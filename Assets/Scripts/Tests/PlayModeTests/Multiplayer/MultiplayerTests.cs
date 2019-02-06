@@ -170,32 +170,54 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                await PvPTestUtility.StartOnlineMatch();
-                TestHelper.DebugCheats.ForceFirstTurnUserId = TestHelper.BackendDataControlMediator.UserDataModel.UserId;
+                Deck playerDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                     player =>
                     {
-                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
-                        Assert.AreEqual(3, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(4, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                     },
                     opponent =>
                     {
-                        Assert.AreEqual(4, TestHelper.GetCurrentPlayer().CardsInHand.Count);
-                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(4, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                     },
                     player =>
                     {
-                        Assert.AreEqual(5, TestHelper.GetCurrentPlayer().CardsInHand.Count);
-                        Assert.AreEqual(5, TestHelper.GetOpponentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                        Assert.AreEqual(5, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                     },
                 };
 
-                MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await matchScenarioPlayer.Play();
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, null);
             });
         }
     }

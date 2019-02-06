@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
@@ -18,19 +19,18 @@ namespace Loom.ZombieBattleground.Test
             Action validateEndStateAction,
             bool enableReverseMatch = true)
         {
-            Func<Task> callTest = async () =>
+            async Task ExecuteTest()
             {
-                await GenericPvPTest(
-                    turns,
+                await GenericPvPTest(turns,
+                    pvpTestContext.Player1Deck,
                     () =>
                     {
                         bool player1HasFirstTurn = pvpTestContext.IsReversed ?
                             !pvpTestContext.Player1HasFirstTurn :
                             pvpTestContext.Player1HasFirstTurn;
-                        TestHelper.DebugCheats.ForceFirstTurnUserId =
-                            player1HasFirstTurn ?
-                                TestHelper.BackendDataControlMediator.UserDataModel.UserId :
-                                TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = player1HasFirstTurn ?
+                            TestHelper.BackendDataControlMediator.UserDataModel.UserId :
+                            TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
                         TestHelper.DebugCheats.UseCustomDeck = true;
                         TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
@@ -41,23 +41,23 @@ namespace Loom.ZombieBattleground.Test
                         cheats.UseCustomDeck = true;
                         cheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player1Deck : pvpTestContext.Player2Deck;
                     },
-                    validateEndStateAction
-                );
-            };
+                    validateEndStateAction);
+            }
 
             pvpTestContext.IsReversed = false;
-            await callTest();
+            await ExecuteTest();
 
             if (enableReverseMatch)
             {
                 Debug.Log("Starting reversed Pvp test");
                 pvpTestContext.IsReversed = true;
-                await callTest();
+                await ExecuteTest();
             }
         }
 
         private static async Task GenericPvPTest(
             IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
+            Deck deck,
             Action setupAction,
             Action<DebugCheatsConfiguration> modifyOpponentDebugCheats,
             Action validateEndStateAction)
@@ -65,7 +65,11 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.CreateAndConnectOpponentDebugClient();
             setupAction?.Invoke();
 
-            await StartOnlineMatch(createOpponent: false);
+            await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
+
+            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
+            GameClient.Get<IMatchManager>().FindMatch();
 
             MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
@@ -88,8 +92,10 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.MainMenuTransition("Button_CasualType");
             await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
 
-            await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-            TestHelper.RecordExpectedOverlordName(selectedHordeIndex);
+            if (selectedHordeIndex > 0)
+            {
+                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+            }
 
             if (tags == null)
             {
@@ -105,7 +111,10 @@ namespace Loom.ZombieBattleground.Test
 
             await TestHelper.LetsThink();
 
-            await TestHelper.MainMenuTransition("Button_Battle");
+            if (selectedHordeIndex > 0)
+            {
+                await TestHelper.MainMenuTransition("Button_Battle");
+            }
 
             if (createOpponent)
             {
