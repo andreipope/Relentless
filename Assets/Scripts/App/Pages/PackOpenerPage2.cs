@@ -457,7 +457,8 @@ namespace Loom.ZombieBattleground
         private void SetPackToOpenAmount( int amount)
         {
             _packToOpenAmount = amount;
-            _packsAmountText.text = amount.ToString();
+            string s = amount > 1 ? "s" : "";
+            _packsAmountText.text = $"{amount.ToString()} pack{s}";
             _createdbuttonOpenPackVFX.gameObject.SetActive(_packToOpenAmount > 0 && _buttonCollect.IsInteractable());          
         }
         
@@ -814,7 +815,7 @@ namespace Loom.ZombieBattleground
         private void ChangeSelectedPackType( int id )
         {
             _selectedPackTypeIndex = id;
-            _packsAmountText.text = _packBalanceAmounts[_selectedPackTypeIndex].ToString();
+            SetPackToOpenAmount(_packBalanceAmounts[_selectedPackTypeIndex]);
             for(int i=0;i<_packTypeButtons.Length;++i)
             {
                 _packTypeButtons[i].GetComponent<Image>().sprite = (i == _selectedPackTypeIndex ? _packHolderSelectedSprite : _packHolderNormalSprite);

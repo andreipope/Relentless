@@ -89,11 +89,14 @@ namespace Loom.ZombieBattleground
                 catch(Exception e)
                 {
                     Debug.Log($"CallTutorialRewardContract failed {e.Message}");
-                    _uiManager.DrawPopup<WarningPopup>($"CallTutorialRewardContract failed failed\n{e.Message}\nPlease try again");
-                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.ConfirmationReceived += WarningPopupConfirmationReceived;
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                    return;
+                    if (!e.Message.Contains("reverted"))
+                    {                       
+                        _uiManager.DrawPopup<WarningPopup>($"CallTutorialRewardContract failed failed\n{e.Message}\nPlease try again");
+                        WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                        popup.ConfirmationReceived += WarningPopupConfirmationReceived;
+                        _uiManager.HidePopup<LoadingFiatPopup>();
+                        return;
+                    }
                 }
             }            
                
