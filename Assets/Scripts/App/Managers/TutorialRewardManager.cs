@@ -7,6 +7,7 @@ using System.Numerics;
 using System.Globalization;
 using System.Threading.Tasks;
 using Loom.Client;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
@@ -102,7 +103,7 @@ namespace Loom.ZombieBattleground
                
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            _uiManager.GetPage<PackOpenerPage2>().RetrievePackBalanceAmount();
+            _uiManager.GetPage<PackOpenerPage2>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
         private void WarningPopupConfirmationReceived()

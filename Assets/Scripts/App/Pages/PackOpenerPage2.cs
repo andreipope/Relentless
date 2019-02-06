@@ -421,6 +421,11 @@ namespace Loom.ZombieBattleground
                 SetPackTypeButtonsAmount(i);
             }              
         }
+        public async Task RetrievePackBalanceAmount(int typeId)
+        {
+            _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
+            SetPackTypeButtonsAmount(typeId);
+        }
         private async Task RetriveCardsFromPack(int packTypeId)
         {
             _uiManager.DrawPopup<LoadingFiatPopup>();
