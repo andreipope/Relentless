@@ -25,7 +25,8 @@ namespace Loom.ZombieBattleground
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 150), "PvP Cheats", Styles.OpaqueWindow);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -65,6 +66,13 @@ namespace Loom.ZombieBattleground
                 }
 
                 GUI.enabled = true;
+            }
+            GUILayout.EndArea();
+
+            pvpCheatsRect.y += pvpCheatsRect.height + 15;
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Options", Styles.OpaqueWindow);
+            {
+                _pvpManager.UseBackendGameLogic = GUILayout.Toggle(_pvpManager.UseBackendGameLogic, "Use Backend Logic");
             }
             GUILayout.EndArea();
 
