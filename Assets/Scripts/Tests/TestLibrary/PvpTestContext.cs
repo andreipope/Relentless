@@ -38,6 +38,15 @@ namespace Loom.ZombieBattleground.Test
             return !IsReversed ? TestHelper.Instance.GetCurrentPlayer() : TestHelper.Instance.GetOpponentPlayer();
         }
 
+        /// <summary>
+        /// Calculates the instance ID of a card in deck by its name and number.
+        /// Example: "in this deck, get the ID of a second 'Slab' card."
+        /// </summary>
+        /// <param name="deck"></param>
+        /// <param name="name">Name of the card</param>
+        /// <param name="number">The number of a card with that name</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public InstanceId GetCardInstanceIdByName(Deck deck, string name, int number) {
             AssertKnownDeck(deck);
             if (number <= 0)
@@ -63,10 +72,21 @@ namespace Loom.ZombieBattleground.Test
             throw new Exception($"card with name {name} not found in deck");
         }
 
+        /// <summary>
+        /// Calculates the instance ID of a card by its index in deck.
+        /// </summary>
+        /// <param name="deck"></param>
+        /// <param name="indexInDeck"></param>
+        /// <returns></returns>
         public InstanceId GetCardInstanceIdByIndex(Deck deck, int indexInDeck) {
             return new InstanceId(GetDeckStartingInstanceId(deck).Id + indexInDeck);
         }
 
+        /// <summary>
+        /// Calculates the instance ID of the first card in a deck.
+        /// </summary>
+        /// <param name="deck"></param>
+        /// <returns></returns>
         public InstanceId GetDeckStartingInstanceId(Deck deck) {
             AssertKnownDeck(deck);
 
@@ -81,20 +101,8 @@ namespace Loom.ZombieBattleground.Test
                 return new InstanceId(2);
             } else
             {
-                return new InstanceId(2 + GetTotalCardCount(otherDeck));
+                return new InstanceId(2 + deck.GetNumCards());
             }
-        }
-
-        public int GetTotalCardCount(Deck deck) {
-            AssertKnownDeck(deck);
-
-            int count = 0;
-            foreach (DeckCardData deckCard in deck.Cards)
-            {
-                count += deckCard.Amount;
-            }
-
-            return count;
         }
 
         private void AssertKnownDeck(Deck deck) {
