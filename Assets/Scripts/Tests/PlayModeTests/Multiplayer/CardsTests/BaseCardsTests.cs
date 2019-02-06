@@ -31,6 +31,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
             return deck;
         }
 
+        protected AbilityData GetAbilityDataFromCardByType(DeckCardData card, Enumerators.AbilityType abilityType)
+        {
+            return TestHelper.DataManager.CachedCardsLibraryData.GetCardFromName(card.CardName)?.Abilities?.Find(ability => ability.AbilityType == abilityType);
+        }
+
         protected async Task DoPvPMatch(IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns, Deck deck, Deck opponentDeck)
         {
             await GenericPvPTest(turns,

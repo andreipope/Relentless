@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
                 InstanceId opponentJetter1 = new InstanceId(2);
                 InstanceId opponentJetter2 = new InstanceId(3);
 
+                AbilityData abilityData = GetAbilityDataFromCardByType(playerDeck.Cards[0], Enumerators.AbilityType.DAMAGE_TARGET);
+
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                        opponent => {},
@@ -116,9 +118,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
                 Assert.NotNull(opponentJetter1Model);
                 Assert.NotNull(opponentJetter2Model);
 
-                Assert.AreEqual(playerJetter1Model.CurrentHp - 1, playerJetter1Model.CurrentHp);
-                Assert.AreEqual(playerJetter2Model.CurrentHp - 1, playerJetter2Model.CurrentHp);
-                Assert.AreEqual(opponentJetter1Model.CurrentHp - 1, opponentJetter1Model.CurrentHp);
+                Assert.AreEqual(playerJetter1Model.CurrentHp - abilityData.Value, playerJetter1Model.CurrentHp);
+                Assert.AreEqual(playerJetter2Model.CurrentHp - abilityData.Value, playerJetter2Model.CurrentHp);
+                Assert.AreEqual(opponentJetter1Model.CurrentHp - abilityData.Value, opponentJetter1Model.CurrentHp);
                 Assert.AreEqual(opponentJetter2Model.CurrentHp, opponentJetter2Model.CurrentHp);
             });
         }
