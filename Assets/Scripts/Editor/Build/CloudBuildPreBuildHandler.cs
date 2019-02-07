@@ -1,6 +1,8 @@
 using System.IO;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Loom.ZombieBattleground.Editor
 {
@@ -35,7 +37,6 @@ namespace Loom.ZombieBattleground.Editor
                var altUnityRunner =
             AssetDatabase.LoadAssetAtPath<GameObject>(
                 AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("AltUnityRunnerPrefab")[0]));
-            var PreviousScenePath = SceneManager.GetActiveScene().path;
             var SceneWithAltUnityRunner = EditorSceneManager.OpenScene("Assets/Scenes/APP_INIT.unity");
             var AltUnityRunner = PrefabUtility.InstantiatePrefab(altUnityRunner);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
