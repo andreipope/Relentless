@@ -115,8 +115,8 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
             #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            #endif
             _finishRequestPack += OnFinishRequestPack;
+            #endif
 
             _selectedColor = Color.white;
             _deselectedColor = new Color(0.5f, 0.5f, 0.5f);
@@ -437,6 +437,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        #if UNITY_IOS || UNITY_ANDROID
         private async void RequestFiatValidationGoogle()
         {            
             _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationGoogle)}");
@@ -596,6 +597,7 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount();
             PackMoveAnimation();
         }
+        #endif
 
 #if UNITY_IOS || UNITY_ANDROID
         private void OnProcessPurchase(PurchaseEventArgs args)
