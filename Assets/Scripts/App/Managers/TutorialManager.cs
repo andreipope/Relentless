@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         private bool _playerOrderScreenCloseManually;
 
+        //public TutorialReward RewardFromLastTutorial { get; private set; }
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialStep CurrentTutorialStep { get; private set; }
 
@@ -80,7 +82,7 @@ namespace Loom.ZombieBattleground
 
         public int TutorialsCount
         {
-            get { return _tutorials.Count; }
+            get { return _tutorials.FindAll(tutor => !tutor.Additional).Count; }
         }
 
         public void Dispose()
@@ -191,6 +193,7 @@ namespace Loom.ZombieBattleground
 
         public void SetupTutorialById(int id)
         {
+            Debug.LogError(id);
             if (CheckAvailableTutorial())
             {
                 CurrentTutorial = _tutorials.Find(tutor => tutor.Id == id);
@@ -350,6 +353,11 @@ namespace Loom.ZombieBattleground
             if (!UnfinishedTutorial)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
+                if (CurrentTutorial.IsGameplayTutorial() && CurrentTutorial.TutorialContent.ToGameplayContent().GetRewardCardPack)
+                {
+                    ApplyReward();
+                }
             }
 
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
@@ -823,16 +831,19 @@ namespace Loom.ZombieBattleground
                         GameClient.Get<IGameplayManager>().EndGame(Enumerators.EndGameType.WIN, 0);
                     }
 
-                    if(!gameStep.PlayerOrderScreenCloseManually && _playerOrderScreenCloseManually)
-                    {
-                        _uiManager.GetPopup<PlayerOrderPopup>().AnimationEnded();
-                    }
-                    _playerOrderScreenCloseManually = gameStep.PlayerOrderScreenCloseManually;
-
                     if (CurrentTutorial.TutorialContent.ToGameplayContent().GameplayFlowBeginsManually && gameStep.BeginGameplayFlowManually)
                     {
                         (_gameplayManager as GameplayManager).TutorialStartAction?.Invoke();
                     }
+
+                    if (!gameStep.PlayerOrderScreenCloseManually && _playerOrderScreenCloseManually)
+                    {
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _uiManager.GetPopup<PlayerOrderPopup>().AnimationEnded();
+                        }, Time.deltaTime);
+                    }
+                    _playerOrderScreenCloseManually = gameStep.PlayerOrderScreenCloseManually;
 
                     break;
                 case TutorialMenuStep menuStep:
@@ -1152,9 +1163,9 @@ namespace Loom.ZombieBattleground
 
         public void HideAllActiveDescriptionTooltip()
         {
-            foreach (TutorialDescriptionTooltipItem tooltip in _tutorialDescriptionTooltipItems)
+            for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
-                tooltip?.Hide();
+                _tutorialDescriptionTooltipItems[i]?.Hide();
             }
         }
 
@@ -1273,6 +1284,11 @@ namespace Loom.ZombieBattleground
                     .Find(info => info.CardName == id);
             }
             return cardData;
+        }
+
+        public void ApplyReward()
+        {
+            //get 1 card pack
         }
     }
 }

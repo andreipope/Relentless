@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialProgressInfoPopup : IUIPopup
     {
-        private const float SpeedFilling = 0.5f;
+        private const float SpeedFilling = 0.35f;
 
         public event Action PopupHiding;
 

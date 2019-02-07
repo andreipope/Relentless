@@ -283,11 +283,14 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
+            if (!_tutorialManager.IsTutorial)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
 
-            await LetsWaitForQueue(cancellationToken);
+                await LetsWaitForQueue(cancellationToken);
+            }
 
             await UseUnitsOnBoard(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -300,18 +303,13 @@ namespace Loom.ZombieBattleground
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
-
             }
-            else
+            if (!_tutorialManager.IsTutorial)
             {
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
             }
+            _battlegroundController.StopTurn();
         }
 
         private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
@@ -583,7 +581,10 @@ namespace Loom.ZombieBattleground
                     if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
                         continue;
 
-                    await LetsWaitForQueue(cancellationToken);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        await LetsWaitForQueue(cancellationToken);
+                    }
 
                     while (UnitCanBeUsable(unit))
                     {
@@ -599,7 +600,10 @@ namespace Loom.ZombieBattleground
                     if (unit.AttackTargetsAvailability.Count == 0)
                         continue;
 
-                    await LetsWaitForQueue(cancellationToken);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        await LetsWaitForQueue(cancellationToken);
+                    }
 
                     while (UnitCanBeUsable(unit))
                     {

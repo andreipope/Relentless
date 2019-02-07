@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         public bool Ignore;
 
+        public bool Additional;
+
         public bool IsGameplayTutorial()
         {
             return TutorialContent is TutorialGameplayContent;
@@ -53,6 +55,8 @@ namespace Loom.ZombieBattleground
         public bool DisabledSpecificTurnInfos;
 
         public bool GameplayFlowBeginsManually;
+
+        public bool GetRewardCardPack;
 
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
 
@@ -365,6 +369,7 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.SetType MainSet;
         public List<Data.CollectionCardData> CardsForArmy;
+        public int MaximumCardsCount;
 
         public SpecificHordeInfo()
         {
@@ -374,12 +379,17 @@ namespace Loom.ZombieBattleground
 
     public class TutorialReward
     {
-        public List<OverlordExperienceManager.LevelReward.UnitRewardItem> UnitRewards;
+        public List<CardRewardInfo> CardPackReward;
 
         public TutorialReward()
         {
-            UnitRewards = new List<OverlordExperienceManager.LevelReward.UnitRewardItem>();
+            CardPackReward = new List<CardRewardInfo>();
         }
+    }
+
+    public class CardRewardInfo
+    {
+        public string Name;
     }
 
     public class TutorialMenuStep : TutorialStep

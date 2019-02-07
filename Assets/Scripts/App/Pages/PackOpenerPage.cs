@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Loom.ZombieBattleground.Common;
@@ -18,6 +19,10 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
         
         private ILoadObjectsManager _loadObjectsManager;
+
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
         
         private CardInfoPopupHandler _cardInfoPopupHandler;
         
@@ -75,7 +80,9 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.StateChanging += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
@@ -336,8 +343,17 @@ namespace Loom.ZombieBattleground
             //Simulate request pack balance from plasma chain
             await Task.Delay(TimeSpan.FromSeconds(1.0));    
             List<Card> cards = RetrieveDummyCards(5);
-            
-            _cardsToDisplayQueqe = cards;
+
+            if (_tutorialManager.IsTutorial)
+            {
+                _cardsToDisplayQueqe = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward
+                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.Name))
+                    .ToList();
+            }
+            else
+            {
+                _cardsToDisplayQueqe = cards;
+            }
             _uiManager.HidePopup<LoadingFiatPopup>(); 
         }
 
@@ -538,11 +554,24 @@ namespace Loom.ZombieBattleground
 
         private void ButtonBackHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
             DestroyCreatedObject();
-            GameClient.Get<IAppStateManager>().BackAppState();
+            if (_tutorialManager.IsTutorial)
+            {
+                _uiManager.SetPage<MainMenuPage>();
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().BackAppState();
+            }
         }
         
         private void ButtonPlusHandler()
@@ -581,6 +610,12 @@ namespace Loom.ZombieBattleground
             {
                 if (_packToOpenAmount <= 0)
                     return;
+
+                if(_tutorialManager.IsTutorial)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
+                }
+
                 ChangeState(STATE.TRAY_INSERTED);
             }            
         }
@@ -600,7 +635,12 @@ namespace Loom.ZombieBattleground
                 
                 if( i == lastIndex)
                 {
-                    hideCardSequence.OnComplete(ProcessOpenPackLogic);                        
+                    hideCardSequence.OnComplete(ProcessOpenPackLogic);
+
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);
+                    }
                 }
             }
         }
