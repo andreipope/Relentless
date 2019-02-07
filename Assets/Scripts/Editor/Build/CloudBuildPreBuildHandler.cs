@@ -31,6 +31,16 @@ namespace Loom.ZombieBattleground.Editor
                 BuildAssetBundleOptions.ForceRebuildAssetBundle,
                 buildTarget
             );
+#if ALTUNITYTESTER
+               var altUnityRunner =
+            AssetDatabase.LoadAssetAtPath<GameObject>(
+                AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("AltUnityRunnerPrefab")[0]));
+            var PreviousScenePath = SceneManager.GetActiveScene().path;
+            var SceneWithAltUnityRunner = EditorSceneManager.OpenScene("Assets/Scenes/APP_INIT.unity");
+            var AltUnityRunner = PrefabUtility.InstantiatePrefab(altUnityRunner);
+            EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            EditorSceneManager.SaveOpenScenes();
+#endif
         }
     }
 }
