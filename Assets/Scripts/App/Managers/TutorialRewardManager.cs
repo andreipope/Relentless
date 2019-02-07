@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
                
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            _uiManager.GetPage<PackOpenerPage2>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
         private void WarningPopupConfirmationReceived()

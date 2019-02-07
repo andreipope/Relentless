@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.PACK_OPENER:
                     if (Constants.EnableShopPage)
                     {
-                        _uiManager.SetPage<PackOpenerPage2>();
+                        _uiManager.SetPage<PackOpenerPage>();
                         break;
                     }
                     else

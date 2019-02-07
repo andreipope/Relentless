@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             Pages.Add(new HordeEditingPage());
             Pages.Add(new ShopPage());
             Pages.Add(new GameplayPage());
-            Pages.Add(new PackOpenerPage2());
+            Pages.Add(new PackOpenerPage());
             Pages.Add(new CreditsPage());
             Pages.Add(new PlaySelectionPage());
             Pages.Add(new PvPSelectionPage());
