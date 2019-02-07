@@ -96,8 +96,10 @@ namespace Loom.ZombieBattleground
 
         private Sequence _shopSelectScrollSequence;
 
+        #if UNITY_IOS || UNITY_ANDROID
         private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
-        private FiatValidationDataAppleStore _fiatValidationDataAppleStore;        
+        private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
+        #endif       
 
         event Action _finishRequestPack;
 
