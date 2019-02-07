@@ -51,6 +51,16 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.END)
+                return;
+
+            Action();
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();

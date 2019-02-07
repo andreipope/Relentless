@@ -1077,6 +1077,10 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DRAW_CARD_BY_FACTION:
                     ability = new DrawCardByFactionAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DESTROY_TARGET_UNIT:
+                    ability = new DestroyTargetUnitAbility(cardKind, abilityData);
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }

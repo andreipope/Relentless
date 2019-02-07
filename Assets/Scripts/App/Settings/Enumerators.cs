@@ -152,7 +152,10 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
             GAIN_GOO,
             BLITZ,
-            DRAW_CARD_BY_FACTION
+            DRAW_CARD_BY_FACTION,
+            DESTROY_TARGET_UNIT,
+            AGILE,
+            CHANGE_STAT_OF_CARDS_IN_HAND
         }
 
         public enum ActionType

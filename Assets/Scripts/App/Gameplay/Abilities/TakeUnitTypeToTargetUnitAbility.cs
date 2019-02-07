@@ -21,10 +21,20 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            {
+                Action();
+            }
+        }
 
-            Action();
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)

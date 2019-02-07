@@ -17,31 +17,42 @@ namespace Loom.ZombieBattleground
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
-
-            Action();
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            {
+                TakeGuardToTarget(AbilityUnitOwner);
+            }
         }
 
-        public override void Action(object info = null)
+        protected override void InputEndedHandler()
         {
-            base.Action(info);
+            base.InputEndedHandler();
 
-            AbilityUnitOwner.AddBuffShield();
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (IsAbilityResolved)
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                TakeGuardToTarget(TargetUnit);
+            }
+        }
+
+        private void TakeGuardToTarget(BoardObject boardObject)
+        {
+            if (boardObject is BoardUnitModel unit)
+            {
+                unit.AddBuffShield();
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.Guard,
-                            Target = AbilityUnitOwner,
+                            Target = unit,
                         }
                     }
-            });
+                });
+            }
         }
     }
 }

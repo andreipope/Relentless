@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -10,11 +11,14 @@ namespace Loom.ZombieBattleground
         public Enumerators.SetType SetType { get; }
         public Enumerators.UnitStatusType UnitStatusType { get; }
 
+        public int Count { get; set; }
+
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             SetType = ability.AbilitySetType;
             UnitStatusType = ability.TargetUnitStatusType;
+            Count = ability.Count;
         }
 
         public override void Activate()
@@ -47,6 +51,15 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        {
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+                return;
+
+            Action();
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -64,28 +77,53 @@ namespace Loom.ZombieBattleground
                 )
                 return;
 
+
+            int cardsCount = Mathf.Clamp(Count, 1, Count);
+
+            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            {
+                cardsCount = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card != MainWorkingCard).Count;
+            }
+
             if (AbilityTargetTypes.Count > 0)
             {
-                Enumerators.AbilityTargetType abilityTargetType = AbilityTargetTypes[0];
-                switch (abilityTargetType)
+                foreach (Enumerators.AbilityTargetType abilityTargetType in AbilityTargetTypes)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER:
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
-                        break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
-                            PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
-                                GameplayManager.OpponentPlayer :
-                                GameplayManager.CurrentPlayer);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
+                    switch (abilityTargetType)
+                    {
+                        case Enumerators.AbilityTargetType.PLAYER:
+                            AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, false, cardsCount);
+                            break;
+                        case Enumerators.AbilityTargetType.OPPONENT:
+                            AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, true, cardsCount);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
+                    }
                 }
             }
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
                 CardsController.AddCardToHand(PlayerCallerOfAbility);
+            }
+        }
+
+        private void AddCardToHand(Player from, Player to, bool fromOtherPlayerDeck = false, int count = 1)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                if (fromOtherPlayerDeck)
+                {
+                    CardsController.AddCardToHandFromOtherPlayerDeck(from,
+                         from.Equals(GameplayManager.CurrentPlayer) ?
+                             GameplayManager.OpponentPlayer :
+                             GameplayManager.CurrentPlayer);
+                }
+                else
+                {
+                    CardsController.AddCardToHandFromOtherPlayerDeck(from, to);
+                }
             }
         }
     }

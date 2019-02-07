@@ -63,6 +63,22 @@ namespace Loom.ZombieBattleground
              }
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+                return;
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+            {
+                _targets.Add(PlayerCallerOfAbility);
+
+                _vfxAnimationEndedCallback = HealOverlord;
+                InvokeActionTriggered(_targets);
+            }
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
