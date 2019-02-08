@@ -3634,7 +3634,7 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClientOwner = onBehaviourHandler;
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, true, false));
+                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, false));
             await client.Start(
                 contractCallProxyFactory,
                 onClientCreatedCallback: chainClient =>
@@ -3642,7 +3642,7 @@ namespace Loom.ZombieBattleground.Test
                     chainClient.Configuration.StaticCallTimeout = 10000;
                     chainClient.Configuration.CallTimeout = 10000;
                 },
-                enabledLogs: true);
+                enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }

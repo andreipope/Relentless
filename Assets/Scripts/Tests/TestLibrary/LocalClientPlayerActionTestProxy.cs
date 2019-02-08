@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public Task OverlordSkillUsed(SkillId skillId, InstanceId targetInstanceId)
+        public Task OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             throw new NotImplementedException();
         }

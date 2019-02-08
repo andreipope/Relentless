@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -36,27 +38,47 @@ namespace Loom.ZombieBattleground.Test
 
         public void EndTurn()
         {
-            Queue.Enqueue(() => Proxy.EndTurn());
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(EndTurn)}()");
+                return Proxy.EndTurn();
+            });
         }
 
         public void LeaveMatch()
         {
-            Queue.Enqueue(() => Proxy.LeaveMatch());
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(LeaveMatch)}()");
+                return Proxy.LeaveMatch();
+            });
         }
 
         public void Mulligan(IEnumerable<InstanceId> cards)
         {
-            Queue.Enqueue(() => Proxy.Mulligan(cards));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(Mulligan)}({nameof(cards)}: {StringifyInstanceIds(cards)})");
+                return Proxy.Mulligan(cards);
+            });
         }
 
         public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
         {
-            Queue.Enqueue(() => Proxy.CardPlay(card, position, entryAbilityTarget));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"})");
+                return Proxy.CardPlay(card, position, entryAbilityTarget);
+            });
         }
 
         public void RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
-            Queue.Enqueue(() => Proxy.RankBuff(card, units));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(RankBuff)}({nameof(card)}: {card}, {nameof(units)}: {StringifyInstanceIds(units)})");
+                return Proxy.RankBuff(card, units);
+            });
         }
 
         public void CardAbilityUsed(
@@ -64,22 +86,58 @@ namespace Loom.ZombieBattleground.Test
             Enumerators.AbilityType abilityType,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, targets));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(CardAbilityUsed)}({nameof(card)}: {card}, {nameof(abilityType)}: {abilityType}), {nameof(targets)}: {StringifyInstanceIds(targets)})");
+                return Proxy.CardAbilityUsed(card, abilityType, targets);
+            });
         }
 
-        public void OverlordSkillUsed(SkillId skillId, InstanceId targetInstanceId)
+        public void OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
-            Queue.Enqueue(() => Proxy.OverlordSkillUsed(skillId, targetInstanceId));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {target})");
+                return Proxy.OverlordSkillUsed(skillId, target);
+            });
         }
 
         public void CardAttack(InstanceId attacker, InstanceId target)
         {
-            Queue.Enqueue(() => Proxy.CardAttack(attacker, target));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(CardAttack)}({nameof(attacker)}: {attacker}, {nameof(target)}: {target})");
+                return Proxy.CardAttack(attacker, target);
+            });
         }
 
-        public void CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets)
+        public void CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
         {
-            Queue.Enqueue(() => Proxy.CheatDestroyCardsOnBoard(targets));
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(CheatDestroyCardsOnBoard)}({nameof(targets)}: {StringifyInstanceIds(targets)})");
+                return Proxy.CheatDestroyCardsOnBoard(targets);
+            });
+        }
+
+        private void LogAction(string log)
+        {
+            Debug.Log($"[ScenarioPlayer] {Proxy.GetType().Name}: " + log);
+        }
+
+        private static string StringifyInstanceIds(IEnumerable<InstanceId> cards)
+        {
+            return StringifyList(cards.Select(card => card.Id.ToString()));
+        }
+
+        private static string StringifyInstanceIds(IEnumerable<ParametrizedAbilityInstanceId> abilityInstanceIds)
+        {
+            return StringifyList(abilityInstanceIds.Select(abilityInstanceId => abilityInstanceId.ToString()));
+        }
+
+        private static string StringifyList(IEnumerable<string> items)
+        {
+            return "[" + String.Concat(", ", items) + "]";
         }
     }
 }
