@@ -19,10 +19,10 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
         );
 
-        Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId);
-        Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target);
+        Task OverlordSkillUsed(SkillId skillId, InstanceId target);
+        Task CardAttack(InstanceId attacker, InstanceId target);
 
-        Task CheatDestroyCardsOnBoard(IEnumerable<Data.InstanceId> targets);
+        Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets);
 
         Task<bool> GetIsCurrentTurn();
     }

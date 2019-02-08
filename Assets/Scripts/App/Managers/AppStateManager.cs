@@ -219,6 +219,11 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
+            if (!Application.isPlaying) {
+                throw exception;
+                return;
+            }
+                
             Debug.LogWarning("Handled network exception: " + exception);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)

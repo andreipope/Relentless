@@ -1,0 +1,169 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
+using UnityEngine;
+
+namespace Loom.ZombieBattleground.Test
+{
+    public static class PvPTestUtility
+    {
+        private static readonly TestHelper TestHelper = TestHelper.Instance;
+
+        public static async Task GenericPvPTest(
+            PvpTestContext pvpTestContext,
+            IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
+            Action validateEndStateAction,
+            bool enableReverseMatch = true)
+        {
+            async Task ExecuteTest()
+            {
+                await GenericPvPTest(
+                    turns,
+                    pvpTestContext.Player1Deck,
+                    () =>
+                    {
+                        bool player1HasFirstTurn = pvpTestContext.IsReversed ?
+                            !pvpTestContext.Player1HasFirstTurn :
+                            pvpTestContext.Player1HasFirstTurn;
+                        TestHelper.DebugCheats.ForceFirstTurnUserId = player1HasFirstTurn ?
+                            TestHelper.BackendDataControlMediator.UserDataModel.UserId :
+                            TestHelper.GetOpponentDebugClient().UserDataModel.UserId;
+                        TestHelper.DebugCheats.UseCustomDeck = true;
+                        TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
+                        TestHelper.DebugCheats.DisableDeckShuffle = true;
+                        TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                    },
+                    cheats =>
+                    {
+                        cheats.UseCustomDeck = true;
+                        cheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player1Deck : pvpTestContext.Player2Deck;
+                    },
+                    validateEndStateAction);
+            }
+
+            pvpTestContext.IsReversed = false;
+            await ExecuteTest();
+
+            if (enableReverseMatch)
+            {
+                Debug.Log("Starting reversed Pvp test");
+                pvpTestContext.IsReversed = true;
+                await ExecuteTest();
+            }
+        }
+
+        private static async Task GenericPvPTest(
+            IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
+            Deck deck,
+            Action setupAction,
+            Action<DebugCheatsConfiguration> modifyOpponentDebugCheats,
+            Action validateEndStateAction)
+        {
+            await TestHelper.CreateAndConnectOpponentDebugClient();
+            setupAction?.Invoke();
+
+            await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
+
+            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
+            await GameClient.Get<IMatchManager>().FindMatch();
+            GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
+
+            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
+            await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
+            await TestHelper.WaitUntilPlayerOrderIsDecided();
+
+            await matchScenarioPlayer.Play();
+            validateEndStateAction?.Invoke();
+
+            await TestHelper.GoBackToMainScreen();
+        }
+
+        public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
+        {
+            await TestHelper.MainMenuTransition("Button_Play");
+            await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
+
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+            await TestHelper.MainMenuTransition("Button_PvPMode");
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PvPSelection);
+            await TestHelper.MainMenuTransition("Button_CasualType");
+            await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+
+            if (selectedHordeIndex > 0)
+            {
+                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
+            }
+
+            if (tags == null)
+            {
+                tags = new List<string>();
+            }
+
+            tags.Insert(0, "pvpTest");
+            tags.Insert(1, TestHelper.GetTestName());
+
+            TestHelper.SetPvPTags(tags);
+            TestHelper.DebugCheats.Enabled = true;
+            TestHelper.DebugCheats.CustomRandomSeed = 0;
+
+            await TestHelper.LetsThink();
+
+            if (selectedHordeIndex > 0)
+            {
+                await TestHelper.MainMenuTransition("Button_Battle");
+            }
+
+            if (createOpponent)
+            {
+                await TestHelper.CreateAndConnectOpponentDebugClient();
+            }
+        }
+
+        public static WorkingCard GetCardOnBoard(Player player, string name)
+        {
+            WorkingCard workingCard =
+                player
+                .BoardCards
+                .Select(boardCard => boardCard.Model.Card)
+                .Concat(player.CardsOnBoard)
+                .FirstOrDefault(card => CardNameEqual(name, card));
+
+            if (workingCard == null)
+            {
+                throw new Exception($"No '{name}' cards found on board for player {player}");
+            }
+
+            return workingCard;
+        }
+
+        public static WorkingCard GetCardInHand(Player player, string name)
+        {
+            WorkingCard workingCard =
+                player
+                    .CardsInHand
+                    .FirstOrDefault(card => CardNameEqual(name, card));
+
+            if (workingCard == null)
+            {
+                throw new Exception($"No '{name}' cards found in hand of player {player}");
+            }
+
+            return workingCard;
+        }
+
+        public static bool CardNameEqual(string name1, string name2)
+        {
+            return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public static bool CardNameEqual(string name, WorkingCard card)
+        {
+            return CardNameEqual(name, card.LibraryCard.Name);
+        }
+    }
+}

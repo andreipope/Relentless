@@ -79,7 +79,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Protobuf.Unit protoUnit = new Protobuf.Unit
                 {
                     InstanceId = unit.ToProtobuf(),
-                    AffectObjectType = AffectObjectType.Types.Enum.Character,
                     Parameter = new Parameter()
                 };
 
@@ -131,7 +130,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, affectObjectType, target.Parameters);
+                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
                     parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
                 }
             }
@@ -154,7 +153,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Protobuf.Unit targetUnit = new Protobuf.Unit
                     {
                         InstanceId = target.Id.ToProtobuf(),
-                        AffectObjectType = (AffectObjectType.Types.Enum) target.AffectObjectType,
                         Parameter = target.Parameters.ToProtobuf()
                     };
 
@@ -186,7 +184,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId target)
+        public PlayerAction OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             return new PlayerAction
             {
@@ -198,14 +196,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Target = new Protobuf.Unit
                     {
                         InstanceId = target.ToProtobuf(),
-                        AffectObjectType = (AffectObjectType.Types.Enum) affectObjectType,
                         Parameter = new Parameter()
                     }
                 }
             };
         }
 
-        public PlayerAction CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public PlayerAction CardAttack(InstanceId attacker, InstanceId target)
         {
             return new PlayerAction
             {
@@ -217,7 +214,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     Target = new Protobuf.Unit
                     {
                         InstanceId = target.ToProtobuf(),
-                        AffectObjectType = (AffectObjectType.Types.Enum) type,
                         Parameter = new Parameter()
                     }
                 }

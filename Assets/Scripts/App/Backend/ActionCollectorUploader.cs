@@ -243,12 +243,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Data.InstanceId instanceId)
             {
-                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
-                    throw new ArgumentNullException(nameof(instanceId));
-
-                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }
 
             private void AbilityUsedHandler(
@@ -266,11 +263,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void SkillUsedHandler(BoardSkill skill, BoardObject target)
             {
-                Enumerators.AffectObjectType affectObjectType =
-                    target is Player ?
-                        Enumerators.AffectObjectType.Player :
-                        Enumerators.AffectObjectType.Character;
-
                 Data.InstanceId targetInstanceId;
                 switch (target)
                 {
@@ -284,7 +276,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         throw new Exception($"Unhandled target type {target}");
                 }
 
-                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, affectObjectType, targetInstanceId));
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targetInstanceId));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)

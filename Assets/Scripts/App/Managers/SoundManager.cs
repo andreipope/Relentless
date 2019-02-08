@@ -52,7 +52,6 @@ namespace Loom.ZombieBattleground
 
             _soundsRoot = new GameObject("SoundContainers").transform;
             _soundsRoot.gameObject.AddComponent<AudioListener>();
-            Object.DontDestroyOnLoad(_soundsRoot);
 
             _soundContainers = new List<SoundContainer>();
             _containersToRemove = new List<SoundContainer>();

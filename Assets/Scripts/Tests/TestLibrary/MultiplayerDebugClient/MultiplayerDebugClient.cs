@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -10,6 +11,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
+using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using Object = UnityEngine.Object;
 
@@ -180,10 +182,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task Update()
         {
 #if UNITY_EDITOR
-            double timeSinceStartup =
-                UnityEditor.EditorApplication.isPlaying ?
-                    Time.realtimeSinceStartup :
-                    UnityEditor.EditorApplication.timeSinceStartup;
+            double timeSinceStartup = Utilites.GetTimeSinceStartup();
 #else
             double timeSinceStartup = Time.realtimeSinceStartup;
 #endif
