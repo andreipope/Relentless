@@ -97,7 +97,8 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AffectObjectType.Player:
                     ThrowUseAbilityEvent(
-                        new List<ParametrizedAbilityBoardObject> {
+                        new List<ParametrizedAbilityBoardObject>
+                        {
                             new ParametrizedAbilityBoardObject(TargetPlayer)
                         }
                     );
@@ -110,7 +111,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
                     ThrowUseAbilityEvent(
-                        new List<ParametrizedAbilityBoardObject> {
+                        new List<ParametrizedAbilityBoardObject>
+                        {
                             new ParametrizedAbilityBoardObject(TargetUnit)
                         }
                     );

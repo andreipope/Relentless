@@ -479,7 +479,8 @@ namespace Loom.ZombieBattleground
 
         }
 
-        protected int GetAbilityIndex() {
+        protected int GetAbilityIndex()
+        {
             int index = MainWorkingCard.LibraryCard.Abilities.IndexOf(AbilityData);
             if (index == -1)
                 throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
@@ -487,7 +488,8 @@ namespace Loom.ZombieBattleground
             return index;
         }
 
-        protected void ThrowUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null) {
+        protected void ThrowUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
+        {
             AbilitiesController.ThrowUseAbilityEvent(
                 MainWorkingCard,
                 AbilityData.AbilityType,

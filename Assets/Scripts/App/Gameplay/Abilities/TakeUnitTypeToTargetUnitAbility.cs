@@ -101,7 +101,8 @@ namespace Loom.ZombieBattleground
             });
 
             ThrowUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject> {
+                new List<ParametrizedAbilityBoardObject>
+                {
                     new ParametrizedAbilityBoardObject(unit)
                 }
             );

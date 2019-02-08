@@ -23,7 +23,8 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             ThrowUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject> {
+                new List<ParametrizedAbilityBoardObject>
+                {
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 }
             );

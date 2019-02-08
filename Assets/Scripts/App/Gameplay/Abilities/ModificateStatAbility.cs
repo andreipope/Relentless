@@ -158,7 +158,8 @@ namespace Loom.ZombieBattleground
                             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
                             {
                                 ThrowUseAbilityEvent(
-                                    new List<ParametrizedAbilityBoardObject> {
+                                    new List<ParametrizedAbilityBoardObject>
+                                    {
                                         new ParametrizedAbilityBoardObject(boardUnit)
                                     }
                                 );

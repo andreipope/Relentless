@@ -65,7 +65,8 @@ namespace Loom.ZombieBattleground
             {
                 TakeBlitzToUnit(AbilityUnitOwner);
                 ThrowUseAbilityEvent(
-                    new List<ParametrizedAbilityBoardObject> {
+                    new List<ParametrizedAbilityBoardObject>
+                    {
                         new ParametrizedAbilityBoardObject(AbilityUnitOwner)
                     }
                 );

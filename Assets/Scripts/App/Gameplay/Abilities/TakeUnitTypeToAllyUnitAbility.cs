@@ -81,7 +81,8 @@ namespace Loom.ZombieBattleground
 
 
                                 ThrowUseAbilityEvent(
-                                    new List<ParametrizedAbilityBoardObject> {
+                                    new List<ParametrizedAbilityBoardObject>
+                                    {
                                         new ParametrizedAbilityBoardObject(allies[0])
                                     }
                                 );
@@ -105,7 +106,8 @@ namespace Loom.ZombieBattleground
                                 });
 
                                 ThrowUseAbilityEvent(
-                                    new List<ParametrizedAbilityBoardObject> {
+                                    new List<ParametrizedAbilityBoardObject>
+                                    {
                                         new ParametrizedAbilityBoardObject(allies[random])
                                     }
                                 );
