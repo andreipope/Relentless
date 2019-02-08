@@ -502,7 +502,7 @@ namespace Loom.ZombieBattleground
 
                     BoardUnitModel unit = GetUnitsOnBoard().Find(unitOnBoard => !unitOnBoard.AttackedThisTurn &&
                                                                        unitOnBoard.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                       _tutorialManager.GetCardNameById(frame.TutorialObjectId).
+                                                                       _tutorialManager.GetCardNameByTutorialObjectId(frame.TutorialObjectId).
                                                                        ToLowerInvariant() &&
                                                                        UnitCanBeUsable(unitOnBoard));
                     BoardObject target = null;
@@ -510,7 +510,7 @@ namespace Loom.ZombieBattleground
                     if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
                     {
                         target = GetOpponentUnitsOnBoard().Find(targetUnit => targetUnit.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                     _tutorialManager.GetCardNameById(frame.TargetTutorialObjectId).
+                                                                     _tutorialManager.GetCardNameByTutorialObjectId(frame.TargetTutorialObjectId).
                                                                      ToLowerInvariant() &&
                                                                      targetUnit.CurrentHp > 0);
                     }
@@ -873,7 +873,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_gameplayManager.IsTutorial && playCardActionInfo != null)
                     {
-                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)))
+                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)))
                         {
                             switch (playCardActionInfo.TargetType)
                             {
@@ -882,7 +882,7 @@ namespace Loom.ZombieBattleground
                                     break;
                                 case Enumerators.SkillTargetType.OPPONENT_CARD:
                                     target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                            _tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)
+                                                                            _tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)
                                                                             .ToLowerInvariant());
                                     break;
                             }

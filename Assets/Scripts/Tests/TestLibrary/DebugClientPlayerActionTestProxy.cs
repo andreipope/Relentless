@@ -45,12 +45,12 @@ namespace Loom.ZombieBattleground.Test
             BoardObject entryAbilityTargetBoardObject = null;
 
             // Entry abilities handling
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
+            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
 
             // First, fire targetable entry abilities
             if (entryAbilityTarget != null)
             {
-                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectById(entryAbilityTarget.Value);
+                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(entryAbilityTarget.Value);
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
 

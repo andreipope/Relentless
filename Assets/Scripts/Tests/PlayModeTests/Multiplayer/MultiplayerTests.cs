@@ -159,8 +159,8 @@ namespace Loom.ZombieBattleground.Test
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerSlabId)).CurrentHp);
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(opponentCyndermanId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSlabId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCyndermanId)).CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -234,8 +234,8 @@ namespace Loom.ZombieBattleground.Test
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerBaneId)).CurrentHp);
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(opponentBaneId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerBaneId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentBaneId)).CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -378,8 +378,8 @@ namespace Loom.ZombieBattleground.Test
 
                 Action validateEndState = () =>
                 {
-                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId));
-                    Assert.AreEqual(1, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId)).CurrentHp);
+                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZepticId));
+                    Assert.AreEqual(1, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZepticId)).CurrentHp);
                     Assert.AreEqual(18, pvpTestContext.GetCurrentPlayer().Defense);
                     Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().CurrentGoo);
                 };

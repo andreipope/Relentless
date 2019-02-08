@@ -985,18 +985,18 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetById(InstanceId id) {
+        public BoardObject GetTargetByInstanceId(InstanceId id) {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
             if (_gameplayManager.OpponentPlayer.InstanceId == id)
                 return _gameplayManager.OpponentPlayer;
 
-            BoardUnitModel boardUnitModelById = GetBoardUnitModelById(id);
+            BoardUnitModel boardUnitModelById = GetBoardUnitModelByInstanceId(id);
             if (boardUnitModelById != null)
                 return boardUnitModelById;
 
-            WorkingCard card = GetWorkingCardById(id);
+            WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
                 return CreateCustomHandBoardCard(card).HandBoardCard;
@@ -1005,7 +1005,7 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public List<BoardObject> GetTargetsById(IList<Unit> targetUnits)
+        public List<BoardObject> GetTargetsByInstanceId(IList<Unit> targetUnits)
         {
             List<BoardObject> boardObjects = new List<BoardObject>();
 
@@ -1013,7 +1013,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (Unit targetUnit in targetUnits)
                 {
-                    boardObjects.Add(GetTargetById(targetUnit.InstanceId));
+                    boardObjects.Add(GetTargetByInstanceId(targetUnit.InstanceId));
                 }
             }
 
@@ -1040,7 +1040,7 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitModelById(InstanceId id)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
         {
             BoardUnitView view = 
                 _gameplayManager.OpponentPlayer.BoardCards
@@ -1050,9 +1050,9 @@ namespace Loom.ZombieBattleground
             return view?.Model;
         }
 
-        public WorkingCard GetWorkingCardById(InstanceId id)
+        public WorkingCard GetWorkingCardByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitModelById(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
             if (boardUnitModel != null)
                 return boardUnitModel.Card;
 
@@ -1068,9 +1068,9 @@ namespace Loom.ZombieBattleground
             return workingCard;
         }
 
-        public BoardObject GetBoardObjectById(InstanceId id)
+        public BoardObject GetBoardObjectByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitModelById(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
             if(boardUnitModel != null)
                 return boardUnitModel;
 
