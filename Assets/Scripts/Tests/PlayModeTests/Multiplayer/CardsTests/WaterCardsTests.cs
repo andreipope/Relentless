@@ -16,8 +16,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestHelper.GetDeckWithCards("deck 1", new List<string>() { "Jetter" });
-                Deck opponentDeck = PvPTestHelper.GetDeckWithCards("deck 2", new List<string>() { "Jetter" });
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", new List<string>() { "Jetter" });
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", new List<string>() { "Jetter" });
 
 
                 InstanceId playerJetter1 = new InstanceId(0);
