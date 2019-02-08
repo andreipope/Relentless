@@ -380,6 +380,7 @@ namespace Loom.ZombieBattleground
     public class TutorialReward
     {
         public List<CardRewardInfo> CardPackReward;
+        public int CardPackCount;
 
         public TutorialReward()
         {

@@ -331,9 +331,16 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<LoadingFiatPopup>();
             
             //Simulate request pack balance from plasma chain
-            await Task.Delay(TimeSpan.FromSeconds(1.0));            
-            _packBalanceAmount = 5;
-            
+            await Task.Delay(TimeSpan.FromSeconds(1.0));
+            if (_tutorialManager.IsTutorial)
+            {
+                _packBalanceAmount = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
+            }
+            else
+            {
+                _packBalanceAmount = 5;
+            }
+
             _uiManager.HidePopup<LoadingFiatPopup>();
         }
         private async Task RetriveCardsFromPack()

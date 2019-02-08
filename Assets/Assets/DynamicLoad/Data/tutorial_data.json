@@ -5,28 +5,6 @@
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
         {
-          "Id": 0,
-          "TutorialTooltipAlign": "TopMiddle",
-          "TutorialTooltipOwner": "EnemyOverlord",
-          "Description": "Enemy Overlord Defense",
-          "Position": {
-            "X": 1.0,
-            "Y": 4.1,
-            "Z": 0.0
-          }
-        },
-        {
-          "Id": 1,
-          "TutorialTooltipAlign": "BottomMiddle",
-          "TutorialTooltipOwner": "PlayerOverlord",
-          "Description": "Your Overlord Defense",
-          "Position": {
-            "X": 1.0,
-            "Y": -2.9,
-            "Z": 0.0
-          }
-        },
-        {
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "EnemyBattleframe",
@@ -99,16 +77,12 @@
           "ActionToEndThisStep": "OverlordSayPopupHided"
         },
         {
-          "TutorialDescriptionTooltipsToActivate": [
-            0,
-            1
-          ],
-          "ActionToEndThisStep": "TapOnScreen"
-        },
-        {
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
+          ],
           "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
@@ -117,9 +91,13 @@
             2,
             3
           ],
-          "ActionToEndThisStep": "TapOnScreen"
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
+          "ActionToEndThisStep": "DescriptionTooltipClosed"
         },
         {
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
           "ActionToEndThisStep": "EndTurn"
         },
         {
@@ -289,6 +267,9 @@
         {
           "UnitsCanAttack": true,
           "LaunchAIBrain": true,
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
+          ],
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
           "ConnectedTurnIndex": 5
         },
@@ -300,6 +281,9 @@
               "TutorialTooltipOwner": "EnemyOverlord",
               "Description": "Double trouble."
             }
+          ],
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
           ],
           "ActionToEndThisStep": "EndTurn",
           "UnitsCanAttack": true
@@ -418,6 +402,8 @@
           "ConnectedTurnIndex": 7,
           "UnitsCanAttack": true,
           "OverlordSayTooltips": [
+          ],
+          "RequiredActivitiesToDoneDuringStep": [
           ],
           "ActionToEndThisStep": "EndTurn"
         },
@@ -802,6 +788,7 @@
                 "Y": -2.7,
                 "Z": 0
               },
+              "AppearDelay": 0.5,
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages"
             }
@@ -823,12 +810,16 @@
                 "Y": -3.0,
                 "Z": 0
               },
+              "AppearDelay": 2.5,
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages"
             }
           ],
           "TutorialDescriptionTooltipsToDeactivate": [
             6
+          ],
+          "ConnectedActivities": [
+            3
           ]
         },
         {
@@ -1206,6 +1197,18 @@
           },
           "TutorialTooltipLayer": "AbovePages"
         },
+        {
+          "Id": 7,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "First open pack",
+          "Position": {
+            "X": -8.92,
+            "Y": -2.2,
+            "Z": 0.0
+          },
+          "TutorialTooltipLayer": "AbovePages"
+        },
       ],
       "ActionActivityHandlers": [
         {
@@ -1237,6 +1240,17 @@
           "TutorialActivityActionHandlerData": {
             "TutorialDescriptionTooltipsToActivate": [
               6
+            ]
+          },
+          "HasSpecificConnection": true
+        },
+        {
+          "TutorialActivityAction": "IncorrectButtonTapped",
+          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
+          "Id": 3,
+          "TutorialActivityActionHandlerData": {
+            "TutorialDescriptionTooltipsToActivate": [
+              7
             ]
           },
           "HasSpecificConnection": true
@@ -1309,6 +1323,7 @@
         ]
       },
       "TutorialReward": {
+        "CardPackCount": 1,
         "CardPackReward": [
           {
             "Name": "Cerberus"
@@ -1721,6 +1736,7 @@
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": false,
+        "AISpecificOrderEnabled": true,
         "PlayerInfo": {
           "OverlordId": 4,
           "Defense": 10,
@@ -2139,6 +2155,7 @@
         ]
       },
       "TutorialReward": {
+        "CardPackCount": 1,
         "CardPackReward": [
           {
             "Name": "Cerberus"
@@ -2320,7 +2337,7 @@
             1,
             2
           ],
-          "ActionToEndThisStep": "TapOnScreen"
+          "ActionToEndThisStep": "DescriptionTooltipClosed"
         },
         {
           "ConnectedTurnIndex": 4,
@@ -2950,6 +2967,7 @@
         ]
       },
       "TutorialReward": {
+        "CardPackCount": 1,
         "CardPackReward": [
           {
             "Name": "Cerberus"
@@ -3022,10 +3040,14 @@
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
+          ],
           "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
         {
           "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
           ],
           "ActionToEndThisStep": "EnemyOverlordCardPlayed"
         },
@@ -3779,6 +3801,7 @@
         ]
       },
       "TutorialReward": {
+        "CardPackCount": 1,
         "CardPackReward": [
           {
             "Name": "Cerberus"
@@ -4220,6 +4243,7 @@
         ]
       },
       "TutorialReward": {
+        "CardPackCount": 2,
         "CardPackReward": [
           {
             "Name": "Cerberus"
