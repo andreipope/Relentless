@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground
 
         private MENU _currentMenu = MENU.NONE;
 
+        private const bool _isAnimateTransition = false;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -134,19 +136,31 @@ namespace Loom.ZombieBattleground
                     buttonTransformList[i].GetComponent<Image>().sprite
                 );
             }
-            
-            for(int i=0;i<_locatorList.Count;++i)
+
+            if (_isAnimateTransition)
             {
-                Transform locator = _locatorList[i];
-                Transform button = buttonTransformList[i];
-                button.position = locator.position - Vector3.right * 3.5f;
-                
-                Sequence sequence = DOTween.Sequence();
-                sequence.AppendInterval( 0.1f * i );
-                sequence.Append(button.DOMove(locator.position, .5f).SetEase(Ease.OutQuad));
+                for (int i = 0; i < _locatorList.Count; ++i)
+                {
+                    Transform locator = _locatorList[i];
+                    Transform button = buttonTransformList[i];
+                    button.position = locator.position - Vector3.right * 3.5f;
+
+                    Sequence sequence = DOTween.Sequence();
+                    sequence.AppendInterval(0.1f * i);
+                    sequence.Append(button.DOMove(locator.position, .5f).SetEase(Ease.OutQuad));
+                }
             }
-            
-            if(_currentMenu != MENU.NONE)
+            else
+            {
+                for (int i = 0; i < _locatorList.Count; ++i)
+                {
+                    Transform locator = _locatorList[i];
+                    Transform button = buttonTransformList[i];
+                    button.position = locator.position;
+                }
+            }
+
+            if (_currentMenu != MENU.NONE)
             {
                 buttonTransformList[(int)_currentMenu].GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
             }

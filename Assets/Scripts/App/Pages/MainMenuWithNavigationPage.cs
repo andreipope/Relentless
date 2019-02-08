@@ -23,12 +23,10 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         
         private GameObject _selfPage;
-        
-        private Button _buttonLogin;
 
         private Button _buttonPlay;
-        
-        private BackendDataControlMediator _backendDataControlMediator;
+
+        private Image _imageOverlordPortrait;
         
         private bool _isReturnToTutorial;
         
@@ -39,47 +37,30 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _playerManager = GameClient.Get<IPlayerManager>();
-            _dataManager = GameClient.Get<IDataManager>();
-            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _dataManager = GameClient.Get<IDataManager>();            
         }
         
         public void Update()
-        {
-            if (_selfPage != null)
-            {
-                if (!Constants.AlwaysGuestLogin && 
-                    _backendDataControlMediator.UserDataModel != null && 
-                    (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
-                {
-                    if (!_buttonLogin.gameObject.activeSelf)
-                    {
-                        _buttonLogin.gameObject.SetActive(true);
-                    }
-                }
-                else
-                {
-                    if (_buttonLogin.gameObject.activeSelf)
-                    {
-                        _buttonLogin.gameObject.SetActive(false);
-                    }
-                }
-            }
+        {            
         }
 
         public void Show()
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuWithNavigationPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
             
-            _buttonLogin = _selfPage.transform.Find("Button_Login").GetComponent<Button>();
-            _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();
-            
-            _buttonLogin.onClick.AddListener(PressedLoginHandler);
+            _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();                        
             _buttonPlay.onClick.AddListener(OnClickPlay);
+
+            _imageOverlordPortrait = _selfPage.transform.Find("Image_OverlordPortrait").GetComponent<Image>();
             
             _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
+            
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
+            _uiManager.DrawPopup<AreaBarPopup>();
+
+            SetOverlordPortrait(Enumerators.SetType.AIR);
         }
         
         public void Hide()
@@ -100,6 +81,7 @@ namespace Loom.ZombieBattleground
 
         private void PressedLoginHandler() 
         {
+            //todo add ReportActivityAction
             //if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBuy.name) || _isReturnToTutorial)
             //{
             //    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
@@ -120,6 +102,7 @@ namespace Loom.ZombieBattleground
         private void OnHide()
         {
             _uiManager.HidePopup<SideMenuPopup>();
+            _uiManager.HidePopup<AreaBarPopup>();
         }
 
         #region Buttons Handlers
@@ -145,6 +128,34 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void SetOverlordPortrait(Enumerators.SetType setType)
+        {
+            switch(setType)
+            {
+                case Enumerators.SetType.AIR:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_air");                  
+                    break;
+                case Enumerators.SetType.FIRE:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_fire");
+                    break;
+                case Enumerators.SetType.EARTH:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_earth");
+                    break;
+                case Enumerators.SetType.TOXIC:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_toxic");
+                    break;
+                case Enumerators.SetType.WATER:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_water");
+                    break;
+                case Enumerators.SetType.LIFE:
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_life");
+                    break;
+                default:
+                    Debug.Log($"No OverlordPortrait found for setType {setType}");
+                    return;
+            }            
+        }
 
     }
 }
