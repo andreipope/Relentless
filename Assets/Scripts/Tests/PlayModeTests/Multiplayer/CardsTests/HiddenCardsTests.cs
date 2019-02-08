@@ -10,7 +10,7 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
 {
-    public class HidenCardsTests : BaseIntegrationTest
+    public class HiddenCardsTests : BaseIntegrationTest
     {
 
     }

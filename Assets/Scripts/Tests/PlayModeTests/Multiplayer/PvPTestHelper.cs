@@ -1,4 +1,7 @@
+using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Loom.ZombieBattleground.Test
@@ -37,6 +40,26 @@ namespace Loom.ZombieBattleground.Test
             return workingCard;
         }
 
+        public static Deck GetDeckWithCards(string name, List<string> cardsNames, int heroId = 0)
+        {
+            List<DeckCardData> cards = new List<DeckCardData>();
+
+            foreach (string card in cardsNames)
+            {
+                cards.Add(new DeckCardData(card, 2));
+            }
+
+            Deck deck = new Deck(
+                 0,
+                 heroId,
+                 name,
+                 cards,
+                 Enumerators.OverlordSkill.NONE,
+                 Enumerators.OverlordSkill.NONE
+             );
+
+            return deck;
+        }
         private static bool CardNameEqual(string name, WorkingCard card)
         {
             return String.Equals(name, card.LibraryCard.Name, StringComparison.InvariantCultureIgnoreCase);
