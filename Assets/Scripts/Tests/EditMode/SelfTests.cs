@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground.Test
                         cardsWithMissingTests.Count,
                         $"Total {client.CardLibrary.Count} cards in library, " +
                         $"{numberOfCardsWithoutAbilities} cards without any abilities, " +
-                        $"{client.CardLibrary.Count - numberOfCardsWithoutAbilities - cardsWithMissingTests.Count} cards have tests, " +
+                        $"{client.CardLibrary.Count - numberOfCardsWithoutAbilities - cardsWithMissingTests.Count} cards with abilities have tests, " +
                         $"{cardsWithMissingTests.Count} cards with missing tests:\n" +
                          String.Join("\n", cardsWithMissingTests)
                     );
