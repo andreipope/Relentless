@@ -190,6 +190,8 @@ namespace Loom.ZombieBattleground
 
         public bool AttackAsFirst { get; set; }
 
+        public bool AgileEnabled { get; private set; }
+
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
         public Enumerators.SetType LastAttackingSetType { get; set; }
@@ -608,6 +610,11 @@ namespace Loom.ZombieBattleground
 
             IsPlayable = true;
             CreaturePlayableForceSet?.Invoke();
+        }
+
+        public void SetAgileStatus(bool status)
+        {
+            AgileEnabled = status;
         }
 
         public void DoCombat(BoardObject target)

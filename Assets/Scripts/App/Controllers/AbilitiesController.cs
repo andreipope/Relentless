@@ -1080,7 +1080,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT:
                     ability = new DestroyTargetUnitAbility(cardKind, abilityData);
                     break;
-
+                case Enumerators.AbilityType.AGILE:
+                    ability = new AgileAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_OF_CARDS_IN_HAND:
+                    ability = new ChangeStatsOfCardsInHandAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
