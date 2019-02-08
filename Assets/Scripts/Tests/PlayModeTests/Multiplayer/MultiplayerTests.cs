@@ -134,8 +134,7 @@ namespace Loom.ZombieBattleground.Test
                            opponent.CardPlay(opponentCyndermanId, ItemPosition.Start);
                            opponent.CardAbilityUsed(
                                opponentCyndermanId,
-                               0,
-                               0,
+                               Enumerators.AbilityType.DAMAGE_TARGET,
                                new List<ParametrizedAbilityInstanceId>
                                {
                                    new ParametrizedAbilityInstanceId(playerSlabId, Enumerators.AffectObjectType.Character)
