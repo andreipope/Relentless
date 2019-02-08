@@ -10,7 +10,8 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class AbilitiesController : IController {
+    public class AbilitiesController : IController
+    {
         public delegate void AbilityUsedEventHandler(
             WorkingCard card,
             Enumerators.AbilityType abilityType,
