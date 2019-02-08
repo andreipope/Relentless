@@ -164,6 +164,82 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Bane()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Bane", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck playerDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Bane", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerBaneId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
+                InstanceId opponentBaneId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+                       player => player.CardPlay(playerBaneId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentBaneId, ItemPosition.Start),
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentBaneId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentBaneId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => {},
+                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId)
+                   };
+
+                Action validateEndState = () =>
+                {
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerBaneId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(opponentBaneId)).CurrentHp);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
         public IEnumerator CorrectCardDraw()
