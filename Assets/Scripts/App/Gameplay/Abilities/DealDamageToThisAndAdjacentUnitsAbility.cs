@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
             }
             _units.Clear();
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 _units
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

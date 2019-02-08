@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 _allies
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

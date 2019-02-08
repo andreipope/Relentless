@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;

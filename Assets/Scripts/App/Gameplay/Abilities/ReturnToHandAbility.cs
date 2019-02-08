@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
             CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)

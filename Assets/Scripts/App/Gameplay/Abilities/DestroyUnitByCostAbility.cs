@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
         {
             if (unit != null && unit.Card.InstanceCard.Cost <= Cost)
             {
-                ThrowUseAbilityEvent(
+                InvokeUseAbilityEvent(
                     new List<ParametrizedAbilityBoardObject>
                     {
                         new ParametrizedAbilityBoardObject(unit)

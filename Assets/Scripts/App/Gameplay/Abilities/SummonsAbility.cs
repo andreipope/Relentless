@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unitView.Model, Damage);
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)

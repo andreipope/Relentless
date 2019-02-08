@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
             if (_movedUnits.Count > 0)
             {
-                ThrowUseAbilityEvent(
+                InvokeUseAbilityEvent(
                     _movedUnits
                         .Select(x => new ParametrizedAbilityBoardObject(x))
                         .ToList()

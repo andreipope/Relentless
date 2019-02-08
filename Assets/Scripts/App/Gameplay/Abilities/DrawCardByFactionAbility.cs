@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.PlayDrawCardVFX();
                 CardsController.AddCardToHand(PlayerCallerOfAbility, card);
 
-                ThrowUseAbilityEvent();
+                InvokeUseAbilityEvent();
             }
         }
     }

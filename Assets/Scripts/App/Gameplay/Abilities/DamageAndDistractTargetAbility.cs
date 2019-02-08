@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)

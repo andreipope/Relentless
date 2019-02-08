@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 targets
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

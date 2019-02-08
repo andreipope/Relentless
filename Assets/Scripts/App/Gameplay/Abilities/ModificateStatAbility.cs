@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
             {
-                ThrowUseAbilityEvent();
+                InvokeUseAbilityEvent();
             }
             else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
                     AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
 
                             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
                             {
-                                ThrowUseAbilityEvent(
+                                InvokeUseAbilityEvent(
                                     new List<ParametrizedAbilityBoardObject>
                                     {
                                         new ParametrizedAbilityBoardObject(boardUnit)

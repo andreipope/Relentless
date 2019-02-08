@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
                                 });
 
 
-                                ThrowUseAbilityEvent(
+                                InvokeUseAbilityEvent(
                                     new List<ParametrizedAbilityBoardObject>
                                     {
                                         new ParametrizedAbilityBoardObject(allies[0])
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                                     Target = allies[random]
                                 });
 
-                                ThrowUseAbilityEvent(
+                                InvokeUseAbilityEvent(
                                     new List<ParametrizedAbilityBoardObject>
                                     {
                                         new ParametrizedAbilityBoardObject(allies[random])
@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
                         });
 
                         TakeTypeToUnit(AbilityUnitOwner);
-                        ThrowUseAbilityEvent();
+                        InvokeUseAbilityEvent();
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
                             });
                         }
 
-                        ThrowUseAbilityEvent(
+                        InvokeUseAbilityEvent(
                             allies
                                 .Select(model => new ParametrizedAbilityBoardObject(model))
                                 .ToList()
@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
                             TakeTypeToUnit(unit);
                         }
 
-                        ThrowUseAbilityEvent(
+                        InvokeUseAbilityEvent(
                             allies
                                 .Select(model => new ParametrizedAbilityBoardObject(model))
                                 .ToList()

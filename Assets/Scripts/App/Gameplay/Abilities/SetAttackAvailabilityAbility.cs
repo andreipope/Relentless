@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
 
             SetAttackAvailability(AbilityUnitOwner);
         }

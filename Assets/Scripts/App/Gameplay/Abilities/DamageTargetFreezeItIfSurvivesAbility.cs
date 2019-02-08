@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject> {
                     new ParametrizedAbilityBoardObject(target)
                 }

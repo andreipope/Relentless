@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
         {
             HealTarget(PlayerCallerOfAbility, Value);
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(PlayerCallerOfAbility)
@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground
 
             HealTarget(boardObject, Value);
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(boardObject)
@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 _targets
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

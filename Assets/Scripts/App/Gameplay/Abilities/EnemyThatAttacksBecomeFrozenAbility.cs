@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
         }
 
         protected override void UnitDamagedHandler(BoardObject from)

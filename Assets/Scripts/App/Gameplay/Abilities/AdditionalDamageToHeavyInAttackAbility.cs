@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
         }
     }
 }

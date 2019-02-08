@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 boardCards
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

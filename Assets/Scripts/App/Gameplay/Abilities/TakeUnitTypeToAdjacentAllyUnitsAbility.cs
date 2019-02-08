@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             Action();
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)

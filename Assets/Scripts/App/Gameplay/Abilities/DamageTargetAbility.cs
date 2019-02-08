@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
 
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-                    ThrowUseAbilityEvent();
+                    InvokeUseAbilityEvent();
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
             switch (AffectObjectType)
             {
                 case Enumerators.AffectObjectType.Player:
-                    ThrowUseAbilityEvent(
+                    InvokeUseAbilityEvent(
                         new List<ParametrizedAbilityBoardObject>
                         {
                             new ParametrizedAbilityBoardObject(TargetPlayer)
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AffectObjectType.Character:
                     BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                    ThrowUseAbilityEvent(
+                    InvokeUseAbilityEvent(
                         new List<ParametrizedAbilityBoardObject>
                         {
                             new ParametrizedAbilityBoardObject(TargetUnit)

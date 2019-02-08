@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                     TakeBlitzToUnit(unit.Model);
                 }
 
-                ThrowUseAbilityEvent(
+                InvokeUseAbilityEvent(
                     units
                         .Select(x => new ParametrizedAbilityBoardObject(x.Model))
                         .ToList()
@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 TakeBlitzToUnit(AbilityUnitOwner);
-                ThrowUseAbilityEvent(
+                InvokeUseAbilityEvent(
                     new List<ParametrizedAbilityBoardObject>
                     {
                         new ParametrizedAbilityBoardObject(AbilityUnitOwner)

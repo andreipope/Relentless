@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ThrowUseAbilityEvent(abilityTargets);
+            InvokeUseAbilityEvent(abilityTargets);
         }
 
         private void RestoreDefenseOfTarget(object target, int defenseValue)

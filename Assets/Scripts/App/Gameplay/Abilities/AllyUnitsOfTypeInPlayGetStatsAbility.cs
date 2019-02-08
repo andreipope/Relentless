@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 

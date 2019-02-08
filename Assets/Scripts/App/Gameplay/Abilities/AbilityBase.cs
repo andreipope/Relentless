@@ -488,9 +488,9 @@ namespace Loom.ZombieBattleground
             return index;
         }
 
-        protected void ThrowUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
+        protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
         {
-            AbilitiesController.ThrowUseAbilityEvent(
+            AbilitiesController.InvokeUseAbilityEvent(
                 MainWorkingCard,
                 AbilityData.AbilityType,
                 targets ?? new List<ParametrizedAbilityBoardObject>()

@@ -668,7 +668,7 @@ namespace Loom.ZombieBattleground
                };
         }
 
-        public void ThrowUseAbilityEvent(
+        public void InvokeUseAbilityEvent(
             WorkingCard card,
             Enumerators.AbilityType abilityType,
             List<ParametrizedAbilityBoardObject> targets)

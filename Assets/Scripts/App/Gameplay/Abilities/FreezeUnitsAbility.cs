@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
             }
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
 
             AbilityProcessingAction?.ForceActionDone();
         }

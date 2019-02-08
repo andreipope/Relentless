@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)

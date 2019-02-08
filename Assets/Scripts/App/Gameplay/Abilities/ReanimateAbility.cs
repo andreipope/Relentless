@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ThrowUseAbilityEvent();
+            InvokeUseAbilityEvent();
 
             if (!AbilityUnitOwner.IsReanimated)
             {

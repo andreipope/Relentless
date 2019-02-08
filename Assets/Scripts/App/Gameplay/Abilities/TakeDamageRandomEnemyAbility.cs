@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
 
             InvokeActionTriggered(_targets);      
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 _targets
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()

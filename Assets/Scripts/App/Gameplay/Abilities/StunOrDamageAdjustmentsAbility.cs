@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
                     new ParametrizedAbilityBoardObject(TargetUnit)

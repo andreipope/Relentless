@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
-            ThrowUseAbilityEvent(
+            InvokeUseAbilityEvent(
                 targets
                     .Select(boardObject => new ParametrizedAbilityBoardObject(boardObject))
                     .ToList()

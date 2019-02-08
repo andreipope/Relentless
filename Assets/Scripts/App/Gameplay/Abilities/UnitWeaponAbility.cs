@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
 
                     TargetUnit.UnitDied += TargetUnitDiedHandler;
 
-                    ThrowUseAbilityEvent(
+                    InvokeUseAbilityEvent(
                         new List<ParametrizedAbilityBoardObject>
                         {
                             new ParametrizedAbilityBoardObject(TargetUnit)
