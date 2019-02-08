@@ -310,9 +310,10 @@ namespace Loom.ZombieBattleground
                     int localPlayerIndex =
                         _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId ?
                             0 : 1;
-                    bool localPlayerHasFirstTurn = _pvpManager.InitialGameState.CurrentPlayerIndex == localPlayerIndex;
-                    GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasFirstTurn ? 0 : 1));
-                    GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasFirstTurn? 0 : 1));
+
+
+                    GetController<PlayerController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[localPlayerIndex].InstanceId.FromProtobuf());
+                    GetController<OpponentController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[1 - localPlayerIndex].InstanceId.FromProtobuf());
                     AvoidGooCost = _pvpManager.DebugCheats.Enabled && _pvpManager.DebugCheats.IgnoreGooRequirements;
                     break;
                 default:
