@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         private bool _playerOrderScreenCloseManually;
 
+        private List<Card> _cardsForOpenPack;
+
         //public TutorialReward RewardFromLastTutorial { get; private set; }
 
         public TutorialData CurrentTutorial { get; private set; }
@@ -82,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         public int TutorialsCount
         {
-            get { return _tutorials.FindAll(tutor => !tutor.Additional).Count; }
+            get { return _tutorials.FindAll(tutor => !tutor.HiddenTutorial).Count; }
         }
 
         public void Dispose()
@@ -191,9 +193,14 @@ namespace Loom.ZombieBattleground
             return BlockedButtons.Contains(name);
         }
 
+        public int GetIndexOfCurrentTutorial()
+        {
+            return _tutorials.FindAll(tutor => !tutor.HiddenTutorial)
+                .FindIndex(info => info.Id == CurrentTutorial.Id);
+        }
+
         public void SetupTutorialById(int id)
         {
-            Debug.LogError(id);
             if (CheckAvailableTutorial())
             {
                 CurrentTutorial = _tutorials.Find(tutor => tutor.Id == id);
@@ -354,7 +361,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId++;
 
-                if (CurrentTutorial.IsGameplayTutorial() && CurrentTutorial.TutorialContent.ToGameplayContent().GetRewardCardPack)
+                if (CurrentTutorial.IsGameplayTutorial())
                 {
                     ApplyReward();
                 }
@@ -1286,9 +1293,31 @@ namespace Loom.ZombieBattleground
             return cardData;
         }
 
+        public List<Card> GetCardForCardPack(int count)
+        {
+            List<Card> cards = new List<Card>();
+            if (_cardsForOpenPack == null || _cardsForOpenPack.Count == 0)
+            {
+                _cardsForOpenPack = CurrentTutorial.TutorialContent.TutorialReward.CardPackReward
+                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.Name))
+                    .ToList();
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                cards.Add(_cardsForOpenPack[0]);
+                _cardsForOpenPack.Remove(_cardsForOpenPack[0]);
+            }
+
+            return cards;
+        }
+
         public void ApplyReward()
         {
-            //get 1 card pack
+            for (int i = 0; i < CurrentTutorial.TutorialContent.ToGameplayContent().RewardCardPackCount; i++)
+            {
+                //get card pack
+            }
         }
     }
 }

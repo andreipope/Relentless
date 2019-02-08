@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
             _imageProgressBar = Self.transform.Find("Image_FillingProgressBar").GetComponent<Image>();
 
-            int id = _tutorialManager.CurrentTutorial.Id;
+            int id = _tutorialManager.GetIndexOfCurrentTutorial();//CurrentTutorial.Id;
 
             SetTextProgress(id);
 

@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
 
         public bool Ignore;
 
-        public bool Additional;
+        public bool HiddenTutorial;
 
         public bool IsGameplayTutorial()
         {
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
 
         public bool GameplayFlowBeginsManually;
 
-        public bool GetRewardCardPack;
+        public int RewardCardPackCount;
 
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
 
