@@ -15,7 +15,6 @@ namespace Loom.ZombieBattleground.Editor
 
             BuildAssetBundles();
         }
-
         public static void BuildAssetBundles()
         {
             string outputPath = Utilites.GetAssetBundleLocalRoot();
@@ -34,6 +33,7 @@ namespace Loom.ZombieBattleground.Editor
                 buildTarget
             );
 #if ALTUNITYTESTER
+            Debug.Log("Start adding AltUnityTester");
                var altUnityRunner =
             AssetDatabase.LoadAssetAtPath<GameObject>(
                 AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("AltUnityRunnerPrefab")[0]));
@@ -41,6 +41,7 @@ namespace Loom.ZombieBattleground.Editor
             var AltUnityRunner = PrefabUtility.InstantiatePrefab(altUnityRunner);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();
+            Debug.Log("Start adding AltUnityTester");
 #endif
         }
     }
