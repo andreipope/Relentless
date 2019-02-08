@@ -217,6 +217,8 @@ namespace Loom.ZombieBattleground
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
             ChangeSelectedPackType(0);   
+            
+            _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
         }
         
         public void Hide()
@@ -229,6 +231,13 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
+
+            OnHide();
+        }
+        
+        private void OnHide()
+        {
+            _uiManager.HidePopup<SideMenuPopup>();
         }
         
         public void Dispose()

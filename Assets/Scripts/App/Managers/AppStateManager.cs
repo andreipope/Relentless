@@ -55,7 +55,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    _uiManager.SetPage<MainMenuPage>();
+                    //Temporary test new Navigation Menu
+                    //_uiManager.SetPage<MainMenuPage>();
+                    _uiManager.SetPage<MainMenuWithNavigationPage>();                    
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();

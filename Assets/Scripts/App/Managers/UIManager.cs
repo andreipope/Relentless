@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
             Pages = new List<IUIElement>();
             Pages.Add(new LoadingPage());
             Pages.Add(new MainMenuPage());
+            Pages.Add(new MainMenuWithNavigationPage());
             Pages.Add(new OverlordSelectionPage());
             Pages.Add(new HordeSelectionPage());
             Pages.Add(new ArmyPage());
@@ -81,6 +82,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new LoadingFiatPopup());
             _uiPopups.Add(new TutorialProgressInfoPopup());
             _uiPopups.Add(new RewardPopup());
+            _uiPopups.Add(new SideMenuPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
