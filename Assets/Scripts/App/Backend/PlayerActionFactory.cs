@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, affectObjectType, target.Parameters);
+                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
                     parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
                 }
             }
@@ -184,7 +184,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId target)
+        public PlayerAction OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             return new PlayerAction
             {
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public PlayerAction CardAttack(InstanceId attacker, InstanceId target)
         {
             return new PlayerAction
             {

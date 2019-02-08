@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground.Test
         private readonly IQueueManager _queueManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
-        private Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
+        private readonly Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
 
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
         {
@@ -53,17 +53,17 @@ namespace Loom.ZombieBattleground.Test
             BoardObject entryAbilityTargetBoardObject = null;
             if (entryAbilityTarget != null)
             {
-                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectById(entryAbilityTarget.Value);
+                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(entryAbilityTarget.Value);
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
+            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
             await _testHelper.PlayCardFromHandToBoard(workingCard, position, false, entryAbilityTargetBoardObject);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
-            throw new InvalidOperationException("Doesn't makes sense for local player - sent automatically by the local player");
+            return Task.CompletedTask;
         }
 
         public Task CardAbilityUsed(
@@ -76,15 +76,15 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public Task OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)
+        public Task OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             throw new NotImplementedException();
         }
 
-        public Task CardAttack(InstanceId attacker, Enumerators.AffectObjectType type, InstanceId target)
+        public Task CardAttack(InstanceId attacker, InstanceId target)
         {
             BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
-            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetById(target, type));
+            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));
 
             return Task.CompletedTask;
         }

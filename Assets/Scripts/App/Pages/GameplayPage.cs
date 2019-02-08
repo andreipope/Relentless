@@ -207,7 +207,6 @@ namespace Loom.ZombieBattleground
             _buttonBack.gameObject.SetActive(true);
             _settingsButton.gameObject.SetActive(false);
 #endif
-
             if (_gameplayManager.IsTutorial)
             {
                 _buttonBack.gameObject.SetActive(false);

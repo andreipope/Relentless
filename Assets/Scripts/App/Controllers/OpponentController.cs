@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case PlayerActionOutcome.OutcomeOneofCase.Rage:
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
-                    BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitById(rageOutcome.InstanceId.FromProtobuf());
+                    BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
@@ -316,8 +316,8 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitById(model.CardId);
-            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
+            BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
 
             if(attackerUnit == null || target == null)
             {
@@ -347,7 +347,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectById(model.Card);
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
 
             if (boardObjectCaller == null)
             {
@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground
             foreach(Unit unit in model.Targets)
             {
                 parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
-                    _battlegroundController.GetTargetById(unit.InstanceId, unit.AffectObjectType),
+                    _battlegroundController.GetTargetByInstanceId(unit.InstanceId),
                     new ParametrizedAbilityParameters
                     {
                         Attack = unit.Parameter.Attack,
@@ -403,7 +403,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
-            BoardObject target = _battlegroundController.GetTargetById(model.TargetId, model.AffectObjectType);
+            BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
 
             if (target == null)
             {
@@ -413,16 +413,16 @@ namespace Loom.ZombieBattleground
 
             Action callback = () =>
             {
-                switch (model.AffectObjectType)
+                switch (target)
                 {
-                    case Enumerators.AffectObjectType.Player:
-                        skill.FightTargetingArrow.SelectedPlayer = (Player)target;
+                    case Player player:
+                        skill.FightTargetingArrow.SelectedPlayer = player;
                         break;
-                    case Enumerators.AffectObjectType.Character:
-                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel)target);
+                    case BoardUnitModel boardUnitModel:
+                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(model.AffectObjectType), model.AffectObjectType, null);
+                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
                 }
 
                 skill.EndDoSkill();
@@ -446,11 +446,11 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnitView> units = _battlegroundController.GetTargetsById(targets)
+            List<BoardUnitView> units = _battlegroundController.GetTargetsByInstanceId(targets)
                 .Cast<BoardUnitModel>()
                 .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
 
-            WorkingCard workingCard = _battlegroundController.GetWorkingCardById(card);
+            WorkingCard workingCard = _battlegroundController.GetWorkingCardByInstanceId(card);
             if (workingCard == null)
                 throw new Exception($"Board unit with instance ID {card} not found");
 
@@ -461,7 +461,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (InstanceId cardId in cards)
             {
-                BoardUnitModel card = (BoardUnitModel) _battlegroundController.GetTargetById(cardId, Enumerators.AffectObjectType.Character);
+                BoardUnitModel card = (BoardUnitModel) _battlegroundController.GetTargetByInstanceId(cardId);
                 if (card == null)
                 {
                     Debug.LogError($"Card {cardId} not found on board");
@@ -502,7 +502,6 @@ namespace Loom.ZombieBattleground
     {
         public SkillId SkillId;
         public InstanceId TargetId;
-        public Enumerators.AffectObjectType AffectObjectType;
     }
 
     public class UseCardAbilityModel
@@ -516,7 +515,6 @@ namespace Loom.ZombieBattleground
     {
         public InstanceId CardId;
         public InstanceId TargetId;
-        public Enumerators.AffectObjectType AffectObjectType;
     }
 
     public class TargetUnitModel

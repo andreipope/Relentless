@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Data
@@ -31,6 +32,10 @@ namespace Loom.ZombieBattleground.Data
         public Vector2Int AppResolution;
 #endif
 
+        public List<int> TutorialTooltipsPassed;
+
+        public Deck TutorialSavedDeck;
+
         public UserLocalData()
         {
             Reset();
@@ -52,6 +57,7 @@ namespace Loom.ZombieBattleground.Data
             Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
             AppResolution = new Vector2Int(resolution.width, resolution.height);
 #endif
+            TutorialTooltipsPassed = new List<int>();
         }
     }
 }

@@ -20,11 +20,13 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
+#if !USE_PRODUCTION_BACKEND
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 150), "PvP Cheats", Styles.OpaqueWindow);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -57,7 +59,7 @@ namespace Loom.ZombieBattleground
                 if (GUILayout.Button("Find Match"))
                 {
                     Deck deck = _dataManager.CachedDecksData.Decks[0];
-                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                     GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                     GameClient.Get<IMatchManager>().FindMatch();
@@ -67,8 +69,17 @@ namespace Loom.ZombieBattleground
             }
             GUILayout.EndArea();
 
+            pvpCheatsRect.y += pvpCheatsRect.height + 15;
+            pvpCheatsRect.height = 75;
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Options", Styles.OpaqueWindow);
+            {
+                _pvpManager.UseBackendGameLogic = GUILayout.Toggle(_pvpManager.UseBackendGameLogic, "Use Backend Logic");
+            }
+            GUILayout.EndArea();
+
             _customDeckEditor?.OnGUI();
         }
+#endif
 
         private void Start()
         {

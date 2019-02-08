@@ -50,8 +50,10 @@ namespace Loom.ZombieBattleground
             }
 
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-            GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = 0;
+            GameClient.Get<ITutorialManager>().StopTutorial(true);
             GameClient.Get<IGameplayManager>().IsTutorial = false;
+            GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
         }
     }
 }

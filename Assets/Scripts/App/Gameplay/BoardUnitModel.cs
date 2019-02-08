@@ -432,6 +432,8 @@ namespace Loom.ZombieBattleground
 
         public void AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType gameMechanic)
         {
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardWithAbilityPlayed, this, gameMechanic.ToString());
+
             if (!GameMechanicDescriptionsOnUnit.Contains(gameMechanic))
             {
                 GameMechanicDescriptionsOnUnit.Add(gameMechanic);
@@ -651,7 +653,10 @@ namespace Loom.ZombieBattleground
                                 }
                             }
 
-                            AttackedBoardObjectsThisTurn.Add(targetPlayer);
+                            if (!AttackedBoardObjectsThisTurn.Contains(targetPlayer))
+                            {
+                                AttackedBoardObjectsThisTurn.Add(targetPlayer);
+                            }
 
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
@@ -706,7 +711,11 @@ namespace Loom.ZombieBattleground
                             ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
                             targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
-                            AttackedBoardObjectsThisTurn.Add(targetCardModel);
+                            if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
+                            {
+                                AttackedBoardObjectsThisTurn.Add(targetCardModel);
+                            }
+
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,

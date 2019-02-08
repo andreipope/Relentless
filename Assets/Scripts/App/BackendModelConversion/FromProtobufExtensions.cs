@@ -42,7 +42,6 @@ namespace Loom.ZombieBattleground.Data
 
             return new Unit(
                 unit.InstanceId.FromProtobuf(),
-                (Enumerators.AffectObjectType) Enumerators.AffectObjectType.None,
                 parameter
             );
         }

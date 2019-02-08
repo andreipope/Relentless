@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.10";
+        internal const string CurrentVersionBase = "0.1.12";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -172,6 +172,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
         public const bool MulliganEnabled = false;
 
@@ -181,6 +182,8 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool DevModeEnabled = false;
 
+        public const bool UsingCardTooltips = false;
+
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
@@ -189,10 +192,7 @@ namespace Loom.ZombieBattleground.Common
 #endif
 
         public const string MatchEmailPattern =
-        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
-        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
-        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
-        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
+            @"^(([^<>()\[\]\.,;:\s@""]+(\.[^<>()\[\]\.,;:\s@""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND

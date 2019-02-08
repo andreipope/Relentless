@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
         private ISoundManager _soundManager;
         private IAppStateManager _appStateManager;
         private IApplicationSettingsManager _applicationSettingsManager;
+        private ITutorialManager _tutorialManager;
 
         private static Vector3 positionCenterForQuitToDesktopButton = new Vector3(0, -2.3f, 0);
 
@@ -50,6 +51,7 @@ namespace Loom.ZombieBattleground
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Dispose()
@@ -214,6 +216,10 @@ namespace Loom.ZombieBattleground
 
             _uiManager.HidePopup<YourTurnPopup>();
 
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.UnfinishedTutorial = true;
+            }
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
