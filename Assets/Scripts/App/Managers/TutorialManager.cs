@@ -283,27 +283,27 @@ namespace Loom.ZombieBattleground
                     break;
 
                 // Abilities
-                case 1:
+                case 2:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
                     break;
 
                 // Rank
-                case 2:
+                case 4:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
                     break;
 
                 // Overflow
-                case 3:
+                case 6:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
                     break;
 
                 // Deck
-                case 4:
+                case 7:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
                     break;
 
                 // battle
-                case 5:
+                case 8:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
                     break;
             }

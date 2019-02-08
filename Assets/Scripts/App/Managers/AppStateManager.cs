@@ -74,9 +74,16 @@ namespace Loom.ZombieBattleground
                     _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                     return;
                 case Enumerators.AppState.PACK_OPENER:
-                    _uiManager.SetPage<PackOpenerPage>();
-                    //_uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    break;
+                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        _uiManager.SetPage<PackOpenerPage>();
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
