@@ -320,13 +320,13 @@ namespace Loom.ZombieBattleground.Test
                        player => {},
                        opponent => opponent.CardAttack(opponentSlabId, pvpTestContext.GetCurrentPlayer().InstanceId),
 
-                       player => player.CardPlay(playerZepticId2, ItemPosition.Start, playerZepticId),
+                       player => player.CardPlay(playerZepticId2, ItemPosition.Start),
                        opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    //Assert.AreEqual(1, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId)).CurrentHp);
+                    Assert.AreEqual(0, pvpTestContext.GetCurrentPlayer().Defense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -369,90 +369,19 @@ namespace Loom.ZombieBattleground.Test
                 };
 
                 InstanceId playerZepticId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 1);
-                InstanceId playerZepticId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 2);
-                InstanceId playerZepticId3 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 3);
-                InstanceId playerZepticId4 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 4);
-                InstanceId playerZepticId5 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 5);
-                InstanceId playerZepticId6 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeptic", 6);
-
-                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-
-                       player => {},
-                       opponent => opponent.CardPlay(opponentSlabId, ItemPosition.Start),
-
                        player => player.CardPlay(playerZepticId, ItemPosition.Start),
-                       opponent => {},
-
-                       player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardPlay(playerZepticId2, ItemPosition.Start, playerZepticId);
-                       },
-                       opponent => {},
-
-                       player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId2, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardPlay(playerZepticId3, ItemPosition.Start, playerZepticId2);
-                       },
-                       opponent => {},
-
-                       player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId2, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId3, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardPlay(playerZepticId4, ItemPosition.Start, playerZepticId3);
-                       },
-                       opponent => {},
-
-                       player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId2, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId3, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId4, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardPlay(playerZepticId5, ItemPosition.Start, playerZepticId4);
-                       },
-                       opponent => {},
-
-                       player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId2, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId3, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId4, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId5, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardPlay(playerZepticId6, ItemPosition.Start, playerZepticId5);
-                       },
-                       opponent => {},
-
-                       /*player =>
-                       {
-                           player.CardAttack(playerZepticId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId2, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId3, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId4, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerZepticId5, pvpTestContext.GetOpponentPlayer().InstanceId);
-                       },
-                       opponent => {},*/
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    //Assert.Null(TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId));
+                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId));
+                    Assert.AreEqual(1, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectById(playerZepticId)).CurrentHp);
+                    Assert.AreEqual(18, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().CurrentGoo);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
