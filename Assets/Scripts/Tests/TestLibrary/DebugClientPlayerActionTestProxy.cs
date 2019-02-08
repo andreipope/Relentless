@@ -43,19 +43,23 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
 
             BoardObject entryAbilityTargetBoardObject = null;
+
+            // Entry abilities handling
+            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
+
+            // First, fire targetable entry abilities
             if (entryAbilityTarget != null)
             {
                 entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectById(entryAbilityTarget.Value);
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
 
-                WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardById(card);
                 AbilityData entryAbility =
                     workingCard.LibraryCard.Abilities
                     .FirstOrDefault(x => _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
 
                 if (entryAbility == null)
-                    throw new Exception("not entry ability found");
+                    throw new Exception($"No entry ability found for target {entryAbilityTarget}");
 
                 Enumerators.AbilityType abilityType = entryAbility.AbilityType;
                 await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
@@ -63,6 +67,23 @@ namespace Loom.ZombieBattleground.Test
                     abilityType,
                     new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
                     ));
+            }
+
+            // Second, fire non-targetable entry abilities
+            AbilityData[] entryAbilities =
+                workingCard.LibraryCard.Abilities
+                    .Where(x =>
+                        _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
+                        !_testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x))
+                    .ToArray();
+
+            foreach (AbilityData entryAbility in entryAbilities)
+            {
+                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                    card,
+                    entryAbility.AbilityType,
+                    new ParametrizedAbilityInstanceId[]{ }
+                ));
             }
         }
 
