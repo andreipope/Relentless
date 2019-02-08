@@ -5,13 +5,11 @@ namespace Loom.ZombieBattleground
     public struct Unit
     {
         public Data.InstanceId InstanceId { get; }
-        public Enumerators.AffectObjectType AffectObjectType { get; }
         public ParameterType Parameter { get; }
 
-        public Unit(Data.InstanceId instanceId, Enumerators.AffectObjectType affectObjectType, ParameterType parameter)
+        public Unit(Data.InstanceId instanceId, ParameterType parameter)
         {
             InstanceId = instanceId;
-            AffectObjectType = affectObjectType;
             Parameter = parameter;
         }
 

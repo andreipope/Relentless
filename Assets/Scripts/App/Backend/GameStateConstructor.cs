@@ -62,6 +62,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             PlayerState playerState = new PlayerState
             {
                 Id = playerId,
+                InstanceId = player.InstanceId.ToProtobuf(),
                 Defense = player.Defense,
                 GooVials = player.GooVials,
                 CurrentGoo = player.CurrentGoo,
