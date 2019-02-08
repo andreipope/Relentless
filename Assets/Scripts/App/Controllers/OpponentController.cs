@@ -191,7 +191,6 @@ namespace Loom.ZombieBattleground
         {
             GotActionCardAttack(new CardAttackModel
             {
-                AffectObjectType = (Enumerators.AffectObjectType) actionCardAttack.Target.AffectObjectType,
                 CardId = actionCardAttack.Attacker.FromProtobuf(),
                 TargetId = actionCardAttack.Target.InstanceId.FromProtobuf()
             });
@@ -203,8 +202,7 @@ namespace Loom.ZombieBattleground
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
-                AbilityIndex = actionUseCardAbility.AbilityIndex,
-                ChoosableAbilityIndex = actionUseCardAbility.ChoosableAbilityIndex,
+                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType,
             });
         }
 
@@ -214,7 +212,6 @@ namespace Loom.ZombieBattleground
             {
                 SkillId = new SkillId(actionUseOverlordSkill.SkillId),
                 TargetId = actionUseOverlordSkill.Target.InstanceId.FromProtobuf(),
-                AffectObjectType = (Enumerators.AffectObjectType) actionUseOverlordSkill.Target.AffectObjectType
             });
         }
 
@@ -393,8 +390,7 @@ namespace Loom.ZombieBattleground
             }
 
             _abilitiesController.PlayAbilityFromEvent(
-                model.AbilityIndex,
-                model.ChoosableAbilityIndex,
+                model.AbilityType,
                 boardObjectCaller,
                 parametrizedAbilityObjects,
                 workingCard,
@@ -512,8 +508,7 @@ namespace Loom.ZombieBattleground
     public class UseCardAbilityModel
     {
         public InstanceId Card;
-        public int AbilityIndex;
-        public int ChoosableAbilityIndex;
+        public Enumerators.AbilityType AbilityType;
         public List<Unit> Targets;
     }
 

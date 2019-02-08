@@ -487,15 +487,12 @@ namespace Loom.ZombieBattleground
             return index;
         }
 
-        protected void ThrowUseAbilityEvent(
-            List<ParametrizedAbilityBoardObject> targets = null,
-            int choosableAbilityIndex = 0
-            ) {
+        protected void ThrowUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null) {
             AbilitiesController.ThrowUseAbilityEvent(
                 MainWorkingCard,
-                targets ?? new List<ParametrizedAbilityBoardObject>(),
-                GetAbilityIndex(),
-                choosableAbilityIndex);
+                AbilityData.AbilityType,
+                targets ?? new List<ParametrizedAbilityBoardObject>()
+            );
         }
     }
 }

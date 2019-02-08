@@ -13,8 +13,7 @@ namespace Loom.ZombieBattleground
     public class AbilitiesController : IController {
         public delegate void AbilityUsedEventHandler(
             WorkingCard card,
-            int abilityIndex,
-            int choosableAbilityIndex,
+            Enumerators.AbilityType abilityType,
             List<ParametrizedAbilityBoardObject> targets = null);
         public event AbilityUsedEventHandler AbilityUsed;
 
@@ -667,34 +666,14 @@ namespace Loom.ZombieBattleground
 
         public void ThrowUseAbilityEvent(
             WorkingCard card,
-            List<ParametrizedAbilityBoardObject> targets,
-            int abilityIndex,
-            int choosableAbilityIndex = 0)
+            Enumerators.AbilityType abilityType,
+            List<ParametrizedAbilityBoardObject> targets)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityIndex, choosableAbilityIndex, targets);
+            AbilityUsed?.Invoke(card, abilityType, targets);
         }
-
-        /*public void ThrowUseAbilityEvent(
-            WorkingCard card,
-            List<BoardObject> targets,
-            int abilityIndex,
-            int choosableAbilityIndex = 0)
-        {
-            if (!CanHandleAbiityUseEvent(card))
-                return; 
-
-            List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
-
-            foreach(BoardObject boardObject in targets)
-            {
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(boardObject));
-            }
-
-            AbilityUsed?.Invoke(card, abilityIndex, choosableAbilityIndex, parametrizedAbilityBoardObjects);
-        }*/
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
         {
@@ -723,14 +702,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayAbilityFromEvent(int abilityIndex, int choosableAbilityIndex, BoardObject abilityCaller,
+        public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
                                          List<ParametrizedAbilityBoardObject> targets, WorkingCard card, Player owner)
         {
-            AbilityData abilityData = card.LibraryCard.Abilities[abilityIndex];
-            if (abilityData.HasChoosableAbilities())
-            {
-                abilityData = abilityData.ChoosableAbilities[choosableAbilityIndex].AbilityData;
-            }
+            AbilityData abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData,
                                                                card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);

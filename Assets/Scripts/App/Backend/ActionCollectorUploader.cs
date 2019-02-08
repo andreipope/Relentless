@@ -253,11 +253,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void AbilityUsedHandler(
                 WorkingCard card,
-                int abilityIndex,
-                int choosableAbilityIndex,
+                Enumerators.AbilityType abilityType,
                 List<ParametrizedAbilityBoardObject> targets = null)
             {
-                AddAction(_playerActionFactory.CardAbilityUsed(card.InstanceId, abilityIndex, choosableAbilityIndex, targets));
+                AddAction(_playerActionFactory.CardAbilityUsed(card.InstanceId, abilityType, targets));
             }
 
             private void MulliganHandler(List<WorkingCard> cards)

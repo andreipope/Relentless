@@ -61,11 +61,10 @@ namespace Loom.ZombieBattleground.Test
 
         public void CardAbilityUsed(
             InstanceId card,
-            int abilityIndex,
-            int choosableAbilityIndex = 0,
+            Enumerators.AbilityType abilityType,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityIndex, choosableAbilityIndex, targets));
+            Queue.Enqueue(() => Proxy.CardAbilityUsed(card, abilityType, targets));
         }
 
         public void OverlordSkillUsed(SkillId skillId, Enumerators.AffectObjectType affectObjectType, InstanceId targetInstanceId)

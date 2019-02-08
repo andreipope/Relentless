@@ -15,8 +15,7 @@ namespace Loom.ZombieBattleground.Test
 
         Task CardAbilityUsed(
             InstanceId card,
-            int abilityIndex,
-            int choosableAbilityIndex = 0,
+            Enumerators.AbilityType abilityType,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
         );
 

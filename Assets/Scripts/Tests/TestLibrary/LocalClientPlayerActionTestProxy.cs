@@ -68,11 +68,10 @@ namespace Loom.ZombieBattleground.Test
 
         public Task CardAbilityUsed(
             InstanceId card,
-            int abilityIndex,
-            int choosableAbilityIndex = 0,
+            Enumerators.AbilityType abilityType,
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityIndex, choosableAbilityIndex, targets));
+            _cardAbilityRequestsQueue.Enqueue(new CardAbilityRequest(card, abilityType, targets));
             HandleNextCardAbility();
             return Task.CompletedTask;
         }
@@ -123,15 +122,13 @@ namespace Loom.ZombieBattleground.Test
         private class CardAbilityRequest
         {
             public readonly InstanceId Card;
-            public readonly int AbilityIndex;
-            public readonly int ChoosableAbilityIndex;
+            public readonly Enumerators.AbilityType AbilityType;
             public readonly IReadOnlyList<ParametrizedAbilityInstanceId> Targets;
 
-            public CardAbilityRequest(InstanceId card, int abilityIndex, int choosableAbilityIndex, IReadOnlyList<ParametrizedAbilityInstanceId> targets)
+            public CardAbilityRequest(InstanceId card, Enumerators.AbilityType abilityType, IReadOnlyList<ParametrizedAbilityInstanceId> targets)
             {
                 Card = card;
-                AbilityIndex = abilityIndex;
-                ChoosableAbilityIndex = choosableAbilityIndex;
+                AbilityType = abilityType;
                 Targets = targets;
             }
 
@@ -139,8 +136,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 return
                     $"({nameof(Card)}: {Card}, " +
-                    $"{nameof(AbilityIndex)}: {AbilityIndex}, " +
-                    $"{nameof(ChoosableAbilityIndex)}: {ChoosableAbilityIndex}, " +
+                    $"{nameof(AbilityType)}: {AbilityType}, " +
                     $"{nameof(Targets)}: {Targets})";
             }
         }
