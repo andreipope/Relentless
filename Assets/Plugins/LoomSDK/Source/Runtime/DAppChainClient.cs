@@ -200,8 +200,6 @@ namespace Loom.Client
                     return result;
                 } catch (LoomException e)
                 {
-                    UnityUserReporting.CurrentClient.LogException(e);
-
                     if (this.TxMiddleware != null)
                     {
                         this.TxMiddleware.HandleTxException(e);

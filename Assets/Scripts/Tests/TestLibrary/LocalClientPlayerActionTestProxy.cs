@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground.Test
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
         {
-            throw new InvalidOperationException("Doesn't makes sense for local player - sent automatically by the local player");
+            return Task.CompletedTask;
         }
 
         public Task CardAbilityUsed(
