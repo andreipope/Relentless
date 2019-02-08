@@ -702,10 +702,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private bool _PvPToggleFirstLastAbility = true;
+
         public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
                                          List<ParametrizedAbilityBoardObject> targets, WorkingCard card, Player owner)
         {
-            AbilityData abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
+            //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
+            //We should absolutely change the backend API to support an index field.
+            //That will tell us directly which one of multiple abilities with the same name we should use for a card.
+            AbilityData abilityData;
+            if (_PvPToggleFirstLastAbility)
+            {
+                abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
+                _PvPToggleFirstLastAbility = false;
+            }
+            else
+            {
+                abilityData = card.LibraryCard.Abilities.Last(x => x.AbilityType == ability);
+                _PvPToggleFirstLastAbility = true;
+            }
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData,
                                                                card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
