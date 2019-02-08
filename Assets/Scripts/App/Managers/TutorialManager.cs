@@ -898,7 +898,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public string GetCardNameById(int id)
+        public string GetCardNameByTutorialObjectId(int id)
         {
             SpecificBattlegroundInfo battleInfo = CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo;
 

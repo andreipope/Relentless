@@ -102,13 +102,10 @@ namespace Loom.Client
                 }
             } catch (AggregateException e)
             {
-                UnityUserReporting.CurrentClient.LogException(e);
                 ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             }
 
             TimeoutException ex = new TimeoutException($"Call took longer than {timeoutMs} ms");
-
-            UnityUserReporting.CurrentClient.LogException(ex);
 
             throw ex;
 #endif
@@ -142,7 +139,6 @@ namespace Loom.Client
                     return await task;
                 } catch (InvalidTxNonceException e)
                 {
-                    UnityUserReporting.CurrentClient.LogException(e);
                     badNonceCount++;
                     lastNonceException = e;
                 }

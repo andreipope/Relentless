@@ -8,7 +8,7 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
 {
-    public class WaterCardsTests : BaseCardsTest
+    public class WaterCardsTests : BaseIntegrationTest
     {
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
                                Enumerators.AbilityType.DAMAGE_TARGET,
                                new List<ParametrizedAbilityInstanceId>
                                {
-                                   new ParametrizedAbilityInstanceId(playerJetter1, Enumerators.AffectObjectType.Character)
+                                   new ParametrizedAbilityInstanceId(playerJetter1, null)
                                }
                            );
                        },
@@ -58,13 +58,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
                                Enumerators.AbilityType.DAMAGE_TARGET,
                                new List<ParametrizedAbilityInstanceId>
                                {
-                                   new ParametrizedAbilityInstanceId(playerJetter2, Enumerators.AffectObjectType.Character)
+                                   new ParametrizedAbilityInstanceId(playerJetter2, null)
                                }
                            );
                        },
                 };
-                  
-                await DoPvPMatch(turns, playerDeck, opponentDeck);
+
+
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
 
                 BoardUnitModel playerJetter1Model = null;
                 BoardUnitModel playerJetter2Model = null;
@@ -72,20 +77,26 @@ namespace Loom.ZombieBattleground.Test.MultiplayerCardsTests
                 BoardUnitModel opponentJetter2Model = null;
 
 
-                playerJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(playerJetter1);
-                playerJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(playerJetter2);
-                opponentJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(opponentJetter1);
-                opponentJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectById(opponentJetter2);
+                playerJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerJetter1);
+                playerJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerJetter2);
+                opponentJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentJetter1);
+                opponentJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentJetter2);
 
-                Assert.NotNull(playerJetter1Model);
-                Assert.NotNull(playerJetter2Model);
-                Assert.NotNull(opponentJetter1Model);
-                Assert.NotNull(opponentJetter2Model);
+                Action validateEndState = () =>
+                {
+                    Assert.NotNull(playerJetter1Model);
+                    Assert.NotNull(playerJetter2Model);
+                    Assert.NotNull(opponentJetter1Model);
+                    Assert.NotNull(opponentJetter2Model);
 
-                Assert.AreEqual(playerJetter1Model.CurrentHp - 1, playerJetter1Model.CurrentHp);
-                Assert.AreEqual(playerJetter2Model.CurrentHp - 1, playerJetter2Model.CurrentHp);
-                Assert.AreEqual(opponentJetter1Model.CurrentHp - 1, opponentJetter1Model.CurrentHp);
-                Assert.AreEqual(opponentJetter2Model.CurrentHp, opponentJetter2Model.CurrentHp);
+                    Assert.AreEqual(playerJetter1Model.CurrentHp - 1, playerJetter1Model.CurrentHp);
+                    Assert.AreEqual(playerJetter2Model.CurrentHp - 1, playerJetter2Model.CurrentHp);
+                    Assert.AreEqual(opponentJetter1Model.CurrentHp - 1, opponentJetter1Model.CurrentHp);
+                    Assert.AreEqual(opponentJetter2Model.CurrentHp, opponentJetter2Model.CurrentHp);
+                };
+
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
     }

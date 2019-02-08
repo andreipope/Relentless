@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
+using UnityEditor;
 using UnityEngine.TestTools;
 using Debug = UnityEngine.Debug;
 
@@ -21,12 +22,12 @@ namespace Loom.ZombieBattleground.Test
         private static int[] MatchmakeTestCases = {
             2,
             10,
-            /*30,
+            30,
             50,
             70,
             100,
             200,
-            300*/
+            300
         };
 
         private readonly Queue<Func<Task>> _failedTestsCleanupTasks = new Queue<Func<Task>>();
@@ -42,7 +43,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(60000)]
+        [Timeout(600000)]
         public IEnumerator MatchmakeAndDoTurns([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
             int turnCount = 20;
@@ -50,6 +51,8 @@ namespace Loom.ZombieBattleground.Test
             return TestUtility.AsyncTest(() => MatchmakingTestBase(clientCount,
                 async clients =>
                 {
+                    double startTime = Utilites.GetTimeSinceStartup();
+
                     ConcurrentDictionary<MultiplayerDebugClient, int> clientToTurns = new ConcurrentDictionary<MultiplayerDebugClient, int>();
 
                     async Task EndTurnIfCurrentTurn(MultiplayerDebugClient client)
@@ -72,6 +75,10 @@ namespace Loom.ZombieBattleground.Test
                                     client.PlayerActionFactory.EndTurn()
                                 )
                             );
+
+                            if (clientTurnCount == turnCount) {
+                                Debug.Log($"Made {clientTurnCount} turns");
+                            }
                         }
                     }
 
@@ -115,6 +122,8 @@ namespace Loom.ZombieBattleground.Test
                         if (allPlayed)
                             break;
                     }
+
+                    Debug.LogFormat("completed in {0:F2}s", Utilites.GetTimeSinceStartup() - startTime);
                 }));
         }
 
@@ -144,12 +153,16 @@ namespace Loom.ZombieBattleground.Test
                     clients
                         .Select(async client =>
                         {
+                            float delay = UnityEngine.Random.Range(0f, 10f) * (clientCount / 300f);
+                            Debug.Log("Waiting for " + delay + "s");
+                            await Task.Delay((int) (delay * 1000f));
                             await client.Start(
                                 enabledLogs: false,
-                                chainClientCallExecutor: new DumbDAppChainClientCallExecutor(
+                                chainClientCallExecutor: new DefaultDAppChainClientCallExecutor(
                                     new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
-                                contractCallProxyFactory: contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract))
+                                contractCallProxyFactory: contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, true, false))
                             );
+                            client.MatchMakingFlowController.ActionWaitingTime = 2;
                         })
                         .ToArray()
                 );
@@ -172,7 +185,13 @@ namespace Loom.ZombieBattleground.Test
 
                 await Task.WhenAll(
                     clients
-                        .Select(client => client.MatchMakingFlowController.Start(1, null, null, false, null))
+                        .Select(async client =>
+                        {
+                            float delay = UnityEngine.Random.Range(0f, 60f) * (clientCount / 300f);
+                            Debug.Log("waiting for " + delay + "s");
+                            await Task.Delay((int) (delay * 1000f));
+                            await client.MatchMakingFlowController.Start(1, null, null, false, null);
+                        })
                         .ToArray()
                 );
 
@@ -183,7 +202,7 @@ namespace Loom.ZombieBattleground.Test
                     await Task.Delay(200);
                     await Task.WhenAll(
                         clients
-                            .Select(client => client.Update())
+                            .Select(client => Task.Run(client.Update))
                             .ToArray()
                     );
                 }
@@ -194,10 +213,6 @@ namespace Loom.ZombieBattleground.Test
                 {
                     await onEndCallback(clients);
                 }
-            }
-            catch(Exception e)
-            {
-                Helpers.ExceptionReporter.LogException(e);
             }
             finally
             {
@@ -221,7 +236,6 @@ namespace Loom.ZombieBattleground.Test
                     }
                     catch (Exception e)
                     {
-                        Helpers.ExceptionReporter.LogException(e);
                         Debug.LogException(e);
                     }
                 }
