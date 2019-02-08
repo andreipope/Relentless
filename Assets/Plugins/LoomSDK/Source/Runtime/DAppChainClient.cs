@@ -102,6 +102,9 @@ namespace Loom.Client
         /// <param name="callExecutor">Blockchain call execution flow controller.</param>
         public DAppChainClient(IRpcClient writeClient, IRpcClient readClient, DAppChainClientConfiguration configuration = null, IDAppChainClientCallExecutor callExecutor = null)
         {
+            if (writeClient == null && readClient == null)
+                throw new ArgumentException("Both write and read clients can't be null");
+
             this.writeClient = writeClient;
             this.readClient = readClient;
 
@@ -122,17 +125,11 @@ namespace Loom.Client
         /// <returns>The nonce.</returns>
         public async Task<ulong> GetNonceAsync(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
         public async Task<ulong> GetNonceAsyncNonBlocking(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
@@ -259,11 +256,10 @@ namespace Loom.Client
 
         private async Task<ulong> GetNonceAsyncRaw(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             await EnsureConnected();
-            string nonce = await this.readClient.SendAsync<string, NonceParams>(
+
+            IRpcClient client = this.writeClient ?? this.readClient;
+            string nonce = await client.SendAsync<string, NonceParams>(
                 "nonce",
                 new NonceParams { Key = key }
             );
