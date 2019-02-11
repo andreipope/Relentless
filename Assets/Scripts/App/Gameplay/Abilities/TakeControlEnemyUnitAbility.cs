@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
+        public List<BoardUnitModel> MovedUnits => _movedUnits;
+
         private List<BoardUnitModel> _movedUnits;
 
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)

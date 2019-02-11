@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        public List<BoardUnitView> Units => _units;
+
         private List<BoardUnitView> _units;
 
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
