@@ -1363,11 +1363,11 @@ namespace Loom.ZombieBattleground.Test
         /// Uses a skill (potentially on specific object).
         /// </summary>
         /// <param name="skill">Skill.</param>
-        /// <param name="targetdeTarget">Override target.</param>
+        /// <param name="overrideTarget">Override target.</param>
         /// <param name="selectedTargetType">Selected target type.</param>
         public void DoBoardSkill(
             BoardSkill skill,
-            BoardObject target = null,
+            BoardObject overrideTarget = null,
             Enumerators.AffectObjectType selectedTargetType = Enumerators.AffectObjectType.None)
         {
             if (overrideTarget != null)
@@ -1408,154 +1408,11 @@ namespace Loom.ZombieBattleground.Test
             }
 
             BoardObject target = null;
-
-            Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
-
-            switch (skill.Skill.OverlordSkill)
-            {
-                case Enumerators.OverlordSkill.HARDEN:
-                case Enumerators.OverlordSkill.STONE_SKIN:
-                case Enumerators.OverlordSkill.DRAW:
-                {
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
-                    target = _testBroker.GetPlayer(_player);
-                }
-
-                    break;
-                case Enumerators.OverlordSkill.HEALING_TOUCH:
-                {
-                    List<BoardUnitModel> units = GetUnitsWithLowHp();
-
-                    if (units.Count > 0)
-                    {
-                        target = units[0];
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
-                    }
-                    else
-                        return;
-                }
-                    break;
-                case Enumerators.OverlordSkill.MEND:
-                {
-                    target = _testBroker.GetPlayer(_player);
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
-
-                    if (_testBroker.GetPlayer(_player).Defense > 13)
-                    {
-                        if (skill.Skill.ElementTargetTypes.Count > 0)
-                        {
-                            _unitsToIgnoreThisTurn =
-                                _testBroker.GetPlayer(_player).BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
-                                    .Select(x => x.Model)
-                                    .ToList();
-                        }
-
-                        List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
-
-                        if (units.Count > 0)
-                        {
-                            target = units[0];
-                            selectedObjectType = Enumerators.AffectObjectType.Character;
-                        }
-                        else
-                            return;
-                    }
-                    else
-                        return;
-                }
-
-                    break;
-                case Enumerators.OverlordSkill.RABIES:
-                {
-                    _unitsToIgnoreThisTurn =
-                        _testBroker.GetPlayer(_player).BoardCards.FindAll(x =>
-                                skill.Skill.ElementTargetTypes.Count > 0 &&
-                                !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
-                                x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
-                            .Select(x => x.Model)
-                            .ToList();
-                    BoardUnitModel unit = GetRandomUnit(false, _unitsToIgnoreThisTurn);
-
-                    if (unit != null)
-                    {
-                        target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
-                    }
-                    else
-                        return;
-                }
-
-                    break;
-                case Enumerators.OverlordSkill.POISON_DART:
-                case Enumerators.OverlordSkill.TOXIC_POWER:
-                case Enumerators.OverlordSkill.ICE_BOLT:
-                case Enumerators.OverlordSkill.FREEZE:
-                case Enumerators.OverlordSkill.FIRE_BOLT:
-                {
-                    target = _testBroker.GetPlayer(_opponent);
-                    selectedObjectType = Enumerators.AffectObjectType.Player;
-
-                    BoardUnitModel unit = GetRandomOpponentUnit();
-
-                    if (unit != null)
-                    {
-                        target = unit;
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
-                    }
-                    else
-                        return;
-                }
-
-                    break;
-                case Enumerators.OverlordSkill.PUSH:
-                {
-                    if (skill.Skill.ElementTargetTypes.Count > 0)
-                    {
-                        _unitsToIgnoreThisTurn =
-                            _testBroker.GetPlayer(_player).BoardCards
-                                .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType))
-                                .Select(x => x.Model)
-                                .ToList();
-                    }
-
-                    List<BoardUnitModel> units = GetUnitsWithLowHp(_unitsToIgnoreThisTurn);
-
-                    if (units.Count > 0)
-                    {
-                        target = units[0];
-
-                        _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
-
-                        selectedObjectType = Enumerators.AffectObjectType.Character;
-                    }
-                    else
-                    {
-                        BoardUnitModel unit = GetRandomOpponentUnit(_unitsToIgnoreThisTurn);
-
-                        if (unit != null)
-                        {
-                            target = unit;
-
-                            _unitsToIgnoreThisTurn.Add((BoardUnitModel) target);
-
-                            selectedObjectType = Enumerators.AffectObjectType.Character;
-                        }
-                        else
-                            return;
-                    }
-                }
-
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
-            }
-
             skill.StartDoSkill(true);
 
             Action callback = () =>
             {
-                switch (selectedObjectType)
+                /*switch (selectedObjectType)
                 {
                     case Enumerators.AffectObjectType.Player:
                         Debug.Log("Board skill: Player");
@@ -1576,7 +1433,7 @@ namespace Loom.ZombieBattleground.Test
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);
-                }
+                }*/
 
                 // todo fix this
                 /* if (overrideTarget != null)
