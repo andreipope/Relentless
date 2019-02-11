@@ -1594,17 +1594,6 @@
                     "ActionToEndThisStep": "EndTurn",
                     "CanEndTurn": true,
                     "CanInteractWithGameplay": true,
-                    "HandPointers": [
-                        {
-                            "AppearDelay": 5.0,
-                            "StartPosition": {
-                                "X": 9.0,
-                                "Y": 1.6,
-                                "Z": 0.0
-                            },
-                            "TutorialHandPointerType": "Single"
-                        }
-                    ],
                     "OverlordSayTooltips": [
                         {
                             "AppearDelay": 10.0,
@@ -1820,6 +1809,44 @@
                 }
             ],
             "HasBlockedInteractivityInGameScreens": true,
+            "SpecificHordeInfo": {
+                "CardsForArmy": [
+                    {
+                        "Amount": 2,
+                        "CardName": "Gloop"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Zky"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Harpoon"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Rubble"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Zwoop"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Bane"
+                    },
+                    {
+                        "Amount": 1,
+                        "CardName": "GooZilla"
+                    },
+                    {
+                        "Amount": 2,
+                        "CardName": "Azzazzin"
+                    }
+                ],
+                "MainSet": "TOXIC",
+                "MaximumCardsCount": 15
+            },
             "TutorialDescriptionTooltips": [
                 {
                     "Description": "Don't you want to open your new cards first?",
