@@ -149,7 +149,7 @@ namespace Loom.Client
 #else
                 await Task.Delay(TimeSpan.FromSeconds(delay));
 #endif
-                delay *= 2f;
+                delay *= 1.75f;
             } while (
                 this.configurationProvider.Configuration.InvalidNonceTxRetries != 0 &&
                 badNonceCount <= this.configurationProvider.Configuration.InvalidNonceTxRetries);
