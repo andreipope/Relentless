@@ -40,7 +40,9 @@ namespace Loom.ZombieBattleground
             _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
             _units =
                 _units
-                    .Where(x => x.Model != AbilityUnitOwner)
+                    .Where(card => card.Model != AbilityUnitOwner &&
+                        card.Model.CurrentHp > 0 &&
+                        !card.Model.IsDead)
                     .ToList();
 
             if (Value > 0)
