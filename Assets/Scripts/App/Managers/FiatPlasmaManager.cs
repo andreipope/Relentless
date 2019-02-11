@@ -234,10 +234,10 @@ namespace Loom.ZombieBattleground
     
             ContractRequest contractParams = new ContractRequest();
             contractParams.UserId = UserId;
-            contractParams.r = HexStringToByte(r);
-            contractParams.s = HexStringToByte(s);
+            contractParams.r = CryptoUtils.HexStringToBytes(r);
+            contractParams.s = CryptoUtils.HexStringToBytes(s);
             contractParams.v = (sbyte)v;
-            contractParams.hash = HexStringToByte(hash);
+            contractParams.hash = CryptoUtils.HexStringToBytes(hash);
             contractParams.amount = amountList.ToArray();
             contractParams.TxID = TxID;
             return contractParams;
@@ -256,16 +256,6 @@ namespace Loom.ZombieBattleground
         {
             BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
             return b;
-        }
-    
-        public Byte[] HexStringToByte(string str)
-        {
-            string hex = str; 
-            byte[] bytes = new byte[hex.Length / 2];
-            
-            for (int i = 0; i < hex.Length; i += 2)
-                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
         }
 #endregion     
     }

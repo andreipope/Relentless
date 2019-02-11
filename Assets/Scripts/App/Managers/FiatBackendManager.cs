@@ -41,14 +41,14 @@ namespace Loom.ZombieBattleground
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
-            webrequestCreationInfo.ContentType = "application/x-www-form-urlencoded";
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
             
-            WWWForm form = new WWWForm();
-            form.AddField("productId", productId);       
-            form.AddField("purchaseToken", purchaseToken);       
-            form.AddField("transactionId", storeTxId);       
-            form.AddField("storeName", storeName);
-            webrequestCreationInfo.Data = form.data;
+            FiatValidationGoogleRequest fiatValidationGoogleRequest = new FiatValidationGoogleRequest();
+            fiatValidationGoogleRequest.productId = productId;
+            fiatValidationGoogleRequest.purchaseToken = purchaseToken;
+            fiatValidationGoogleRequest.storeTxId = storeTxId;
+            fiatValidationGoogleRequest.storeName = storeName;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationGoogleRequest));
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
             
             HttpResponseMessage httpResponseMessage =
@@ -71,14 +71,14 @@ namespace Loom.ZombieBattleground
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
-            webrequestCreationInfo.ContentType = "application/x-www-form-urlencoded";
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
             
-            WWWForm form = new WWWForm();
-            form.AddField("productId", productId);       
-            form.AddField("transactionId", transactionId);       
-            form.AddField("receiptData", receiptData);       
-            form.AddField("storeName", storeName);
-            webrequestCreationInfo.Data = form.data;
+            FiatValidationAppleRequest fiatValidationAppleRequest = new FiatValidationAppleRequest();
+            fiatValidationAppleRequest.productId = productId;
+            fiatValidationAppleRequest.transactionId = transactionId;
+            fiatValidationAppleRequest.receiptData = receiptData;
+            fiatValidationAppleRequest.storeName = storeName;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationAppleRequest));
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
             
             HttpResponseMessage httpResponseMessage =
@@ -154,6 +154,22 @@ namespace Loom.ZombieBattleground
             return true;
         }
         
+        public class FiatValidationGoogleRequest
+        {
+            public string productId;
+            public string purchaseToken;    
+            public string storeTxId;    
+            public string storeName;
+        }
+        
+        public class FiatValidationAppleRequest
+        {
+            public string productId;
+            public string transactionId;    
+            public string receiptData;    
+            public string storeName;
+        }
+
         public class FiatValidationResponse
         {
             public string msg;

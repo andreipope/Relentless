@@ -86,6 +86,10 @@ namespace Loom.ZombieBattleground
         private bool _isTransitioningState;
         
         private bool _isWaitingForTapToReveal;
+
+        private int _lastPackBalanceIdRequest;
+        
+        private int _lastOpenPackIdRequest;
         
         #region IUIElement
         
@@ -298,7 +302,7 @@ namespace Loom.ZombieBattleground
             _packTypeButtons = new Button[amountOfPackType];
             for(int i=0; i<amountOfPackType; ++i)
             {   
-                Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContect/Group/pack_holder_normal_{i}");
+                Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContent/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
                 _packTypeNames[i].text = $"{packTypes[i].ToString().ToUpper()} PACK";
                 _packTypeAmountLabels[i] = buttonParent.Find("text_amount").GetComponent<TextMeshProUGUI>();
@@ -417,21 +421,60 @@ namespace Loom.ZombieBattleground
             _packBalanceAmounts = new int[packTypes.Length];
             for(int i=0; i<packTypes.Length;++i)
             {
-                _packBalanceAmounts[i] = await _openPackPlasmaManager.CallPackBalanceContract((int)packTypes[i]);
-                SetPackTypeButtonsAmount(i);
+                await RetrievePackBalanceAmount(i);
             }              
         }
+        
         public async Task RetrievePackBalanceAmount(int typeId)
         {
-            _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
-            SetPackTypeButtonsAmount(typeId);
+            _lastPackBalanceIdRequest = typeId;
+            try
+            {
+                _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
+                SetPackTypeButtonsAmount(typeId);
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupRequestPackBalance;
+            }
         }
+        
+        private void WarningPopupRequestPackBalance()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupRequestPackBalance;
+
+            RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+        }
+        
         private async Task RetriveCardsFromPack(int packTypeId)
         {
+            _lastOpenPackIdRequest = packTypeId;
             _uiManager.DrawPopup<LoadingFiatPopup>();
-            List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
-            _cardsToDisplayQueqe = cards;
-            _uiManager.HidePopup<LoadingFiatPopup>(); 
+            try
+            {
+                List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
+                _cardsToDisplayQueqe = cards;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupRequestOpenPack;
+            }
+        }
+        
+        private void WarningPopupRequestOpenPack()
+        {
+            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+            popup.ConfirmationReceived -= WarningPopupRequestOpenPack;
+
+            RetriveCardsFromPack(_lastOpenPackIdRequest);
         }
 
         private async void ProcessOpenPackLogic()
@@ -699,14 +742,19 @@ namespace Loom.ZombieBattleground
         {
             _buttonCollect.gameObject.SetActive(false);
             _createdHighlightingVFXItem.ChangeState(false);
+            
             int amount = _createdBoardCards.Count;
             int lastIndex = amount - 1;
+            float delayOffset = 0.1f;
+            float moveDuration = 0.4f;
+            Vector3 hideCardPosition = -Vector3.up * 14f;
+            
             for(int i=0; i<amount ; ++i)
             {
                 Transform displayBoardCard = _createdBoardCards[i].Transform;
                 Sequence hideCardSequence = DOTween.Sequence();
-                hideCardSequence.AppendInterval(.1f * i);
-                hideCardSequence.Append(displayBoardCard.DOMove(  - Vector3.up * 14f  , .4f));
+                hideCardSequence.AppendInterval(delayOffset * i);
+                hideCardSequence.Append(displayBoardCard.DOMove(hideCardPosition, moveDuration));
                 
                 if( i == lastIndex)
                 {

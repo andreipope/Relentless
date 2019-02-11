@@ -78,7 +78,6 @@ namespace Loom.ZombieBattleground
                 await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
-                _uiManager.HidePopup<LoadingFiatPopup>();
                 Debug.Log($"{nameof(CallRewardTutorialFlow)} failed {e.Message}");
                 _uiManager.DrawPopup<WarningPopup>($"{nameof(CallRewardTutorialFlow)} failed \n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
@@ -130,10 +129,10 @@ namespace Loom.ZombieBattleground
         private ContractRequest GenerateFakeContractRequest()
         {
             ContractRequest contractParams = new ContractRequest();
-            contractParams.r = HexStringToByte("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269".Substring(2));
-            contractParams.s = HexStringToByte("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31".Substring(2));
+            contractParams.r = CryptoUtils.HexStringToBytes("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269".Substring(2));
+            contractParams.s = CryptoUtils.HexStringToBytes("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31".Substring(2));
             contractParams.v = 28;
-            contractParams.hash = HexStringToByte("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b".Substring(2));
+            contractParams.hash = CryptoUtils.HexStringToBytes("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b".Substring(2));
             contractParams.amount = 1;
             return contractParams;
         }
@@ -219,10 +218,10 @@ namespace Loom.ZombieBattleground
             Debug.Log(log);
     
             ContractRequest contractParams = new ContractRequest();
-            contractParams.r = HexStringToByte(r);
-            contractParams.s = HexStringToByte(s);
+            contractParams.r = CryptoUtils.HexStringToBytes(r);
+            contractParams.s = CryptoUtils.HexStringToBytes(s);
             contractParams.v = v;
-            contractParams.hash = HexStringToByte(hash);
+            contractParams.hash = CryptoUtils.HexStringToBytes(hash);
             contractParams.amount = amount;
             return contractParams;
         }
@@ -240,16 +239,6 @@ namespace Loom.ZombieBattleground
         {
             BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
             return b;
-        }
-    
-        public Byte[] HexStringToByte(string str)
-        {
-            string hex = str; 
-            byte[] bytes = new byte[hex.Length / 2];
-            
-            for (int i = 0; i < hex.Length; i += 2)
-                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
         }
 
         public int BigUIntToInt(Client.Protobuf.BigUInt bigNumber)
