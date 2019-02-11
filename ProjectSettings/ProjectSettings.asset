@@ -652,7 +652,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     1: 
     7: 
-    platformArchitecture: {}
+  platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild: {}
