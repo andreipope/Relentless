@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}"), false, true);
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1), false, true);
                 }
             }, null);
         }
