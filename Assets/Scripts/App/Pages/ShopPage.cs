@@ -594,7 +594,7 @@ namespace Loom.ZombieBattleground
         private void OnFinishRequestPack()
         {
             Debug.Log("SUCCESSFULLY REQUEST for packs");
-            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount();
+            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             PackMoveAnimation();
         }
         #endif

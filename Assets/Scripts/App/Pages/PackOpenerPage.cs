@@ -393,7 +393,7 @@ namespace Loom.ZombieBattleground
         {
             DestroyCardVFX();
             DestroyBoardCards();
-            if(_panelCollect != null )
+            if(_panelCollect != null)
             {
                 Object.Destroy(_panelCollect.gameObject);
             }
@@ -405,7 +405,7 @@ namespace Loom.ZombieBattleground
             {
                 _cardPositions.Clear();
             }
-            if( _createdbuttonOpenPackVFX != null)
+            if(_createdbuttonOpenPackVFX != null)
             {
                 Object.Destroy(_createdbuttonOpenPackVFX);
             }

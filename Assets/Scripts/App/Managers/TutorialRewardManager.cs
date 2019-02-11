@@ -35,7 +35,10 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
         
@@ -64,41 +67,23 @@ namespace Loom.ZombieBattleground
         
         public async Task CallRewardTutorialFlow()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
+            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallRewardTutorialComplete)}");
             
             RewardTutorialCompletedResponse response = null;
             try
             {
                 response = await CallRewardTutorialComplete();
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallTutorialRewardContract)}");
+                await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
-                Debug.Log($"CallRewardTutorialComplete failed {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"CallRewardTutorialComplete failed failed\n{e.Message}\nPlease try again");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupConfirmationReceived;
                 _uiManager.HidePopup<LoadingFiatPopup>();
+                Debug.Log($"{nameof(CallRewardTutorialFlow)} failed {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(CallRewardTutorialFlow)} failed \n{e.Message}\nPlease try again");
+                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                popup.ConfirmationReceived += WarningPopupConfirmationReceived;                
                 return;
-            }
-            if (response != null)
-            {
-                try
-                {
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                    _uiManager.DrawPopup<LoadingFiatPopup>("CallTutorialRewardContract...");
-                    await CallTutorialRewardContract(response);
-                }
-                catch(Exception e)
-                {
-                    Debug.Log($"CallTutorialRewardContract failed {e.Message}");
-                    if (!e.Message.Contains("reverted"))
-                    {                       
-                        _uiManager.DrawPopup<WarningPopup>($"CallTutorialRewardContract failed failed\n{e.Message}\nPlease try again");
-                        WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                        popup.ConfirmationReceived += WarningPopupConfirmationReceived;
-                        _uiManager.HidePopup<LoadingFiatPopup>();
-                        return;
-                    }
-                }
             }            
                
             _uiManager.HidePopup<LoadingFiatPopup>();
@@ -152,6 +137,8 @@ namespace Loom.ZombieBattleground
             contractParams.amount = 1;
             return contractParams;
         }
+        
+        private const string RequestPacksMethod = "requestPacks";
 
         private async Task CallTutorialRewardContract(EvmContract contract, ContractRequest contractParams)
         {
@@ -159,10 +146,10 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log($"Calling TutorialRewardContract [requestPacks]");
+            Debug.Log($"{nameof(CallTutorialRewardContract)} {RequestPacksMethod}");
             await contract.CallAsync
             (
-                "requestPacks",
+                RequestPacksMethod,
                 contractParams.r,
                 contractParams.s,
                 contractParams.v,
@@ -170,7 +157,7 @@ namespace Loom.ZombieBattleground
                 contractParams.amount
             );
             
-            Debug.Log($"Smart contract method [requestPacks] finished executing.");            
+            Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");            
         }
         
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)

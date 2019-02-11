@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
                 }
                 if( _tutorialManager.CurrentTutorial.Id == 5)
                 {
-                    _message.text = "Congratulations!\nReward would be automatically claimed.";
+                    _message.text = "Congratulations!\nThe reward will be\nautomatically claimed..";
                 }
             }
         }
