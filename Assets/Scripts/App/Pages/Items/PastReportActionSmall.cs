@@ -135,14 +135,7 @@ namespace Loom.ZombieBattleground
                         player.SelfHero.HeroElement + "_EXP");
                     break;
                 case BoardUnitModel unit:
-                    {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
-                        string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
-                        string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
-
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
-                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-                    }
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{unit.Card.LibraryCard.Picture.ToLowerInvariant()}");
                     break;
                 case BoardCard card:
                     if (card.PictureSprite && card.PictureSprite != null)
@@ -154,14 +147,7 @@ namespace Loom.ZombieBattleground
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
                     break;
                 case BoardSpell spell:
-                    {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
-                        string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
-                        string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
-
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
-                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-                    }
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{spell.Card.LibraryCard.Picture.ToLowerInvariant()}");
                     break;
                 case null:
                     break;

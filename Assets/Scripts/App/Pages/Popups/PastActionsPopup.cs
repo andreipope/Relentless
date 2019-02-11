@@ -448,8 +448,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
                 _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
@@ -564,8 +563,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
 
                 if (_withEffect)
                 {
@@ -786,8 +784,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
                 _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
 
                 if (_withEffect)
@@ -883,8 +880,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                    "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLower(), libraryCard.Picture.ToLowerInvariant()));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
 
                 if (_withEffect)
                 {
