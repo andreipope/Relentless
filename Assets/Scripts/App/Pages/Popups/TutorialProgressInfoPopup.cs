@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialProgressInfoPopup : IUIPopup
     {
-        private const float DurationFilling = 1.5f;
+        private const float SpeedFilling = 0.5f;
 
         public event Action PopupHiding;
 
@@ -96,7 +96,8 @@ namespace Loom.ZombieBattleground
             _startValueProgressBar = step * id;
             _endValueProgressBar = step * (id + 1);
             _imageProgressBar.fillAmount = _startValueProgressBar;
-            _imageProgressBar.DOFillAmount(_endValueProgressBar, DurationFilling).OnComplete(() =>
+            float duration = (_endValueProgressBar - _startValueProgressBar) / SpeedFilling;
+            _imageProgressBar.DOFillAmount(_endValueProgressBar, duration).OnComplete(() =>
             {
                 SetTextProgress(id + 1);
                 InternalTools.DoActionDelayed(Hide, 1.5f);

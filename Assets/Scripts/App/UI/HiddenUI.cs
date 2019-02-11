@@ -20,7 +20,6 @@ namespace Loom.ZombieBattleground
 
         void Start()
         {
-            DontDestroyOnLoad(gameObject);
             _isVisible = UIRoot.gameObject.activeInHierarchy;
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)

@@ -65,6 +65,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 EditorGUILayout.Space();
                 GUILayout.Label("<b>Meta Info</b>", Styles.RichLabel);
 
+                GUILayout.Label("InstanceId: " + playerState.InstanceId.Id);
                 GUILayout.Label("MaxGooVials: " + playerState.MaxGooVials);
                 GUILayout.Label("MaxCardsInHand: " + playerState.MaxCardsInHand);
                 GUILayout.Label("MaxCardsInPlay: " + playerState.MaxCardsInPlay);

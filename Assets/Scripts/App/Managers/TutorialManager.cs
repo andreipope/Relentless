@@ -527,6 +527,8 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
+
+                _overlordsChatController.UpdatePopupsByReportActivityAction(action);
             }
 
             if (CurrentTutorialStep.ConnectedActivities != null)
@@ -734,7 +736,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.Resizable,
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
-                                           tooltip.TutorialTooltipLayer);
+                                           tooltip.TutorialTooltipLayer,
+                                           tooltip.MinimumShowTime);
                 }
             }
 
@@ -768,7 +771,11 @@ namespace Loom.ZombieBattleground
                                                 tooltip.TutorialTooltipOwner,
                                                 tooltip.AppearDelay,
                                                 true,
-                                                tooltip.Duration);
+                                                tooltip.Duration,
+                                                tooltip.SoundToPlay,
+                                                tooltip.SoundToPlayBeginDelay,
+                                                tooltip.ActionToHideThisPopup,
+                                                tooltip.MinimumShowTime);
                         }
                     }
 
@@ -898,7 +905,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public string GetCardNameById(int id)
+        public string GetCardNameByTutorialObjectId(int id)
         {
             SpecificBattlegroundInfo battleInfo = CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo;
 
@@ -930,6 +937,8 @@ namespace Loom.ZombieBattleground
             List<TutorialDescriptionTooltip> tooltips = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.FindAll(tooltip => tooltip.TutorialTooltipOwnerId == ownerId &&
                 (tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.EnemyBattleframe ||
                 tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.PlayerBattleframe));
+
+            Debug.LogError(ownerId + " ||| " + tooltips.Count);
             foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
                 step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));
@@ -1031,7 +1040,8 @@ namespace Loom.ZombieBattleground
                                            bool resizable,
                                            float appearDelay,
                                            bool dynamicPosition,
-                                           Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default)
+                                           Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
+                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
         {
             if (appearDelay > 0)
             {
@@ -1045,7 +1055,8 @@ namespace Loom.ZombieBattleground
                                                                                                     resizable,
                                                                                                     dynamicPosition,
                                                                                                     ownerId,
-                                                                                                    layer);
+                                                                                                    layer,
+                                                                                                    minimumShowTime: minimumShowTime);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
@@ -1060,7 +1071,8 @@ namespace Loom.ZombieBattleground
                                                                                                 resizable,
                                                                                                 dynamicPosition,
                                                                                                 ownerId,
-                                                                                                layer);
+                                                                                                layer,
+                                                                                                minimumShowTime: minimumShowTime);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -1083,7 +1095,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer);
+                                       tooltipInfo.TutorialTooltipLayer,
+                                       tooltipInfo.MinimumShowTime);
             }
             else
             {
@@ -1111,7 +1124,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer);
+                                       tooltipInfo.TutorialTooltipLayer,
+                                       tooltipInfo.MinimumShowTime);
             }
             else
             {
@@ -1162,11 +1176,15 @@ namespace Loom.ZombieBattleground
                                         Enumerators.TutorialObjectOwner owner,
                                         float appearDelay,
                                         bool ofStep = false,
-                                        float duration = Constants.OverlordTalkingPopupDuration)
+                                        float duration = Constants.OverlordTalkingPopupDuration,
+                                        string soundToPlay = Constants.Empty,
+                                        float soundToPlayBeginDelay = 0,
+                                        Enumerators.TutorialActivityAction actionToHideThisPopup = Enumerators.TutorialActivityAction.Undefined,
+                                        float minimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime)
         {
             Sequence sequence = InternalTools.DoActionDelayed(() =>
             {
-                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration);
+                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration, soundToPlay, soundToPlayBeginDelay, actionToHideThisPopup, minimumShowTime);
             }, appearDelay);
 
             if (ofStep)
@@ -1201,7 +1219,15 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialActivityActionHandler.OverlordSayTooltip:
                     {
                         OverlordSayTooltipInfo data = activity.TutorialActivityActionHandlerData as OverlordSayTooltipInfo;
-                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay, duration: data.Duration);
+                        DrawOverlordSayPopup(data.Description,
+                                            data.TutorialTooltipAlign,
+                                            data.TutorialTooltipOwner,
+                                            data.AppearDelay,
+                                            duration: data.Duration,
+                                            soundToPlay: data.SoundToPlay,
+                                            soundToPlayBeginDelay: data.SoundToPlayBeginDelay,
+                                            actionToHideThisPopup: data.ActionToHideThisPopup,
+                                            minimumShowTime: data.MinimumShowTime);
                     }
                     break;
                 case Enumerators.TutorialActivityActionHandler.DrawDescriptionTooltips:

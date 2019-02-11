@@ -181,6 +181,10 @@ namespace Loom.ZombieBattleground.Data
             return ChoosableAbilities != null && ChoosableAbilities.Count > 1;
         }
 
+        public override string ToString() {
+            return $"({nameof(Name)}: {Name}, {nameof(AbilityType)}: {nameof(AbilityType)})";
+        }
+
         public class VisualEffectInfo
         {
             [JsonProperty("Type")]
