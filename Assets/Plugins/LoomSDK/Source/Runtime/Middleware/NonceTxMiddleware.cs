@@ -16,6 +16,7 @@ namespace Loom.Client
     public class NonceTxMiddleware : ITxMiddlewareHandler
     {
         protected readonly string publicKeyHex;
+        protected readonly object nonceSetLock = new object();
 
         /// <summary>
         /// Public key for which the nonce should be set.
@@ -72,12 +73,17 @@ namespace Loom.Client
             if (this.NextNonce == null)
             {
                 ulong nonce = await GetNonceFromNodeAsync();
-                this.NextNonce = nonce;
-                //Debug.Log($"NonceLog: unknown current nonce, got nonce {nonce}");
+                lock (this.nonceSetLock)
+                {
+                    this.NextNonce = nonce + 1;
+                }
+            } else
+            {
+                lock (this.nonceSetLock)
+                {
+                    this.NextNonce++;
+                }
             }
-
-            this.NextNonce++;
-            //Debug.Log($"NonceLog: using nonce {this.NextNonce} for the call");
 
             return this.NextNonce.Value;
         }

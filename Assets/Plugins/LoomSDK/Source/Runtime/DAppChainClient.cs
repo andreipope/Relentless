@@ -14,8 +14,6 @@ using Loom.Client.Protobuf;
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 #endif
 
-using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
-
 namespace Loom.Client
 {
     /// <summary>

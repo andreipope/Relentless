@@ -61,6 +61,12 @@ namespace Loom.ZombieBattleground
 
         private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
 
+        private bool _playerOrderScreenCloseManually;
+
+        private List<Card> _cardsForOpenPack;
+
+        //public TutorialReward RewardFromLastTutorial { get; private set; }
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialStep CurrentTutorialStep { get; private set; }
 
@@ -78,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         public int TutorialsCount
         {
-            get { return _tutorials.Count; }
+            get { return _tutorials.FindAll(tutor => !tutor.HiddenTutorial).Count; }
         }
 
         public void Dispose()
@@ -187,6 +193,12 @@ namespace Loom.ZombieBattleground
             return BlockedButtons.Contains(name);
         }
 
+        public int GetIndexOfCurrentTutorial()
+        {
+            return _tutorials.FindAll(tutor => !tutor.HiddenTutorial)
+                .FindIndex(info => info.Id == CurrentTutorial.Id);
+        }
+
         public void SetupTutorialById(int id)
         {
             if (CheckAvailableTutorial())
@@ -271,27 +283,27 @@ namespace Loom.ZombieBattleground
                     break;
 
                 // Abilities
-                case 1:
+                case 2:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
                     break;
 
                 // Rank
-                case 2:
+                case 4:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
                     break;
 
                 // Overflow
-                case 3:
+                case 6:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
                     break;
 
                 // Deck
-                case 4:
+                case 7:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
                     break;
 
                 // battle
-                case 5:
+                case 8:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
                     break;
             }
@@ -348,6 +360,11 @@ namespace Loom.ZombieBattleground
             if (!UnfinishedTutorial)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
+                if (CurrentTutorial.IsGameplayTutorial())
+                {
+                    ApplyReward();
+                }
             }
 
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
@@ -826,6 +843,15 @@ namespace Loom.ZombieBattleground
                         (_gameplayManager as GameplayManager).TutorialStartAction?.Invoke();
                     }
 
+                    if (!gameStep.PlayerOrderScreenCloseManually && _playerOrderScreenCloseManually)
+                    {
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _uiManager.GetPopup<PlayerOrderPopup>().AnimationEnded();
+                        }, Time.deltaTime);
+                    }
+                    _playerOrderScreenCloseManually = gameStep.PlayerOrderScreenCloseManually;
+
                     break;
                 case TutorialMenuStep menuStep:
 
@@ -938,7 +964,6 @@ namespace Loom.ZombieBattleground
                 (tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.EnemyBattleframe ||
                 tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.PlayerBattleframe));
 
-            Debug.LogError(ownerId + " ||| " + tooltips.Count);
             foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
                 step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));
@@ -1145,9 +1170,9 @@ namespace Loom.ZombieBattleground
 
         public void HideAllActiveDescriptionTooltip()
         {
-            foreach (TutorialDescriptionTooltipItem tooltip in _tutorialDescriptionTooltipItems)
+            for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
-                tooltip?.Hide();
+                _tutorialDescriptionTooltipItems[i]?.Hide();
             }
         }
 
@@ -1266,6 +1291,33 @@ namespace Loom.ZombieBattleground
                     .Find(info => info.CardName == id);
             }
             return cardData;
+        }
+
+        public List<Card> GetCardForCardPack(int count)
+        {
+            List<Card> cards = new List<Card>();
+            if (_cardsForOpenPack == null || _cardsForOpenPack.Count == 0)
+            {
+                _cardsForOpenPack = CurrentTutorial.TutorialContent.TutorialReward.CardPackReward
+                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.Name))
+                    .ToList();
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                cards.Add(_cardsForOpenPack[0]);
+                _cardsForOpenPack.Remove(_cardsForOpenPack[0]);
+            }
+
+            return cards;
+        }
+
+        public void ApplyReward()
+        {
+            for (int i = 0; i < CurrentTutorial.TutorialContent.ToGameplayContent().RewardCardPackCount; i++)
+            {
+                //get card pack
+            }
         }
     }
 }
