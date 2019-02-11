@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
         public UniqueList<T> FindAll(Predicate<T> match)
         {
-            return new UniqueList<T>(new List<T>(this.FindAll<T>(match)));
+            return new UniqueList<T>(new List<T>(((IReadOnlyList<T>)this).FindAll(match)));
         }
 
         private void ThrowIfContains(T item)

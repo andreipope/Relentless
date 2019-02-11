@@ -117,6 +117,9 @@
             2,
             3
           ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
           "ActionToEndThisStep": "EndTurn"
         },
         {
@@ -229,7 +232,8 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My boy is tough enough to take a hit."
+              "Description": "My boy is tough enough to take a hit.",
+              "ActionToHideThisPopup": "TapOnScreen"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -264,7 +268,8 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I’m done. Let’s move on, shall we?"
+              "Description": "I’m done. Let’s move on, shall we?",
+              "AppearDelay": 5.0
             }
           ],
           "HandPointers": [
@@ -274,6 +279,7 @@
                 "Y": 1.6,
                 "Z": 0.0
               },
+              "AppearDelay": 5.0,
               "TutorialHandPointerType": "Single"
             }
           ],
@@ -445,15 +451,16 @@
           "ActionToEndThisStep": "OverlordSayPopupHided"
         },
         {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "NOICE!\nYou won your first match!",
-            "DescriptionTooltipCloseText": "GOT IT!"
+            "DescriptionTooltipCloseText": "GOT IT!",
+            "AboveUI": true
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
-        },
-        {
-          "ActionToEndThisStep": "YouWonPopupOpened"
         },
         {
           "HandPointers": [
@@ -476,6 +483,7 @@
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": false,
+        "AISpecificOrderEnabled": true,
         "PlayerInfo": {
           "OverlordId": 4,
           "Defense": 10,
@@ -547,7 +555,10 @@
             {
               "TutorialObjectId": 51
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed"
+          ],
         },
         {
           "TurnIndex": 2,
@@ -576,7 +587,10 @@
               "TutorialObjectId": 51,
               "TargetType": "PLAYER"
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked"
+          ],
         },
         {
           "TurnIndex": 4,
@@ -628,7 +642,11 @@
             {
               "TutorialObjectId": 53
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed",
+          ],
         },
         {
           "TurnIndex": 6,
@@ -1966,6 +1984,23 @@
               "Description": "Let’s play Cherno-bill. But we need Overflow first. Use Tainted Goo."
             }
           ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 7.1,
+                "Y": -5.4,
+                "Z": 0.0
+              },
+              "EndPosition": {
+                "X": 4.0,
+                "Y": -0.25,
+                "Z": 0.0
+              },
+              "TutorialHandPointerType": "Animated",
+              "TutorialHandPointerOwner": "PlayerCardInHand",
+              "AppearDelay": 10.0
+            }
+          ],
           "ConnectedActivities": [
             0
           ],
@@ -2465,7 +2500,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardDragged",
           "CanDragCards": true,
@@ -2495,7 +2533,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardRemoved",
           "CanDoubleTapCards": true,
@@ -2523,7 +2564,10 @@
             "Button_Buy",
             "Button_Army",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "ArrowRightButton",
+            "ArrowLeftButton",
+            "ElementsToggles"
           ],
           "ActionToEndThisStep": "CardAdded",
           "CanDoubleTapCards": true,
@@ -2560,8 +2604,12 @@
             2
           ],
           "TutorialDescriptionTooltipsToActivate": [
-            4
+            4,
+            5
           ],
+          "ConnectedActivities": [
+            1
+          ]
         },
         {
           "OpenScreen": "HordeEditingPage",
@@ -2674,6 +2722,18 @@
           },
           "TutorialTooltipLayer": "AbovePages"
         },
+        {
+          "Id": 5,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Click on the arrows to browse your cards.",
+          "Position": {
+            "X": 10.15,
+            "Y": -2.42,
+            "Z": 0
+          },
+          "TutorialTooltipLayer": "AbovePages"
+        }
       ],
       "ActionActivityHandlers": [
         {
@@ -2683,6 +2743,17 @@
           "TutorialActivityActionHandlerData": {
             "TutorialDescriptionTooltipsToActivate": [
               3
+            ]
+          },
+          "HasSpecificConnection": true
+        },
+        {
+          "TutorialActivityAction": "IncorrectButtonTapped",
+          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
+          "Id": 1,
+          "TutorialActivityActionHandlerData": {
+            "TutorialDescriptionTooltipsToActivate": [
+              5
             ]
           },
           "HasSpecificConnection": true

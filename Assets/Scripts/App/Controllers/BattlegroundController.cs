@@ -985,49 +985,27 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetById(InstanceId id, Enumerators.AffectObjectType affectObjectType)
-        {
-            switch(affectObjectType)
+        public BoardObject GetTargetByInstanceId(InstanceId id) {
+            if (_gameplayManager.CurrentPlayer.InstanceId == id)
+                return _gameplayManager.CurrentPlayer;
+
+            if (_gameplayManager.OpponentPlayer.InstanceId == id)
+                return _gameplayManager.OpponentPlayer;
+
+            BoardUnitModel boardUnitModelById = GetBoardUnitModelByInstanceId(id);
+            if (boardUnitModelById != null)
+                return boardUnitModelById;
+
+            WorkingCard card = GetWorkingCardByInstanceId(id);
+            if (card != null)
             {
-                case Enumerators.AffectObjectType.Player:
-                    return _gameplayManager.OpponentPlayer.InstanceId == id ? _gameplayManager.OpponentPlayer : _gameplayManager.CurrentPlayer;
-                case Enumerators.AffectObjectType.Character:
-                    {
-                        List<BoardUnitView> units = new List<BoardUnitView>();
-                        units.AddRange(_gameplayManager.OpponentPlayer.BoardCards);
-                        units.AddRange(_gameplayManager.CurrentPlayer.BoardCards);
-
-                        BoardUnitView unit = units.Find(u => u.Model.Card.InstanceId == id);
-
-                        units.Clear();
-
-                        if (unit != null)
-                            return unit.Model;
-                    }
-                    break;
-                case Enumerators.AffectObjectType.Card:
-                    List<WorkingCard> cards = new List<WorkingCard>();
-                    cards.AddRange(_gameplayManager.OpponentPlayer.CardsInDeck);
-                    cards.AddRange(_gameplayManager.CurrentPlayer.CardsInDeck);
-                    cards.AddRange(_gameplayManager.OpponentPlayer.CardsInHand);
-                    cards.AddRange(_gameplayManager.CurrentPlayer.CardsInHand);
-
-                    WorkingCard card = cards.Find(u => u.InstanceId == id);
-
-                    cards.Clear();
-                    if (card != null)
-                    {
-                        return CreateCustomHandBoardCard(card).HandBoardCard;
-                    }
-                    return null;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(affectObjectType), affectObjectType, null);
+                return CreateCustomHandBoardCard(card).HandBoardCard;
             }
 
             return null;
         }
 
-        public List<BoardObject> GetTargetsById(IList<Unit> targetUnits)
+        public List<BoardObject> GetTargetsByInstanceId(IList<Unit> targetUnits)
         {
             List<BoardObject> boardObjects = new List<BoardObject>();
 
@@ -1035,7 +1013,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (Unit targetUnit in targetUnits)
                 {
-                    boardObjects.Add(GetTargetById(targetUnit.InstanceId, targetUnit.AffectObjectType));
+                    boardObjects.Add(GetTargetByInstanceId(targetUnit.InstanceId));
                 }
             }
 
@@ -1062,7 +1040,7 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitById(InstanceId id)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
         {
             BoardUnitView view = 
                 _gameplayManager.OpponentPlayer.BoardCards
@@ -1072,9 +1050,9 @@ namespace Loom.ZombieBattleground
             return view?.Model;
         }
 
-        public WorkingCard GetWorkingCardById(InstanceId id)
+        public WorkingCard GetWorkingCardByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
             if (boardUnitModel != null)
                 return boardUnitModel.Card;
 
@@ -1083,14 +1061,16 @@ namespace Loom.ZombieBattleground
                     .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
+                    .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
                     .FirstOrDefault(u => u != null && u.InstanceId == id);
 
             return workingCard;
         }
 
-        public BoardObject GetBoardObjectById(InstanceId id)
+        public BoardObject GetBoardObjectByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitById(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
             if(boardUnitModel != null)
                 return boardUnitModel;
 

@@ -493,7 +493,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             const string queryURLsEndPoint = "/zbversion";
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "http://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
+            webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
             Debug.Log(webrequestCreationInfo.Url);
 

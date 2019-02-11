@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         void SetupTutorialById(int id);
 
-        void StopTutorial();
+        void StopTutorial(bool isManual = false);
 
         void ActivateSelectHandPointer(Enumerators.TutorialObjectOwner owner);
 
@@ -33,16 +34,20 @@ namespace Loom.ZombieBattleground
 
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
+        void PlayTutorialSound(string sound, float delay = 0f);
+
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();
-        string GetCardNameById(int id);
+        string GetCardNameByTutorialObjectId(int id);
 
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
 
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
+
+        event Action OnMenuStepUpdated;
     }
 }

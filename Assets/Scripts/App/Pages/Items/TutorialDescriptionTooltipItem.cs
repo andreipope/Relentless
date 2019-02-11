@@ -1,4 +1,6 @@
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,6 +54,14 @@ namespace Loom.ZombieBattleground
 
         private bool _isDrawing;
 
+        private int _ownerId;
+
+        private bool _canBeClosed = false;
+
+        private float _minimumShowTime;
+
+        private Sequence _showingSequence;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
@@ -61,7 +71,8 @@ namespace Loom.ZombieBattleground
                                                 bool dynamicPosition,
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                                BoardObject boardObjectOwner = null)
+                                                BoardObject boardObjectOwner = null,
+                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -69,10 +80,12 @@ namespace Loom.ZombieBattleground
 
             this.Id = id;
             OwnerType = owner;
+            _ownerId = ownerId;
             _align = align;
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
             _layer = layer;
+            _minimumShowTime = minimumShowTime;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -139,6 +152,8 @@ namespace Loom.ZombieBattleground
             UpdatePosition();
 
             _isDrawing = true;
+
+            StartShowTimer();
         }
 
         public void UpdatePosition()
@@ -206,16 +221,23 @@ namespace Loom.ZombieBattleground
                 SetPosition();
             }
             _isDrawing = true;
+            UpdatePossibilityForClose();
         }
 
         public void Hide()
         {
-            if (!_isDrawing)
+            if (!_isDrawing || !_canBeClosed)
                 return;
 
             _selfObject?.SetActive(false);
 
             _isDrawing = false;
+
+            if(_showingSequence != null)
+            {
+                _showingSequence.Kill();
+                _showingSequence = null;
+            }
         }
 
         public void Dispose()
@@ -236,12 +258,13 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        if (_ownerUnit != null && !_ownerUnit.Model.IsDead && _ownerUnit.GameObject != null)
+                        if (_ownerUnit != null && !_ownerUnit.Model.IsDead && _ownerUnit.GameObject != null && _ownerUnit.GameObject)
                         {
                             _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
                         }
-                        else
+                        else if(_ownerId != 0)
                         {
+                            UpdatePossibilityForClose();
                             Hide();
                         }
                         break;
@@ -249,6 +272,17 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+        }
+
+        private void StartShowTimer()
+        {
+            _canBeClosed = false;
+            _showingSequence = InternalTools.DoActionDelayed(UpdatePossibilityForClose, _minimumShowTime);
+        }
+
+        private void UpdatePossibilityForClose()
+        {
+            _canBeClosed = true;
         }
 
         private void UpdateTextPosition()

@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.11";
+        internal const string CurrentVersionBase = "0.1.12";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -135,6 +135,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Space = " ";
 
+        internal const string Empty = "";
+
         internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
 
         internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
@@ -154,6 +156,11 @@ namespace Loom.ZombieBattleground.Common
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
 
         internal const float OverlordTalkingPopupDuration = 2f;
+
+        internal const float OverlordTalkingPopupMinimumShowTime = 2f;
+
+        internal const float DescriptionTooltipMinimumShowTime = 2f;
+
 
         internal const float HandPointerSpeed = 4f;
 
@@ -192,10 +199,7 @@ namespace Loom.ZombieBattleground.Common
 #endif
 
         public const string MatchEmailPattern =
-        @"^(([\w-]+\.)+[\w-]+|([a-zA-Z]{1}|[\w-]{2,}))@"
-        + @"((([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\."
-        + @"([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])\.([0-1]?[0-9]{1,2}|25[0-5]|2[0-4][0-9])){1}|"
-        + @"([a-zA-Z]+[\w-]+\.)+[a-zA-Z]{2,4})$";
+            @"^(([^<>()\[\]\.,;:\s@""]+(\.[^<>()\[\]\.,;:\s@""]+)*)|("".+""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
 
         internal const string FacebookAppId =
 #if USE_STAGING_BACKEND

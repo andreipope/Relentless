@@ -138,18 +138,15 @@ namespace Loom.ZombieBattleground
 
             StopGameplay();
 
-            CurrentTurnPlayer = null;
-            CurrentPlayer = null;
-            OpponentPlayer = null;
             StartingTurn = Enumerators.StartingTurn.UnDecided;
-            PlayerMoves = null;
-
+            
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
             //GameClient.Get<IQueueManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
+            
         }
 
         public void StartGameplay()
@@ -198,9 +195,15 @@ namespace Loom.ZombieBattleground
             return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
         }
 
-        public Player GetPlayerById(int id)
+        public Player GetPlayerByInstanceId(InstanceId id)
         {
-            return CurrentPlayer.InstanceId.Id == id ? CurrentPlayer : OpponentPlayer;
+            if (CurrentPlayer.InstanceId == id)
+                return CurrentPlayer;
+
+            if (OpponentPlayer.InstanceId == id)
+                return OpponentPlayer;
+
+            throw new Exception($"No player with instance id {id} found");
         }
 
         public void ResetWholeGameplayScene()
@@ -234,6 +237,8 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _matchManager.MatchFinished += MatchFinishedHandler;
 
             InitControllers();
 
@@ -308,10 +313,12 @@ namespace Loom.ZombieBattleground
                     GetController<AIController>().InitializePlayer(new InstanceId(1));
                     break;
                 case Enumerators.MatchType.PVP:
-                    bool localPlayerHasZeroIndex =
-                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
-                    GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
-                    GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
+                    int localPlayerIndex =
+                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId ?
+                            0 : 1;
+
+                    GetController<PlayerController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[localPlayerIndex].InstanceId.FromProtobuf());
+                    GetController<OpponentController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[1 - localPlayerIndex].InstanceId.FromProtobuf());
                     AvoidGooCost = _pvpManager.DebugCheats.Enabled && _pvpManager.DebugCheats.IgnoreGooRequirements;
                     break;
                 default:
@@ -437,6 +444,14 @@ namespace Loom.ZombieBattleground
             IsGameEnded = false;
 
             GameInitialized?.Invoke();
+        }
+
+        private void MatchFinishedHandler()
+        {
+            CurrentPlayer = null;
+            OpponentPlayer = null;
+            CurrentTurnPlayer = null;
+            PlayerMoves = null;
         }
     }
 }
