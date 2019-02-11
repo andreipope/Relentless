@@ -51,6 +51,19 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void ChangeRageStatusAction(bool status)
+        {
+            base.ChangeRageStatusAction(status);
+
+            if (AbilityCallType != Enumerators.AbilityCallType.RAGE)
+                return;
+
+            if (status)
+            {
+                Action();
+            }
+        }
+
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
@@ -83,6 +96,10 @@ namespace Loom.ZombieBattleground
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
                 cardsCount = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card != MainWorkingCard).Count;
+            }
+            else if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
+            {
+                cardsCount = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count;
             }
 
             if (AbilityTargetTypes.Count > 0)

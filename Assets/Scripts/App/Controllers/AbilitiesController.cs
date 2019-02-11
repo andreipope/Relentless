@@ -843,9 +843,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
                     break;
-                case Enumerators.AbilityType.WEAPON:
-                    ability = new HeroWeaponAbility(cardKind, abilityData);
-                    break;
                 case Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE:
                     ability = new ChangeUnitsOfTypeStatAbility(cardKind, abilityData);
                     break;
@@ -1086,6 +1083,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.CHANGE_STAT_OF_CARDS_IN_HAND:
                     ability = new ChangeStatsOfCardsInHandAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.GIVE_BUFFS_TO_UNIT:
+                    ability = new GiveBuffsToUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISCARD_CARD_FROM_HAND:
+                    ability = new DiscardCardFromHandAbility(cardKind, abilityData);
+                    break;            
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }

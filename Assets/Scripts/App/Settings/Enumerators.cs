@@ -23,7 +23,8 @@ namespace Loom.ZombieBattleground.Common
             GOT_DAMAGE,
             AT_DEFENCE,
             IN_HAND,
-            KILL_UNIT
+            KILL_UNIT,
+            RAGE
         }
 
         public enum AbilityEffectType
@@ -155,7 +156,9 @@ namespace Loom.ZombieBattleground.Common
             DRAW_CARD_BY_FACTION,
             DESTROY_TARGET_UNIT,
             AGILE,
-            CHANGE_STAT_OF_CARDS_IN_HAND
+            CHANGE_STAT_OF_CARDS_IN_HAND,
+            GIVE_BUFFS_TO_UNIT,
+            DISCARD_CARD_FROM_HAND
         }
 
         public enum ActionType
@@ -674,7 +677,9 @@ namespace Loom.ZombieBattleground.Common
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,
-            YourOverlord
+            YourOverlord,
+            PermanentChanges,
+            HasChangesInParameters
         }
 
         public enum UniqueAnimationType

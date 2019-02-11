@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
+        protected bool UnitOwnerIsInRage;
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -406,6 +408,20 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void UnitHpChangedHandler()
+        {
+            if (!UnitOwnerIsInRage)
+            {
+                UnitOwnerIsInRage = true;
+                ChangeRageStatusAction(UnitOwnerIsInRage);
+            }
+            else
+            {
+                UnitOwnerIsInRage = false;
+                ChangeRageStatusAction(UnitOwnerIsInRage);
+            }
+        }
+
+        protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
 

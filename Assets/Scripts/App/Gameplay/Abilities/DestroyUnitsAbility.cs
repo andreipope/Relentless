@@ -29,6 +29,19 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                _units = new List<BoardUnitModel>();
+                _units.Add(TargetUnit);
+
+                InvokeActionTriggered(_units.Select(x => BattlegroundController.GetBoardUnitViewByModel(x)).ToList());
+            }
+        }
+
         public override void Update()
         {
             base.Update();

@@ -7,12 +7,12 @@ namespace Loom.ZombieBattleground
 {
     public class ReturnToHandAbility : AbilityBase
     {
-        public int Value { get; }
+        public int Cost { get; }
 
         public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Cost = ability.Cost;
         }
 
         public override void Activate()
@@ -22,27 +22,32 @@ namespace Loom.ZombieBattleground
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
         }
 
-        public override void Update()
+        protected override void InputEndedHandler()
         {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                ReturnTargetToHand(TargetUnit);
+            }
         }
 
-        public override void Dispose()
+        private void ReturnTargetToHand(BoardUnitModel unit)
         {
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position;
+            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
+            CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(unit));
+
+            if(AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
+            {
+                unit.Card.InstanceCard.Cost += Cost;
+            }
 
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
             {
-                TargetUnit
+                unit
             }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -54,20 +59,10 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Push,
-                        Target = TargetUnit
+                        Target = unit
                     }
                 }
             });
-        }
-
-        protected override void InputEndedHandler()
-        {
-            base.InputEndedHandler();
-
-            if (IsAbilityResolved)
-            {
-                Action();
-            }
         }
     }
 }

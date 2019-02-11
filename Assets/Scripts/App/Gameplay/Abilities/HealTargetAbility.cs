@@ -79,6 +79,24 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityCallType == Enumerators.AbilityCallType.END)
+                return;
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            {
+                _targets.Clear();
+
+                _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+
+                _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                InvokeActionTriggered(_targets);
+            }
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();

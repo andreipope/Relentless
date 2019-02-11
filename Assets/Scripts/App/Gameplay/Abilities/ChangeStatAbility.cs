@@ -31,6 +31,18 @@ namespace Loom.ZombieBattleground
             if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
             {
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+
+                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                {
+                    if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+                    {
+                        ChangeStatsToItself();
+                    }
+                    else if(AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_ALL_CARDS))
+                    {
+                        ChangeStatsOfPlayerAllyCards(false);
+                    }
+                }
             }
         }
 
@@ -40,8 +52,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
-
                 ChangeStatsOfTarget(TargetUnit);
 
                 AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { TargetUnit }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
@@ -54,7 +64,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
                 return;
 
-            Action();
+            ChangeStatsToItself();
         }
 
         protected override void UnitDiedHandler()
@@ -64,7 +74,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-            Action();
+            ChangeStatsToItself();
         }
 
         protected override void TurnEndedHandler()
@@ -74,14 +84,23 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
-            Action();
+            ChangeStatsToItself();
         }
 
-        public override void Action(object info = null)
+        private void ChangeStatsToItself()
         {
-            base.Action(info);
-
             ChangeStatsOfTarget(AbilityUnitOwner);
+        }
+
+        private void ChangeStatsOfPlayerAllyCards(bool withCaller = false)
+        {
+            foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+            {
+                if (!withCaller && unit.Model.Card == MainWorkingCard)
+                    continue;
+
+                ChangeStatsOfTarget(unit.Model);
+            }
         }
 
         private void ChangeStatsOfTarget(BoardUnitModel unit)

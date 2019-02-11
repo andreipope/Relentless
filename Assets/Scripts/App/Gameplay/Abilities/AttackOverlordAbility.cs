@@ -33,6 +33,33 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void ChangeRageStatusAction(bool status)
+        {
+            base.ChangeRageStatusAction(status);
+
+            if (AbilityCallType != Enumerators.AbilityCallType.RAGE)
+                return;
+
+            if (status)
+            {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+                InvokeActionTriggered();
+            }
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();

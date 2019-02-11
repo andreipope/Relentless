@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Random = UnityEngine.Random;
+using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -11,10 +12,15 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.CardType UnitType;
 
+        public int Count { get; }
+
         public TakeUnitTypeToTargetUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
+            Count = ability.Count;
+
+            Count = Mathf.Clamp(Count, 1, Count);
         }
 
         public override void Activate()
@@ -23,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
             {
-                Action();
+                HandleTargets();
             }
         }
 
@@ -33,58 +39,64 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                TakeTypeToUnits(new List<BoardUnitModel>() { TargetUnit });
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                {
+                    TargetUnit
+                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
         }
 
-        public override void Action(object info = null)
+        private void HandleTargets()
         {
-            base.Action(info);
+            List<BoardUnitModel> units;
 
-            List<BoardUnitModel> allies;
-
-            BoardUnitModel target = null;
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
-
-                if (allies.Count > 0)
-                {
-                    target = allies[0];
-                }
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
             }
             else
             {
-                allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
                .ToList();
 
-                if (allies.Count > 0)
+                if (AbilityData.AbilitySubTrigger != Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                 {
-                    target = allies[Random.Range(0, allies.Count)];
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
             }
 
-            if (target == null)
+            if (units.Count > 0)
             {
-                TakeTypeToUnit(target);
+                TakeTypeToUnits(units);
+
+                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnits(List<BoardUnitModel> units)
         {
-            switch (UnitType)
+            foreach (BoardUnitModel unit in units)
             {
-                case Enumerators.CardType.HEAVY:
-                    unit.SetAsHeavyUnit();
-                    break;
-                case Enumerators.CardType.FERAL:
-                    unit.SetAsFeralUnit();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
+                switch (UnitType)
+                {
+                    case Enumerators.CardType.HEAVY:
+                        unit.SetAsHeavyUnit();
+                        break;
+                    case Enumerators.CardType.FERAL:
+                        unit.SetAsFeralUnit();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
+                }
             }
 
+            PostGameActionReport(units);
+        }
+
+        private void PostGameActionReport(List<BoardUnitModel> targets)
+        {
             Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
 
             if (UnitType == Enumerators.CardType.FERAL)
@@ -96,24 +108,23 @@ namespace Loom.ZombieBattleground
                 effectType = Enumerators.ActionEffectType.Heavy;
             }
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            foreach (BoardUnitModel target in targets)
+            {
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = effectType,
+                    Target = target
+                });
+            }
+
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = effectType,
-                        Target = unit
-                    }
-                }
+                TargetEffects = TargetEffects
             });
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-               unit
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
     }
 }

@@ -8,8 +8,6 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        private bool _wasChanged;
-
         public RageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -23,17 +21,16 @@ namespace Loom.ZombieBattleground
             AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
-        protected override void UnitHpChangedHandler()
+        protected override void ChangeRageStatusAction(bool status)
         {
-            base.UnitHpChangedHandler();
+            base.ChangeRageStatusAction(status);
 
             if (!PvPManager.UseBackendGameLogic)
             {
-                if (!_wasChanged)
+                if (status)
                 {
                     if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
                     {
-                        _wasChanged = true;
                         AbilityUnitOwner.BuffedDamage += Value;
                         AbilityUnitOwner.CurrentDamage += Value;
                         InvokeActionTriggered(true);
@@ -45,7 +42,6 @@ namespace Loom.ZombieBattleground
                     {
                         AbilityUnitOwner.BuffedDamage -= Value;
                         AbilityUnitOwner.CurrentDamage -= Value;
-                        _wasChanged = false;
                         InvokeActionTriggered(false);
                     }
                 }

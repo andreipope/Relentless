@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
-            Action();
+            TakeDamage(true);
         }
 
         public override void Update()
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-            Action();
+            TakeDamage();
         }
 
         protected override void TurnEndedHandler()
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.END)
                 return;
 
-            Action();
+            TakeDamage();
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -76,11 +76,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public override void Action(object info = null)
+        private void TakeDamage(bool exceptCaller = false)
         {
             _targets = new List<BoardObject>();
 
-            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
+            BoardObject caller = (BoardObject)AbilityUnitOwner ?? BoardSpell;
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
@@ -94,6 +94,11 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                         _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+
+                        if (exceptCaller && _targets.Contains(AbilityUnitOwner))
+                        {
+                            _targets.Remove(AbilityUnitOwner);
+                        }
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         _targets.Add(opponent);
