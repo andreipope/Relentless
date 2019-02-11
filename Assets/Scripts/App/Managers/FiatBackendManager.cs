@@ -167,15 +167,16 @@ namespace Loom.ZombieBattleground
             public VerifyHash VerifyHash;
             public int UserId;        
             public int Booster;
+            public int Super;
             public int Air;
             public int Earth;
             public int Fire;
             public int Life;
             public int Toxic;
-            public int Water;
-            public int Super;
+            public int Water;            
             public int Small;
             public int Minion;
+            public int Binance;
             public int TxID;
         }
         

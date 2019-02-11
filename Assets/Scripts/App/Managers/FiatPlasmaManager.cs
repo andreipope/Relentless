@@ -33,15 +33,22 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
         
         private BackendDataControlMediator _backendDataControlMediator;
+        
         private ILoadObjectsManager _loadObjectsManager;   
         
         private bool _isEventTriggered = false;      
+        
         private string _eventResponse;           
+        
+        private const int _maxRequestRetryAttempt = 5;
     
         public void Init()
         {           
@@ -74,6 +81,8 @@ namespace Loom.ZombieBattleground
             responseEvent = await CallRequestPacksContract(_fiatPurchaseContract, contractParams);             
             return responseEvent;
         }
+
+        private const string RequestPacksMethod = "requestPacks";
         
         private async Task<string> CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
         {              
@@ -81,7 +90,7 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [requestPacks]");                     
+            Debug.Log( $"Calling smart contract [{RequestPacksMethod}]");                     
             
             int count = 0;
             while (true)
@@ -93,7 +102,7 @@ namespace Loom.ZombieBattleground
 
                     await contract.CallAsync
                     (
-                        "requestPacks",
+                        RequestPacksMethod,
                         contractParams.UserId,
                         contractParams.r,
                         contractParams.s,
@@ -102,7 +111,7 @@ namespace Loom.ZombieBattleground
                         contractParams.amount,
                         contractParams.TxID
                     );
-                    Debug.Log($"Smart contract method [requestPacks] finished executing.");
+                    Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");
                     for (int i = 0; i < 10; ++i)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(1));
@@ -116,11 +125,15 @@ namespace Loom.ZombieBattleground
                 }
                 catch
                 {
-                    Debug.Log($"smart contract [requestPacks] error or reverted");
+                    Debug.Log($"smart contract [{RequestPacksMethod}] error or reverted");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
-                Debug.Log($"Retry requestPacks: {count}");
+                Debug.Log($"Retry {RequestPacksMethod}: {count}");
+                if(count > _maxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
+                }
             }
             return "";
         }
@@ -202,6 +215,7 @@ namespace Loom.ZombieBattleground
             amountList.Add( fiatResponse.Water);        
             amountList.Add( fiatResponse.Small);
             amountList.Add( fiatResponse.Minion);
+            amountList.Add( fiatResponse.Binance);
 
             log += "UserId: " + UserId + "\n";
             log += "r: " + r + "\n";
