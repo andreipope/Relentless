@@ -562,12 +562,8 @@ namespace Loom.ZombieBattleground
 
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
-                {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-                    startMatch?.Invoke();
-                };
-                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                startMatch?.Invoke();
             }
             else
             {

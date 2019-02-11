@@ -259,6 +259,15 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
+
+                        if(_gameplayManager.IsTutorial && _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
+                        {
+                            _gameplayManager.OpponentPlayerDeck.PrimarySkill =
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility;
+                            _gameplayManager.OpponentPlayerDeck.SecondarySkill =
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility;
+
+                        }
                     }
                     break;
                 case Enumerators.MatchType.PVP:
