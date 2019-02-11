@@ -20,12 +20,13 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
+#if !USE_PRODUCTION_BACKEND
         private void OnGUI()
         {
-#if !USE_PRODUCTION_BACKEND
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 150), "PvP Cheats", Styles.OpaqueWindow);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -68,9 +69,17 @@ namespace Loom.ZombieBattleground
             }
             GUILayout.EndArea();
 
+            pvpCheatsRect.y += pvpCheatsRect.height + 15;
+            pvpCheatsRect.height = 75;
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Options", Styles.OpaqueWindow);
+            {
+                _pvpManager.UseBackendGameLogic = GUILayout.Toggle(_pvpManager.UseBackendGameLogic, "Use Backend Logic");
+            }
+            GUILayout.EndArea();
+
             _customDeckEditor?.OnGUI();
-#endif
         }
+#endif
 
         private void Start()
         {
@@ -204,7 +213,6 @@ namespace Loom.ZombieBattleground
                                     GUILayout.BeginHorizontal();
                                     {
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
-                                        GUILayout.FlexibleSpace();
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
                                             if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))

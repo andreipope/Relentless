@@ -117,6 +117,9 @@
             2,
             3
           ],
+          "ActionToEndThisStep": "TapOnScreen"
+        },
+        {
           "ActionToEndThisStep": "EndTurn"
         },
         {
@@ -229,7 +232,8 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My boy is tough enough to take a hit."
+              "Description": "My boy is tough enough to take a hit.",
+              "ActionToHideThisPopup": "TapOnScreen"
             }
           ],
           "TutorialDescriptionTooltipsToActivate": [
@@ -264,7 +268,8 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I’m done. Let’s move on, shall we?"
+              "Description": "I’m done. Let’s move on, shall we?",
+              "AppearDelay": 5.0
             }
           ],
           "HandPointers": [
@@ -274,6 +279,7 @@
                 "Y": 1.6,
                 "Z": 0.0
               },
+              "AppearDelay": 5.0,
               "TutorialHandPointerType": "Single"
             }
           ],
@@ -445,15 +451,16 @@
           "ActionToEndThisStep": "OverlordSayPopupHided"
         },
         {
+          "ActionToEndThisStep": "YouWonPopupOpened"
+        },
+        {
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "NOICE!\nYou won your first match!",
-            "DescriptionTooltipCloseText": "GOT IT!"
+            "DescriptionTooltipCloseText": "GOT IT!",
+            "AboveUI": true
           },
           "ActionToEndThisStep": "AvatarTooltipClosed"
-        },
-        {
-          "ActionToEndThisStep": "YouWonPopupOpened"
         },
         {
           "HandPointers": [
@@ -476,6 +483,7 @@
       ],
       "SpecificBattlegroundInfo": {
         "RankSystemHasEnabled": false,
+        "AISpecificOrderEnabled": true,
         "PlayerInfo": {
           "OverlordId": 4,
           "Defense": 10,
@@ -547,7 +555,10 @@
             {
               "TutorialObjectId": 51
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed"
+          ],
         },
         {
           "TurnIndex": 2,
@@ -576,7 +587,10 @@
               "TutorialObjectId": 51,
               "TargetType": "PLAYER"
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked"
+          ],
         },
         {
           "TurnIndex": 4,
@@ -628,7 +642,11 @@
             {
               "TutorialObjectId": 53
             }
-          ]
+          ],
+          "RequiredActivitiesToDoneDuringTurn": [
+            "EnemyOverlordCardPlayed",
+            "EnemyOverlordCardPlayed",
+          ],
         },
         {
           "TurnIndex": 6,

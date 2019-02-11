@@ -119,7 +119,6 @@ namespace Loom.Client.Internal
             }
             catch (Exception e)
             {
-                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnOpen -= openHandler;
                 this.webSocket.OnClose -= closeHandler;
                 throw;
@@ -145,7 +144,6 @@ namespace Loom.Client.Internal
             }
             catch (Exception e)
             {
-                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnClose -= handler;
                 throw;
             }
@@ -227,7 +225,6 @@ namespace Loom.Client.Internal
                 }
                 catch (Exception ex)
                 {
-                    UnityUserReporting.CurrentClient.LogException(ex);
                     tcs.TrySetException(ex);
                     throw;
                 }
@@ -241,7 +238,6 @@ namespace Loom.Client.Internal
             }
             catch (Exception e)
             {
-                UnityUserReporting.CurrentClient.LogException(e);
                 this.webSocket.OnClose -= closeHandler;
                 this.webSocket.OnMessage -= messageHandler;
                 throw;
@@ -328,7 +324,6 @@ namespace Loom.Client.Internal
             }
             catch (Exception ex)
             {
-                UnityUserReporting.CurrentClient.LogException(ex);
                 this.Logger.LogError(LogTag, "[WSSharpRPCClient_OnMessage error] " + ex);
             }
         }

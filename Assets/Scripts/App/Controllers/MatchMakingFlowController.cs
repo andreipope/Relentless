@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<MatchMetadata> MatchConfirmed;
 
-        public float ActionWaitingTime { get; set; } = 5;
+        public float ActionWaitingTime { get; set; } = 3.5f;
 
         public MatchMakingState State => _state;
 
@@ -355,6 +355,7 @@ namespace Loom.ZombieBattleground
                 case MatchMakingState.RegisteringToPool:
                     break;
                 case MatchMakingState.WaitingPeriod:
+                    _currentWaitingTime = 0f;
                     break;
                 case MatchMakingState.FindingMatch:
                     await InitiateFindingMatch();
@@ -362,6 +363,7 @@ namespace Loom.ZombieBattleground
                 case MatchMakingState.AcceptingMatch:
                     break;
                 case MatchMakingState.WaitingForOpponent:
+                    _currentWaitingTime = 0f;
                     break;
                 case MatchMakingState.ConfirmingWithOpponent:
                     await CheckIfOpponentIsReady();

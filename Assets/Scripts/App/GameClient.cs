@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public class GameClient : ServiceLocatorBase
     {
+        public event Action ServicesInitialized;
+
         private static readonly object Sync = new object();
 
         private static GameClient _instance;
@@ -72,6 +74,12 @@ namespace Loom.ZombieBattleground
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
+        }
+
+        public override void InitServices() {
+            base.InitServices();
+
+            ServicesInitialized?.Invoke();
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
