@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const bool EnableShopPage = false;
+        internal const bool EnableShopPage = true;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
