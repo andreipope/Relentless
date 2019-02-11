@@ -158,7 +158,8 @@ namespace Loom.ZombieBattleground.Common
             AGILE,
             CHANGE_STAT_OF_CARDS_IN_HAND,
             GIVE_BUFFS_TO_UNIT,
-            DISCARD_CARD_FROM_HAND
+            DISCARD_CARD_FROM_HAND,
+            GET_GOO_THIS_TURN
         }
 
         public enum ActionType

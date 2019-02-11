@@ -1088,7 +1088,10 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DISCARD_CARD_FROM_HAND:
                     ability = new DiscardCardFromHandAbility(cardKind, abilityData);
-                    break;            
+                    break;
+                case Enumerators.AbilityType.GET_GOO_THIS_TURN:
+                    ability = new GetGooThisTurnAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.AbilityType), abilityData.AbilityType, null);
             }
