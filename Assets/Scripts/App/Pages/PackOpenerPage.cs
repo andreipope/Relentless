@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
             InitState();
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
-            ChangeSelectedPackType(0);   
+            ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);   
         }
         
         public void Hide()
@@ -313,6 +313,7 @@ namespace Loom.ZombieBattleground
                     ButtonPackTypeHandler(id);
                  });
             }
+            _selfPage.transform.Find($"pack_holder_tray/PackContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;
         }
         
         private void SetPackTypeButtonsAmount()
