@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         
         private string _eventResponse;           
         
-        private const int _maxRequestRetryAttempt = 5;
+        private const int MaxRequestRetryAttempt = 5;
     
         public void Init()
         {           
@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
                 }
                 ++count;
                 Debug.Log($"Retry {RequestPacksMethod}: {count}");
-                if(count > _maxRequestRetryAttempt)
+                if(count > MaxRequestRetryAttempt)
                 {
                     throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
                 }

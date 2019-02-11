@@ -90,6 +90,12 @@ namespace Loom.ZombieBattleground
         private int _lastPackBalanceIdRequest;
         
         private int _lastOpenPackIdRequest;
+
+        private int _retryPackBalanceRequestCount = 0;
+        
+        private int _retryOpenPackRequestCount = 0;
+        
+        private const int MaxRequestRetryAttempt = 2;
         
         #region IUIElement
         
@@ -433,13 +439,26 @@ namespace Loom.ZombieBattleground
             {
                 _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
                 SetPackTypeButtonsAmount(typeId);
+                _retryPackBalanceRequestCount = 0;
             }
             catch(Exception e)
             {
                 Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nPlease try again");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestPackBalance;
+
+                _retryPackBalanceRequestCount++;
+                if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
+                {
+                    _retryPackBalanceRequestCount = 0;
+                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
+                    QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                    popup.ConfirmationReceived += RetryRequestPackBalance;
+                }
+                else
+                {
+                    _uiManager.DrawPopup<WarningPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nPlease try again");
+                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                    popup.ConfirmationReceived += WarningPopupRequestPackBalance;
+                }
             }
         }
         
@@ -448,7 +467,13 @@ namespace Loom.ZombieBattleground
             WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
             popup.ConfirmationReceived -= WarningPopupRequestPackBalance;
 
-            RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+            RetryRequestPackBalance(true);
+        }
+
+        private void RetryRequestPackBalance(bool confirmRetry)
+        {
+            if(confirmRetry)             
+                RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
         }
         
         private async Task RetriveCardsFromPack(int packTypeId)
@@ -460,13 +485,26 @@ namespace Loom.ZombieBattleground
                 List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
                 _cardsToDisplayQueqe = cards;
                 _uiManager.HidePopup<LoadingFiatPopup>();
+                _retryOpenPackRequestCount = 0;
+                ChangeState(STATE.CARD_EMERGED);
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nPlease try again");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestOpenPack;
+                _retryOpenPackRequestCount++;
+                if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
+                {
+                    _retryOpenPackRequestCount = 0;
+                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
+                    QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                    popup.ConfirmationReceived += RetryRequestOpenPack;
+                }
+                else
+                {
+                    Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                    _uiManager.DrawPopup<WarningPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nPlease try again");
+                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
+                    popup.ConfirmationReceived += WarningPopupRequestOpenPack;
+                }
             }
         }
         
@@ -477,6 +515,18 @@ namespace Loom.ZombieBattleground
 
             RetriveCardsFromPack(_lastOpenPackIdRequest);
         }
+        
+        private void RetryRequestOpenPack(bool confirmRetry)
+        {
+            if (confirmRetry)
+            {
+                RetriveCardsFromPack(_lastOpenPackIdRequest);
+            }
+            else
+            {
+                ChangeState(STATE.CARD_EMERGED);
+            }
+        }
 
         private async void ProcessOpenPackLogic()
         {
@@ -485,9 +535,7 @@ namespace Loom.ZombieBattleground
                 _packBalanceAmounts[_selectedPackTypeIndex]--;
                 _packToOpenAmount--;
                 await RetriveCardsFromPack(_selectedPackTypeIndex);
-            }            
-            
-            ChangeState(STATE.CARD_EMERGED);       
+            }     
         }
         
         private List<Card> RetrieveDummyCards(int amount)
