@@ -455,19 +455,9 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _uiManager.DrawPopup<WarningPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nPlease try again");
-                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.ConfirmationReceived += WarningPopupRequestPackBalance;
+                    RetryRequestPackBalance(true);
                 }
             }
-        }
-        
-        private void WarningPopupRequestPackBalance()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestPackBalance;
-
-            RetryRequestPackBalance(true);
         }
 
         private void RetryRequestPackBalance(bool confirmRetry)
@@ -490,6 +480,8 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
+                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
                 {
@@ -500,20 +492,9 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
-                    _uiManager.DrawPopup<WarningPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nPlease try again");
-                    WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    popup.ConfirmationReceived += WarningPopupRequestOpenPack;
+                    RetryRequestOpenPack(true);
                 }
             }
-        }
-        
-        private void WarningPopupRequestOpenPack()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestOpenPack;
-
-            RetriveCardsFromPack(_lastOpenPackIdRequest);
         }
         
         private void RetryRequestOpenPack(bool confirmRetry)
