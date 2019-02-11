@@ -14,47 +14,48 @@ namespace Loom.ZombieBattleground.Test
     public class LoginTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(90000)]
+        [Timeout(250000)]
         public IEnumerator RegisterAndLoginFlow()
         {
             return AsyncTest(async () =>
             {
-                LoginPopup loginPoup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
+                LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
+                DeactivateTutorialFlag();
                 HandleLogut();
 
-                await TestHelper.LetsThink();
+                await ConfirmLoginPopupHide();
 
                 await TestHelper.ClickGenericButton("Button_Login");
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Register_BG/Button_Register");
 
-                string email = UnityEngine.Random.Range(0, 2 ^ 1024) + UnityEngine.Random.Range(0, 2 ^ 1024) + "_Test@test.com";
+                string email = UnityEngine.Random.Range(0, 2 ^ 4096) + UnityEngine.Random.Range(0, 2 ^ 4096) + "_Test@test.com";
                 string password = "testing";
 
-                loginPoup.SetRegistrationFieldsData(email, password);
+                loginPopup.SetRegistrationFieldsData(email, password);
 
                 await TestHelper.LetsThink();
 
                 await TestHelper.ClickGenericButton("Register_Group/Button_Register_BG/Button_Register");
 
-                await TestHelper.LetsThink();
+                await ConfirmLoginPopupHide();
 
                 Assert.IsTrue(IsUserLoggedIn());
 
                 HandleLogut();
 
-                await TestHelper.LetsThink();
+                await ConfirmLoginPopupHide();
 
                 await TestHelper.ClickGenericButton("Button_Login");
 
-                loginPoup.SetLoginFieldsData(email, password);
+                loginPopup.SetLoginFieldsData(email, password);
 
                 await TestHelper.LetsThink();
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.LetsThink();
+                await ConfirmLoginPopupHide();
 
                 Assert.IsTrue(IsUserLoggedIn());
             });
@@ -77,6 +78,20 @@ namespace Loom.ZombieBattleground.Test
                 return true;
             }
             return false;
+        }
+
+        private void DeactivateTutorialFlag()
+        {
+            GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
+        }
+
+        private async Task ConfirmLoginPopupHide()
+        {
+            LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
+
+            await new WaitUntil(()=>{
+                return loginPopup.Self == null;
+            });
         }
     }
 }

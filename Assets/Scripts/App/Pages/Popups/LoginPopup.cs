@@ -236,6 +236,7 @@ namespace Loom.ZombieBattleground
         {
             _emailFieldRegister.text = _email;
             _passwordFieldRegister.text = _password;
+            _confirmFieldRegister.text = _password;
         }
 
         public void Logout() 
