@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground.Test
                     "test deck",
                     new List<DeckCardData>
                     {
-                        new DeckCardData("Bane", 30)
+                        new DeckCardData("Slab", 30)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -203,39 +203,31 @@ namespace Loom.ZombieBattleground.Test
                 };
 
                 InstanceId playerBaneId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
-                InstanceId opponentBaneId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerBaneId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentBaneId, ItemPosition.Start),
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(opponentBaneId, pvpTestContext.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(opponentBaneId, pvpTestContext.GetCurrentPlayer().InstanceId),
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       player => {},
                        opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       player => {},
                        opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId),
-                       opponent => {},
-                       player => player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId)
+
+                       player =>
+                       {
+                           player.CardPlay(playerBaneId, ItemPosition.Start);
+                           player.CardAttack(playerBaneId, pvpTestContext.GetOpponentPlayer().InstanceId);
+                       },
+                       opponent => opponent.CardPlay(opponentSlabId, ItemPosition.Start)
                    };
 
                 Action validateEndState = () =>
                 {
+                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerBaneId));
                     Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerBaneId)).CurrentHp);
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentBaneId)).CurrentHp);
+                    Assert.AreEqual(19, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(17, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -243,6 +235,180 @@ namespace Loom.ZombieBattleground.Test
         }
 
 
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Ectoplasm()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck playerDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Ectoplasm", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerEctoplasmId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+
+                       player => player.CardPlay(playerEctoplasmId, ItemPosition.Start),
+                       opponent => {},
+                   };
+
+                Action validateEndState = () =>
+                {
+                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEctoplasmId));
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEctoplasmId)).CurrentHp);
+                    Assert.AreEqual(20, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().GooVials);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Poizom()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Wood", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck playerDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Poizom", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerPoizomId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
+                InstanceId opponentWoodId = pvpTestContext.GetCardInstanceIdByIndex(opponentDeck, 0);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+
+                       player => player.CardPlay(playerPoizomId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentWoodId, ItemPosition.Start),
+
+                       player => player.CardAttack(playerPoizomId, opponentWoodId),
+                       opponent => {}
+                   };
+
+                Action validateEndState = () =>
+                    {
+                        Assert.AreEqual(1,
+                            ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(
+                                opponentWoodId)).CurrentHp);
+                    };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Zlimey()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    0,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                Deck playerDeck = new Deck(
+                    0,
+                    0,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Zlimey", 30)
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerZlimeyId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlimey", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => player.CardPlay(playerZlimeyId, ItemPosition.Start),
+                       opponent => {}
+                   };
+
+                Action validateEndState = () =>
+                {
+                    Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlimeyId));
+                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlimeyId)).CurrentHp);
+                    Assert.AreEqual(18, pvpTestContext.GetCurrentPlayer().Defense);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
