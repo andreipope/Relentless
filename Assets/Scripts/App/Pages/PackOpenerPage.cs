@@ -237,8 +237,7 @@ namespace Loom.ZombieBattleground
             InitState();
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
-            ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);  
-            RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion); 
+            ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion); 
         }
         
         public void Hide()
