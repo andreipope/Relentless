@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -17,6 +18,10 @@ namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
     {    
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
+
         private TextMeshProUGUI[] _packTypeAmountLabels, _packTypeNames;
 
         private Button[] _packTypeButtons;
@@ -105,6 +110,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
             
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -706,15 +714,34 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
             DestroyCreatedObject();
-            GameClient.Get<IAppStateManager>().BackAppState();
+            if (_tutorialManager.IsTutorial)
+            {
+                _uiManager.SetPage<MainMenuPage>();
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().BackAppState();
+            }
         }
         
         private void ButtonBuyPacksHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBuyPack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
@@ -724,6 +751,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPlusHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonPlus.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
@@ -733,6 +766,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMinusHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMinus.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount <= 0)
@@ -742,6 +781,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMaxHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMax.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
@@ -751,6 +796,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonOpenPackHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonOpenPack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         
@@ -759,6 +810,12 @@ namespace Loom.ZombieBattleground
                 SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packToOpenAmount <= 0)
                     return;
+                
+                if(_tutorialManager.IsTutorial)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
+                }
+
                 ChangeState(STATE.TRAY_INSERTED);
             }            
         }
