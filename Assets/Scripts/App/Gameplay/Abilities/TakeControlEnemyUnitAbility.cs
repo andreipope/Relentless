@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
+        public List<BoardUnitModel> MovedUnits => _movedUnits;
+
         private List<BoardUnitModel> _movedUnits;
 
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -29,7 +31,8 @@ namespace Loom.ZombieBattleground
             {
                 if (PredefinedTargets != null)
                 {
-                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList());
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList()
+                        .FindAll(card => card.CurrentHp > 0 && !card.IsDead));
                 }
                 else
                 {
