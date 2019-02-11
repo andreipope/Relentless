@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
+            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(CardSetType)}: {CardSetType})";
         }
 
         public void ForceUpdateAbilities(IList<AbilityData> abilities)
