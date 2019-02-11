@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, target));
-            await new WaitForSeconds(5f);
+            await new WaitForSeconds(4f);
         }
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)

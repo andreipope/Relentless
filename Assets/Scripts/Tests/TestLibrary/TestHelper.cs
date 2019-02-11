@@ -1357,52 +1357,42 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        // todo: review
         /// <summary>
         /// Uses a skill (potentially on specific object).
         /// </summary>
         /// <param name="skill">Skill.</param>
-        /// <param name="overrideTarget">Override target.</param>
-        /// <param name="selectedTargetType">Selected target type.</param>
-        public Task DoBoardSkill(
+        /// <param name="target">Target.</param>
+        public async Task DoBoardSkill(
             BoardSkill skill,
             BoardObject target = null)
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
+            skill.FightTargetingArrow.SetTarget(target);
+            await new WaitForSeconds(0.5f);
 
-            Action overrideCallback = () =>
+            switch (target)
             {
-                switch (target)
-                {
-                    case Player player:
-                        skill.FightTargetingArrow.SelectedPlayer = player;
-                        break;
-                    case BoardUnitModel boardUnitModel:
-                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
-                }
+                case Player player:
+                    skill.FightTargetingArrow.OnPlayerSelected(player);
+                    break;
+                case BoardUnitModel boardUnitModel:
+                    skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+            }
 
-                GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
-                Action<GameplayQueueAction<object>> onDone = null;
-                onDone = gameplayQueueAction2 =>
-                {
-                    taskCompletionSource.SetResult(gameplayQueueAction2);
-                    gameplayQueueAction.OnActionDoneEvent -= onDone;
-                };
-                gameplayQueueAction.OnActionDoneEvent += onDone;
+            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+            Action<GameplayQueueAction<object>> onDone = null;
+            onDone = gameplayQueueAction2 =>
+            {
+                taskCompletionSource.SetResult(gameplayQueueAction2);
+                gameplayQueueAction.OnActionDoneEvent -= onDone;
             };
+            gameplayQueueAction.OnActionDoneEvent += onDone;
 
-            _boardArrowController.ResetCurrentBoardArrow();
-
-            skill.FightTargetingArrow =
-                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform,
-                    target,
-                    action: overrideCallback);
-
-            return taskCompletionSource.Task;
+            await taskCompletionSource.Task;
         }
 
         #endregion

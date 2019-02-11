@@ -435,8 +435,8 @@ namespace Loom.ZombieBattleground.Test
                        player => {},
                        opponent =>
                        {
-                           Time.timeScale = 0.5f;
                            opponent.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetCurrentPlayer().InstanceId);
+                           Time.timeScale = 0.5f;
                        },
                        player =>
                        {
