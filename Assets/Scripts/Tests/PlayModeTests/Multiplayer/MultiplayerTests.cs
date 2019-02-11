@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground.Test
         //Toxic Faction Tests
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Zpitter()
+        public IEnumerator Zpitter_v4()
         {
             return AsyncTest(async () =>
             {
@@ -510,7 +510,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Ghoul()
+        public IEnumerator Ghoul_v4()
         {
             return AsyncTest(async () =>
             {
@@ -521,7 +521,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Ghoul", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -534,7 +534,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Ghoul", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -555,14 +555,24 @@ namespace Loom.ZombieBattleground.Test
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerGhoulId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentGhoulId, ItemPosition.Start),
+                       player =>
+                       {
+                           player.CardPlay(playerGhoulId, ItemPosition.Start);
+                           player.CardPlay(playerBurnId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentGhoulId, ItemPosition.Start);
+                           opponent.CardPlay(opponentBurnId, ItemPosition.Start);
+                       },
+                       player => player.CardAttack(playerGhoulId, opponentBurnId),
+                       opponent => opponent.CardAttack(opponentGhoulId, playerBurnId),
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp - 3, pvpTestContext.GetCurrentPlayer().BuffedHp);
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp - 3, pvpTestContext.GetOpponentPlayer().BuffedHp);
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp - 3, pvpTestContext.GetCurrentPlayer().MaxCurrentHp);
+                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp - 3, pvpTestContext.GetOpponentPlayer().MaxCurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -572,7 +582,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Wazte()
+        public IEnumerator Wazte_v4()
         {
             return AsyncTest(async () =>
             {
@@ -583,7 +593,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Wazte", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -596,7 +606,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Wazte", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -615,25 +625,23 @@ namespace Loom.ZombieBattleground.Test
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerWazteId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentWazteId, ItemPosition.Start),
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().MaxGooVials);
-                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().MaxGooVials);
+                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().GooVials);
+                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().GooVials);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Azzazzin()
+        public IEnumerator Azzazzin_v4()
         {
             return AsyncTest(async () =>
             {
@@ -644,7 +652,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Azzazzin", 2),
-                        new DeckCardData("Cerberuz", 2)
+                        new DeckCardData("Cerberuz", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -657,7 +665,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Azzazzin", 2),
-                        new DeckCardData("Cerberuz", 2)
+                        new DeckCardData("Cerberuz", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -704,7 +712,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Hazzard()
+        public IEnumerator Hazzard_v4()
         {
             return AsyncTest(async () =>
             {
@@ -715,7 +723,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Hazzard", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -728,7 +736,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Hazzard", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -747,25 +755,23 @@ namespace Loom.ZombieBattleground.Test
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerHazzardId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentHazzardId, ItemPosition.Start),
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(1, pvpTestContext.GetCurrentPlayer().MaxGooVials);
-                    Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().MaxGooVials);
+                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().GooVials);
+                    Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().GooVials);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Zlopper()
+        public IEnumerator Zlopper_v4()
         {
             return AsyncTest(async () =>
             {
@@ -776,7 +782,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Zlopper", 2),
-                        new DeckCardData("Cerberuz", 2)
+                        new DeckCardData("Cerberuz", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -789,7 +795,7 @@ namespace Loom.ZombieBattleground.Test
                     new List<DeckCardData>
                     {
                         new DeckCardData("Zlopper", 2),
-                        new DeckCardData("Cerberuz", 2)
+                        new DeckCardData("Cerberuz", 10)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -841,7 +847,7 @@ namespace Loom.ZombieBattleground.Test
         //Item Faction Tests
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Boomstick()
+        public IEnumerator Boomstick_v4()
         {
             return AsyncTest(async () =>
             {
@@ -853,7 +859,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         new DeckCardData("Boomstick", 2),
                         new DeckCardData("Cerberuz", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 4)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -867,7 +873,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         new DeckCardData("Boomstick", 2),
                         new DeckCardData("Cerberuz", 2),
-                        new DeckCardData("Burn", 2)
+                        new DeckCardData("Burn", 4)
                     },
                     Enumerators.OverlordSkill.NONE,
                     Enumerators.OverlordSkill.NONE
@@ -880,10 +886,17 @@ namespace Loom.ZombieBattleground.Test
 
                 InstanceId playerCerberuzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cerberuz", 1);
                 InstanceId opponentCerberuzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cerberuz", 1);
-                InstanceId playerBurnId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burn", 1);
-                InstanceId opponentBurnId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burn", 1);
                 InstanceId playerBoomstickId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Boomstick", 1);
                 InstanceId opponentBoomstickId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Boomstick", 1);
+                InstanceId playerBurnId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burn", 1);
+                InstanceId opponentBurnId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burn", 1);
+                
+                Debug.Log("playerCerberuzId = " + playerCerberuzId);
+                Debug.Log("opponentCerberuzId = " + opponentCerberuzId);
+                Debug.Log("playerBurnId = " + playerBurnId);
+                Debug.Log("opponentBurnId = " + opponentBurnId);
+                Debug.Log("playerBoomstickId = " + playerBoomstickId);
+                Debug.Log("opponentBoomstickId = " + opponentBoomstickId);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
@@ -894,18 +907,15 @@ namespace Loom.ZombieBattleground.Test
                        {
                            player.CardPlay(playerCerberuzId, ItemPosition.Start);
                            player.CardPlay(playerBurnId, ItemPosition.Start);
-                           player.CardPlay(playerBurnId, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentCerberuzId, ItemPosition.Start);
                            opponent.CardPlay(opponentBurnId, ItemPosition.Start);
-                           opponent.CardPlay(opponentBurnId, ItemPosition.Start);
                        },
                        player => player.CardPlay(playerBoomstickId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentBoomstickId, ItemPosition.Start),
                    };
-
                 Action validateEndState = () =>
                 {
                     Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
@@ -914,11 +924,11 @@ namespace Loom.ZombieBattleground.Test
                     Assert.NotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCerberuzId));
                     Assert.AreEqual(4, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCerberuzId)).CurrentHp);
                     Assert.AreEqual(4, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCerberuzId)).CurrentHp);
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp, pvpTestContext.GetCurrentPlayer().BuffedHp);
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp, pvpTestContext.GetOpponentPlayer().BuffedHp);
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp, pvpTestContext.GetCurrentPlayer().MaxCurrentHp);
+                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp, pvpTestContext.GetOpponentPlayer().MaxCurrentHp);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
     }
