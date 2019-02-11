@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
         {
             string log = "ContractRequest Params: \n";
             int UserId = fiatResponse.UserId;
-            string hash = fiatResponse.VerifyHash.hash.Substring(2);
+            string hash = fiatResponse.VerifyHash.hash;
             int TxID = fiatResponse.TxID;
             string sig = fiatResponse.VerifyHash.signature;
             string r = Slice(sig, 2, 66);

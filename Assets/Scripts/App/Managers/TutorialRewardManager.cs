@@ -129,10 +129,10 @@ namespace Loom.ZombieBattleground
         private ContractRequest GenerateFakeContractRequest()
         {
             ContractRequest contractParams = new ContractRequest();
-            contractParams.r = CryptoUtils.HexStringToBytes("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269".Substring(2));
-            contractParams.s = CryptoUtils.HexStringToBytes("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31".Substring(2));
+            contractParams.r = CryptoUtils.HexStringToBytes("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269");
+            contractParams.s = CryptoUtils.HexStringToBytes("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31");
             contractParams.v = 28;
-            contractParams.hash = CryptoUtils.HexStringToBytes("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b".Substring(2));
+            contractParams.hash = CryptoUtils.HexStringToBytes("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b");
             contractParams.amount = 1;
             return contractParams;
         }
@@ -204,9 +204,9 @@ namespace Loom.ZombieBattleground
         private ContractRequest ParseContractRequestFromRewardTutorialCompletedResponse(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {
             string log = "<color=green>ContractRequest Params:</color>\n";
-            string hash = rewardTutorialCompletedResponse.Hash.Substring(2);
-            string r = rewardTutorialCompletedResponse.R.Substring(2);
-            string s = rewardTutorialCompletedResponse.S.Substring(2);
+            string hash = rewardTutorialCompletedResponse.Hash;
+            string r = rewardTutorialCompletedResponse.R;
+            string s = rewardTutorialCompletedResponse.S;
             sbyte v = Convert.ToSByte(rewardTutorialCompletedResponse.V);
             int amount = (int)BigUIntToSByte(rewardTutorialCompletedResponse.Amount);
             
