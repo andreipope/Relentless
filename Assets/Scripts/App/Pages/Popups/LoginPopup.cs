@@ -232,6 +232,19 @@ namespace Loom.ZombieBattleground
             SetUIState(LoginState.InitiateLogin);
         }
 
+        public void SetRegistrationFieldsData(string _email, string _password)
+        {
+            _emailFieldRegister.text = _email;
+            _passwordFieldRegister.text = _password;
+            _confirmFieldRegister.text = _password;
+        }
+
+        public void Logout() 
+        {
+            Show();
+            SetLoginAsGuestState();
+        }
+
         private void PressedSendOTPHandler()
         {
             GameClient.Get<ISoundManager>()
