@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
 
         private ISoundManager _soundManager;
 
+        private ITutorialManager _tutorialManager;
+
         private Animator _playerAnimator, _opponentAnimator;
 
         private AnimationEventTriggering _animationEventTriggering;
@@ -37,6 +39,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Dispose()
@@ -82,7 +85,11 @@ namespace Loom.ZombieBattleground
             _animationEventTriggering = _playerAnimator.GetComponent<AnimationEventTriggering>();
             _animationEventTriggering.AnimationEventTriggered += AnimationEventTriggeredEventHandler;
 
-            InternalTools.DoActionDelayed(AnimationEnded, _durationOfShow);
+            if (!_tutorialManager.IsTutorial ||
+                (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().PlayerOrderScreenCloseManually))
+            {
+                InternalTools.DoActionDelayed(AnimationEnded, _durationOfShow);
+            }
         }
 
         public void Show(object data)
@@ -134,7 +141,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void AnimationEnded()
+        public void AnimationEnded()
         {
             _uiManager.HidePopup<PlayerOrderPopup>();
 
