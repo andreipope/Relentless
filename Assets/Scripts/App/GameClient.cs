@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
+            Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 

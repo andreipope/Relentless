@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:
+                case Enumerators.AppState.SHOP:            
                     if (Constants.EnableShopPage)
                     {
                         if (string.IsNullOrEmpty(
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
                         return;
                     }
                 case Enumerators.AppState.PACK_OPENER:
-                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                         break;
@@ -240,7 +240,6 @@ namespace Loom.ZombieBattleground
         {
             if (!Application.isPlaying) {
                 throw exception;
-                return;
             }
                 
             Debug.LogWarning("Handled network exception: " + exception);

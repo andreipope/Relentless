@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
                 if (!string.IsNullOrEmpty(GitCommitHash))
                 {
 #if UNITY_CLOUD_BUILD
-                    text += $" ({GitCommitHash})";
+                    text += $" ({GitCommitHash} #{CloudBuildBuildNumber})";
 #else
                     text += $" ({GitCommitHash}/{GitBranchName})";
 #endif
