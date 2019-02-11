@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
 #if USE_PLASMA_DEV_ENVIRONMENT
         //DEV ENVIRONMENT (asia1)
-        public static readonly string ContractAddressCardFaucet = "0xc5641a5dc35aa0c70144a1ba423d6d24a1a6749e";  
+        public static readonly string ContractAddressCardFaucet = "0xbd54b4b26ac8e4bd202b70f3fbad6b3d5a885eec";  
         public static readonly string ContractAddressBoosterPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
         public static readonly string ContractAddressSuperPack = "0x60ab575af210cc952999976854e938447e919871";
         public static readonly string ContractAddressAirPack = "0xb681fbf4b36c49e0811ee640cca1933ab57be81e";
@@ -18,7 +18,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public static readonly string ContractAddressWaterPack = "0x9ed8380b47feef8945251ded45f0ba4f1b72f522";
         public static readonly string ContractAddressSmallPack = "0x0049493999a5ecc90654b5f0678d50a8952b9c3d";
         public static readonly string ContractAddressMinionPack = "0x637845034f92c3fe58d4b43447815dab7b880f9d";
-        public static readonly string ContractAddressFiatPurchase = "0x3f7d995201684ef012fe522c26761c81f5880e34";
+        public static readonly string ContractAddressBinancePack = "0x8240905f778ab546939957bf9f57a369c368a296";
+        public static readonly string ContractAddressFiatPurchase = "0xe385465fc42c0898b743282b71ae8d74922a525a";
         public static readonly string ContractAddressTutorialReward = "0x2668524145c2f05f2e9de4f6d4a0171535df733a";
         public static readonly string Chainid = "asia1";
         public static readonly string WebSocket = "wss://test-z-asia1.dappchains.com/websocket";
@@ -40,6 +41,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public static readonly string ContractAddressWaterPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
         public static readonly string ContractAddressSmallPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
         public static readonly string ContractAddressMinionPack = "0x63c43b64f40b8115c2c9970e559405fd16377a57";
+        public static readonly string ContractAddressBinancePack = "0x8240905f778ab546939957bf9f57a369c368a296";
         public static readonly string ContractAddressFiatPurchase = "0xb4b0bd2eb757b124a72065bfa535bea1849101ab";       
         public static readonly string ContractAddressTutorialReward = "0xad5fb91fc52afcc76e4a996d4bc13137fa813bb6";
         
