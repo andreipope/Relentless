@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MindFlayer_Ability()
+        public IEnumerator MindFlayer()
         {
             return AsyncTest(async () =>
             {
@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Maelstrom_Ability()
+        public IEnumerator Maelstrom()
         {
             return AsyncTest(async () =>
             {
