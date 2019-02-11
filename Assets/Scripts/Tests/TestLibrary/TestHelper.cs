@@ -97,7 +97,6 @@ namespace Loom.ZombieBattleground.Test
         public AbilitiesController AbilitiesController => _abilitiesController;
 
         private int pageTransitionWaitTime = 30;
-        private int turnWaitTime = 300;
 
         private string _recordedExpectedValue, _recordedActualValue;
 
@@ -1365,114 +1364,45 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="skill">Skill.</param>
         /// <param name="overrideTarget">Override target.</param>
         /// <param name="selectedTargetType">Selected target type.</param>
-        public void DoBoardSkill(
+        public Task DoBoardSkill(
             BoardSkill skill,
-            BoardObject overrideTarget = null,
-            Enumerators.AffectObjectType selectedTargetType = Enumerators.AffectObjectType.None)
+            BoardObject target = null)
         {
-            if (overrideTarget != null)
+            TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
+            skill.StartDoSkill();
+
+            Action overrideCallback = () =>
             {
-                skill.StartDoSkill();
-
-                Action overrideCallback = () =>
+                switch (target)
                 {
-                    switch (selectedTargetType)
-                    {
-                        case Enumerators.AffectObjectType.Player:
-                            skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) overrideTarget;
-
-                            Debug.Log("Board skill: Player");
-
-                            break;
-                        case Enumerators.AffectObjectType.Character:
-                            BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) overrideTarget);
-                            skill.FightTargetingArrow.SelectedCard = selectedCardView;
-
-                            Debug.Log("Board skill: Character");
-
-                            break;
-                    }
-
-                    // _skillsController.DoSkillAction (skill, null, overrideTarget);
-                    skill.EndDoSkill();
-                };
-
-                _boardArrowController.ResetCurrentBoardArrow();
-
-                skill.FightTargetingArrow =
-                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform,
-                        overrideTarget,
-                        action: overrideCallback);
-
-                return;
-            }
-
-            BoardObject target = null;
-            skill.StartDoSkill(true);
-
-            Action callback = () =>
-            {
-                /*switch (selectedObjectType)
-                {
-                    case Enumerators.AffectObjectType.Player:
-                        Debug.Log("Board skill: Player");
-
-                        skill.FightTargetingArrow.SelectedPlayer = (Loom.ZombieBattleground.Player) target;
-
+                    case Player player:
+                        skill.FightTargetingArrow.SelectedPlayer = player;
                         break;
-                    case Enumerators.AffectObjectType.Character:
-                        Debug.Log("Board skill: Character");
-
-                        BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel((BoardUnitModel) target);
-                        skill.FightTargetingArrow.SelectedCard = selectedCardView;
-
-                        break;
-                    case Enumerators.AffectObjectType.None:
-                        Debug.Log("Board skill: None");
-
+                    case BoardUnitModel boardUnitModel:
+                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);
-                }*/
-
-                // todo fix this
-                /* if (overrideTarget != null)
-                {
-                    _skillsController.DoSkillAction (skill, null, overrideTarget);
+                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
                 }
-                else
+
+                GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+                Action<GameplayQueueAction<object>> onDone = null;
+                onDone = gameplayQueueAction2 =>
                 {
-                    _skillsController.DoSkillAction (skill, null, target);
-                } */
-
-                skill.EndDoSkill();
-
-                // _boardArrowController.ResetCurrentBoardArrow ();
+                    taskCompletionSource.SetResult(gameplayQueueAction2);
+                    gameplayQueueAction.OnActionDoneEvent -= onDone;
+                };
+                gameplayQueueAction.OnActionDoneEvent += onDone;
             };
+
+            _boardArrowController.ResetCurrentBoardArrow();
 
             skill.FightTargetingArrow =
-                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform,
+                    target,
+                    action: overrideCallback);
 
-            /* Action callback = () => {
-                switch (selectedObjectType)
-                {
-                    case Enumerators.AffectObjectType.Player:
-                        skill.FightTargetingArrow.SelectedPlayer = (Player) target;
-                        break;
-                    case Enumerators.AffectObjectType.Character:
-                        BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel ( (BoardUnitModel) target);
-                        skill.FightTargetingArrow.SelectedCard = selectedCardView;
-                        break;
-                    case Enumerators.AffectObjectType.None:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException (nameof (selectedObjectType), selectedObjectType, null);
-                }
-
-                skill.EndDoSkill ();
-            };
-
-            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow> (skill.SelfObject.transform, target, 1f, action: callback); */
+            return taskCompletionSource.Task;
         }
 
         #endregion
@@ -1546,6 +1476,23 @@ namespace Loom.ZombieBattleground.Test
     */
         }
 
+        public BoardSkill GetBoardSkill(Player player, SkillId skillId)
+        {
+            List<BoardSkill> boardSkills = new List<BoardSkill>();
+            if (player == GetCurrentPlayer())
+            {
+                boardSkills.Add(_skillsController.PlayerPrimarySkill);
+                boardSkills.Add(_skillsController.PlayerSecondarySkill);
+            }
+            else
+            {
+                boardSkills.Add(_skillsController.OpponentPrimarySkill);
+                boardSkills.Add(_skillsController.OpponentSecondarySkill);
+            }
+
+            return boardSkills.First(skill => skill.SkillId == skillId);
+        }
+
         /// <summary>
         /// Picks Mulligan Cards.
         /// </summary>
@@ -1601,22 +1548,6 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await LetsThink();
-        }
-
-        public async Task WaitUntilWeHaveACardAtHand()
-        {
-            await new WaitUntil(() => _battlegroundController.PlayerHandCards.Count >= 1);
-
-            await new WaitForUpdate();
-        }
-
-        /// <summary>
-        /// Waits until AIBrain stops thinking.
-        /// </summary>
-        /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        public async Task WaitUntilAIBrainStops()
-        {
-            await new WaitUntil(() => _gameplayManager.GetController<AIController>().IsBrainWorking == false);
         }
 
         /// <summary>

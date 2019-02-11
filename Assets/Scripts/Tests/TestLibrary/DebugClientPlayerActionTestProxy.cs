@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test
@@ -103,6 +104,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task OverlordSkillUsed(SkillId skillId, InstanceId target)
         {
             await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, target));
+            await new WaitForSeconds(5f);
         }
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)

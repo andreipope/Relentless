@@ -189,17 +189,20 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public void EndDoSkill()
+        public GameplayQueueAction<object> EndDoSkill()
         {
             if (!IsSkillCanUsed() || !IsUsing)
-                return;
+                return null;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
-                 (parameter, completeCallback) =>
-                 {
-                     DoOnUpSkillAction(completeCallback);
-                     IsUsing = false;
-                 }, Enumerators.QueueActionType.OverlordSkillUsage);
+            return _gameplayManager
+                .GetController<ActionsQueueController>()
+                .AddNewActionInToQueue(
+                    (parameter, completeCallback) =>
+                    {
+                        DoOnUpSkillAction(completeCallback);
+                        IsUsing = false;
+                    },
+                    Enumerators.QueueActionType.OverlordSkillUsage);
         }
 
         public void UseSkill(BoardObject target)

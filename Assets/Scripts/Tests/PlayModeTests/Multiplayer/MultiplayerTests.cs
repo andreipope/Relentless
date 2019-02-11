@@ -388,6 +388,72 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator OverlordAbility()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck opponentDeck = new Deck(
+                    0,
+                    1,
+                    "test deck",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.FIREBALL,
+                    Enumerators.OverlordSkill.MASS_RABIES
+                );
+
+                Deck playerDeck = new Deck(
+                    0,
+                    1,
+                    "test deck2",
+                    new List<DeckCardData>
+                    {
+                        new DeckCardData("Slab", 30)
+                    },
+                    Enumerators.OverlordSkill.FIREBALL,
+                    Enumerators.OverlordSkill.MASS_RABIES
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
+                    Player1HasFirstTurn = true
+                };
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent =>
+                       {
+                           Time.timeScale = 0.5f;
+                           opponent.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetCurrentPlayer().InstanceId);
+                       },
+                       player =>
+                       {
+                           player.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetOpponentPlayer().InstanceId);
+                       },
+                       opponent => {},
+                       player => {},
+                   };
+
+                Action validateEndState = () =>
+                {
+
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+            });
+        }
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
