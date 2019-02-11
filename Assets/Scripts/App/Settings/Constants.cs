@@ -135,6 +135,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Space = " ";
 
+        internal const string Empty = "";
+
         internal const string OverlordRegularNeckR = "OverlordRegularNeckR";
 
         internal const string OverlordRegularNeckL = "OverlordRegularNeckL";
@@ -154,6 +156,11 @@ namespace Loom.ZombieBattleground.Common
         internal const float DefaultPositonOfUnitWhenSpawn = 1.9f;
 
         internal const float OverlordTalkingPopupDuration = 2f;
+
+        internal const float OverlordTalkingPopupMinimumShowTime = 2f;
+
+        internal const float DescriptionTooltipMinimumShowTime = 2f;
+
 
         internal const float HandPointerSpeed = 4f;
 

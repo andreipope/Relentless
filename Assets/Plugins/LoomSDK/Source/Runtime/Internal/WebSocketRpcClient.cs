@@ -1,4 +1,4 @@
-#if !UNITY_WEBGL || UNITY_EDITOR
+﻿#if !UNITY_WEBGL || UNITY_EDITOR
 
 using System.Threading.Tasks;
 using System;
@@ -7,7 +7,6 @@ using System.ComponentModel;
 using Loom.Newtonsoft.Json;
 using Loom.WebSocketSharp;
 using UnityEngine;
-using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
 
 namespace Loom.Client.Internal
 {
@@ -33,7 +32,7 @@ namespace Loom.Client.Internal
                 // Just return Disconnected until we know anything better for sure.
                 if (!anyConnectionStateChangesReceived)
                     return RpcConnectionState.Disconnected;
-
+                
                 WebSocketState state = this.webSocket.ReadyState;
                 switch (state)
                 {
@@ -46,7 +45,7 @@ namespace Loom.Client.Internal
                     case WebSocketState.Closed:
                         return RpcConnectionState.Disconnected;
                     default:
-                        throw new InvalidEnumArgumentException(nameof(this.webSocket.ReadyState), (int)state, typeof(WebSocketState));
+                        throw new InvalidEnumArgumentException(nameof(this.webSocket.ReadyState), (int) state, typeof(WebSocketState));
                 }
             }
         }
@@ -88,12 +87,12 @@ namespace Loom.Client.Internal
                 this.webSocket.OnError -= WebSocketOnError;
                 this.webSocket.OnOpen -= WebSocketOnOpen;
                 this.webSocket.OnClose -= WebSocketOnClose;
-                ((IDisposable)this.webSocket).Dispose();
+                ((IDisposable) this.webSocket).Dispose();
             }
 
             this.disposed = true;
         }
-
+        
         public override Task ConnectAsync()
         {
             AssertNotAlreadyConnectedOrConnecting();
@@ -109,7 +108,7 @@ namespace Loom.Client.Internal
             };
             closeHandler = (sender, e) =>
             {
-                tcs.SetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}"));
+                tcs.SetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}", e.Code));
             };
             this.webSocket.OnOpen += openHandler;
             this.webSocket.OnClose += closeHandler;
@@ -117,7 +116,7 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.ConnectAsync();
             }
-            catch (Exception e)
+            catch
             {
                 this.webSocket.OnOpen -= openHandler;
                 this.webSocket.OnClose -= closeHandler;
@@ -142,7 +141,7 @@ namespace Loom.Client.Internal
             {
                 this.webSocket.CloseAsync(CloseStatusCode.Normal, "Client disconnected.");
             }
-            catch (Exception e)
+            catch
             {
                 this.webSocket.OnClose -= handler;
                 throw;
@@ -189,7 +188,7 @@ namespace Loom.Client.Internal
             EventHandler<MessageEventArgs> messageHandler = null;
             closeHandler = (sender, e) =>
             {
-                tcs.TrySetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}"));
+                tcs.TrySetException(new RpcClientException($"WebSocket closed unexpectedly with error {e.Code}: {e.Reason}", e.Code));
             };
 
             messageHandler = (sender, e) =>
@@ -208,10 +207,7 @@ namespace Loom.Client.Internal
                             this.webSocket.OnMessage -= messageHandler;
                             if (partialMsg.Error != null)
                             {
-                                throw new RpcClientException(String.Format(
-                                    "JSON-RPC Error {0} ({1}): {2}",
-                                    partialMsg.Error.Code, partialMsg.Error.Message, partialMsg.Error.Data
-                                ));
+                                HandleJsonRpcResponseError(partialMsg);
                             }
 
                             var fullMsg = JsonConvert.DeserializeObject<JsonRpcResponse<TResult>>(e.Data);
@@ -226,17 +222,16 @@ namespace Loom.Client.Internal
                 catch (Exception ex)
                 {
                     tcs.TrySetException(ex);
-                    throw;
                 }
             };
-
+  
             this.webSocket.OnClose += closeHandler;
             this.webSocket.OnMessage += messageHandler;
             try
             {
                 await SendAsync(method, args, msgId);
             }
-            catch (Exception e)
+            catch
             {
                 this.webSocket.OnClose -= closeHandler;
                 this.webSocket.OnMessage -= messageHandler;
@@ -286,7 +281,7 @@ namespace Loom.Client.Internal
                 }
                 else
                 {
-                    tcs.TrySetException(new RpcClientException("Send error", errorEventArgs.Exception));
+                    tcs.TrySetException(new RpcClientException("Send error", 1, errorEventArgs.Exception));
                 }
             });
             this.webSocket.OnError -= errorHandler;
@@ -305,10 +300,7 @@ namespace Loom.Client.Internal
                     {
                         if (partialMsg.Error != null)
                         {
-                            throw new RpcClientException(String.Format(
-                                "JSON-RPC Error {0} ({1}): {2}",
-                                partialMsg.Error.Code, partialMsg.Error.Message, partialMsg.Error.Data
-                            ));
+                            HandleJsonRpcResponseError(partialMsg);
                         }
                         else
                         {

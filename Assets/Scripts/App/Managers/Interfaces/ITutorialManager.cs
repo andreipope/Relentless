@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         bool UnfinishedTutorial { get; set; }
 
+        //TutorialReward RewardFromLastTutorial { get; }
+
         void StartTutorial();
 
         void SetupTutorialById(int id);
@@ -34,6 +36,8 @@ namespace Loom.ZombieBattleground
 
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
+        void PlayTutorialSound(string sound, float delay = 0f);
+
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
         SpecificTurnInfo GetCurrentTurnInfo();
@@ -43,6 +47,8 @@ namespace Loom.ZombieBattleground
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
 
+        int GetIndexOfCurrentTutorial();
+        List<Data.Card> GetCardForCardPack(int count);
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
 

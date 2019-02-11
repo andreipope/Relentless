@@ -1,4 +1,6 @@
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -52,6 +54,14 @@ namespace Loom.ZombieBattleground
 
         private bool _isDrawing;
 
+        private int _ownerId;
+
+        private bool _canBeClosed = false;
+
+        private float _minimumShowTime;
+
+        private Sequence _showingSequence;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
@@ -61,7 +71,8 @@ namespace Loom.ZombieBattleground
                                                 bool dynamicPosition,
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                                BoardObject boardObjectOwner = null)
+                                                BoardObject boardObjectOwner = null,
+                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -69,10 +80,12 @@ namespace Loom.ZombieBattleground
 
             this.Id = id;
             OwnerType = owner;
+            _ownerId = ownerId;
             _align = align;
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
             _layer = layer;
+            _minimumShowTime = minimumShowTime;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -139,6 +152,8 @@ namespace Loom.ZombieBattleground
             UpdatePosition();
 
             _isDrawing = true;
+
+            StartShowTimer();
         }
 
         public void UpdatePosition()
@@ -159,15 +174,36 @@ namespace Loom.ZombieBattleground
 
                         distance = Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x);
 
-                        if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
-                            (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                        if (tooltip.Align == Enumerators.TooltipAlign.CenterLeft ||
+                            tooltip.Align == Enumerators.TooltipAlign.CenterRight)
                         {
-                            _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+
+                            if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
+                                (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                            {
+                                _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+                                SetBackgroundType(_align);
+                                _currentPosition.x *= -1f;
+                                UpdateTextPosition();
+                                SetPosition();
+                                Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
+                            }
+                        }
+                        else
+                        {
+                            if(_selfObject.transform.position.x > tooltip._selfObject.transform.position.x)
+                            {
+                                _align = Enumerators.TooltipAlign.CenterLeft;
+                                _currentPosition.x = Mathf.Abs(_currentPosition.x);
+                            }
+                            else
+                            {
+                                _align = Enumerators.TooltipAlign.CenterRight;
+                                _currentPosition.x = -Mathf.Abs(_currentPosition.x);
+                            }
                             SetBackgroundType(_align);
-                            _currentPosition.x *= -1f;
                             UpdateTextPosition();
                             SetPosition();
-                            Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                         }
                     }
                 }
@@ -206,16 +242,25 @@ namespace Loom.ZombieBattleground
                 SetPosition();
             }
             _isDrawing = true;
+            UpdatePossibilityForClose();
         }
 
         public void Hide()
         {
-            if (!_isDrawing)
+            if (!_isDrawing || !_canBeClosed)
                 return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DescriptionTooltipClosed);
 
             _selfObject?.SetActive(false);
 
             _isDrawing = false;
+
+            if(_showingSequence != null)
+            {
+                _showingSequence.Kill();
+                _showingSequence = null;
+            }
         }
 
         public void Dispose()
@@ -240,8 +285,9 @@ namespace Loom.ZombieBattleground
                         {
                             _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
                         }
-                        else
+                        else if(_ownerId != 0)
                         {
+                            UpdatePossibilityForClose();
                             Hide();
                         }
                         break;
@@ -249,6 +295,24 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+        }
+
+        private void StartShowTimer()
+        {
+            _canBeClosed = false;
+            if (_minimumShowTime > 0f)
+            {
+                _showingSequence = InternalTools.DoActionDelayed(UpdatePossibilityForClose, _minimumShowTime);
+            }
+            else
+            {
+                UpdatePossibilityForClose();
+            }
+        }
+
+        private void UpdatePossibilityForClose()
+        {
+            _canBeClosed = true;
         }
 
         private void UpdateTextPosition()

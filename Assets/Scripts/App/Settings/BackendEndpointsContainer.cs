@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain-staging.dappchains.com:9999/queryws",
                         "ws://gamechain-staging.dappchains.com:46657/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v4",
+                        "v6",
                         false,
                         false,
                         false

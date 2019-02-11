@@ -166,6 +166,18 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        if ((IsPrimary && !_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.SkillType == Enumerators.SkillType.PRIMARY)) ||
+                            (!IsPrimary && !_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.SkillType == Enumerators.SkillType.SECONDARY)))
+                        {
+                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseWrongBattleframe);
+                            return;
+                        }
+
+                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
+                    }
+
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
@@ -178,11 +190,6 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow.IgnoreHeavy = true;
 
                     FightTargetingArrow.Begin(SelfObject.transform.position);
-
-                    if(_tutorialManager.IsTutorial)
-                    {
-                        _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerOverlordAbility);
-                    }
                 }
             }
 
@@ -391,8 +398,36 @@ namespace Loom.ZombieBattleground
                 {
                     if (FightTargetingArrow != null)
                     {
-                        _skillsController.DoSkillAction(this, completeCallback);
                         _playerController.IsCardSelected = false;
+
+                        if (_tutorialManager.IsTutorial)
+                        {
+                            if (FightTargetingArrow.SelectedPlayer != null)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info =>
+                                    (info.TargetType == Enumerators.SkillTargetType.PLAYER && FightTargetingArrow.SelectedPlayer.IsLocalPlayer) ||
+                                    (info.TargetType == Enumerators.SkillTargetType.OPPONENT && !FightTargetingArrow.SelectedPlayer.IsLocalPlayer)))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    CancelTargetingArrows();
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
+                            }
+                            else if (FightTargetingArrow.SelectedCard != null)
+                            {
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.TargetTutorialObjectId == FightTargetingArrow.SelectedCard.Model.TutorialObjectId &&
+                                    (info.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD || info.TargetType == Enumerators.SkillTargetType.PLAYER_CARD)))
+                                {
+                                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
+                                    CancelTargetingArrows();
+                                    completeCallback?.Invoke();
+                                    return;
+                                }
+                            }
+                        }
+
+                        _skillsController.DoSkillAction(this, completeCallback);
                     }
                     else
                     {
@@ -409,7 +444,7 @@ namespace Loom.ZombieBattleground
         private bool IsSkillCanUsed()
         {
             if (!IsSkillReady || _gameplayManager.CurrentTurnPlayer != OwnerPlayer || _usedInThisTurn ||
-                (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().PlayerOverlordAbilityShouldBeUnlocked))
+                (_tutorialManager.IsTutorial && !_tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn.Contains(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed)))
             {
                 return false;
             }

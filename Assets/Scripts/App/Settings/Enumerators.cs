@@ -807,6 +807,7 @@ namespace Loom.ZombieBattleground.Common
 
             TapOnScreen,
             AvatarTooltipClosed,
+            DescriptionTooltipClosed,
 
             OverlordSayPopupHided,
 
@@ -821,6 +822,9 @@ namespace Loom.ZombieBattleground.Common
             ScreenChanged,
             PopupClosed,
 
+            CardPackOpened,
+            CardPackCollected,
+
             CardDragged,
             CardRemoved,
             CardAdded,
@@ -829,6 +833,7 @@ namespace Loom.ZombieBattleground.Common
             HordeFilled,
 
             IncorrectButtonTapped,
+            TriedToPressPlayButton,
 
             SceneChanged,
 
