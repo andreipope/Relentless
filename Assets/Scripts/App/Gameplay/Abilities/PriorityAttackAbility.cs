@@ -25,7 +25,10 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            AbilityUnitOwner.AttackAsFirst = true;
+            if (!PvPManager.UseBackendGameLogic)
+            {
+                AbilityUnitOwner.AttackAsFirst = true;
+            }
         }
     }
 }
