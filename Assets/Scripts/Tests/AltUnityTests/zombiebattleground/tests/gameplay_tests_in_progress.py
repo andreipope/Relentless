@@ -25,20 +25,12 @@ class CZBPlayTests(CZBTests):
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
         self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn')
         time.sleep(5)
-        # self.altdriver.wait_for_element('MainPanel/Panel/EnableCheats').mobile_tap(500)
         self.altdriver.wait_for_element("SkipTutorial").tap()
-        # self.driver.swipe(int(skipTutorialButton.x),int(skipTutorialButton.mobileY)+100,int(skipTutorialButton.x),int(skipTutorialButton.mobileY),4000)
-        # self.driver.tap([(int(skipTutorialButton.x)-50,int(skipTutorialButton.mobileY)+50)],1000)
+       
         time.sleep(1)
         self.altdriver.find_element('Root',enabled=True).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
 
-        self.altdriver.wait_for_element('Button_Play').mobile_tap()
-        self.altdriver.wait_for_element('Button_SoloMode').mobile_tap()
-        self.altdriver.wait_for_element('Button_Battle').mobile_tap()
-        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        time.sleep(2)
-        self.altdriver.wait_for_element('GameplayPage(Clone)/Button_Back').tap()
-        self.altdriver.wait_for_element('Button_Yes').mobile_tap()
+        
         
        
     def test_start_match_versus_ai(self):
@@ -59,8 +51,8 @@ class CZBPlayTests(CZBTests):
         logs.append(str(datetime.datetime.now())+' Start new game')
         self.altdriver.wait_for_element('Button_Battle').mobile_tap()
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        self.mulligan_cards()
-        # self.altdriver.wait_for_element('Button_Keep').mobile_tap()
+        # self.mulligan_cards()
+        self.altdriver.wait_for_element('Button_Keep').mobile_tap()
 
         while self.game_not_ended():
             self.your_turn()
@@ -78,7 +70,7 @@ class CZBPlayTests(CZBTests):
             'EndTurnButton/_1_btn_endturn/EndTurnGlowEffect', timeout=60)
         self.check_player_goo_bottle_to_be_refilled()
         time.sleep(3)
-        self.choose_what_card_to_play()
+        # self.choose_what_card_to_play()
         self.altdriver.wait_for_element(
             'EndTurnButton/_1_btn_endturn').mobile_tap()
         logs.append(str(datetime.datetime.now())+' End turn.')

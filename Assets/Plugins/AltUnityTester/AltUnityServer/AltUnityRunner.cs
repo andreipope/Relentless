@@ -564,22 +564,26 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
         if( temp != null )
             DestroyImmediate( temp );
     }
-}
+    }
+    
     private GameObject FindObjectInScene(string objectName, bool enabled)
     {
         string[] pathList = objectName.Split('/');
         List<int> optionList = new List<int>();
         GameObject foundGameObject = null;
-        foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
+        for (int i = 0; i < SceneManager.sceneCount; i++)
         {
-            foundGameObject = CheckPath(obj, pathList, 0, enabled);
-            if (foundGameObject != null)
-                return foundGameObject;
-            else
+            foreach (GameObject obj in SceneManager.GetSceneAt(i).GetRootGameObjects())
             {
-                foundGameObject = CheckChildren(obj, pathList, enabled);
+                foundGameObject = CheckPath(obj, pathList, 0, enabled);
                 if (foundGameObject != null)
                     return foundGameObject;
+                else
+                {
+                    foundGameObject = CheckChildren(obj, pathList, enabled);
+                    if (foundGameObject != null)
+                        return foundGameObject;
+                }
             }
         }
         foreach (var destroyOnLoadObject in GetDontDestroyOnLoadObjects())
@@ -686,14 +690,17 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
         string[] pathList = objectName.Split('/');
         List<int> optionList = new List<int>();
         GameObject foundGameObject = null;
-        foreach (GameObject obj in SceneManager.GetActiveScene().GetRootGameObjects())
+        for (int i = 0; i < SceneManager.sceneCount; i++)
         {
-            List<GameObject> listGameObjects = CheckPathForMultipleElements(obj.gameObject, pathList, 0, enabled);
-            if (listGameObjects != null)
-                objectsFound.AddRange(listGameObjects);
-            listGameObjects = CheckChildrenForMultipleElements(obj.gameObject, pathList, enabled);
-            if (listGameObjects != null)
-                objectsFound.AddRange(listGameObjects);
+            foreach (GameObject obj in SceneManager.GetSceneAt(i).GetRootGameObjects())
+            {
+                List<GameObject> listGameObjects = CheckPathForMultipleElements(obj.gameObject, pathList, 0, enabled);
+                if (listGameObjects != null)
+                    objectsFound.AddRange(listGameObjects);
+                listGameObjects = CheckChildrenForMultipleElements(obj.gameObject, pathList, enabled);
+                if (listGameObjects != null)
+                    objectsFound.AddRange(listGameObjects);
+            }
         }
         foreach (var destroyOnLoadObject in GetDontDestroyOnLoadObjects())
         {
