@@ -28,7 +28,10 @@ namespace Loom.ZombieBattleground.Test
 
         private int _currentTurn;
         private bool _aborted;
-        private bool _completed;
+        private Exception _abortException;
+
+        public bool Completed { get; private set; }
+
         private QueueProxyPlayerActionTestProxy _lastQueueProxy;
 
         public MatchScenarioPlayer(TestHelper testHelper, IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns)
@@ -61,16 +64,21 @@ namespace Loom.ZombieBattleground.Test
 #endif
 
             await _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
-            _completed = true;
+            Completed = true;
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 3 - Finished");
 #endif
+
+            if (_abortException != null)
+            {
+                throw _abortException;
+            }
         }
 
         public void AbortNextMoves()
         {
-            _aborted = true;
+            Completed = true;
         }
 
         public void Dispose()
@@ -80,7 +88,7 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task HandleOpponentClientTurn(bool isFirstTurn)
         {
-            if (_completed)
+            if (Completed)
                 return;
 
             try
@@ -100,6 +108,9 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
+            if (Completed)
+                return;
+
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log($"[ScenarioPlayer]: PlayNextOpponentClientTurn, current turn {_currentTurn}");
 #endif
@@ -141,11 +152,11 @@ namespace Loom.ZombieBattleground.Test
 
             if (!isOpponent && _currentTurn >= _turns.Count)
             {
-                _completed = true;
+                Completed = true;
                 return false;
             }
 
-            if (_aborted)
+            if (Completed)
                 return false;
 
             _lastQueueProxy = queueProxy;
@@ -155,7 +166,7 @@ namespace Loom.ZombieBattleground.Test
                 // If the last turn happens to be by the opponent, local player task runner will get stuck waiting for its turn.
                 // So just end the opponent turn to hand control to the local player runner.
                 turnAction = proxy => {};
-                _completed = true;
+                Completed = true;
             }
             else
             {
@@ -163,7 +174,17 @@ namespace Loom.ZombieBattleground.Test
             }
 
             beforeTurnActionCallback?.Invoke(queueProxy);
-            turnAction(queueProxy);
+            try
+            {
+                turnAction(queueProxy);
+            }
+            catch (Exception e)
+            {
+                Completed = true;
+                _abortException = e;
+                _opponentProxy.LeaveMatch();
+                throw;
+            }
 
             // EndTurn is added as last action in turn automatically
             queueProxy.EndTurn();
@@ -194,7 +215,7 @@ namespace Loom.ZombieBattleground.Test
             // Switch to main thread
             await new WaitForUpdate();
 
-            if (_completed)
+            if (Completed)
                 return;
 
             try

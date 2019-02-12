@@ -1370,19 +1370,24 @@ namespace Loom.ZombieBattleground.Test
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
-            skill.FightTargetingArrow.SetTarget(target);
-            await new WaitForSeconds(0.5f);
 
-            switch (target)
+            if (target != null)
             {
-                case Player player:
-                    skill.FightTargetingArrow.OnPlayerSelected(player);
-                    break;
-                case BoardUnitModel boardUnitModel:
-                    skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
+                skill.FightTargetingArrow.SetTarget(target);
+                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+
+                switch (target)
+                {
+                    case Player player:
+                        skill.FightTargetingArrow.OnPlayerSelected(player);
+                        break;
+                    case BoardUnitModel boardUnitModel:
+                        skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                }
             }
 
             GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();

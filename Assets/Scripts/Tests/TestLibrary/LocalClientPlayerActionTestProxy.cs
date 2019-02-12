@@ -76,12 +76,11 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public async Task OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public async Task OverlordSkillUsed(SkillId skillId, InstanceId? target)
         {
-            BoardObject boardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(target);
+            BoardObject targetBoardObject = target != null ? _testHelper.BattlegroundController.GetBoardObjectByInstanceId(target.Value) : null;
             BoardSkill boardSkill = _testHelper.GetBoardSkill(_testHelper.GetCurrentPlayer(), skillId);
-            await _testHelper.DoBoardSkill(boardSkill, boardObject);
-            //await new WaitForSeconds(1);
+            await _testHelper.DoBoardSkill(boardSkill, targetBoardObject);
         }
 
         public Task CardAttack(InstanceId attacker, InstanceId target)
