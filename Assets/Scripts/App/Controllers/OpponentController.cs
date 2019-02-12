@@ -148,6 +148,7 @@ namespace Loom.ZombieBattleground
             if (!_pvpManager.UseBackendGameLogic)
                 return;
 
+            Debug.LogError("Use ability = " + outcome.OutcomeCase);
             switch (outcome.OutcomeCase)
             {
                 case PlayerActionOutcome.OutcomeOneofCase.None:
@@ -168,6 +169,7 @@ namespace Loom.ZombieBattleground
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(priorityAttackOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedHp = priorityAttackOutcome.NewDefense;
+                    boardUnit.CurrentHp = priorityAttackOutcome.NewDefense;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
