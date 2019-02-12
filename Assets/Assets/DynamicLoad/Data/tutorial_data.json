@@ -954,7 +954,7 @@
                         {
                             "AppearDelay": 2.5,
                             "StartPosition": {
-                                "X": 8,
+                                "X": 2,
                                 "Y": -3,
                                 "Z": 0
                             },
@@ -1593,7 +1593,7 @@
                 {
                     "ActionToEndThisStep": "EndTurn",
                     "CanEndTurn": true,
-                    "CanInteractWithGameplay": true,
+                    "CanInteractWithGameplay": true,                    
                     "OverlordSayTooltips": [
                         {
                             "AppearDelay": 10.0,
@@ -1795,6 +1795,44 @@
         "Id": 3,
         "Name": "Deck Building 2",
         "TutorialContent": {
+			 "SpecificHordeInfo": {
+        "MainSet": "TOXIC",
+        "MaximumCardsCount": 15,
+        "CardsForArmy": [
+          {
+            "Amount": 2,
+            "CardName": "Gloop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zky"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Harpoon"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Rubble"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zwoop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Bane"
+          },
+          {
+            "Amount": 1,
+            "CardName": "GooZilla"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Azzazzin"
+          }
+        ]
+      },
             "ActionActivityHandlers": [
                 {
                     "HasSpecificConnection": true,
@@ -1809,44 +1847,6 @@
                 }
             ],
             "HasBlockedInteractivityInGameScreens": true,
-            "SpecificHordeInfo": {
-                "CardsForArmy": [
-                    {
-                        "Amount": 2,
-                        "CardName": "Gloop"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Zky"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Harpoon"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Rubble"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Zwoop"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Bane"
-                    },
-                    {
-                        "Amount": 1,
-                        "CardName": "GooZilla"
-                    },
-                    {
-                        "Amount": 2,
-                        "CardName": "Azzazzin"
-                    }
-                ],
-                "MainSet": "TOXIC",
-                "MaximumCardsCount": 15
-            },
             "TutorialDescriptionTooltips": [
                 {
                     "Description": "Don't you want to open your new cards first?",
@@ -2124,16 +2124,12 @@
                 {
                     "PlayCardsSequence": [
                         {
-                            "TutorialObjectId": 51
-                        },
-                        {
                             "TutorialObjectId": 52
                         }
                     ],
                     "RequiredActivitiesToDoneDuringTurn": [
-                        "EnemyOverlordCardPlayed",
-                        "BattleframeAttacked",
                         "EnemyOverlordCardPlayed"
+                        
                     ],
                     "TurnIndex": 1,
                     "UseBattleframesSequence": [
