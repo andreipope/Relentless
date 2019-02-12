@@ -76,8 +76,6 @@ namespace Loom.ZombieBattleground
 
         private int _selectedPackTypeIndex;
         
-        private bool _dataLoading = false;
-        
         private enum STATE
         {
             NONE,
@@ -129,19 +127,8 @@ namespace Loom.ZombieBattleground
             _packBalanceAmounts = new int[packTypes.Length];
         }
         
-        public async void  Update()
-        {
-            if (!_dataLoading)
-            {
-                if (_backendDataControlMediator.UserDataModel != null)
-                    if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
-                    {
-                        _dataLoading = true;
-                        await Task.Delay(TimeSpan.FromSeconds(3));
-                        RetrievePackBalanceAmount();                        
-                    }
-            }
-        
+        public void  Update()
+        {        
             if (_selfPage == null || !_selfPage.activeInHierarchy)
                 return;
             
@@ -246,8 +233,11 @@ namespace Loom.ZombieBattleground
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
                 _isCollectedTutorialCards = false;
+            }else
+            {
+                RetrievePackBalanceAmount();
             }
-            
+
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
