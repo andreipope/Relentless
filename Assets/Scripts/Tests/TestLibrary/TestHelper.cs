@@ -1421,7 +1421,7 @@ namespace Loom.ZombieBattleground.Test
                     .BoardCards
                     .FirstOrDefault(card => card.Model.InstanceId == instanceId);
 
-            if (boardUnitView == null)
+            if (boardUnitView == null || boardUnitView is default(BoardUnitView))
                 throw new Exception($"Card {instanceId} not found on board");
 
             return boardUnitView;
