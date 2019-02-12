@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Test.MultiplayerTests;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
@@ -17,7 +18,14 @@ namespace Loom.ZombieBattleground.Test
         {
             List<Type> cardTestFixtureTypes = new List<Type>
             {
-                typeof(MultiplayerTests)
+                typeof(GeneralMultiplayerTests),
+                typeof(WaterCardsTests),
+                typeof(AirCardsTests),
+                typeof(EarthCardsTests),
+                typeof(FireCardsTests),
+                typeof(ToxicCardsTests),
+                typeof(HiddenCardsTests),
+                typeof(LifeCardsTests)
             };
 
             List<string> testNames =
