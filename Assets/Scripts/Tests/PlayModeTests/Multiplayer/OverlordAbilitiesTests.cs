@@ -8,7 +8,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Loom.ZombieBattleground.Test
+namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
     public class OverlordAbilitiesTests : BaseIntegrationTest
     {
@@ -138,7 +138,6 @@ namespace Loom.ZombieBattleground.Test
                        player =>
                        {
                            player.OverlordSkillUsed(new SkillId(1), null);
-                           Time.timeScale = 0.5f;
                        },
                        opponent =>
                        {
