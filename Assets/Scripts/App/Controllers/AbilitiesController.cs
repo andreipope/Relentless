@@ -437,7 +437,7 @@ namespace Loom.ZombieBattleground
 
                        if (canUseAbility)
                        {
-                           AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
+                           AbilityData ability = libraryCard.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
                            if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
                                !HasSpecialUnitOnBoard(workingCard, ability) ||
@@ -632,7 +632,7 @@ namespace Loom.ZombieBattleground
                        }
                    };
 
-                   AbilityData choosableAbility = libraryCard.Abilities.Find(x => x.HasChoosableAbilities());
+                   AbilityData choosableAbility = libraryCard.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
                    if (choosableAbility != null)
                    {
@@ -730,9 +730,9 @@ namespace Loom.ZombieBattleground
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
             AbilityData abilityData;
 
-            var subAbilitiesData = card.LibraryCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+            AbilityData subAbilitiesData = card.LibraryCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
 
-            if (subAbilitiesData != null && !(subAbilitiesData is default(AbilityData)))
+            if (subAbilitiesData != null)
             {
                 abilityData = subAbilitiesData.ChoosableAbilities.Find(x => x.AbilityData.AbilityType == ability).AbilityData;
             }
@@ -740,12 +740,12 @@ namespace Loom.ZombieBattleground
             {
                 if (_PvPToggleFirstLastAbility)
                 {
-                    abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
+                    abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
                     _PvPToggleFirstLastAbility = false;
                 }
                 else
                 {
-                    abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
+                    abilityData = card.LibraryCard.Abilities.Last(x => x.AbilityType == ability);
                     _PvPToggleFirstLastAbility = true;
                 }
             }

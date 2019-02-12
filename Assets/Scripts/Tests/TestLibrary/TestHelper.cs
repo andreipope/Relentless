@@ -94,6 +94,8 @@ namespace Loom.ZombieBattleground.Test
 
         public BackendDataControlMediator BackendDataControlMediator => _backendDataControlMediator;
 
+        public AbilitiesController AbilitiesController => _abilitiesController;
+
         GameplayQueueAction<object> _callAbilityAction;
 
         private Player _currentPlayer, _opponentPlayer;
@@ -135,6 +137,8 @@ namespace Loom.ZombieBattleground.Test
 
         public int SelectedHordeIndex { get; private set; }
 
+        public UserDataModel TestUserDataModel { get; set; }
+
         public static TestHelper Instance => _instance ?? (_instance = new TestHelper());
 
         /// <summary>
@@ -152,6 +156,16 @@ namespace Loom.ZombieBattleground.Test
             return TestContext.CurrentContext.Test.Name;
         }
 
+        public string GetTestUserName()
+        {
+            return "Test_" + GetTestName() + "_" + Guid.NewGuid();
+        }
+
+        public string GetOpponentTestUserName()
+        {
+            return "Test" + GetTestName() + "_Opponent_" + Guid.NewGuid();
+        }
+
         /// <summary>
         /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
         /// </summary>
@@ -165,19 +179,26 @@ namespace Loom.ZombieBattleground.Test
 
             Time.timeScale = TestTimeScale;
 
+            TestUserDataModel = new UserDataModel(GetTestUserName(), CryptoUtils.GeneratePrivateKey()) {
+                IsRegistered = true
+            };
+
             if (!Initialized)
             {
                 _testScene = SceneManager.GetActiveScene();
                 _testerGameObject = _testScene.GetRootGameObjects()[0];
                 Object.DontDestroyOnLoad(_testerGameObject);
 
+                GameClient.Instance.ServicesInitialized += async () => {
+                    SetGameplayManagers();
+                    await HandleLogin();
+                };
+
                 await SceneManager.LoadSceneAsync("APP_INIT", LoadSceneMode.Single);
 
                 await AddVirtualInputModule();
 
                 await SetCanvases();
-
-                SetGameplayManagers();
 
                 #region Login
 
@@ -203,6 +224,8 @@ namespace Loom.ZombieBattleground.Test
                 {
                     await GoOnePageHigher();
                 }
+
+                await HandleLogin();
             }
         }
 
@@ -214,7 +237,7 @@ namespace Loom.ZombieBattleground.Test
             }
             else
             {
-                await TearDown_GoBackToMainScreen();
+                await TearDown();
             }
 
             await new WaitForUpdate();
@@ -277,7 +300,16 @@ namespace Loom.ZombieBattleground.Test
         /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
         /// </summary>
         /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
-        public async Task TearDown_GoBackToMainScreen()
+        public async Task TearDown()
+        {
+            await GoBackToMainScreen();
+        }
+
+        /// <summary>
+        /// TearDown method to be used to go back to MainMenuPage, so that other tests can take it from there and go further.
+        /// </summary>
+        /// <remarks>Generally is used for all tests in the group, except for the last one (where actual cleanup happens).</remarks>
+        public async Task GoBackToMainScreen()
         {
             while (_lastCheckedAppState != Enumerators.AppState.MAIN_MENU)
             {
@@ -899,13 +931,14 @@ namespace Loom.ZombieBattleground.Test
         /// Logs in into the game using one of the keys. Picks a correct one depending on whether it is an passive or active tester.
         /// </summary>
         /// <remarks>The login.</remarks>
-        public async Task HandleLogin()
-        {
-            BackendDataControlMediator.UserDataModel =
-                new UserDataModel("Test_" + GetTestName(), CryptoUtils.GeneratePrivateKey())
-                {
-                    IsRegistered = true
-                };
+        public async Task HandleLogin() {
+            if (BackendDataControlMediator.UserDataModel != null &&
+                BackendDataControlMediator.UserDataModel == TestUserDataModel)
+                return;
+
+            BackendDataControlMediator.UserDataModel = TestUserDataModel;
+
+            await BackendDataControlMediator.LoginAndLoadData();
 
             WaitStart(1000);
             await new WaitUntil(() => CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp());
@@ -1269,7 +1302,6 @@ namespace Loom.ZombieBattleground.Test
                             {
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Character,
                                     attackedUnit.Card.InstanceId);
 
                                 /* if (target == SelectedPlayer)
@@ -1318,8 +1350,7 @@ namespace Loom.ZombieBattleground.Test
 
                         unit.OwnerPlayer.ThrowCardAttacked(
                             unit.Card,
-                            Enumerators.AffectObjectType.Player,
-                            null);
+                            _gameplayManager.CurrentPlayer.InstanceId);
 
                         await LetsThink();
                     }
@@ -1342,8 +1373,7 @@ namespace Loom.ZombieBattleground.Test
 
                             unit.OwnerPlayer.ThrowCardAttacked(
                                 unit.Card,
-                                Enumerators.AffectObjectType.Player,
-                                null);
+                                _gameplayManager.CurrentPlayer.InstanceId);
 
                             await LetsThink();
                         }
@@ -1359,7 +1389,6 @@ namespace Loom.ZombieBattleground.Test
 
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Character,
                                     attackedCreature.Card.InstanceId);
 
                                 await LetsThink();
@@ -1372,8 +1401,7 @@ namespace Loom.ZombieBattleground.Test
 
                                 unit.OwnerPlayer.ThrowCardAttacked(
                                     unit.Card,
-                                    Enumerators.AffectObjectType.Player,
-                                    null);
+                                    _gameplayManager.CurrentPlayer.InstanceId);
 
                                 await LetsThink();
                             }
@@ -1446,7 +1474,7 @@ namespace Loom.ZombieBattleground.Test
                 if (cards[i].LibraryCard.Abilities != null)
                 {
                     AbilityData attackOverlordAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
                         if (attackOverlordAbility.Value * 2 >= _testBroker.GetPlayer(_player).Defense)
@@ -1454,7 +1482,7 @@ namespace Loom.ZombieBattleground.Test
                     }
 
                     overflowGooAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
                     if (overflowGooAbility != null)
                     {
                         if (_testBroker.GetPlayer(_player).BoardCards.Count + boardCount < _testBroker.GetPlayer(_player).MaxCardsInPlay - 1)
@@ -1507,12 +1535,12 @@ namespace Loom.ZombieBattleground.Test
                 _normalUnitCardInHand.Clear();
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalUnitCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
 
                 _normalSpellCardInHand.Clear();
                 _normalSpellCardInHand.AddRange(GetSpellCardsInHand());
                 _normalSpellCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
             }
 
             await LetsThink();
@@ -1610,7 +1638,8 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
+                        Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -2692,7 +2721,7 @@ namespace Loom.ZombieBattleground.Test
 
             await HandleConnectivityIssues();
 
-            await new WaitUntil(() => _playerController.IsActive);
+            await new WaitUntil(() => IsGameEnded() || _playerController.IsActive);
         }
 
         /// <summary>
@@ -3583,17 +3612,29 @@ namespace Loom.ZombieBattleground.Test
         /// <returns></returns>
         public async Task CreateAndConnectOpponentDebugClient()
         {
+            if (_opponentDebugClient != null)
+            {
+                await _opponentDebugClient.Reset();
+                _opponentDebugClient = null;
+            }
+
+            if (_opponentDebugClientOwner != null)
+            {
+                Object.Destroy(_opponentDebugClientOwner);
+                _opponentDebugClientOwner = null;
+            }
+
             GameObject owner = new GameObject("_OpponentDebugClient");
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
 
-            MultiplayerDebugClient client = new MultiplayerDebugClient("Test_" + GetTestName());
+            MultiplayerDebugClient client = new MultiplayerDebugClient(GetOpponentTestUserName());
 
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new DefaultContractCallProxy(contract));
+                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, false));
             await client.Start(
                 contractCallProxyFactory,
                 onClientCreatedCallback: chainClient =>
@@ -3601,7 +3642,7 @@ namespace Loom.ZombieBattleground.Test
                     chainClient.Configuration.StaticCallTimeout = 10000;
                     chainClient.Configuration.CallTimeout = 10000;
                 },
-                enabledLogs: true);
+                enabledLogs: false);
 
             onBehaviourHandler.Updating += async go => await client.Update();
         }

@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
         ///     Initializes the services.
         /// </summary>
         /// <exception cref="Exception">Service don't have Init() method!</exception>
-        public void InitServices()
+        public virtual void InitServices()
         {
             Stopwatch stopwatch = new Stopwatch();
             StringBuilder logMessageBuilder = new StringBuilder(1024);

@@ -36,11 +36,16 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
 
         private const int _cardsPerPack = 5;
+
+        private const int _maxRequestRetryAttempt = 5;
 
         private bool _eventInitialized;
         
@@ -114,7 +119,7 @@ namespace Loom.ZombieBattleground
             );
 
             int amount;
-            int count = 0;
+            int count = 0;            
             while (true)
             {
                 try
@@ -128,6 +133,10 @@ namespace Loom.ZombieBattleground
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
+                if(count > _maxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallPackBalanceContract)} with packTypeId {packTypeId}  failed after {count} attempts");
+                }
                 Debug.Log($"Retry CallPackBalance: {count}");
             }
             return amount;            
@@ -191,6 +200,10 @@ namespace Loom.ZombieBattleground
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
+                if(count > _maxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallOpenPack)} with packTypeId {packTypeId}  failed after {count} attempts");
+                }
                 Debug.Log($"Retry CallOpenPack: {count}");
             }
             return resultList;                                   
@@ -228,6 +241,8 @@ namespace Loom.ZombieBattleground
     
             return new EvmContract(client, contractAddr, callerAddr, abi);
         }
+
+        private const string BalanceOfMethod = "balanceOf";
         
         public async Task<int> CallBalanceContract(EvmContract contract)
         {
@@ -236,16 +251,18 @@ namespace Loom.ZombieBattleground
                 throw new Exception("Contract not signed in!");
             }
             
-            Debug.Log("Calling smart contract [balanceOf]");
+            Debug.Log($"Calling smart contract [{BalanceOfMethod}]");
             int result = await contract.StaticCallSimpleTypeOutputAsync<int>(
-                "balanceOf",
+                BalanceOfMethod,
                  Address.FromPublicKey(PublicKey).ToString()
             );        
             Debug.Log("<color=green>" + "balanceOf RESULT: " + result + "</color>");
         
-            Debug.Log("Smart contract method [balanceOf] finished executing.");
+            Debug.Log($"Smart contract method [{BalanceOfMethod}] finished executing.");
             return result;
         }
+        
+        private const string ApproveMethod = "approve";
         
         public async Task CallApproveContract(EvmContract contract)
         {
@@ -257,10 +274,12 @@ namespace Loom.ZombieBattleground
     
             int amountToApprove = 1;
         
-            await contract.CallAsync("approve", PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
+            await contract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
         
-            Debug.Log("Smart contract method [approve] finished executing.");
+            Debug.Log($"Smart contract method [{ApproveMethod}] finished executing.");
         }
+        
+        private const string OpenPackMethod = "openBoosterPack";
         
         public async Task CallOpenPackContract(EvmContract contract, int packTypeId)
         {
@@ -268,11 +287,11 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [openBoosterPack] with packId: {packTypeId}");
+            Debug.Log( $"Calling smart contract [{OpenPackMethod}] with packId: {packTypeId}");
         
-            await contract.CallAsync("openBoosterPack", packTypeId);
+            await contract.CallAsync(OpenPackMethod, packTypeId);
         
-            Debug.Log($"Smart contract method [openBoosterPack] with packId: {packTypeId} finished executing.");
+            Debug.Log($"Smart contract method [{OpenPackMethod}] with packId: {packTypeId} finished executing.");
         }
         
         [Event("GeneratedCard")]

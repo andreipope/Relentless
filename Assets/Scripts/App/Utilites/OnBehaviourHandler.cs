@@ -35,7 +35,6 @@ namespace Loom.ZombieBattleground
 
         public event Action<GameObject> OnParticleCollisionEvent;
 
-        public static GameObject SelectedGameObject;
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -64,8 +63,7 @@ namespace Loom.ZombieBattleground
 
         private void Update()
         {
-            if(SelectedGameObject == gameObject)
-               Updating?.Invoke(gameObject); 
+            Updating?.Invoke(gameObject);
         }
 
         private void OnMouseUp()
@@ -75,7 +73,6 @@ namespace Loom.ZombieBattleground
 
         private void OnMouseDown()
         {
-            SelectedGameObject = gameObject;
             MouseDownTriggered?.Invoke(gameObject);
         }
 

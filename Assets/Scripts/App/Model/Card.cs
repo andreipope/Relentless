@@ -62,6 +62,14 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("hidden_set")]
         public Enumerators.SetType HiddenCardSetType { get; set; }
 
+        IList<AbilityData> IReadOnlyCard.InitialAbilities => InitialAbilities;
+
+        IList<AbilityData> IReadOnlyCard.Abilities => Abilities;
+
+        IList<AbilityData> ICard.Abilities { get; }
+
+        IList<AbilityData> ICard.InitialAbilities { get; }
+
         [JsonConstructor]
         public Card(
             long mouldId,
@@ -136,14 +144,14 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(CardSetType)}: {CardSetType})";
+            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(CardSetType)}: {CardSetType})";
         }
 
-        public void ForceUpdateAbilities(List<AbilityData> abilities)
+        public void ForceUpdateAbilities(IList<AbilityData> abilities)
         {
             if (abilities != null)
             {
-                Abilities = abilities;
+                Abilities = abilities.ToList();
                 CloneAbilitiesToInitialAbilities();
             }
         }

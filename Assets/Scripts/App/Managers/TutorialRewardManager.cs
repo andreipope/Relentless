@@ -35,7 +35,10 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
         
@@ -64,41 +67,22 @@ namespace Loom.ZombieBattleground
         
         public async Task CallRewardTutorialFlow()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>("CallRewardTutorialComplete...");
+            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallRewardTutorialComplete)}");
             
             RewardTutorialCompletedResponse response = null;
             try
             {
                 response = await CallRewardTutorialComplete();
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallTutorialRewardContract)}");
+                await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
-                Debug.Log($"CallRewardTutorialComplete failed {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"CallRewardTutorialComplete failed failed\n{e.Message}\nPlease try again");
+                Debug.Log($"{nameof(CallRewardTutorialFlow)} failed {e.Message}");
+                _uiManager.DrawPopup<WarningPopup>($"{nameof(CallRewardTutorialFlow)} failed \n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupConfirmationReceived;
-                _uiManager.HidePopup<LoadingFiatPopup>();
+                popup.ConfirmationReceived += WarningPopupConfirmationReceived;                
                 return;
-            }
-            if (response != null)
-            {
-                try
-                {
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                    _uiManager.DrawPopup<LoadingFiatPopup>("CallTutorialRewardContract...");
-                    await CallTutorialRewardContract(response);
-                }
-                catch(Exception e)
-                {
-                    Debug.Log($"CallTutorialRewardContract failed {e.Message}");
-                    if (!e.Message.Contains("reverted"))
-                    {                       
-                        _uiManager.DrawPopup<WarningPopup>($"CallTutorialRewardContract failed failed\n{e.Message}\nPlease try again");
-                        WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                        popup.ConfirmationReceived += WarningPopupConfirmationReceived;
-                        _uiManager.HidePopup<LoadingFiatPopup>();
-                        return;
-                    }
-                }
             }            
                
             _uiManager.HidePopup<LoadingFiatPopup>();
@@ -145,13 +129,15 @@ namespace Loom.ZombieBattleground
         private ContractRequest GenerateFakeContractRequest()
         {
             ContractRequest contractParams = new ContractRequest();
-            contractParams.r = HexStringToByte("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269".Substring(2));
-            contractParams.s = HexStringToByte("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31".Substring(2));
+            contractParams.r = CryptoUtils.HexStringToBytes("0x6408eb878d2c1617028dc9590d622d0bdfdb353255091c6c0c6325049b068269");
+            contractParams.s = CryptoUtils.HexStringToBytes("0x72d04e6d8831712a883d2895784eadd42d9722f96f9f7eca3a2ab1f68def4f31");
             contractParams.v = 28;
-            contractParams.hash = HexStringToByte("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b".Substring(2));
+            contractParams.hash = CryptoUtils.HexStringToBytes("0x995f062c0503dd3fb3f4dae00eb3c7ddc50cfdf45d270522675aa140e876725b");
             contractParams.amount = 1;
             return contractParams;
         }
+        
+        private const string RequestPacksMethod = "requestPacks";
 
         private async Task CallTutorialRewardContract(EvmContract contract, ContractRequest contractParams)
         {
@@ -159,10 +145,10 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log($"Calling TutorialRewardContract [requestPacks]");
+            Debug.Log($"{nameof(CallTutorialRewardContract)} {RequestPacksMethod}");
             await contract.CallAsync
             (
-                "requestPacks",
+                RequestPacksMethod,
                 contractParams.r,
                 contractParams.s,
                 contractParams.v,
@@ -170,7 +156,7 @@ namespace Loom.ZombieBattleground
                 contractParams.amount
             );
             
-            Debug.Log($"Smart contract method [requestPacks] finished executing.");            
+            Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");            
         }
         
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
@@ -218,9 +204,9 @@ namespace Loom.ZombieBattleground
         private ContractRequest ParseContractRequestFromRewardTutorialCompletedResponse(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {
             string log = "<color=green>ContractRequest Params:</color>\n";
-            string hash = rewardTutorialCompletedResponse.Hash.Substring(2);
-            string r = rewardTutorialCompletedResponse.R.Substring(2);
-            string s = rewardTutorialCompletedResponse.S.Substring(2);
+            string hash = rewardTutorialCompletedResponse.Hash;
+            string r = rewardTutorialCompletedResponse.R;
+            string s = rewardTutorialCompletedResponse.S;
             sbyte v = Convert.ToSByte(rewardTutorialCompletedResponse.V);
             int amount = (int)BigUIntToSByte(rewardTutorialCompletedResponse.Amount);
             
@@ -232,10 +218,10 @@ namespace Loom.ZombieBattleground
             Debug.Log(log);
     
             ContractRequest contractParams = new ContractRequest();
-            contractParams.r = HexStringToByte(r);
-            contractParams.s = HexStringToByte(s);
+            contractParams.r = CryptoUtils.HexStringToBytes(r);
+            contractParams.s = CryptoUtils.HexStringToBytes(s);
             contractParams.v = v;
-            contractParams.hash = HexStringToByte(hash);
+            contractParams.hash = CryptoUtils.HexStringToBytes(hash);
             contractParams.amount = amount;
             return contractParams;
         }
@@ -253,16 +239,6 @@ namespace Loom.ZombieBattleground
         {
             BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
             return b;
-        }
-    
-        public Byte[] HexStringToByte(string str)
-        {
-            string hex = str; 
-            byte[] bytes = new byte[hex.Length / 2];
-            
-            for (int i = 0; i < hex.Length; i += 2)
-                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
         }
 
         public int BigUIntToInt(Client.Protobuf.BigUInt bigNumber)

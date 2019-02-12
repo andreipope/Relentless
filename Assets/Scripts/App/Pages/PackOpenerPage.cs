@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -17,6 +18,10 @@ namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
     {    
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
+
         private TextMeshProUGUI[] _packTypeAmountLabels, _packTypeNames;
 
         private Button[] _packTypeButtons;
@@ -86,6 +91,18 @@ namespace Loom.ZombieBattleground
         private bool _isTransitioningState;
         
         private bool _isWaitingForTapToReveal;
+
+        private int _lastPackBalanceIdRequest;
+        
+        private int _lastOpenPackIdRequest;
+
+        private int _retryPackBalanceRequestCount = 0;
+        
+        private int _retryOpenPackRequestCount = 0;
+        
+        private const int MaxRequestRetryAttempt = 2;
+
+        private bool _isCollectedTutorialCards = false;
         
         #region IUIElement
         
@@ -95,6 +112,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _openPackPlasmaManager = GameClient.Get<OpenPackPlasmaManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
             
             _cardInfoPopupHandler = new CardInfoPopupHandler();
             _cardInfoPopupHandler.Init();
@@ -216,9 +236,15 @@ namespace Loom.ZombieBattleground
             InitState();
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
-            ChangeSelectedPackType(0);   
             
-            _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
+            if(_tutorialManager.IsTutorial)
+            {
+                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
+                SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+                _isCollectedTutorialCards = false;
+            }
+            
+            ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
         public void Hide()
@@ -231,13 +257,6 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
-
-            OnHide();
-        }
-        
-        private void OnHide()
-        {
-            _uiManager.HidePopup<SideMenuPopup>();
         }
         
         public void Dispose()
@@ -307,7 +326,7 @@ namespace Loom.ZombieBattleground
             _packTypeButtons = new Button[amountOfPackType];
             for(int i=0; i<amountOfPackType; ++i)
             {   
-                Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContect/Group/pack_holder_normal_{i}");
+                Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContent/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
                 _packTypeNames[i].text = $"{packTypes[i].ToString().ToUpper()} PACK";
                 _packTypeAmountLabels[i] = buttonParent.Find("text_amount").GetComponent<TextMeshProUGUI>();
@@ -318,6 +337,7 @@ namespace Loom.ZombieBattleground
                     ButtonPackTypeHandler(id);
                  });
             }
+            _selfPage.transform.Find($"pack_holder_tray/PackContent").GetComponent<ScrollRect>().verticalNormalizedPosition = 1f;
         }
         
         private void SetPackTypeButtonsAmount()
@@ -402,7 +422,7 @@ namespace Loom.ZombieBattleground
         {
             DestroyCardVFX();
             DestroyBoardCards();
-            if(_panelCollect != null )
+            if(_panelCollect != null)
             {
                 Object.Destroy(_panelCollect.gameObject);
             }
@@ -414,7 +434,7 @@ namespace Loom.ZombieBattleground
             {
                 _cardPositions.Clear();
             }
-            if( _createdbuttonOpenPackVFX != null)
+            if(_createdbuttonOpenPackVFX != null)
             {
                 Object.Destroy(_createdbuttonOpenPackVFX);
             }
@@ -426,33 +446,131 @@ namespace Loom.ZombieBattleground
             _packBalanceAmounts = new int[packTypes.Length];
             for(int i=0; i<packTypes.Length;++i)
             {
-                _packBalanceAmounts[i] = await _openPackPlasmaManager.CallPackBalanceContract((int)packTypes[i]);
-                SetPackTypeButtonsAmount(i);
+                await RetrievePackBalanceAmount(i);
             }              
         }
+        
         public async Task RetrievePackBalanceAmount(int typeId)
         {
-            _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
-            SetPackTypeButtonsAmount(typeId);
+            _lastPackBalanceIdRequest = typeId;
+            try
+            {
+                _packBalanceAmounts[typeId] = await _openPackPlasmaManager.CallPackBalanceContract(typeId);
+                SetPackTypeButtonsAmount(typeId);
+                _retryPackBalanceRequestCount = 0;
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
+
+                _retryPackBalanceRequestCount++;
+                if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
+                {
+                    _retryPackBalanceRequestCount = 0;
+                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
+                    QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                    popup.ConfirmationReceived += RetryRequestPackBalance;
+                }
+                else
+                {
+                    RetryRequestPackBalance(true);
+                }
+            }
         }
+
+        private void RetryRequestPackBalance(bool confirmRetry)
+        {
+            if(confirmRetry)             
+                RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+        }
+        
         private async Task RetriveCardsFromPack(int packTypeId)
         {
+            _lastOpenPackIdRequest = packTypeId;
             _uiManager.DrawPopup<LoadingFiatPopup>();
-            List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
-            _cardsToDisplayQueqe = cards;
-            _uiManager.HidePopup<LoadingFiatPopup>(); 
+            try
+            {
+                List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
+                _cardsToDisplayQueqe = cards;
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _retryOpenPackRequestCount = 0;
+                ChangeState(STATE.CARD_EMERGED);
+            }
+            catch(Exception e)
+            {
+                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                
+                _retryOpenPackRequestCount++;
+                if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
+                {
+                    _retryOpenPackRequestCount = 0;
+                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
+                    QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                    popup.ConfirmationReceived += RetryRequestOpenPack;
+                }
+                else
+                {
+                    RetryRequestOpenPack(true);
+                }
+            }
+        }
+        
+        private async Task SimulateRetriveTutorialCardsFromPack()
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _cardsToDisplayQueqe.Clear();
+            foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
+            {
+                _cardsToDisplayQueqe.Add
+                (
+                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name)
+                );
+                if (_cardsToDisplayQueqe.Count >= 5)
+                    break;
+            }
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            await Task.Delay(TimeSpan.FromSeconds(1));
+            ChangeState(STATE.CARD_EMERGED);          
+        }
+
+        private void RetryRequestOpenPack(bool confirmRetry)
+        {
+            if (confirmRetry)
+            {
+                RetriveCardsFromPack(_lastOpenPackIdRequest);
+            }
+            else
+            {
+                ChangeState(STATE.CARD_EMERGED);
+            }
         }
 
         private async void ProcessOpenPackLogic()
         {
-            if(_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
+            if (_tutorialManager.IsTutorial)
             {
-                _packBalanceAmounts[_selectedPackTypeIndex]--;
-                _packToOpenAmount--;
-                await RetriveCardsFromPack(_selectedPackTypeIndex);
-            }            
-            
-            ChangeState(STATE.CARD_EMERGED);       
+                if (!_isCollectedTutorialCards)
+                {
+                    _isCollectedTutorialCards = true;
+                    SimulateRetriveTutorialCardsFromPack();
+                    _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 0;
+                }
+                else
+                {
+                    _cardsToDisplayQueqe.Clear();
+                    ChangeState(STATE.CARD_EMERGED);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);                   
+                }
+            }
+            else
+            {
+                if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
+                {
+                    _packBalanceAmounts[_selectedPackTypeIndex]--;
+                    _packToOpenAmount--;
+                    await RetriveCardsFromPack(_selectedPackTypeIndex);
+                }
+            }    
         }
         
         private List<Card> RetrieveDummyCards(int amount)
@@ -642,15 +760,33 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
             DestroyCreatedObject();
-            GameClient.Get<IAppStateManager>().BackAppState();
+            if (_tutorialManager.IsTutorial)
+            {
+                _uiManager.SetPage<MainMenuPage>();
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().BackAppState();
+            }
         }
         
         private void ButtonBuyPacksHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBuyPack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
@@ -660,6 +796,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPlusHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonPlus.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
@@ -669,6 +811,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMinusHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMinus.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount <= 0)
@@ -678,6 +826,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMaxHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMax.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
@@ -687,14 +841,26 @@ namespace Loom.ZombieBattleground
         
         private void ButtonOpenPackHandler()
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonOpenPack.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         
             if (_state == STATE.READY)
             {
+                if(_tutorialManager.IsTutorial)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
+                }
+                
                 SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packToOpenAmount <= 0)
                     return;
+
                 ChangeState(STATE.TRAY_INSERTED);
             }            
         }
@@ -708,14 +874,19 @@ namespace Loom.ZombieBattleground
         {
             _buttonCollect.gameObject.SetActive(false);
             _createdHighlightingVFXItem.ChangeState(false);
+            
             int amount = _createdBoardCards.Count;
             int lastIndex = amount - 1;
+            float delayOffset = 0.1f;
+            float moveDuration = 0.4f;
+            Vector3 hideCardPosition = -Vector3.up * 14f;
+            
             for(int i=0; i<amount ; ++i)
             {
                 Transform displayBoardCard = _createdBoardCards[i].Transform;
                 Sequence hideCardSequence = DOTween.Sequence();
-                hideCardSequence.AppendInterval(.1f * i);
-                hideCardSequence.Append(displayBoardCard.DOMove(  - Vector3.up * 14f  , .4f));
+                hideCardSequence.AppendInterval(delayOffset * i);
+                hideCardSequence.Append(displayBoardCard.DOMove(hideCardPosition, moveDuration));
                 
                 if( i == lastIndex)
                 {

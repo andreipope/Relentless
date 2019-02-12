@@ -162,13 +162,13 @@ namespace Loom.ZombieBattleground
             if(_tutorialManager.IsTutorial)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupOpened);
-                if(_tutorialManager.CurrentTutorial.Id == 0)                
+                if(_tutorialManager.CurrentTutorial.Id == 0)
                 {
                     _message.gameObject.SetActive(false);
                 }
-                if( _tutorialManager.CurrentTutorial.Id == 5)
+                else if( _tutorialManager.CurrentTutorial.Id == 5)
                 {
-                    _message.text = "Congratulations!\nReward would be automatically claimed.";
+                    _message.text = "Congratulations!\nThe reward will be\nautomatically claimed..";
                 }
             }
         }
@@ -254,22 +254,13 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
                 {
-                    if (_tutorialManager.CurrentTutorial.Id < 3)
+                    _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
+                    GameClient.Get<ITutorialManager>().StopTutorial();
+                    if (_tutorialManager.CurrentTutorial.Id == 5)
                     {
-                        _matchManager.FinishMatch(Enumerators.AppState.PlaySelection);
-                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
-                    }
-                    else
-                    {
-                        _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
-                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
-                        GameClient.Get<ITutorialManager>().StopTutorial();
-
-                        if (_tutorialManager.CurrentTutorial.Id == 5)
-                        {
-                            GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
-                        }                       
-                    }
+                        GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
+                    } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }

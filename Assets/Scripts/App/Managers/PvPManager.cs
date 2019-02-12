@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
 
             if (_matchMakingFlowController != null)
             {
-                await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Update(Time.deltaTime));
+                await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Update(Time.unscaledDeltaTime));
             }
         }
 

@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Object = UnityEngine.Object;
 using Newtonsoft.Json;
+using Plugins.AsyncAwaitUtil.Source;
 
 namespace Loom.ZombieBattleground
 {
@@ -33,106 +34,81 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        private bool IsSuccess(UnityWebRequest request)
-        {
-            if (request.isNetworkError) { return false; }
-            
-            if (request.responseCode == 0) { return true; }
-            if (request.responseCode == (long)HttpStatusCode.OK) { return true; }
-            
-            return false;
-        }
-        
         public async Task<FiatValidationResponse> CallFiatValidationGoogle(string productId, string purchaseToken, string storeTxId, string storeName)
         {  
             Debug.Log($"{nameof(CallFiatValidationGoogle)}");
+            
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            
+            FiatValidationGoogleRequest fiatValidationGoogleRequest = new FiatValidationGoogleRequest();
+            fiatValidationGoogleRequest.productId = productId;
+            fiatValidationGoogleRequest.purchaseToken = purchaseToken;
+            fiatValidationGoogleRequest.storeTxId = storeTxId;
+            fiatValidationGoogleRequest.storeName = storeName;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationGoogleRequest));
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
+            
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            UnityWebRequest request = null;
-            FiatValidationResponse response = null;
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CallFiatValidationGoogle)} failed with error code {httpResponseMessage.StatusCode}");            
             
-            WWWForm form = new WWWForm();
-            form.AddField("productId", productId);       
-            form.AddField("purchaseToken", purchaseToken);       
-            form.AddField("transactionId", storeTxId);       
-            form.AddField("storeName", storeName);
-            
-            request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
-            AddAuthorizationHeader(request);
-            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.downloadHandler = new DownloadHandlerBuffer();
-            
-            await request.SendWebRequest();
-            if (IsSuccess(request))
-            {
-                string json = request.downloadHandler.text;          
-                Debug.Log(json);        
-                response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
-                Debug.Log($"Finish {nameof(CallFiatValidationGoogle)}");
-                return response;        
-            }
-            throw new Exception($"{nameof(CallFiatValidationGoogle)} failed with error code {request.responseCode}");
+            string json = httpResponseMessage.ReadToEnd();          
+            Debug.Log(json);        
+            FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
+            Debug.Log($"Finish {nameof(CallFiatValidationGoogle)}");
+            return response;
         }
         
         public async Task<FiatValidationResponse> CallFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
         {  
             Debug.Log($"{nameof(CallFiatValidationApple)}");
-
-            UnityWebRequest request = null;
-            FiatValidationResponse response = null;
             
-            WWWForm form = new WWWForm();
-            form.AddField("productId", productId);       
-            form.AddField("transactionId", transactionId);       
-            form.AddField("receiptData", receiptData);       
-            form.AddField("storeName", storeName);
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
             
-            request = UnityWebRequest.Post(PlasmaChainEndpointsContainer.FiatValidationURL,form);
-            AddAuthorizationHeader(request);
-            request.SetRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.downloadHandler = new DownloadHandlerBuffer();
-           
-            await request.SendWebRequest();
-            Debug.Log($"{nameof(CallFiatValidationApple)} responseCode: {request.responseCode}");
+            FiatValidationAppleRequest fiatValidationAppleRequest = new FiatValidationAppleRequest();
+            fiatValidationAppleRequest.productId = productId;
+            fiatValidationAppleRequest.transactionId = transactionId;
+            fiatValidationAppleRequest.receiptData = receiptData;
+            fiatValidationAppleRequest.storeName = storeName;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationAppleRequest));
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
+            
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            string json = request.downloadHandler.text;          
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CallFiatValidationApple)} failed with error code {httpResponseMessage.StatusCode}");                        
+
+            string json = httpResponseMessage.ReadToEnd();                
             Debug.Log(json);        
-            response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
+            FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
             Debug.Log($"Finish {nameof(CallFiatValidationApple)}");
             return response;            
         }
         
         public async Task<List<FiatTransactionResponse>> CallFiatTransaction()
-        {
-            Debug.Log("CallFiatTransaction");
-            
-            UnityWebRequest request = null;
+        {    
+            Debug.Log($"{nameof(CallFiatTransaction)}");
+                 
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatTransactionURL;
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
 
-            int count = 0;
-            while (true)
-            {
-                if (request != null)
-                    request.Dispose();
-                request = new UnityWebRequest(PlasmaChainEndpointsContainer.FiatTransactionURL);
-                AddAuthorizationHeader(request);
-                request.downloadHandler = new DownloadHandlerBuffer();
-                try
-                {
-                    await request.SendWebRequest();
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-                    if (IsSuccess(request))
-                        break;
-                    Debug.Log("FiatTransaction request connection error");
-                }
-                catch
-                {
-                    Debug.Log("Catch FiatTransaction request connection error");
-                    await Task.Delay(TimeSpan.FromSeconds(1));                
-                }
-                ++count;
-                Debug.Log($"Retry FiatTransaction: {count}");
-            }
-            
-            string json = request.downloadHandler.text;          
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CallFiatTransaction)} failed with error code {httpResponseMessage.StatusCode}");
+        
+            string json = httpResponseMessage.ReadToEnd();   
             Debug.Log(json);   
             
             List<FiatTransactionResponse> fiatResponseList = JsonConvert.DeserializeObject<List<FiatTransactionResponse>>(json);           
@@ -142,7 +118,7 @@ namespace Loom.ZombieBattleground
                 Debug.Log("FiatTransactionResponse hash: " + reponse.VerifyHash.hash);
             }
 
-            return fiatResponseList;          
+            return fiatResponseList;
         }
         
         [Serializable]
@@ -154,71 +130,52 @@ namespace Loom.ZombieBattleground
 
         public async Task<bool> CallFiatClaim(int userId, List<int> transactionIds)
         {
-            Debug.Log("CallFiatClaim");
-
+            Debug.Log($"{nameof(CallFiatClaim)}");
+            
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Method = WebRequestMethod.POST;
+            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatClaimURL;
+            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            
             FiatClaimRequestBody body = new FiatClaimRequestBody();
             body.user_id = userId;
-            body.transaction_ids = transactionIds.ToArray();
-            string jsonString = JsonUtility.ToJson(body);
-            byte[] bodyRaw = Encoding.UTF8.GetBytes
-            (
-                jsonString                
-            );            
+            body.transaction_ids = transactionIds.ToArray();  
             
-            UnityWebRequest request = null;
+            webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(body));
+            webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
+            webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
 
-            int count = 0;
-            while (true)
-            {
-                if (request != null)
-                    request.Dispose();
-                request = new UnityWebRequest
-                (
-                    PlasmaChainEndpointsContainer.FiatClaimURL,
-                    "POST"
-                );
-                request.uploadHandler = new UploadHandlerRaw(bodyRaw);            
-                AddAuthorizationHeader(request);
-                request.SetRequestHeader("Content-Type", "application/json");
-                
-                try
-                {
-                    await request.SendWebRequest();
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-                    if (IsSuccess(request))
-                        break;
-                    Debug.Log("FiatClaim request connection error");
-                }
-                catch
-                {
-                    Debug.Log("Catch FiatClaim request connection error");
-                    await Task.Delay(TimeSpan.FromSeconds(1));                
-                }
-                ++count;
-                Debug.Log($"Retry FiatClaim: {count}");
-            }
-            
-            Debug.Log("FiatClaim Response Code: " + request.responseCode);           
-            return (request.responseCode == 200);
-        }
-
-        private void AddAuthorizationHeader(UnityWebRequest request)
-        {
-            request.SetRequestHeader
-            (
-                "Authorization",
-                "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken
-            );
+            if (!httpResponseMessage.IsSuccessStatusCode)
+                throw new Exception($"{nameof(CallFiatClaim)} failed with error code {httpResponseMessage.StatusCode}");
+                     
+            return true;
         }
         
-      public class FiatValidationResponse
+        public class FiatValidationGoogleRequest
+        {
+            public string productId;
+            public string purchaseToken;    
+            public string storeTxId;    
+            public string storeName;
+        }
+        
+        public class FiatValidationAppleRequest
+        {
+            public string productId;
+            public string transactionId;    
+            public string receiptData;    
+            public string storeName;
+        }
+
+        public class FiatValidationResponse
         {
             public string msg;
             public string transactionId;
             public bool success;
-            #if UNITY_ANDROID
             public int txId;
-            #endif
         }
         
         public class FiatTransactionResponse
@@ -226,15 +183,16 @@ namespace Loom.ZombieBattleground
             public VerifyHash VerifyHash;
             public int UserId;        
             public int Booster;
+            public int Super;
             public int Air;
             public int Earth;
             public int Fire;
             public int Life;
             public int Toxic;
-            public int Water;
-            public int Super;
+            public int Water;            
             public int Small;
             public int Minion;
+            public int Binance;
             public int TxID;
         }
         

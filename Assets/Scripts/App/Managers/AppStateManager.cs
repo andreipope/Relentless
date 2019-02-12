@@ -79,9 +79,8 @@ namespace Loom.ZombieBattleground
                             _backendDataControlMediator.UserDataModel.AccessToken
                         ))
                         {   
-                            _uiManager.DrawPopup<WarningPopup>($"Please login\nbefore entering a shop");
-                            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                            popup.ConfirmationReceived += WarningPopupConfirmationNavigateToLogin;
+                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                            loginPopup.Show();
                             return;
                         }
                         else
@@ -96,7 +95,7 @@ namespace Loom.ZombieBattleground
                         return;
                     }
                 case Enumerators.AppState.PACK_OPENER:
-                    if (Constants.EnableShopPage)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                         break;
@@ -206,7 +205,7 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}"), false, true);
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1), false, true);
                 }
             }, null);
         }
@@ -241,6 +240,10 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
+            if (!Application.isPlaying) {
+                throw exception;
+            }
+                
             Debug.LogWarning("Handled network exception: " + exception);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
@@ -286,15 +289,6 @@ namespace Loom.ZombieBattleground
             popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
 
             UpdateConnectionStatus();
-        }
-        
-        private void WarningPopupConfirmationNavigateToLogin()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupConfirmationNavigateToLogin;
-
-            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-            loginPopup.Show();
         }
 
         private void LoomManagerOnContractCreated(Contract oldContract, Contract newContract)
