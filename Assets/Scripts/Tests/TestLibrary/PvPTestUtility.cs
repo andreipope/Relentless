@@ -166,20 +166,13 @@ namespace Loom.ZombieBattleground.Test
             return CardNameEqual(name, card.LibraryCard.Name);
         }
 
-        public static Deck GetDeckWithCards(string name, int heroId = 0, int copiesOfCards = 1, params string[] cardsNames)
+        public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)
         {
-            List<DeckCardData> cards = new List<DeckCardData>();
-
-            foreach (string card in cardsNames)
-            {
-                cards.Add(new DeckCardData(card, copiesOfCards));
-            }
-
             Deck deck = new Deck(
                  0,
                  heroId,
                  name,
-                 cards,
+                 cards.ToList(),
                  Enumerators.OverlordSkill.NONE,
                  Enumerators.OverlordSkill.NONE
              );
