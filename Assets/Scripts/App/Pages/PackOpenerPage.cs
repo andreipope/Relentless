@@ -126,15 +126,16 @@ namespace Loom.ZombieBattleground
             _cardsToReveal = new List<Transform>();
         }
         
-        public void Update()
+        public async void  Update()
         {
             if (!_dataLoading)
             {
                 if (_backendDataControlMediator.UserDataModel != null)
                     if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
                     {
-                        RetrievePackBalanceAmount();
                         _dataLoading = true;
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        RetrievePackBalanceAmount();                        
                     }
             }
         
