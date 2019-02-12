@@ -169,7 +169,6 @@ namespace Loom.ZombieBattleground
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(priorityAttackOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedHp = priorityAttackOutcome.NewDefense;
-                    boardUnit.CurrentHp = priorityAttackOutcome.NewDefense;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
