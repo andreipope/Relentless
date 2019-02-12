@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
     public class LoginPopup : IUIPopup
     {
         public static Action OnHidePopupEvent;
+        public static Action OnLoginSuccess;
 
         public bool IsRegisteredUser;
 
@@ -700,6 +701,7 @@ namespace Loom.ZombieBattleground
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
             Hide();
+            OnLoginSuccess?.Invoke();
         }
 
         private void SetUIState(LoginState state, string errorMsg = "")

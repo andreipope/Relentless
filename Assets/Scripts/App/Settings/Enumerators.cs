@@ -879,5 +879,19 @@ namespace Loom.ZombieBattleground.Common
             AbovePopups,
             AboveUI
         }
+        
+        public enum MarketplaceCardPackType
+        {
+            Booster = 0,
+            Super = 1,
+            Air = 2,
+            Earth = 3,
+            Fire = 4,
+            Life = 5,
+            Toxic = 6,
+            Water = 7,
+            Small = 8,
+            Minion = 9            
+        }
     }
 }
