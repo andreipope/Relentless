@@ -98,52 +98,6 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator MatchmakeMakeOneMoveAndQuit()
-        {
-            return AsyncTest(async () =>
-            {
-                await PvPTestUtility.StartOnlineMatch();
-                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
-                    null,
-                    () =>
-                    {
-                        Assert.Fail("Didn't match, so couldn't check.");
-                        return Task.CompletedTask;
-                    });
-
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await TestHelper.PlayAMatch(1);
-                await TestHelper.ClickGenericButton("Button_Settings");
-                await TestHelper.ClickGenericButton("Button_QuitToMainMenu");
-                await TestHelper.RespondToYesNoOverlay(true);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(300 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator MatchmakeAndPlay()
-        {
-            return AsyncTest(async () =>
-            {
-                await PvPTestUtility.StartOnlineMatch();
-                await TestHelper.AssertPvPStartedOrMatchmakingFailed(
-                    null,
-                    () =>
-                    {
-                        Assert.Fail("Didn't match, so couldn't check.");
-                        return Task.CompletedTask;
-                    });
-
-                TestHelper.SetupOpponentDebugClientToEndTurns();
-                await TestHelper.MatchmakeOpponentDebugClient();
-
-                await TestHelper.PlayAMatch();
-            });
-        }
-
-        [UnityTest]
         [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
         public IEnumerator MatchmakingCancelAndMatchmake()
         {

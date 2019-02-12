@@ -345,6 +345,12 @@ namespace Loom.ZombieBattleground
                         //Should not handle this anymore through events for now
                         break;
                     case Match.Types.Status.Playing:
+                        foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
+                        {
+                            Debug.Log(playerActionOutcome.ToString());
+                            PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
+                        }
+
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
                             if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
@@ -427,12 +433,6 @@ namespace Loom.ZombieBattleground
 
         private void OnReceivePlayerActionType(PlayerActionEvent playerActionEvent)
         {
-            foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
-            {
-                Debug.Log(playerActionOutcome.ToString());
-                PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
-            }
-
             switch (playerActionEvent.PlayerAction.ActionType)
             {
                 case PlayerActionType.Types.Enum.None:
