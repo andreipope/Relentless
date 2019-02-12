@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground.Test
             Debug.Log("[ScenarioPlayer]: Play 3 - Finished");
 #endif
 
+            // Rethrow the exception here, to make sure it's thrown on the main thread,
+            // so that the testing framework could react accordingly
             if (_abortException != null)
             {
                 throw _abortException;
@@ -182,6 +184,9 @@ namespace Loom.ZombieBattleground.Test
             {
                 Completed = true;
                 _abortException = e;
+
+                // FIXME: this is not ideal, but allows the test to end gracefully.
+                // A better option would be to cancel the TestHelper.PlayMoves, but that's a bit involved
                 _opponentProxy.LeaveMatch();
                 throw;
             }
