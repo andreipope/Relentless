@@ -15,14 +15,12 @@ namespace Loom.ZombieBattleground
         private const string PersistentFileName = "CheatsSettings.json";
 
         private readonly List<Action> _updateBinds = new List<Action>();
-
         private IPvPManager _pvpManager;
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
         private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
 
-#if !USE_PRODUCTION_BACKEND
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
@@ -81,7 +79,6 @@ namespace Loom.ZombieBattleground
 
             _customDeckEditor?.OnGUI();
         }
-#endif
 
         private void Start()
         {
