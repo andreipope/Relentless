@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
             }
 
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;

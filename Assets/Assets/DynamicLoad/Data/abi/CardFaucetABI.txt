@@ -40,6 +40,14 @@
         {
           "name": "waterPackAddr",
           "type": "address"
+        },
+        {
+          "name": "smallPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "minionPackAddr",
+          "type": "address"
         }
       ],
       "payable": false,

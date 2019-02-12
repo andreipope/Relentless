@@ -70,11 +70,30 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:
-                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                case Enumerators.AppState.SHOP:            
+                    if (Constants.EnableShopPage)
+                    {
+                        if (string.IsNullOrEmpty(
+                            _backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {   
+                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                            loginPopup.Show();
+                            return;
+                        }
+                        else
+                        {
+                            _uiManager.SetPage<ShopPage>();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.PACK_OPENER:
-                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
                         _uiManager.SetPage<PackOpenerPage>();
                         break;
@@ -221,7 +240,6 @@ namespace Loom.ZombieBattleground
         {
             if (!Application.isPlaying) {
                 throw exception;
-                return;
             }
 
             string message = "Handled network exception: ";

@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground.Test
 
         public IGameplayManager GameplayManager => _gameplayManager;
 
+        public IDataManager DataManager => _dataManager;
+
         public BattlegroundController BattlegroundController => _battlegroundController;
 
         public BackendDataControlMediator BackendDataControlMediator => _backendDataControlMediator;
