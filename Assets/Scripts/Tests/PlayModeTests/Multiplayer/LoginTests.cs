@@ -80,13 +80,13 @@ namespace Loom.ZombieBattleground.Test
 
                 string email = UnityEngine.Random.Range(0, 2 ^ 1024) + UnityEngine.Random.Range(0, 2 ^ 1024) + "_Test@test.com";
 
-                PopulateLoginPopupTextField(email, "Forgot_Group/Email_BG/Email_Text");
+                PopulateLoginPopupTextField(email, "Forgot_Group/Email_BG/Email_InputField");
 
                 await TestHelper.LetsThink();
 
                 await TestHelper.ClickGenericButton("Forgot_Group/Button_Send_BG/Button_Send");
 
-                await TestHelper.LetsThink();
+                await TestHelper.LetsThink(5);
 
                 await TestHelper.ClickGenericButton("SuccessForgot_Group/Button_Confirm_BG/Button_Confirm");
 
@@ -140,9 +140,9 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.ClickGenericButton("WarningPopup/Button_GotIt");
+                await TestHelper.LetsThink(10);
 
-                Assert.IsFalse(IsUserLoggedIn());
+                Assert.IsTrue(GameClient.Get<IUIManager>().GetPopup<WarningPopup>().Self != null);
             });
         }
 
@@ -190,9 +190,9 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.ClickGenericButton("WarningPopup/Button_GotIt");
+                await TestHelper.LetsThink(10);
 
-                Assert.IsFalse(IsUserLoggedIn());
+                Assert.IsTrue(GameClient.Get<IUIManager>().GetPopup<WarningPopup>().Self != null);
             });
         }
 
@@ -240,5 +240,4 @@ namespace Loom.ZombieBattleground.Test
             }
         }
     }
-}
 }
