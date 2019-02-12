@@ -65,7 +65,7 @@ namespace Loom.Client.Internal
         {
             if (partialMsg.Error.Data.EndsWith("Tx already exists in cache"))
             {
-                throw new InvalidTxNonceException(int.Parse(partialMsg.Error.Code), partialMsg.Error.Data);
+                throw new TxAlreadyExistsInCacheException(int.Parse(partialMsg.Error.Code), partialMsg.Error.Data);
             }
 
             throw new RpcClientException(

@@ -167,7 +167,7 @@ namespace Loom.Client
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
 
-            return await this.CallExecutor.Call<BroadcastTxResult>(async () =>
+            return await this.CallExecutor.Call(async () =>
             {
                 await EnsureConnected();
 

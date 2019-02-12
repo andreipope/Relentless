@@ -13,9 +13,9 @@ using UnityEngine.TestTools;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
-namespace Loom.ZombieBattleground.Test
+namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
-    public class MultiplayerTests : BaseIntegrationTest
+    public class GeneralMultiplayerTests : BaseIntegrationTest
     {
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
@@ -96,74 +96,6 @@ namespace Loom.ZombieBattleground.Test
                         //Assert.AreEqual(0, pvpTestContext.GetOpponentPlayer().Defense);
                     }
                 );
-            });
-        }
-
-        [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Cynderman()
-        {
-            return AsyncTest(async () =>
-            {
-                Deck opponentDeck = new Deck(
-                    0,
-                    0,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Cynderman", 2),
-                        new DeckCardData("Slab", 2)
-                    },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
-                );
-
-                Deck playerDeck = new Deck(
-                    0,
-                    0,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Cynderman", 2),
-                        new DeckCardData("Slab", 2)
-                    },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
-                );
-
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
-                    Player1HasFirstTurn = true
-                };
-
-                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Slab", 1);
-                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
-                InstanceId playerCyndermanId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cynderman", 1);
-                InstanceId opponentCyndermanId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cynderman", 1);
-                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                   {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => player.CardPlay(playerSlabId, ItemPosition.Start),
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
-                           opponent.CardPlay(opponentCyndermanId, ItemPosition.Start, playerSlabId);
-                       },
-                       player =>
-                       {
-                           player.CardPlay(playerCyndermanId, ItemPosition.Start, opponentCyndermanId);
-                       },
-                   };
-
-                Action validateEndState = () =>
-                {
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSlabId)).CurrentHp);
-                    Assert.AreEqual(2, ((BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCyndermanId)).CurrentHp);
-                };
-
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
