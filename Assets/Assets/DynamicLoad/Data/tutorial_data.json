@@ -2115,12 +2115,11 @@
                 },
                 "RankSystemHasEnabled": true
             },
-            "SpecificTurnInfos": [
-                
+            "SpecificTurnInfos": [                
                 {
                     "PlayCardsSequence": [                        
                         {
-                            "TutorialObjectId": 20
+                            "TutorialObjectId": 1
                         }
                     ],
                     "RequiredActivitiesToDoneDuringTurn": [                        
@@ -2311,14 +2310,14 @@
                         "DescriptionTooltipCloseText": "LET'S BEGIN",
                         "Pose": "NORMAL"
                     }
-                },				                
+                },    
                 {
                     "ActionToEndThisStep": "PlayerOverlordCardPlayed",
                     "CanInteractWithGameplay": true,
-                    "ConnectedTurnIndex": 1,
+                    "ConnectedTurnIndex": 1,					
                     "HandPointers": [
                         {
-                            "AppearDelay": 2.5,
+                            "AppearDelay": 5.0,
                             "EndPosition": {
                                 "X": 0,
                                 "Y": -0.25,
@@ -2336,14 +2335,14 @@
                 },
 				{
                     "ActionToEndThisStep": "EndTurn",
-                    "ConnectedTurnIndex": 2,
+                    "ConnectedTurnIndex": 2,					
                     "RequiredActivitiesToDoneDuringStep": [
                         "EnemyOverlordCardPlayed"
                     ]
                 },
                 {
                     "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-                    "CanInteractWithGameplay": true,
+                    "CanInteractWithGameplay": true,					
                     "ConnectedTurnIndex": 2,
                     "HandPointers": [
                         {
