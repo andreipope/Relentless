@@ -92,7 +92,10 @@ namespace Loom.ZombieBattleground
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
             LoadDeckData();
-            UpdateSelectedDeckDisplay();  
+            if (_selectedDeck != null)
+            {
+                UpdateSelectedDeckDisplay();
+            }
         }
         
         public void Show(object data)
