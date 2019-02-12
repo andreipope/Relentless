@@ -809,5 +809,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
 #endregion
+
+#region RewardTutorial
+        private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
+        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
+        {
+            Debug.Log("GetRewardTutorialCompletedResponse");
+            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
+        }
+
+        private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
+        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
+        {
+            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
+        }
+#endregion
     }
 }
