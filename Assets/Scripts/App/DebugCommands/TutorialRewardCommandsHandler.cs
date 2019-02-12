@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
             }
 
             GameClient.Get<ITutorialManager>().StopTutorial(true);
-            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = 5;
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = GameClient.Get<ITutorialManager>().TutorialsCount-2;
         }
         
         [CommandHandler(Description = "Reduce the current def of the AI overlord to zero")]

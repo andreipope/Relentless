@@ -46,6 +46,7 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private BackendFacade _backendFacade;
+        private IDataManager _dataManager;
     
         public void Init()
         {           
@@ -85,6 +86,8 @@ namespace Loom.ZombieBattleground
                 return;
             }            
                
+            _dataManager.CachedUserLocalData.TutorialRewardClaimed = true;
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
             _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
