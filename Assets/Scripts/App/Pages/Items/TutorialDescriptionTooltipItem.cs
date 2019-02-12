@@ -183,8 +183,8 @@ namespace Loom.ZombieBattleground
                                 _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
                                 SetBackgroundType(_align);
                                 _currentPosition.x *= -1f;
-                                UpdateTextPosition();
                                 SetPosition();
+                                UpdateTextPosition();
                                 Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
                             }
                         }
@@ -201,8 +201,8 @@ namespace Loom.ZombieBattleground
                                 _currentPosition.x = -Mathf.Abs(_currentPosition.x);
                             }
                             SetBackgroundType(_align);
-                            UpdateTextPosition();
                             SetPosition();
+                            UpdateTextPosition();
                         }
                     }
                 }
@@ -337,12 +337,12 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.TooltipAlign.CenterRight:
                 case Enumerators.TooltipAlign.CenterLeft:
-                    textPosition.x *= 1.06f;
+                    textPosition.x *= 1.03f;
                     break;
                 default:
                     break;
             }
-            _textDescription.transform.localPosition = textPosition;
+            _textDescription.transform.position = textPosition;
         }
 
         private void SetPosition()
