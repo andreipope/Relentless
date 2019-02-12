@@ -12,7 +12,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
     public class FireCardsTests : BaseIntegrationTest
     {
-       
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
         public IEnumerator Cynderman()

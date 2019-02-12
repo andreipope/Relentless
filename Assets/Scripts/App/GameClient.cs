@@ -23,6 +23,8 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
+            Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
@@ -72,6 +74,8 @@ namespace Loom.ZombieBattleground
             AddService<FiatBackendManager>(new FiatBackendManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
+            AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
+            AddService<TutorialRewardManager>(new TutorialRewardManager());
         }
 
         public override void InitServices() {
