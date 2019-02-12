@@ -163,7 +163,11 @@ namespace Loom.ZombieBattleground
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
                     break;
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
-                    // TODO
+                    PlayerActionOutcome.Types.CardAbilityPriorityAttackOutcome priorityAttackOutcome =
+                        outcome.PriorityAttack;
+                    boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(priorityAttackOutcome.InstanceId.FromProtobuf());
+
+                    boardUnit.BuffedHp = priorityAttackOutcome.NewDefense;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
