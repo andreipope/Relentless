@@ -2851,13 +2851,16 @@
                 "PlayerInfo": {
                     "CardsInDeck": [
                         {
-                            "Name": "Germ"
+                            "Name": "Germ",
+                            "TutorialObjectId": 10
                         },
                         {
-                            "Name": "Germ"
+                            "Name": "Germ",
+                            "TutorialObjectId": 11
                         },
                         {
-                            "Name": "Nail Bomb"
+                            "Name": "Nail Bomb",
+                            "TutorialObjectId": 12
                         }
                     ],
                     "CardsInHand": [
@@ -3139,30 +3142,15 @@
                 },
                 {
                     "ActionToEndThisStep": "TapOnScreen",
+                    "MatchShouldBePaused": true,
                     "TutorialDescriptionTooltipsToActivate": [
                         2
                     ]
                 },
                 {
                     "ActionToEndThisStep": "BattleframeAttacked",
-                    "ConnectedTurnIndex": 2,
-                    "HandPointers": [
-                        {
-                            "EndPosition": {
-                                "X": -1.32,
-                                "Y": 3.04,
-                                "Z": 0
-                            },
-                            "StartPosition": {
-                                "X": 0,
-                                "Y": 1.6,
-                                "Z": 0
-                            },
-                            "TutorialHandPointerOwner": "PlayerBattleframe",
-                            "TutorialHandPointerType": "Animated",
-                            "TutorialObjectIdStepOwner": 20
-                        }
-                    ],
+                    "CanInteractWithGameplay": true,
+                    "ConnectedTurnIndex": 2,                    
                     "SelectableTargets": [
                         "OPPONENT_CARD"
                     ],
@@ -3304,7 +3292,8 @@
                     "ConnectedTurnIndex": 6,
                     "SelectableTargets": [
                         "OPPONENT"
-                    ]
+                    ],
+                    "UnitsCanAttack": true
                 },
                 {
                     "ActionToEndThisStep": "AvatarTooltipClosed",
@@ -3324,7 +3313,9 @@
             ]
         }
     },
-    {
+
+
+ {
         "HiddenTutorial": true,
         "Id": 7,
         "Name": "Deck Building 4",
@@ -3367,7 +3358,7 @@
             "CardName": "GooZilla"
           },
           {
-            "Amount": 3,
+            "Amount": 2,
             "CardName": "Azzazzin"
           },
           {
@@ -3391,13 +3382,13 @@
             "CardName": "Goo Beaker"
           },
           {
-            "Amount": 1,
+            "Amount": 2,
             "CardName": "Slab"
           },
           {
-            "Amount": 1,
+            "Amount": 2,
             "CardName": "Burrrnn"
-          },
+          },		  
           {
             "Amount": 1,
             "CardName": "Pushhh"
@@ -3431,7 +3422,7 @@
                         "Name": "Slab"
                     },
                     {
-                        "Name": "Burn"
+                        "Name": "Burrrnn"
                     },
                     {
                         "Name": "Azzazzin"
