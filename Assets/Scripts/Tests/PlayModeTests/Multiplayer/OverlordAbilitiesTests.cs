@@ -143,12 +143,9 @@ namespace Loom.ZombieBattleground.Test
                        opponent =>
                        {
                            int numCardsWithFeral =
-                               new[]
-                                   {
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz1Id),
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz2Id),
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz3Id)
-                                   }.Select(model => model.HasFeral)
+                               new []{playerPyromaz1Id, playerPyromaz2Id, playerPyromaz3Id}
+                                   .Select(id => (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(id))
+                                   .Select(model => model.HasFeral)
                                    .Count();
 
                            Assert.AreEqual(2, numCardsWithFeral);
