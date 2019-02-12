@@ -11,7 +11,9 @@ namespace Loom.ZombieBattleground
     public class HiddenUI : MonoBehaviour
     {
         public GameObject UIRoot;
+
         public BaseRaycaster[] AlwaysActiveRaycasters = new BaseRaycaster[0];
+        public GameObject[] ObjectsToDisableInProduction = { };
 
         private AFPSCounter _afpsCounter;
         private bool _isVisible;
@@ -20,50 +22,59 @@ namespace Loom.ZombieBattleground
 
         void Start()
         {
-            _isVisible = UIRoot.gameObject.activeInHierarchy;
             _afpsCounter = FindObjectOfType<AFPSCounter>();
             if (_afpsCounter == null)
                 throw new Exception("AFPSCounter instance not found in scene");
 
+            SetVisibility(ShouldBeVisible);
 #if USE_PRODUCTION_BACKEND
-            UIRoot.gameObject.SetActive(false);
-            _afpsCounter.OperationMode = OperationMode.Disabled;
-            _afpsCounter.circleGesture = false;
-#endif
-        }
-
-        void Update()
-        {
-#if !USE_PRODUCTION_BACKEND
-            if (_isVisible != ShouldBeVisible)
+            foreach (GameObject go in ObjectsToDisableInProduction)
             {
-                BaseRaycaster[] raycasters = FindObjectsOfType<BaseRaycaster>();
-                bool raycastersEnabled = !ShouldBeVisible;
-                foreach (BaseRaycaster raycaster in raycasters)
-                {
-                    if (AlwaysActiveRaycasters.Contains(raycaster))
-                        continue;
-
-                    raycaster.enabled = raycastersEnabled;
-                }
-
-                // Update UI
-                if (this.UIRoot != null)
-                {
-                    UIRoot.gameObject.SetActive(ShouldBeVisible);
-                }
-
-                if (ShouldBeVisible)
-                {
-                    DebugConsole.IsVisible = false;
-                }
-
-                _isVisible = ShouldBeVisible;
+                go.SetActive(false);
             }
 #endif
         }
 
-#region UI Handlers
+        private void Update()
+        {
+            UpdateVisibility();
+        }
+
+        private void UpdateVisibility()
+        {
+            if (_isVisible != ShouldBeVisible)
+            {
+                SetVisibility(ShouldBeVisible);
+
+                _isVisible = ShouldBeVisible;
+            }
+        }
+
+        private void SetVisibility(bool visible)
+        {
+            BaseRaycaster[] raycasters = FindObjectsOfType<BaseRaycaster>();
+            bool raycastersEnabled = !visible;
+            foreach (BaseRaycaster raycaster in raycasters)
+            {
+                if (AlwaysActiveRaycasters.Contains(raycaster))
+                    continue;
+
+                raycaster.enabled = raycastersEnabled;
+            }
+
+            // Update UI
+            if (this.UIRoot != null)
+            {
+                UIRoot.gameObject.SetActive(visible);
+            }
+
+            if (visible)
+            {
+                DebugConsole.IsVisible = false;
+            }
+        }
+
+        #region UI Handlers
 
         public void SubmitBugReport()
         {
