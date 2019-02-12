@@ -229,7 +229,8 @@
                             "TutorialActivityActionHandlerData": {
                                 "Description": "An Item. Didn't know you were smart enough to play those...",
                                 "TutorialTooltipAlign": "CenterRight",
-                                "TutorialTooltipOwner": "PlayerOverlord"
+                                "TutorialTooltipOwner": "PlayerOverlord",
+								"Duration": 4.0
                             }
                         }
                     ],
@@ -801,7 +802,7 @@
                     "Description": "Add cards to your deck by dragging them to the top.",
                     "Id": 0,
                     "Position": {
-                        "X": 1.4,
+                        "X": -6.2,
                         "Y": -2.5,
                         "Z": 0
                     },
@@ -825,7 +826,7 @@
                     "Description": "You can also add cards by double tapping them.",
                     "Id": 2,
                     "Position": {
-                        "X": 1.4,
+                        "X": -6.2,
                         "Y": -2.5,
                         "Z": 0
                     },
@@ -1105,12 +1106,12 @@
                     "HandPointers": [
                         {
                             "EndPosition": {
-                                "X": 0,
+                                "X": -7.8,
                                 "Y": 3.8,
                                 "Z": 0
                             },
                             "StartPosition": {
-                                "X": 0,
+                                "X": -7.8,
                                 "Y": -1.5,
                                 "Z": 0
                             },
@@ -1169,7 +1170,7 @@
                     "HandPointers": [
                         {
                             "StartPosition": {
-                                "X": 0,
+                                "X": -7.8,
                                 "Y": -1.5,
                                 "Z": 0
                             },
@@ -2050,7 +2051,7 @@
             "ActionActivityHandlers": [],
             "PlayerOrderScreenShouldAppear": false,
             "RewardCardPackCount": 1,
-            "SpecificBattlegroundInfo": {
+            "SpecificBattlegroundInfo": {			
                 "AISpecificOrderEnabled": true,
                 "GameplayBeginManually": true,
                 "OpponentInfo": {
@@ -2102,14 +2103,7 @@
                             "Name": "Gloop",
                             "TutorialObjectId": 1
                         }
-                    ],
-                    "CardsOnBoard": [
-                        {
-                            "IsManuallyPlayable": true,
-                            "Name": "Zwoop",
-                            "TutorialObjectId": 10
-                        }
-                    ],
+                    ],                    
                     "CurrentGoo": 10,
                     "Defense": 10,
                     "MaximumDefense": 20,
@@ -2123,34 +2117,27 @@
             "SpecificTurnInfos": [
                 {
                     "PlayCardsSequence": [
+						{
+                            "TutorialObjectId": 1
+                        },
                         {
                             "TutorialObjectId": 52
                         }
                     ],
                     "RequiredActivitiesToDoneDuringTurn": [
-                        "EnemyOverlordCardPlayed"
-                        
+						"PlayerOverlordCardPlayed",
+                        "EnemyOverlordCardPlayed"                        
                     ],
-                    "TurnIndex": 1,
-                    "UseBattleframesSequence": [
-                        {
-                            "TargetTutorialObjectId": 10,
-                            "TargetType": "OPPONENT_CARD",
-                            "TutorialObjectId": 51
-                        }
-                    ]
+                    "TurnIndex": 1
                 },
                 {
                     "PlayCardsSequence": [
-                        {
-                            "TutorialObjectId": 1
-                        },
+                        
                         {
                             "TutorialObjectId": 20
                         }
                     ],
-                    "RequiredActivitiesToDoneDuringTurn": [
-                        "PlayerOverlordCardPlayed",
+                    "RequiredActivitiesToDoneDuringTurn": [                        
                         "PlayerOverlordCardPlayed"
                     ],
                     "TurnIndex": 2
@@ -2328,16 +2315,14 @@
                         "Pose": "NORMAL"
                     }
                 },
-                {
-                    "ActionToEndThisStep": "EnemyBattleframeDied",
+{
+                    "ActionToEndThisStep": "EndTurn",
                     "ConnectedTurnIndex": 1,
-                    "LaunchAIBrain": true,
-                    "LaunchGameplayManually": true,
+					"CanInteractWithGameplay": true,
                     "RequiredActivitiesToDoneDuringStep": [
-                        "EnemyOverlordCardPlayed",
-                        "BattleframeAttacked"
+                        "PlayerOverlordCardPlayed"
                     ]
-                },
+                },                
                 {
                     "ActionToEndThisStep": "EndTurn",
                     "ConnectedTurnIndex": 1,
@@ -2571,7 +2556,57 @@
             "HasBlockedInteractivityInGameScreens": true,
             "TutorialDescriptionTooltips": [
                 {}
-            ],
+            ],"SpecificHordeInfo": {
+        "MainSet": "TOXIC",
+        "MaximumCardsCount": 20,
+        "CardsForArmy": [
+          {
+            "Amount": 2,
+            "CardName": "Gloop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zky"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Harpoon"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Rubble"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zwoop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Bane"
+          },
+          {
+            "Amount": 1,
+            "CardName": "GooZilla"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Azzazzin"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Cherno-bill"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Germ"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Nail Bomb"
+          }
+        ]
+      },
+  
             "TutorialReward": {
                 "CardPackCount": 1,
                 "CardPackReward": [
@@ -3303,6 +3338,84 @@
             "TutorialDescriptionTooltips": [
                 {}
             ],
+			"SpecificHordeInfo": {
+        "MainSet": "TOXIC",
+        "MaximumCardsCount": 30,
+        "CardsForArmy": [
+          {
+            "Amount": 2,
+            "CardName": "Gloop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zky"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Harpoon"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Rubble"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zwoop"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Bane"
+          },
+          {
+            "Amount": 1,
+            "CardName": "GooZilla"
+          },
+          {
+            "Amount": 3,
+            "CardName": "Azzazzin"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Cherno-bill"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Germ"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Nail Bomb"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Whistle"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Goo Beaker"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Slab"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Burrrnn"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Pushhh"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Blizzard"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Vindrom"
+          }
+        ]
+      },      
             "TutorialReward": {
                 "CardPackCount": 2,
                 "CardPackReward": [
