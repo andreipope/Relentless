@@ -707,7 +707,7 @@ namespace Loom.ZombieBattleground
                 Canvas.ForceUpdateCanvases();
             }
 
-            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize/2)
+            if(_tutorialManager.IsTutorial && _currentDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
             }      

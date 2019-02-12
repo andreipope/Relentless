@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
     public class LoginPopup : IUIPopup
     {
         public static Action OnHidePopupEvent;
+        public static Action OnLoginSuccess;
 
         public bool IsRegisteredUser;
 
@@ -230,6 +231,19 @@ namespace Loom.ZombieBattleground
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
+        }
+
+        public void SetRegistrationFieldsData(string _email, string _password)
+        {
+            _emailFieldRegister.text = _email;
+            _passwordFieldRegister.text = _password;
+            _confirmFieldRegister.text = _password;
+        }
+
+        public void Logout() 
+        {
+            Show();
+            SetLoginAsGuestState();
         }
 
         private void PressedSendOTPHandler()
@@ -687,6 +701,7 @@ namespace Loom.ZombieBattleground
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
             Hide();
+            OnLoginSuccess?.Invoke();
         }
 
         private void SetUIState(LoginState state, string errorMsg = "")

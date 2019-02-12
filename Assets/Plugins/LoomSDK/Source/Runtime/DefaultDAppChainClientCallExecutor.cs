@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client.Internal.AsyncEx;
 using UnityEngine;
-using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
 
 namespace Loom.Client
 {
@@ -105,9 +104,7 @@ namespace Loom.Client
                 ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             }
 
-            TimeoutException ex = new TimeoutException($"Call took longer than {timeoutMs} ms");
-
-            throw ex;
+            throw new TimeoutException($"Call took longer than {timeoutMs} ms");
 #endif
         }
 

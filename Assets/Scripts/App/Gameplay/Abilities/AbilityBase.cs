@@ -460,7 +460,9 @@ namespace Loom.ZombieBattleground
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count).Select(x => x.Model).ToList();
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
+                .Select(x => x.Model).ToList()
+                .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
         }
 
         protected void InvokeActionTriggered(object info = null)
