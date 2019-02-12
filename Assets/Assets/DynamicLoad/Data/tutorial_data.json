@@ -2540,7 +2540,7 @@
         "GameplayBeginManually": true
       },
       "PlayerOrderScreenShouldAppear": false,
-      "RewardCardPackCount": 1,
+      "RewardCardPackCount": 1
     }
   },
     {
@@ -3329,6 +3329,14 @@
         "MainSet": "TOXIC",
         "MaximumCardsCount": 30,
         "CardsForArmy": [
+			{
+            "Amount": 2,
+            "CardName": "Grower"
+          },
+		  {
+            "Amount": 2,
+            "CardName": "Shroom"
+          },
           {
             "Amount": 2,
             "CardName": "Gloop"
@@ -3396,7 +3404,7 @@
           {
             "Amount": 1,
             "CardName": "Blizzard"
-          },
+          },		  
           {
             "Amount": 1,
             "CardName": "Vindrom"
