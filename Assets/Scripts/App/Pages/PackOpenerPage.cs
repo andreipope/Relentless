@@ -124,6 +124,9 @@ namespace Loom.ZombieBattleground
             _cardsToDisplayQueqe = new List<Card>();
             _createdCardsVFX = new List<GameObject>();
             _cardsToReveal = new List<Transform>();
+            
+            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
+            _packBalanceAmounts = new int[packTypes.Length];
         }
         
         public async void  Update()
@@ -134,7 +137,7 @@ namespace Loom.ZombieBattleground
                     if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
                     {
                         _dataLoading = true;
-                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(3));
                         RetrievePackBalanceAmount();                        
                     }
             }
@@ -442,9 +445,8 @@ namespace Loom.ZombieBattleground
         }
         
         public async Task RetrievePackBalanceAmount()
-        {            
+        {  
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-            _packBalanceAmounts = new int[packTypes.Length];
             for(int i=0; i<packTypes.Length;++i)
             {
                 await RetrievePackBalanceAmount(i);
