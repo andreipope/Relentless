@@ -2116,17 +2116,7 @@
                 "RankSystemHasEnabled": true
             },
             "SpecificTurnInfos": [
-                {
-                    "PlayCardsSequence": [						
-                        {
-                            "TutorialObjectId": 52
-                        }
-                    ],
-                    "RequiredActivitiesToDoneDuringTurn": [						
-                        "EnemyOverlordCardPlayed"                        
-                    ],
-                    "TurnIndex": 2
-                },
+                
                 {
                     "PlayCardsSequence": [                        
                         {
@@ -2137,6 +2127,17 @@
                         "PlayerOverlordCardPlayed"
                     ],
                     "TurnIndex": 1
+                },
+				{
+                    "PlayCardsSequence": [						
+                        {
+                            "TutorialObjectId": 52
+                        }
+                    ],
+                    "RequiredActivitiesToDoneDuringTurn": [						
+                        "EnemyOverlordCardPlayed"                        
+                    ],
+                    "TurnIndex": 2
                 },
                 {
                     "PlayCardsSequence": [
