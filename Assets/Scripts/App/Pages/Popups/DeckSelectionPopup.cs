@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground
                 if(deck == _selectedDeck)
                 {
                     _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
-                    _imageDeckIconGrow.GetComponent<RectTransform>().localPosition = _createdDeckIconList[i].GetComponent<RectTransform>().localPosition;                   
+                    //_imageDeckIconGrow.GetComponent<RectTransform>().localPosition = _createdDeckIconList[i].GetComponent<RectTransform>().localPosition;                   
                 }
                 else
                 {
