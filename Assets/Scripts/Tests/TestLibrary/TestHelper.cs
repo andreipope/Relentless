@@ -126,6 +126,8 @@ namespace Loom.ZombieBattleground.Test
         private MultiplayerDebugClient _opponentDebugClient;
         private OnBehaviourHandler _opponentDebugClientOwner;
 
+        private bool _aborted;
+
         public int SelectedHordeIndex { get; private set; }
 
         public UserDataModel TestUserDataModel { get; set; }
@@ -137,6 +139,11 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         private TestHelper()
         {
+        }
+
+        public void AbortCurrentTest()
+        {
+            _aborted = true;
         }
 
         /// <summary>
@@ -169,6 +176,7 @@ namespace Loom.ZombieBattleground.Test
             Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
 
             Time.timeScale = TestTimeScale;
+            _aborted = false;
 
             TestUserDataModel = new UserDataModel(GetTestUserName(), CryptoUtils.GeneratePrivateKey()) {
                 IsRegistered = true
@@ -1059,21 +1067,6 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        /// <summary>
-        /// Waits until a page unloads.
-        /// </summary>
-        public async Task WaitUntilPageUnloads()
-        {
-            await new WaitUntil(() =>
-            {
-                if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount <= 1)
-                {
-                    return true;
-                }
-
-                return false;
-            });
-        }
 
         #region Interactions with PvP module
 
@@ -2326,8 +2319,8 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         public MultiplayerDebugClient GetOpponentDebugClient()
         {
-            Assert.NotNull(_opponentDebugClient);
-            Assert.NotNull(_opponentDebugClientOwner);
+            Assert.NotNull(_opponentDebugClient, "_opponentDebugClient != null");
+            Assert.NotNull(_opponentDebugClientOwner, "_opponentDebugClientOwner != null");
 
             return _opponentDebugClient;
         }
@@ -2337,7 +2330,7 @@ namespace Loom.ZombieBattleground.Test
         /// Connects that client to the backend.
         /// </summary>
         /// <returns></returns>
-        public async Task CreateAndConnectOpponentDebugClient()
+        public async Task CreateAndConnectOpponentDebugClient(Func<Exception, Task> onExceptionCallback = null)
         {
             if (_opponentDebugClient != null)
             {
@@ -2371,7 +2364,22 @@ namespace Loom.ZombieBattleground.Test
                 },
                 enabledLogs: false);
 
-            onBehaviourHandler.Updating += async go => await client.Update();
+            onBehaviourHandler.Updating += async go =>
+            {
+                try
+                {
+                    await client.Update();
+                }
+                catch (Exception e)
+                {
+                    if (onExceptionCallback != null)
+                    {
+                        await onExceptionCallback.Invoke(e);
+                    }
+
+                    throw;
+                }
+            };
         }
 
         /// <summary>

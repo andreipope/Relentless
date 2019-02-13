@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
@@ -63,7 +64,17 @@ namespace Loom.ZombieBattleground.Test
             Action<DebugCheatsConfiguration> modifyOpponentDebugCheats,
             Action validateEndStateAction)
         {
-            await TestHelper.CreateAndConnectOpponentDebugClient();
+            MatchScenarioPlayer matchScenarioPlayer = null;
+
+            bool canceled = false;
+            await TestHelper.CreateAndConnectOpponentDebugClient(
+                async exception =>
+                {
+                    await GameClient.Get<IPvPManager>().StopMatchmaking();
+                    matchScenarioPlayer?.AbortNextMoves();
+                    canceled = true;
+                }
+                );
             setupAction?.Invoke();
 
             await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
@@ -73,10 +84,13 @@ namespace Loom.ZombieBattleground.Test
             await GameClient.Get<IMatchManager>().FindMatch();
             GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
 
-            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
-            await TestHelper.WaitUntilPlayerOrderIsDecided();
 
+            Assert.IsFalse(canceled, "canceled");
+            await TestHelper.WaitUntilPlayerOrderIsDecided();
+            Assert.IsFalse(canceled, "canceled");
+
+            matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await matchScenarioPlayer.Play();
             validateEndStateAction?.Invoke();
 

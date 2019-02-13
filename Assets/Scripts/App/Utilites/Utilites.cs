@@ -81,11 +81,9 @@ namespace Loom.ZombieBattleground
             return str.Substring(0, maxLength);
         }
 
-        public static double GetTimeSinceStartup()
+        public static double GetTimestamp()
         {
-            long ticks = Stopwatch.GetTimestamp();
-            double uptime = (double)ticks / Stopwatch.Frequency;
-            return uptime;
+            return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
         }
 
         #region asset bundles and cache

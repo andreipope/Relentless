@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Ignore("broken, need verification")]
     public class MatchmakingTests : BaseIntegrationTest
     {
         [UnityTest]

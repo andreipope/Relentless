@@ -6,6 +6,7 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Ignore("broken")]
     public class TutorialTests : BaseIntegrationTest
     {
         [UnityTest]

@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task Update()
         {
 #if UNITY_EDITOR
-            double timeSinceStartup = Utilites.GetTimeSinceStartup();
+            double timeSinceStartup = Utilites.GetTimestamp();
 #else
             double timeSinceStartup = Time.realtimeSinceStartup;
 #endif
