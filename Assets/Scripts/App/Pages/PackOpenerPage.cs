@@ -133,7 +133,10 @@ namespace Loom.ZombieBattleground
                 if (_backendDataControlMediator.UserDataModel != null)
                     if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
                     {
-                        RetrievePackBalanceAmount();
+                        if (Constants.EnableShopPage)
+                        {
+                            RetrievePackBalanceAmount();
+                        }
                         _dataLoading = true;
                     }
             }
