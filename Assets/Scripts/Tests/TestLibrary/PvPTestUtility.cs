@@ -165,5 +165,19 @@ namespace Loom.ZombieBattleground.Test
         {
             return CardNameEqual(name, card.LibraryCard.Name);
         }
+
+        public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)
+        {
+            Deck deck = new Deck(
+                 0,
+                 heroId,
+                 name,
+                 cards.ToList(),
+                 Enumerators.OverlordSkill.NONE,
+                 Enumerators.OverlordSkill.NONE
+             );
+
+            return deck;
+        }
     }
 }
