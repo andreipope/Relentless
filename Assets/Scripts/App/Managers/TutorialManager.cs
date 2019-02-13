@@ -479,24 +479,16 @@ namespace Loom.ZombieBattleground
                 HideAllActiveDescriptionTooltip();
             }
 
-            bool skip = false;
-            foreach (TutorialData tutorial in _tutorials)
+            if (CurrentTutorial.TutorialContent.ActionActivityHandlers != null)
             {
-                if (tutorial.TutorialContent.ActionActivityHandlers != null)
+                foreach (ActionActivityHandler activityHandler in CurrentTutorial.TutorialContent.ActionActivityHandlers)
                 {
-                    foreach (ActionActivityHandler activityHandler in tutorial.TutorialContent.ActionActivityHandlers)
+                    if (activityHandler.TutorialActivityAction == action && !activityHandler.HasSpecificConnection)
                     {
-                        if (activityHandler.TutorialActivityAction == action && !activityHandler.HasSpecificConnection)
-                        {
-                            DoActionByActivity(activityHandler);
-                            skip = true;
-                            break;
-                        }
+                        DoActionByActivity(activityHandler);
+                        break;
                     }
                 }
-
-                if (skip)
-                    break;
             }
 
             if (CurrentTutorial.IsGameplayTutorial())
