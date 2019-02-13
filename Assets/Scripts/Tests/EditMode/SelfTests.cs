@@ -25,7 +25,8 @@ namespace Loom.ZombieBattleground.Test
                 typeof(FireCardsTests),
                 typeof(ToxicCardsTests),
                 typeof(HiddenCardsTests),
-                typeof(LifeCardsTests)
+                typeof(LifeCardsTests),
+                typeof(ItemsCardsTests)
             };
 
             List<string> testNames =
