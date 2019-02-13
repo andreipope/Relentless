@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground
             _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");   
             
             _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
-            _buttonBuyPack = _selfPage.transform.Find("Header/Button_BuyPacks").GetComponent<Button>();
+            _buttonBuyPack = _selfPage.transform.Find("Pack_Panel/Button_BuyPacks").GetComponent<Button>();
             _buttonPlus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonPlus").GetComponent<Button>();
             _buttonMinus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMinus").GetComponent<Button>();
             _buttonMax = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMax").GetComponent<Button>();
