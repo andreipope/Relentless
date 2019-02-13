@@ -558,11 +558,18 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                await RetrievePackBalanceAmount(_selectedPackTypeIndex);
+                SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
                 {
                     _packBalanceAmounts[_selectedPackTypeIndex]--;
                     _packToOpenAmount--;
                     await RetriveCardsFromPack(_selectedPackTypeIndex);
+                }
+                else
+                {
+                    _cardsToDisplayQueqe.Clear();
+                    ChangeState(STATE.CARD_EMERGED);
                 }
             }    
         }
