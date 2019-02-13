@@ -63,8 +63,10 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
-                    _uiManager.SetPage<HordeSelectionPage>();
-                    CheckIfPlayAgainOptionShouldBeAvailable();
+                    //Temporary test new Navigation Menu
+                    //_uiManager.SetPage<HordeSelectionPage>();
+                    //CheckIfPlayAgainOptionShouldBeAvailable();
+                    _uiManager.SetPage<MyDecksPage>();
                     break;
                 case Enumerators.AppState.ARMY:
                     _uiManager.SetPage<ArmyPage>();
