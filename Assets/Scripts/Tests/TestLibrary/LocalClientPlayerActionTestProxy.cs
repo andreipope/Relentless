@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Test
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
             WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
-            await _testHelper.PlayCardFromHandToBoard(workingCard, position, false, entryAbilityTargetBoardObject);
+            await _testHelper.PlayCardFromHandToBoard(workingCard, position, entryAbilityTargetBoardObject);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
@@ -76,9 +76,11 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public Task OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public async Task OverlordSkillUsed(SkillId skillId, InstanceId? target)
         {
-            throw new NotImplementedException();
+            BoardObject targetBoardObject = target != null ? _testHelper.BattlegroundController.GetBoardObjectByInstanceId(target.Value) : null;
+            BoardSkill boardSkill = _testHelper.GetBoardSkill(_testHelper.GetCurrentPlayer(), skillId);
+            await _testHelper.DoBoardSkill(boardSkill, targetBoardObject);
         }
 
         public Task CardAttack(InstanceId attacker, InstanceId target)

@@ -35,20 +35,29 @@ namespace Loom.ZombieBattleground
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 List<BoardUnitView> units = new List<BoardUnitView>();
-                foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
-                {
-                    switch (targetType)
-                    {
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
-                    }
-                }
 
-                units = InternalTools.GetRandomElementsFromList(units, Count);
+                if (PredefinedTargets != null)
+                {
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().
+                             Select(model => BattlegroundController.GetBoardUnitViewByModel(model)).ToList();
+                }
+                else
+                {
+                    foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                    {
+                        switch (targetType)
+                        {
+                            case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                                break;
+                            case Enumerators.AbilityTargetType.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                                break;
+                        }
+                    }
+
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
+                }
 
                 foreach (BoardUnitView unit in units)
                 {
