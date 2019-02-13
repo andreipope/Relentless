@@ -41,12 +41,12 @@ namespace Loom.ZombieBattleground
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            webrequestCreationInfo.ContentType = "application/json";
             
             FiatValidationGoogleRequest fiatValidationGoogleRequest = new FiatValidationGoogleRequest();
             fiatValidationGoogleRequest.productId = productId;
             fiatValidationGoogleRequest.purchaseToken = purchaseToken;
-            fiatValidationGoogleRequest.storeTxId = storeTxId;
+            fiatValidationGoogleRequest.transactionId = storeTxId;
             fiatValidationGoogleRequest.storeName = storeName;
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationGoogleRequest));
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            webrequestCreationInfo.ContentType = "application/json";
             
             FiatValidationAppleRequest fiatValidationAppleRequest = new FiatValidationAppleRequest();
             fiatValidationAppleRequest.productId = productId;
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatClaimURL;
-            webrequestCreationInfo.ContentType = "application/json;charset=UTF-8";
+            webrequestCreationInfo.ContentType = "application/json";
             
             FiatClaimRequestBody body = new FiatClaimRequestBody();
             body.user_id = userId;
@@ -158,7 +158,7 @@ namespace Loom.ZombieBattleground
         {
             public string productId;
             public string purchaseToken;    
-            public string storeTxId;    
+            public string transactionId;    
             public string storeName;
         }
         
