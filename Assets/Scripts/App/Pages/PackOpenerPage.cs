@@ -242,6 +242,10 @@ namespace Loom.ZombieBattleground
             
             if(_tutorialManager.IsTutorial)
             {
+                if (!Constants.EnableShopPage) {
+                    Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
+                    _packBalanceAmounts = new int[packTypes.Length];
+                }
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
                 _isCollectedTutorialCards = false;
