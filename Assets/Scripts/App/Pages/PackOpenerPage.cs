@@ -233,7 +233,8 @@ namespace Loom.ZombieBattleground
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
                 _isCollectedTutorialCards = false;
-            }else
+            }
+            else
             {
                 RetrievePackBalanceAmount();
             }
