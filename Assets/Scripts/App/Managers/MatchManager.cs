@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
         private async void MatchMakingPopupOnCancelMatchmakingClicked()
         {
             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
-            UIMatchMakingFlowController matchMakingFlowController = _pvpManager.MatchMakingFlowController;
+            MatchMakingFlowController matchMakingFlowController = _pvpManager.MatchMakingFlowController;
 
             try
             {
@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground
             StartPvPMatch();
         }
 
-        private void HandleEndMatchmaking(MatchMakingPopup matchMakingPopup, UIMatchMakingFlowController matchMakingFlowController)
+        private void HandleEndMatchmaking(MatchMakingPopup matchMakingPopup, MatchMakingFlowController matchMakingFlowController)
         {
             FindOpponentTime.FinishTimer();
 
