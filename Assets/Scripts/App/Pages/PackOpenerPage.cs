@@ -99,8 +99,6 @@ namespace Loom.ZombieBattleground
         private int _retryOpenPackRequestCount = 0;
         
         private const int MaxRequestRetryAttempt = 2;
-
-        private bool _isCollectedTutorialCards = false;
         
         #region IUIElement
         
@@ -230,9 +228,8 @@ namespace Loom.ZombieBattleground
             
             if(_tutorialManager.IsTutorial)
             {
-                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
+                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
-                _isCollectedTutorialCards = false;
             }
             else
             {
@@ -513,15 +510,9 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.DrawPopup<LoadingFiatPopup>();
             _cardsToDisplayQueqe.Clear();
-            foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
-            {
-                _cardsToDisplayQueqe.Add
-                (
-                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name)
-                );
-                if (_cardsToDisplayQueqe.Count >= 5)
-                    break;
-            }
+            
+            _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
+            
             _uiManager.HidePopup<LoadingFiatPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
@@ -543,15 +534,15 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial)
             {
-                if (!_isCollectedTutorialCards)
+                if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
                 {
-                    _isCollectedTutorialCards = true;
-                    SimulateRetriveTutorialCardsFromPack();
-                    _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 0;
+                    await SimulateRetriveTutorialCardsFromPack();
+
+                    _packBalanceAmounts[_selectedPackTypeIndex]--;
+                    _packToOpenAmount--;
                 }
                 else
                 {
-                    _cardsToDisplayQueqe.Clear();
                     ChangeState(STATE.CARD_EMERGED);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);                   
                 }
@@ -562,9 +553,10 @@ namespace Loom.ZombieBattleground
                 SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
                 {
+                    await RetriveCardsFromPack(_selectedPackTypeIndex);
+                    
                     _packBalanceAmounts[_selectedPackTypeIndex]--;
                     _packToOpenAmount--;
-                    await RetriveCardsFromPack(_selectedPackTypeIndex);
                 }
                 else
                 {
@@ -852,15 +844,15 @@ namespace Loom.ZombieBattleground
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         
             if (_state == STATE.READY)
-            {
+            {    
+                SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
+                if (_packToOpenAmount <= 0)
+                    return;
+                    
                 if(_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
                 }
-                
-                SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
-                if (_packToOpenAmount <= 0)
-                    return;
 
                 ChangeState(STATE.TRAY_INSERTED);
             }            
