@@ -82,12 +82,15 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => player.CardPlay(playerCardId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
+                       player => player.CardAttack(playerCardId, opponentCardId),
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasBuffShield);
-                    Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasBuffShield);
+                    BoardUnitModel playerUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    BoardUnitModel opponentUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    Assert.AreEqual(playerUnit.InitialHp, playerUnit.CurrentHp);
+                    Assert.AreEqual(opponentUnit.InitialHp, opponentUnit.CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
