@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground
                 (
                     _fiatValidationDataGoogleStore.productId,
                     _fiatValidationDataGoogleStore.purchaseToken,
-                    _fiatValidationDataGoogleStore.storeTxId,
+                    _fiatValidationDataGoogleStore.transactionId,
                     _fiatValidationDataGoogleStore.storeName
                 );        
             }
@@ -608,7 +608,7 @@ namespace Loom.ZombieBattleground
             Debug.Log("OnProcessPurchase");
             Debug.Log($"productId {product.definition.id}");
             Debug.Log($"receipt {args.purchasedProduct.receipt}");
-            Debug.Log($"storeTxId {product.transactionID}");
+            Debug.Log($"transactionID {product.transactionID}");
             Debug.Log($"storeSpecificId {product.definition.storeSpecificId}");
 
 
@@ -616,7 +616,7 @@ namespace Loom.ZombieBattleground
             _fiatValidationDataGoogleStore = new FiatValidationDataGoogleStore();      
             _fiatValidationDataGoogleStore.productId = product.definition.id;
             _fiatValidationDataGoogleStore.purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
-            _fiatValidationDataGoogleStore.storeTxId = product.transactionID;
+            _fiatValidationDataGoogleStore.transactionId = product.transactionID;
             _fiatValidationDataGoogleStore.storeName = "GooglePlay";
 
             RequestFiatValidationGoogle();  
@@ -764,7 +764,7 @@ namespace Loom.ZombieBattleground
         {
             public string productId;
             public string purchaseToken;
-            public string storeTxId;
+            public string transactionId;
             public string storeName;
         }
         

@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task<FiatValidationResponse> CallFiatValidationGoogle(string productId, string purchaseToken, string storeTxId, string storeName)
+        public async Task<FiatValidationResponse> CallFiatValidationGoogle(string productId, string purchaseToken, string transactionId, string storeName)
         {  
             Debug.Log($"{nameof(CallFiatValidationGoogle)}");
             
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             FiatValidationGoogleRequest fiatValidationGoogleRequest = new FiatValidationGoogleRequest();
             fiatValidationGoogleRequest.productId = productId;
             fiatValidationGoogleRequest.purchaseToken = purchaseToken;
-            fiatValidationGoogleRequest.transactionId = storeTxId;
+            fiatValidationGoogleRequest.transactionId = transactionId;
             fiatValidationGoogleRequest.storeName = storeName;
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(fiatValidationGoogleRequest));
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
