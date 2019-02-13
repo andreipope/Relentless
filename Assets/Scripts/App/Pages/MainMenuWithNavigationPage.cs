@@ -101,7 +101,8 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
+            //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
+            _uiManager.DrawPopup<GameModePopup>();
         }
 
         #endregion

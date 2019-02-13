@@ -87,6 +87,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new SideMenuPopup());
             _uiPopups.Add(new AreaBarPopup());
             _uiPopups.Add(new DeckSelectionPopup());
+            _uiPopups.Add(new GameModePopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
