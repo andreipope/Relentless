@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
 
         DebugCheatsConfiguration DebugCheats { get; }
 
-        UIMatchMakingFlowController MatchMakingFlowController { get; }
+        MatchMakingFlowController MatchMakingFlowController { get; }
 
         string GetOpponentUserId();
 
