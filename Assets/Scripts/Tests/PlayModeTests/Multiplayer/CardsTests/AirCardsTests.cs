@@ -75,8 +75,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    UnityEngine.Debug.LogError(TestHelper.BattlegroundController.PlayerBoardCards.Count + " ||| " +
-                        TestHelper.BattlegroundController.OpponentBoardCards.Count);
                     Assert.AreEqual(0, TestHelper.BattlegroundController.PlayerBoardCards.Count);
                     Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Count);
                 };
