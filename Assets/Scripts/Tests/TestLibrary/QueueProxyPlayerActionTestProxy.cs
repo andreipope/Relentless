@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public void OverlordSkillUsed(SkillId skillId, InstanceId? target)
         {
             Queue.Enqueue(() =>
             {

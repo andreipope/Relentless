@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1), false, true);
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1, null), false, true);
                 }
             }, null);
         }
@@ -243,8 +243,15 @@ namespace Loom.ZombieBattleground
             if (!Application.isPlaying) {
                 throw exception;
             }
-                
-            Debug.LogWarning("Handled network exception: " + exception);
+
+            string message = "Handled network exception: ";
+            if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)
+            {
+                message += $"[URL: {webSocketRpcClient.Url}] ";
+            }
+            message += exception;
+
+            Debug.LogWarning(message);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
             {

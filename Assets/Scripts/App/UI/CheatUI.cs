@@ -15,12 +15,12 @@ namespace Loom.ZombieBattleground
         private const string PersistentFileName = "CheatsSettings.json";
 
         private readonly List<Action> _updateBinds = new List<Action>();
-
         private IPvPManager _pvpManager;
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
-#if !USE_PRODUCTION_BACKEND
+        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
+
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
@@ -79,7 +79,6 @@ namespace Loom.ZombieBattleground
 
             _customDeckEditor?.OnGUI();
         }
-#endif
 
         private void Start()
         {
@@ -119,8 +118,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
-
         private class CustomDeckEditor
         {
             private readonly CheatUI _cheatUI;
@@ -130,6 +127,7 @@ namespace Loom.ZombieBattleground
             private bool _visible;
             private Vector2 _customDeckScrollPosition;
             private Vector2 _cardLibraryScrollPosition;
+            private string _nameFilterString = "";
 
             public bool Visible => _visible;
 
@@ -205,11 +203,21 @@ namespace Loom.ZombieBattleground
                         // Card Library
                         GUILayout.BeginVertical("Card Library", Styles.OpaqueWindow, GUILayout.Height(Screen.height * (1f - customDeckScreenHeightRatio) / UIScaleFactor));
                         {
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
+                                _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
+                            }
+
+                            GUILayout.EndHorizontal();
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
                                 foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
                                 {
+                                    if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                        continue;
+
                                     GUILayout.BeginHorizontal();
                                     {
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
