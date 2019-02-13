@@ -54,6 +54,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _dataManager = GameClient.Get<IDataManager>();
             
             _abiTutorialReward = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/TutorialRewardABI");                       
         }
