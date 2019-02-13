@@ -238,9 +238,11 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
-            if (!Application.isPlaying) {
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) {
                 throw exception;
             }
+#endif
 
             string message = "Handled network exception: ";
             if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)

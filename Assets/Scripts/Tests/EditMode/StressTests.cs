@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client;
@@ -22,12 +23,12 @@ namespace Loom.ZombieBattleground.Test
         private static int[] MatchmakeTestCases = {
             2,
             10,
-            30,
+            /*30,
             50,
             70,
             100,
             200,
-            300
+            300*/
         };
 
         private readonly Queue<Func<Task>> _failedTestsCleanupTasks = new Queue<Func<Task>>();
@@ -48,11 +49,11 @@ namespace Loom.ZombieBattleground.Test
         {
             int turnCount = 20;
 
-            return TestUtility.AsyncTest(() => MatchmakingTestBase(clientCount,
+            return TestUtility.AsyncTest(() => MatchmakingTestBase(
+                clientCount,
                 async clients =>
                 {
                     double startTime = Utilites.GetTimeSinceStartup();
-
                     ConcurrentDictionary<MultiplayerDebugClient, int> clientToTurns = new ConcurrentDictionary<MultiplayerDebugClient, int>();
 
                     async Task EndTurnIfCurrentTurn(MultiplayerDebugClient client)
@@ -66,7 +67,7 @@ namespace Loom.ZombieBattleground.Test
                         GameState gameState = gameStateResponse.GameState;
                         if (gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == client.UserDataModel.UserId)
                         {
-                            Debug.Log("ending turn " + clientTurnCount);
+                            Debug.Log("Ending turn " + clientTurnCount);
                             clientTurnCount++;
                             clientToTurns[client] = clientTurnCount;
 
@@ -94,14 +95,14 @@ namespace Loom.ZombieBattleground.Test
 
                             if (isLocalPlayer != null)
                             {
-                                await EndTurnIfCurrentTurn(client);
+                                await TaskThreadedWrapper(() => EndTurnIfCurrentTurn(client));
                             }
                         };
                     }
 
                     await Task.WhenAll(
                         clients
-                            .Select(EndTurnIfCurrentTurn)
+                            .Select(client => TaskThreadedWrapper(() => EndTurnIfCurrentTurn(client)))
                             .ToArray()
                     );
 
@@ -151,24 +152,31 @@ namespace Loom.ZombieBattleground.Test
 
                 await Task.WhenAll(
                     clients
-                        .Select(async client =>
+                        .Select(client =>
                         {
                             float delay = UnityEngine.Random.Range(0f, 10f) * (clientCount / 300f);
-                            Debug.Log("Waiting for " + delay + "s");
-                            await Task.Delay((int) (delay * 1000f));
-                            await client.Start(
-                                enabledLogs: false,
-                                chainClientCallExecutor: new DefaultDAppChainClientCallExecutor(
-                                    new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
-                                contractCallProxyFactory: contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, true, false))
-                            );
-                            client.MatchMakingFlowController.ActionWaitingTime = 2;
+                            return TaskThreadedWrapper(async () =>
+                            {
+                                Debug.Log("Waiting for " + delay + "s");
+                                await Task.Delay((int) (delay * 1000f));
+                                await client.Start(
+                                    enabledLogs: true,
+                                    chainClientCallExecutor: new DefaultDAppChainClientCallExecutor(
+                                        new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration())),
+                                    contractCallProxyFactory: contract => new DefaultContractCallProxy(contract),
+                                    onClientCreatedCallback: chainClient =>
+                                    {
+                                        chainClient.Configuration.CallTimeout = 15000;
+                                        chainClient.Configuration.StaticCallTimeout = 15000;
+                                    }
+                                );
+                                client.MatchMakingFlowController.ActionWaitingTime = 5;
+                            });
                         })
                         .ToArray()
                 );
 
                 Assert.AreEqual(clients.Count, clients.Select(client => client.UserDataModel.UserId).Distinct().ToArray().Length);
-
                 Debug.Log($"Created {clientCount} clients");
 
                 int confirmationCount = 0;
@@ -185,12 +193,15 @@ namespace Loom.ZombieBattleground.Test
 
                 await Task.WhenAll(
                     clients
-                        .Select(async client =>
+                        .Select(client =>
                         {
                             float delay = UnityEngine.Random.Range(0f, 60f) * (clientCount / 300f);
-                            Debug.Log("waiting for " + delay + "s");
-                            await Task.Delay((int) (delay * 1000f));
-                            await client.MatchMakingFlowController.Start(1, null, null, false, null);
+                            return TaskThreadedWrapper(async () =>
+                            {
+                                Debug.Log("waiting for " + delay + "s");
+                                await Task.Delay((int) (delay * 1000f));
+                                await client.MatchMakingFlowController.Start(1, null, null, false, null);
+                            });
                         })
                         .ToArray()
                 );
@@ -202,7 +213,7 @@ namespace Loom.ZombieBattleground.Test
                     await Task.Delay(200);
                     await Task.WhenAll(
                         clients
-                            .Select(client => Task.Run(client.Update))
+                            .Select(client => TaskThreadedWrapper(client.Update))
                             .ToArray()
                     );
                 }
@@ -236,10 +247,25 @@ namespace Loom.ZombieBattleground.Test
                     }
                     catch (Exception e)
                     {
+                        Debug.LogError("Exception during test cleanup");
                         Debug.LogException(e);
                     }
                 }
             }, 10000);
+        }
+
+        private async Task TaskThreadedWrapper(Func<Task> taskFunc, Action<Exception> onExceptionCallback = null)
+        {
+            try
+            {
+                await Task.Run(taskFunc);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                onExceptionCallback?.Invoke(e);
+                ExceptionDispatchInfo.Capture(e).Throw();
+            }
         }
     }
 }
