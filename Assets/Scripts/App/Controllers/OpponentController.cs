@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using Card = Loom.ZombieBattleground.Data.Card;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
@@ -148,6 +149,7 @@ namespace Loom.ZombieBattleground
             if (!_pvpManager.UseBackendGameLogic)
                 return;
 
+            Debug.LogError(outcome.OutcomeCase);
             switch (outcome.OutcomeCase)
             {
                 case PlayerActionOutcome.OutcomeOneofCase.None:
@@ -158,16 +160,92 @@ namespace Loom.ZombieBattleground
 
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
-
-                    boardUnit.BuffedDamage = rageOutcome.NewAttack;
-                    boardUnit.CurrentDamage = rageOutcome.NewAttack;
                     break;
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
                     // TODO
                     break;
+
+                case PlayerActionOutcome.OutcomeOneofCase.Reanimate:
+                    PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome = outcome.Reanimate;
+                    ReAnimateAbility(reanimateAbilityOutcome);
+                    break;
+
+                case PlayerActionOutcome.OutcomeOneofCase.ChangeStat:
+                    PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome  = outcome.ChangeStat;
+                    boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
+
+                    boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
+                    boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
+
+                    boardUnit.BuffedHp = changeStatOutcome.NewDefense;
+                    boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void ReAnimateAbility(PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome)
+        {
+            /*
+            // TODO :  set owner instance id from backend
+            BoardUnitModel abilityUnitOwner = _battlegroundController.GetBoardUnitModelByInstanceId(reanimateAbilityOutcome..FromProtobuf());
+
+            Player owner = abilityUnitOwner.OwnerPlayer;
+            Card libraryCard = new Card(abilityUnitOwner.Card.LibraryCard);
+
+            //TODO: set card instance id from backend
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner, reanimateAbilityOutcome.InstanceId.FromProtobuf());
+            BoardUnitView unit = CreateBoardUnit(card, owner);
+
+            owner.AddCardToBoard(card, ItemPosition.End);
+            owner.BoardCards.Insert(ItemPosition.End, unit);
+
+            if (owner.IsLocalPlayer)
+            {
+                _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
+            }
+            else
+            {
+                _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
+            }
+
+            _boardController.UpdateCurrentBoardOfPlayer(owner, null);
+
+            // TODO : have to see... how to invoke this
+            //InvokeActionTriggered(unit);
+            AbilityData abilityData = AbilitiesController.GetAbilityDataByType(Enumerators.AbilityType.REANIMATE_UNIT);
+            AbilityBase ability = new ReanimateAbility(libraryCard.CardKind, abilityData);
+            AbilityViewBase abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
+            ability.InvokeActionTriggered(unit);
+            */
+        }
+
+        private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
+        {
+            GameObject playerBoard = owner.IsLocalPlayer ?
+                _battlegroundController.PlayerBoardObject :
+                _battlegroundController.OpponentBoardObject;
+
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
+            boardUnitView.Transform.parent = playerBoard.transform;
+            boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnitView.Model.OwnerPlayer = owner;
+            boardUnitView.SetObjectInfo(card);
+            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
+
+            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+            {
+                boardUnitView.Model.IsPlayable = true;
+            }
+
+            boardUnitView.PlayArrivalAnimation();
+
+            _gameplayManager.CanDoDragActions = true;
+
+            return boardUnitView;
         }
 
         private void OnPlayerLeftGameActionHandler()
