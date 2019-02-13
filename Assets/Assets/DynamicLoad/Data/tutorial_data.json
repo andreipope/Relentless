@@ -647,6 +647,12 @@
                     "UnitsCanAttack": true
                 },
                 {
+                  "ConnectedTurnIndex": 7,
+                  "RequiredActivitiesToDoneDuringStep": [
+                  ],
+                  "ActionToEndThisStep": "OverlordSayPopupHided",
+                },
+                {
                     "ActionToEndThisStep": "EndTurn",
                     "ConnectedTurnIndex": 7,
                     "OverlordSayTooltips": [],
