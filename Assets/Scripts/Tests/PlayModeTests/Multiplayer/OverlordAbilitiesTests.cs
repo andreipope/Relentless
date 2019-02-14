@@ -486,9 +486,7 @@ namespace Loom.ZombieBattleground.Test
                        {
                            player.CardAttack(playerCardId, opponentCardId);
                        },
-                       opponent =>
-                       {
-                       },
+                       opponent => {},
                        player =>
                        {
                            player.CardAttack(playerCardId, pvpTestContext.GetOpponentPlayer().InstanceId);
