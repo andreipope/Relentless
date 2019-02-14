@@ -101,65 +101,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-        public IEnumerator Bane()
-        {
-            return AsyncTest(async () =>
-            {
-                Deck opponentDeck = new Deck(
-                    0,
-                    0,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Slab", 30)
-                    },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
-                );
-
-                Deck playerDeck = new Deck(
-                    0,
-                    0,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Bane", 30)
-                    },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
-                );
-
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
-                    Player1HasFirstTurn = true
-                };
-
-                InstanceId playerBaneId = pvpTestContext.GetCardInstanceIdByIndex(playerDeck, 0);
-
-                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                   {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-
-                       player => player.CardPlay(playerBaneId, ItemPosition.Start),
-                       opponent => {}
-                   };
-
-                Action validateEndState = () =>
-                {
-                    Assert.AreEqual(19, pvpTestContext.GetCurrentPlayer().Defense);
-                };
-
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            });
-        }
-
-
-        [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
         public IEnumerator Zeptic_Lose()
         {
             return AsyncTest(async () =>
