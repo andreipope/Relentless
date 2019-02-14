@@ -172,14 +172,36 @@ namespace Loom.ZombieBattleground
 
                 case PlayerActionOutcome.OutcomeOneofCase.ChangeStat:
                     PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome  = outcome.ChangeStat;
+
+                    BoardObject targetObject =
+                        _battlegroundController.GetBoardObjectByInstanceId(changeStatOutcome.TargetInstanceId
+                            .FromProtobuf());
+
+                    BoardUnitModel unitModel =
+                        _battlegroundController.GetBoardUnitModelByInstanceId(
+                            changeStatOutcome.InstanceId.FromProtobuf());
+
+                    switch (targetObject)
+                    {
+                        case Player targetPlayer:
+                            _battleController.AttackPlayerByUnit(unitModel, targetPlayer);
+                            break;
+                        case BoardUnitModel targetCardModel:
+                            break;
+                    }
+
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
-                    _battleController.AttackPlayerByUnit(boardUnit, _gameplayManager.OpponentPlayer);
 
-                    boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
-                    boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
-
-                    boardUnit.BuffedHp = changeStatOutcome.NewDefense;
-                    boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+                    if (changeStatOutcome.Stat == StatType.Types.Enum.Damage)
+                    {
+                        boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
+                        boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
+                    }
+                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Health)
+                    {
+                        boardUnit.BuffedHp = changeStatOutcome.NewDefense;
+                        boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+                    }
 
                     break;
 
