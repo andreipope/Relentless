@@ -171,31 +171,17 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck opponentDeck = new Deck(
-                    0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
                     5,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Puffer", 1),
-                        new DeckCardData("Azuraz", 15)
-                    },
                     Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Puffer", 1), new DeckCardData("Azuraz", 15));
 
-                Deck playerDeck = new Deck(
-                    0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
                     5,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Puffer", 1),
-                        new DeckCardData("Azuraz", 15)
-                    },
                     Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Puffer", 1), new DeckCardData("Azuraz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
@@ -264,35 +250,22 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck opponentDeck = new Deck(
-                    0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
                     5,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Slab", 15),
-                    },
                     Enumerators.OverlordSkill.HEALING_TOUCH,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Slab", 15));
 
-                Deck playerDeck = new Deck(
-                    0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
                     5,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Slab", 15),
-                    },
                     Enumerators.OverlordSkill.HEALING_TOUCH,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
                 };
-
 
                 InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Slab", 1);
 
@@ -343,29 +316,17 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck opponentDeck = new Deck(
-                    0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
                     5,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Slab", 15),
-                    },
                     Enumerators.OverlordSkill.MEND,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Slab", 15));
 
-                Deck playerDeck = new Deck(
-                    0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
                     5,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Slab", 15),
-                    },
                     Enumerators.OverlordSkill.MEND,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
@@ -429,35 +390,22 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck opponentDeck = new Deck(
-                    0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
                     5,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Puffer", 15)
-                    },
                     Enumerators.OverlordSkill.RESSURECT,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Puffer", 15));
 
-                Deck playerDeck = new Deck(
-                    0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
                     5,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Puffer", 15)
-                    },
                     Enumerators.OverlordSkill.RESSURECT,
-                    Enumerators.OverlordSkill.ENHANCE
-                );
+                    Enumerators.OverlordSkill.ENHANCE,
+                    new DeckCardData("Puffer", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
                 };
-
 
                 InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Puffer", 1);
 
@@ -478,10 +426,7 @@ namespace Loom.ZombieBattleground.Test
                        {
                            opponent.CardAttack(opponentCardId, playerCardId);
                        },
-                       player =>
-                       {
-                           
-                       },
+                       player => {},
                        opponent => {},
                        player => {},
                        opponent => {},
@@ -513,29 +458,17 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck opponentDeck = new Deck(
-                    0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
                     5,
-                    "test deck",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Keeper", 15),
-                    },
                     Enumerators.OverlordSkill.ENHANCE,
-                    Enumerators.OverlordSkill.HEALING_TOUCH
-                );
+                    Enumerators.OverlordSkill.HEALING_TOUCH,
+                    new DeckCardData("Keeper", 15));
 
-                Deck playerDeck = new Deck(
-                    0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
                     5,
-                    "test deck2",
-                    new List<DeckCardData>
-                    {
-                        new DeckCardData("Keeper", 15),
-                    },
                     Enumerators.OverlordSkill.ENHANCE,
-                    Enumerators.OverlordSkill.HEALING_TOUCH
-                );
+                    Enumerators.OverlordSkill.HEALING_TOUCH,
+                    new DeckCardData("Keeper", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
