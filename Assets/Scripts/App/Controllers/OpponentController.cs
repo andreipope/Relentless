@@ -173,12 +173,14 @@ namespace Loom.ZombieBattleground
                 case PlayerActionOutcome.OutcomeOneofCase.ChangeStat:
                     PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome  = outcome.ChangeStat;
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
+                    _battleController.AttackPlayerByUnit(boardUnit, boardUnit.OwnerPlayer);
 
                     boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
                     boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
 
                     boardUnit.BuffedHp = changeStatOutcome.NewDefense;
                     boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+
                     break;
 
                case PlayerActionOutcome.OutcomeOneofCase.InstanceStat:

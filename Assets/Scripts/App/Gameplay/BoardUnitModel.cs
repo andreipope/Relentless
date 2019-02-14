@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
 
         private readonly AbilitiesController _abilitiesController;
 
+        private readonly IPvPManager _pvpManager;
+
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
@@ -63,6 +65,7 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
             AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
@@ -663,7 +666,8 @@ namespace Loom.ZombieBattleground
                                 targetPlayer,
                                 () =>
                                 {
-                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                    if(!_pvpManager.UseBackendGameLogic)
+                                        _battleController.AttackPlayerByUnit(this, targetPlayer);
                                 },
                                 () =>
                                 {

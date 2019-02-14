@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -11,8 +10,6 @@ namespace Loom.ZombieBattleground
         private IGameplayManager _gameplayManager;
 
         private ITutorialManager _tutorialManager;
-
-        private IPvPManager _pvPManager;
 
         private ActionsQueueController _actionsQueueController;
 
@@ -32,7 +29,6 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _pvPManager = GameClient.Get<IPvPManager>();
 
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
@@ -52,13 +48,11 @@ namespace Loom.ZombieBattleground
 
         public void AttackPlayerByUnit(BoardUnitModel attackingUnitModel, Player attackedPlayer)
         {
-            Debug.LogError("Attacked Player by unit - ");
             int damageAttacking = attackingUnitModel.CurrentDamage;
 
             if (attackingUnitModel != null && attackedPlayer != null)
             {
-                if(!_pvPManager.UseBackendGameLogic)
-                    attackedPlayer.Defense -= damageAttacking;
+                attackedPlayer.Defense -= damageAttacking;
             }
 
             attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
