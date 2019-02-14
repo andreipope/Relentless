@@ -17,7 +17,10 @@ namespace Loom.ZombieBattleground.Test
             PvpTestContext pvpTestContext,
             IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
             Action validateEndStateAction,
-            bool enableReverseMatch = true)
+            bool enableReverseMatch = true,
+            bool enableBackendGameLogicMatch = false,
+            bool enableClientGameLogicMatch = true
+            )
         {
             async Task ExecuteTest()
             {
@@ -36,23 +39,40 @@ namespace Loom.ZombieBattleground.Test
                         TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
                         TestHelper.DebugCheats.IgnoreGooRequirements = true;
+
+                        GameClient.Get<IPvPManager>().UseBackendGameLogic = pvpTestContext.UseBackendLogic;
                     },
                     cheats =>
                     {
                         cheats.UseCustomDeck = true;
                         cheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player1Deck : pvpTestContext.Player2Deck;
-                    },
+                        },
                     validateEndStateAction);
             }
 
-            pvpTestContext.IsReversed = false;
-            await ExecuteTest();
-
-            if (enableReverseMatch)
+            async Task ExecuteTestWithReverse()
             {
-                Debug.Log("Starting reversed Pvp test");
-                pvpTestContext.IsReversed = true;
+                pvpTestContext.IsReversed = false;
                 await ExecuteTest();
+
+                if (enableReverseMatch)
+                {
+                    Debug.Log("Starting reversed Pvp test");
+                    pvpTestContext.IsReversed = true;
+                    await ExecuteTest();
+                }
+            }
+
+            if (enableClientGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = false;
+                await ExecuteTestWithReverse();
+            }
+
+            if (enableBackendGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = true;
+                await ExecuteTestWithReverse();
             }
         }
 
