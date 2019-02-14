@@ -966,5 +966,179 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator EverlaZting()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("EverlaZting", 1),
+                    new DeckCardData("Igloo", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("EverlaZting", 1),
+                    new DeckCardData("Igloo", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerEverlaztingId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "EverlaZting", 1);
+                InstanceId playerIglooId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Igloo", 1);
+                InstanceId opponentEverlaztingId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "EverlaZting", 1);
+                InstanceId opponentIglooId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Igloo", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentIglooId, ItemPosition.Start);
+                           opponent.CardPlay(opponentEverlaztingId, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerIglooId, ItemPosition.Start);
+                           player.CardPlay(playerEverlaztingId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardAttack(opponentEverlaztingId, playerIglooId);
+                           opponent.CardAbilityUsed(opponentEverlaztingId, Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK, new List<ParametrizedAbilityInstanceId>());
+                       },
+                       player => {
+                           player.CardAttack(playerEverlaztingId, opponentIglooId);
+                           player.CardAbilityUsed(playerEverlaztingId, Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK, new List<ParametrizedAbilityInstanceId>());    
+                       },
+                       opponent => {},
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    bool playerHasEverlazting = false;
+                    bool opponentHasEverlazting = false;
+
+                    string cardToFind = "EverlaZting";
+
+                    foreach (DeckCardData card in TestHelper.GameplayManager.CurrentPlayerDeck.Cards)
+                    {
+                        if (card.CardName == cardToFind) 
+                        {
+                            playerHasEverlazting = true;
+                            break;
+                        }
+                    }
+
+                    foreach (BoardCard card in TestHelper.BattlegroundController.PlayerHandCards)
+                    {
+                        if (card.LibraryCard.Name == cardToFind) 
+                        {
+                            playerHasEverlazting = true;
+                            break;
+                        }
+                    }
+
+                    foreach (DeckCardData card in TestHelper.GameplayManager.OpponentPlayerDeck.Cards)
+                    {
+                        if (card.CardName == cardToFind) 
+                        {
+                            opponentHasEverlazting = true;
+                            break;
+                        }
+                    }
+
+                    foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
+                    {
+                        if (card.WorkingCard.LibraryCard.Name == cardToFind) 
+                        {
+                            opponentHasEverlazting = true;
+                            break;
+                        }
+                    }
+
+                    Assert.IsTrue(playerHasEverlazting);
+                    Assert.IsTrue(opponentHasEverlazting);   
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Healz()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("Healz", 2),
+                    new DeckCardData("Enrager", 20)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("Healz", 2),
+                    new DeckCardData("Enrager", 20)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerHealz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Healz", 1);
+                InstanceId playerHealz2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Healz", 2);
+                InstanceId playerEnragerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 1);
+                InstanceId opponentHealz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Healz", 1);
+                InstanceId opponentHealz2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Healz", 2);
+                InstanceId opponentEnragerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Enrager", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentEnragerId, ItemPosition.Start);
+                           opponent.CardAttack(opponentEnragerId, TestHelper.GameplayManager.CurrentPlayer.InstanceId);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerEnragerId, ItemPosition.Start);
+                           player.CardAttack(playerEnragerId, TestHelper.GameplayManager.OpponentPlayer.InstanceId);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardAttack(opponentEnragerId, TestHelper.GameplayManager.CurrentPlayer.InstanceId);
+                       },
+                       player => 
+                       {
+                           player.CardAttack(playerEnragerId, TestHelper.GameplayManager.OpponentPlayer.InstanceId);
+                           player.CardPlay(playerHealz1Id, ItemPosition.Start);
+                           //player.CardAbilityUsed(playerHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
+                           player.CardPlay(playerHealz2Id, ItemPosition.Start);
+                           //player.CardAbilityUsed(playerHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
+                       },
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentHealz1Id, ItemPosition.Start);
+                           //opponent.CardAbilityUsed(opponentHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
+                           opponent.CardPlay(opponentHealz2Id, ItemPosition.Start);
+                           //opponent.CardAbilityUsed(opponentHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
+                       },
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.AreEqual(18, TestHelper.GameplayManager.CurrentPlayer.Defense);
+                    Assert.AreEqual(18, TestHelper.GameplayManager.OpponentPlayer.Defense);   
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
     }
 }
