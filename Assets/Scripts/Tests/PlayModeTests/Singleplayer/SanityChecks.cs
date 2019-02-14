@@ -11,15 +11,12 @@ namespace Loom.ZombieBattleground.Test
     public class SanityChecks : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateAHorde()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");

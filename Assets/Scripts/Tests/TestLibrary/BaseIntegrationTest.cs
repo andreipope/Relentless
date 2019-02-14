@@ -14,61 +14,9 @@ namespace Loom.ZombieBattleground.Test
     {
         protected TestHelper TestHelper => TestHelper.Instance;
 
-        #region Setup & TearDown
-
-        /*[UnitySetUp]
-        public virtual IEnumerator PerTestSetup()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.PerTestSetup();
-
-                TestHelper.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
-            });
-        }
-
-        [UnityTearDown]
-        public virtual IEnumerator PerTestTearDown()
-        {
-            return AsyncTest(async () =>
-            {
-                TestHelper.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
-
-                if (false && TestContext.CurrentContext.Test.Name == "TestN_Cleanup")
-                {
-                    await TestHelper.TearDown_Cleanup();
-                }
-                else
-                {
-                    await TestHelper.TearDown();
-                }
-
-                /*await _testHelper.PerTestTearDown();
-
-                _testHelper.ReportTestTime();#1#
-            });
-        }*/
-
-        #endregion
-
-        protected IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = -1)
+        protected IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = 30 * 1000)
         {
             return IntegrationTestRunner.Instance.AsyncTest(taskFunc, timeout);
-            /*return TestHelper.TaskAsIEnumerator(async () =>
-            {
-                try
-                {
-                    await taskFunc();
-                }
-                catch (Exception e)
-                {
-                    Debug.LogException(e);
-                }
-                finally
-                {
-                    TestHelper.TestEndHandler();
-                }
-            });*/
         }
     }
 }

@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground.Test
                     if (_appStateManager == null)
                         return false;
 
-                    IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                    IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                     return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU);
                 });
 
@@ -227,6 +227,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 while (_appStateManager.AppState != Enumerators.AppState.MAIN_MENU)
                 {
+                    IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                     await GoOnePageHigher();
                 }
 
@@ -303,7 +304,7 @@ namespace Loom.ZombieBattleground.Test
         {
             while (_lastCheckedAppState != Enumerators.AppState.MAIN_MENU)
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 await GoOnePageHigher();
 
                 await LetsThink();
@@ -320,7 +321,7 @@ namespace Loom.ZombieBattleground.Test
         {
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 if (_canvas1GameObject != null && _canvas1GameObject.transform.childCount >= 2)
                 {
                     return true;
@@ -432,7 +433,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return GameObject.Find("Canvas1") != null;
             });
 
@@ -444,22 +445,6 @@ namespace Loom.ZombieBattleground.Test
         }
 
         public bool IsTestFailed { get; private set; }
-
-        /// <summary>
-        /// Asserts if we were sent to tutorial. This is used to get out of tutorial, so that test can go on with its purpose.
-        /// </summary>
-        public async Task AssertIfWentDirectlyToTutorial(Func<Task> callback1, Func<Task> callback2 = null)
-        {
-            if (IsTestFailed)
-            {
-                return;
-            }
-
-            await CombinedCheck(
-                (() => CheckCurrentAppState(Enumerators.AppState.GAMEPLAY), callback1),
-                (() => CheckCurrentAppState(Enumerators.AppState.PlaySelection), callback1)
-            );
-        }
 
         // @todo: Get this to working using an artificial timeout
         /// <summary>
@@ -504,6 +489,7 @@ namespace Loom.ZombieBattleground.Test
             bool outcomeDecided = false;
             while (!outcomeDecided)
             {
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 if (IsTestFailed)
                     break;
 
@@ -634,7 +620,7 @@ namespace Loom.ZombieBattleground.Test
             GameObject errorTextObject;
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 if (WaitTimeIsUp())
                 {
                     transitionTimeout = true;
@@ -720,6 +706,7 @@ namespace Loom.ZombieBattleground.Test
             float interpolation = 0f;
             while (Vector2.Distance(cursorPosition, to) >= _positionalTolerance)
             {
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 cursorPosition = Vector2.Lerp(from, to, interpolation / duration);
                 _fakeCursorTransform.position = cursorPosition;
 
@@ -799,7 +786,7 @@ namespace Loom.ZombieBattleground.Test
                     WaitStart(3);
                     await new WaitUntil(() =>
                     {
-                        IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                        IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                         return buttonClickable || WaitTimeIsUp();
                     });
 
@@ -847,7 +834,7 @@ namespace Loom.ZombieBattleground.Test
                     WaitStart(3);
                     await new WaitUntil(() =>
                     {
-                        IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                        IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                         return buttonClickable || WaitTimeIsUp();
                     });
 
@@ -895,7 +882,7 @@ namespace Loom.ZombieBattleground.Test
                     WaitStart(3);
                     await new WaitUntil(() =>
                     {
-                        IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                        IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                         return buttonClickable || WaitTimeIsUp();
                     });
 
@@ -943,7 +930,7 @@ namespace Loom.ZombieBattleground.Test
             WaitStart(10);
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return waitForMainMenu && CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp();
             });
 
@@ -975,7 +962,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
 
                 if (parentGameObject != null)
                 {
@@ -1071,7 +1058,7 @@ namespace Loom.ZombieBattleground.Test
             ButtonShiftingContent overlayButton = null;
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 overlayButton = GameObject.Find(buttonName)?.GetComponent<ButtonShiftingContent>();
                 return overlayButton != null;
             });
@@ -1446,7 +1433,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (forceRealtime)
                 {
-                    await new CustomWaitForSeconds(thinkTime);
+                    await new WaitForSecondsRealtime(thinkTime);
                 }
                 else
                 {
@@ -1463,12 +1450,12 @@ namespace Loom.ZombieBattleground.Test
             // await new WaitUntil(() => GameObject.Find("PlayerOrderPopup(Clone)") != null);
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return _gameplayManager.CurrentPlayer != null && _gameplayManager.OpponentPlayer != null;
             });
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return _gameplayManager.CurrentPlayer.MulliganWasStarted;
             });
 
@@ -1569,7 +1556,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null || _uiManager.GetPopup<ConnectionPopup>().Self != null;
             });
 
@@ -1577,7 +1564,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self == null;
             });
 
@@ -1585,7 +1572,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return IsGameEnded() || _playerController.IsActive;
             });
         }
@@ -1599,7 +1586,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return IsGameEnded() || _gameplayManager.IsLocalPlayerTurn();
             });
 
@@ -1619,7 +1606,7 @@ namespace Loom.ZombieBattleground.Test
 
             await new WaitUntil(() =>
             {
-                IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 return boardChildrenCount < boardTransform.childCount && boardChildrenCount < _battlegroundController.OpponentBoardCards.Count;
             });
         }
@@ -1653,6 +1640,8 @@ namespace Loom.ZombieBattleground.Test
             Func<Task> currentTurnTask;
             while ((currentTurnTask = turnTaskGenerator()) != null)
             {
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
+
                 await LetsThink();
 
                 //Debug.Log("!a 0");
@@ -1726,7 +1715,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await new WaitUntil(() =>
                 {
-                    IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                    IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                     return _uiManager.GetPopup<ConnectionPopup>().Self != null || WaitTimeIsUp();
                 });
 
@@ -1889,6 +1878,8 @@ namespace Loom.ZombieBattleground.Test
 
             while (_overlordNames[selectedIndex] != overlordName)
             {
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
+
                 if (goRight)
                 {
                     await ClickGenericButton("Button_RightArrow");
@@ -2467,6 +2458,7 @@ namespace Loom.ZombieBattleground.Test
 
             while (!matchConfirmed)
             {
+                IntegrationTestRunner.Instance.ThrowIfCancellationRequested();
                 await new WaitForUpdate();
             }
         }

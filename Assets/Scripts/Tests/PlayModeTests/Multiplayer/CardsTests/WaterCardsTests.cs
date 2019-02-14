@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     public class WaterCardsTests : BaseIntegrationTest
     {
 		[UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Znowman()
         {
             return AsyncTest(async () =>
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
     
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Jetter()
         {
             return AsyncTest(async () =>
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Maelstrom()
         {
             return AsyncTest(async () =>
@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Izze()
         {
             return AsyncTest(async () =>

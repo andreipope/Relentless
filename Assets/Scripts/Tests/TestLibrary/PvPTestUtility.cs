@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
-        private static readonly TestHelper TestHelper = TestHelper.Instance;
+        private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
             PvpTestContext pvpTestContext,
@@ -100,7 +100,6 @@ namespace Loom.ZombieBattleground.Test
         public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
         {
             await TestHelper.MainMenuTransition("Button_Play");
-            await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
 
             await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
             await TestHelper.MainMenuTransition("Button_PvPMode");
