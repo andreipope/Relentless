@@ -24,6 +24,10 @@ namespace Loom.ZombieBattleground
 
         private ISoundManager _soundManager;
 
+        private IMatchManager _matchManager;
+
+        private IPvPManager _pvpManager;
+
         private VfxController _vfxController;
 
         private BattleController _battleController;
@@ -60,6 +64,8 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _timerManager = GameClient.Get<ITimerManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battleController = _gameplayManager.GetController<BattleController>();
@@ -107,8 +113,22 @@ namespace Loom.ZombieBattleground
             rootPage.OpponentSecondarySkillHandler.MouseUpTriggered +=
                 OpponentSecondarySkillHandlerMouseUpTriggeredHandler;
 
-            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.PrimarySkill);
-            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(_gameplayManager.CurrentPlayerDeck.SecondarySkill);
+
+            Enumerators.OverlordSkill primarySkillType;
+            Enumerators.OverlordSkill secondarySkillType;
+            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
+            {
+                primarySkillType = (Enumerators.OverlordSkill) _gameplayManager.CurrentPlayer.InitialPvPPlayerState.Deck.PrimarySkill;
+                secondarySkillType = (Enumerators.OverlordSkill) _gameplayManager.CurrentPlayer.InitialPvPPlayerState.Deck.SecondarySkill;
+            }
+            else
+            {
+                primarySkillType = _gameplayManager.CurrentPlayerDeck.PrimarySkill;
+                secondarySkillType = _gameplayManager.CurrentPlayerDeck.SecondarySkill;
+            }
+
+            HeroSkill primary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(primarySkillType);
+            HeroSkill secondary = _gameplayManager.CurrentPlayer.SelfHero.GetSkill(secondarySkillType);
 
             rootPage.SetupSkills(primary, secondary, false);
             SetPlayerSkills(rootPage, primary, secondary);
