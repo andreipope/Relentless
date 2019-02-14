@@ -188,15 +188,13 @@ namespace Loom.ZombieBattleground
 
         private void ReAnimateAbility(PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome)
         {
-            /*
-            // TODO :  set owner instance id from backend
-            BoardUnitModel abilityUnitOwner = _battlegroundController.GetBoardUnitModelByInstanceId(reanimateAbilityOutcome..FromProtobuf());
+            Player owner = _gameplayManager.CurrentPlayer;
+            if (reanimateAbilityOutcome.NewCardInstance.Owner != _backendDataControlMediator.UserDataModel.UserId)
+                owner = _gameplayManager.OpponentPlayer;
 
-            Player owner = abilityUnitOwner.OwnerPlayer;
-            Card libraryCard = new Card(abilityUnitOwner.Card.LibraryCard);
+            Card libraryCard = reanimateAbilityOutcome.NewCardInstance.Prototype.FromProtobuf();
 
-            //TODO: set card instance id from backend
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner, reanimateAbilityOutcome.InstanceId.FromProtobuf());
+            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner, reanimateAbilityOutcome.NewCardInstance.InstanceId.FromProtobuf());
             BoardUnitView unit = CreateBoardUnit(card, owner);
 
             owner.AddCardToBoard(card, ItemPosition.End);
@@ -219,7 +217,6 @@ namespace Loom.ZombieBattleground
             AbilityBase ability = new ReanimateAbility(libraryCard.CardKind, abilityData);
             AbilityViewBase abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
             ability.InvokeActionTriggered(unit);
-            */
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
