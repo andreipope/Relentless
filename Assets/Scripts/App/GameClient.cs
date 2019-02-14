@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
     public class GameClient : ServiceLocatorBase
     {
         public event Action ServicesInitialized;
-        public bool UpdateServices { get; set; }
+        public bool UpdateServices { get; set; } = true;
 
         private static readonly object Sync = new object();
 
