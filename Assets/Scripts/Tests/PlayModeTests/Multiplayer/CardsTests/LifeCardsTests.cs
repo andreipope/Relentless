@@ -363,5 +363,127 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Bloomer()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                    new DeckCardData("Bloomer", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                    new DeckCardData("Bloomer", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerBloomer1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bloomer", 1);
+                InstanceId playerBloomer2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bloomer", 2);
+                InstanceId opponentBloomer1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bloomer", 1);
+                InstanceId opponentBloomer2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bloomer", 2);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerBloomer1Id, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentBloomer1Id, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerBloomer2Id, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentBloomer2Id, ItemPosition.Start);
+                       },
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.AreEqual(7, TestHelper.BattlegroundController.PlayerHandCards.Count);
+                    Assert.AreEqual(7, TestHelper.BattlegroundController.OpponentHandCards.Count);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Zap()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("Zap", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("Zap", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerZapId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zap", 1);
+                InstanceId opponentZapId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zap", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerZapId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentZapId, ItemPosition.Start);
+                       },
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    bool playerHasTaintendGoo = false;
+                    bool opponentHasTaintedGoo = false;
+
+                    foreach (BoardCard card in TestHelper.BattlegroundController.PlayerHandCards)
+                    {
+                        if (card.WorkingCard.LibraryCard.Name == "Tainted Goo") 
+                        {
+                            playerHasTaintendGoo = true;
+                            break;
+                        }
+                    }
+
+                    foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
+                    {
+                        if (card.WorkingCard.LibraryCard.Name == "Tainted Goo") 
+                        {
+                            opponentHasTaintedGoo = true;
+                            break;
+                        }
+                    }
+                    Assert.IsTrue(playerHasTaintendGoo);
+                    Assert.IsTrue(opponentHasTaintedGoo);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
     }
 }
