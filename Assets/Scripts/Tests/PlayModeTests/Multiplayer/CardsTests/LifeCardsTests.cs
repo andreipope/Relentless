@@ -485,5 +485,160 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Amber()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("Amber", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("Amber", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerAmberId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Amber", 1);
+                InstanceId opponentAmberId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Amber", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerAmberId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentAmberId, ItemPosition.Start);
+                            opponent.CardAbilityUsed(opponentAmberId, Enumerators.AbilityType.DELAYED_GAIN_ATTACK, new List<ParametrizedAbilityInstanceId>());
+                       },
+                       player => {},
+                       opponent => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerAmberId)).CurrentDamage);
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentAmberId)).CurrentDamage);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Bark()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("Bark", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("Bark", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerBarkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bark", 1);
+                InstanceId opponentBarkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bark", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerBarkId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentBarkId, ItemPosition.Start);
+                       },
+                       player => {},
+                       opponent => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerBarkId)).HasHeavy);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentBarkId)).HasHeavy);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator PreZerver()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("PreZerver", 1),
+                    new DeckCardData("Igloo", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("PreZerver", 1),
+                    new DeckCardData("Igloo", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerPreZerverId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "PreZerver", 1);
+                InstanceId playerIglooId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Igloo", 1);
+                InstanceId opponentPreZerverId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "PreZerver", 1);
+                InstanceId opponentIglooId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Igloo", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerIglooId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentIglooId, ItemPosition.Start);
+                       },
+                       player => 
+                       {
+                           player.CardAttack(playerIglooId, opponentIglooId);
+                           player.CardPlay(playerPreZerverId, ItemPosition.Start, playerIglooId);
+                       },
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentPreZerverId, ItemPosition.Start, opponentIglooId);
+                       },
+                       player => {},
+                       opponent => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId)).CurrentHp);
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId)).CurrentHp);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
     }
 }
