@@ -149,7 +149,6 @@ namespace Loom.ZombieBattleground
             }
             else
             {*/
-                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                 _uiManager.GetPage<MainMenuWithNavigationPage>().SetGameMode(MainMenuWithNavigationPage.GameMode.VS);
                 _uiManager.HidePopup<GameModePopup>();
                 //_stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);

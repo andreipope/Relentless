@@ -117,29 +117,21 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (_gameMode == GameMode.SOLO)
+            Action startMatch = () =>
             {
+                DeckSelectionPopup deckSelectionPopup = _uiManager.GetPopup<DeckSelectionPopup>();
+                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deckSelectionPopup.GetSelectedDeck();
+                GameClient.Get<IMatchManager>().FindMatch();
+            };
 
-                Action startMatch = () =>
-                {
-                    DeckSelectionPopup deckSelectionPopup = _uiManager.GetPopup<DeckSelectionPopup>();
-                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deckSelectionPopup.GetSelectedDeck();
-                    GameClient.Get<IMatchManager>().FindMatch();
-                };
-
-                if (GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-                    startMatch?.Invoke();
-                }
-                else
-                {
-                    startMatch?.Invoke();
-                }
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                startMatch?.Invoke();
             }
-            else if (_gameMode == GameMode.VS)
+            else
             {
-
+                startMatch?.Invoke();
             }
             //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);           
         }
