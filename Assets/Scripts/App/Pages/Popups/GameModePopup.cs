@@ -125,12 +125,11 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
             }
-
-            _uiManager.HidePopup<GameModePopup>();
             
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
-            _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);            
+            
+            _uiManager.GetPage<MainMenuWithNavigationPage>().SetGameMode(MainMenuWithNavigationPage.GameMode.SOLO);
+            _uiManager.HidePopup<GameModePopup>();
         }
 
         private void PvPModeButtonOnClickHandler()
@@ -150,8 +149,10 @@ namespace Loom.ZombieBattleground
             }
             else
             {*/
+                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
+                _uiManager.GetPage<MainMenuWithNavigationPage>().SetGameMode(MainMenuWithNavigationPage.GameMode.VS);
                 _uiManager.HidePopup<GameModePopup>();
-                _stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
+                //_stateManager.ChangeAppState(Enumerators.AppState.PvPSelection);
             //}
         }
 

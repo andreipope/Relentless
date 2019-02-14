@@ -22,11 +22,21 @@ namespace Loom.ZombieBattleground
         
         private GameObject _selfPage;
 
-        private Button _buttonPlay;
+        private Button _buttonPlay, _buttonChangeMode;
+
+        private TextMeshProUGUI _textGameMode;
 
         private Image _imageOverlordPortrait;
         
         private bool _isReturnToTutorial;
+        
+        public enum GameMode
+        {
+            SOLO,
+            VS
+        }
+
+        private GameMode _gameMode;
 
         public void Init()
         {
@@ -49,10 +59,16 @@ namespace Loom.ZombieBattleground
             
             _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();                        
             _buttonPlay.onClick.AddListener(OnClickPlay);
-
+            _buttonChangeMode = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Battle_Mode").GetComponent<Button>();
+            _buttonChangeMode.onClick.AddListener(OnClickChangeMode);
+            
             _imageOverlordPortrait = _selfPage.transform.Find("Image_OverlordPortrait").GetComponent<Image>();
             
+            _textGameMode = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Battle_Mode/Text_BattleMode").GetComponent<TextMeshProUGUI>();
+            
             _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
+
+            SetGameMode(GameMode.SOLO);
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       
@@ -101,7 +117,35 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
+            if (_gameMode == GameMode.SOLO)
+            {
+
+                Action startMatch = () =>
+                {
+                    DeckSelectionPopup deckSelectionPopup = _uiManager.GetPopup<DeckSelectionPopup>();
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deckSelectionPopup.GetSelectedDeck();
+                    GameClient.Get<IMatchManager>().FindMatch();
+                };
+
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                    startMatch?.Invoke();
+                }
+                else
+                {
+                    startMatch?.Invoke();
+                }
+            }
+            else if (_gameMode == GameMode.VS)
+            {
+
+            }
+            //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);           
+        }
+
+        private void OnClickChangeMode()
+        {
             _uiManager.DrawPopup<GameModePopup>();
         }
 
@@ -134,6 +178,20 @@ namespace Loom.ZombieBattleground
                     return;
             }            
         }
-
+        
+        public void SetGameMode(GameMode gameMode)
+        {
+            _gameMode = gameMode;
+            if(_gameMode == GameMode.SOLO)
+            {
+                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.LOCAL;
+                _textGameMode.text = "SOLO";
+            }
+            else if(_gameMode == GameMode.VS)
+            {
+                GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
+                _textGameMode.text = "VS\nCASUAL";                 
+            }
+        }
     }
 }

@@ -211,5 +211,10 @@ namespace Loom.ZombieBattleground
                 _createdDeckIconList = null;
             }
         }
+        
+        public Deck GetSelectedDeck()
+        {
+            return _selectedDeck;
+        }
     }
 }
