@@ -17,6 +17,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
+using UnityAsyncAwaitUtil;
 using UnityEngine.TestTools;
 using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
@@ -55,7 +56,6 @@ namespace Loom.ZombieBattleground.Test
 
         private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
 
-        private Scene _testScene;
         private GameObject _testerGameObject;
         private VirtualInputModule _virtualInputModule;
         private RectTransform _fakeCursorTransform;
@@ -134,6 +134,11 @@ namespace Loom.ZombieBattleground.Test
 
         public static TestHelper Instance => _instance ?? (_instance = new TestHelper());
 
+        public static void DestroyInstance()
+        {
+            _instance = null;
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:TestHelper"/> class.
         /// </summary>
@@ -154,12 +159,12 @@ namespace Loom.ZombieBattleground.Test
             return TestContext.CurrentContext.Test.Name;
         }
 
-        public string GetTestUserName()
+        public string CreateTestUserName()
         {
             return "Test_" + GetTestName() + "_" + Guid.NewGuid();
         }
 
-        public string GetOpponentTestUserName()
+        public string CreateOpponentTestUserName()
         {
             return "Test" + GetTestName() + "_Opponent_" + Guid.NewGuid();
         }
@@ -167,7 +172,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// SetUp method to be used for most Solo and PvP tests. Logs in and sets up a number of stuff.
         /// </summary>
-        public async Task PerTestSetup()
+        public async Task PerTestSetupInternal()
         {
             // HACK: Unity sometimes log an harmless internal assert, but the testing framework trips on it
             // So instead, implement our own log handler that ignores asserts.
@@ -178,14 +183,13 @@ namespace Loom.ZombieBattleground.Test
             Time.timeScale = TestTimeScale;
             _aborted = false;
 
-            TestUserDataModel = new UserDataModel(GetTestUserName(), CryptoUtils.GeneratePrivateKey()) {
+            TestUserDataModel = new UserDataModel(CreateTestUserName(), CryptoUtils.GeneratePrivateKey()) {
                 IsRegistered = true
             };
 
             if (!Initialized)
             {
-                _testScene = SceneManager.GetActiveScene();
-                _testerGameObject = _testScene.GetRootGameObjects()[0];
+                _testerGameObject = GameObject.Find("Code-based tests runner");
                 Object.DontDestroyOnLoad(_testerGameObject);
 
                 GameClient.Instance.ServicesInitialized += async () =>
@@ -258,39 +262,19 @@ namespace Loom.ZombieBattleground.Test
                 UnityEngine.Object.Destroy(_opponentDebugClientOwner.gameObject);
             }
 
-            Scene dontDestroyOnLoadScene = _testerGameObject.scene;
+            GameObject[] rootGameObjects =
+                Utilites.CollectAllSceneRootGameObjects(_testerGameObject)
+                    .Where((go, i) => go != _testerGameObject.transform.root.gameObject && go != AsyncCoroutineRunner.Instance.gameObject)
+                    .ToArray();
 
-            _testScene = SceneManager.CreateScene("testScene");
-
-            await new WaitForUpdate();
-
-            SceneManager.MoveGameObjectToScene(_testerGameObject, _testScene);
-            Scene currentScene = SceneManager.GetActiveScene();
-
-            await new WaitForUpdate();
-
-            foreach (GameObject rootGameObject in currentScene.GetRootGameObjects())
+            foreach (GameObject rootGameObject in rootGameObjects)
             {
-                GameObject.Destroy(rootGameObject);
+                Object.Destroy(rootGameObject);
             }
 
             await new WaitForUpdate();
-
-            foreach (GameObject rootGameObject in dontDestroyOnLoadScene.GetRootGameObjects())
-            {
-                GameObject.Destroy(rootGameObject);
-            }
-
-            await LetsThink();
-
-            SceneManager.SetActiveScene(_testScene);
-
-            await new WaitForUpdate();
-
-            await SceneManager.UnloadSceneAsync(currentScene);
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
-            Time.timeScale = 1;
         }
 
         /// <summary>
@@ -442,11 +426,6 @@ namespace Loom.ZombieBattleground.Test
             _canvas3GameObject = GameObject.Find("Canvas3");
 
             await new WaitForUpdate();
-        }
-
-        public void TestEndHandler()
-        {
-            //FIXME
         }
 
         public bool IsTestFailed { get; private set; }
@@ -2348,7 +2327,7 @@ namespace Loom.ZombieBattleground.Test
             owner.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;
             OnBehaviourHandler onBehaviourHandler = owner.AddComponent<OnBehaviourHandler>();
 
-            MultiplayerDebugClient client = new MultiplayerDebugClient(GetOpponentTestUserName());
+            MultiplayerDebugClient client = new MultiplayerDebugClient(CreateOpponentTestUserName());
 
             _opponentDebugClient = client;
             _opponentDebugClientOwner = onBehaviourHandler;
@@ -2427,55 +2406,7 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        /// <summary>
-        /// Setups very dumb logic for the simulated opponent that only skips turns.
-        /// </summary>
-        public void SetupOpponentDebugClientToEndTurns()
-        {
-            MultiplayerDebugClient client = _opponentDebugClient;
-
-            async Task EndTurnIfCurrentTurn(bool isFirstTurn)
-            {
-                GetGameStateResponse gameStateResponse =
-                    await client.BackendFacade.GetGameState(client.MatchMakingFlowController.MatchMetadata.Id);
-                GameState gameState = gameStateResponse.GameState;
-                if (gameState.PlayerStates[gameState.CurrentPlayerIndex].Id == client.UserDataModel.UserId)
-                {
-                    Debug.Log("ending FIRST turn: " + isFirstTurn);
-                    await client.BackendFacade.SendPlayerAction(
-                        client.MatchRequestFactory.CreateAction(
-                            client.PlayerActionFactory.EndTurn()
-                        )
-                    );
-                }
-            }
-
-            client.MatchMakingFlowController.MatchConfirmed += async metadata =>
-            {
-                await EndTurnIfCurrentTurn(true);
-            };
-
-            client.BackendFacade.PlayerActionDataReceived += async bytes =>
-            {
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
-                bool? isLocalPlayer =
-                    playerActionEvent.PlayerAction != null ?
-                        playerActionEvent.PlayerAction.PlayerId == client.UserDataModel.UserId :
-                        (bool?) null;
-
-                if (isLocalPlayer != null)
-                {
-                    await EndTurnIfCurrentTurn(false);
-                }
-            };
-        }
-
         #endregion
-
-        public AbilityBoardArrow GetAbilityBoardArrow()
-        {
-            return GameObject.FindObjectOfType<AbilityBoardArrow>();
-        }
 
         /// <summary>
         /// Starts the waiting process.
@@ -2526,11 +2457,16 @@ namespace Loom.ZombieBattleground.Test
             while (!task.IsCompleted)
             {
                 if (timeoutStopwatch != null && timeoutStopwatch.ElapsedMilliseconds > timeout)
+                {
+                    Debug.LogError("timeout!");
                     throw new TimeoutException($"Test task {task} timed out after {timeout} ms");
+                }
 
+                Debug.Log("yield!");
                 yield return null;
             }
 
+            Debug.Log("task.IsCompleted");
             task.Wait();
         }
 

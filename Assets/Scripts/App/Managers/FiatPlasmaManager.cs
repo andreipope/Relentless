@@ -64,6 +64,7 @@ namespace Loom.ZombieBattleground
         
         public void Dispose()
         {
+            this.
         }
         
          public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)

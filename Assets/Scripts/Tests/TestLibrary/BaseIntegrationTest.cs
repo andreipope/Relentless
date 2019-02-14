@@ -5,17 +5,18 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
     public class BaseIntegrationTest
     {
-        protected readonly TestHelper TestHelper = TestHelper.Instance;
+        protected TestHelper TestHelper => TestHelper.Instance;
 
         #region Setup & TearDown
 
-        [UnitySetUp]
+        /*[UnitySetUp]
         public virtual IEnumerator PerTestSetup()
         {
             return AsyncTest(async () =>
@@ -44,25 +45,30 @@ namespace Loom.ZombieBattleground.Test
 
                 /*await _testHelper.PerTestTearDown();
 
-                _testHelper.ReportTestTime();*/
+                _testHelper.ReportTestTime();#1#
             });
-        }
+        }*/
 
         #endregion
 
         protected IEnumerator AsyncTest(Func<Task> taskFunc)
         {
-            return TestHelper.TaskAsIEnumerator(async () =>
+            return IntegrationTestRunner.Instance.AsyncTest(taskFunc);
+            /*return TestHelper.TaskAsIEnumerator(async () =>
             {
                 try
                 {
                     await taskFunc();
                 }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
                 finally
                 {
                     TestHelper.TestEndHandler();
                 }
-            });
+            });*/
         }
     }
 }
