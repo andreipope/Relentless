@@ -28,8 +28,13 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (PvPManager.UseBackendGameLogic)
+                return;
+
             if (AbilityUnitOwner.IsReanimated)
                 return;
+
+            Debug.LogError("ReAnimate action ability called === ");
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
             Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);

@@ -181,6 +181,10 @@ namespace Loom.ZombieBattleground
                     boardUnit.CurrentHp = changeStatOutcome.NewDefense;
                     break;
 
+               case PlayerActionOutcome.OutcomeOneofCase.InstanceStat:
+
+                   break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
