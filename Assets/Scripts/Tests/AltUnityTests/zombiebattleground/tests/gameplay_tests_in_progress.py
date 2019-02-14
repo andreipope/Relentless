@@ -36,8 +36,9 @@ class CZBPlayTests(CZBTests):
     def test_start_match_versus_ai(self):
         global logs
         # enter Deck Selection
-
+        time.sleep(1)
         self.altdriver.wait_for_element('Button_Play').mobile_tap()
+        time.sleep(1)
         self.altdriver.wait_for_element('Button_SoloMode').mobile_tap()
 
         cards = self.get_list_of_card_in_deck()
@@ -70,7 +71,7 @@ class CZBPlayTests(CZBTests):
             'EndTurnButton/_1_btn_endturn/EndTurnGlowEffect', timeout=60)
         self.check_player_goo_bottle_to_be_refilled()
         time.sleep(3)
-        # self.choose_what_card_to_play()
+        self.choose_what_card_to_play()
         self.altdriver.wait_for_element(
             'EndTurnButton/_1_btn_endturn').mobile_tap()
         logs.append(str(datetime.datetime.now())+' End turn.')
