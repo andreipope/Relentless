@@ -23,24 +23,24 @@ namespace Loom.ZombieBattleground.Test
         private static int[] MatchmakeTestCases = {
             2,
             10,
-            /*30,
+            30,
             50,
             70,
             100,
             200,
-            300*/
+            300
         };
 
         private readonly Queue<Func<Task>> _failedTestsCleanupTasks = new Queue<Func<Task>>();
 
         [UnityTest]
-        [Timeout(30000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Matchmake([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
-            return TestUtility.AsyncTest(async () =>
+            return AsyncTestRunner.Instance.AsyncTest(async () =>
             {
                 await MatchmakingTestBase(clientCount, null);
-            });
+            }, 5000);
         }
 
         [UnityTest]
@@ -84,6 +84,7 @@ namespace Loom.ZombieBattleground.Test
 
                     foreach (MultiplayerDebugClient client in clients)
                     {
+                        AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                         client.BackendFacade.PlayerActionDataReceived += async bytes =>
                         {
                             PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
@@ -107,7 +108,8 @@ namespace Loom.ZombieBattleground.Test
 
                     while (true)
                     {
-                        await Task.Delay(200);
+                        AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                        await Task.Delay(200, AsyncTestRunner.Instance.CurrentTestCancellationToken);
 
                         bool allPlayed = true;
                         foreach (KeyValuePair<MultiplayerDebugClient,int> pair in clientToTurns)
@@ -209,7 +211,8 @@ namespace Loom.ZombieBattleground.Test
 
                 while (confirmationCount != clientCount)
                 {
-                    await Task.Delay(100);
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                    await Task.Delay(100, AsyncTestRunner.Instance.CurrentTestCancellationToken);
                     await Task.WhenAll(
                         clients
                             .Select(client => TaskThreadedWrapper(client.Update))

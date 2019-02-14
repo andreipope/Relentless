@@ -12,11 +12,11 @@ using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loom.ZombieBattleground.Test
 {
-    public class IntegrationTestRunner
+    public class AsyncTestRunner
     {
-        private const string LogTag = "[" + nameof(IntegrationTestRunner) + "] ";
+        private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
 
-        public static IntegrationTestRunner Instance { get; } = new IntegrationTestRunner();
+        public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
@@ -43,8 +43,11 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = Timeout.Infinite)
+        public IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = 30 * 1000)
         {
+            if (timeout <= 0)
+                throw new ArgumentOutOfRangeException(nameof(timeout));
+
             return TaskAsIEnumeratorInternal(async () =>
                 {
                     await GameSetUp();
@@ -62,9 +65,10 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task GameTearDown()
         {
+            if (!Application.isPlaying)
+                return;
+
             Debug.Log(LogTag + nameof(GameTearDown));
-
-
             await Task.Delay(1000);
             await TestHelper.Instance.TearDown_Cleanup();
 
@@ -77,6 +81,9 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task GameSetUp()
         {
+            if (!Application.isPlaying)
+                return;
+
             Debug.Log(LogTag + nameof(GameSetUp));
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
@@ -88,8 +95,7 @@ namespace Loom.ZombieBattleground.Test
 
         private IEnumerator TaskAsIEnumeratorInternal(Func<Task> taskFunc, int timeout = Timeout.Infinite)
         {
-            int testTimeout = (int) TestContext.CurrentContext.Test.Properties["Timeout"][0];
-            Assert.AreEqual(int.MaxValue, testTimeout, "Integration test timeout must be int.MaxValue");
+            Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must be int.MaxValue");
 
             if (_currentRunningTestTask != null)
             {
