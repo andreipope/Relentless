@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground.Test
                 await AddVirtualInputModule();
 
                 await SetCanvases();
-
+ 
                 #region Login
 
                 await new WaitUntil(() => CheckCurrentAppState(Enumerators.AppState.MAIN_MENU));
@@ -2164,7 +2164,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
-            for (int i = GetNumberOfHordes() - 2; i >= 1; i--)
+            for (int i = GetNumberOfHordes() - 3; i >= 1; i--)
             {
                 await RemoveAHorde(1);
 
