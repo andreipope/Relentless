@@ -1117,17 +1117,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardAttack(playerEnragerId, TestHelper.GameplayManager.OpponentPlayer.InstanceId);
                            player.CardPlay(playerHealz1Id, ItemPosition.Start);
-                           //player.CardAbilityUsed(playerHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
                            player.CardPlay(playerHealz2Id, ItemPosition.Start);
-                           //player.CardAbilityUsed(playerHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
-                       },
+                        },
                        opponent => 
                        {
                            opponent.CardPlay(opponentHealz1Id, ItemPosition.Start);
-                           //opponent.CardAbilityUsed(opponentHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());  
                            opponent.CardPlay(opponentHealz2Id, ItemPosition.Start);
-                           //opponent.CardAbilityUsed(opponentHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
-                       },
+                        },
                        player => {}
                 };
 
@@ -1135,6 +1131,75 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     Assert.AreEqual(18, TestHelper.GameplayManager.CurrentPlayer.Defense);
                     Assert.AreEqual(18, TestHelper.GameplayManager.OpponentPlayer.Defense);   
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        public IEnumerator Zeeder()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
+                    new DeckCardData("Zeeder", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
+                    new DeckCardData("Zeeder", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerZeederId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeeder", 1);
+                InstanceId opponentZeederId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zeeder", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerZeederId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentZeederId, ItemPosition.Start);
+                       },
+                       player => {},
+                       opponent => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    bool playerHasBark = false;
+                    bool opponentHasBark = false;
+
+                    string cardToFind = "Bark";
+
+                    foreach (BoardUnitView card in TestHelper.BattlegroundController.PlayerBoardCards)
+                    {
+                        if (card.Model.Card.LibraryCard.Name == cardToFind) 
+                        {
+                            playerHasBark = true;
+                            break;
+                        }
+                    }
+
+                    foreach (BoardUnitView card in TestHelper.BattlegroundController.OpponentBoardCards)
+                    {
+                        if (card.Model.Card.LibraryCard.Name == cardToFind) 
+                        {
+                            opponentHasBark = true;
+                            break;
+                        }
+                    }
+                    Assert.IsTrue(playerHasBark);
+                    Assert.IsTrue(opponentHasBark);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
