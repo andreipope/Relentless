@@ -8,7 +8,7 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-namespace Loom.ZombieBattleground.Test
+namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
     public class OverlordAbilitiesTests : BaseIntegrationTest
     {
@@ -138,17 +138,16 @@ namespace Loom.ZombieBattleground.Test
                        player =>
                        {
                            player.OverlordSkillUsed(new SkillId(1), null);
-                           Time.timeScale = 0.5f;
                        },
                        opponent =>
                        {
                            int numCardsWithFeral =
                                new[]
                                    {
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz1Id),
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz2Id),
-                                       (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz3Id)
-                                   }.Select(model => model.HasFeral)
+                                       playerPyromaz1Id, playerPyromaz2Id, playerPyromaz3Id
+                                   }
+                                   .Select(id => (BoardUnitModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(id))
+                                   .Select(model => model.HasFeral)
                                    .Count();
 
                            Assert.AreEqual(2, numCardsWithFeral);
