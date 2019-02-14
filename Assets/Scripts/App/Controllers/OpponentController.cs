@@ -149,7 +149,6 @@ namespace Loom.ZombieBattleground
             if (!_pvpManager.UseBackendGameLogic)
                 return;
 
-            Debug.LogError(outcome.OutcomeCase);
             switch (outcome.OutcomeCase)
             {
                 case PlayerActionOutcome.OutcomeOneofCase.None:
@@ -173,27 +172,28 @@ namespace Loom.ZombieBattleground
                 case PlayerActionOutcome.OutcomeOneofCase.ChangeStat:
                     PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome  = outcome.ChangeStat;
 
-                    BoardObject targetObject =
-                        _battlegroundController.GetBoardObjectByInstanceId(changeStatOutcome.TargetInstanceId
-                            .FromProtobuf());
-
-                    BoardUnitModel unitModel =
-                        _battlegroundController.GetBoardUnitModelByInstanceId(
-                            changeStatOutcome.InstanceId.FromProtobuf());
-
-                    switch (targetObject)
-                    {
-                        case Player targetPlayer:
-                            _battleController.AttackPlayerByUnit(unitModel, targetPlayer);
-                            break;
-                        case BoardUnitModel targetCardModel:
-                            break;
-                    }
-
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
 
                     if (changeStatOutcome.Stat == StatType.Types.Enum.Damage)
                     {
+                        BoardObject targetObject =
+                            _battlegroundController.GetBoardObjectByInstanceId(changeStatOutcome.TargetInstanceId
+                                .FromProtobuf());
+
+                        BoardUnitModel unitModel =
+                            _battlegroundController.GetBoardUnitModelByInstanceId(
+                                changeStatOutcome.InstanceId.FromProtobuf());
+
+                        switch (targetObject)
+                        {
+                            case Player targetPlayer:
+                                _battleController.AttackPlayerByUnit(unitModel, targetPlayer);
+                                break;
+                            case BoardUnitModel targetCardModel:
+                                _battleController.AttackUnitByUnit(unitModel, targetCardModel);
+                                break;
+                        }
+
                         boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
                         boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
                     }
