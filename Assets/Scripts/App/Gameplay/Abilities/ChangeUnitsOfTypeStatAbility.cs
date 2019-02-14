@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
                 return;

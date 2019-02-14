@@ -12,7 +12,11 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, List<ParametrizedAbilityBoardObject>> AbilityUsed;
+        public delegate void AbilityUsedEventHandler(
+            WorkingCard card,
+            Enumerators.AbilityType abilityType,
+            List<ParametrizedAbilityBoardObject> targets = null);
+        public event AbilityUsedEventHandler AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -664,33 +668,15 @@ namespace Loom.ZombieBattleground
                };
         }
 
-        public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
-                                         Enumerators.AbilityType abilityType,
-                                         /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
+        public void InvokeUseAbilityEvent(
+            WorkingCard card,
+            Enumerators.AbilityType abilityType,
+            List<ParametrizedAbilityBoardObject> targets)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return;
 
             AbilityUsed?.Invoke(card, abilityType, targets);
-        }
-
-        public void ThrowUseAbilityEvent(
-            WorkingCard card,
-            List<BoardObject> targets,
-            Enumerators.AbilityType abilityType,
-            /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType)
-        {
-            if (!CanHandleAbiityUseEvent(card))
-                return; 
-
-            List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
-
-            foreach(BoardObject boardObject in targets)
-            {
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(boardObject));
-            }
-
-            AbilityUsed?.Invoke(card, abilityType, parametrizedAbilityBoardObjects);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)

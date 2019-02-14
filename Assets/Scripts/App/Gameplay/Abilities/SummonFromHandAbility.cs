@@ -77,7 +77,11 @@ namespace Loom.ZombieBattleground
                 PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref TargetEffects, ref boardCards);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            InvokeUseAbilityEvent(
+                boardCards
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
