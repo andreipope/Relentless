@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
@@ -591,11 +592,19 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Cynderman()
         {
             return AsyncTest(async () =>
             {
+                await new WaitUntil(() =>
+                {
+                    Debug.Log("cynderman!");
+                    IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                    return false;
+                });
+
+                return;
                 Deck opponentDeck = new Deck(
                     0,
                     0,
@@ -656,7 +665,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            });
+            }, 3000);
         }
 
         [UnityTest]

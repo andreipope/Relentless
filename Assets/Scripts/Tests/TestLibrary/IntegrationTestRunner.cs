@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground.Test
 
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
+
+        private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
 
         public CancellationToken CurrentTestCancellationToken
         {
@@ -41,11 +44,7 @@ namespace Loom.ZombieBattleground.Test
                     }
                     finally
                     {
-                        await TestHelper.Instance.TearDown_Cleanup();
-                        GameClient.Instance.Dispose();
-                        GameClient.ClearInstance();
-
-                        await new WaitForUpdate();
+                        await GameTearDown();
                     }
 
                     //TestHelper.Instance.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
@@ -53,21 +52,47 @@ namespace Loom.ZombieBattleground.Test
                 timeout);
         }
 
+        private async Task GameTearDown()
+        {
+            await TestHelper.Instance.TearDown_Cleanup();
+
+            await new WaitForUpdate();
+            GameClient.ClearInstance();
+            await new WaitForUpdate();
+
+            Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
+        }
+
+        private async Task GameSetUp()
+        {
+            Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
+            Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
+
+            await TestHelper.Instance.PerTestSetupInternal();
+        }
+
         private IEnumerator TaskAsIEnumeratorInternal(Func<Task> taskFunc, int timeout = Timeout.Infinite)
         {
-            /*if (_currentRunningTestTask != null)
+            if (_currentRunningTestTask != null)
             {
                 try
                 {
-                    Debug.Log("Previous test still running, waiting for it to end... " + random);
-                    _currentRunningTestTask.Wait();
+                    Debug.Log("Previous test still running, tearing down the world");
+                    yield return TestHelper.TaskAsIEnumerator(GameTearDown);
+
+                    while (!_currentRunningTestTask.IsCompleted)
+                    {
+                        yield return null;
+                    }
+
+                    yield return TestHelper.TaskAsIEnumerator(GameSetUp);
                 }
                 finally
                 {
                     _currentRunningTestTask = null;
                     _currentTestCancellationTokenSource = null;
                 }
-            }*/
+            }
 
             _currentTestCancellationTokenSource = new CancellationTokenSource();
             Task currentTask = taskFunc();
@@ -97,6 +122,43 @@ namespace Loom.ZombieBattleground.Test
             {
                 _currentRunningTestTask = null;
                 _currentTestCancellationTokenSource = null;
+            }
+        }
+
+        private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Error:
+                case LogType.Exception:
+                    _currentTestCancellationTokenSource?.Cancel();
+                    //_errorMessages.Add(new LogMessage(condition, stacktrace, type));
+                    break;
+                case LogType.Assert:
+                case LogType.Warning:
+                case LogType.Log:
+                    break;
+            }
+        }
+
+        private struct LogMessage
+        {
+            public string Message { get; }
+
+            public string StackTrace { get; }
+
+            public LogType LogType { get; }
+
+            public LogMessage(string message, string stackTrace, LogType logType)
+            {
+                Message = message;
+                StackTrace = stackTrace;
+                LogType = logType;
+            }
+
+            public override string ToString()
+            {
+                return $"[{LogType}] {Message}";
             }
         }
     }

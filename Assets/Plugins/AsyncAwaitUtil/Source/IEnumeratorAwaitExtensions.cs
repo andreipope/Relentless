@@ -39,9 +39,9 @@ public static class IEnumeratorAwaitExtensions
         return GetAwaiterReturnVoid(instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitUntil instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitUntil instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter((IEnumerator) instruction);
     }
 
     public static SimpleCoroutineAwaiter GetAwaiter(this WaitWhile instruction)

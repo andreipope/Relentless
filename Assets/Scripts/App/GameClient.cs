@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DG.Tweening;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -27,6 +28,7 @@ namespace Loom.ZombieBattleground
         {
             Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
 
+            DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
