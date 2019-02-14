@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -14,29 +15,29 @@ using UnityAsyncAwaitUtil;
 // that make the most sense for the specific instruction type
 public static class IEnumeratorAwaitExtensions
 {
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForSeconds instruction)
+    /*public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForSeconds instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
-    }
+        return GetAwaiter(instruction);
+    }*/
 
     public static SimpleCoroutineAwaiter GetAwaiter(this WaitForUpdate instruction)
     {
         return GetAwaiterReturnVoid(instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForEndOfFrame instruction)
+    /*public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForEndOfFrame instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter(instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForFixedUpdate instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForFixedUpdate instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
-    }
+        return GetAwaiter(instruction);
+    }*/
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForSecondsRealtime instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForSecondsRealtime instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter((IEnumerator) instruction);
     }
 
     public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitUntil instruction)
@@ -44,9 +45,9 @@ public static class IEnumeratorAwaitExtensions
         return GetAwaiter((IEnumerator) instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitWhile instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitWhile instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter((IEnumerator) instruction);
     }
 
     public static SimpleCoroutineAwaiter<AsyncOperation> GetAwaiter(this AsyncOperation instruction)
@@ -154,6 +155,7 @@ public static class IEnumeratorAwaitExtensions
 
             if (_exception != null)
             {
+                ExceptionDispatchInfo.Capture(_exception).Throw();
                 throw _exception;
             }
 

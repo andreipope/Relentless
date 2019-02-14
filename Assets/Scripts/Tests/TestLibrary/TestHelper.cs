@@ -207,6 +207,9 @@ namespace Loom.ZombieBattleground.Test
 
                 await new WaitUntil(() =>
                 {
+                    if (_appStateManager == null)
+                        return false;
+
                     IntegrationTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
                     return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU);
                 });
@@ -265,7 +268,8 @@ namespace Loom.ZombieBattleground.Test
 
             GameObject[] keepAliveGameObjects = new[]
             {
-                AsyncCoroutineRunner.Instance.gameObject, GameObject.Find("[DOTween]")
+                AsyncCoroutineRunner.Instance.gameObject,
+                GameObject.Find("[DOTween]")
             };
 
             GameObject[] rootGameObjects =
@@ -1041,12 +1045,12 @@ namespace Loom.ZombieBattleground.Test
 
                 if (delay <= 0f)
                 {
-                    await new WaitForEndOfFrame();
-                    await new WaitForEndOfFrame();
+                    await new WaitForUpdate();
+                    await new WaitForUpdate();
                 }
                 else
                 {
-                    await new WaitForSeconds(delay);
+                    await new CustomWaitForSeconds(delay);
                 }
             }
         }
@@ -1376,7 +1380,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                 skill.FightTargetingArrow.SetTarget(target);
-                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+                await new CustomWaitForSeconds(0.4f); // just so we can see the arrow for a short bit
 
                 switch (target)
                 {
@@ -1435,18 +1439,18 @@ namespace Loom.ZombieBattleground.Test
         {
             if (thinkTime <= 0f)
             {
-                await new WaitForEndOfFrame();
-                await new WaitForEndOfFrame();
+                await new WaitForUpdate();
+                await new WaitForUpdate();
             }
             else
             {
                 if (forceRealtime)
                 {
-                    await new WaitForSecondsRealtime(thinkTime);
+                    await new CustomWaitForSeconds(thinkTime);
                 }
                 else
                 {
-                    await new WaitForSeconds(thinkTime);
+                    await new CustomWaitForSeconds(thinkTime);
                 }
             }
         }
@@ -2463,7 +2467,7 @@ namespace Loom.ZombieBattleground.Test
 
             while (!matchConfirmed)
             {
-                await new WaitForEndOfFrame();
+                await new WaitForUpdate();
             }
         }
 

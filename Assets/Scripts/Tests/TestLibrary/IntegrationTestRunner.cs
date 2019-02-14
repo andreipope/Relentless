@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground.Test
 {
     public class IntegrationTestRunner
     {
+        private const string LogTag = "[" + nameof(IntegrationTestRunner) + "] ";
+
         public static IntegrationTestRunner Instance { get; } = new IntegrationTestRunner();
 
         private Task _currentRunningTestTask;
@@ -34,10 +36,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return TaskAsIEnumeratorInternal(async () =>
                 {
-                    TestHelper.DestroyInstance();
-
-                    //TestHelper.Instance.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
-                    await TestHelper.Instance.PerTestSetupInternal();
+                    await GameSetUp();
                     try
                     {
                         await taskFunc();
@@ -46,14 +45,14 @@ namespace Loom.ZombieBattleground.Test
                     {
                         await GameTearDown();
                     }
-
-                    //TestHelper.Instance.DebugCheats.CopyFrom(new DebugCheatsConfiguration());
                 },
                 timeout);
         }
 
         private async Task GameTearDown()
         {
+            Debug.Log(LogTag + nameof(GameTearDown));
+
             await TestHelper.Instance.TearDown_Cleanup();
 
             await new WaitForUpdate();
@@ -65,9 +64,12 @@ namespace Loom.ZombieBattleground.Test
 
         private async Task GameSetUp()
         {
+            Debug.Log(LogTag + nameof(GameSetUp));
+
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
 
+            TestHelper.DestroyInstance();
             await TestHelper.Instance.PerTestSetupInternal();
         }
 
@@ -131,8 +133,8 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
+                    _errorMessages.Add(new LogMessage(condition, stacktrace, type));
                     _currentTestCancellationTokenSource?.Cancel();
-                    //_errorMessages.Add(new LogMessage(condition, stacktrace, type));
                     break;
                 case LogType.Assert:
                 case LogType.Warning:
