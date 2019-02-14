@@ -23,12 +23,12 @@ namespace Loom.ZombieBattleground.Test
         private static int[] MatchmakeTestCases = {
             2,
             10,
-            30,
+            /*30,
             50,
             70,
             100,
             200,
-            300
+            300*/
         };
 
         private readonly Queue<Func<Task>> _failedTestsCleanupTasks = new Queue<Func<Task>>();
