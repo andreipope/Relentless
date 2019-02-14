@@ -171,17 +171,17 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
-                    5,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.REANIMATE,
                     Enumerators.OverlordSkill.ENHANCE,
-                    new DeckCardData("Puffer", 1), new DeckCardData("Azuraz", 15));
+                    new DeckCardData("Puffer", 1),
+                    new DeckCardData("Azuraz", 15));
 
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
-                    5,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.REANIMATE,
                     Enumerators.OverlordSkill.ENHANCE,
-                    new DeckCardData("Puffer", 1), new DeckCardData("Azuraz", 15));
+                    new DeckCardData("Puffer", 1),
+                    new DeckCardData("Azuraz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
@@ -250,14 +250,12 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
-                    5,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.HEALING_TOUCH,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
-                    5,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.HEALING_TOUCH,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Slab", 15));
@@ -316,14 +314,12 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
-                    5,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.MEND,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
-                    5,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.MEND,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Slab", 15));
@@ -390,14 +386,12 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
-                    5,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.RESSURECT,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Puffer", 15));
 
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
-                    5,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.RESSURECT,
                     Enumerators.OverlordSkill.ENHANCE,
                     new DeckCardData("Puffer", 15));
@@ -458,14 +452,12 @@ namespace Loom.ZombieBattleground.Test
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1",
-                    5,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.ENHANCE,
                     Enumerators.OverlordSkill.HEALING_TOUCH,
                     new DeckCardData("Keeper", 15));
 
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2",
-                    5,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.ENHANCE,
                     Enumerators.OverlordSkill.HEALING_TOUCH,
                     new DeckCardData("Keeper", 15));
