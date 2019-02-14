@@ -35,6 +35,8 @@ public class BoardArrow : MonoBehaviour
 
     public Player SelectedPlayer { get; set; }
 
+    public GameObject SelfObject => _selfObject;
+
     public bool IsDragging()
     {
         if (StartedDrag)

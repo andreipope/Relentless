@@ -231,6 +231,8 @@ namespace Loom.ZombieBattleground
 
         private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
         {
+            _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
+
             _queueManager.Active = false;
             _queueManager.Clear();
 

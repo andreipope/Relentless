@@ -179,5 +179,18 @@ namespace Loom.ZombieBattleground.Test
 
             return deck;
         }
+
+        public static Deck GetDeckWithCards(string name,
+                                    int heroId = 0,
+                                    Enumerators.OverlordSkill primaryskill = Enumerators.OverlordSkill.NONE,
+                                    Enumerators.OverlordSkill secondarySkill = Enumerators.OverlordSkill.NONE,
+                                    params DeckCardData[] cards)
+        {
+            Deck deck = GetDeckWithCards(name, heroId, cards);
+            deck.PrimarySkill = primaryskill;
+            deck.SecondarySkill = secondarySkill;
+
+            return deck;
+        }
     }
 }

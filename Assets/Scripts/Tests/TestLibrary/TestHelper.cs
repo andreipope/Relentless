@@ -180,9 +180,12 @@ namespace Loom.ZombieBattleground.Test
                 _testerGameObject = _testScene.GetRootGameObjects()[0];
                 Object.DontDestroyOnLoad(_testerGameObject);
 
-                GameClient.Instance.ServicesInitialized += async () => {
+                GameClient.Instance.ServicesInitialized += async () =>
+                {
+                    GameClient.Instance.UpdateServices = false;
                     SetGameplayManagers();
-                    await HandleLogin();
+                    await HandleLogin(false);
+                    GameClient.Instance.UpdateServices = true;
                 };
 
                 await SceneManager.LoadSceneAsync("APP_INIT", LoadSceneMode.Single);
@@ -190,15 +193,10 @@ namespace Loom.ZombieBattleground.Test
                 await AddVirtualInputModule();
 
                 await SetCanvases();
-
+ 
                 #region Login
 
-                await HandleLogin();
-
-                if (IsTestFailed)
-                    return;
-
-                await LetsThink();
+                await new WaitUntil(() => CheckCurrentAppState(Enumerators.AppState.MAIN_MENU));
 
                 if (IsTestFailed)
                     return;
@@ -918,7 +916,7 @@ namespace Loom.ZombieBattleground.Test
         /// Logs in into the game using one of the keys. Picks a correct one depending on whether it is an passive or active tester.
         /// </summary>
         /// <remarks>The login.</remarks>
-        public async Task HandleLogin() {
+        public async Task HandleLogin(bool waitForMainMenu = true) {
             if (BackendDataControlMediator.UserDataModel != null &&
                 BackendDataControlMediator.UserDataModel == TestUserDataModel)
                 return;
@@ -927,10 +925,10 @@ namespace Loom.ZombieBattleground.Test
 
             await BackendDataControlMediator.LoginAndLoadData();
 
-            WaitStart(1000);
-            await new WaitUntil(() => CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp());
+            WaitStart(10);
+            await new WaitUntil(() => waitForMainMenu && CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp());
 
-            if (!CheckCurrentAppState(Enumerators.AppState.MAIN_MENU))
+            if (waitForMainMenu && !CheckCurrentAppState(Enumerators.AppState.MAIN_MENU))
             {
                 Assert.Fail(
                     $"Login wasn't completed. Please ensure you have logged in previously, and that you're pointing to the Stage or Production server.");
@@ -2194,7 +2192,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
-            for (int i = GetNumberOfHordes() - 2; i >= 1; i--)
+            for (int i = GetNumberOfHordes() - 3; i >= 1; i--)
             {
                 await RemoveAHorde(1);
 
