@@ -49,6 +49,7 @@ namespace Loom.ZombieBattleground
             Pages.Add(new CustomGameModeListPage());
             Pages.Add(new CustomGameModeCustomUiPage());
             Pages.Add(new MyDecksPage());
+            Pages.Add(new MyCardsPage());
 
             foreach (IUIElement page in Pages)
             {

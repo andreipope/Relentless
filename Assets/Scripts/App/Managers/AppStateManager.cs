@@ -69,7 +69,9 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<MyDecksPage>();
                     break;
                 case Enumerators.AppState.ARMY:
-                    _uiManager.SetPage<ArmyPage>();
+                    //Temporary test new Navigation Menu
+                    //_uiManager.SetPage<ArmyPage>();
+                    _uiManager.SetPage<MyCardsPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
