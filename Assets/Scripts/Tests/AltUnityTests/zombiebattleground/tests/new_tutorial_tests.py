@@ -45,8 +45,9 @@ class CZBTutorialTests(CZBTests):
 
         self.driver.swipe(int(playerCard.x), int(playerCard.mobileY),
                           int(enemyCard.x), int(enemyCard.mobileY), 1000)
-        time.sleep(1)
+       
         self.altdriver.wait_for_element('CreatureCard(Clone)')
+        time.sleep(3)
         card=self.altdriver.wait_for_element('CreatureCard(Clone)')
         cardGoo = self.altdriver.wait_for_element(
             'id('+str(card.id)+')/GooText')
