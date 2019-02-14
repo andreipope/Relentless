@@ -1,6 +1,8 @@
-﻿using System;
+using System;
+using System.IO;
 using System.Linq;
 using CodeStage.AdvancedFPSCounter;
+using KellermanSoftware.CompareNetObjects;
 using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -92,6 +94,42 @@ namespace Loom.ZombieBattleground
             GeneralCommandsHandler.SkipTutorialFlow();
         }
 
-#endregion
+        public void DumpState()
+        {
+            Protobuf.GameState currentGameState = null;
+            try
+            {
+                currentGameState = BackendCommunication.GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
+            }
+            catch(Exception exception)
+            {
+                return;
+            }
+
+            uint variation = 0;
+            string fileName= String.Empty;
+            string filePath = String.Empty;
+
+            bool fileCreated = false;
+            while (!fileCreated)
+            {
+                fileName = "DumpState_" + currentGameState.Id + "_" + variation + ".json";
+                filePath = GameClient.Get<IDataManager>().GetPersistentDataPath(fileName);
+
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();
+                    fileCreated = true;
+                }
+                else
+                {
+                    variation++;
+                }
+            }
+
+            File.WriteAllText(filePath, GameClient.Get<IDataManager>().SerializeToJson(currentGameState, true));
+        }
+
+        #endregion
     }
 }

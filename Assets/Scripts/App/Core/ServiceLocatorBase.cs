@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         /// <summary>
         ///     Calls Update to each service.
         /// </summary>
-        public void Update()
+        public virtual void Update()
         {
             foreach (IService service in Services.Values)
             {

@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        private void PopulateDeckWithCardsFromIndex (int index, int amount = 5) 
+        private void PopulateDeckWithCardsFromIndex(int index, int amount = 5)
         {
             IGameplayManager _gameplayManager = GameClient.Get<IGameplayManager>();
             IDataManager _dataManager = GameClient.Get<IDataManager>();
@@ -45,7 +45,8 @@ namespace Loom.ZombieBattleground.Test
 
             for (int i = 0; i < amount; i++)
             {
-                if (index >= _dataManager.CachedCardsLibraryData.Cards.Count) {
+                if (index >= _dataManager.CachedCardsLibraryData.Cards.Count)
+                {
                     index = 0;
                 }
 
