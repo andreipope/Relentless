@@ -24,10 +24,13 @@ namespace Loom.ZombieBattleground
         
         private BackendDataControlMediator _backendDataControlMediator;
         
-        private Button _buttonLogin, _buttonSettings;
+        private Button _buttonLogin, 
+                       _buttonSettings;
 
         private TextMeshProUGUI _textPlayerName;
-        
+
+        #region IUIPopup
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -100,7 +103,11 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
+
+        #endregion
         
+        #region Buttons Handlers
+
         private void ButtonSettingHandler()
         {
             //todo add ReportActivityAction
@@ -127,5 +134,7 @@ namespace Loom.ZombieBattleground
             LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
             popup.Show();
         }
+
+        #endregion
     }
 }

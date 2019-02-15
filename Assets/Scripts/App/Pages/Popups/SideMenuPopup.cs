@@ -24,7 +24,11 @@ namespace Loom.ZombieBattleground
 
         private List<Transform> _locatorList;
         
-        private Button _buttonBattle, _buttonShop, _buttonMyDecks, _buttonMyPacks, _buttonMyCards;
+        private Button _buttonBattle, 
+                       _buttonShop, 
+                       _buttonMyDecks, 
+                       _buttonMyPacks, 
+                       _buttonMyCards;
 
         private List<Sprite> _selectedSpriteList;
         
@@ -43,6 +47,8 @@ namespace Loom.ZombieBattleground
         private MENU _currentMenu = MENU.NONE;
 
         private const bool _isAnimateTransition = false;
+        
+        #region IUIPopup
 
         public void Init()
         {
@@ -175,7 +181,11 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
         }
-        
+
+        #endregion
+
+        #region Buttons Handlers
+
         private void ButtonBattleHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -206,5 +216,7 @@ namespace Loom.ZombieBattleground
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.ARMY);
         }
+        
+        #endregion
     }
 }

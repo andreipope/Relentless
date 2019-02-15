@@ -22,7 +22,8 @@ namespace Loom.ZombieBattleground
         
         private GameObject _selfPage;
 
-        private Button _buttonPlay, _buttonChangeMode;
+        private Button _buttonPlay, 
+                       _buttonChangeMode;
 
         private TextMeshProUGUI _textGameMode;
 
@@ -37,6 +38,8 @@ namespace Loom.ZombieBattleground
         }
 
         private GameMode _gameMode;
+        
+        #region IUIElement
 
         public void Init()
         {
@@ -58,9 +61,9 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
             
             _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();                        
-            _buttonPlay.onClick.AddListener(OnClickPlay);
+            _buttonPlay.onClick.AddListener(ButtonPlayHandler);
             _buttonChangeMode = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Battle_Mode").GetComponent<Button>();
-            _buttonChangeMode.onClick.AddListener(OnClickChangeMode);
+            _buttonChangeMode.onClick.AddListener(ButtonChangeModeHandler);
             
             _imageOverlordPortrait = _selfPage.transform.Find("Image_OverlordPortrait").GetComponent<Image>();
             
@@ -90,7 +93,9 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
         }
-        
+
+        #endregion
+
         private void OnHide()
         {
             _uiManager.HidePopup<SideMenuPopup>();
@@ -100,7 +105,7 @@ namespace Loom.ZombieBattleground
 
         #region Buttons Handlers
 
-        private void OnClickPlay()
+        private void ButtonPlayHandler()
         {
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPlay.name))
             {
@@ -136,7 +141,7 @@ namespace Loom.ZombieBattleground
             //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);           
         }
 
-        private void OnClickChangeMode()
+        private void ButtonChangeModeHandler()
         {
             _uiManager.DrawPopup<GameModePopup>();
         }

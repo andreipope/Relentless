@@ -23,14 +23,16 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
-        private Button _backButton,
+        private Button _buttonBack,
                        _buttonSoloMode,
                        _buttonPvPMode;
 
         private ButtonShiftingContent _buttonTutorial;
 
         private BackendDataControlMediator _backendDataControlMediator;
-        
+
+        #region IUIPopup
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -71,12 +73,12 @@ namespace Loom.ZombieBattleground
             _buttonTutorial = Self.transform.Find("Scaler/Button_Tutorial").GetComponent<ButtonShiftingContent>();
             _buttonSoloMode = Self.transform.Find("Scaler/Button_SoloMode").GetComponent<Button>();
             _buttonPvPMode = Self.transform.Find("Scaler/Button_PvPMode").GetComponent<Button>();
-            _backButton = Self.transform.Find("Scaler/Button_Back").GetComponent<Button>();
+            _buttonBack = Self.transform.Find("Scaler/Button_Back").GetComponent<Button>();
 
-            _buttonTutorial.onClick.AddListener(TutorialButtonOnClickHandler);
-            _buttonSoloMode.onClick.AddListener(SoloModeButtonOnClickHandler);
-            _buttonPvPMode.onClick.AddListener(PvPModeButtonOnClickHandler);
-            _backButton.onClick.AddListener(BackButtonOnClickHandler);
+            _buttonTutorial.onClick.AddListener(ButtonTutorialHandler);
+            _buttonSoloMode.onClick.AddListener(ButtonSoloModeHandler);
+            _buttonPvPMode.onClick.AddListener(ButtonPvPModeHandler);
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
 
             _buttonPvPMode.interactable = _dataManager.ConfigData.EnablePvP;
             _buttonPvPMode.interactable = true;
@@ -93,10 +95,12 @@ namespace Loom.ZombieBattleground
         public void Update()
         {
         }
-        
+
+        #endregion
+
         #region Buttons Handlers
 
-        private void TutorialButtonOnClickHandler()
+        private void ButtonTutorialHandler()
         {
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonTutorial.name))
             {
@@ -118,7 +122,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SoloModeButtonOnClickHandler()
+        private void ButtonSoloModeHandler()
         {
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSoloMode.name))
             {
@@ -132,7 +136,7 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<GameModePopup>();
         }
 
-        private void PvPModeButtonOnClickHandler()
+        private void ButtonPvPModeHandler()
         {
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPvPMode.name))
             {
@@ -155,9 +159,9 @@ namespace Loom.ZombieBattleground
             //}
         }
 
-        private void BackButtonOnClickHandler()
+        private void ButtonBackHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_backButton.name))
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonBack.name))
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
                 return;
