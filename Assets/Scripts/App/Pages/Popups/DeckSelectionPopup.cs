@@ -237,7 +237,8 @@ namespace Loom.ZombieBattleground
                     _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
                     if(_glowBorderVFX == null)
                     {
-                        _glowBorderVFX = Object.Instantiate(_glowBorderPrefab);
+                        //_glowBorderVFX = Object.Instantiate(_glowBorderPrefab);
+                        _glowBorderVFX = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").gameObject;
                     }
                     Transform deckIcon = _createdDeckIconList[i].transform;
                     Sequence sequence = DOTween.Sequence();
