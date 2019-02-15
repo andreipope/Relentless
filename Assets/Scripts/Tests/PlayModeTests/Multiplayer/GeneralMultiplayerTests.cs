@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     public class GeneralMultiplayerTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Slab()
         {
             return AsyncTest(async () =>
@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Bane()
         {
             return AsyncTest(async () =>
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zeptic_Lose()
         {
             return AsyncTest(async () =>
@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CorrectCardDraw()
         {
             return AsyncTest(async () =>
@@ -310,7 +310,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         //Toxic Faction Tests
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zpitter_v4()
         {
             return AsyncTest(async () =>
@@ -371,7 +371,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Ghoul_v4()
         {
             return AsyncTest(async () =>
@@ -442,7 +442,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
  
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zlopper_v4()
         {
             return AsyncTest(async () =>
@@ -518,7 +518,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         //Item Faction Tests
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Boomstick_v4()
         {
             return AsyncTest(async () =>

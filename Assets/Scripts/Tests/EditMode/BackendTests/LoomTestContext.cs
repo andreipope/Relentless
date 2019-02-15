@@ -19,6 +19,7 @@ namespace Loom.ZombieBattleground.Test
         {
             BackendEndpoint backendEndpoint = new BackendEndpoint(BackendEndpointsContainer.Endpoints[BackendPurpose.Local]);
             BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract));
+            BackendFacade.EnableRpcLogging = true;
             UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
         }
 
@@ -51,7 +52,7 @@ namespace Loom.ZombieBattleground.Test
 
         public string CreateUniqueUserId(string userId)
         {
-            return userId + "_" + new Random().NextDouble();
+            return userId + "_" + Guid.NewGuid();
         }
 
         private async Task EnsureContract()
