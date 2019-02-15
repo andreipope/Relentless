@@ -27,7 +27,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1245764788466224
 GameObject:
   m_ObjectHideFlags: 1
@@ -408,8 +408,8 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_text: DECK NAME
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9ebc016c0284b448b89f1cdb88416b4c, type: 2}
-  m_sharedMaterial: {fileID: 21866595372282448, guid: 9ebc016c0284b448b89f1cdb88416b4c,
+  m_fontAsset: {fileID: 11400000, guid: b4cb1ae519a08b7448de48b644273030, type: 2}
+  m_sharedMaterial: {fileID: 21184011302497486, guid: b4cb1ae519a08b7448de48b644273030,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}

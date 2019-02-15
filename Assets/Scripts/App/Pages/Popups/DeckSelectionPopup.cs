@@ -14,118 +14,183 @@ namespace Loom.ZombieBattleground
     public class DeckSelectionPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
-        
+
         private ILoadObjectsManager _loadObjectsManager;
-        
+
         private IUIManager _uiManager;
-        
+
         private ISoundManager _soundManager;
-        
+
         private IDataManager _dataManager;
-        
+
         private TextMeshProUGUI _textDeckName;
 
-        private Image _imageDeckIconGrow;
+        private GameObject _glowBorderVFX;
 
         private Button _buttonLeft, _buttonRight;
 
-        private GameObject _deckIconPrefab;
+        private GameObject _deckIconPrefab,
+                           _glowBorderPrefab;
 
         private List<GameObject> _createdDeckIconList;
 
         private Transform _deckIconGroup;
-        
-        private Deck _selectedDeck;
-        
-        private int _defaultSelectedDeck = 1;
 
         private const float _deckIconScaleNormal = 0.7178f;
-        
+
         private const float _deckIconScaleSelected = 1f;
+
+        private List<Deck> _deckList;
         
+        private int _selectDeckIndex;
+
+        #region IUIPopup
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _dataManager = GameClient.Get<IDataManager>();     
+            _dataManager = GameClient.Get<IDataManager>();
         }
-        
+
         public void Dispose()
         {
         }
-        
+
         public void Hide()
         {
             if (Self == null)
                 return;
 
             DisposeCreatedObject();
-        
+
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
         }
-        
+
         public void SetMainPriority()
         {
         }
-        
+
         public void Show()
         {
             if (Self != null)
                 return;
-        
+
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/DeckSelectionPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");            
-            
+            _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
+            _glowBorderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/GlowBorder");
+
             _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            _imageDeckIconGrow = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").GetComponent<Image>();
             _deckIconGroup = Self.transform.Find("Scaler/Panel_DeckContent/Group");
-            
+
             _buttonRight = Self.transform.Find("Scaler/Button_Right").GetComponent<Button>();
             _buttonLeft = Self.transform.Find("Scaler/Button_Left").GetComponent<Button>();
             _buttonRight.onClick.AddListener(ButtonRightHandler);
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
-            LoadDeckData();
+            LoadDefaultDeckData();
             LoadDeckObjects();
-            if (_selectedDeck != null)
-            {
-                UpdateSelectedDeckDisplay();
-            }
+            UpdateSelectedDeckDisplay
+            (
+                GetSelectedDeck()
+            );            
         }
-        
+
         public void Show(object data)
         {
             Show();
         }
-        
+
         public void Update()
         {
         }
-        
-        private void LoadDeckData()
+
+        #endregion
+
+        #region Deck Data
+
+        private void LoadDefaultDeckData()
         {
-            _defaultSelectedDeck = _dataManager.CachedUserLocalData.LastSelectedDeckId;
-            
-            if (_defaultSelectedDeck > _dataManager.CachedDecksData.Decks.Count)
+            int defaultSelectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
+
+            if (defaultSelectedDeckId > _dataManager.CachedDecksData.Decks.Count)
             {
-                _defaultSelectedDeck = 1;
+                defaultSelectedDeckId = 1;
             }
             if (_dataManager.CachedDecksData.Decks.Count > 1)
             {
-                _defaultSelectedDeck = Mathf.Clamp(_defaultSelectedDeck, 1, _defaultSelectedDeck);
+                defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
             }
 
-            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _defaultSelectedDeck);            
+            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
+            UpdateSelectedDeckData(selectedDeck);
             
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_selectedDeck.Id;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            _deckList = _dataManager.CachedDecksData.Decks;            
         }
+
+        private void UpdateSelectedDeckData(Deck deck)
+        {
+            UpdateSelectedDeckData((int)deck.Id);
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
+        }
+
+        private void UpdateSelectedDeckData(int deckId)
+        {
+            UpdateSelectedDeckData
+            (
+                _dataManager.CachedDecksData.Decks.Find(x => x.Id == deckId)
+            );            
+        }
+        
+        public Deck GetSelectedDeck()
+        {
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+        }
+
+        private Hero GetHeroDataFromDeck(Deck deck)
+        {
+            int heroId = deck.HeroId;
+            Hero hero = _dataManager.CachedHeroesData.Heroes[heroId];
+            return hero;
+        }
+        
+        private void SwitchSelectedDeckIndex(int direction)
+        {  
+            if (direction == 0)
+                return;
+                
+            if (_deckList.Count <= 0)
+            {
+                Debug.Log("No deck in list");
+                return;
+            }
+            
+            int nextIndex = _selectDeckIndex + direction;
+            if(nextIndex >= _deckList.Count)
+            {
+                nextIndex = 0;
+            }else if(nextIndex < 0)
+            {
+                nextIndex = _deckList.Count - 1;
+            }
+
+            Deck selectedDeck = _deckList[nextIndex];
+
+            UpdateSelectedDeckData(selectedDeck);
+            UpdateSelectedDeckDisplay(selectedDeck);
+        }
+
+        #endregion
+
+        #region Deck Display
         
         private void LoadDeckObjects()
         {
@@ -147,26 +212,31 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private Hero GetHeroDataFromDeck(Deck deck)
+        private void UpdateSelectedDeckDisplay(Deck selectedDeck)
         {
-            int heroId = deck.HeroId;
-            Hero hero = _dataManager.CachedHeroesData.Heroes[heroId];
-            return hero;
-        }
-        
-        private void UpdateSelectedDeckDisplay()
-        {
-            _textDeckName.text = _selectedDeck.Name;
-            Hero selectedHero = GetHeroDataFromDeck(_selectedDeck);
+            _textDeckName.text = selectedDeck.Name;
+            Hero selectedHero = GetHeroDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedHero.HeroElement);
 
             for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i<_createdDeckIconList.Count; i++)
             {
                 Deck deck = _dataManager.CachedDecksData.Decks[i];
-                if(deck == _selectedDeck)
+                if(deck == selectedDeck)
                 {
                     _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
-                    //_imageDeckIconGrow.GetComponent<RectTransform>().localPosition = _createdDeckIconList[i].GetComponent<RectTransform>().localPosition;                   
+                    if(_glowBorderVFX == null)
+                    {
+                        _glowBorderVFX = Object.Instantiate(_glowBorderPrefab);
+                    }
+                    Transform deckIcon = _createdDeckIconList[i].transform;
+                    Sequence sequence = DOTween.Sequence();
+                    sequence.AppendInterval(0.1f);
+                    sequence.OnComplete(()=> 
+                    {
+                        Vector3 glowBorderPosition = deckIcon.position;
+                        glowBorderPosition.z = 0;
+                        _glowBorderVFX.transform.position = glowBorderPosition;  
+                    });   
                 }
                 else
                 {
@@ -196,16 +266,6 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private void ButtonRightHandler()
-        {
-
-        }
-        
-        private void ButtonLeftHandler()
-        {
-
-        }
-
         private void DisposeCreatedObject()
         {
             if(_createdDeckIconList != null)
@@ -217,11 +277,26 @@ namespace Loom.ZombieBattleground
                 _createdDeckIconList.Clear();
                 _createdDeckIconList = null;
             }
+            if(_glowBorderVFX != null)
+            {
+                Object.Destroy(_glowBorderVFX);
+            }
+        }
+
+        #endregion
+
+        #region Buttons Handlers
+
+        private void ButtonRightHandler()
+        {
+            SwitchSelectedDeckIndex(1);
         }
         
-        public Deck GetSelectedDeck()
+        private void ButtonLeftHandler()
         {
-            return _selectedDeck;
+            SwitchSelectedDeckIndex(-1);
         }
+
+        #endregion
     }
 }
