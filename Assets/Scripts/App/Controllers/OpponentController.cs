@@ -162,9 +162,28 @@ namespace Loom.ZombieBattleground
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
                     break;
+
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
                     // TODO
                     break;
+
+
+                case PlayerActionOutcome.OutcomeOneofCase.AttackOverlord:
+                    PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome attackOverlordOutcome = outcome.AttackOverlord;
+                    BoardObject boardObject = _battlegroundController.GetBoardObjectByInstanceId(attackOverlordOutcome.InstanceId.FromProtobuf());
+
+                    if (boardObject is Player targetOverlord)
+                    {
+                        int currentDefence = targetOverlord.Defense;
+                        int damage = currentDefence - attackOverlordOutcome.NewDefense;
+                        _battleController.AttackPlayer(targetOverlord, damage);
+                        targetOverlord.Defense = attackOverlordOutcome.NewDefense;
+                    }
+
+                    break;
+
+
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }

@@ -53,7 +53,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
+                if(!PvPManager.UseBackendGameLogic)
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
