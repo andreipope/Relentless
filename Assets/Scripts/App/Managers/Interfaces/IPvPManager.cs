@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         event Action LeaveMatchReceived;
 
+        int CurrentActionIndex { get; set; }
+
         Address? CustomGameModeAddress { get; set; }
 
         MatchMetadata MatchMetadata { get; }

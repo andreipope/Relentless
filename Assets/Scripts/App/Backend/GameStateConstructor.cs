@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 throw new Exception("Game must be PVP");
 
             return CreateGameState(
-                (int)_pvpManager.InitialGameState.CurrentActionIndex,
+                _pvpManager.CurrentActionIndex,
                 _pvpManager.IsFirstPlayer(),
                 _pvpManager.InitialGameState.Id,
                 _pvpManager.InitialGameState.RandomSeed,
