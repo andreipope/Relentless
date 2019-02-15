@@ -123,8 +123,6 @@ namespace Loom.ZombieBattleground
                     popup.Show();
                     popup.SetLoginAsGuestState();
                 }
-                
-                //GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
         }
 
