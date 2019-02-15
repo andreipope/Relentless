@@ -92,6 +92,7 @@ namespace Loom.ZombieBattleground
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
             LoadDeckData();
+            LoadDeckObjects();
             if (_selectedDeck != null)
             {
                 UpdateSelectedDeckDisplay();
@@ -120,8 +121,14 @@ namespace Loom.ZombieBattleground
                 _defaultSelectedDeck = Mathf.Clamp(_defaultSelectedDeck, 1, _defaultSelectedDeck);
             }
 
-            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _defaultSelectedDeck);
-
+            _selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _defaultSelectedDeck);            
+            
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_selectedDeck.Id;
+            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+        }
+        
+        private void LoadDeckObjects()
+        {
             DisposeCreatedObject();
             _createdDeckIconList = new List<GameObject>();
             for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)

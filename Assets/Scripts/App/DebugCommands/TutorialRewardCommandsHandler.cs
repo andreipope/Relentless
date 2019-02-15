@@ -40,5 +40,11 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager.OpponentPlayer.Defense = 0;
         }
+        
+        [CommandHandler(Description = "Reduce the current def of the Playwe overlord to zero")]
+        private static void LoseBattle()
+        {
+            _gameplayManager.CurrentPlayer.Defense = 0;
+        }
     }
 }

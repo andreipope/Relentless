@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.BackendCommunication;
 
 namespace Loom.ZombieBattleground
@@ -124,8 +125,9 @@ namespace Loom.ZombieBattleground
 
             Action startMatch = () =>
             {
-                DeckSelectionPopup deckSelectionPopup = _uiManager.GetPopup<DeckSelectionPopup>();
-                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deckSelectionPopup.GetSelectedDeck();
+                Deck selectedDeck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)selectedDeck.Id;
+                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = selectedDeck;
                 GameClient.Get<IMatchManager>().FindMatch();
             };
 
