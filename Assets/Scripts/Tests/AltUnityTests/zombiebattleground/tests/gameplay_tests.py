@@ -71,7 +71,7 @@ class CZBPlayTests(CZBTests):
             'EndTurnButton/_1_btn_endturn/EndTurnGlowEffect', timeout=60)
         self.check_player_goo_bottle_to_be_refilled()
         time.sleep(3)
-        self.choose_what_card_to_play()
+        # self.choose_what_card_to_play()
         self.altdriver.wait_for_element(
             'EndTurnButton/_1_btn_endturn').mobile_tap()
         logs.append(str(datetime.datetime.now())+' End turn.')
@@ -80,7 +80,7 @@ class CZBPlayTests(CZBTests):
         # self.check_opponent_goo_bottle_to_be_refilled()
 
     def get_player_board_monster_count(self):
-        return int(self.altdriver.find_elements('BattleField/PlayerBoard/BoardCreature(Clone)'))
+        return int(len(self.altdriver.find_elements('BattleField/PlayerBoard/BoardCreature(Clone)')))
 
     def get_player_defence(self):
         return int(self.altdriver.wait_for_element('Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText').get_component_property('TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro'))

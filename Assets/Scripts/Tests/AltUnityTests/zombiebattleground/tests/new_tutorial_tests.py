@@ -28,14 +28,14 @@ class CZBTutorialTests(CZBTests):
         board.mobile_tap()
 
         self.altdriver.wait_for_element('CreatureCard(Clone)')
-        time.sleep(3)
+        time.sleep(4)
 
 
         card=self.altdriver.wait_for_element('CreatureCard(Clone)')
         cardGoo = self.altdriver.wait_for_element(
             'id('+str(card.id)+')/GooText')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
-                          int(board.x), int(board.mobileY), 1000)
+                          int(board.x), int(board.mobileY), 2000)
 
         
         self.end_turn_and_wait_for_your_turn()
@@ -44,7 +44,7 @@ class CZBTutorialTests(CZBTests):
         enemyCard=self.altdriver.wait_for_element('OpponentBoard/BoardCreature(Clone)')
 
         self.driver.swipe(int(playerCard.x), int(playerCard.mobileY),
-                          int(enemyCard.x), int(enemyCard.mobileY), 1000)
+                          int(enemyCard.x), int(enemyCard.mobileY), 2000)
        
         self.altdriver.wait_for_element('CreatureCard(Clone)')
         time.sleep(3)
@@ -53,7 +53,7 @@ class CZBTutorialTests(CZBTests):
             'id('+str(card.id)+')/GooText')
         board = self.altdriver.wait_for_element('PlayerBoard')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
-                          int(board.x), int(board.mobileY), 1000)
+                          int(board.x), int(board.mobileY), 2000)
 
         board.mobile_tap()
 
@@ -64,16 +64,16 @@ class CZBTutorialTests(CZBTests):
         oponentFace=self.altdriver.wait_for_element('Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage')
     
         self.driver.swipe(int(playerCards[1].x), int(playerCards[1].mobileY),
-                          int(oponentFace.x), int(oponentFace.mobileY), 1000)
+                          int(oponentFace.x), int(oponentFace.mobileY), 2000)
         time.sleep(1)
         self.driver.swipe(int(playerCards[0].x), int(playerCards[0].mobileY),
-                          int(oponentFace.x), int(oponentFace.mobileY), 1000)
+                          int(oponentFace.x), int(oponentFace.mobileY), 2000)
         time.sleep(2)
         card=self.altdriver.wait_for_element('CreatureCard(Clone)')
         cardGoo = self.altdriver.wait_for_element(
             'id('+str(card.id)+')/GooText')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
-                          int(board.x), int(board.mobileY), 1000)
+                          int(board.x), int(board.mobileY), 2000)
 
         self.end_turn_and_wait_for_your_turn()
 
@@ -83,7 +83,7 @@ class CZBTutorialTests(CZBTests):
             'id('+str(card.id)+')/GooText')
         board = self.altdriver.wait_for_element('PlayerBoard')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
-                          int(board.x), int(board.mobileY), 1000)
+                          int(board.x), int(board.mobileY), 2000)
         time.sleep(1)
         oponentFace.mobile_tap()
         self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
@@ -92,7 +92,7 @@ class CZBTutorialTests(CZBTests):
         self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn').mobile_tap()
         self.altdriver.wait_for_element(
             'EndTurnButton/_1_btn_endturn/EndTurnGlowEffect', timeout=60)
-        time.sleep(3)
+        time.sleep(4)
 
 
              
