@@ -1505,7 +1505,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     for (int i = 0; i < units.Length; i++)
                     {
-                        Assert.Null(units[i]);
+                        Assert.AreEqual(0, units[i].CurrentHp);
                     }
                     Assert.AreEqual(0, TestHelper.BattlegroundController.PlayerBoardCards.Count);
                     Assert.AreEqual(0, TestHelper.BattlegroundController.OpponentBoardCards.Count);
