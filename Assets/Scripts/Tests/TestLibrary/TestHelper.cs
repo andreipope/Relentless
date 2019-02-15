@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 3;
+        public const int TestTimeScale = DebugTests ? 1 : 1;
 
         private static TestHelper _instance;
 
@@ -1540,6 +1540,8 @@ namespace Loom.ZombieBattleground.Test
                     return;
 
                 await WaitUntilInputIsUnblocked();
+
+                await new WaitUntil(() => _playerController.IsActive);
             }
 
             await LetsThink();

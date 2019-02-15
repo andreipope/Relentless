@@ -20,7 +20,8 @@ namespace Loom.ZombieBattleground.Test
             Action validateEndStateAction,
             bool enableReverseMatch = true,
             bool enableBackendGameLogicMatch = false,
-            bool enableClientGameLogicMatch = true
+            bool enableClientGameLogicMatch = true,
+            bool onlyReverseMatch = false
             )
         {
             async Task ExecuteTest()
@@ -53,8 +54,11 @@ namespace Loom.ZombieBattleground.Test
 
             async Task ExecuteTestWithReverse()
             {
-                pvpTestContext.IsReversed = false;
-                await ExecuteTest();
+                if (!onlyReverseMatch)
+                {
+                    pvpTestContext.IsReversed = false;
+                    await ExecuteTest();
+                }
 
                 if (enableReverseMatch)
                 {
@@ -65,7 +69,10 @@ namespace Loom.ZombieBattleground.Test
             }
 
             if (!enableClientGameLogicMatch && !enableBackendGameLogicMatch)
-                throw new Exception("At least one tests= must be run");
+                throw new Exception("At least one tests must be run");
+
+            if (!enableReverseMatch && onlyReverseMatch)
+                throw new Exception("!enableReverseMatch && onlyReverseMatch");
 
             if (enableClientGameLogicMatch)
             {

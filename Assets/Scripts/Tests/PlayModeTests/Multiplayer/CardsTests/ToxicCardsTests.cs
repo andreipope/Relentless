@@ -266,7 +266,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentUnit.InitialDamage - 1, opponentUnit.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, false, true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: true, enableBackendGameLogicMatch: false, enableClientGameLogicMatch: true);
             }, 180);
         }
 

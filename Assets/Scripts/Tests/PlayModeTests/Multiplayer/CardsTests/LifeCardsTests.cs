@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.Contains(156, TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId).ToList());
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, true, true, false);
             });
         }
 
