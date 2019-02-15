@@ -177,8 +177,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => player.CardPlay(playerCardId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
-                       player => player.CardAttack(playerCardId, TestHelper.GetCurrentPlayer().InstanceId),
-                       opponent => opponent.CardAttack(opponentCardId, TestHelper.GetOpponentPlayer().InstanceId),
+                       player => player.CardAttack(playerCardId, TestHelper.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentCardId, TestHelper.GetCurrentPlayer().InstanceId),
                    };
 
                 Action validateEndState = () =>
@@ -193,7 +193,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentUnit.InitialDamage - 1, opponentUnit.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
