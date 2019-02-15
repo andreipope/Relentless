@@ -67,13 +67,18 @@ namespace Loom.ZombieBattleground
         {
             BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<ParametrizedAbilityBoardObject>()
-            {
-                new ParametrizedAbilityBoardObject(player, new ParametrizedAbilityParameters()
-                    {
-                        Attack = _damage
-                    })
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(
+                        player,
+                        new ParametrizedAbilityParameters
+                        {
+                            Attack = _damage
+                        }
+                    )
+                }
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

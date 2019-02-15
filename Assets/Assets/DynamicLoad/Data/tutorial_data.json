@@ -647,6 +647,12 @@
                     "UnitsCanAttack": true
                 },
                 {
+                  "ConnectedTurnIndex": 7,
+                  "RequiredActivitiesToDoneDuringStep": [
+                  ],
+                  "ActionToEndThisStep": "OverlordSayPopupHided",
+                },
+                {
                     "ActionToEndThisStep": "EndTurn",
                     "ConnectedTurnIndex": 7,
                     "OverlordSayTooltips": [],
@@ -946,7 +952,8 @@
                 {
                     "ActionToEndThisStep": "CardPackOpened",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "ConnectedActivities": [
                         3
@@ -971,17 +978,31 @@
                 {
                     "ActionToEndThisStep": "CardPackCollected",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
                 {
                     "ActionToEndThisStep": "ScreenChanged",
+                    "HandPointers": [
+                        {
+                            "AppearDelay": 0.5,
+                            "StartPosition": {
+                                "X": -14.8,
+                                "Y": 7.6,
+                                "Z": 0
+                            },
+                            "TutorialHandLayer": "AbovePages",
+                            "TutorialHandPointerType": "Single"
+                        }
+                    ],
                     "BlockedButtons": [
                         "ButtonMinus",
                         "ButtonPlus",
                         "ButtonMax",
-                        "ButtonOpenPacks"
+                        "ButtonOpenPacks",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -1886,14 +1907,16 @@
                 {
                     "ActionToEndThisStep": "CardPackOpened",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
                 {
                     "ActionToEndThisStep": "CardPackCollected",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -1903,7 +1926,8 @@
                         "ButtonMinus",
                         "ButtonPlus",
                         "ButtonMax",
-                        "ButtonOpenPacks"
+                        "ButtonOpenPacks",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -2627,14 +2651,16 @@
                 {
                     "ActionToEndThisStep": "CardPackOpened",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
                 {
                     "ActionToEndThisStep": "CardPackCollected",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -2644,7 +2670,8 @@
                         "ButtonMinus",
                         "ButtonPlus",
                         "ButtonMax",
-                        "ButtonOpenPacks"
+                        "ButtonOpenPacks",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -3450,14 +3477,16 @@
                 {
                     "ActionToEndThisStep": "CardPackOpened",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
                 {
                     "ActionToEndThisStep": "CardPackCollected",
                     "BlockedButtons": [
-                        "BackButton"
+                        "BackButton",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },
@@ -3467,7 +3496,8 @@
                         "ButtonMinus",
                         "ButtonPlus",
                         "ButtonMax",
-                        "ButtonOpenPacks"
+                        "ButtonOpenPacks",
+                        "Button_BuyPacks"
                     ],
                     "OpenScreen": "PackOpenerPage"
                 },

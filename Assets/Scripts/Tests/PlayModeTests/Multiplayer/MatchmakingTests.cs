@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.Test
     public class MatchmakingTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MatchmakingCancel()
         {
             return AsyncTest(async () =>
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MatchmakingTimeout()
         {
             return AsyncTest(async () =>
@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MatchmakeAndQuit()
         {
             return AsyncTest(async () =>
@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MatchmakeWaitForOurTurnAndQuit()
         {
             return AsyncTest(async () =>
@@ -98,14 +98,12 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(50 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MatchmakingCancelAndMatchmake()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.MainMenuTransition("Button_Play");
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.MainMenuTransition("Button_PvPMode");

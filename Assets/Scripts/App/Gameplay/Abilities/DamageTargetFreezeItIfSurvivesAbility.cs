@@ -82,13 +82,10 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
-                new List<BoardObject>
-                {
-                    target
-                },
-                AbilityData.AbilityType,
-                AffectObjectType
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject> {
+                    new ParametrizedAbilityBoardObject(target)
+                }
             );
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
