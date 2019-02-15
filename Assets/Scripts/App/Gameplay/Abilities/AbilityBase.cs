@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -478,6 +479,24 @@ namespace Loom.ZombieBattleground
         protected void ReportAbilityDoneAction(List<BoardObject> targets)
         {
 
+        }
+
+        protected int GetAbilityIndex()
+        {
+            int index = MainWorkingCard.LibraryCard.Abilities.IndexOf(AbilityData);
+            if (index == -1)
+                throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
+
+            return index;
+        }
+
+        protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
+        {
+            AbilitiesController.InvokeUseAbilityEvent(
+                MainWorkingCard,
+                AbilityData.AbilityType,
+                targets ?? new List<ParametrizedAbilityBoardObject>()
+            );
         }
     }
 }

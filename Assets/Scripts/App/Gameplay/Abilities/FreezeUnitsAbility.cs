@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
                 unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             AbilityProcessingAction?.ForceActionDone();
         }

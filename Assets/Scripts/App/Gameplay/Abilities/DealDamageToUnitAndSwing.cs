@@ -53,8 +53,12 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unitView.Model, Damage);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { TargetUnit },
-                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                }
+            );
         }
 
         private void TakeDamageToUnit(BoardUnitModel unit, int value)
