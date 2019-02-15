@@ -100,9 +100,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-<<<<<<< HEAD
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
-=======
         [Timeout(int.MaxValue)]
         public IEnumerator Bane()
         {
@@ -163,7 +160,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
->>>>>>> development
         public IEnumerator Zeptic_Lose()
         {
             return AsyncTest(async () =>
