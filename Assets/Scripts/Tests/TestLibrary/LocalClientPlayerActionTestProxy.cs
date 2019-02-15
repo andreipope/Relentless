@@ -35,6 +35,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(2000);
             await _testHelper.EndTurn();
         }
 

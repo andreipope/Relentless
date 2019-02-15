@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Cactuz", 10)
+                    new DeckCardData("Slab", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Cactuz", 10)
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cactuz", 1);
+                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Slab", 1);
                 InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cactuz", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
@@ -47,12 +47,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.REANIMATE_UNIT, new List<ParametrizedAbilityInstanceId>());
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
                        },
-                       player => player.CardAttack(playerCardId, opponentCardId),
+                       player =>
+                       {
+                           //player.CardAttack(playerCardId, opponentCardId);
+                       },
+                        opponent =>
+                        {
+                            opponent.CardAttack(opponentCardId, playerCardId);
+                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.REANIMATE_UNIT, new List<ParametrizedAbilityInstanceId>());
+                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
+                        },
                        player => {},
-                       opponent => {},
                 };
 
                 Action validateEndState = () =>
@@ -63,7 +69,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(156, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId)));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, false);
             });
         }
 

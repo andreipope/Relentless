@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -179,6 +180,13 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Error:
                 case LogType.Exception:
                     _errorMessages.Add(new LogMessage(condition, stacktrace, type));
+                    string[] knownErrors = new []{
+                        "Sub-emitters must be children of the system that spawns them"
+                    }.Select(s => s.ToLowerInvariant()).ToArray();
+
+                    if (knownErrors.Any(error => condition.ToLowerInvariant().Contains(error)))
+                        break;
+
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
                     break;
                 case LogType.Assert:
