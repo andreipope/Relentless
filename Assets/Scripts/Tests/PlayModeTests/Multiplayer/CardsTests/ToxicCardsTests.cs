@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     public class ToxicCardsTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator RelentleZZ()
         {
             return AsyncTest(async () =>
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zpitter()
         {
             return AsyncTest(async () =>
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Ectoplasm()
         {
             return AsyncTest(async () =>
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Ghoul()
         {
             return AsyncTest(async () =>
@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Wazte()
         {
             return AsyncTest(async () =>
@@ -238,7 +238,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Poizom()
         {
             return AsyncTest(async () =>
@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Azzazzin()
         {
             return AsyncTest(async () =>
@@ -376,7 +376,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Hazzard()
         {
             return AsyncTest(async () =>
@@ -435,7 +435,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zlimey()
         {
             return AsyncTest(async () =>
@@ -472,7 +472,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Hazmaz()
         {
             return AsyncTest(async () =>
@@ -513,7 +513,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zeptic()
         {
             return AsyncTest(async () =>
@@ -554,7 +554,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Germ()
         {
             return AsyncTest(async () =>
@@ -595,7 +595,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zcavenger()
         {
             return AsyncTest(async () =>

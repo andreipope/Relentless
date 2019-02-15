@@ -42,7 +42,6 @@ namespace Loom.ZombieBattleground
             switch (stateTo)
             {
                 case Enumerators.AppState.APP_INIT:
-                    GameClient.Get<ITimerManager>().Dispose();
                     _uiManager.SetPage<LoadingPage>();
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,
@@ -238,9 +237,11 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
-            if (!Application.isPlaying) {
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) {
                 throw exception;
             }
+#endif
 
             string message = "Handled network exception: ";
             if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)

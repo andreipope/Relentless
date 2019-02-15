@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     public class LifeCardsTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Cactuz()
         {
             return AsyncTest(async () =>
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Huzk()
         {
             return AsyncTest(async () =>
@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Yggdrazil()
         {
             return AsyncTest(async () =>
@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Puffer()
         {
             return AsyncTest(async () =>

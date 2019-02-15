@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     public class AirCardsTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator MindFlayer()
         {
             return AsyncTest(async () =>
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Banshee()
         {
             return AsyncTest(async () =>
@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
         [UnityTest]
-        [Timeout(150 * 1000 * TestHelper.TestTimeScale)]
+        [Timeout(int.MaxValue)]
         public IEnumerator Zonic()
         {
             return AsyncTest(async () =>
