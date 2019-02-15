@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -76,11 +77,14 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public async Task OverlordSkillUsed(SkillId skillId, InstanceId? target)
+        public async Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            BoardObject targetBoardObject = target != null ? _testHelper.BattlegroundController.GetBoardObjectByInstanceId(target.Value) : null;
+            List<ParametrizedAbilityBoardObject> targetBoardObjects = targets != null ? targets.Select(target =>
+            {
+                return new ParametrizedAbilityBoardObject(_testHelper.BattlegroundController.GetBoardObjectByInstanceId(target.Id), target.Parameters);
+            }).ToList() : null;
             BoardSkill boardSkill = _testHelper.GetBoardSkill(_testHelper.GetCurrentPlayer(), skillId);
-            await _testHelper.DoBoardSkill(boardSkill, targetBoardObject);
+            await _testHelper.DoBoardSkill(boardSkill, targetBoardObjects);
         }
 
         public Task CardAttack(InstanceId attacker, InstanceId target)
