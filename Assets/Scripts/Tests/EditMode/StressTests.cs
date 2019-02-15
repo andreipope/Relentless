@@ -237,12 +237,6 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private static float CalculateFuzzDelay(int clientCount, float scale, Random random)
-        {
-            float delay = (float) random.NextDouble() * scale * Mathf.Max(0.25f, clientCount / 300f);
-            return delay;
-        }
-
         [UnityTearDown]
         public IEnumerator Cleanup()
         {
@@ -264,7 +258,13 @@ namespace Loom.ZombieBattleground.Test
             }, 10000);
         }
 
-        private async Task TaskThreadedWrapper(Func<Task> taskFunc, Action<Exception> onExceptionCallback = null)
+        private static float CalculateFuzzDelay(int clientCount, float scale, Random random)
+        {
+            float delay = (float) random.NextDouble() * scale * Mathf.Max(0.25f, clientCount / 300f);
+            return delay;
+        }
+
+        private static async Task TaskThreadedWrapper(Func<Task> taskFunc, Action<Exception> onExceptionCallback = null)
         {
             try
             {
