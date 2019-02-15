@@ -139,28 +139,7 @@ namespace Loom.ZombieBattleground
             UpdateSelectedDeckData(selectedDeck);
 
             _deckList = _dataManager.CachedDecksData.Decks;            
-        }
-        
-        private List<Deck> GenerateDummyDeckData()
-        {
-            List<Deck> deckList = new List<Deck>();
-            for(int i=0; i<3;++i)
-            {
-                Deck deck = new Deck
-                (
-                    i,
-                    i,
-                    "Dummy0"+i,
-                    new List<DeckCardData>()
-                    {
-                    },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE                    
-                );
-                deckList.Add(deck);
-            }
-            return deckList;
-        }        
+        }       
 
         private void UpdateSelectedDeckData(Deck deck)
         {
@@ -180,6 +159,11 @@ namespace Loom.ZombieBattleground
         public Deck GetSelectedDeck()
         {
             return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);            
+        }
+        
+        public List<Deck> GetDeckList()
+        {
+            return _dataManager.CachedDecksData.Decks;
         }
 
         private Hero GetHeroDataFromDeck(Deck deck)

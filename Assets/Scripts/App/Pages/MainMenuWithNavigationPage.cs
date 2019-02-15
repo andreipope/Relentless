@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -76,7 +77,9 @@ namespace Loom.ZombieBattleground
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       
-            _uiManager.DrawPopup<DeckSelectionPopup>();           
+            _uiManager.DrawPopup<DeckSelectionPopup>();
+
+            AnimateOverlordPortrait();         
         }
         
         public void Hide()
@@ -191,6 +194,12 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                 _textGameMode.text = "VS\nCASUAL";                 
             }
+        }
+        
+        private void AnimateOverlordPortrait()
+        {
+            _imageOverlordPortrait.transform.localScale = Vector3.one;
+            _imageOverlordPortrait.transform.DOScale(1.05f, 3f).SetLoops(-1, LoopType.Yoyo);
         }
     }
 }
