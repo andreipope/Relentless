@@ -1698,32 +1698,15 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private async Task HandleConnectivityIssues()
+        private Task HandleConnectivityIssues()
         {
             if (IsTestFailed)
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
-            {
-                WaitStart(10);
-
-                await ClickGenericButton("Button_Reconnect");
-
-                await new WaitUntil(() =>
-                {
-                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                    return _uiManager.GetPopup<ConnectionPopup>().Self != null || WaitTimeIsUp();
-                });
-
-                if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
-                {
-                    Assert.Fail("Connectivity issue came up.");
-                }
-            }
-
-            await new WaitForUpdate();
+            Assert.True(_uiManager.GetPopup<ConnectionPopup>().Self == null, "Connectivity issue came up");
+            return Task.CompletedTask;
         }
 
         #region Horde Creation / Editing

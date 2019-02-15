@@ -144,12 +144,14 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                if (e is OperationCanceledException)
+                if (e is OperationCanceledException || e is TaskCanceledException)
                 {
+                    Debug.LogException(_cancellationReason);
                     ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
                 }
                 else
                 {
+                    Debug.LogException(e);
                     throw;
                 }
             }

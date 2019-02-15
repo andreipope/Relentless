@@ -164,14 +164,14 @@ namespace Loom.ZombieBattleground.Test
                                 Debug.Log("Waiting for " + delay + "s");
                                 await Task.Delay((int) (delay * 1000f));
                                 await client.Start(
-                                    enabledLogs: true,
+                                    enabledLogs: false,
                                     chainClientCallExecutor: new DefaultDAppChainClientCallExecutor(
                                         new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration
                                         {
                                             CallTimeout = 15000,
                                             StaticCallTimeout = 15000
                                         })),
-                                    contractCallProxyFactory: contract => new DefaultContractCallProxy(contract)
+                                    contractCallProxyFactory: contract => new TimeMetricsContractCallProxy(contract, true, false)
                                 );
                                 client.MatchMakingFlowController.ActionWaitingTime = 5;
                             });

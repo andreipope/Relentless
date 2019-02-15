@@ -59,11 +59,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
                     Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
-                    Assert.AreEqual(156, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.LibraryCard.MouldId)));
-                    Assert.AreEqual(156, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId)));
+                    Assert.Contains(156, TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.LibraryCard.MouldId).ToList());
+                    Assert.Contains(156, TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId).ToList());
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableBackendGameLogicMatch: true);
             });
         }
 
