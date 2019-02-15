@@ -11,15 +11,12 @@ namespace Loom.ZombieBattleground.Test
     public class SanityChecks : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateAHorde()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
@@ -34,43 +31,6 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AddRazuHorde();
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
             });
-        }
-
-        private void PopulateDeckWithCardsFromIndex(int index, int amount = 5)
-        {
-            IGameplayManager _gameplayManager = GameClient.Get<IGameplayManager>();
-            IDataManager _dataManager = GameClient.Get<IDataManager>();
-
-            _gameplayManager.CurrentPlayerDeck.Cards = new List<Data.DeckCardData>();
-
-            for (int i = 0; i < amount; i++)
-            {
-                if (index >= _dataManager.CachedCardsLibraryData.Cards.Count)
-                {
-                    index = 0;
-                }
-
-                _gameplayManager.CurrentPlayerDeck.AddCard(_dataManager.CachedCardsLibraryData.Cards[index].Name);
-
-                index++;
-            }
-        }
-
-        private async Task SkipTutorial(bool twoSteps = true)
-        {
-            await new WaitForSeconds(8);
-            await TestHelper.ClickGenericButton("Button_Skip");
-
-            await TestHelper.RespondToYesNoOverlay(true);
-
-            if (twoSteps)
-            {
-                await TestHelper.ClickGenericButton("Button_Skip");
-
-                await TestHelper.RespondToYesNoOverlay(true);
-            }
-
-            await new WaitForUpdate();
         }
     }
 }

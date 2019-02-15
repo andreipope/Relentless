@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Test
         {
             while (_testHelper.GameplayManager.IsLocalPlayerTurn())
             {
-                await new WaitForEndOfFrame();
+                await new WaitForUpdate();
             }
         }
 

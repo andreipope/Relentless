@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEditor;
 using UnityEngine.TestTools;
 using UnityEngine.UI;
 
@@ -15,7 +16,7 @@ namespace Loom.ZombieBattleground.Test
     public class LoginTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(250000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator RegisterAndLoginFlow()
         {
             return AsyncTest(async () =>
@@ -63,7 +64,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(250000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator ForgotPasswordFlow()
         {
             return AsyncTest(async () =>
@@ -86,7 +87,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Forgot_Group/Button_Send_BG/Button_Send");
 
-                await TestHelper.LetsThink(5);
+                await TestHelper.LetsThink(5, true);
 
                 await TestHelper.ClickGenericButton("SuccessForgot_Group/Button_Confirm_BG/Button_Confirm");
 
@@ -97,7 +98,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(250000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator LoginWithWrongPasswordFlow()
         {
             return AsyncTest(async () =>
@@ -140,14 +141,14 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.LetsThink(10);
+                await TestHelper.LetsThink(10, true);
 
                 Assert.IsTrue(GameClient.Get<IUIManager>().GetPopup<WarningPopup>().Self != null);
             });
         }
 
         [UnityTest]
-        [Timeout(250000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator LoginWithWrongEmailFlow()
         {
             return AsyncTest(async () =>
@@ -190,7 +191,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.LetsThink(10);
+                await TestHelper.LetsThink(10, true);
 
                 Assert.IsTrue(GameClient.Get<IUIManager>().GetPopup<WarningPopup>().Self != null);
             });

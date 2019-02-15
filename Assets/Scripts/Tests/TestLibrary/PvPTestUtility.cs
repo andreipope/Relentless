@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
-        private static readonly TestHelper TestHelper = TestHelper.Instance;
+        private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
             PvpTestContext pvpTestContext,
@@ -83,7 +84,17 @@ namespace Loom.ZombieBattleground.Test
             Action<DebugCheatsConfiguration> modifyOpponentDebugCheats,
             Action validateEndStateAction)
         {
-            await TestHelper.CreateAndConnectOpponentDebugClient();
+            MatchScenarioPlayer matchScenarioPlayer = null;
+
+            bool canceled = false;
+            await TestHelper.CreateAndConnectOpponentDebugClient(
+                async exception =>
+                {
+                    await GameClient.Get<IPvPManager>().StopMatchmaking();
+                    matchScenarioPlayer?.AbortNextMoves();
+                    canceled = true;
+                }
+                );
             setupAction?.Invoke();
 
             await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
@@ -93,10 +104,13 @@ namespace Loom.ZombieBattleground.Test
             await GameClient.Get<IMatchManager>().FindMatch();
             GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
 
-            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
-            await TestHelper.WaitUntilPlayerOrderIsDecided();
 
+            Assert.IsFalse(canceled, "canceled");
+            await TestHelper.WaitUntilPlayerOrderIsDecided();
+            Assert.IsFalse(canceled, "canceled");
+
+            matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await matchScenarioPlayer.Play();
             validateEndStateAction?.Invoke();
 
@@ -106,7 +120,6 @@ namespace Loom.ZombieBattleground.Test
         public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
         {
             await TestHelper.MainMenuTransition("Button_Play");
-            await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
 
             await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
             await TestHelper.MainMenuTransition("Button_PvPMode");

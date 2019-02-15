@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground.Test
 
         private void HandleNextCardAbility()
         {
-            AbilityBoardArrow abilityBoardArrow = _testHelper.GetAbilityBoardArrow();
+            AbilityBoardArrow abilityBoardArrow = GameObject.FindObjectOfType<AbilityBoardArrow>();
 
             // TODO: Handle non-entry targetable abilities (do they even exist)?
             if (abilityBoardArrow != null)

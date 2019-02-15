@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground.Test
     public class HordeManipulationTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateHordeAndCancel()
         {
             return AsyncTest(async () =>
@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateHordeAndDraft()
         {
             return AsyncTest(async () =>
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator RemoveAllHordesExceptFirst()
         {
             return AsyncTest(async () =>

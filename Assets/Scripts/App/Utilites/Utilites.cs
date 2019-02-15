@@ -13,6 +13,7 @@ using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -81,11 +82,28 @@ namespace Loom.ZombieBattleground
             return str.Substring(0, maxLength);
         }
 
-        public static double GetTimeSinceStartup()
+        public static double GetTimestamp()
         {
-            long ticks = Stopwatch.GetTimestamp();
-            double uptime = (double)ticks / Stopwatch.Frequency;
-            return uptime;
+            return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
+        }
+
+        public static GameObject[] CollectAllSceneRootGameObjects(GameObject dontDestroyOnLoadGameObject)
+        {
+            Scene[] scenes = new Scene[SceneManager.sceneCount];
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                scenes[i] = SceneManager.GetSceneAt(i);
+            }
+
+            return 
+                scenes
+                    .Concat(new[]
+                    {
+                        dontDestroyOnLoadGameObject.scene
+                    })
+                    .Distinct()
+                    .SelectMany(scene => scene.GetRootGameObjects())
+                    .ToArray();
         }
 
         #region asset bundles and cache
