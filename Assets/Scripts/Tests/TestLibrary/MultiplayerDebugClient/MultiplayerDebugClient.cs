@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground.Test
             UserDataModel = new UserDataModel(
                 "DebugClient_" +
                 (name != null ? name + "_" : "") +
-                new global::System.Random().Next(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                Guid.NewGuid(),
                 CryptoUtils.GeneratePrivateKey()
             );
         }
@@ -130,8 +130,6 @@ namespace Loom.ZombieBattleground.Test
             bool enabledLogs = true)
         {
             await Reset();
-
-            //Debug.Log(JsonConvert.SerializeObject(UserDataModel, Formatting.Indented));
 
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint(), contractCallProxyFactory)
             {
@@ -182,7 +180,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task Update()
         {
 #if UNITY_EDITOR
-            double timeSinceStartup = Utilites.GetTimeSinceStartup();
+            double timeSinceStartup = Utilites.GetTimestamp();
 #else
             double timeSinceStartup = Time.realtimeSinceStartup;
 #endif

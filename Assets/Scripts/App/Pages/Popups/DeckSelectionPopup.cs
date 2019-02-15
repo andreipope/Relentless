@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
         private List<Deck> _deckList;
         
         private int _selectDeckIndex;
+        
+        private const bool _useDummyData = false;
 
         #region IUIPopup
 
@@ -128,18 +130,58 @@ namespace Loom.ZombieBattleground
                 defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
             }
 
-            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
-            UpdateSelectedDeckData(selectedDeck);
-            
-            _deckList = _dataManager.CachedDecksData.Decks;            
+            if (_useDummyData)
+            {
+                _deckList = GenerateDummyDeckData();
+                UpdateSelectedDeckData
+                (
+                    _deckList[0]
+                );
+            }
+            else
+            {
+                Debug.Log("Decks: " + _dataManager.CachedDecksData.Decks.Count);
+                Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
+
+                UpdateSelectedDeckData(selectedDeck);
+
+                _deckList = _dataManager.CachedDecksData.Decks;
+            }
         }
+        
+        private List<Deck> GenerateDummyDeckData()
+        {
+            List<Deck> deckList = new List<Deck>();
+            for(int i=0; i<3;++i)
+            {
+                Deck deck = new Deck
+                (
+                    i,
+                    i,
+                    "Dummy0"+i,
+                    new List<DeckCardData>()
+                    {
+                    },
+                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.OverlordSkill.NONE                    
+                );
+                deckList.Add(deck);
+            }
+            return deckList;
+        }        
 
         private void UpdateSelectedDeckData(Deck deck)
         {
-            UpdateSelectedDeckData((int)deck.Id);
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
+            if (_useDummyData)
+            {
+                _selectDeckIndex = _deckList.IndexOf(deck);
+            }
+            else
+            {
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+                _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
+            }
         }
 
         private void UpdateSelectedDeckData(int deckId)
@@ -152,7 +194,14 @@ namespace Loom.ZombieBattleground
         
         public Deck GetSelectedDeck()
         {
-            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            if (_useDummyData)
+            {
+                return _deckList[_selectDeckIndex];
+            }
+            else
+            {
+                return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            }
         }
 
         private Hero GetHeroDataFromDeck(Deck deck)

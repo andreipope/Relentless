@@ -65,6 +65,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //this makes us skip the initial "bar fill"
             _percentage = 100f;
 #endif
 
@@ -122,6 +123,8 @@ namespace Loom.ZombieBattleground
                     popup.Show();
                     popup.SetLoginAsGuestState();
                 }
+                
+                //GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
         }
 

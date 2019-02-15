@@ -8,15 +8,12 @@ namespace Loom.ZombieBattleground.Test
     public class HordeManipulationTests : BaseIntegrationTest
     {
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateHordeAndCancel()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
@@ -36,15 +33,12 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator CreateHordeAndDraft()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
 
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
@@ -71,77 +65,17 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        [Timeout(500000)]
+        [Timeout(int.MaxValue)]
         public IEnumerator RemoveAllHordesExceptFirst()
         {
             return AsyncTest(async () =>
             {
                 await TestHelper.ClickGenericButton("Button_Play");
 
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
                 await TestHelper.RemoveAllHordesExceptDefault();
-            });
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator CreateRazuHordeAndSave()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-                await TestHelper.AddRazuHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator CreateKalileHorde()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-                await TestHelper.AddKalileHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-            });
-        }
-
-        [UnityTest]
-        [Timeout(500000)]
-        public IEnumerator CreateValashHorde()
-        {
-            return AsyncTest(async () =>
-            {
-                await TestHelper.ClickGenericButton("Button_Play");
-
-                await TestHelper.AssertIfWentDirectlyToTutorial(
-                    TestHelper.GoBackToMainAndPressPlay);
-
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
-                await TestHelper.ClickGenericButton("Button_SoloMode");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-                await TestHelper.AddValashHorde();
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
             });
         }
     }
