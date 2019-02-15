@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            File.WriteAllText(filePath, GameClient.Get<IDataManager>().SerializeToJson(currentGameState, true));
+            File.WriteAllText(filePath, GameClient.Get<IDataManager>().SerializeToJson(currentGameState, true).ToLower());
         }
 
         #endregion
