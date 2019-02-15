@@ -14,9 +14,9 @@ namespace Loom.ZombieBattleground.Test
     {
         protected TestHelper TestHelper => TestHelper.Instance;
 
-        protected IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = 30 * 1000)
+        protected IEnumerator AsyncTest(Func<Task> taskFunc, float timeout = 60)
         {
-            return AsyncTestRunner.Instance.AsyncTest(taskFunc, timeout);
+            return AsyncTestRunner.Instance.RunAsyncTest(taskFunc, timeout);
         }
     }
 }

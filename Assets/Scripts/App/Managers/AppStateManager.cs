@@ -42,7 +42,6 @@ namespace Loom.ZombieBattleground
             switch (stateTo)
             {
                 case Enumerators.AppState.APP_INIT:
-                    //GameClient.Get<ITimerManager>().Dispose();
                     _uiManager.SetPage<LoadingPage>();
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,

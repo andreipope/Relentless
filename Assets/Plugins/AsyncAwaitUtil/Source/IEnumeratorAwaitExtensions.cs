@@ -15,29 +15,29 @@ using UnityAsyncAwaitUtil;
 // that make the most sense for the specific instruction type
 public static class IEnumeratorAwaitExtensions
 {
-    /*public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForSeconds instruction)
+    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForSeconds instruction)
     {
-        return GetAwaiter(instruction);
-    }*/
+        return GetAwaiterReturnVoid(instruction);
+    }
 
     public static SimpleCoroutineAwaiter GetAwaiter(this WaitForUpdate instruction)
     {
         return GetAwaiterReturnVoid(instruction);
     }
 
-    /*public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForEndOfFrame instruction)
+    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForEndOfFrame instruction)
     {
-        return GetAwaiter(instruction);
+        return GetAwaiterReturnVoid(instruction);
     }
 
-    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForFixedUpdate instruction)
+    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForFixedUpdate instruction)
     {
-        return GetAwaiter(instruction);
-    }*/
+        return GetAwaiterReturnVoid(instruction);
+    }
 
-    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitForSecondsRealtime instruction)
+    public static SimpleCoroutineAwaiter GetAwaiter(this WaitForSecondsRealtime instruction)
     {
-        return GetAwaiter((IEnumerator) instruction);
+        return GetAwaiterReturnVoid(instruction);
     }
 
     public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitUntil instruction)

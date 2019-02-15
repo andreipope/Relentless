@@ -43,12 +43,15 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public IEnumerator AsyncTest(Func<Task> taskFunc, int timeout = 30 * 1000)
+        public IEnumerator RunAsyncTest(Func<Task> taskFunc, float timeout)
         {
             if (timeout <= 0)
                 throw new ArgumentOutOfRangeException(nameof(timeout));
 
-            return TaskAsIEnumeratorInternal(async () =>
+            Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must be int.MaxValue");
+            Debug.Log("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
+
+            return RunAsyncTestInternal(async () =>
                 {
                     await GameSetUp();
                     try
@@ -69,7 +72,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             Debug.Log(LogTag + nameof(GameTearDown));
-            await Task.Delay(1000);
+            await Task.Delay(500);
             await TestHelper.Instance.TearDown_Cleanup();
 
             await new WaitForUpdate();
@@ -93,10 +96,8 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.Instance.PerTestSetupInternal();
         }
 
-        private IEnumerator TaskAsIEnumeratorInternal(Func<Task> taskFunc, int timeout = Timeout.Infinite)
+        private IEnumerator RunAsyncTestInternal(Func<Task> taskFunc, float timeout)
         {
-            Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must be int.MaxValue");
-
             if (_currentRunningTestTask != null)
             {
                 try
@@ -113,8 +114,7 @@ namespace Loom.ZombieBattleground.Test
                 }
                 finally
                 {
-                    _currentRunningTestTask = null;
-                    _currentTestCancellationTokenSource = null;
+                    FinishCurrentTest();
                 }
             }
 
@@ -124,19 +124,15 @@ namespace Loom.ZombieBattleground.Test
 
             double lastTimestamp = Utilites.GetTimestamp();
             double timeElapsed = 0;
-            double timeoutSeconds = timeout / 1000.0;
             while (!currentTask.IsCompleted)
             {
-                if (timeout != Timeout.Infinite)
-                {
-                    double currentTimestamp = Utilites.GetTimestamp();
-                    timeElapsed += currentTimestamp - lastTimestamp;
-                    lastTimestamp = currentTimestamp;
+                double currentTimestamp = Utilites.GetTimestamp();
+                timeElapsed += currentTimestamp - lastTimestamp;
+                lastTimestamp = currentTimestamp;
 
-                    if (timeElapsed > timeoutSeconds)
-                    {
-                        CancelTestWithReason(new TimeoutException($"Test execution time exceeded {timeout} ms"));
-                    }
+                if (timeElapsed > timeout)
+                {
+                    CancelTestWithReason(new TimeoutException($"Test execution time exceeded {timeout} s"));
                 }
 
                 yield return null;
@@ -148,14 +144,26 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
-                throw;
+                if (e is OperationCanceledException)
+                {
+                    ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
+                }
+                else
+                {
+                    throw;
+                }
             }
             finally
             {
-                _currentRunningTestTask = null;
-                _currentTestCancellationTokenSource = null;
+                FinishCurrentTest();
             }
+        }
+
+        private void FinishCurrentTest()
+        {
+            _currentRunningTestTask = null;
+            _currentTestCancellationTokenSource = null;
+            _cancellationReason = null;
         }
 
         private void CancelTestWithReason(Exception reason)

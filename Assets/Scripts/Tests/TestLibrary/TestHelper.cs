@@ -54,7 +54,6 @@ namespace Loom.ZombieBattleground.Test
 
         public bool Initialized { get; private set; }
 
-
         private GameObject _testerGameObject;
         private VirtualInputModule _virtualInputModule;
         private RectTransform _fakeCursorTransform;
@@ -125,8 +124,6 @@ namespace Loom.ZombieBattleground.Test
         private MultiplayerDebugClient _opponentDebugClient;
         private OnBehaviourHandler _opponentDebugClientOwner;
 
-        private bool _aborted;
-
         public int SelectedHordeIndex { get; private set; }
 
         public UserDataModel TestUserDataModel { get; set; }
@@ -143,11 +140,6 @@ namespace Loom.ZombieBattleground.Test
         /// </summary>
         private TestHelper()
         {
-        }
-
-        public void AbortCurrentTest()
-        {
-            _aborted = true;
         }
 
         /// <summary>
@@ -178,7 +170,6 @@ namespace Loom.ZombieBattleground.Test
             LogAssert.ignoreFailingMessages = true;
 
             Time.timeScale = TestTimeScale;
-            _aborted = false;
 
             TestUserDataModel = new UserDataModel(CreateTestUserName(), CryptoUtils.GeneratePrivateKey()) {
                 IsRegistered = true
@@ -444,7 +435,14 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
         }
 
-        public bool IsTestFailed { get; private set; }
+        private bool IsTestFailed
+        {
+            get
+            {
+                AsyncTestRunner.Instance.CurrentTestCancellationToken.ThrowIfCancellationRequested();
+                return AsyncTestRunner.Instance.CurrentTestCancellationToken.IsCancellationRequested;
+            }
+        }
 
         // @todo: Get this to working using an artificial timeout
         /// <summary>
@@ -1037,7 +1035,7 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    await new CustomWaitForSeconds(delay);
+                    await new WaitForSeconds(delay);
                 }
             }
         }
@@ -1367,7 +1365,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                 skill.FightTargetingArrow.SetTarget(target);
-                await new CustomWaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
 
                 switch (target)
                 {
@@ -1437,7 +1435,7 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    await new CustomWaitForSeconds(thinkTime);
+                    await new WaitForSeconds(thinkTime);
                 }
             }
         }
@@ -2302,9 +2300,8 @@ namespace Loom.ZombieBattleground.Test
         public void AssertOverlordName()
         {
             // FIXME: overlord name is not recorded, see WaitUntilPlayerOrderIsDecided
-            return;
 
-            if (string.IsNullOrEmpty(_recordedExpectedValue) || string.IsNullOrEmpty(_recordedActualValue))
+            /*if (string.IsNullOrEmpty(_recordedExpectedValue) || string.IsNullOrEmpty(_recordedActualValue))
             {
                 Debug.LogWarning("One of the overlord names was null, so didn't check.");
 
@@ -2317,7 +2314,7 @@ namespace Loom.ZombieBattleground.Test
 
             Debug.LogFormat("{0} vs {1}", _recordedExpectedValue, _recordedActualValue);
 
-            Assert.AreEqual(_recordedExpectedValue, _recordedActualValue);
+            Assert.AreEqual(_recordedExpectedValue, _recordedActualValue);*/
         }
 
         private string UppercaseFirst(string s)

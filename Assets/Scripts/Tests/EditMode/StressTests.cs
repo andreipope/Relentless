@@ -13,8 +13,10 @@ using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.TestTools;
 using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -37,20 +39,20 @@ namespace Loom.ZombieBattleground.Test
         [Timeout(int.MaxValue)]
         public IEnumerator Matchmake([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
-            return AsyncTestRunner.Instance.AsyncTest(async () =>
+            return AsyncTestRunner.Instance.RunAsyncTest(async () =>
             {
                 await MatchmakingTestBase(clientCount, null);
-            }, 5000);
+            }, 120);
         }
 
         [UnityTest]
-        [Timeout(600000)]
-        [Ignore("")]
+        [Timeout(int.MaxValue)]
+        //[Ignore("")]
         public IEnumerator MatchmakeAndDoTurns([ValueSource(nameof(MatchmakeTestCases))] int clientCount)
         {
             int turnCount = 20;
 
-            return TestUtility.AsyncTest(() => MatchmakingTestBase(
+            return AsyncTestRunner.Instance.RunAsyncTest(() => MatchmakingTestBase(
                 clientCount,
                 async clients =>
                 {
@@ -126,7 +128,7 @@ namespace Loom.ZombieBattleground.Test
                     }
 
                     Debug.LogFormat("completed in {0:F2}s", Utilites.GetTimestamp() - startTime);
-                }));
+                }), 60f);
         }
 
         private async Task MatchmakingTestBase(int clientCount, Func<List<MultiplayerDebugClient>, Task> onEndCallback = null)
@@ -156,7 +158,7 @@ namespace Loom.ZombieBattleground.Test
                     clients
                         .Select(client =>
                         {
-                            float delay = (float) random.NextDouble() * 10f * (clientCount / 300f);
+                            float delay = CalculateFuzzDelay(clientCount, 10f, random);
                             return TaskThreadedWrapper(async () =>
                             {
                                 Debug.Log("Waiting for " + delay + "s");
@@ -196,7 +198,7 @@ namespace Loom.ZombieBattleground.Test
                     clients
                         .Select(client =>
                         {
-                            float delay = (float) random.NextDouble() * 60f * (clientCount / 300f);
+                            float delay = CalculateFuzzDelay(clientCount, 60f, random);
                             return TaskThreadedWrapper(async () =>
                             {
                                 Debug.Log("waiting for " + delay + "s");
@@ -233,6 +235,12 @@ namespace Loom.ZombieBattleground.Test
 
                 Debug.Log($"Stopped {clientCount} clients");
             }
+        }
+
+        private static float CalculateFuzzDelay(int clientCount, float scale, Random random)
+        {
+            float delay = (float) random.NextDouble() * scale * Mathf.Max(0.25f, clientCount / 300f);
+            return delay;
         }
 
         [UnityTearDown]
