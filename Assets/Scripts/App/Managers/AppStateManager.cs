@@ -55,56 +55,64 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    //Temporary test new Navigation Menu
-                    //_uiManager.SetPage<MainMenuPage>();
-                    _uiManager.SetPage<MainMenuWithNavigationPage>();                    
+                    if(Constants.EnableNewUI)
+                        _uiManager.SetPage<MainMenuWithNavigationPage>();                    
+                    else
+                        _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
                     _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
-                    //Temporary test new Navigation Menu
-                    //_uiManager.SetPage<HordeSelectionPage>();
-                    //CheckIfPlayAgainOptionShouldBeAvailable();
-                    _uiManager.SetPage<MyDecksPage>();
-                    break;
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<MyDecksPage>();                    
+                    else
+                        _uiManager.SetPage<HordeSelectionPage>();                        
+                        
+                    CheckIfPlayAgainOptionShouldBeAvailable();
+                    break;                    
                 case Enumerators.AppState.ARMY:
-                    //Temporary test new Navigation Menu
-                    //_uiManager.SetPage<ArmyPage>();
-                    _uiManager.SetPage<MyCardsPage>();
+                    if (Constants.EnableNewUI)
+                        _uiManager.SetPage<MyCardsPage>();
+                    else
+                        _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:
-                    //Temporary test new Navigation Menu           
-                    //if (Constants.EnableShopPage)
-                    //{
-                    //    if (string.IsNullOrEmpty(
-                    //        _backendDataControlMediator.UserDataModel.AccessToken
-                    //    ))
-                    //    {   
-                    //        LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
-                    //        loginPopup.Show();
-                    //        return;
-                    //    }
-                    //    else
-                    //    {
-                    //        _uiManager.SetPage<ShopPage>();
-                    //    }
-                    //    break;
-                    //}
-                    //else
-                    //{
-                    //    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    //    return;
-                    //}
-                    _uiManager.SetPage<MyShopPage>();
+                case Enumerators.AppState.SHOP:                    
+                    if (Constants.EnableShopPage)
+                    {
+                        if (string.IsNullOrEmpty(
+                            _backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {   
+                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                            loginPopup.Show();
+                            return;
+                        }
+                        else
+                        {
+                            if (Constants.EnableNewUI)
+                                _uiManager.SetPage<MyShopPage>();
+                            else
+                                _uiManager.SetPage<ShopPage>();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }                    
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
-                        _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
+                        if (Constants.EnableNewUI)
+                            _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
+                        else
+                            _uiManager.SetPage<PackOpenerPage>();
                         break;
                     }
                     else

@@ -214,6 +214,8 @@ namespace Loom.ZombieBattleground.Common
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
-        internal const int LastTutorialId = 8;        
+        internal const int LastTutorialId = 8;
+        
+        internal const bool EnableNewUI = true;        
     }
 }
