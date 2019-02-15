@@ -136,7 +136,10 @@ namespace Loom.ZombieBattleground.Test
 
             public override string ToString()
             {
-                return $"({nameof(Card)}: {Card}, {nameof(AbilityType)}: {AbilityType}, {nameof(Targets)}: {Targets})";
+                return
+                    $"({nameof(Card)}: {Card}, " +
+                    $"{nameof(AbilityType)}: {AbilityType}, " +
+                    $"{nameof(Targets)}: {Targets})";
             }
         }
     }

@@ -83,11 +83,12 @@ namespace Loom.ZombieBattleground
                 creature.Stun(Enumerators.StunType.FREEZE, 1);
             }
 
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                TargetUnit,
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                }
+            );
         }
 
         protected override void InputEndedHandler()

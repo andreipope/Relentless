@@ -64,6 +64,11 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                 return;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //this makes us skip the initial "bar fill"
+            _percentage = 100f;
+#endif
+
             if (!_isLoaded)
             {
                 _percentage += 1.4f;

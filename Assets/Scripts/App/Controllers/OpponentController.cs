@@ -305,7 +305,7 @@ namespace Loom.ZombieBattleground
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
-                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType
+                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType,
             });
         }
 
@@ -492,11 +492,12 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObjectCaller));
             }
 
-            _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
-                                                      boardObjectCaller,
-                                                      parametrizedAbilityObjects,
-                                                      workingCard,
-                                                      _gameplayManager.OpponentPlayer);
+            _abilitiesController.PlayAbilityFromEvent(
+                model.AbilityType,
+                boardObjectCaller,
+                parametrizedAbilityObjects,
+                workingCard,
+                _gameplayManager.OpponentPlayer);
         }
 
         private void GotActionUseOverlordSkill(UseOverlordSkillModel model)
