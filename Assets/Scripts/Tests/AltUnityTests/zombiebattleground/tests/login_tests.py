@@ -59,7 +59,7 @@ class CZBLoginTests(CZBTests):
         self.altdriver.wait_for_element('LoginPopup(Clone)')
         self.altdriver.wait_for_element('Button_Register_BG/Button_Register').mobile_tap()
         self.altdriver.wait_for_element('Register_Group')
-        fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testEmail.test'
+        fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testsonbitbar.com'
         self.altdriver.wait_for_element('Register_Group/Email_BG/Email_InputField').set_component_property('UnityEngine.UI.InputField','text',fakeEmail,'UnityEngine.UI')
         self.altdriver.wait_for_element('Register_Group/Password_BG/Password_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
         self.altdriver.wait_for_element('Register_Group/Confirm_BG/Confirm_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
