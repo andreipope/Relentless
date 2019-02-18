@@ -24,7 +24,6 @@ namespace Loom.ZombieBattleground
         {
             _targets = info as List<BoardObject>;
 
-            Debug.Log("ENTERING ON ABILITY ACTION IN VIEW");
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = Vector3.zero;
@@ -51,7 +50,6 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Debug.Log("SKIPPING IT");
                 ActionCompleted();
             }
         }
@@ -68,10 +66,8 @@ namespace Loom.ZombieBattleground
             string soundName = string.Empty;
             float delaySound = 0;
 
-            Debug.Log("ENTERING ACTION COMPLETED IN VIEW");
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Debug.Log("EFFECT IMPACT FOUND");
                 Vector3 targetPosition = Vector3.zero;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);

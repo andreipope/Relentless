@@ -242,7 +242,6 @@ namespace Loom.ZombieBattleground
 
         public virtual void Dispose()
         {
-            Debug.LogWarning("I'm DISPOSING HERe");
             GameplayManager.GameEnded -= GameEndedHandler;
 
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;

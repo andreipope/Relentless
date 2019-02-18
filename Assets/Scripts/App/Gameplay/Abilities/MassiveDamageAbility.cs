@@ -63,7 +63,6 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            Debug.LogWarning("DOING THE ACTION");
             _targets = new List<BoardObject>();
 
             BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
@@ -97,7 +96,6 @@ namespace Loom.ZombieBattleground
 
         public void OneActionCompleted(BoardObject boardObject)
         {
-            Debug.LogWarning("On One Action Completed");
             switch (boardObject)
             {
                 case Player player:

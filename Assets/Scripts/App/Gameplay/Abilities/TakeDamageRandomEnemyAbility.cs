@@ -63,8 +63,6 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Debug.Log("ACTION");
-
             if (PredefinedTargets != null)
             {
                 _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
@@ -114,7 +112,6 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            Debug.Log("I'; im VFX ENDED");
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;

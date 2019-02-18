@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
-                Debug.Log("UNIT HAS DIED");
-
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
@@ -51,7 +49,6 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            Debug.Log("ACTIVATED!");
             base.Action(info);
 
             _boardUnits.Clear();

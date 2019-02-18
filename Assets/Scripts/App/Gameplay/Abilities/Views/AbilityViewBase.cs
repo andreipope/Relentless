@@ -38,8 +38,6 @@ namespace Loom.ZombieBattleground
 
             Ability.Disposed += Dispose;
             Ability.ActionTriggered += OnAbilityAction;
-            Debug.Log("SHOWING THAT WE ACTIVATE ABILITYVIEWBASE");
-            Debug.Log(Ability.AbilityCallType);
         }
 
         protected virtual void CreateVfx(
@@ -75,7 +73,6 @@ namespace Loom.ZombieBattleground
 
         protected virtual void Dispose()
         {
-            Debug.Log("WE'RE DISPOSING HERE");
             Ability.Disposed -= Dispose;
             Ability.ActionTriggered -= OnAbilityAction;
         }

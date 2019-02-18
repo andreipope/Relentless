@@ -516,69 +516,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().Defense == TestHelper.GetOpponentPlayer().InitialHp-5
+                    || (TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.MouldId == 101)).ToList().Count == 0);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            }, 600);
-        }
-
-        [UnityTest]
-        [Timeout(int.MaxValue)]
-        public IEnumerator Zteroid()
-        {
-            return AsyncTest(async () =>
-            {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Zteroid", 1),
-                    new DeckCardData("Enrager", 10)
-                );
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("Zteroid", 1),
-                    new DeckCardData("Enrager", 10)
-                );
-
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
-                    Player1HasFirstTurn = true
-                };
-
-                InstanceId playerKabombId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zteroid", 1);
-                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 1);
-                InstanceId playerSlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 2);
-                InstanceId playerSlab3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 3);
-                InstanceId playerSlab4Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 4);
-                InstanceId playerSlab5Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Enrager", 5);
-                InstanceId opponentKabombId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zteroid", 1);
-                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Enrager", 1);
-
-                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
-                       player => 
-                       {
-                           player.CardPlay(playerKabombId, ItemPosition.Start);
-                           player.CardPlay(playerSlabId, ItemPosition.Start);
-                       },
-                       opponent => 
-                       {
-                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
-                       },
-                       player => 
-                       {
-                           player.CardAttack(playerKabombId, opponentSlabId);
-                           player.CardPlay(playerSlab2Id, ItemPosition.Start);
-                           player.CardPlay(playerSlab3Id, ItemPosition.Start);
-                           player.CardPlay(playerSlab4Id, ItemPosition.Start);
-                           player.CardAttack(playerSlab2Id, opponentSlabId);
-                       },
-                       opponent => {},
-                       player => {}
-                };
-
-                Action validateEndState = () =>
-                {
-                };
-
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             }, 600);
         }
 
