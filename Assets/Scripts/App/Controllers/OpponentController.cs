@@ -205,10 +205,9 @@ namespace Loom.ZombieBattleground
 
                     break;
 
-               case PlayerActionOutcome.OutcomeOneofCase.InstanceStat:
-                   PlayerActionOutcome.Types.InstanceStatOutcome instanceStatOutcome  = outcome.InstanceStat;
+               case PlayerActionOutcome.OutcomeOneofCase.CardAttack:
+                   PlayerActionOutcome.Types.CardAttackOutcome cardAttackOutcome  = outcome.CardAttack;
                    break;
-
                 default:
                     throw new ArgumentOutOfRangeException();
             }

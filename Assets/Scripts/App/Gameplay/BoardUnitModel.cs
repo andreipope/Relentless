@@ -179,8 +179,6 @@ namespace Loom.ZombieBattleground
 
         public bool TakeFreezeToAttacked { get; set; }
 
-        public int AdditionalDamage { get; set; }
-
         public int DamageDebuffUntillEndOfTurn { get; set; }
 
         public int HpDebuffUntillEndOfTurn { get; set; }
@@ -725,7 +723,7 @@ namespace Loom.ZombieBattleground
                                 targetCardModel,
                                 () =>
                                 {
-                                    _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+                                    _battleController.AttackUnitByUnit(this, targetCardModel);
 
                                     if (HasSwing)
                                     {
@@ -733,7 +731,7 @@ namespace Loom.ZombieBattleground
 
                                         foreach (BoardUnitView unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                            _battleController.AttackUnitByUnit(this, unit.Model,false);
                                         }
                                     }
 

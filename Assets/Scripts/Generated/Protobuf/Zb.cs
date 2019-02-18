@@ -459,7 +459,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             "KAUiaQoUQ2FyZEFiaWxpdHlSZWFuaW1hdGUSFQoNZGVmYXVsdEF0dGFjaxgB",
             "IAEoBRIWCg5kZWZhdWx0RGVmZW5zZRgCIAEoBRIiCgtuZXdJbnN0YW5jZRgD",
             "IAEoCzINLkNhcmRJbnN0YW5jZSI/ChlDYXJkQWJpbGl0eUF0dGFja092ZXJs",
-            "b3JkEg4KBmRhbWFnZRgBIAEoBRISCgp3YXNBcHBsaWVkGAIgASgIIoMKChNQ",
+            "b3JkEg4KBmRhbWFnZRgBIAEoBRISCgp3YXNBcHBsaWVkGAIgASgIIrwKChNQ",
             "bGF5ZXJBY3Rpb25PdXRjb21lEjsKBHJhZ2UYASABKAsyKy5QbGF5ZXJBY3Rp",
             "b25PdXRjb21lLkNhcmRBYmlsaXR5UmFnZU91dGNvbWVIABJPCg5wcmlvcml0",
             "eUF0dGFjaxgCIAEoCzI1LlBsYXllckFjdGlvbk91dGNvbWUuQ2FyZEFiaWxp",
@@ -471,116 +471,118 @@ namespace Loom.ZombieBattleground.Protobuf {
             "ZRgEIAEoCzIwLlBsYXllckFjdGlvbk91dGNvbWUuQ2FyZEFiaWxpdHlSZWFu",
             "aW1hdGVPdXRjb21lSAASTwoOYXR0YWNrT3ZlcmxvcmQYBiABKAsyNS5QbGF5",
             "ZXJBY3Rpb25PdXRjb21lLkNhcmRBYmlsaXR5QXR0YWNrT3ZlcmxvcmRPdXRj",
-            "b21lSAASQAoMaW5zdGFuY2VTdGF0GAcgASgLMiguUGxheWVyQWN0aW9uT3V0",
-            "Y29tZS5JbnN0YW5jZVN0YXRPdXRjb21lSAAaTAoWQ2FyZEFiaWxpdHlSYWdl",
-            "T3V0Y29tZRIfCgppbnN0YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJZBIRCglu",
-            "ZXdBdHRhY2sYAiABKAUaVwogQ2FyZEFiaWxpdHlQcmlvcml0eUF0dGFja091",
-            "dGNvbWUSHwoKaW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEgoKbmV3",
-            "RGVmZW5zZRgCIAEoBRpFChtDYXJkQWJpbGl0eVJlYW5pbWF0ZU91dGNvbWUS",
-            "JgoPbmV3Q2FyZEluc3RhbmNlGAEgASgLMg0uQ2FyZEluc3RhbmNlGmkKMUNh",
-            "cmRBYmlsaXR5QWRkaXRpb25hbERhbWFnZVRvSGVhdnlJbkF0dGFja091dGNv",
-            "bWUSHwoKaW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEwoLYWRkZWRB",
-            "dHRhY2sYAiABKAUaqwEKHENhcmRBYmlsaXR5Q2hhbmdlU3RhdE91dGNvbWUS",
-            "HwoKaW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEQoJbmV3QXR0YWNr",
-            "GAIgASgFEhIKCm5ld0RlZmVuc2UYAyABKAUSHAoEc3RhdBgEIAEoDjIOLlN0",
-            "YXRUeXBlLkVudW0SJQoQdGFyZ2V0SW5zdGFuY2VJZBgFIAEoCzILLkluc3Rh",
-            "bmNlSWQaVwogQ2FyZEFiaWxpdHlBdHRhY2tPdmVybG9yZE91dGNvbWUSHwoK",
-            "aW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEgoKbmV3RGVmZW5zZRgC",
-            "IAEoBRpdChNJbnN0YW5jZVN0YXRPdXRjb21lEh8KCmluc3RhbmNlSWQYASAB",
-            "KAsyCy5JbnN0YW5jZUlkEhEKCW5ld0F0dGFjaxgCIAEoBRISCgpuZXdEZWZl",
-            "bnNlGAMgASgFQgkKB091dGNvbWUioQMKE0NhcmRBYmlsaXR5SW5zdGFuY2US",
-            "IAoEcmFnZRgBIAEoCzIQLkNhcmRBYmlsaXR5UmFnZUgAEjQKDnByaW9yaXR5",
-            "QXR0YWNrGAIgASgLMhouQ2FyZEFiaWxpdHlQcmlvcml0eUF0dGFja0gAEioK",
-            "CXJlYW5pbWF0ZRgFIAEoCzIVLkNhcmRBYmlsaXR5UmVhbmltYXRlSAASVgof",
-            "YWRkaXRpb25hbERhbWFnZVRvSGVhdnlJbkF0dGFjaxgGIAEoCzIrLkNhcmRB",
-            "YmlsaXR5QWRkaXRpb25hbERhbWFnZVRvSGVhdnlJbkF0dGFja0gAEiwKCmNo",
-            "YW5nZVN0YXQYByABKAsyFi5DYXJkQWJpbGl0eUNoYW5nZVN0YXRIABI0Cg5h",
-            "dHRhY2tPdmVybG9yZBgIIAEoCzIaLkNhcmRBYmlsaXR5QXR0YWNrT3Zlcmxv",
-            "cmRIABIQCghpc0FjdGl2ZRgDIAEoCBIpCgd0cmlnZ2VyGAQgASgOMhguQ2Fy",
-            "ZEFiaWxpdHlUcmlnZ2VyLkVudW1CDQoLQWJpbGl0eVR5cGUijAIKDENhcmRJ",
-            "bnN0YW5jZRIYCglwcm90b3R5cGUYASABKAsyBS5DYXJkEh8KCmluc3RhbmNl",
-            "SWQYAiABKAsyCy5JbnN0YW5jZUlkEisKCGluc3RhbmNlGAMgASgLMhkuQ2Fy",
-            "ZEluc3RhbmNlU3BlY2lmaWNEYXRhEg0KBW93bmVyGAQgASgJEiUKHWFiaWxp",
-            "dGllc0luc3RhbmNlc0luaXRpYWxpemVkGAUgASgIEjAKEmFiaWxpdGllc0lu",
-            "c3RhbmNlcxgGIAMoCzIULkNhcmRBYmlsaXR5SW5zdGFuY2USGAoEem9uZRgH",
-            "IAEoDjIKLlpvbmUudHlwZRISCgpvd25lckluZGV4GAggASgFIh0KC0RhdGFJ",
-            "ZE93bmVyEg4KBmRhdGFJZBgBIAEoBSIgCghDYXJkRGVjaxIUCgVjYXJkcxgB",
-            "IAMoCzIFLkNhcmQiGAoKSW5zdGFuY2VJZBIKCgJpZBgBIAEoBSLhAQoQT3Zl",
-            "cmxvcmRJbnN0YW5jZRIfCgppbnN0YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJ",
-            "ZBIlCglwcm90b3R5cGUYAiABKAsyEi5PdmVybG9yZFByb3RvdHlwZRIqCgpm",
-            "aXJzdFNraWxsGAMgASgLMhYuT3ZlcmxvcmRTa2lsbEluc3RhbmNlEisKC3Nl",
-            "Y29uZFNraWxsGAQgASgLMhYuT3ZlcmxvcmRTa2lsbEluc3RhbmNlEg8KB2Rl",
-            "ZmVuc2UYBSABKAUSCwoDZ29vGAYgASgFEg4KBm1heEdvbxgHIAEoBSLiAQoR",
-            "T3ZlcmxvcmRQcm90b3R5cGUSDgoGaGVyb0lkGAEgASgFEgwKBGljb24YAiAB",
-            "KAkSDAoEbmFtZRgDIAEoCRIYChBzaG9ydERlc2NyaXB0aW9uGAQgASgJEhcK",
-            "D2xvbmdEZXNjcmlwdGlvbhgFIAEoCRISCgpleHBlcmllbmNlGAYgASgFEg0K",
-            "BWxldmVsGAcgASgFEiIKB2VsZW1lbnQYCCABKA4yES5DYXJkU2V0VHlwZS5F",
-            "bnVtEicKBnNraWxscxgJIAMoCzIXLk92ZXJsb3JkU2tpbGxQcm90b3R5cGUi",
-            "VQoVT3ZlcmxvcmRTa2lsbEluc3RhbmNlEioKCXByb3RvdHlwZRgBIAEoCzIX",
-            "Lk92ZXJsb3JkU2tpbGxQcm90b3R5cGUSEAoIY29vbGRvd24YAiABKAUixQIK",
-            "Fk92ZXJsb3JkU2tpbGxQcm90b3R5cGUSDQoFdGl0bGUYASABKAkSDQoFc2tp",
-            "bGwYAiABKAkSEAoIaWNvblBhdGgYAyABKAkSEwoLZGVzY3JpcHRpb24YBCAB",
-            "KAkSEAoIY29vbGRvd24YBSABKAUSFwoPaW5pdGlhbENvb2xkb3duGAYgASgF",
-            "EhEKCXBhcmFtZXRlchgHIAEoBRIOCgZhdHRhY2sYCCABKAUSMgoRb3Zlcmxv",
-            "cmRTa2lsbEtpbmQYCSABKA4yFy5PdmVybG9yZFNraWxsS2luZC5FbnVtEjUK",
-            "EHNraWxsVGFyZ2V0VHlwZXMYCiADKA4yGy5PdmVybG9yZEFiaWxpdHlUYXJn",
-            "ZXQuRW51bRItChJlbGVtZW50VGFyZ2V0VHlwZXMYCyADKA4yES5DYXJkU2V0",
-            "VHlwZS5FbnVtIigKFlBsYXllckFjdGlvbkxlYXZlTWF0Y2gSDgoGd2lubmVy",
-            "GAEgASgJIkMKFFBsYXllckFjdGlvbkNhcmRQbGF5EhkKBGNhcmQYASABKAsy",
-            "Cy5JbnN0YW5jZUlkEhAKCHBvc2l0aW9uGAIgASgFIkkKFFBsYXllckFjdGlv",
-            "blJhbmtCdWZmEhkKBGNhcmQYASABKAsyCy5JbnN0YW5jZUlkEhYKB3Rhcmdl",
-            "dHMYAiADKAsyBS5Vbml0Ik4KFlBsYXllckFjdGlvbkNhcmRBdHRhY2sSHQoI",
-            "YXR0YWNrZXIYASABKAsyCy5JbnN0YW5jZUlkEhUKBnRhcmdldBgCIAEoCzIF",
-            "LlVuaXQifAobUGxheWVyQWN0aW9uQ2FyZEFiaWxpdHlVc2VkEhkKBGNhcmQY",
-            "ASABKAsyCy5JbnN0YW5jZUlkEhYKB3RhcmdldHMYAyADKAsyBS5Vbml0EioK",
-            "C0FiaWxpdHlUeXBlGAQgASgOMhUuQ2FyZEFiaWxpdHlUeXBlLkVudW0iRwod",
-            "UGxheWVyQWN0aW9uT3ZlcmxvcmRTa2lsbFVzZWQSDwoHU2tpbGxJZBgBIAEo",
-            "AxIVCgZ0YXJnZXQYAiABKAsyBS5Vbml0IhUKE1BsYXllckFjdGlvbkVuZFR1",
-            "cm4iPAoUUGxheWVyQWN0aW9uTXVsbGlnYW4SJAoPbXVsbGlnYW5lZENhcmRz",
-            "GAEgAygLMgsuSW5zdGFuY2VJZCJLCiRQbGF5ZXJBY3Rpb25DaGVhdERlc3Ry",
-            "b3lDYXJkc09uQm9hcmQSIwoOZGVzdHJveWVkQ2FyZHMYASADKAsyCy5JbnN0",
-            "YW5jZUlkIjUKD1N0YXJ0R2FtZUFjdGlvbhIiCgxwbGF5ZXJTdGF0ZXMYASAD",
-            "KAsyDC5QbGF5ZXJTdGF0ZSJGCgRVbml0Eh8KCmluc3RhbmNlSWQYASABKAsy",
-            "Cy5JbnN0YW5jZUlkEh0KCVBhcmFtZXRlchgDIAEoCzIKLlBhcmFtZXRlciI+",
-            "CglQYXJhbWV0ZXISDgoGQXR0YWNrGAEgASgFEg8KB0RlZmVuc2UYAiABKAUS",
-            "EAoIQ2FyZE5hbWUYAyABKAkizAMKEU92ZXJsb3JkU2tpbGxLaW5kIrYDCgRF",
-            "bnVtEggKBE5PTkUQABIICgRQVVNIEAESCAoERFJBVxACEg8KC1dJTkRfU0hJ",
-            "RUxEEAMSDAoITEVWSVRBVEUQBBILCgdSRVRSRUFUEAUSCgoGSEFSREVOEAYS",
-            "DgoKU1RPTkVfU0tJThAHEgsKB0ZPUlRJRlkQCBILCgdQSEFMQU5YEAkSDAoI",
-            "Rk9SVFJFU1MQChINCglGSVJFX0JPTFQQCxIKCgZSQUJJRVMQDBIMCghGSVJF",
-            "QkFMTBANEg8KC01BU1NfUkFCSUVTEA4SEQoNTUVURU9SX1NIT1dFUhAPEhEK",
-            "DUhFQUxJTkdfVE9VQ0gQEBIICgRNRU5EEBESDQoJUkVTU1VSRUNUEBISCwoH",
-            "RU5IQU5DRRATEg0KCVJFQU5JTUFURRAUEg8KC1BPSVNPTl9EQVJUEBUSDwoL",
-            "VE9YSUNfUE9XRVIQFhIMCghCUkVBS09VVBAXEgoKBklORkVDVBAYEgwKCEVQ",
-            "SURFTUlDEBkSCgoGRlJFRVpFEBoSDAoISUNFX0JPTFQQGxIMCghJQ0VfV0FM",
-            "TBAcEgsKB1NIQVRURVIQHRIMCghCTElaWkFSRBAeIjkKCFN0YXRUeXBlIi0K",
-            "BEVudW0SDQoJVU5ERUZJTkVEEAASCgoGSEVBTFRIEAESCgoGREFNQUdFEAIi",
-            "MQoRVW5pdFNwZWNpYWxTdGF0dXMiHAoERW51bRIICgROT05FEAASCgoGRlJP",
-            "WkVOEAEiSgoKR2FtZVJlcGxheRIeCgdhY3Rpb25zGAUgAygLMg0uUGxheWVy",
-            "QWN0aW9uEhwKBmJsb2NrcxgGIAMoCzIMLkhpc3RvcnlEYXRhIikKBlBsYXll",
-            "chIKCgJpZBgBIAEoCRITCgRkZWNrGAIgASgLMgUuRGVjayJpCgRab25lImEK",
-            "BHR5cGUSCAoEUExBWRAAEggKBERFQ0sQARIICgRIQU5EEAISDQoJR1JBVkVZ",
-            "QVJEEAMSEgoOUkVNT1ZFRlJPTUdBTUUQBBIMCghTRVRBU0lERRAFEgoKBlNF",
-            "Q1JFVBAGIiUKB0hpc3RvcnkSGgoEbGlzdBgBIAMoCzIMLkhpc3RvcnlEYXRh",
-            "Io0CCgtIaXN0b3J5RGF0YRIoCgpjcmVhdGVHYW1lGAEgASgLMhIuSGlzdG9y",
-            "eUNyZWF0ZUdhbWVIABIsCgxmdWxsSW5zdGFuY2UYAiABKAsyFC5IaXN0b3J5",
-            "RnVsbEluc3RhbmNlSAASKAoMc2hvd0luc3RhbmNlGAMgASgLMhAuSGlzdG9y",
-            "eUluc3RhbmNlSAASJAoMaGlkZUluc3RhbmNlGAQgASgLMgwuSGlzdG9yeUhp",
-            "ZGVIABIqCg5jaGFuZ2VJbnN0YW5jZRgFIAEoCzIQLkhpc3RvcnlJbnN0YW5j",
-            "ZUgAEiIKB2VuZEdhbWUYBiABKAsyDy5IaXN0b3J5RW5kR2FtZUgAQgYKBGRh",
-            "dGEiYgoRSGlzdG9yeUNyZWF0ZUdhbWUSDgoGZ2FtZUlkGAEgASgDEhgKB3Bs",
-            "YXllcnMYAiADKAsyBy5QbGF5ZXISEgoKcmFuZG9tU2VlZBgDIAEoAxIPCgd2",
-            "ZXJzaW9uGAQgASgJIlcKE0hpc3RvcnlGdWxsSW5zdGFuY2USHwoKaW5zdGFu",
-            "Y2VJZBgBIAEoCzILLkluc3RhbmNlSWQSDgoGYXR0YWNrGAIgASgFEg8KB2Rl",
-            "ZmVuc2UYAyABKAUiZAoPSGlzdG9yeUluc3RhbmNlEh8KCmluc3RhbmNlSWQY",
-            "ASABKAsyCy5JbnN0YW5jZUlkEg0KBXZhbHVlGAIgASgFIiEKBmNoYW5nZRIK",
-            "CgZBdHRhY2sQABILCgdEZWZlbnNlEAEiQwoLSGlzdG9yeUhpZGUSHwoKaW5z",
-            "dGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEwoEem9uZRgCIAEoCzIFLlpv",
-            "bmUiQwoOSGlzdG9yeUVuZEdhbWUSDwoHbWF0Y2hJZBgBIAEoAxIOCgZ1c2Vy",
-            "SWQYAiABKAkSEAoId2lubmVySWQYAyABKAkqJwoMR2FtZU1vZGVUeXBlEg0K",
-            "CUNvbW11bml0eRAAEggKBExvb20QASo4ChpPdmVybG9yZFNraWxsU2VsZWN0",
-            "aW9uVHlwZRILCgdQcmltYXJ5EAASDQoJU2Vjb25kYXJ5EAFCI6oCIExvb20u",
-            "Wm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVmYgZwcm90bzM="));
+            "b21lSAASPAoKY2FyZEF0dGFjaxgHIAEoCzImLlBsYXllckFjdGlvbk91dGNv",
+            "bWUuQ2FyZEF0dGFja091dGNvbWVIABpMChZDYXJkQWJpbGl0eVJhZ2VPdXRj",
+            "b21lEh8KCmluc3RhbmNlSWQYASABKAsyCy5JbnN0YW5jZUlkEhEKCW5ld0F0",
+            "dGFjaxgCIAEoBRpXCiBDYXJkQWJpbGl0eVByaW9yaXR5QXR0YWNrT3V0Y29t",
+            "ZRIfCgppbnN0YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJZBISCgpuZXdEZWZl",
+            "bnNlGAIgASgFGkUKG0NhcmRBYmlsaXR5UmVhbmltYXRlT3V0Y29tZRImCg9u",
+            "ZXdDYXJkSW5zdGFuY2UYASABKAsyDS5DYXJkSW5zdGFuY2UaaQoxQ2FyZEFi",
+            "aWxpdHlBZGRpdGlvbmFsRGFtYWdlVG9IZWF2eUluQXR0YWNrT3V0Y29tZRIf",
+            "CgppbnN0YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJZBITCgthZGRlZEF0dGFj",
+            "axgCIAEoBRqrAQocQ2FyZEFiaWxpdHlDaGFuZ2VTdGF0T3V0Y29tZRIfCgpp",
+            "bnN0YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJZBIRCgluZXdBdHRhY2sYAiAB",
+            "KAUSEgoKbmV3RGVmZW5zZRgDIAEoBRIcCgRzdGF0GAQgASgOMg4uU3RhdFR5",
+            "cGUuRW51bRIlChB0YXJnZXRJbnN0YW5jZUlkGAUgASgLMgsuSW5zdGFuY2VJ",
+            "ZBpXCiBDYXJkQWJpbGl0eUF0dGFja092ZXJsb3JkT3V0Y29tZRIfCgppbnN0",
+            "YW5jZUlkGAEgASgLMgsuSW5zdGFuY2VJZBISCgpuZXdEZWZlbnNlGAIgASgF",
+            "GpkBChFDYXJkQXR0YWNrT3V0Y29tZRInChJhdHRhY2tlckluc3RhbmNlSWQY",
+            "ASABKAsyCy5JbnN0YW5jZUlkEiUKEHRhcmdldEluc3RhbmNlSWQYAiABKAsy",
+            "Cy5JbnN0YW5jZUlkEhoKEmF0dGFja2VyTmV3RGVmZW5zZRgDIAEoBRIYChB0",
+            "YXJnZXROZXdEZWZlbnNlGAQgASgFQgkKB091dGNvbWUioQMKE0NhcmRBYmls",
+            "aXR5SW5zdGFuY2USIAoEcmFnZRgBIAEoCzIQLkNhcmRBYmlsaXR5UmFnZUgA",
+            "EjQKDnByaW9yaXR5QXR0YWNrGAIgASgLMhouQ2FyZEFiaWxpdHlQcmlvcml0",
+            "eUF0dGFja0gAEioKCXJlYW5pbWF0ZRgFIAEoCzIVLkNhcmRBYmlsaXR5UmVh",
+            "bmltYXRlSAASVgofYWRkaXRpb25hbERhbWFnZVRvSGVhdnlJbkF0dGFjaxgG",
+            "IAEoCzIrLkNhcmRBYmlsaXR5QWRkaXRpb25hbERhbWFnZVRvSGVhdnlJbkF0",
+            "dGFja0gAEiwKCmNoYW5nZVN0YXQYByABKAsyFi5DYXJkQWJpbGl0eUNoYW5n",
+            "ZVN0YXRIABI0Cg5hdHRhY2tPdmVybG9yZBgIIAEoCzIaLkNhcmRBYmlsaXR5",
+            "QXR0YWNrT3ZlcmxvcmRIABIQCghpc0FjdGl2ZRgDIAEoCBIpCgd0cmlnZ2Vy",
+            "GAQgASgOMhguQ2FyZEFiaWxpdHlUcmlnZ2VyLkVudW1CDQoLQWJpbGl0eVR5",
+            "cGUijAIKDENhcmRJbnN0YW5jZRIYCglwcm90b3R5cGUYASABKAsyBS5DYXJk",
+            "Eh8KCmluc3RhbmNlSWQYAiABKAsyCy5JbnN0YW5jZUlkEisKCGluc3RhbmNl",
+            "GAMgASgLMhkuQ2FyZEluc3RhbmNlU3BlY2lmaWNEYXRhEg0KBW93bmVyGAQg",
+            "ASgJEiUKHWFiaWxpdGllc0luc3RhbmNlc0luaXRpYWxpemVkGAUgASgIEjAK",
+            "EmFiaWxpdGllc0luc3RhbmNlcxgGIAMoCzIULkNhcmRBYmlsaXR5SW5zdGFu",
+            "Y2USGAoEem9uZRgHIAEoDjIKLlpvbmUudHlwZRISCgpvd25lckluZGV4GAgg",
+            "ASgFIh0KC0RhdGFJZE93bmVyEg4KBmRhdGFJZBgBIAEoBSIgCghDYXJkRGVj",
+            "axIUCgVjYXJkcxgBIAMoCzIFLkNhcmQiGAoKSW5zdGFuY2VJZBIKCgJpZBgB",
+            "IAEoBSLhAQoQT3ZlcmxvcmRJbnN0YW5jZRIfCgppbnN0YW5jZUlkGAEgASgL",
+            "MgsuSW5zdGFuY2VJZBIlCglwcm90b3R5cGUYAiABKAsyEi5PdmVybG9yZFBy",
+            "b3RvdHlwZRIqCgpmaXJzdFNraWxsGAMgASgLMhYuT3ZlcmxvcmRTa2lsbElu",
+            "c3RhbmNlEisKC3NlY29uZFNraWxsGAQgASgLMhYuT3ZlcmxvcmRTa2lsbElu",
+            "c3RhbmNlEg8KB2RlZmVuc2UYBSABKAUSCwoDZ29vGAYgASgFEg4KBm1heEdv",
+            "bxgHIAEoBSLiAQoRT3ZlcmxvcmRQcm90b3R5cGUSDgoGaGVyb0lkGAEgASgF",
+            "EgwKBGljb24YAiABKAkSDAoEbmFtZRgDIAEoCRIYChBzaG9ydERlc2NyaXB0",
+            "aW9uGAQgASgJEhcKD2xvbmdEZXNjcmlwdGlvbhgFIAEoCRISCgpleHBlcmll",
+            "bmNlGAYgASgFEg0KBWxldmVsGAcgASgFEiIKB2VsZW1lbnQYCCABKA4yES5D",
+            "YXJkU2V0VHlwZS5FbnVtEicKBnNraWxscxgJIAMoCzIXLk92ZXJsb3JkU2tp",
+            "bGxQcm90b3R5cGUiVQoVT3ZlcmxvcmRTa2lsbEluc3RhbmNlEioKCXByb3Rv",
+            "dHlwZRgBIAEoCzIXLk92ZXJsb3JkU2tpbGxQcm90b3R5cGUSEAoIY29vbGRv",
+            "d24YAiABKAUixQIKFk92ZXJsb3JkU2tpbGxQcm90b3R5cGUSDQoFdGl0bGUY",
+            "ASABKAkSDQoFc2tpbGwYAiABKAkSEAoIaWNvblBhdGgYAyABKAkSEwoLZGVz",
+            "Y3JpcHRpb24YBCABKAkSEAoIY29vbGRvd24YBSABKAUSFwoPaW5pdGlhbENv",
+            "b2xkb3duGAYgASgFEhEKCXBhcmFtZXRlchgHIAEoBRIOCgZhdHRhY2sYCCAB",
+            "KAUSMgoRb3ZlcmxvcmRTa2lsbEtpbmQYCSABKA4yFy5PdmVybG9yZFNraWxs",
+            "S2luZC5FbnVtEjUKEHNraWxsVGFyZ2V0VHlwZXMYCiADKA4yGy5PdmVybG9y",
+            "ZEFiaWxpdHlUYXJnZXQuRW51bRItChJlbGVtZW50VGFyZ2V0VHlwZXMYCyAD",
+            "KA4yES5DYXJkU2V0VHlwZS5FbnVtIigKFlBsYXllckFjdGlvbkxlYXZlTWF0",
+            "Y2gSDgoGd2lubmVyGAEgASgJIkMKFFBsYXllckFjdGlvbkNhcmRQbGF5EhkK",
+            "BGNhcmQYASABKAsyCy5JbnN0YW5jZUlkEhAKCHBvc2l0aW9uGAIgASgFIkkK",
+            "FFBsYXllckFjdGlvblJhbmtCdWZmEhkKBGNhcmQYASABKAsyCy5JbnN0YW5j",
+            "ZUlkEhYKB3RhcmdldHMYAiADKAsyBS5Vbml0Ik4KFlBsYXllckFjdGlvbkNh",
+            "cmRBdHRhY2sSHQoIYXR0YWNrZXIYASABKAsyCy5JbnN0YW5jZUlkEhUKBnRh",
+            "cmdldBgCIAEoCzIFLlVuaXQifAobUGxheWVyQWN0aW9uQ2FyZEFiaWxpdHlV",
+            "c2VkEhkKBGNhcmQYASABKAsyCy5JbnN0YW5jZUlkEhYKB3RhcmdldHMYAyAD",
+            "KAsyBS5Vbml0EioKC0FiaWxpdHlUeXBlGAQgASgOMhUuQ2FyZEFiaWxpdHlU",
+            "eXBlLkVudW0iRwodUGxheWVyQWN0aW9uT3ZlcmxvcmRTa2lsbFVzZWQSDwoH",
+            "U2tpbGxJZBgBIAEoAxIVCgZ0YXJnZXQYAiABKAsyBS5Vbml0IhUKE1BsYXll",
+            "ckFjdGlvbkVuZFR1cm4iPAoUUGxheWVyQWN0aW9uTXVsbGlnYW4SJAoPbXVs",
+            "bGlnYW5lZENhcmRzGAEgAygLMgsuSW5zdGFuY2VJZCJLCiRQbGF5ZXJBY3Rp",
+            "b25DaGVhdERlc3Ryb3lDYXJkc09uQm9hcmQSIwoOZGVzdHJveWVkQ2FyZHMY",
+            "ASADKAsyCy5JbnN0YW5jZUlkIjUKD1N0YXJ0R2FtZUFjdGlvbhIiCgxwbGF5",
+            "ZXJTdGF0ZXMYASADKAsyDC5QbGF5ZXJTdGF0ZSJGCgRVbml0Eh8KCmluc3Rh",
+            "bmNlSWQYASABKAsyCy5JbnN0YW5jZUlkEh0KCVBhcmFtZXRlchgDIAEoCzIK",
+            "LlBhcmFtZXRlciI+CglQYXJhbWV0ZXISDgoGQXR0YWNrGAEgASgFEg8KB0Rl",
+            "ZmVuc2UYAiABKAUSEAoIQ2FyZE5hbWUYAyABKAkizAMKEU92ZXJsb3JkU2tp",
+            "bGxLaW5kIrYDCgRFbnVtEggKBE5PTkUQABIICgRQVVNIEAESCAoERFJBVxAC",
+            "Eg8KC1dJTkRfU0hJRUxEEAMSDAoITEVWSVRBVEUQBBILCgdSRVRSRUFUEAUS",
+            "CgoGSEFSREVOEAYSDgoKU1RPTkVfU0tJThAHEgsKB0ZPUlRJRlkQCBILCgdQ",
+            "SEFMQU5YEAkSDAoIRk9SVFJFU1MQChINCglGSVJFX0JPTFQQCxIKCgZSQUJJ",
+            "RVMQDBIMCghGSVJFQkFMTBANEg8KC01BU1NfUkFCSUVTEA4SEQoNTUVURU9S",
+            "X1NIT1dFUhAPEhEKDUhFQUxJTkdfVE9VQ0gQEBIICgRNRU5EEBESDQoJUkVT",
+            "U1VSRUNUEBISCwoHRU5IQU5DRRATEg0KCVJFQU5JTUFURRAUEg8KC1BPSVNP",
+            "Tl9EQVJUEBUSDwoLVE9YSUNfUE9XRVIQFhIMCghCUkVBS09VVBAXEgoKBklO",
+            "RkVDVBAYEgwKCEVQSURFTUlDEBkSCgoGRlJFRVpFEBoSDAoISUNFX0JPTFQQ",
+            "GxIMCghJQ0VfV0FMTBAcEgsKB1NIQVRURVIQHRIMCghCTElaWkFSRBAeIjkK",
+            "CFN0YXRUeXBlIi0KBEVudW0SDQoJVU5ERUZJTkVEEAASCgoGSEVBTFRIEAES",
+            "CgoGREFNQUdFEAIiMQoRVW5pdFNwZWNpYWxTdGF0dXMiHAoERW51bRIICgRO",
+            "T05FEAASCgoGRlJPWkVOEAEiSgoKR2FtZVJlcGxheRIeCgdhY3Rpb25zGAUg",
+            "AygLMg0uUGxheWVyQWN0aW9uEhwKBmJsb2NrcxgGIAMoCzIMLkhpc3RvcnlE",
+            "YXRhIikKBlBsYXllchIKCgJpZBgBIAEoCRITCgRkZWNrGAIgASgLMgUuRGVj",
+            "ayJpCgRab25lImEKBHR5cGUSCAoEUExBWRAAEggKBERFQ0sQARIICgRIQU5E",
+            "EAISDQoJR1JBVkVZQVJEEAMSEgoOUkVNT1ZFRlJPTUdBTUUQBBIMCghTRVRB",
+            "U0lERRAFEgoKBlNFQ1JFVBAGIiUKB0hpc3RvcnkSGgoEbGlzdBgBIAMoCzIM",
+            "Lkhpc3RvcnlEYXRhIo0CCgtIaXN0b3J5RGF0YRIoCgpjcmVhdGVHYW1lGAEg",
+            "ASgLMhIuSGlzdG9yeUNyZWF0ZUdhbWVIABIsCgxmdWxsSW5zdGFuY2UYAiAB",
+            "KAsyFC5IaXN0b3J5RnVsbEluc3RhbmNlSAASKAoMc2hvd0luc3RhbmNlGAMg",
+            "ASgLMhAuSGlzdG9yeUluc3RhbmNlSAASJAoMaGlkZUluc3RhbmNlGAQgASgL",
+            "MgwuSGlzdG9yeUhpZGVIABIqCg5jaGFuZ2VJbnN0YW5jZRgFIAEoCzIQLkhp",
+            "c3RvcnlJbnN0YW5jZUgAEiIKB2VuZEdhbWUYBiABKAsyDy5IaXN0b3J5RW5k",
+            "R2FtZUgAQgYKBGRhdGEiYgoRSGlzdG9yeUNyZWF0ZUdhbWUSDgoGZ2FtZUlk",
+            "GAEgASgDEhgKB3BsYXllcnMYAiADKAsyBy5QbGF5ZXISEgoKcmFuZG9tU2Vl",
+            "ZBgDIAEoAxIPCgd2ZXJzaW9uGAQgASgJIlcKE0hpc3RvcnlGdWxsSW5zdGFu",
+            "Y2USHwoKaW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSDgoGYXR0YWNr",
+            "GAIgASgFEg8KB2RlZmVuc2UYAyABKAUiZAoPSGlzdG9yeUluc3RhbmNlEh8K",
+            "Cmluc3RhbmNlSWQYASABKAsyCy5JbnN0YW5jZUlkEg0KBXZhbHVlGAIgASgF",
+            "IiEKBmNoYW5nZRIKCgZBdHRhY2sQABILCgdEZWZlbnNlEAEiQwoLSGlzdG9y",
+            "eUhpZGUSHwoKaW5zdGFuY2VJZBgBIAEoCzILLkluc3RhbmNlSWQSEwoEem9u",
+            "ZRgCIAEoCzIFLlpvbmUiQwoOSGlzdG9yeUVuZEdhbWUSDwoHbWF0Y2hJZBgB",
+            "IAEoAxIOCgZ1c2VySWQYAiABKAkSEAoId2lubmVySWQYAyABKAkqJwoMR2Ft",
+            "ZU1vZGVUeXBlEg0KCUNvbW11bml0eRAAEggKBExvb20QASo4ChpPdmVybG9y",
+            "ZFNraWxsU2VsZWN0aW9uVHlwZRILCgdQcmltYXJ5EAASDQoJU2Vjb25kYXJ5",
+            "EAFCI6oCIExvb20uWm9tYmllQmF0dGxlZ3JvdW5kLlByb3RvYnVmYgZwcm90",
+            "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Loom.Client.Protobuf.TypesReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Loom.ZombieBattleground.Protobuf.GameModeType), typeof(global::Loom.ZombieBattleground.Protobuf.OverlordSkillSelectionType), }, new pbr::GeneratedClrTypeInfo[] {
@@ -749,13 +751,13 @@ namespace Loom.ZombieBattleground.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityPriorityAttack), global::Loom.ZombieBattleground.Protobuf.CardAbilityPriorityAttack.Parser, new[]{ "AttackerOldDefense", "TargetOldDefense" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityReanimate), global::Loom.ZombieBattleground.Protobuf.CardAbilityReanimate.Parser, new[]{ "DefaultAttack", "DefaultDefense", "NewInstance" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord), global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord.Parser, new[]{ "Damage", "WasApplied" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Parser, new[]{ "Rage", "PriorityAttack", "AdditionalDamageToHeavyInAttack", "ChangeStat", "Reanimate", "AttackOverlord", "InstanceStat" }, new[]{ "Outcome" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome.Parser, new[]{ "InstanceId", "NewAttack" }, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Parser, new[]{ "Rage", "PriorityAttack", "AdditionalDamageToHeavyInAttack", "ChangeStat", "Reanimate", "AttackOverlord", "CardAttack" }, new[]{ "Outcome" }, null, new pbr::GeneratedClrTypeInfo[] { new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome.Parser, new[]{ "InstanceId", "NewAttack" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityPriorityAttackOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityPriorityAttackOutcome.Parser, new[]{ "InstanceId", "NewDefense" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReanimateOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReanimateOutcome.Parser, new[]{ "NewCardInstance" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAdditionalDamageToHeavyInAttackOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAdditionalDamageToHeavyInAttackOutcome.Parser, new[]{ "InstanceId", "AddedAttack" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityChangeStatOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityChangeStatOutcome.Parser, new[]{ "InstanceId", "NewAttack", "NewDefense", "Stat", "TargetInstanceId" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome.Parser, new[]{ "InstanceId", "NewDefense" }, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome.Parser, new[]{ "InstanceId", "NewAttack", "NewDefense" }, null, null, null)}),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome), global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome.Parser, new[]{ "AttackerInstanceId", "TargetInstanceId", "AttackerNewDefense", "TargetNewDefense" }, null, null, null)}),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardAbilityInstance), global::Loom.ZombieBattleground.Protobuf.CardAbilityInstance.Parser, new[]{ "Rage", "PriorityAttack", "Reanimate", "AdditionalDamageToHeavyInAttack", "ChangeStat", "AttackOverlord", "IsActive", "Trigger" }, new[]{ "AbilityType" }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.CardInstance), global::Loom.ZombieBattleground.Protobuf.CardInstance.Parser, new[]{ "Prototype", "InstanceId", "Instance", "Owner", "AbilitiesInstancesInitialized", "AbilitiesInstances", "Zone", "OwnerIndex" }, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Loom.ZombieBattleground.Protobuf.DataIdOwner), global::Loom.ZombieBattleground.Protobuf.DataIdOwner.Parser, new[]{ "DataId" }, null, null, null),
@@ -1489,7 +1491,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       attack_ = other.attack_;
       defense_ = other.defense_;
       gooCost_ = other.gooCost_;
-      CardViewInfo = other.cardViewInfo_ != null ? other.CardViewInfo.Clone() : null;
+      cardViewInfo_ = other.cardViewInfo_ != null ? other.cardViewInfo_.Clone() : null;
       abilities_ = other.abilities_.Clone();
       uniqueAnimationType_ = other.uniqueAnimationType_;
       hiddenSet_ = other.hiddenSet_;
@@ -2292,8 +2294,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CardViewInfo(CardViewInfo other) : this() {
-      Position = other.position_ != null ? other.Position.Clone() : null;
-      Scale = other.scale_ != null ? other.Scale.Clone() : null;
+      position_ = other.position_ != null ? other.position_.Clone() : null;
+      scale_ = other.scale_ != null ? other.scale_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2803,8 +2805,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Rect(Rect other) : this() {
-      Position = other.position_ != null ? other.Position.Clone() : null;
-      Size = other.size_ != null ? other.Size.Clone() : null;
+      position_ = other.position_ != null ? other.position_.Clone() : null;
+      size_ = other.size_ != null ? other.size_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5362,7 +5364,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetHeroResponse(GetHeroResponse other) : this() {
-      Hero = other.hero_ != null ? other.Hero.Clone() : null;
+      hero_ = other.hero_ != null ? other.hero_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5499,7 +5501,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public SetHeroRequest(SetHeroRequest other) : this() {
       userId_ = other.userId_;
       heroId_ = other.heroId_;
-      Hero = other.hero_ != null ? other.Hero.Clone() : null;
+      hero_ = other.hero_ != null ? other.hero_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -5688,7 +5690,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetHeroResponse(SetHeroResponse other) : this() {
-      Hero = other.hero_ != null ? other.Hero.Clone() : null;
+      hero_ = other.hero_ != null ? other.hero_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7173,7 +7175,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public AIDeck(AIDeck other) : this() {
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       type_ = other.type_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -7463,7 +7465,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       heroes_ = other.heroes_.Clone();
       aiDecks_ = other.aiDecks_.Clone();
       version_ = other.version_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       contentVersion_ = other.contentVersion_;
       pvpVersion_ = other.pvpVersion_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -7776,8 +7778,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public UpdateOracle(UpdateOracle other) : this() {
-      NewOracle = other.newOracle_ != null ? other.NewOracle.Clone() : null;
-      OldOracle = other.oldOracle_ != null ? other.OldOracle.Clone() : null;
+      newOracle_ = other.newOracle_ != null ? other.newOracle_.Clone() : null;
+      oldOracle_ = other.oldOracle_ != null ? other.oldOracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -7951,7 +7953,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       heroes_ = other.heroes_.Clone();
       aiDecks_ = other.aiDecks_.Clone();
       version_ = other.version_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       oldVersion_ = other.oldVersion_;
       contentVersion_ = other.contentVersion_;
       pvpVersion_ = other.pvpVersion_;
@@ -8428,7 +8430,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       defaultHeroes_ = other.defaultHeroes_.Clone();
       aiDecks_ = other.aiDecks_.Clone();
       version_ = other.version_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9027,7 +9029,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetGamechainStateResponse(GetGamechainStateResponse other) : this() {
-      State = other.state_ != null ? other.State.Clone() : null;
+      state_ = other.state_ != null ? other.state_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9162,7 +9164,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public InitGamechainStateRequest(InitGamechainStateRequest other) : this() {
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9298,7 +9300,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetLastPlasmaBlockNumRequest(SetLastPlasmaBlockNumRequest other) : this() {
       lastBlockNum_ = other.lastBlockNum_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9461,7 +9463,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetRewardContractVersionRequest(SetRewardContractVersionRequest other) : this() {
       version_ = other.version_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9624,7 +9626,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetTutorialRewardAmountRequest(SetTutorialRewardAmountRequest other) : this() {
       amount_ = other.amount_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -9787,7 +9789,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetDefaultPlayerDefenseRequest(SetDefaultPlayerDefenseRequest other) : this() {
       defense_ = other.defense_;
-      Oracle = other.oracle_ != null ? other.Oracle.Clone() : null;
+      oracle_ = other.oracle_ != null ? other.oracle_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -11172,7 +11174,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetDeckResponse(GetDeckResponse other) : this() {
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -11308,7 +11310,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CreateDeckRequest(CreateDeckRequest other) : this() {
       userId_ = other.userId_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -11629,7 +11631,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public CreateDeckEvent(CreateDeckEvent other) : this() {
       userId_ = other.userId_;
       senderAddress_ = other.senderAddress_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -12189,7 +12191,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public EditDeckRequest(EditDeckRequest other) : this() {
       userId_ = other.userId_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -12381,7 +12383,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public EditDeckEvent(EditDeckEvent other) : this() {
       userId_ = other.userId_;
       senderAddress_ = other.senderAddress_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       version_ = other.version_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -14724,7 +14726,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       r_ = other.r_;
       s_ = other.s_;
       v_ = other.v_;
-      Amount = other.amount_ != null ? other.Amount.Clone() : null;
+      amount_ = other.amount_ != null ? other.amount_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -15235,11 +15237,11 @@ namespace Loom.ZombieBattleground.Protobuf {
     public PlayerState(PlayerState other) : this() {
       id_ = other.id_;
       currentAction_ = other.currentAction_;
-      OverlordInstance = other.overlordInstance_ != null ? other.OverlordInstance.Clone() : null;
+      overlordInstance_ = other.overlordInstance_ != null ? other.overlordInstance_.Clone() : null;
       cardsInHand_ = other.cardsInHand_.Clone();
       cardsInPlay_ = other.cardsInPlay_.Clone();
       cardsInDeck_ = other.cardsInDeck_.Clone();
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       defense_ = other.defense_;
       currentGoo_ = other.currentGoo_;
       gooVials_ = other.gooVials_;
@@ -15251,7 +15253,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       maxGooVials_ = other.maxGooVials_;
       turnTime_ = other.turnTime_;
       turnNumber_ = other.turnNumber_;
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
       mulliganCards_ = other.mulliganCards_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -15874,7 +15876,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public InitialPlayerState(InitialPlayerState other) : this() {
       id_ = other.id_;
       matchAccepted_ = other.matchAccepted_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -16226,7 +16228,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       status_ = other.status_;
       version_ = other.version_;
       randomSeed_ = other.randomSeed_;
-      CustomGameAddr = other.customGameAddr_ != null ? other.CustomGameAddr.Clone() : null;
+      customGameAddr_ = other.customGameAddr_ != null ? other.customGameAddr_.Clone() : null;
       createdAt_ = other.createdAt_;
       useBackendGameLogic_ = other.useBackendGameLogic_;
       playerLastSeens_ = other.playerLastSeens_.Clone();
@@ -16747,7 +16749,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public MatchMakingInfo(MatchMakingInfo other) : this() {
       userId_ = other.userId_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -17034,7 +17036,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       playerId_ = other.playerId_;
       actionOutcomes_ = other.actionOutcomes_.Clone();
       createdAt_ = other.createdAt_;
-      ControlGameState = other.controlGameState_ != null ? other.ControlGameState.Clone() : null;
+      controlGameState_ = other.controlGameState_ != null ? other.controlGameState_.Clone() : null;
       switch (other.ActionCase) {
         case ActionOneofCase.EndTurn:
           EndTurn = other.EndTurn.Clone();
@@ -17656,9 +17658,9 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionEvent(PlayerActionEvent other) : this() {
-      PlayerAction = other.playerAction_ != null ? other.PlayerAction.Clone() : null;
-      Match = other.match_ != null ? other.Match.Clone() : null;
-      Block = other.block_ != null ? other.Block.Clone() : null;
+      playerAction_ = other.playerAction_ != null ? other.playerAction_.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
+      block_ = other.block_ != null ? other.block_.Clone() : null;
       currentActionIndex_ = other.currentActionIndex_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -17887,7 +17889,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerProfile(PlayerProfile other) : this() {
-      RegistrationData = other.registrationData_ != null ? other.RegistrationData.Clone() : null;
+      registrationData_ = other.registrationData_ != null ? other.registrationData_.Clone() : null;
       updatedAt_ = other.updatedAt_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -18053,10 +18055,10 @@ namespace Loom.ZombieBattleground.Protobuf {
       userId_ = other.userId_;
       deckId_ = other.deckId_;
       version_ = other.version_;
-      CustomGame = other.customGame_ != null ? other.CustomGame.Clone() : null;
+      customGame_ = other.customGame_ != null ? other.customGame_.Clone() : null;
       tags_ = other.tags_.Clone();
       useBackendGameLogic_ = other.useBackendGameLogic_;
-      DebugCheats = other.debugCheats_ != null ? other.DebugCheats.Clone() : null;
+      debugCheats_ = other.debugCheats_ != null ? other.debugCheats_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -18601,7 +18603,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public RegisterPlayerPoolRequest(RegisterPlayerPoolRequest other) : this() {
-      RegistrationData = other.registrationData_ != null ? other.RegistrationData.Clone() : null;
+      registrationData_ = other.registrationData_ != null ? other.registrationData_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -18941,7 +18943,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerPoolResponse(PlayerPoolResponse other) : this() {
-      Pool = other.pool_ != null ? other.Pool.Clone() : null;
+      pool_ = other.pool_ != null ? other.pool_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -19078,7 +19080,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public DebugCheatsConfiguration(DebugCheatsConfiguration other) : this() {
       enabled_ = other.enabled_;
       useCustomDeck_ = other.useCustomDeck_;
-      CustomDeck = other.customDeck_ != null ? other.CustomDeck.Clone() : null;
+      customDeck_ = other.customDeck_ != null ? other.customDeck_.Clone() : null;
       useCustomRandomSeed_ = other.useCustomRandomSeed_;
       customRandomSeed_ = other.customRandomSeed_;
       disableDeckShuffle_ = other.disableDeckShuffle_;
@@ -19556,7 +19558,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public FindMatchResponse(FindMatchResponse other) : this() {
-      Match = other.match_ != null ? other.Match.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
       matchFound_ = other.matchFound_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -19876,8 +19878,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public AcceptMatchResponse(AcceptMatchResponse other) : this() {
-      Match = other.match_ != null ? other.Match.Clone() : null;
-      Block = other.block_ != null ? other.Block.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
+      block_ = other.block_ != null ? other.block_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -20452,7 +20454,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetMatchResponse(GetMatchResponse other) : this() {
-      Match = other.match_ != null ? other.Match.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -20587,7 +20589,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetMatchRequest(SetMatchRequest other) : this() {
-      Match = other.match_ != null ? other.Match.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -20851,7 +20853,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetGameStateResponse(GetGameStateResponse other) : this() {
-      GameState = other.gameState_ != null ? other.GameState.Clone() : null;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -20986,7 +20988,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public SetGameStateRequest(SetGameStateRequest other) : this() {
-      GameState = other.gameState_ != null ? other.GameState.Clone() : null;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -21122,7 +21124,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionRequest(PlayerActionRequest other) : this() {
       matchId_ = other.matchId_;
-      PlayerAction = other.playerAction_ != null ? other.PlayerAction.Clone() : null;
+      playerAction_ = other.playerAction_ != null ? other.playerAction_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -21284,7 +21286,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionResponse(PlayerActionResponse other) : this() {
-      Match = other.match_ != null ? other.Match.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -21568,8 +21570,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public BundlePlayerActionResponse(BundlePlayerActionResponse other) : this() {
-      GameState = other.gameState_ != null ? other.GameState.Clone() : null;
-      Match = other.match_ != null ? other.Match.Clone() : null;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
+      match_ = other.match_ != null ? other.match_.Clone() : null;
       history_ = other.history_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -21942,7 +21944,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public EndMatchResponse(EndMatchResponse other) : this() {
-      GameState = other.gameState_ != null ? other.GameState.Clone() : null;
+      gameState_ = other.gameState_ != null ? other.gameState_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -23243,8 +23245,8 @@ namespace Loom.ZombieBattleground.Protobuf {
       description_ = other.description_;
       version_ = other.version_;
       gameModeType_ = other.gameModeType_;
-      Address = other.address_ != null ? other.Address.Clone() : null;
-      Owner = other.owner_ != null ? other.Owner.Clone() : null;
+      address_ = other.address_ != null ? other.address_.Clone() : null;
+      owner_ = other.owner_ != null ? other.owner_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -24621,7 +24623,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public GetCustomGameModeCustomUiRequest(GetCustomGameModeCustomUiRequest other) : this() {
-      Address = other.address_ != null ? other.Address.Clone() : null;
+      address_ = other.address_ != null ? other.address_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -24877,7 +24879,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CallCustomGameModeFunctionRequest(CallCustomGameModeFunctionRequest other) : this() {
-      Address = other.address_ != null ? other.Address.Clone() : null;
+      address_ = other.address_ != null ? other.address_.Clone() : null;
       callData_ = other.callData_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -25455,7 +25457,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CustomGameModeCustomUiElement(CustomGameModeCustomUiElement other) : this() {
-      Rect = other.rect_ != null ? other.Rect.Clone() : null;
+      rect_ = other.rect_ != null ? other.rect_.Clone() : null;
       switch (other.UiElementCase) {
         case UiElementOneofCase.Label:
           Label = other.Label.Clone();
@@ -27941,7 +27943,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CardChoosableAbility(CardChoosableAbility other) : this() {
       description_ = other.description_;
-      AbilityData = other.abilityData_ != null ? other.AbilityData.Clone() : null;
+      abilityData_ = other.abilityData_ != null ? other.abilityData_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -29671,7 +29673,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public CardAbilityReanimate(CardAbilityReanimate other) : this() {
       defaultAttack_ = other.defaultAttack_;
       defaultDefense_ = other.defaultDefense_;
-      NewInstance = other.newInstance_ != null ? other.NewInstance.Clone() : null;
+      newInstance_ = other.newInstance_ != null ? other.newInstance_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -30036,8 +30038,8 @@ namespace Loom.ZombieBattleground.Protobuf {
         case OutcomeOneofCase.AttackOverlord:
           AttackOverlord = other.AttackOverlord.Clone();
           break;
-        case OutcomeOneofCase.InstanceStat:
-          InstanceStat = other.InstanceStat.Clone();
+        case OutcomeOneofCase.CardAttack:
+          CardAttack = other.CardAttack.Clone();
           break;
       }
 
@@ -30115,14 +30117,14 @@ namespace Loom.ZombieBattleground.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "instanceStat" field.</summary>
-    public const int InstanceStatFieldNumber = 7;
+    /// <summary>Field number for the "cardAttack" field.</summary>
+    public const int CardAttackFieldNumber = 7;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome InstanceStat {
-      get { return outcomeCase_ == OutcomeOneofCase.InstanceStat ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome) outcome_ : null; }
+    public global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome CardAttack {
+      get { return outcomeCase_ == OutcomeOneofCase.CardAttack ? (global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome) outcome_ : null; }
       set {
         outcome_ = value;
-        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.InstanceStat;
+        outcomeCase_ = value == null ? OutcomeOneofCase.None : OutcomeOneofCase.CardAttack;
       }
     }
 
@@ -30136,7 +30138,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       ChangeStat = 5,
       Reanimate = 4,
       AttackOverlord = 6,
-      InstanceStat = 7,
+      CardAttack = 7,
     }
     private OutcomeOneofCase outcomeCase_ = OutcomeOneofCase.None;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -30169,7 +30171,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (!object.Equals(ChangeStat, other.ChangeStat)) return false;
       if (!object.Equals(Reanimate, other.Reanimate)) return false;
       if (!object.Equals(AttackOverlord, other.AttackOverlord)) return false;
-      if (!object.Equals(InstanceStat, other.InstanceStat)) return false;
+      if (!object.Equals(CardAttack, other.CardAttack)) return false;
       if (OutcomeCase != other.OutcomeCase) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -30183,7 +30185,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (outcomeCase_ == OutcomeOneofCase.ChangeStat) hash ^= ChangeStat.GetHashCode();
       if (outcomeCase_ == OutcomeOneofCase.Reanimate) hash ^= Reanimate.GetHashCode();
       if (outcomeCase_ == OutcomeOneofCase.AttackOverlord) hash ^= AttackOverlord.GetHashCode();
-      if (outcomeCase_ == OutcomeOneofCase.InstanceStat) hash ^= InstanceStat.GetHashCode();
+      if (outcomeCase_ == OutcomeOneofCase.CardAttack) hash ^= CardAttack.GetHashCode();
       hash ^= (int) outcomeCase_;
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -30222,9 +30224,9 @@ namespace Loom.ZombieBattleground.Protobuf {
         output.WriteRawTag(50);
         output.WriteMessage(AttackOverlord);
       }
-      if (outcomeCase_ == OutcomeOneofCase.InstanceStat) {
+      if (outcomeCase_ == OutcomeOneofCase.CardAttack) {
         output.WriteRawTag(58);
-        output.WriteMessage(InstanceStat);
+        output.WriteMessage(CardAttack);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -30252,8 +30254,8 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (outcomeCase_ == OutcomeOneofCase.AttackOverlord) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(AttackOverlord);
       }
-      if (outcomeCase_ == OutcomeOneofCase.InstanceStat) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(InstanceStat);
+      if (outcomeCase_ == OutcomeOneofCase.CardAttack) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(CardAttack);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -30303,11 +30305,11 @@ namespace Loom.ZombieBattleground.Protobuf {
           }
           AttackOverlord.MergeFrom(other.AttackOverlord);
           break;
-        case OutcomeOneofCase.InstanceStat:
-          if (InstanceStat == null) {
-            InstanceStat = new global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome();
+        case OutcomeOneofCase.CardAttack:
+          if (CardAttack == null) {
+            CardAttack = new global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome();
           }
-          InstanceStat.MergeFrom(other.InstanceStat);
+          CardAttack.MergeFrom(other.CardAttack);
           break;
       }
 
@@ -30377,12 +30379,12 @@ namespace Loom.ZombieBattleground.Protobuf {
             break;
           }
           case 58: {
-            global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.InstanceStatOutcome();
-            if (outcomeCase_ == OutcomeOneofCase.InstanceStat) {
-              subBuilder.MergeFrom(InstanceStat);
+            global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome subBuilder = new global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome();
+            if (outcomeCase_ == OutcomeOneofCase.CardAttack) {
+              subBuilder.MergeFrom(CardAttack);
             }
             input.ReadMessage(subBuilder);
-            InstanceStat = subBuilder;
+            CardAttack = subBuilder;
             break;
           }
         }
@@ -30418,7 +30420,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityRageOutcome(CardAbilityRageOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+          instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
           newAttack_ = other.newAttack_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
@@ -30581,7 +30583,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityPriorityAttackOutcome(CardAbilityPriorityAttackOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+          instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
           newDefense_ = other.newDefense_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
@@ -30744,7 +30746,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityReanimateOutcome(CardAbilityReanimateOutcome other) : this() {
-          NewCardInstance = other.newCardInstance_ != null ? other.NewCardInstance.Clone() : null;
+          newCardInstance_ = other.newCardInstance_ != null ? other.newCardInstance_.Clone() : null;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -30879,7 +30881,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityAdditionalDamageToHeavyInAttackOutcome(CardAbilityAdditionalDamageToHeavyInAttackOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+          instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
           addedAttack_ = other.addedAttack_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
@@ -31042,11 +31044,11 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityChangeStatOutcome(CardAbilityChangeStatOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+          instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
           newAttack_ = other.newAttack_;
           newDefense_ = other.newDefense_;
           stat_ = other.stat_;
-          TargetInstanceId = other.targetInstanceId_ != null ? other.TargetInstanceId.Clone() : null;
+          targetInstanceId_ = other.targetInstanceId_ != null ? other.targetInstanceId_.Clone() : null;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
@@ -31295,7 +31297,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public CardAbilityAttackOverlordOutcome(CardAbilityAttackOverlordOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+          instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
           newDefense_ = other.newDefense_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
@@ -31433,11 +31435,11 @@ namespace Loom.ZombieBattleground.Protobuf {
 
       }
 
-      public sealed partial class InstanceStatOutcome : pb::IMessage<InstanceStatOutcome> {
-        private static readonly pb::MessageParser<InstanceStatOutcome> _parser = new pb::MessageParser<InstanceStatOutcome>(() => new InstanceStatOutcome());
+      public sealed partial class CardAttackOutcome : pb::IMessage<CardAttackOutcome> {
+        private static readonly pb::MessageParser<CardAttackOutcome> _parser = new pb::MessageParser<CardAttackOutcome>(() => new CardAttackOutcome());
         private pb::UnknownFieldSet _unknownFields;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public static pb::MessageParser<InstanceStatOutcome> Parser { get { return _parser; } }
+        public static pb::MessageParser<CardAttackOutcome> Parser { get { return _parser; } }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public static pbr::MessageDescriptor Descriptor {
@@ -31450,83 +31452,97 @@ namespace Loom.ZombieBattleground.Protobuf {
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public InstanceStatOutcome() {
+        public CardAttackOutcome() {
           OnConstruction();
         }
 
         partial void OnConstruction();
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public InstanceStatOutcome(InstanceStatOutcome other) : this() {
-          InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
-          newAttack_ = other.newAttack_;
-          newDefense_ = other.newDefense_;
+        public CardAttackOutcome(CardAttackOutcome other) : this() {
+          attackerInstanceId_ = other.attackerInstanceId_ != null ? other.attackerInstanceId_.Clone() : null;
+          targetInstanceId_ = other.targetInstanceId_ != null ? other.targetInstanceId_.Clone() : null;
+          attackerNewDefense_ = other.attackerNewDefense_;
+          targetNewDefense_ = other.targetNewDefense_;
           _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public InstanceStatOutcome Clone() {
-          return new InstanceStatOutcome(this);
+        public CardAttackOutcome Clone() {
+          return new CardAttackOutcome(this);
         }
 
-        /// <summary>Field number for the "instanceId" field.</summary>
-        public const int InstanceIdFieldNumber = 1;
-        private global::Loom.ZombieBattleground.Protobuf.InstanceId instanceId_;
+        /// <summary>Field number for the "attackerInstanceId" field.</summary>
+        public const int AttackerInstanceIdFieldNumber = 1;
+        private global::Loom.ZombieBattleground.Protobuf.InstanceId attackerInstanceId_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public global::Loom.ZombieBattleground.Protobuf.InstanceId InstanceId {
-          get { return instanceId_; }
+        public global::Loom.ZombieBattleground.Protobuf.InstanceId AttackerInstanceId {
+          get { return attackerInstanceId_; }
           set {
-            instanceId_ = value;
+            attackerInstanceId_ = value;
           }
         }
 
-        /// <summary>Field number for the "newAttack" field.</summary>
-        public const int NewAttackFieldNumber = 2;
-        private int newAttack_;
+        /// <summary>Field number for the "targetInstanceId" field.</summary>
+        public const int TargetInstanceIdFieldNumber = 2;
+        private global::Loom.ZombieBattleground.Protobuf.InstanceId targetInstanceId_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public int NewAttack {
-          get { return newAttack_; }
+        public global::Loom.ZombieBattleground.Protobuf.InstanceId TargetInstanceId {
+          get { return targetInstanceId_; }
           set {
-            newAttack_ = value;
+            targetInstanceId_ = value;
           }
         }
 
-        /// <summary>Field number for the "newDefense" field.</summary>
-        public const int NewDefenseFieldNumber = 3;
-        private int newDefense_;
+        /// <summary>Field number for the "attackerNewDefense" field.</summary>
+        public const int AttackerNewDefenseFieldNumber = 3;
+        private int attackerNewDefense_;
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public int NewDefense {
-          get { return newDefense_; }
+        public int AttackerNewDefense {
+          get { return attackerNewDefense_; }
           set {
-            newDefense_ = value;
+            attackerNewDefense_ = value;
+          }
+        }
+
+        /// <summary>Field number for the "targetNewDefense" field.</summary>
+        public const int TargetNewDefenseFieldNumber = 4;
+        private int targetNewDefense_;
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+        public int TargetNewDefense {
+          get { return targetNewDefense_; }
+          set {
+            targetNewDefense_ = value;
           }
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public override bool Equals(object other) {
-          return Equals(other as InstanceStatOutcome);
+          return Equals(other as CardAttackOutcome);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public bool Equals(InstanceStatOutcome other) {
+        public bool Equals(CardAttackOutcome other) {
           if (ReferenceEquals(other, null)) {
             return false;
           }
           if (ReferenceEquals(other, this)) {
             return true;
           }
-          if (!object.Equals(InstanceId, other.InstanceId)) return false;
-          if (NewAttack != other.NewAttack) return false;
-          if (NewDefense != other.NewDefense) return false;
+          if (!object.Equals(AttackerInstanceId, other.AttackerInstanceId)) return false;
+          if (!object.Equals(TargetInstanceId, other.TargetInstanceId)) return false;
+          if (AttackerNewDefense != other.AttackerNewDefense) return false;
+          if (TargetNewDefense != other.TargetNewDefense) return false;
           return Equals(_unknownFields, other._unknownFields);
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public override int GetHashCode() {
           int hash = 1;
-          if (instanceId_ != null) hash ^= InstanceId.GetHashCode();
-          if (NewAttack != 0) hash ^= NewAttack.GetHashCode();
-          if (NewDefense != 0) hash ^= NewDefense.GetHashCode();
+          if (attackerInstanceId_ != null) hash ^= AttackerInstanceId.GetHashCode();
+          if (targetInstanceId_ != null) hash ^= TargetInstanceId.GetHashCode();
+          if (AttackerNewDefense != 0) hash ^= AttackerNewDefense.GetHashCode();
+          if (TargetNewDefense != 0) hash ^= TargetNewDefense.GetHashCode();
           if (_unknownFields != null) {
             hash ^= _unknownFields.GetHashCode();
           }
@@ -31540,17 +31556,21 @@ namespace Loom.ZombieBattleground.Protobuf {
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public void WriteTo(pb::CodedOutputStream output) {
-          if (instanceId_ != null) {
+          if (attackerInstanceId_ != null) {
             output.WriteRawTag(10);
-            output.WriteMessage(InstanceId);
+            output.WriteMessage(AttackerInstanceId);
           }
-          if (NewAttack != 0) {
-            output.WriteRawTag(16);
-            output.WriteInt32(NewAttack);
+          if (targetInstanceId_ != null) {
+            output.WriteRawTag(18);
+            output.WriteMessage(TargetInstanceId);
           }
-          if (NewDefense != 0) {
+          if (AttackerNewDefense != 0) {
             output.WriteRawTag(24);
-            output.WriteInt32(NewDefense);
+            output.WriteInt32(AttackerNewDefense);
+          }
+          if (TargetNewDefense != 0) {
+            output.WriteRawTag(32);
+            output.WriteInt32(TargetNewDefense);
           }
           if (_unknownFields != null) {
             _unknownFields.WriteTo(output);
@@ -31560,14 +31580,17 @@ namespace Loom.ZombieBattleground.Protobuf {
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
         public int CalculateSize() {
           int size = 0;
-          if (instanceId_ != null) {
-            size += 1 + pb::CodedOutputStream.ComputeMessageSize(InstanceId);
+          if (attackerInstanceId_ != null) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(AttackerInstanceId);
           }
-          if (NewAttack != 0) {
-            size += 1 + pb::CodedOutputStream.ComputeInt32Size(NewAttack);
+          if (targetInstanceId_ != null) {
+            size += 1 + pb::CodedOutputStream.ComputeMessageSize(TargetInstanceId);
           }
-          if (NewDefense != 0) {
-            size += 1 + pb::CodedOutputStream.ComputeInt32Size(NewDefense);
+          if (AttackerNewDefense != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(AttackerNewDefense);
+          }
+          if (TargetNewDefense != 0) {
+            size += 1 + pb::CodedOutputStream.ComputeInt32Size(TargetNewDefense);
           }
           if (_unknownFields != null) {
             size += _unknownFields.CalculateSize();
@@ -31576,21 +31599,27 @@ namespace Loom.ZombieBattleground.Protobuf {
         }
 
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-        public void MergeFrom(InstanceStatOutcome other) {
+        public void MergeFrom(CardAttackOutcome other) {
           if (other == null) {
             return;
           }
-          if (other.instanceId_ != null) {
-            if (instanceId_ == null) {
-              instanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
+          if (other.attackerInstanceId_ != null) {
+            if (attackerInstanceId_ == null) {
+              attackerInstanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
             }
-            InstanceId.MergeFrom(other.InstanceId);
+            AttackerInstanceId.MergeFrom(other.AttackerInstanceId);
           }
-          if (other.NewAttack != 0) {
-            NewAttack = other.NewAttack;
+          if (other.targetInstanceId_ != null) {
+            if (targetInstanceId_ == null) {
+              targetInstanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
+            }
+            TargetInstanceId.MergeFrom(other.TargetInstanceId);
           }
-          if (other.NewDefense != 0) {
-            NewDefense = other.NewDefense;
+          if (other.AttackerNewDefense != 0) {
+            AttackerNewDefense = other.AttackerNewDefense;
+          }
+          if (other.TargetNewDefense != 0) {
+            TargetNewDefense = other.TargetNewDefense;
           }
           _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
         }
@@ -31604,18 +31633,25 @@ namespace Loom.ZombieBattleground.Protobuf {
                 _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
                 break;
               case 10: {
-                if (instanceId_ == null) {
-                  instanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
+                if (attackerInstanceId_ == null) {
+                  attackerInstanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
                 }
-                input.ReadMessage(instanceId_);
+                input.ReadMessage(attackerInstanceId_);
                 break;
               }
-              case 16: {
-                NewAttack = input.ReadInt32();
+              case 18: {
+                if (targetInstanceId_ == null) {
+                  targetInstanceId_ = new global::Loom.ZombieBattleground.Protobuf.InstanceId();
+                }
+                input.ReadMessage(targetInstanceId_);
                 break;
               }
               case 24: {
-                NewDefense = input.ReadInt32();
+                AttackerNewDefense = input.ReadInt32();
+                break;
+              }
+              case 32: {
+                TargetNewDefense = input.ReadInt32();
                 break;
               }
             }
@@ -32070,9 +32106,9 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public CardInstance(CardInstance other) : this() {
-      Prototype = other.prototype_ != null ? other.Prototype.Clone() : null;
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
-      Instance = other.instance_ != null ? other.Instance.Clone() : null;
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
+      instance_ = other.instance_ != null ? other.instance_.Clone() : null;
       owner_ = other.owner_;
       abilitiesInstancesInitialized_ = other.abilitiesInstancesInitialized_;
       abilitiesInstances_ = other.abilitiesInstances_.Clone();
@@ -32790,10 +32826,10 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public OverlordInstance(OverlordInstance other) : this() {
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
-      Prototype = other.prototype_ != null ? other.Prototype.Clone() : null;
-      FirstSkill = other.firstSkill_ != null ? other.FirstSkill.Clone() : null;
-      SecondSkill = other.secondSkill_ != null ? other.SecondSkill.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
+      firstSkill_ = other.firstSkill_ != null ? other.firstSkill_.Clone() : null;
+      secondSkill_ = other.secondSkill_ != null ? other.secondSkill_.Clone() : null;
       defense_ = other.defense_;
       goo_ = other.goo_;
       maxGoo_ = other.maxGoo_;
@@ -33456,7 +33492,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public OverlordSkillInstance(OverlordSkillInstance other) : this() {
-      Prototype = other.prototype_ != null ? other.Prototype.Clone() : null;
+      prototype_ = other.prototype_ != null ? other.prototype_.Clone() : null;
       cooldown_ = other.cooldown_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -34143,7 +34179,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionCardPlay(PlayerActionCardPlay other) : this() {
-      Card = other.card_ != null ? other.Card.Clone() : null;
+      card_ = other.card_ != null ? other.card_.Clone() : null;
       position_ = other.position_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -34306,7 +34342,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionRankBuff(PlayerActionRankBuff other) : this() {
-      Card = other.card_ != null ? other.Card.Clone() : null;
+      card_ = other.card_ != null ? other.card_.Clone() : null;
       targets_ = other.targets_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -34461,8 +34497,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionCardAttack(PlayerActionCardAttack other) : this() {
-      Attacker = other.attacker_ != null ? other.Attacker.Clone() : null;
-      Target = other.target_ != null ? other.Target.Clone() : null;
+      attacker_ = other.attacker_ != null ? other.attacker_.Clone() : null;
+      target_ = other.target_ != null ? other.target_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -34630,7 +34666,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionCardAbilityUsed(PlayerActionCardAbilityUsed other) : this() {
-      Card = other.card_ != null ? other.Card.Clone() : null;
+      card_ = other.card_ != null ? other.card_.Clone() : null;
       targets_ = other.targets_.Clone();
       abilityType_ = other.abilityType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -34814,7 +34850,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public PlayerActionOverlordSkillUsed(PlayerActionOverlordSkillUsed other) : this() {
       skillId_ = other.skillId_;
-      Target = other.target_ != null ? other.Target.Clone() : null;
+      target_ = other.target_ != null ? other.target_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -35440,8 +35476,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Unit(Unit other) : this() {
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
-      Parameter = other.parameter_ != null ? other.Parameter.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
+      parameter_ = other.parameter_ != null ? other.parameter_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -36323,7 +36359,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Player(Player other) : this() {
       id_ = other.id_;
-      Deck = other.deck_ != null ? other.Deck.Clone() : null;
+      deck_ = other.deck_ != null ? other.deck_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -37292,7 +37328,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public HistoryFullInstance(HistoryFullInstance other) : this() {
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
       attack_ = other.attack_;
       defense_ = other.defense_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
@@ -37483,7 +37519,7 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public HistoryInstance(HistoryInstance other) : this() {
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
       value_ = other.value_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -37658,8 +37694,8 @@ namespace Loom.ZombieBattleground.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public HistoryHide(HistoryHide other) : this() {
-      InstanceId = other.instanceId_ != null ? other.InstanceId.Clone() : null;
-      Zone = other.zone_ != null ? other.Zone.Clone() : null;
+      instanceId_ = other.instanceId_ != null ? other.instanceId_.Clone() : null;
+      zone_ = other.zone_ != null ? other.zone_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
