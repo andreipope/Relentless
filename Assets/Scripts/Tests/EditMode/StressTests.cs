@@ -20,7 +20,7 @@ using Random = System.Random;
 
 namespace Loom.ZombieBattleground.Test
 {
-    [Ignore("hang sometimes")]
+    [Ignore("hangs sometimes")]
     public class StressTests
     {
         private static int[] MatchmakeTestCases = {

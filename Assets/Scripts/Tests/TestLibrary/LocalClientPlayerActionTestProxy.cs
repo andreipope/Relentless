@@ -90,7 +90,6 @@ namespace Loom.ZombieBattleground.Test
             boardUnitView.StartAttackTargeting();
             await _testHelper.SelectTargetOnFightTargetArrow(boardUnitView.FightTargetingArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
             boardUnitView.FinishAttackTargeting();
-            //boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));*/
         }
 
         public Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
