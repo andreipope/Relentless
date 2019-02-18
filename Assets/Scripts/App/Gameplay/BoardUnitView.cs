@@ -105,6 +105,8 @@ namespace Loom.ZombieBattleground
 
         public Animator battleframeAnimator { get; private set; }
 
+        public BattleBoardArrow FightTargetingArrow => _fightTargetingArrow;
+
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
@@ -772,7 +774,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnMouseDown()
+        public void StartAttackTargeting()
         {
             if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
@@ -784,7 +786,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseWrongBattleframe);
                 return;
-            }            
+            }
 
             if (!_arrivalDone)
                 return;
@@ -819,7 +821,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnMouseUp()
+        public void FinishAttackTargeting()
         {
             if (_fightTargetingArrow != null)
             {
@@ -838,6 +840,16 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow = null;
                 }
             }
+        }
+
+        private void OnMouseDown()
+        {
+            StartAttackTargeting();
+        }
+
+        private void OnMouseUp()
+        {
+            FinishAttackTargeting();
         }
 
         [Serializable]

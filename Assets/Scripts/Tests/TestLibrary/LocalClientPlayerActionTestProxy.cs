@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
-            await Task.Delay(5000);
+            await Task.Delay(3000);
             await _testHelper.EndTurn();
         }
 
@@ -84,12 +84,13 @@ namespace Loom.ZombieBattleground.Test
             await _testHelper.DoBoardSkill(boardSkill, targetBoardObject);
         }
 
-        public Task CardAttack(InstanceId attacker, InstanceId target)
+        public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
-            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));
-
-            return Task.CompletedTask;
+            BoardUnitView boardUnitView = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            boardUnitView.StartAttackTargeting();
+            await _testHelper.SelectTargetOnFightTargetArrow(boardUnitView.FightTargetingArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            boardUnitView.FinishAttackTargeting();
+            //boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));*/
         }
 
         public Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)

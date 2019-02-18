@@ -225,33 +225,22 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                    {
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerCardId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                        player =>
                        {
-                           player.CardAttack(playerCardId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.CHANGE_STAT, new []
-                           {
-                               new ParametrizedAbilityInstanceId(playerCardId)
-                           });
-                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.CHANGE_STAT, new []
-                           {
-                               new ParametrizedAbilityInstanceId(playerCardId)
-                           });
+                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
+                           player.CardPlay(playerCardId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardAttack(opponentCardId, pvpTestContext.GetCurrentPlayer().InstanceId);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.CHANGE_STAT, new []
-                           {
-                               new ParametrizedAbilityInstanceId(opponentCardId)
-                           });
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.CHANGE_STAT, new []
-                           {
-                               new ParametrizedAbilityInstanceId(opponentCardId)
-                           });
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardPlay(opponentCardId, ItemPosition.Start);
                        },
-                       player => {}
+                       player => player.CardAttack(playerCardId, pvpTestContext.GetOpponentPlayer().InstanceId),
+                       opponent => opponent.CardAttack(opponentCardId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
@@ -266,7 +255,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentUnit.InitialDamage - 1, opponentUnit.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: true, enableBackendGameLogicMatch: false, enableClientGameLogicMatch: true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: true, enableBackendGameLogicMatch: true, enableClientGameLogicMatch: true);
             }, 180);
         }
 

@@ -922,15 +922,17 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             BackendDataControlMediator.UserDataModel = TestUserDataModel;
-
             await BackendDataControlMediator.LoginAndLoadData();
 
-            WaitStart(10);
-            await new WaitUntil(() =>
+            if (waitForMainMenu)
             {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return waitForMainMenu && CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp();
-            });
+                WaitStart(10);
+                await new WaitUntil(() =>
+                {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                    return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp();
+                });
+            }
 
             if (waitForMainMenu && !CheckCurrentAppState(Enumerators.AppState.MAIN_MENU))
             {
@@ -1002,7 +1004,7 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail($"Couldn't find the button: {buttonName}");
             }
 
-            await LetsThink(0.5f);
+            await LetsThink();
 
             if (count >= 2)
             {
@@ -1364,20 +1366,7 @@ namespace Loom.ZombieBattleground.Test
             if (target != null)
             {
                 Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
-                skill.FightTargetingArrow.SetTarget(target);
-                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
-
-                switch (target)
-                {
-                    case Player player:
-                        skill.FightTargetingArrow.OnPlayerSelected(player);
-                        break;
-                    case BoardUnitModel boardUnitModel:
-                        skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
-                }
+                await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
             }
 
             GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
@@ -1393,6 +1382,24 @@ namespace Loom.ZombieBattleground.Test
         }
 
         #endregion
+
+        public async Task SelectTargetOnFightTargetArrow(BattleBoardArrow arrow, BoardObject target)
+        {
+            arrow.SetTarget(target);
+            await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+
+            switch (target)
+            {
+                case Player player:
+                    arrow.OnPlayerSelected(player);
+                    break;
+                case BoardUnitModel boardUnitModel:
+                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+            }
+        }
 
         public Player GetCurrentPlayer()
         {
@@ -1644,25 +1651,25 @@ namespace Loom.ZombieBattleground.Test
 
                 await LetsThink();
 
-                Debug.Log("!a 0");
+                //Debug.Log("!a 0");
 
                 await TaskAsIEnumerator(currentTurnTask());
 
-                Debug.Log("!a 1");
+                //Debug.Log("!a 1");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilOurTurnStarts();
 
-                Debug.Log("!a 2");
+                //Debug.Log("!a 2");
 
                 if (IsGameEnded())
                     break;
 
                 await WaitUntilInputIsUnblocked();
 
-                Debug.Log("!a 3");
+                //Debug.Log("!a 3");
 
                 if (IsGameEnded())
                     break;
