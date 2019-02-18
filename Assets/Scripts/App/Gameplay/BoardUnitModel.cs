@@ -560,7 +560,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            if (AttackedThisTurn || NumTurnsOnBoard == 0)
+            if (AttackedThisTurn || NumTurnsOnBoard == 0 || !_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
                 turns++;
 
             if (turns > _stunTurns)
