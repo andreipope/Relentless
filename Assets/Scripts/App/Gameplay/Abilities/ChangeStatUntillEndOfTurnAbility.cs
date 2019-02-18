@@ -39,10 +39,10 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
+
+                Debug.Log("UNIT HAS DIED");
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
@@ -51,6 +51,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
+            Debug.Log("ACTIVATED!");
             base.Action(info);
 
             _boardUnits.Clear();
@@ -95,6 +96,9 @@ namespace Loom.ZombieBattleground
 
         protected override void TurnEndedHandler()
         {
+            if (_boardUnits.Count <= 0) 
+                return;
+
             base.TurnEndedHandler();
 
             foreach (BoardUnitView unit in _boardUnits)
@@ -104,13 +108,13 @@ namespace Loom.ZombieBattleground
 
                 if (unit.Model.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.Model.CurrentDamage += Mathf.Abs(unit.Model.DamageDebuffUntillEndOfTurn);
+                    unit.Model.CurrentDamage -= unit.Model.DamageDebuffUntillEndOfTurn;
                     unit.Model.DamageDebuffUntillEndOfTurn = 0;
                 }
 
                 if (unit.Model.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.Model.CurrentHp += Mathf.Abs(unit.Model.HpDebuffUntillEndOfTurn);
+                    unit.Model.CurrentHp -= unit.Model.HpDebuffUntillEndOfTurn;
                     unit.Model.HpDebuffUntillEndOfTurn = 0;
                 }
             }

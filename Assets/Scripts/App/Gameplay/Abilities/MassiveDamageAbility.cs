@@ -37,13 +37,8 @@ namespace Loom.ZombieBattleground
             OnUpdateEvent?.Invoke();
         }
 
-        public override void Dispose()
-        {
-        }
-
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
@@ -52,6 +47,7 @@ namespace Loom.ZombieBattleground
 
         protected override void VFXAnimationEndedHandler()
         {
+            base.UnitDiedHandler();
             base.VFXAnimationEndedHandler();
 
             for (int i = _targets.Count-1; i >= 0; i--)
@@ -67,6 +63,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
+            Debug.LogWarning("DOING THE ACTION");
             _targets = new List<BoardObject>();
 
             BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
@@ -100,6 +97,7 @@ namespace Loom.ZombieBattleground
 
         public void OneActionCompleted(BoardObject boardObject)
         {
+            Debug.LogWarning("On One Action Completed");
             switch (boardObject)
             {
                 case Player player:

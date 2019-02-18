@@ -53,8 +53,6 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
@@ -64,6 +62,8 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
+
+            Debug.Log("ACTION");
 
             if (PredefinedTargets != null)
             {
@@ -114,6 +114,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            Debug.Log("I'; im VFX ENDED");
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
@@ -145,6 +146,8 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted(object target, out int damageWas)
         {
+            base.UnitDiedHandler();
+            
             int damageOverride = Damage;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)

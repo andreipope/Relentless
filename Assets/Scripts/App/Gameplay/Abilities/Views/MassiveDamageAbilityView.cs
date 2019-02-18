@@ -36,6 +36,8 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
+
+            Debug.LogWarning("DOING THE ON ABILITY ACTION");
             _targets = info as List<BoardObject>;
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
