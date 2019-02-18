@@ -13,15 +13,17 @@ public class MersenneTwister
     const uint MERS_B = 0x9D2C5680;
     const uint MERS_C = 0xEFC60000;
 
-    uint[] mt = new uint[MERS_N];
-    uint mti;
+    static uint[] mt = new uint[MERS_N];
+    static uint mti;
 
+    /*
     private MersenneTwister() { }
     public MersenneTwister(uint seed)
     {
         RandomInit(seed);
     }
-    public void RandomInit(uint seed)
+    */
+    static public void RandomInit(uint seed)
     {
         mt[0] = seed;
         for (mti = 1; mti < MERS_N; mti++)
@@ -29,7 +31,7 @@ public class MersenneTwister
             mt[mti] = (1812433253U * (mt[mti - 1] ^ (mt[mti - 1] >> 30)) + mti);
         }
     }
-    public int IRandom(int min, int max)
+    static public int IRandom(int min, int max)
     {
         int r;
         r = (int)((max - min + 1) * Random()) + min;
@@ -38,7 +40,7 @@ public class MersenneTwister
             return -2147483648;
         return r;
     }
-    public double Random()
+    static public double Random()
     {
         uint r = BRandom(); // get 32 random bits
         if (BitConverter.IsLittleEndian)
@@ -54,7 +56,7 @@ public class MersenneTwister
             return r * (1.0 / (0xFFFFFFFF + 1.0));
         }
     }
-    public uint BRandom()
+    static public uint BRandom()
     {
         uint y;
 
