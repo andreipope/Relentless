@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
         private IGameplayManager _gameplayManager;
 
-        private MatchMakingFlowController _matchMakingFlowController;
+        private UIMatchMakingFlowController _matchMakingFlowController;
 
         public void Init()
         {
@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground
                     await _matchMakingFlowController.Stop();
                 }
 
-                _matchMakingFlowController = new MatchMakingFlowController(
+                _matchMakingFlowController = new UIMatchMakingFlowController(
                     _backendFacade,
                     _backendDataControlMediator.UserDataModel
                 );
@@ -231,6 +231,8 @@ namespace Loom.ZombieBattleground
 
         private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
         {
+            _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
+
             _queueManager.Active = false;
             _queueManager.Clear();
 

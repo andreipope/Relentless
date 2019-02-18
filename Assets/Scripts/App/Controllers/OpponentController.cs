@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
-                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType
+                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType,
             });
         }
 
@@ -265,11 +265,11 @@ namespace Loom.ZombieBattleground
                             boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                             boardUnit.SetActive(false);
 
-                            _gameplayManager.OpponentPlayer.BoardCards.Insert(
-                                position,
+                            _gameplayManager.OpponentPlayer.BoardCards.Insert(Mathf.Clamp(position, 0,
+                                _gameplayManager.OpponentPlayer.BoardCards.Count),
                                 boardUnitViewElement);
-                            _battlegroundController.OpponentBoardCards.Insert(
-                                position,
+                            _battlegroundController.OpponentBoardCards.Insert(Mathf.Clamp(position, 0,
+                                _battlegroundController.OpponentBoardCards.Count),
                                 boardUnitViewElement);
 
                             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
@@ -389,11 +389,12 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObjectCaller));
             }
 
-            _abilitiesController.PlayAbilityFromEvent(model.AbilityType,
-                                                      boardObjectCaller,
-                                                      parametrizedAbilityObjects,
-                                                      workingCard,
-                                                      _gameplayManager.OpponentPlayer);
+            _abilitiesController.PlayAbilityFromEvent(
+                model.AbilityType,
+                boardObjectCaller,
+                parametrizedAbilityObjects,
+                workingCard,
+                _gameplayManager.OpponentPlayer);
         }
 
         private void GotActionUseOverlordSkill(UseOverlordSkillModel model)
@@ -410,26 +411,33 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            Action callback = () =>
-            {
-                switch (target)
-                {
-                    case Player player:
-                        skill.FightTargetingArrow.SelectedPlayer = player;
-                        break;
-                    case BoardUnitModel boardUnitModel:
-                        skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
-                }
-
-                skill.EndDoSkill();
-            };
-
             skill.StartDoSkill();
 
-            skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            if (skill.Skill.CanSelectTarget)
+            {
+                Action callback = () =>
+                {
+                    switch (target)
+                    {
+                        case Player player:
+                            skill.FightTargetingArrow.SelectedPlayer = player;
+                            break;
+                        case BoardUnitModel boardUnitModel:
+                            skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                    }
+
+                    skill.EndDoSkill();
+                };
+
+                skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+            }
+            else
+            {
+                skill.EndDoSkill();
+            }
         }
 
         private void GotActionMulligan(MulliganModel model)

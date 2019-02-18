@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DG.Tweening;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
     {
         public event Action ServicesInitialized;
 
+        public bool UpdateServices { get; set; } = true;
+
         private static readonly object Sync = new object();
 
         private static GameClient _instance;
@@ -25,6 +28,7 @@ namespace Loom.ZombieBattleground
         {
             Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
 
+            DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
@@ -84,6 +88,14 @@ namespace Loom.ZombieBattleground
             ServicesInitialized?.Invoke();
         }
 
+        public override void Update()
+        {
+            if (!UpdateServices)
+                return;
+
+            base.Update();
+        }
+
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
@@ -121,6 +133,11 @@ namespace Loom.ZombieBattleground
         public static T Get<T>()
         {
             return Instance.GetService<T>();
+        }
+
+        public static void ClearInstance()
+        {
+            _instance = null;
         }
     }
 }
