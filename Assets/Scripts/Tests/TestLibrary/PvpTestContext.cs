@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground.Test
                 return new InstanceId(2);
             } else
             {
-                return new InstanceId(2 + deck.GetNumCards());
+                return new InstanceId(2 + otherDeck.GetNumCards());
             }
         }
 

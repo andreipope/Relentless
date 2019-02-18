@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: true, enableBackendGameLogicMatch: true, enableClientGameLogicMatch: true);
-            }, 180);
+            }, 5 * 60);
         }
 
         [UnityTest]
