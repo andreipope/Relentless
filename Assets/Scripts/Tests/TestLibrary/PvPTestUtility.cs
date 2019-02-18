@@ -36,6 +36,7 @@ namespace Loom.ZombieBattleground.Test
                         TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
                         TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                        TestHelper.DebugCheats.CustomRandomSeed = 1337;
                     },
                     cheats =>
                     {

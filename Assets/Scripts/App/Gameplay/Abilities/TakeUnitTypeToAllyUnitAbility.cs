@@ -4,6 +4,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Random = UnityEngine.Random;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -93,7 +94,8 @@ namespace Loom.ZombieBattleground
 
                             if (allies.Count > 0)
                             {
-                                int random = Random.Range(0, allies.Count);
+                                int random = MersenneTwister.IRandom(0, allies.Count);
+                                Debug.Log("TEST HAS CHOSEN " + random);
                                 TakeTypeToUnit(allies[random]);
 
                                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
