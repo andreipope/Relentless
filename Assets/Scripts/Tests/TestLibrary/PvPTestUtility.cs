@@ -24,8 +24,14 @@ namespace Loom.ZombieBattleground.Test
             bool onlyReverseMatch = false
             )
         {
+            void LogTestMode()
+            {
+                Debug.Log($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
+            }
+
             async Task ExecuteTest()
             {
+                LogTestMode();
                 await GenericPvPTest(
                     turns,
                     pvpTestContext.Player1Deck,
