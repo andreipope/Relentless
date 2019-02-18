@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
-            Vector3 castVfxPosition;
+            Vector3 castVfxPosition = Vector3.zero;
             switch (target)
             {
                 case Player player:
@@ -299,6 +299,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    break;
+                case HandBoardCard cardInHand:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

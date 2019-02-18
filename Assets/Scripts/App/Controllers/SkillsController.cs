@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground
 
         private bool _isDirection;
 
+        private List<ParametrizedAbilityBoardObject> _targets;
+
         private GameObject _buildParticlePrefab;
 
         public BoardSkill OpponentPrimarySkill { get; private set; }
@@ -333,7 +335,7 @@ namespace Loom.ZombieBattleground
                         _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                     }
 
-                    skill.UseSkill(targets);
+                    _targets = targets;
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
@@ -341,6 +343,7 @@ namespace Loom.ZombieBattleground
                         (x) =>
                         {
                             DoActionByType(skill, targets, completeCallback);
+                            skill.UseSkill(_targets);
                         }, _isDirection);
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -752,8 +755,13 @@ namespace Loom.ZombieBattleground
         private void Levitate(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
             int value = -skill.Value;
+            WorkingCard card = null;
+            if(targets != null && targets.Count > 0)
+            {
+                card = ((HandBoardCard)targets[0].BoardObject).CardView.WorkingCard;
+            }
 
-            WorkingCard card = _cardsController.LowGooCostOfCardInHand(owner, null, value);
+            card = _cardsController.LowGooCostOfCardInHand(owner, card, value);
 
             if (owner.IsLocalPlayer)
             {
@@ -912,6 +920,7 @@ namespace Loom.ZombieBattleground
             if (targets != null)
             {
                 boardObjects = targets.Select(target => target.BoardObject).ToList();
+                sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
             }
             else
             {
@@ -1656,7 +1665,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitView> units = null;
 
-            if (targets != null)
+            if (targets != null && targets[0].BoardObject is BoardUnitModel)
             {
                 units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
             }
@@ -1664,6 +1673,9 @@ namespace Loom.ZombieBattleground
             {
                 units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
                 units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+
+                _targets.Clear();
+                _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
             }
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/BlizzardVFX"), Vector3.zero, true, 8);

@@ -999,7 +999,9 @@ namespace Loom.ZombieBattleground
             WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
-                return CreateCustomHandBoardCard(card).HandBoardCard;
+                BoardCard boardCard = CreateCustomHandBoardCard(card);
+                Object.Destroy(boardCard.GameObject);
+                return boardCard.HandBoardCard;
             }
 
             return null;
@@ -1094,6 +1096,17 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
                 }
             });
+
+            if(foundObject == null)
+            {
+                WorkingCard card = GetWorkingCardByInstanceId(id);
+                if (card != null)
+                {
+                    BoardCard boardCard = CreateCustomHandBoardCard(card);
+                    Object.Destroy(boardCard.GameObject);
+                    return boardCard.HandBoardCard;
+                }
+            }
 
             return foundObject;
         }

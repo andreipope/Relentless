@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets)
+        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;
@@ -362,7 +362,7 @@ namespace Loom.ZombieBattleground
         {
             if (OwnerPlayer.IsLocalPlayer)
             {
-                EndDoSkill(null);
+                EndDoSkill(null, true);
             }
         }
 
@@ -430,10 +430,15 @@ namespace Loom.ZombieBattleground
 
             if (!Skill.CanSelectTarget)
             {
-                _skillsController.DoSkillAction(this, completeCallback, new List<ParametrizedAbilityBoardObject>()
+                if(targets == null || targets.Count == 0)
                 {
-                    new ParametrizedAbilityBoardObject(OwnerPlayer)
-                });
+                    targets = new List<ParametrizedAbilityBoardObject>()
+                    {
+                        new ParametrizedAbilityBoardObject(OwnerPlayer)
+                    };
+                }
+
+                _skillsController.DoSkillAction(this, completeCallback, targets);
             }
             else
             {
