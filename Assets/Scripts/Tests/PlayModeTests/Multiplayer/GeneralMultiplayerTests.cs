@@ -613,10 +613,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                                                                  new DeckCardData("Pyromaz", 5),
+                                                                  new DeckCardData("Pyromaz", 2),
                                                                   new DeckCardData("Quazi", 5));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                                                                    new DeckCardData("Pyromaz", 5),
+                                                                    new DeckCardData("Pyromaz", 2),
                                                                     new DeckCardData("Quazi", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -624,89 +624,45 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
-                InstanceId playerCard1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
-                InstanceId playerCard2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 3);
-                InstanceId playerCard3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 4);
-                InstanceId playerCard4Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 5);
-                InstanceId playerQuazi1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 1);
-                InstanceId playerQuazi2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 2);
-                InstanceId playerQuazi3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 3);
-                InstanceId playerQuazi4Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 4);
-                InstanceId playerQuazi5Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 5);
+                InstanceId playerPyromazId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
+                InstanceId playerPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
+                InstanceId playerQuaziId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 1);
+                InstanceId playerQuazi1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 2);
 
-                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
-                InstanceId opponentCard1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
-                InstanceId opponentCard2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 3);
-                InstanceId opponentCard3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 4);
-                InstanceId opponentCard4Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 5);
-                InstanceId opponentCard5Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 1);
-                InstanceId opponentCard6Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 2);
-                InstanceId opponentCard7Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 3);
-                InstanceId opponentCard8Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 4);
-                InstanceId opponentCard9Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 5);
+                InstanceId opponentPyromazId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
+                InstanceId opponentPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
+                InstanceId opponentQuaziId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 1);
+                InstanceId opponentQuazi1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 2);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                        player => {},
                        opponent => {},
-                       player => {},
+                       player => player.CardPlay(playerPyromazId, ItemPosition.Start),                 
+                       opponent => opponent.CardPlay(opponentPyromazId, ItemPosition.Start),
+                       player => player.CardPlay(playerPyromaz1Id, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentPyromaz1Id, ItemPosition.Start),
+                       player =>
+                       {
+                            player.CardPlay(playerQuaziId, ItemPosition.Start);
+                            player.CardPlay(playerQuazi1Id, ItemPosition.Start);
+                       },
                        opponent => {},
                        player => {},
-                       opponent => {},
+                       opponent =>
+                       {
+                            opponent.CardPlay(opponentQuaziId, ItemPosition.Start);
+                            opponent.CardPlay(opponentQuazi1Id, ItemPosition.Start);
+                       },
+                       player => player.CardAttack(playerPyromaz1Id, opponentPyromazId),
+                       opponent => opponent.CardAttack(opponentQuaziId, playerQuaziId),
                        player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       //player =>
-                       //{
-                       //     player.CardPlay(playerCardId, ItemPosition.Start);
-                       //     player.CardPlay(playerCard1Id, ItemPosition.Start);
-                       //     player.CardPlay(playerCard2Id, ItemPosition.Start);
-                       //     player.CardPlay(playerCard3Id, ItemPosition.Start);
-                       //     player.CardPlay(playerCard5Id, ItemPosition.Start);
-                       //},
-                       //opponent =>
-                       //{
-                       //     opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard1Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard2Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard3Id, ItemPosition.Start);
-                       //},
-                       //player =>
-                       //{
-                       //     player.CardAttack(playerCardId, opponentCardId);
-                       //     player.CardAttack(playerCard1Id, opponentCard1Id);
-                       //     player.CardAttack(playerCard2Id, opponentCard2Id);
-                       //     player.CardAttack(playerCard3Id, opponentCard3Id);
-                       //     player.CardPlay(playerCard6Id, ItemPosition.Start);
-                       //     player.CardPlay(playerCard7Id, ItemPosition.Start);
-                       //},
-                       //opponent =>
-                       //{
-                       //     opponent.CardPlay(opponentCard4Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard5Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard6Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard7Id, ItemPosition.Start);
-                       //     opponent.CardPlay(opponentCard8Id, ItemPosition.Start);
-                       //},
-                       //player =>
-                       //{
-                       //     player.CardPlay(playerCard8Id, ItemPosition.Start);
-                       //     player.CardPlay(playerCard9Id, ItemPosition.Start);
-                       //},
-                       //opponent =>
-                       //{
-                       //     opponent.CardAttack(opponentCard4Id, playerCard6Id);
-                       //     opponent.CardAttack(opponentCard5Id, playerCard7Id);
-                       //     opponent.CardAttack(opponentCard6Id, playerCard8Id);
-                       //     opponent.CardAttack(opponentCard7Id, playerCard9Id);
-                       //}
+                       opponent => opponent.CardAttack(opponentQuazi1Id, playerQuazi1Id),
+                       player => {}
                 };
 
                 Action validateEndState = () =>
                 {
-
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
