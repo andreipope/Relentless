@@ -53,8 +53,6 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
             if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
                 return;
 
@@ -145,6 +143,8 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted(object target, out int damageWas)
         {
+            base.UnitDiedHandler();
+            
             int damageOverride = Damage;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
