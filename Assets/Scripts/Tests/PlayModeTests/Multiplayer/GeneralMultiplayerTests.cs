@@ -47,8 +47,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Enumerators.OverlordSkill.NONE
                 );
 
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
                     Player1HasFirstTurn = true
                 };
 
@@ -130,8 +129,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Enumerators.OverlordSkill.NONE
                 );
 
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
                     Player1HasFirstTurn = true
                 };
 
@@ -190,8 +188,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Enumerators.OverlordSkill.NONE
                 );
 
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
                     Player1HasFirstTurn = true
                 };
 
@@ -251,7 +248,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         }
 
 
-
+        
 
 
         [UnityTest]
@@ -284,8 +281,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Enumerators.OverlordSkill.NONE
                 );
 
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
                     Player1HasFirstTurn = true
                 };
 
@@ -444,7 +440,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
-
+ 
         [UnityTest]
         [Timeout(int.MaxValue)]
         public IEnumerator Zlopper_v4()
@@ -566,7 +562,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId opponentBoomstickId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Boomstick", 1);
                 InstanceId playerBurnId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burn", 1);
                 InstanceId opponentBurnId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burn", 1);
-
+                
                 Debug.Log("playerCerberuzId = " + playerCerberuzId);
                 Debug.Log("opponentCerberuzId = " + opponentCerberuzId);
                 Debug.Log("playerBurnId = " + playerBurnId);
