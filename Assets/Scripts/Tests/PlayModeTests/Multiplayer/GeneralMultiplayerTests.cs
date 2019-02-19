@@ -159,6 +159,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             });
         }
 
+
         [UnityTest]
         [Timeout(int.MaxValue)]
         public IEnumerator Zeptic_Lose()
@@ -248,6 +249,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
+
+
+
 
         [UnityTest]
         [Timeout(int.MaxValue)]
@@ -602,73 +607,5 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
-
-
-        #region specific situations tests
-
-        [UnityTest]
-        [Timeout(int.MaxValue)]
-        public IEnumerator Task306_GameCrashedQuaziCameOnBoard()
-        {
-            return AsyncTest(async () =>
-            {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                                                                  new DeckCardData("Pyromaz", 2),
-                                                                  new DeckCardData("Quazi", 5));
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                                                                    new DeckCardData("Pyromaz", 2),
-                                                                    new DeckCardData("Quazi", 5));
-
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
-                    Player1HasFirstTurn = true
-                };
-
-                InstanceId playerPyromazId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
-                InstanceId playerPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
-                InstanceId playerQuaziId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 1);
-                InstanceId playerQuazi1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 2);
-
-                InstanceId opponentPyromazId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
-                InstanceId opponentPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
-                InstanceId opponentQuaziId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 1);
-                InstanceId opponentQuazi1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 2);
-
-                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
-                       player => {},
-                       opponent => {},
-                       player => player.CardPlay(playerPyromazId, ItemPosition.Start),                 
-                       opponent => opponent.CardPlay(opponentPyromazId, ItemPosition.Start),
-                       player => player.CardPlay(playerPyromaz1Id, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentPyromaz1Id, ItemPosition.Start),
-                       player =>
-                       {
-                            player.CardPlay(playerQuaziId, ItemPosition.Start);
-                            player.CardPlay(playerQuazi1Id, ItemPosition.Start);
-                       },
-                       opponent => {},
-                       player => {},
-                       opponent =>
-                       {
-                            opponent.CardPlay(opponentQuaziId, ItemPosition.Start);
-                            opponent.CardPlay(opponentQuazi1Id, ItemPosition.Start);
-                       },
-                       player => player.CardAttack(playerPyromaz1Id, opponentPyromazId),
-                       opponent => opponent.CardAttack(opponentQuaziId, playerQuaziId),
-                       player => {},
-                       opponent => opponent.CardAttack(opponentQuazi1Id, playerQuazi1Id),
-                       player => {}
-                };
-
-                Action validateEndState = () =>
-                {
-                };
-
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            });
-        }
-
-        #endregion
     }
 }
