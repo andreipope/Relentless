@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
                         }
 
-                        EndDoSkill(null);
+                        EndDoSkill(parametrizedAbilityObjects);
                     };
 
                     FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(SelfObject.transform, target, action: callback);
