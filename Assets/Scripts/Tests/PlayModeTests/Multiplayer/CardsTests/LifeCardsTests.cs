@@ -20,10 +20,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     new DeckCardData("Cactuz", 10)
                 );
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     new DeckCardData("Cactuz", 10)
                 );
 
