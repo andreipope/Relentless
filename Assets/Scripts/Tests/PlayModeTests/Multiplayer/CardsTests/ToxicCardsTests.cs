@@ -501,6 +501,59 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        public IEnumerator Kabomb_Just_Local()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                    new DeckCardData("Kabomb", 1),
+                    new DeckCardData("Slab", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                    new DeckCardData("Kabomb", 1),
+                    new DeckCardData("Slab", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerKabombId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Kabomb", 1);
+                InstanceId playerSlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Slab", 1);
+                InstanceId opponentKabombId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Kabomb", 1);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => 
+                       {
+                           player.CardPlay(playerKabombId, ItemPosition.Start);
+                       },
+                       opponent => 
+                       {
+                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
+                       },
+                       player => 
+                       {
+                           player.CardAttack(playerKabombId, opponentSlabId);
+                       },
+                       opponent => {},
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().Defense == TestHelper.GetOpponentPlayer().InitialHp-5
+                    || (TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.MouldId == 101)).ToList().Count == 0);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+            }, 600);
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
         public IEnumerator Hazmaz()
         {
             return AsyncTest(async () =>

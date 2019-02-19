@@ -34,8 +34,6 @@ namespace Loom.ZombieBattleground
             if (AbilityUnitOwner.IsReanimated)
                 return;
 
-            Debug.LogError("ReAnimate action ability called === ");
-
             Player owner = AbilityUnitOwner.OwnerPlayer;
             Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
             WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
