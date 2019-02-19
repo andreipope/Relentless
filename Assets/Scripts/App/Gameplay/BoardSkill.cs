@@ -122,6 +122,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsUsing { get; private set; }
 
+        public bool IsLocal { get; private set; }
+
         public bool IsPrimary { get; }
 
         public void CancelTargetingArrows()
@@ -240,6 +242,8 @@ namespace Loom.ZombieBattleground
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;
+
+            IsLocal = isLocal;
 
             return _gameplayManager
                 .GetController<ActionsQueueController>()

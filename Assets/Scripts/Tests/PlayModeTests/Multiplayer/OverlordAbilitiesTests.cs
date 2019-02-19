@@ -179,71 +179,94 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.ENHANCE,
-                    new DeckCardData("Puffer", 1),
-                    new DeckCardData("Azuraz", 15));
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Puffer", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.ENHANCE,
-                    new DeckCardData("Puffer", 1),
-                    new DeckCardData("Azuraz", 15));
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Puffer", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
                 };
 
+                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Puffer", 1);
+                InstanceId playerCardId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Puffer", 2);
+                InstanceId playerCardId3 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Puffer", 3);
 
-                InstanceId playerPufferId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Puffer", 1);
-                InstanceId playerAzuraz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Azuraz", 1);
-
-                InstanceId opponentPufferId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Puffer", 1);
-                InstanceId opponentAzuraz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Azuraz", 1);
+                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Puffer", 1);
+                InstanceId opponentCardId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Puffer", 2);
+                InstanceId opponentCardId3 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Puffer", 3);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player =>
                        {
-                           player.CardPlay(playerAzuraz1Id, ItemPosition.Start);
+                           player.CardPlay(playerCardId, ItemPosition.Start);
+                           player.CardPlay(playerCardId2, ItemPosition.Start);
+                           player.CardPlay(playerCardId3, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentAzuraz1Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId3, ItemPosition.Start);
                        },
-                       player =>
+                       player => {},
+                       opponent =>
                        {
-                           player.CardAttack(playerAzuraz1Id, opponentAzuraz1Id);
+                           opponent.CardAttack(opponentCardId, playerCardId);
+                           opponent.CardAttack(opponentCardId2, playerCardId2);
+                           opponent.CardAttack(opponentCardId3, playerCardId3);
                        },
-                       opponent => {},
                        player => {},
                        opponent => {},
                        player => {},
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), null);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId3,
+                                    new ParametrizedAbilityParameters()
+                                    {
+                                        CardName = playerCardId3.Id.ToString()
+                                    }),
+                                new ParametrizedAbilityInstanceId(playerCardId,
+                                    new ParametrizedAbilityParameters()
+                                    {
+                                        CardName = playerCardId.Id.ToString()
+                                    })
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), null);
-                       },
-                       player =>
-                       {
-                           player.CardPlay(playerPufferId, ItemPosition.Start);
-                       },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentPufferId, ItemPosition.Start);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId2,
+                                    new ParametrizedAbilityParameters()
+                                    {
+                                        CardName = opponentCardId2.Id.ToString()
+                                    }),
+                                new ParametrizedAbilityInstanceId(opponentCardId3,
+                                    new ParametrizedAbilityParameters()
+                                    {
+                                        CardName = opponentCardId3.Id.ToString()
+                                    })
+                           });
                        },
                        player => {},
                        opponent => {},
-                   };
+                       };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Count);
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.InstanceId == playerCardId3));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.InstanceId == playerCardId));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.InstanceId == opponentCardId2));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.InstanceId == opponentCardId3));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -400,12 +423,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
             Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                 Enumerators.OverlordSkill.RESSURECT,
-                Enumerators.OverlordSkill.ENHANCE,
+                Enumerators.OverlordSkill.NONE,
                 new DeckCardData("Puffer", 15));
 
             Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                 Enumerators.OverlordSkill.RESSURECT,
-                Enumerators.OverlordSkill.ENHANCE,
+                Enumerators.OverlordSkill.NONE,
                 new DeckCardData("Puffer", 15));
 
             PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -446,8 +469,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
                        player =>
                        {
                            player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
@@ -461,7 +482,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), null);
                            opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
                            {
                                 new ParametrizedAbilityInstanceId(opponentCardId2,
@@ -2037,14 +2057,24 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
                            {
-                                new ParametrizedAbilityInstanceId(playerCardId1)
+                                new ParametrizedAbilityInstanceId(playerCardId1,
+                                    new ParametrizedAbilityParameters()
+                                        {
+                                            CardName = playerCardId1.Id.ToString()
+                                        }
+                                    )
                            });
                        },
                        opponent =>
                        {
                            opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
                            {
-                                new ParametrizedAbilityInstanceId(opponentCardId2)
+                                new ParametrizedAbilityInstanceId(opponentCardId2,
+                                    new ParametrizedAbilityParameters()
+                                        {
+                                            CardName = opponentCardId2.Id.ToString()
+                                        }
+                                    )
                            });
                        },
                        player => {},
@@ -2160,7 +2190,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     BoardUnitModel playerUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1);
-                    BoardUnitModel playerUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1);
+                    BoardUnitModel playerUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId3);
 
                     BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId1);
                     BoardUnitModel opponentUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId3);
@@ -2256,6 +2286,202 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId1)).HasFeral);
                     Assert.IsTrue(!((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId2)).HasFeral);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId3)).HasFeral);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
+        public IEnumerator Infect()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
+                    Enumerators.OverlordSkill.INFECT,
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Hazmaz", 15));
+
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
+                    Enumerators.OverlordSkill.INFECT,
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Hazmaz", 15));
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerCardId1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 1);
+                InstanceId playerCardId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 2);
+                InstanceId playerCardId3 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 3);
+
+                InstanceId opponentCardId1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 1);
+                InstanceId opponentCardId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 2);
+                InstanceId opponentCardId3 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 3);
+
+                int playerDifference = 0;
+                int opponentDiference = 0;
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerCardId1, ItemPosition.Start);
+                           player.CardPlay(playerCardId2, ItemPosition.Start);
+                           player.CardPlay(playerCardId3, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentCardId1, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId3, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           playerDifference = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1)).CurrentDamage;
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1),
+                                new ParametrizedAbilityInstanceId(opponentCardId3),
+                           });
+                       },
+                       opponent =>
+                       {
+                           opponentDiference = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId2)).CurrentDamage;
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId2),
+                                new ParametrizedAbilityInstanceId(playerCardId3)
+                           });
+                       },
+                   };
+
+                Action validateEndState = () =>
+                {
+                    BoardUnitModel playerUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId3);
+                    BoardUnitModel opponentUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId3);
+
+                    Assert.AreEqual(playerUnit3.InitialHp - opponentDiference, playerUnit3.CurrentHp);
+                    Assert.AreEqual(opponentUnit3.InitialHp - playerDifference, opponentUnit3.CurrentHp);
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1));
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId2));
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
+        public IEnumerator Epidemic()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
+                    Enumerators.OverlordSkill.EPIDEMIC,
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Hazmaz", 15));
+
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
+                    Enumerators.OverlordSkill.EPIDEMIC,
+                    Enumerators.OverlordSkill.NONE,
+                    new DeckCardData("Hazmaz", 15));
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerCardId1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 1);
+                InstanceId playerCardId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 2);
+                InstanceId playerCardId3 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 3);
+                InstanceId playerCardId4 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 4);
+                InstanceId playerCardId5 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hazmaz", 5);
+
+                InstanceId opponentCardId1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 1);
+                InstanceId opponentCardId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 2);
+                InstanceId opponentCardId3 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 3);
+                InstanceId opponentCardId4 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 4);
+                InstanceId opponentCardId5 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hazmaz", 5);
+
+                int playerDifference1 = 0;
+                int playerDifference2 = 0;
+                int opponentDiference1 = 0;
+                int opponentDiference2 = 0;
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                   {
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerCardId1, ItemPosition.Start);
+                           player.CardPlay(playerCardId2, ItemPosition.Start);
+                           player.CardPlay(playerCardId3, ItemPosition.Start);
+                           player.CardPlay(playerCardId4, ItemPosition.Start);
+                           player.CardPlay(playerCardId5, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentCardId1, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId3, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId4, ItemPosition.Start);
+                           opponent.CardPlay(opponentCardId5, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           playerDifference1 = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1)).CurrentDamage;
+                           playerDifference2 = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId4)).CurrentDamage;
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1),
+                                new ParametrizedAbilityInstanceId(opponentCardId3),
+                                new ParametrizedAbilityInstanceId(playerCardId4),
+                                new ParametrizedAbilityInstanceId(opponentCardId1),
+                           });
+                       },
+                       opponent =>
+                       {
+                           opponentDiference1 = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId2)).CurrentDamage;
+                           opponentDiference2 = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId4)).CurrentDamage;
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId2),
+                                new ParametrizedAbilityInstanceId(playerCardId3),
+                                new ParametrizedAbilityInstanceId(opponentCardId4),
+                                new ParametrizedAbilityInstanceId(playerCardId2),
+                           });
+                       },
+                   };
+
+                Action validateEndState = () =>
+                {
+                    BoardUnitModel playerUnit2 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId2);
+                    BoardUnitModel playerUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId3);
+                    BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId1);
+                    BoardUnitModel opponentUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId3);
+
+                    Assert.AreEqual(playerUnit3.InitialHp - opponentDiference1, playerUnit3.CurrentHp);
+                    Assert.AreEqual(playerUnit2.InitialHp - opponentDiference2, playerUnit2.CurrentHp);
+                    Assert.AreEqual(opponentUnit3.InitialHp - playerDifference1, opponentUnit3.CurrentHp);
+                    Assert.AreEqual(opponentUnit1.InitialHp - playerDifference2, opponentUnit1.CurrentHp);
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId1));
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId4));
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId2));
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId4));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

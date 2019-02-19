@@ -724,11 +724,20 @@ namespace Loom.ZombieBattleground
         private void WindShieldAction(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
-
-            List<BoardUnitView> units =
+            List<BoardUnitView> units;
+            if (!boardSkill.IsLocal && targets != null)
+            {
+                units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
+            }
+            else
+            {
+                units =
                 InternalTools.GetRandomElementsFromList(
                     owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR),
                     skill.Value);
+
+                _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
+            }           
 
             foreach (BoardUnitView unit in units)
             {
@@ -756,12 +765,24 @@ namespace Loom.ZombieBattleground
         {
             int value = -skill.Value;
             WorkingCard card = null;
-            if(targets != null && targets.Count > 0)
+            if(!boardSkill.IsLocal && targets != null && targets.Count > 0)
             {
-                card = ((HandBoardCard)targets[0].BoardObject).CardView.WorkingCard;
+                card = owner.CardsInHand.FirstOrDefault(cardInHand => cardInHand.InstanceId.Id.ToString() == targets[0].Parameters.CardName);
             }
 
             card = _cardsController.LowGooCostOfCardInHand(owner, card, value);
+
+            if(boardSkill.IsLocal)
+            {
+                _targets = new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(null,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = card.InstanceId.Id.ToString()
+                        })
+                };
+            }
 
             if (owner.IsLocalPlayer)
             {
@@ -914,16 +935,16 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            List<BoardObject> boardObjects = new List<BoardObject>();
+            
             Dictionary<BoardObject, int> sortedTargets = null;
 
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
-                boardObjects = targets.Select(target => target.BoardObject).ToList();
                 sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
             }
             else
             {
+                List<BoardObject> boardObjects = new List<BoardObject>();
                 Player opponent = _gameplayManager.GetOpponentByPlayer(owner);
 
                 boardObjects.Add(opponent);
@@ -933,6 +954,14 @@ namespace Loom.ZombieBattleground
                 boardObjects.AddRange(boardCradsModels);
 
                 sortedTargets = GetRandomTargetsByAmount(boardObjects, skill.Count);
+
+                _targets = sortedTargets.Select(target =>
+                    new ParametrizedAbilityBoardObject(target.Key,
+                        new ParametrizedAbilityParameters()
+                        {
+                            Attack = target.Value
+                        })
+                ).ToList();
             }
 
             GameObject prefabMovedVfx = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX");
@@ -1007,13 +1036,26 @@ namespace Loom.ZombieBattleground
                     unit, delay: 6f, isIgnoreCastVfx: true);
                     _battlegroundController.DestroyBoardUnit(unit, false, true);
 
-                    IReadOnlyList<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
+                    BoardUnitView targetUnit = null;
+                    if (boardSkill.IsLocal)
+                    {
+                        IReadOnlyList<BoardUnitView> opponentUnits = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
 
-                    if (opponentUnits.Count == 0)
-                        return;
+                        if (opponentUnits.Count == 0)
+                            return;
 
-                    BoardUnitView targetUnit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
-                    
+                        targetUnit = opponentUnits[UnityEngine.Random.Range(0, opponentUnits.Count)];
+
+                        _targets.Add(new ParametrizedAbilityBoardObject(targetUnit.Model));
+                    }
+                    else
+                    {
+                        if (targets.Count == 1)
+                            return;
+
+                        targetUnit = _battlegroundController.GetBoardUnitViewByModel(targets[1].BoardObject as BoardUnitModel);
+                    }
+
                     _vfxController.CreateSkillVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
                     _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position,
@@ -1055,22 +1097,38 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             IReadOnlyList<BoardUnitView> units = null;
+            List<BoardUnitView> opponentUnits = null;
+            Dictionary<BoardUnitView, int> unitAttacks = new Dictionary<BoardUnitView, int>();
+            Dictionary<BoardUnitView, string> unitAttacked = new Dictionary<BoardUnitView, string>();
 
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
-                units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
+                units = targets
+                    .Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel))
+                    .ToList()
+                    .FindAll(unit => unit.Model.OwnerPlayer == owner);
+
+                unitAttacked = targets
+                    .FindAll(target => (target.BoardObject as BoardUnitModel).OwnerPlayer != owner)
+                    .ToDictionary(info => _battlegroundController.GetBoardUnitViewByModel(info.BoardObject as BoardUnitModel),
+                        info => info.Parameters.CardName);
+                   
+                opponentUnits = targets
+                    .Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel))
+                    .ToList()
+                    .FindAll(unit => unit.Model.OwnerPlayer != owner);
+
             }
             else
             {
                 units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+                units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+
+                opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
             }
 
             if (units.Count == 0)
                 return;
-
-            units = InternalTools.GetRandomElementsFromList(units, skill.Count);
-            List<BoardUnitView> opponentUnits =
-                InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
 
             List<BoardUnitView> opponentUnitsTakenDamage = new List<BoardUnitView>();
 
@@ -1079,7 +1137,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView opponentUnitView = null;
             BoardUnitView unitView = null;
 
-            Dictionary<BoardUnitView, int> unitAttacks = new Dictionary<BoardUnitView, int>();
+            
 
             Action<BoardUnitView> callback = null;
 
@@ -1112,7 +1170,6 @@ namespace Loom.ZombieBattleground
                 {
                     if(unitAttacks.ContainsKey(opponentUnitView))
                     {
-                        
                         unitAttacks[opponentUnitView] += unitAtk;
                         TargetEffects.Find(x => x.Target == opponentUnitView).Value -= unitAtk;
                     }
@@ -1269,7 +1326,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<WorkingCard> cards = null;
 
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
                 List<WorkingCard> foundCards = new List<WorkingCard>();
 
@@ -1289,6 +1346,13 @@ namespace Loom.ZombieBattleground
 
                 cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
+                _targets = cards
+                    .Select(target => new ParametrizedAbilityBoardObject(null,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = target.InstanceId.Id.ToString()
+                        }))
+                    .ToList();
             }
 
             BoardUnitView unit = null;
@@ -1403,7 +1467,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<WorkingCard> cards = null;
 
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
                 List<WorkingCard> foundCards = new List<WorkingCard>();
 
@@ -1422,6 +1486,13 @@ namespace Loom.ZombieBattleground
 
                 cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
+                _targets = cards
+                    .Select(target => new ParametrizedAbilityBoardObject(null,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = target.InstanceId.Id.ToString()
+                        }))
+                    .ToList();
             }
 
             List<BoardUnitView> units = new List<BoardUnitView>();
@@ -1665,7 +1736,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitView> units = null;
 
-            if (targets != null && targets[0].BoardObject is BoardUnitModel)
+            if (targets != null && !boardSkill.IsLocal)
             {
                 units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
             }
@@ -1674,7 +1745,6 @@ namespace Loom.ZombieBattleground
                 units = _gameplayManager.GetOpponentByPlayer(owner).BoardCards;
                 units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
-                _targets.Clear();
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
             }
 
@@ -1845,7 +1915,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitView> units = null;
 
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
                 units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
             }
@@ -1854,6 +1924,8 @@ namespace Loom.ZombieBattleground
                 units = owner.BoardCards.FindAll(
                     x => !x.Model.HasFeral && x.Model.Card.LibraryCard.CardSetType == owner.SelfHero.HeroElement);
                 units = InternalTools.GetRandomElementsFromList(units, skill.Value);
+
+                _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
             }
 
             foreach (BoardUnitView unit in units)
@@ -2124,7 +2196,7 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardUnitView> units = null;
-            if (targets != null)
+            if (!boardSkill.IsLocal && targets != null)
             {
                 units = targets.Select(target => _battlegroundController.GetBoardUnitViewByModel(target.BoardObject as BoardUnitModel)).ToList();
             }
@@ -2133,6 +2205,8 @@ namespace Loom.ZombieBattleground
                 units = InternalTools.GetRandomElementsFromList(
                         owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH),
                         skill.Count);
+
+                _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
             }
 
             foreach (BoardUnitView unit in units)

@@ -283,7 +283,10 @@ namespace Loom.ZombieBattleground
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)
+            {
+                InternalTools.DoActionDelayed(() => callbackComplete(target), Time.deltaTime);
                 return;
+            }
 
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
