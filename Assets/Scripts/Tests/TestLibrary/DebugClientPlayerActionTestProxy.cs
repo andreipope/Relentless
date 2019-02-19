@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.Mulligan(cards));
         }
 
-        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false)
         {
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
 
@@ -69,6 +69,9 @@ namespace Loom.ZombieBattleground.Test
                     new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
                     ));
             }
+
+            if (skipEntryAbilities) 
+                return;
 
             // Second, fire non-targetable entry abilities
             AbilityData[] entryAbilities =
