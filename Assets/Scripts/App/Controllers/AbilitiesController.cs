@@ -714,6 +714,8 @@ namespace Loom.ZombieBattleground
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
+            Debug.LogWarning("PLAYING ABILITY");
+            Debug.Log(owner.IsLocalPlayer);
             AbilityData abilityData;
 
             AbilityData subAbilitiesData = card.LibraryCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
