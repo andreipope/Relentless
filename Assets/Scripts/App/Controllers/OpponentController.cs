@@ -205,12 +205,61 @@ namespace Loom.ZombieBattleground
 
                     break;
 
-               case PlayerActionOutcome.OutcomeOneofCase.CardAttack:
-                   PlayerActionOutcome.Types.CardAttackOutcome cardAttackOutcome  = outcome.CardAttack;
-                   break;
+                case PlayerActionOutcome.OutcomeOneofCase.ReplaceUnitsWithTypeOnStrongerOnes:
+                    PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome  = outcome.ReplaceUnitsWithTypeOnStrongerOnes;
+                    ReplaceUnitsWithTypeOnStrongerOnes(replaceUnitWithTypeStatOutcome);
+                    break;
+
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome)
+        {
+            List<BoardUnitView> oldCardList = new List<BoardUnitView>();
+            for (int i=0; i<replaceUnitWithTypeStatOutcome.ReplacedInstanceIds.Count; i++)
+            {
+                InstanceId id = replaceUnitWithTypeStatOutcome.ReplacedInstanceIds[i].FromProtobuf();
+                BoardUnitModel unitModel = _battlegroundController.GetBoardUnitModelByInstanceId(id);
+                BoardUnitView unit = _battlegroundController.GetBoardUnitViewByModel(unitModel);
+                oldCardList.Add(unit);
+            }
+            ClearOldUnitsOnBoard(oldCardList);
+
+            List<BoardUnitView> newCardList = new List<BoardUnitView>();
+            for (int i=0; i<replaceUnitWithTypeStatOutcome.NewCardInstances.Count; i++)
+            {
+                Player owner = _gameplayManager.CurrentPlayer;
+                if (replaceUnitWithTypeStatOutcome.NewCardInstances[i].Owner != _backendDataControlMediator.UserDataModel.UserId)
+                    owner = _gameplayManager.OpponentPlayer;
+
+                Card libraryCard = replaceUnitWithTypeStatOutcome.NewCardInstances[i].Prototype.FromProtobuf();
+                WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner, replaceUnitWithTypeStatOutcome.NewCardInstances[i].InstanceId.FromProtobuf());
+                BoardUnitView unit = CreateBoardUnit(card, owner);
+                newCardList.Add(unit);
+            }
+            GenerateNewUnitsOnBoard(newCardList);
+        }
+
+        private void ClearOldUnitsOnBoard(List<BoardUnitView> boardUnits)
+        {
+            foreach (BoardUnitView unit in boardUnits)
+            {
+                unit.Model.OwnerPlayer.BoardCards.Remove(unit);
+                unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
+
+                unit.DisposeGameObject();
+            }
+        }
+
+        private void GenerateNewUnitsOnBoard(List<BoardUnitView> boardUnits)
+        {
+            foreach (BoardUnitView unit in boardUnits)
+            {
+                _battlegroundController.PlayerBoardCards.Insert(new ItemPosition(0), unit);
+            }
+
         }
 
         private void ReAnimateAbility(PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome)

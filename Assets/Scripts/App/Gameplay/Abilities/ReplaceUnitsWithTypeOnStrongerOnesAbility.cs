@@ -42,6 +42,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (PvPManager.UseBackendGameLogic)
+                return;
+
             GetInfosAboutUnitsOnBoard();
             GetPossibleNewUnits();
             ClearOldUnitsOnBoard();
