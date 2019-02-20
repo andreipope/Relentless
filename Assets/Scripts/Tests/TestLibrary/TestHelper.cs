@@ -142,6 +142,14 @@ namespace Loom.ZombieBattleground.Test
         {
         }
 
+        public async Task Dispose()
+        {
+            if (_opponentDebugClient != null)
+            {
+                await _opponentDebugClient.Reset();
+            }
+        }
+
         /// <summary>
         /// Gets the name of the test.
         /// </summary>

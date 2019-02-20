@@ -16,6 +16,7 @@ namespace Loom.ZombieBattleground.Test
     public class AsyncTestRunner
     {
         private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
+        private const int FlappyErrorMaxRetryCount = 3;
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
@@ -49,22 +50,29 @@ namespace Loom.ZombieBattleground.Test
             if (timeout <= 0)
                 throw new ArgumentOutOfRangeException(nameof(timeout));
 
-            Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must be int.MaxValue");
+            Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must have [Timeout(int.MaxValue)] attribute");
             Debug.Log("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
 
-            return RunAsyncTestInternal(async () =>
-                {
-                    await GameSetUp();
-                    try
+            IEnumerator enumerator =
+                RunAsyncTestInternal(async () =>
                     {
-                        await taskFunc();
-                    }
-                    finally
-                    {
-                        await GameTearDown();
-                    }
-                },
-                timeout);
+                        try
+                        {
+                            await GameSetUp();
+                            await taskFunc();
+                        }
+                        finally
+                        {
+                            await GameTearDown();
+                        }
+                    },
+                    timeout,
+                    1);
+
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
         }
 
         private async Task GameTearDown()
@@ -93,11 +101,12 @@ namespace Loom.ZombieBattleground.Test
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
 
+            await TestHelper.Instance.Dispose();
             TestHelper.DestroyInstance();
             await TestHelper.Instance.PerTestSetupInternal();
         }
 
-        private IEnumerator RunAsyncTestInternal(Func<Task> taskFunc, float timeout)
+        private IEnumerator RunAsyncTestInternal(Func<Task> taskFunc, float timeout, int retry)
         {
             if (_currentRunningTestTask != null)
             {
@@ -139,6 +148,7 @@ namespace Loom.ZombieBattleground.Test
                 yield return null;
             }
 
+            bool mustRetry = false;
             try
             {
                 currentTask.Wait();
@@ -152,14 +162,40 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    Debug.LogException(e);
-                    throw;
+                    if (IsFlappyException(e) && retry <= FlappyErrorMaxRetryCount)
+                    {
+                        mustRetry = true;
+                        Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
+                        Debug.LogException(e);
+                    }
+                    else
+                    {
+                        Debug.LogException(e);
+                        throw;
+                    }
                 }
             }
             finally
             {
                 FinishCurrentTest();
             }
+
+            if (mustRetry)
+            {
+                IEnumerator retryEnumerator = RunAsyncTestInternal(taskFunc, timeout, retry + 1);
+                while (retryEnumerator.MoveNext())
+                {
+                    yield return retryEnumerator.Current;
+                }
+            }
+        }
+
+        private bool IsFlappyException(Exception e)
+        {
+            string str = e.ToString();
+            return
+                str.Contains("RpcClientException") ||
+                str.Contains("Call took longer than");
         }
 
         private void FinishCurrentTest()
