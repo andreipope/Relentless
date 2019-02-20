@@ -230,11 +230,11 @@ namespace Loom.ZombieBattleground.Test
             {
                 MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
-                bool? isLocalPlayer = playerActionEvent.PlayerAction != null ?
+                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
                     playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
                     (bool?) null;
 
-                if (isLocalPlayer != null && isLocalPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                if (isOpponentPlayer != null && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                 {
                     await HandleOpponentClientTurn(false);
                 }
