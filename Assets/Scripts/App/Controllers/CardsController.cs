@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
+        private IPvPManager _pvpManager;
+
         private BattlegroundController _battlegroundController;
 
         private VfxController _vfxController;
@@ -89,6 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -124,7 +127,8 @@ namespace Loom.ZombieBattleground
 
         public InstanceId GetNewCardInstanceId()
         {
-            return new InstanceId(_cardInstanceId++);
+            _cardInstanceId++;
+            return new InstanceId(_cardInstanceId);
         }
 
         public InstanceId GetCardInstanceId()
@@ -193,7 +197,16 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
+                int highestInstanceId =
+                    _pvpManager.InitialGameState.PlayerStates
+                    .SelectMany(state =>
+                        state.MulliganCards
+                            .Concat(state.CardsInDeck)
+                            .Concat(state.CardsInHand)
+                            .Concat(state.CardsInPlay)
+                            .Concat(state.CardsInGraveyard))
+                    .Max(card => card.InstanceId.Id);
+                SetNewCardInstanceId(highestInstanceId);
             }
         }
 
