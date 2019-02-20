@@ -39,16 +39,20 @@ namespace Loom.ZombieBattleground
         private Sprite _spriteDeckThumbnailNormal,
                        _spriteDeckThumbnailSelected;
 
-        private Transform _trayUpper;
+        private Transform _trayButtonBack,
+                          _trayButtonAuto;
 
         private Button _buttonNewDeck,
                        _buttonBack,
-                       _buttonFilter,
-                       _buttonSearch,
+                       _buttonSelectDeckFilter,
+                       _buttonSelectDeckSearch,
                        _buttonEdit,
                        _buttonDelete,
                        _buttonRename,
-                       _buttonSaveRenameDeck;                   
+                       _buttonSaveRenameDeck,
+                       _buttonAuto,
+                       _buttonEditDeckFilter,
+                       _buttonEditDeckSearch;                 
                        
         private TMP_InputField _inputFieldDeckName;
 
@@ -71,8 +75,6 @@ namespace Loom.ZombieBattleground
         private TAB _tab;
         
         private int _selectDeckIndex;
-
-        private bool _showBackButton;
 
         #endregion
 
@@ -107,24 +109,39 @@ namespace Loom.ZombieBattleground
             _inputFieldDeckName.onEndEdit.AddListener(OnInputFieldEndedEdit);
             _inputFieldDeckName.text = "Deck Name";
 
-            _trayUpper = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray");
-            _trayUpper.gameObject.SetActive(false);
+            _trayButtonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonBackTray");
+            _trayButtonBack.gameObject.SetActive(false);
+            
+            _trayButtonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray");
+            _trayButtonAuto.gameObject.SetActive(false);
 
             _buttonNewDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
             _buttonNewDeck.onClick.AddListener(ButtonNewDeckHandler);
             _buttonNewDeck.onClick.AddListener(PlayClickSound);
             
-            _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray/Button_Back").GetComponent<Button>();
+            _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonBackTray/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
             _buttonBack.onClick.AddListener(PlayClickSound);
             
-            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
-            _buttonFilter.onClick.AddListener(ButtonFilterHandler);
-            _buttonFilter.onClick.AddListener(PlayClickSound);
+            _buttonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
+            _buttonAuto.onClick.AddListener(ButtonAutoHandler);
+            _buttonAuto.onClick.AddListener(PlayClickSound);
             
-            _buttonSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
-            _buttonSearch.onClick.AddListener(ButtonSearchHandler);
-            _buttonSearch.onClick.AddListener(PlayClickSound);
+            _buttonSelectDeckFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonSelectDeckFilter.onClick.AddListener(ButtonSelectDeckFilterHandler);
+            _buttonSelectDeckFilter.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectDeckSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
+            _buttonSelectDeckSearch.onClick.AddListener(ButtonSelectDeckSearchHandler);
+            _buttonSelectDeckSearch.onClick.AddListener(PlayClickSound);
+            
+            _buttonEditDeckFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonEditDeckFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
+            _buttonEditDeckFilter.onClick.AddListener(PlayClickSound);
+            
+            _buttonEditDeckSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
+            _buttonEditDeckSearch.onClick.AddListener(ButtonEditDeckSearchHandler);
+            _buttonEditDeckSearch.onClick.AddListener(PlayClickSound);
             
             _buttonEdit = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Edit").GetComponent<Button>();
             _buttonEdit.onClick.AddListener(ButtonEditHandler);
@@ -185,20 +202,30 @@ namespace Loom.ZombieBattleground
             ChangeTab(TAB.SELECT_DECK);
         }
         
-        private void ButtonFilterHandler()
+        private void ButtonSelectDeckFilterHandler()
         {
         
         }
         
-        private void ButtonSearchHandler()
+        private void ButtonSelectDeckSearchHandler()
+        {
+
+        }
+        
+        private void ButtonEditDeckFilterHandler()
+        {
+        
+        }
+        
+        private void ButtonEditDeckSearchHandler()
         {
 
         }
 
         private void ButtonEditHandler()
         {
-        
-        }
+            ChangeTab(TAB.EDITING);
+        }        
         
         private void ButtonDeleteHandler()
         {
@@ -226,6 +253,11 @@ namespace Loom.ZombieBattleground
             Deck deck = GetCurrentDeck();
             string newName = _inputFieldDeckName.text;
             ProcessRenameDeck(deck, newName);
+        }
+        
+        private void ButtonAutoHandler()
+        {
+           
         }
 
         public void OnInputFieldEndedEdit(string value)
@@ -268,15 +300,17 @@ namespace Loom.ZombieBattleground
                 GameObject tabObject = _tabObjects[i];
                 tabObject.SetActive(i == (int)newTab);
             }
+
+            UpdateShowBackButton
+            (
+                newTab == TAB.EDITING || 
+                newTab == TAB.RENAME
+            );
             
-            if(newTab == TAB.EDITING || newTab == TAB.RENAME)
-            {
-                UpdateShowBackButton(true);
-            }
-            else
-            {
-                UpdateShowBackButton(false);
-            }
+            UpdateShowAutoButton
+            (
+                newTab == TAB.EDITING
+            );
 
             switch (newTab)
             {
@@ -306,8 +340,12 @@ namespace Loom.ZombieBattleground
         
         private void UpdateShowBackButton(bool isShow)
         {
-             _trayUpper.gameObject.SetActive(isShow);
-            _showBackButton = isShow;
+            _trayButtonBack.gameObject.SetActive(isShow);
+        }
+
+        private void UpdateShowAutoButton(bool isShow)
+        {
+            _trayButtonAuto.gameObject.SetActive(isShow);
         }
 
         public async void ProcessRenameDeck(Deck currentDeck, string newName)
