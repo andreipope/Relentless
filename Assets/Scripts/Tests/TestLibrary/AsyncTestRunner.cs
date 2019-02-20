@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground.Test
                 if (flappyException != null && retry <= FlappyErrorMaxRetryCount)
                 {
                     mustRetry = true;
-                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
+                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry + 1} out of {FlappyErrorMaxRetryCount})");
                 }
                 else
                 {
