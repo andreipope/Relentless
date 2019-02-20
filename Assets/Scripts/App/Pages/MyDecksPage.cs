@@ -112,27 +112,35 @@ namespace Loom.ZombieBattleground
 
             _buttonNewDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
             _buttonNewDeck.onClick.AddListener(ButtonNewDeckHandler);
+            _buttonNewDeck.onClick.AddListener(PlayClickSound);
             
             _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
+            _buttonBack.onClick.AddListener(PlayClickSound);
             
             _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonFilterHandler);
+            _buttonFilter.onClick.AddListener(PlayClickSound);
             
             _buttonSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
             _buttonSearch.onClick.AddListener(ButtonSearchHandler);
+            _buttonSearch.onClick.AddListener(PlayClickSound);
             
             _buttonEdit = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Edit").GetComponent<Button>();
             _buttonEdit.onClick.AddListener(ButtonEditHandler);
+            _buttonEdit.onClick.AddListener(PlayClickSound);
             
             _buttonDelete = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Delete").GetComponent<Button>();
             _buttonDelete.onClick.AddListener(ButtonDeleteHandler);
+            _buttonDelete.onClick.AddListener(PlayClickSound);
             
             _buttonRename = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
+            _buttonRename.onClick.AddListener(PlayClickSound);
             
             _buttonSaveRenameDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
             _buttonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);
+            _buttonSaveRenameDeck.onClick.AddListener(PlayClickSound);
 
             _spriteDeckThumbnailNormal = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_normal").GetComponent<Image>().sprite;
             _spriteDeckThumbnailSelected = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_selected").GetComponent<Image>().sprite;
@@ -194,7 +202,18 @@ namespace Loom.ZombieBattleground
         
         private void ButtonDeleteHandler()
         {
-        
+            if (GetDeckList().Count <= 1)
+            {
+                OpenAlertDialog("Sorry, Not able to delete Last Deck.");
+                return;
+            }
+
+            Deck deck = GetCurrentDeck();
+            if (deck != null)
+            {
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
+                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.Name + "?");
+            }
         }
         
         private void ButtonRenameHandler()
@@ -212,6 +231,19 @@ namespace Loom.ZombieBattleground
         public void OnInputFieldEndedEdit(string value)
         {
             
+        }
+        
+        private void ConfirmDeleteDeckReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
+
+            if (!status)
+                return;
+                
+            Deck deck = GetCurrentDeck();
+            ProcessDeleteDeck(deck);
+
+            _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
         }
 
         #endregion
@@ -356,6 +388,45 @@ namespace Loom.ZombieBattleground
             
             _buttonSaveRenameDeck.interactable = true;
         }
+        
+        private async void ProcessDeleteDeck(Deck currentDeck)
+        {
+            try
+            {
+                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    currentDeck.Id
+                );
+
+                Debug.Log($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+            }
+            catch (TimeoutException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" Time out == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+                Debug.Log("Result === " + e);
+                OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
+                return;
+            }
+
+            ChangeTab(TAB.SELECT_DECK);
+        }
 
         #endregion
 
@@ -470,5 +541,10 @@ namespace Loom.ZombieBattleground
         }
         
         #endregion
+        
+        private void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
     }
 }

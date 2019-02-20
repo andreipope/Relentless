@@ -135,6 +135,11 @@ namespace Loom.ZombieBattleground
                 Debug.Log($"Deck id: {deck.Id} Hero id: {deck.HeroId}");
             }
             Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
+            
+            if(selectedDeck == null)
+            {
+                selectedDeck = _dataManager.CachedDecksData.Decks[0];
+            }
 
             UpdateSelectedDeckData(selectedDeck);
 
