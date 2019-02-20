@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Test
     /// <summary>
     /// Plays automated scripted PvP matches.
     /// </summary>
-    public class MatchScenarioPlayer
+    public class MatchScenarioPlayer : IDisposable
     {
         private readonly TestHelper _testHelper;
         private readonly IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> _turns;
@@ -85,7 +85,10 @@ namespace Loom.ZombieBattleground.Test
 
         public void Dispose()
         {
-            _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
+            if (_opponentClient?.BackendFacade != null)
+            {
+                _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
+            }
         }
 
         private async Task HandleOpponentClientTurn(bool isFirstTurn)
@@ -231,7 +234,7 @@ namespace Loom.ZombieBattleground.Test
                     playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
                     (bool?) null;
 
-                if (isLocalPlayer != null)
+                if (isLocalPlayer != null && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                 {
                     await HandleOpponentClientTurn(false);
                 }

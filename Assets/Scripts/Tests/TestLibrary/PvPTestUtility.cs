@@ -70,7 +70,6 @@ namespace Loom.ZombieBattleground.Test
 
                 if (enableReverseMatch)
                 {
-                    Debug.Log("Starting reversed Pvp test");
                     pvpTestContext.IsReversed = true;
                     await ExecuteTest();
                 }
@@ -82,6 +81,7 @@ namespace Loom.ZombieBattleground.Test
             if (!enableReverseMatch && onlyReverseMatch)
                 throw new Exception("!enableReverseMatch && onlyReverseMatch");
 
+            //enableBackendGameLogicMatch = false;
             if (enableClientGameLogicMatch)
             {
                 pvpTestContext.UseBackendLogic = false;
@@ -128,10 +128,12 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.WaitUntilPlayerOrderIsDecided();
             Assert.IsFalse(canceled, "canceled");
 
-            matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
-            await matchScenarioPlayer.Play();
-            validateEndStateAction?.Invoke();
+            using (matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns))
+            {
+                await matchScenarioPlayer.Play();
+            }
 
+            validateEndStateAction?.Invoke();
             await TestHelper.GoBackToMainScreen();
         }
 

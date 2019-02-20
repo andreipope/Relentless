@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground.Test
     public class AsyncTestRunner
     {
         private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
-        private const int FlappyErrorMaxRetryCount = 3;
+        private const int FlappyErrorMaxRetryCount = 2;
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground.Test
                         }
                     },
                     timeout,
-                    1);
+                    0);
 
             while (enumerator.MoveNext())
             {
