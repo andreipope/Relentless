@@ -26,7 +26,10 @@ namespace Loom.ZombieBattleground
         
         private GameObject _selfPage;
 
-        private Button _buttonNewDeck;
+        private Transform _trayUpper;
+
+        private Button _buttonNewDeck,
+                       _buttonBack;
 
         private List<DeckInfoObject> _deckInfoObjectList;
 
@@ -57,8 +60,14 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
             _uiManager.DrawPopup<AreaBarPopup>();
 
-            _buttonNewDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
+            _trayUpper = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray");
+            _trayUpper.gameObject.SetActive(false);
+
+            _buttonNewDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
             _buttonNewDeck.onClick.AddListener(ButtonNewDeckHandler);
+            
+            _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray/Button_Back").GetComponent<Button>();
+            _buttonBack.onClick.AddListener(ButtonBackHandler);
 
             InitObjects();
             UpdateDeckInfoObjects();  
@@ -93,6 +102,11 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.SetPage<HordeSelectionPage>();
         }
+        
+        private void ButtonBackHandler()
+        {
+        
+        }
 
         #endregion
         
@@ -102,7 +116,7 @@ namespace Loom.ZombieBattleground
             for(int i=0; i<3; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Anchor_BottomRight/Scaler/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
+                string path = $"Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
                 deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
