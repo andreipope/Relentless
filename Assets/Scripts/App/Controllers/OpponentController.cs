@@ -321,7 +321,9 @@ namespace Loom.ZombieBattleground
 
             if(attackerUnit == null || target == null)
             {
-                Helpers.ExceptionReporter.LogException("GotActionCardAttack Has Error: attackerUnit: " + attackerUnit + "; target: " + target);
+                Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
+                Debug.LogException(exception);
+                Helpers.ExceptionReporter.LogException(exception);
                 return;
             }
 
@@ -407,7 +409,9 @@ namespace Loom.ZombieBattleground
 
             if (target == null)
             {
-                Helpers.ExceptionReporter.LogException("GotActionUseOverlordSkill Has Error: target: " + target);
+                Exception exception = new Exception($"GotActionUseOverlordSkill Has Error: target {target}");
+                Debug.LogException(exception);
+                Helpers.ExceptionReporter.LogException(exception);
                 return;
             }
 
