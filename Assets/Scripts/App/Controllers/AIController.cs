@@ -1682,7 +1682,7 @@ namespace Loom.ZombieBattleground
                 skill.EndDoSkill(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(target)
-                });
+                }, true);
             };
 
             if ((skill.Skill.CanSelectTarget && target != null) ||

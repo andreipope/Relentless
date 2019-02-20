@@ -122,6 +122,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsUsing { get; private set; }
 
+        public bool IsLocal { get; private set; }
+
         public bool IsPrimary { get; }
 
         public void CancelTargetingArrows()
@@ -181,7 +183,7 @@ namespace Loom.ZombieBattleground
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
                         }
 
-                        EndDoSkill(null);
+                        EndDoSkill(parametrizedAbilityObjects);
                     };
 
                     FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(SelfObject.transform, target, action: callback);
@@ -236,10 +238,12 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets)
+        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;
+
+            IsLocal = isLocal;
 
             return _gameplayManager
                 .GetController<ActionsQueueController>()
@@ -362,7 +366,7 @@ namespace Loom.ZombieBattleground
         {
             if (OwnerPlayer.IsLocalPlayer)
             {
-                EndDoSkill(null);
+                EndDoSkill(null, true);
             }
         }
 
@@ -430,10 +434,15 @@ namespace Loom.ZombieBattleground
 
             if (!Skill.CanSelectTarget)
             {
-                _skillsController.DoSkillAction(this, completeCallback, new List<ParametrizedAbilityBoardObject>()
+                if(targets == null || targets.Count == 0)
                 {
-                    new ParametrizedAbilityBoardObject(OwnerPlayer)
-                });
+                    targets = new List<ParametrizedAbilityBoardObject>()
+                    {
+                        new ParametrizedAbilityBoardObject(OwnerPlayer)
+                    };
+                }
+
+                _skillsController.DoSkillAction(this, completeCallback, targets);
             }
             else
             {

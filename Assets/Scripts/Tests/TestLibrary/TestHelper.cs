@@ -1363,22 +1363,25 @@ namespace Loom.ZombieBattleground.Test
 
             if (targets != null && targets.Count > 0)
             {
-                BoardObject target = targets[0].BoardObject;
-
-                Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
-                skill.FightTargetingArrow.SetTarget(target);
-                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
-
-                switch (target)
+                if (skill.Skill.CanSelectTarget)
                 {
-                    case Player player:
-                        skill.FightTargetingArrow.OnPlayerSelected(player);
-                        break;
-                    case BoardUnitModel boardUnitModel:
-                        skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                    BoardObject target = targets[0].BoardObject;
+
+                    Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
+                    skill.FightTargetingArrow.SetTarget(target);
+                    await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+
+                    switch (target)
+                    {
+                        case Player player:
+                            skill.FightTargetingArrow.OnPlayerSelected(player);
+                            break;
+                        case BoardUnitModel boardUnitModel:
+                            skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                    }
                 }
             }
 
