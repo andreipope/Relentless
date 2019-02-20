@@ -1551,14 +1551,12 @@ namespace Loom.ZombieBattleground.Test
                     return;
 
                 await WaitUntilOurTurnStarts();
-
-                if (IsGameEnded())
-                    return;
-
-                await WaitUntilInputIsUnblocked();
-
-                await new WaitUntil(() => _playerController.IsActive);
             }
+
+            if (IsGameEnded())
+                return;
+
+            await WaitUntilInputIsUnblocked();
 
             await LetsThink();
         }
@@ -1585,14 +1583,6 @@ namespace Loom.ZombieBattleground.Test
             });
 
             await HandleConnectivityIssues();
-
-            await new WaitUntil(() =>
-            {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return IsGameEnded() || _playerController.IsActive;
-            });
-
-            Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
         /// <summary>
@@ -1609,6 +1599,14 @@ namespace Loom.ZombieBattleground.Test
             });
 
             await HandleConnectivityIssues();
+
+            await new WaitUntil(() =>
+            {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                return IsGameEnded() || _playerController.IsActive;
+            });
+
+            Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
         // todo: reconsider having this
@@ -1664,27 +1662,23 @@ namespace Loom.ZombieBattleground.Test
 
                 //Debug.Log("!a 0");
 
-                Assert.True(_playerController.IsActive, "_playerController.IsActive");
-                await TaskAsIEnumerator(currentTurnTask());
+                await WaitUntilInputIsUnblocked();
 
                 //Debug.Log("!a 1");
 
+                Assert.True(_playerController.IsActive, "_playerController.IsActive");
+                await TaskAsIEnumerator(currentTurnTask());
+
                 if (IsGameEnded())
                     break;
-
-                await WaitUntilOurTurnStarts();
 
                 //Debug.Log("!a 2");
+                await WaitUntilOurTurnStarts();
 
                 if (IsGameEnded())
                     break;
-
-                await WaitUntilInputIsUnblocked();
 
                 //Debug.Log("!a 3");
-
-                if (IsGameEnded())
-                    break;
             }
         }
 

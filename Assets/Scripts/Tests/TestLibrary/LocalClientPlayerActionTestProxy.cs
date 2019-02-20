@@ -93,6 +93,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(boardUnitView.Model.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
             Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
             Assert.True(boardUnitView.Model.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+            Assert.True(boardUnitView.ArrivalDone, "boardUnitView.ArrivalDone");
 
             boardUnitView.StartAttackTargeting();
             Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");
