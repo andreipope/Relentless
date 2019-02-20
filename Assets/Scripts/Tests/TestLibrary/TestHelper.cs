@@ -1356,13 +1356,15 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="target">Target.</param>
         public async Task DoBoardSkill(
             BoardSkill skill,
-            BoardObject target = null)
+            List<ParametrizedAbilityBoardObject> targets = null)
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
 
-            if (target != null)
+            if (targets != null && targets.Count > 0)
             {
+                BoardObject target = targets[0].BoardObject;
+
                 Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                 skill.FightTargetingArrow.SetTarget(target);
                 await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
@@ -1380,7 +1382,7 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
-            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
             Action<GameplayQueueAction<object>> onDone = null;
             onDone = gameplayQueueAction2 =>
             {

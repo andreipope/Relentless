@@ -60,12 +60,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player => {},
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetCurrentPlayer().InstanceId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
+                           });
                        },
                        player =>
                        {
                            Assert.AreEqual(18, pvpTestContext.GetCurrentPlayer().Defense);
-                           player.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetOpponentPlayer().InstanceId);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().InstanceId)
+                           });
                        },
                        opponent => Assert.AreEqual(18, pvpTestContext.GetOpponentPlayer().Defense),
                        player => {},
@@ -288,11 +294,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -564,11 +576,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), opponentCardId);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), playerCardId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -627,12 +645,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId)
+                           });
                            player.CardAttack(playerCardId, pvpTestContext.GetOpponentPlayer().InstanceId);
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId)
+                           });
                            opponent.CardAttack(opponentCardId, pvpTestContext.GetCurrentPlayer().InstanceId);
                        },
                        player => {},
@@ -702,11 +726,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -974,11 +1004,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -1041,11 +1077,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -1183,11 +1225,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                    };
 
@@ -1250,11 +1298,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                    };
 
@@ -1323,11 +1377,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), pvpTestContext.GetOpponentPlayer().InstanceId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().InstanceId)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -1392,13 +1452,25 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), opponentCardId1);
-                           player.OverlordSkillUsed(new SkillId(1), opponentCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
+                           player.OverlordSkillUsed(new SkillId(1), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), playerCardId1);
-                           opponent.OverlordSkillUsed(new SkillId(1), playerCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
+                           opponent.OverlordSkillUsed(new SkillId(1), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -1563,11 +1635,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), playerCardId1);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId1)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), opponentCardId1);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId1)
+                           });
                        },
                        player => {},
                        opponent => {},
@@ -1626,11 +1704,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.OverlordSkillUsed(new SkillId(0), opponentCardId);
+                           player.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(opponentCardId)
+                           });
                        },
                        opponent =>
                        {
-                           opponent.OverlordSkillUsed(new SkillId(0), playerCardId);
+                           opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
+                           {
+                                new ParametrizedAbilityInstanceId(playerCardId)
+                           });
                        },
                        player => {},
                        opponent => {},
