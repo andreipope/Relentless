@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         public event Action MatchingFailed;
 
         // game status actions
-        private Action GameStartedActionReceived;
+        public event Action GameStartedActionReceived;
 
         public event Action GameEndedActionReceived;
 

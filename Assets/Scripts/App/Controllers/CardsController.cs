@@ -772,6 +772,12 @@ namespace Loom.ZombieBattleground
                 opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.WorkingCard.InstanceId == cardId);
             }
 
+            Debug.Log("Cards in Hand");
+            foreach (OpponentHandCard carta in _battlegroundController.OpponentHandCards) {
+                Debug.Log(carta.WorkingCard.InstanceId);
+            }
+            Debug.Log("CARD FOUND" + opponentHandCard);
+            Debug.Log(cardId);
             if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
