@@ -26,16 +26,35 @@ namespace Loom.ZombieBattleground
         
         private GameObject _selfPage;
 
+        private GameObject[] _tabObjects;
+
         private Transform _trayUpper;
 
         private Button _buttonNewDeck,
-                       _buttonBack;
+                       _buttonBack,
+                       _buttonFilter,
+                       _buttonSearch,
+                       _buttonEdit,
+                       _buttonDelete,
+                       _buttonRename;                       
+                       
+        private TMP_InputField _inputFieldDeckName;
 
         private List<DeckInfoObject> _deckInfoObjectList;
 
         private const int _numberOfDeckInfo = 3;
 
         private const int _maxDeckCard = 30;
+        
+        private enum TAB
+        {
+            NONE = -1,
+            SELECT_DECK = 0,
+            RENAME = 1,
+            EDITING = 2,
+        }
+        
+        private TAB _tab;
         
         #region IUIElement
         
@@ -59,6 +78,10 @@ namespace Loom.ZombieBattleground
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
             _uiManager.DrawPopup<AreaBarPopup>();
+            
+            _inputFieldDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_Content/InputText_DeckName").GetComponent<TMP_InputField>();
+            _inputFieldDeckName.onEndEdit.AddListener(OnInputFieldEndedEdit);
+            _inputFieldDeckName.text = "Deck Name";
 
             _trayUpper = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray");
             _trayUpper.gameObject.SetActive(false);
@@ -68,9 +91,25 @@ namespace Loom.ZombieBattleground
             
             _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonTray/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
+            
+            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonFilter.onClick.AddListener(ButtonFilterHandler);
+            
+            _buttonSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
+            _buttonSearch.onClick.AddListener(ButtonSearchHandler);
+            
+            _buttonEdit = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Edit").GetComponent<Button>();
+            _buttonEdit.onClick.AddListener(ButtonEditHandler);
+            
+            _buttonDelete = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Delete").GetComponent<Button>();
+            _buttonDelete.onClick.AddListener(ButtonDeleteHandler);
+            
+            _buttonRename = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
+            _buttonRename.onClick.AddListener(ButtonRenameHandler);
 
             InitObjects();
-            UpdateDeckInfoObjects();  
+            UpdateDeckInfoObjects();
+            InitTabs();
         }
         
         public void Hide()
@@ -96,7 +135,7 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        #region Buttons Handlers
+        #region UI Handlers
 
         private void ButtonNewDeckHandler()
         {
@@ -105,11 +144,70 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
+            ChangeTab(TAB.SELECT_DECK);
+        }
+        
+        private void ButtonFilterHandler()
+        {
+        
+        }
+        
+        private void ButtonSearchHandler()
+        {
+
+        }
+
+        private void ButtonEditHandler()
+        {
+        
+        }
+        
+        private void ButtonDeleteHandler()
+        {
+        
+        }
+        
+        private void ButtonRenameHandler()
+        {
+            ChangeTab(TAB.RENAME);
+        }
+        
+        public void OnInputFieldEndedEdit(string value)
+        {
         
         }
 
         #endregion
         
+        private void InitTabs()
+        {
+            _tab = TAB.NONE;
+            ChangeTab(TAB.SELECT_DECK);
+        }
+
+        private void ChangeTab(TAB newTab)
+        {
+            for(int i=0; i<_tabObjects.Length;++i)
+            {
+                GameObject tabObject = _tabObjects[i];
+                tabObject.SetActive(i == (int)newTab);
+            }
+            switch (newTab)
+            {
+                case TAB.NONE:
+                    break;
+                case TAB.SELECT_DECK:
+                    break;
+                case TAB.RENAME:
+                    break;
+                case TAB.EDITING:
+                    break;
+                default:
+                    break;
+            }
+            _tab = newTab;
+        }
+
         private void InitObjects()
         {
             _deckInfoObjectList.Clear();
@@ -122,7 +220,14 @@ namespace Loom.ZombieBattleground
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._imageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
                 _deckInfoObjectList.Add(deckInfoObject);
-            } 
+            }
+
+            _tabObjects = new GameObject[]
+            {
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck").gameObject,
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename").gameObject,
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing").gameObject
+            };
         }
         
         private void UpdateDeckInfoObjects()
