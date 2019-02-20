@@ -24,9 +24,20 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
         
+        private ITutorialManager _tutorialManager;
+
+        private BackendFacade _backendFacade;
+
+        private BackendDataControlMediator _backendDataControlMediator;
+        
+        private IAnalyticsManager _analyticsManager;
+        
         private GameObject _selfPage;
 
         private GameObject[] _tabObjects;
+
+        private Sprite _spriteDeckThumbnailNormal,
+                       _spriteDeckThumbnailSelected;
 
         private Transform _trayUpper;
 
@@ -36,7 +47,8 @@ namespace Loom.ZombieBattleground
                        _buttonSearch,
                        _buttonEdit,
                        _buttonDelete,
-                       _buttonRename;                       
+                       _buttonRename,
+                       _buttonSaveRenameDeck;                   
                        
         private TMP_InputField _inputFieldDeckName;
 
@@ -45,7 +57,9 @@ namespace Loom.ZombieBattleground
         private const int _numberOfDeckInfo = 3;
 
         private const int _maxDeckCard = 30;
-        
+
+        #region Cache Data
+
         private enum TAB
         {
             NONE = -1,
@@ -56,13 +70,23 @@ namespace Loom.ZombieBattleground
         
         private TAB _tab;
         
+        private int _selectDeckIndex;
+
+        private bool _showBackButton;
+
+        #endregion
+
         #region IUIElement
-        
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
             _deckInfoObjectList = new List<DeckInfoObject>();
         }
 
@@ -106,10 +130,16 @@ namespace Loom.ZombieBattleground
             
             _buttonRename = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
+            
+            _buttonSaveRenameDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
+            _buttonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);
 
-            InitObjects();
-            UpdateDeckInfoObjects();
+            _spriteDeckThumbnailNormal = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_normal").GetComponent<Image>().sprite;
+            _spriteDeckThumbnailSelected = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_selected").GetComponent<Image>().sprite;
+
+            InitObjects();            
             InitTabs();
+            ChangeDeckIndex(0);            
         }
         
         public void Hide()
@@ -172,19 +202,33 @@ namespace Loom.ZombieBattleground
             ChangeTab(TAB.RENAME);
         }
         
+        private void ButtonSaveRenameDeckHandler()
+        {
+            Deck deck = GetCurrentDeck();
+            string newName = _inputFieldDeckName.text;
+            ProcessRenameDeck(deck, newName);
+        }
+
         public void OnInputFieldEndedEdit(string value)
         {
-        
+            
         }
 
         #endregion
-        
-        private void InitTabs()
-        {
-            _tab = TAB.NONE;
-            ChangeTab(TAB.SELECT_DECK);
-        }
 
+        #region Data and State
+
+        private List<Deck> GetDeckList()
+        {
+            return _dataManager.CachedDecksData.Decks;
+        }
+        
+        private Deck GetCurrentDeck()
+        {
+            List<Deck> deckList = GetDeckList();
+            return deckList[_selectDeckIndex];
+        }
+        
         private void ChangeTab(TAB newTab)
         {
             for(int i=0; i<_tabObjects.Length;++i)
@@ -192,20 +236,135 @@ namespace Loom.ZombieBattleground
                 GameObject tabObject = _tabObjects[i];
                 tabObject.SetActive(i == (int)newTab);
             }
+            
+            if(newTab == TAB.EDITING || newTab == TAB.RENAME)
+            {
+                UpdateShowBackButton(true);
+            }
+            else
+            {
+                UpdateShowBackButton(false);
+            }
+
             switch (newTab)
             {
                 case TAB.NONE:
                     break;
                 case TAB.SELECT_DECK:
+                    UpdateDeckInfoObjects();
                     break;
                 case TAB.RENAME:
+                    Deck deck = GetCurrentDeck();
+                    _inputFieldDeckName.text = deck.Name;
                     break;
                 case TAB.EDITING:
                     break;
                 default:
                     break;
             }
+            
             _tab = newTab;
+        }
+        
+        private void ChangeDeckIndex(int newIndex)
+        {
+            UpdateSelectedDeckDisplay(newIndex);
+            _selectDeckIndex = newIndex;
+        }
+        
+        private void UpdateShowBackButton(bool isShow)
+        {
+             _trayUpper.gameObject.SetActive(isShow);
+            _showBackButton = isShow;
+        }
+
+        public async void ProcessRenameDeck(Deck currentDeck, string newName)
+        {
+            _buttonSaveRenameDeck.interactable = false;
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                _buttonSaveRenameDeck.interactable = true;
+                OpenAlertDialog("Saving Deck with an empty name is not allowed.");
+                return;
+            }
+
+            List<Deck> deckList = GetDeckList();
+            foreach (Deck deck in deckList)
+            {
+                if (currentDeck.Id != deck.Id &&
+                    deck.Name.Trim().Equals(currentDeck.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    _buttonSaveRenameDeck.interactable = true;
+                    OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
+                    return;
+                }
+            }
+            
+            currentDeck.Name = newName;
+            bool success = true;
+            try
+            {
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, currentDeck);
+
+                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+                {
+                    if (_dataManager.CachedDecksData.Decks[i].Id == currentDeck.Id)
+                    {
+                        _dataManager.CachedDecksData.Decks[i] = currentDeck;
+                        break;
+                    }
+                }
+
+                _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
+                Debug.Log(" ====== Edit Deck Successfully ==== ");
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+
+                success = false;
+
+                if (e is Client.RpcClientException || e is TimeoutException)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                }
+                else
+                {
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    if (_tutorialManager.IsTutorial)
+                    {
+                        message = Constants.ErrorMessageForConnectionFailed;
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                }
+            }
+        
+            if (success)
+            {
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)currentDeck.Id;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                ChangeTab(TAB.SELECT_DECK);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+            }
+            
+            _buttonSaveRenameDeck.interactable = true;
+        }
+
+        #endregion
+
+        #region Display
+
+        private void InitTabs()
+        {
+            _tab = TAB.NONE;
+            ChangeTab(TAB.SELECT_DECK);
         }
 
         private void InitObjects()
@@ -232,7 +391,7 @@ namespace Loom.ZombieBattleground
         
         private void UpdateDeckInfoObjects()
         {
-            List<Deck> deckList = _dataManager.CachedDecksData.Decks;
+            List<Deck> deckList = GetDeckList();
             //TODO Add logic to display more than 3 decks
             for(int i=0; i<_deckInfoObjectList.Count; ++i)
             {
@@ -253,13 +412,24 @@ namespace Loom.ZombieBattleground
                 deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{_maxDeckCard}";
                 deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(heroElement);
                 deckInfoObject._button.onClick.RemoveAllListeners();
+                int index = i;
                 deckInfoObject._button.onClick.AddListener(() =>
                 {
-                    //TODO
+                    ChangeDeckIndex(index);
                 });
             }
         }
-        
+
+        private void UpdateSelectedDeckDisplay(int selectedDeckIndex)
+        {
+            for (int i = 0; i < _deckInfoObjectList.Count; ++i)
+            {
+                DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
+                Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
+                deckInfoObject._button.GetComponent<Image>().sprite = sprite;
+            }
+        }
+
         private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordPortrait/OverlordDeckThumbnail";
@@ -291,5 +461,14 @@ namespace Loom.ZombieBattleground
             public Image _imageOverlordThumbnail;
             public TextMeshProUGUI _textCardsAmount;
         }
+        
+        private void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            _uiManager.DrawPopup<WarningPopup>(msg);
+        }
+        
+        #endregion
     }
 }
