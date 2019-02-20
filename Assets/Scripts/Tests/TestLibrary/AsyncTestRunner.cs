@@ -155,6 +155,11 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
+                if (e is AggregateException aggregateException)
+                {
+                    Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
+                    e = aggregateException.InnerException;
+                }
                 Debug.Log("e is OperationCanceledException: " + (e is OperationCanceledException));
 
                 Exception flappyException = null;
