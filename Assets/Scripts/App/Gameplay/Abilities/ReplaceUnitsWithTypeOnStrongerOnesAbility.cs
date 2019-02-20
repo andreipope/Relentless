@@ -42,6 +42,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if(PredefinedTargets != null && PredefinedTargets.Count == 0)
+                return;
+
             GetInfosAboutUnitsOnBoard();
             GetPossibleNewUnits();
             ClearOldUnitsOnBoard();
@@ -113,7 +116,7 @@ namespace Loom.ZombieBattleground
 
         private void ClearOldUnitsOnBoard()
         {
-            if (PredefinedTargets != null)
+            if (PredefinedTargets != null && PredefinedTargets.Count > 0)
             {
                 foreach (BoardUnitView unit in _boardUnits)
                 {
@@ -125,14 +128,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-	            foreach(ReplaceUnitInfo unitInfo in _replaceUnitInfos)
-	            {
-	                unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
-	                unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
+                foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
+                {
+                    unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
+                    unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
 
                     unitInfo.OldUnitView.DisposeGameObject();
                 }
-	        }
+            }
         }
 
         private void GetPossibleNewUnits()
@@ -155,7 +158,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-	            ReplaceUnitInfo replaceUnitInfo = null;
+                ReplaceUnitInfo replaceUnitInfo = null;
 	            foreach (BoardUnitView unit in _boardUnits)
 	            {
 	                replaceUnitInfo = new ReplaceUnitInfo()
