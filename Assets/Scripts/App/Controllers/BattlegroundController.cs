@@ -999,7 +999,9 @@ namespace Loom.ZombieBattleground
             WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
-                return CreateCustomHandBoardCard(card).HandBoardCard;
+                BoardCard boardCard = CreateCustomHandBoardCard(card);
+                Object.Destroy(boardCard.GameObject);
+                return boardCard.HandBoardCard;
             }
 
             return null;
