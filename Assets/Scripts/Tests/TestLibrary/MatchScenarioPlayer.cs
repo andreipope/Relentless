@@ -234,7 +234,7 @@ namespace Loom.ZombieBattleground.Test
                     playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
                     (bool?) null;
 
-                if (isLocalPlayer != null && isLocalPlayer && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                if (isLocalPlayer != null && isLocalPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
                 {
                     await HandleOpponentClientTurn(false);
                 }
