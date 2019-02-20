@@ -1679,6 +1679,10 @@ namespace Loom.ZombieBattleground.Test
                     break;
 
                 //Debug.Log("!a 3");
+
+                await WaitUntilInputIsUnblocked();
+
+                //Debug.Log("!a 4");
             }
         }
 
