@@ -866,8 +866,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1, new DeckCardData("Alpha", 1), new DeckCardData("Pyromaz", 2));
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1, new DeckCardData("Alpha", 1), new DeckCardData("Pyromaz", 2));
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1, new DeckCardData("Alpha", 1), new DeckCardData("Pyromaz", 20));
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1, new DeckCardData("Alpha", 1), new DeckCardData("Pyromaz", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
@@ -891,12 +891,23 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         player.CardPlay(playerCard1Id, ItemPosition.Start);
                         player.CardPlay(playerCard2Id, ItemPosition.Start);
-                        player.CardPlay(playerCardId, ItemPosition.Start);
                     },
                     opponent =>
                     {
                         opponent.CardPlay(opponentCard1Id, ItemPosition.Start);
                         opponent.CardPlay(opponentCard2Id, ItemPosition.Start);
+                    },
+                    player => 
+                    {
+                        player.CardPlay(playerCardId, ItemPosition.Start);
+                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
+                        {
+                            new ParametrizedAbilityInstanceId(playerCard1Id),
+                            new ParametrizedAbilityInstanceId(playerCard2Id)
+                        });
+                    },
+                    opponent => 
+                    {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
                         {
@@ -904,8 +915,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                             new ParametrizedAbilityInstanceId(opponentCard2Id)
                         });
                     },
-                    player => {},
-                    opponent => {},
                 };
 
                 Action validateEndState = () =>
@@ -926,7 +935,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasFeral);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             }, 400);
         }
 
