@@ -21,6 +21,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private int _finishedMatchCounter;
 
+    public const string EventGameStarted = "Game Started";
+
     public const string EventLogIn = "Log In";
 
     public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
@@ -76,6 +78,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
             LogEvent("NewInstallation", Application.platform.ToString(), 0);
             PlayerPrefs.SetInt(FirstTimeInstallKey, 1);
         }
+
+        SetEvent(EventGameStarted);
     }
 
     public void LogScreen(string title)
