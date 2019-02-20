@@ -170,7 +170,6 @@ namespace Loom.ZombieBattleground.Test
                 {
                     mustRetry = true;
                     Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
-                    Debug.LogException(flappyException);
                 }
                 else
                 {
