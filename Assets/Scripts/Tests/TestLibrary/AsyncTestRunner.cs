@@ -155,23 +155,38 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                if (e is OperationCanceledException)
+                if (e is AggregateException aggregateException)
                 {
-                    Debug.LogException(_cancellationReason);
-                    ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
+                    Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
+                    e = aggregateException.InnerException;
+                }
+                Debug.Log("e is OperationCanceledException: " + (e is OperationCanceledException));
+
+                Exception flappyException = null;
+                if (IsFlappyException(e))
+                {
+                    flappyException = e;
+                } else if (_cancellationReason != null && IsFlappyException(_cancellationReason))
+                {
+                    flappyException = _cancellationReason;
+                }
+
+                if (flappyException != null && retry <= FlappyErrorMaxRetryCount)
+                {
+                    mustRetry = true;
+                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
                 }
                 else
                 {
-                    if (IsFlappyException(e) && retry <= FlappyErrorMaxRetryCount)
+                    if (e is OperationCanceledException)
                     {
-                        mustRetry = true;
-                        Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
-                        Debug.LogException(e);
+                        Debug.LogException(_cancellationReason);
+                        ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
                     }
                     else
                     {
                         Debug.LogException(e);
-                        throw;
+                        ExceptionDispatchInfo.Capture(e).Throw();
                     }
                 }
             }

@@ -167,6 +167,8 @@ namespace Loom.ZombieBattleground
 
         public Sprite Sprite => _pictureSprite.sprite;
 
+        public bool ArrivalDone => _arrivalDone;
+
         public void Update()
         {
             CheckOnDie();
