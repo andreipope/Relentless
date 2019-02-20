@@ -1097,17 +1097,6 @@ namespace Loom.ZombieBattleground
                 }
             });
 
-            if(foundObject == null)
-            {
-                WorkingCard card = GetWorkingCardByInstanceId(id);
-                if (card != null)
-                {
-                    BoardCard boardCard = CreateCustomHandBoardCard(card);
-                    Object.Destroy(boardCard.GameObject);
-                    return boardCard.HandBoardCard;
-                }
-            }
-
             return foundObject;
         }
 
