@@ -963,7 +963,7 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(target.Key,
                         new ParametrizedAbilityParameters()
                         {
-                            Attack = target.Value
+                            Attack = target.Value * skill.Value
                         })
                 ).ToList();
             }
