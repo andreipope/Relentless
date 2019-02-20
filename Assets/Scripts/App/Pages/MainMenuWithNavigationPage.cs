@@ -158,22 +158,22 @@ namespace Loom.ZombieBattleground
             switch(setType)
             {
                 case Enumerators.SetType.AIR:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_air");                  
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_air");                  
                     break;
                 case Enumerators.SetType.FIRE:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_fire");
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_fire");
                     break;
                 case Enumerators.SetType.EARTH:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_earth");
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_earth");
                     break;
                 case Enumerators.SetType.TOXIC:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_toxic");
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_toxic");
                     break;
                 case Enumerators.SetType.WATER:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_water");
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_water");
                     break;
                 case Enumerators.SetType.LIFE:
-                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/OverlordPortrait/main_portrait_life");
+                    _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_life");
                     break;
                 default:
                     Debug.Log($"No OverlordPortrait found for setType {setType}");

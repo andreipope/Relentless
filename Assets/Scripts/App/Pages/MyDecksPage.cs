@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
         
         private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
         {
-            string path = "Images/UI/OverlordPortrait/OverlordDeckThumbnail";
+            string path = "Images/UI/MyDecks/OverlordPortrait/OverlordDeckThumbnail";
             switch(heroElement)
             {
                 case Enumerators.SetType.AIR:
