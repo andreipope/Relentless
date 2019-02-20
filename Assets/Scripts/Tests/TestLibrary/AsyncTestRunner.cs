@@ -155,23 +155,34 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                if (e is OperationCanceledException)
+                Debug.Log("e is OperationCanceledException: " + (e is OperationCanceledException));
+
+                Exception flappyException = null;
+                if (IsFlappyException(e))
                 {
-                    Debug.LogException(_cancellationReason);
-                    ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
+                    flappyException = e;
+                } else if (_cancellationReason != null && IsFlappyException(_cancellationReason))
+                {
+                    flappyException = _cancellationReason;
+                }
+
+                if (flappyException != null && retry <= FlappyErrorMaxRetryCount)
+                {
+                    mustRetry = true;
+                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
+                    Debug.LogException(flappyException);
                 }
                 else
                 {
-                    if (IsFlappyException(e) && retry <= FlappyErrorMaxRetryCount)
+                    if (e is OperationCanceledException)
                     {
-                        mustRetry = true;
-                        Debug.LogWarning($"Test had flappy error, retrying (retry {retry} out of {FlappyErrorMaxRetryCount})");
-                        Debug.LogException(e);
+                        Debug.LogException(_cancellationReason);
+                        ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
                     }
                     else
                     {
                         Debug.LogException(e);
-                        throw;
+                        ExceptionDispatchInfo.Capture(e).Throw();
                     }
                 }
             }

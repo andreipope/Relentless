@@ -1137,6 +1137,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
                         Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
+                        Assert.True(boardCard.CanBePlayed(boardCard.WorkingCard.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1426,7 +1427,7 @@ namespace Loom.ZombieBattleground.Test
                     .BoardCards
                     .FirstOrDefault(card => card.Model.InstanceId == instanceId);
 
-            if (boardUnitView == null || boardUnitView is default(BoardUnitView))
+            if (boardUnitView == null)
                 throw new Exception($"Card {instanceId} not found on board");
 
             return boardUnitView;
@@ -1572,7 +1573,7 @@ namespace Loom.ZombieBattleground.Test
             await new WaitUntil(() =>
             {
                 AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null || _uiManager.GetPopup<ConnectionPopup>().Self != null;
+                return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null;
             });
 
             await HandleConnectivityIssues();
@@ -1590,6 +1591,8 @@ namespace Loom.ZombieBattleground.Test
                 AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                 return IsGameEnded() || _playerController.IsActive;
             });
+
+            Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
         /// <summary>
@@ -1661,6 +1664,7 @@ namespace Loom.ZombieBattleground.Test
 
                 //Debug.Log("!a 0");
 
+                Assert.True(_playerController.IsActive, "_playerController.IsActive");
                 await TaskAsIEnumerator(currentTurnTask());
 
                 //Debug.Log("!a 1");
@@ -2364,16 +2368,16 @@ namespace Loom.ZombieBattleground.Test
         /// <returns></returns>
         public async Task CreateAndConnectOpponentDebugClient(Func<Exception, Task> onExceptionCallback = null)
         {
+            if (_opponentDebugClientOwner != null)
+            {
+                Object.Destroy(_opponentDebugClientOwner.gameObject);
+                _opponentDebugClientOwner = null;
+            }
+
             if (_opponentDebugClient != null)
             {
                 await _opponentDebugClient.Reset();
                 _opponentDebugClient = null;
-            }
-
-            if (_opponentDebugClientOwner != null)
-            {
-                Object.Destroy(_opponentDebugClientOwner);
-                _opponentDebugClientOwner = null;
             }
 
             GameObject owner = new GameObject("_OpponentDebugClient");
@@ -2484,8 +2488,6 @@ namespace Loom.ZombieBattleground.Test
             float baseTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
             return baseTime > _waitStartTime + _waitAmount;
         }
-
-
 
         public static IEnumerator TaskAsIEnumerator(Func<Task> taskFunc, int timeout = Timeout.Infinite)
         {
