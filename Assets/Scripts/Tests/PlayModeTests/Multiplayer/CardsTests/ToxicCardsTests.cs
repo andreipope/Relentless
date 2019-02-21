@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentUnit.InitialDamage - 1, opponentUnit.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: true, enableBackendGameLogicMatch: true, enableClientGameLogicMatch: true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableReverseMatch: false, enableBackendGameLogicMatch: true, enableClientGameLogicMatch: true);
             }, 5 * 60);
         }
 
@@ -1521,7 +1521,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(6, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZludgeId)).CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
             });
         }
     }

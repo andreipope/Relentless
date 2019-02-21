@@ -1110,14 +1110,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    InstanceId id1 = new InstanceId(61);
+                    InstanceId id1 = new InstanceId(7);
                     Assert.IsNotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(id1));
 
-                    InstanceId id2 = new InstanceId(62);
+                    InstanceId id2 = new InstanceId(8);
                     Assert.IsNotNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(id2));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, false, true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
             });
         }
     }
