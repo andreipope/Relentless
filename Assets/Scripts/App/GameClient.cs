@@ -138,13 +138,19 @@ namespace Loom.ZombieBattleground
         {
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
             Debug.Log("Trying to load config file: " + configDataFilePath);
-            ConfigData configData = new ConfigData();
             if (File.Exists(configDataFilePath))
             {
-                configData = JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }
+#if UNITY_EDITOR
+            configDataFilePath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, Constants.LocalConfigDataFileName);
+            if (File.Exists(configDataFilePath))
+            {
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+            }
+#endif
 
-            return configData;
+            return new ConfigData();
         }
     }
 }
