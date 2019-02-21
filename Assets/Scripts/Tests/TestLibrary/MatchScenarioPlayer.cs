@@ -25,6 +25,7 @@ namespace Loom.ZombieBattleground.Test
         private readonly QueueProxyPlayerActionTestProxy _localQueueProxy;
         private readonly QueueProxyPlayerActionTestProxy _opponentQueueProxy;
         //private readonly SemaphoreSlim _opponentClientTurnSemaphore = new SemaphoreSlim(1);
+        private int _endTurnSemaphore = 0;
 
         private int _currentTurn;
         private bool _aborted;
@@ -48,7 +49,46 @@ namespace Loom.ZombieBattleground.Test
             _localQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _localProxy);
             _opponentQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _opponentProxy);
 
+            _opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
+
             //_opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
+        }
+
+        private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)
+        {
+            // Switch to main thread
+            await new WaitForUpdate();
+
+            if (Completed)
+                return;
+
+            try
+            {
+                MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
+                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
+                    playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
+                    (bool?) null;
+
+                if (isOpponentPlayer != null && !isOpponentPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                {
+                    Debug.Log("OnBackendFacadeOnPlayerActionDataReceived");
+                    _endTurnSemaphore++;
+                    Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+        private void OnEndTurnActionReceived(GameState obj)
+        {
+            Debug.Log("OnEndTurnActionReceived!!!");
+
+            _endTurnSemaphore++;
+            Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
         }
 
         public async Task Play()
@@ -150,6 +190,16 @@ namespace Loom.ZombieBattleground.Test
             return async () =>
             {
                 await PlayQueue();
+                Debug.Log("await _endTurnSemaphore.WaitAsync();");
+                _endTurnSemaphore--;
+                Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
+                while (_endTurnSemaphore < 0)
+                {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                    await new WaitForUpdate();
+                }
+
+                Debug.Log("await _endTurnSemaphore.WaitAsync(); - END");
                 await HandleOpponentClientTurn(false);
             };
         }

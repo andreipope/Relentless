@@ -159,7 +159,6 @@ namespace Loom.ZombieBattleground.Test
                     Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
                     e = aggregateException.InnerException;
                 }
-                Debug.Log("e is OperationCanceledException: " + (e is OperationCanceledException));
 
                 Exception flappyException = null;
                 if (IsFlappyException(e))
@@ -245,27 +244,6 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Warning:
                 case LogType.Log:
                     break;
-            }
-        }
-
-        private struct LogMessage
-        {
-            public string Message { get; }
-
-            public string StackTrace { get; }
-
-            public LogType LogType { get; }
-
-            public LogMessage(string message, string stackTrace, LogType logType)
-            {
-                Message = message;
-                StackTrace = stackTrace;
-                LogType = logType;
-            }
-
-            public override string ToString()
-            {
-                return $"[{LogType}] {Message}";
             }
         }
     }

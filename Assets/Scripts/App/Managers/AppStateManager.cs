@@ -173,6 +173,8 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
         }
 
         public void Init()
