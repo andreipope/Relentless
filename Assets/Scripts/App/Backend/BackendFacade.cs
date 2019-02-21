@@ -15,7 +15,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private int _subscribeCount;
         private IRpcClient _reader;
         private IContractCallProxy _contractCallProxy;
         private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
@@ -703,6 +702,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(IList<string> topics)
         {
+            await _reader.UnsubscribeAsync(EventHandler);
             await _reader.SubscribeAsync(EventHandler, topics);
         }
 

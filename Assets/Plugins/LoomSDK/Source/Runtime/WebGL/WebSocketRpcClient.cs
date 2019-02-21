@@ -110,7 +110,6 @@ namespace Loom.Client.Unity.WebGL.Internal
         public override async Task SubscribeAsync(EventHandler<JsonRpcEventData> handler, ICollection<string> topics)
         {
             var isFirstSub = this.eventReceived == null;
-            this.eventReceived -= handler;
             this.eventReceived += handler;
             if (isFirstSub)
             {

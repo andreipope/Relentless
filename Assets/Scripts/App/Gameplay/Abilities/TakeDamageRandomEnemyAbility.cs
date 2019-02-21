@@ -34,20 +34,18 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
-
-            Action();
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
+            {
+                Action();
+            }
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-            Debug.Log("END TURN IS COMING");
             if (AbilityCallType != Enumerators.AbilityCallType.END ||
           !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
-            Debug.Log("WENT THROUGH");
             Action();
         }
 
@@ -136,6 +134,12 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
+
+            
+            if (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer) 
+            {
+                base.Deactivate();
+            }
         }
 
         private void ActionCompleted(object target, out int damageWas)
