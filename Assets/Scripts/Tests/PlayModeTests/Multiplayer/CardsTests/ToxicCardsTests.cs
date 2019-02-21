@@ -97,8 +97,16 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentBurnId, ItemPosition.Start);
                            opponent.CardPlay(opponentBurn2Id, ItemPosition.Start);
                        },
-                       player => player.CardPlay(playerZpitterId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentZpitterId, ItemPosition.Start),
+                       player =>
+                       {
+                           player.CardPlay(playerZpitterId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZpitterId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentZpitterId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(opponentZpitterId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
+                       }
                    };
 
                 Action validateEndState = () =>
@@ -814,7 +822,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.LetsThink();
                            opponent.CardAttack(opponentSlabId, playerSpikezId);
-                           opponent.LetsThink();
+                           opponent.LetsThink(3);
                        },
                 };
 
@@ -912,22 +920,27 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                            player.CardAttack(playerSpikerbId, opponentPolluterId);
-
+                           player.CardAttack(playerPolluterId, opponentSpikerId);
+                           player.LetsThink(5);
+                           player.Assert(() => {
+                                Assert.AreEqual(6, TestHelper.GetCurrentPlayer().GooVials);
+                           });
                        },
                        opponent =>
                        {
-                            Assert.AreEqual(5, TestHelper.GetOpponentPlayer().GooVials);
-                            opponent.CardAttack(opponentSpikerId, playerPolluterId);
+                           opponent.CardAttack(opponentPolluterId, playerSpikerbId);
+                           opponent.LetsThink(5);
+                           opponent.Assert(() => {
+                                Assert.AreEqual(6, TestHelper.GetOpponentPlayer().GooVials);
+                           });
                        },
-                       player => Assert.AreEqual(6, TestHelper.GetCurrentPlayer().GooVials),
                 };
 
                 Action validateEndState = () =>
                 {
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
