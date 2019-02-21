@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
 
                 _targets = new List<BoardObject>();
                 int count = Count;
-                while (count > 0 || possibleTargets.Count > 0)
+                while (count > 0 && possibleTargets.Count > 0)
                 {   
                     int chosenIndex = MersenneTwister.IRandom(0, possibleTargets.Count-1);
                     _targets.Add(possibleTargets[chosenIndex]);
