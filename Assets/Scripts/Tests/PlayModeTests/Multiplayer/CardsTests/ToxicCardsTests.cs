@@ -2,8 +2,6 @@ using System;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine.TestTools;
@@ -212,7 +210,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            }, 5 * 60);
+            });
         }
 
         [UnityTest]
@@ -474,7 +472,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Zlimey", 10)
                 );
-
+               
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
