@@ -737,14 +737,26 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
 
+            if (!player.IsLocalPlayer)
+            {
+                card.GameObject.SetActive(false);
+            }
+
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
             animationSequence.OnComplete(() =>
             {
-                RemoveCard(new object[]
+                if (player.IsLocalPlayer)
                 {
+                    RemoveCard(new object[]
+                    {
                         card
-                });
+                    });
+                }
+                else
+                {
+                    Object.Destroy(card.GameObject);
+                }
 
                 InternalTools.DoActionDelayed(() =>
                 {
