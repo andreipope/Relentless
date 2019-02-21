@@ -138,5 +138,16 @@ namespace Loom.ZombieBattleground.Test
                 )
             );
         }
+
+        public async Task LetsThink(float thinkTime, bool forceRealtime)
+        {
+            await _testHelper.LetsThink(thinkTime, forceRealtime);
+        }
+
+        public async Task Assert(Action action)
+        {
+           action();
+           await new WaitForSeconds(1f);
+        }
     }
 }

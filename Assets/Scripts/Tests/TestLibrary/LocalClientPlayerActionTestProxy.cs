@@ -106,6 +106,17 @@ namespace Loom.ZombieBattleground.Test
             throw new NotSupportedException();
         }
 
+        public async Task LetsThink(float thinkTime, bool forceRealtime)
+        {
+            await _testHelper.LetsThink(thinkTime, forceRealtime);
+        }
+
+        public Task Assert(Action action)
+        {
+            action();
+            return Task.CompletedTask;
+        }
+
         private void HandleNextCardAbility()
         {
             AbilityBoardArrow abilityBoardArrow = GameObject.FindObjectOfType<AbilityBoardArrow>();
