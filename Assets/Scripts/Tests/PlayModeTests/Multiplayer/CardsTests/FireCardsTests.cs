@@ -346,7 +346,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "BlaZter", 1);
                 InstanceId opponentCard1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
 
-                Debug.Log(playerCardId + " - " + opponentCardId + " - " + opponentCard1Id);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                     player => {},
