@@ -1521,7 +1521,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(6, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZludgeId)).CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, true, true, true);
             });
         }
     }
