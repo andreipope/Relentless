@@ -340,7 +340,7 @@ namespace Loom.ZombieBattleground
                         }
                         if (matchCanStart)
                         {
-                            MersenneTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
+                            MTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
                             MatchingStartedActionReceived?.Invoke();
                         }
                         break;

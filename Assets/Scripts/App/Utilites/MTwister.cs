@@ -1,6 +1,6 @@
 ﻿using System;
 
-public class MersenneTwister
+public class MTwister
 {
     const int MERS_N = 624;
     const int MERS_M = 397;
@@ -16,13 +16,6 @@ public class MersenneTwister
     static uint[] mt = new uint[MERS_N];
     static uint mti;
 
-    /*
-    private MersenneTwister() { }
-    public MersenneTwister(uint seed)
-    {
-        RandomInit(seed);
-    }
-    */
     static public void RandomInit(uint seed)
     {
         mt[0] = seed;

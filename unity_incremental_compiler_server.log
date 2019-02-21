@@ -1,0 +1,169 @@
+ (0,0): [02/21/2019 02:28:34.827 ] Unity incremental compiler server
+ (0,0): [02/21/2019 02:28:34.974 ] watchdog active on pid: 20800
+ (0,0): [02/21/2019 02:28:51.967 ] ZombieBattleground.RuntimeEditorOnly.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:51.981 ] ZombieBattleground.RuntimeEditorOnly.dll compiling...
+ (0,0): [02/21/2019 02:28:52.021 ] Unity.TextMeshPro.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.033 ] Unity.TextMeshPro.dll compiling...
+ (0,0): [02/21/2019 02:28:52.200 ] LoomSDK.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.204 ] GoogleAnalytics.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.214 ] LoomSDK.dll compiling...
+ (0,0): [02/21/2019 02:28:52.216 ] GoogleAnalytics.dll compiling...
+ (0,0): [02/21/2019 02:28:52.201 ] Opencoding.Console.Misc.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.253 ] Opencoding.Console.Misc.dll compiling...
+ (0,0): [02/21/2019 02:28:52.382 ] Unity.PackageManagerUI.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.416 ] Unity.PackageManagerUI.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:52.427 ] AsyncAwaitUtil.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.439 ] AsyncAwaitUtil.dll compiling...
+ (0,0): [02/21/2019 02:28:52.483 ] AdvancedFPSCounter.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:52.495 ] AdvancedFPSCounter.dll compiling...
+ (0,0): [02/21/2019 02:28:54.871 ] ZombieBattleground.RuntimeEditorOnly.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.RuntimeEditorOnly.dll
+ (0,0): [02/21/2019 02:28:54.872 ] GoogleAnalytics.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\GoogleAnalytics.dll
+ (0,0): [02/21/2019 02:28:54.871 ] Unity.PackageManagerUI.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Unity.PackageManagerUI.Editor.dll
+ (0,0): [02/21/2019 02:28:54.873 ] AdvancedFPSCounter.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\AdvancedFPSCounter.dll
+ (0,0): [02/21/2019 02:28:54.874 ] Opencoding.Console.Misc.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Opencoding.Console.Misc.dll
+ (0,0): [02/21/2019 02:28:54.871 ] AsyncAwaitUtil.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\AsyncAwaitUtil.dll
+ (0,0): [02/21/2019 02:28:54.941 ] ZombieBattleground.RuntimeEditorOnly.dll compilation finished in 2959ms  source files re-parsed: 6 metadata reloaded: 238
+ (0,0): [02/21/2019 02:28:54.954 ] ZombieBattleground.RuntimeEditorOnly.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.024 ] Opencoding.Console.Misc.dll compilation finished in 2771ms  source files re-parsed: 16 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.024 ] Unity.PackageManagerUI.Editor.dll compilation finished in 2627ms  source files re-parsed: 44 metadata reloaded: 1
+ (0,0): [02/21/2019 02:28:55.037 ] Unity.TextMeshPro.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Unity.TextMeshPro.dll
+ (0,0): [02/21/2019 02:28:55.043 ] Opencoding.Console.Misc.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.046 ] AdvancedFPSCounter.dll compilation finished in 2551ms  source files re-parsed: 15 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.048 ] Unity.PackageManagerUI.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.024 ] AsyncAwaitUtil.dll compilation finished in 2585ms  source files re-parsed: 10 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.058 ] AdvancedFPSCounter.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.070 ] AsyncAwaitUtil.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.024 ] GoogleAnalytics.dll compilation finished in 2808ms  source files re-parsed: 18 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.090 ] LoomSDK.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\LoomSDK.dll
+ (0,0): [02/21/2019 02:28:55.091 ] GoogleAnalytics.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.108 ] Unity.TextMeshPro.dll compilation finished in 3075ms  source files re-parsed: 45 metadata reloaded: 138
+ (0,0): [02/21/2019 02:28:55.120 ] Unity.TextMeshPro.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.181 ] LoomSDK.dll compilation finished in 2967ms  source files re-parsed: 54 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.193 ] LoomSDK.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.762 ] DOTween.Modules.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.774 ] DOTween.Modules.dll compiling...
+ (0,0): [02/21/2019 02:28:55.877 ] LoomSDK.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.889 ] LoomSDK.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:55.914 ] DOTween.Modules.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\DOTween.Modules.dll
+ (0,0): [02/21/2019 02:28:55.937 ] LoomSDK.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\LoomSDK.Editor.dll
+ (0,0): [02/21/2019 02:28:55.963 ] Unity.AssetBundleBrowser.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.975 ] Unity.AssetBundleBrowser.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:55.976 ] LoomSDK.Editor.dll compilation finished in 87ms  source files re-parsed: 1 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.982 ] DOTween.Modules.dll compilation finished in 208ms  source files re-parsed: 7 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:55.987 ] LoomSDK.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:55.996 ] DOTween.Modules.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.110 ] Opencoding.Console.Misc.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.122 ] Opencoding.Console.Misc.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:56.138 ] Unity.AssetBundleBrowser.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Unity.AssetBundleBrowser.Editor.dll
+ (0,0): [02/21/2019 02:28:56.163 ] GoogleAnalytics.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.164 ] Opencoding.Console.Misc.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Opencoding.Console.Misc.Editor.dll
+ (0,0): [02/21/2019 02:28:56.174 ] GoogleAnalytics.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:56.202 ] GoogleAnalytics.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\GoogleAnalytics.Editor.dll
+ (0,0): [02/21/2019 02:28:56.208 ] Opencoding.Console.Misc.Editor.dll compilation finished in 87ms  source files re-parsed: 5 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:56.220 ] Opencoding.Console.Misc.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.229 ] Unity.AssetBundleBrowser.Editor.dll compilation finished in 254ms  source files re-parsed: 18 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:56.239 ] GoogleAnalytics.Editor.dll compilation finished in 65ms  source files re-parsed: 1 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:56.241 ] Unity.AssetBundleBrowser.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.251 ] GoogleAnalytics.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.260 ] UnityEditor.StandardEvents.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.273 ] UnityEditor.StandardEvents.dll compiling...
+ (0,0): [02/21/2019 02:28:56.305 ] UnityEditor.StandardEvents.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\UnityEditor.StandardEvents.dll
+ (0,0): [02/21/2019 02:28:56.338 ] UnityEditor.StandardEvents.dll compilation finished in 65ms  source files re-parsed: 1 metadata reloaded: 0
+ (0,0): [02/21/2019 02:28:56.350 ] UnityEditor.StandardEvents.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.362 ] ZombieBattleground.Generated.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.374 ] ZombieBattleground.Generated.dll compiling...
+ (0,0): [02/21/2019 02:28:56.471 ] Unity.TextMeshPro.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.483 ] Unity.TextMeshPro.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:56.626 ] AdvancedFPSCounter.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:56.699 ] AdvancedFPSCounter.Editor.dll compiling...
+ (0,0): [02/21/2019 02:28:56.875 ] AdvancedFPSCounter.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\AdvancedFPSCounter.Editor.dll
+ (0,0): [02/21/2019 02:28:56.951 ] Unity.TextMeshPro.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Unity.TextMeshPro.Editor.dll
+ (0,0): [02/21/2019 02:28:56.972 ] AdvancedFPSCounter.Editor.dll compilation finished in 272ms  source files re-parsed: 3 metadata reloaded: 1
+ (0,0): [02/21/2019 02:28:57.008 ] AdvancedFPSCounter.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:57.280 ] Unity.TextMeshPro.Editor.dll compilation finished in 797ms  source files re-parsed: 39 metadata reloaded: 1
+ (0,0): [02/21/2019 02:28:57.292 ] Unity.TextMeshPro.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:57.322 ] ZombieBattleground.Generated.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Generated.dll
+ (0,0): [02/21/2019 02:28:57.441 ] ZombieBattleground.Generated.dll compilation finished in 1067ms  source files re-parsed: 10 metadata reloaded: 1
+ (0,0): [02/21/2019 02:28:57.452 ] ZombieBattleground.Generated.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:57.840 ] ZombieBattleground.Main.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:57.852 ] ZombieBattleground.Main.dll compiling...
+ (0,0): [02/21/2019 02:28:58.944 ] ZombieBattleground.Main.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Main.dll
+ (0,0): [02/21/2019 02:28:59.098 ] ZombieBattleground.Main.dll compilation finished in 1246ms  source files re-parsed: 397 metadata reloaded: 5
+ (0,0): [02/21/2019 02:28:59.111 ] ZombieBattleground.Main.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:28:59.487 ] ZombieBattleground.TestLibrary.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:28:59.499 ] ZombieBattleground.TestLibrary.dll compiling...
+ (0,0): [02/21/2019 02:28:59.718 ] ZombieBattleground.TestLibrary.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.TestLibrary.dll
+ (0,0): [02/21/2019 02:28:59.791 ] ZombieBattleground.TestLibrary.dll compilation finished in 292ms  source files re-parsed: 15 metadata reloaded: 4
+ (0,0): [02/21/2019 02:28:59.804 ] ZombieBattleground.TestLibrary.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:00.241 ] ZombieBattleground.Editor.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:00.253 ] ZombieBattleground.Editor.dll compiling...
+ (0,0): [02/21/2019 02:29:00.353 ] ZombieBattleground.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Editor.dll
+ (0,0): [02/21/2019 02:29:00.432 ] ZombieBattleground.Editor.dll compilation finished in 178ms  source files re-parsed: 17 metadata reloaded: 2
+ (0,0): [02/21/2019 02:29:00.444 ] ZombieBattleground.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:00.745 ] Assembly-CSharp-firstpass.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:00.757 ] Assembly-CSharp-firstpass.dll compiling...
+ (0,0): [02/21/2019 02:29:00.863 ] Assembly-CSharp-firstpass.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp-firstpass.dll
+ (0,0): [02/21/2019 02:29:00.873 ] ZombieBattleground.Tests.PlayMode.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:00.885 ] ZombieBattleground.Tests.PlayMode.dll compiling...
+ (0,0): [02/21/2019 02:29:00.953 ] Assembly-CSharp-firstpass.dll compilation finished in 196ms  source files re-parsed: 30 metadata reloaded: 9
+ (0,0): [02/21/2019 02:29:00.974 ] Assembly-CSharp-firstpass.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.313 ] Assembly-CSharp.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.321 ] ZombieBattleground.Tests.PlayMode.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Tests.PlayMode.dll
+ (0,0): [02/21/2019 02:29:01.325 ] Assembly-CSharp.dll compiling...
+ (0,0): [02/21/2019 02:29:01.358 ] Assembly-CSharp.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp.dll
+ (0,0): [02/21/2019 02:29:01.384 ] Assembly-CSharp-Editor-firstpass.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.389 ] Assembly-CSharp.dll compilation finished in 64ms  source files re-parsed: 1 metadata reloaded: 1
+ (0,0): [02/21/2019 02:29:01.397 ] Assembly-CSharp-Editor-firstpass.dll compiling...
+ (0,0): [02/21/2019 02:29:01.401 ] Assembly-CSharp.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.435 ] ZombieBattleground.Tests.PlayMode.dll compilation finished in 550ms  source files re-parsed: 15 metadata reloaded: 0
+ (0,0): [02/21/2019 02:29:01.447 ] ZombieBattleground.Tests.PlayMode.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.568 ] Assembly-CSharp-Editor-firstpass.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp-Editor-firstpass.dll
+ (0,0): [02/21/2019 02:29:01.646 ] Assembly-CSharp-Editor-firstpass.dll compilation finished in 250ms  source files re-parsed: 27 metadata reloaded: 0
+ (0,0): [02/21/2019 02:29:01.659 ] Assembly-CSharp-Editor-firstpass.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.894 ] ZombieBattleground.Tests.EditMode.dll: no prior compilation found in cache. Caller PID: 20800
+ (0,0): [02/21/2019 02:29:01.906 ] ZombieBattleground.Tests.EditMode.dll compiling...
+ (0,0): [02/21/2019 02:29:01.980 ] ZombieBattleground.Tests.EditMode.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Tests.EditMode.dll
+ (0,0): [02/21/2019 02:29:02.054 ] ZombieBattleground.Tests.EditMode.dll compilation finished in 148ms  source files re-parsed: 6 metadata reloaded: 1
+ (0,0): [02/21/2019 02:29:02.067 ] ZombieBattleground.Tests.EditMode.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 02:33:37.395 ] Compiler cache size is now 23,02 MB
+ (0,0): [02/21/2019 05:21:38.492 ] ZombieBattleground.Main.dll compiling...
+ (0,0): [02/21/2019 05:21:39.664 ] ZombieBattleground.Main.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Main.dll
+ (0,0): [02/21/2019 05:21:39.834 ] ZombieBattleground.Main.dll compilation finished in 1342ms  source files re-parsed: 1 metadata reloaded: 0
+ (0,0): [02/21/2019 05:21:39.847 ] ZombieBattleground.Main.dll: compilation was cached, 1 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:39.859 ] ZombieBattleground.Main.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:40.453 ] ZombieBattleground.TestLibrary.dll compiling...
+ (0,0): [02/21/2019 05:21:40.682 ] ZombieBattleground.TestLibrary.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.TestLibrary.dll
+ (0,0): [02/21/2019 05:21:40.788 ] ZombieBattleground.TestLibrary.dll compilation finished in 333ms  source files re-parsed: 0 metadata reloaded: 1
+ (0,0): [02/21/2019 05:21:40.800 ] ZombieBattleground.TestLibrary.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:40.812 ] ZombieBattleground.TestLibrary.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:41.220 ] ZombieBattleground.Editor.dll compiling...
+ (0,0): [02/21/2019 05:21:41.339 ] ZombieBattleground.Editor.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Editor.dll
+ (0,0): [02/21/2019 05:21:41.426 ] ZombieBattleground.Editor.dll compilation finished in 205ms  source files re-parsed: 0 metadata reloaded: 1
+ (0,0): [02/21/2019 05:21:41.438 ] ZombieBattleground.Editor.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:41.450 ] ZombieBattleground.Editor.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:41.727 ] Assembly-CSharp-firstpass.dll compiling...
+ (0,0): [02/21/2019 05:21:41.847 ] ZombieBattleground.Tests.PlayMode.dll compiling...
+ (0,0): [02/21/2019 05:21:41.877 ] Assembly-CSharp-firstpass.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp-firstpass.dll
+ (0,0): [02/21/2019 05:21:42.004 ] Assembly-CSharp-firstpass.dll compilation finished in 276ms  source files re-parsed: 0 metadata reloaded: 1
+ (0,0): [02/21/2019 05:21:42.036 ] Assembly-CSharp-firstpass.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.048 ] Assembly-CSharp-firstpass.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.213 ] ZombieBattleground.Tests.PlayMode.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Tests.PlayMode.dll
+ (0,0): [02/21/2019 05:21:42.325 ] ZombieBattleground.Tests.PlayMode.dll compilation finished in 478ms  source files re-parsed: 0 metadata reloaded: 0
+ (0,0): [02/21/2019 05:21:42.337 ] ZombieBattleground.Tests.PlayMode.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.348 ] ZombieBattleground.Tests.PlayMode.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.420 ] Assembly-CSharp.dll compiling...
+ (0,0): [02/21/2019 05:21:42.449 ] Assembly-CSharp.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp.dll
+ (0,0): [02/21/2019 05:21:42.477 ] Assembly-CSharp.dll compilation finished in 57ms  source files re-parsed: 0 metadata reloaded: 1
+ (0,0): [02/21/2019 05:21:42.490 ] Assembly-CSharp.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.502 ] Assembly-CSharp.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.532 ] Assembly-CSharp-Editor-firstpass.dll compiling...
+ (0,0): [02/21/2019 05:21:42.646 ] ZombieBattleground.Tests.EditMode.dll compiling...
+ (0,0): [02/21/2019 05:21:42.680 ] Assembly-CSharp-Editor-firstpass.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\Assembly-CSharp-Editor-firstpass.dll
+ (0,0): [02/21/2019 05:21:42.722 ] ZombieBattleground.Tests.EditMode.dll: emitting IL to : C:\Users\Hachi\Documents\Lavoro\CryptoZombies-Battleground 2\Temp\ZombieBattleground.Tests.EditMode.dll
+ (0,0): [02/21/2019 05:21:42.791 ] Assembly-CSharp-Editor-firstpass.dll compilation finished in 259ms  source files re-parsed: 0 metadata reloaded: 0
+ (0,0): [02/21/2019 05:21:42.803 ] Assembly-CSharp-Editor-firstpass.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.803 ] ZombieBattleground.Tests.EditMode.dll compilation finished in 155ms  source files re-parsed: 0 metadata reloaded: 1
+ (0,0): [02/21/2019 05:21:42.815 ] Assembly-CSharp-Editor-firstpass.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.825 ] ZombieBattleground.Tests.EditMode.dll: compilation was cached, 0 file(s) were found to have changed. Caller PID: 20800
+ (0,0): [02/21/2019 05:21:42.837 ] ZombieBattleground.Tests.EditMode.dll: session status updated to IncrementalCompilationStatus.Finished for Caller PID: 20800
+ (0,0): [02/21/2019 05:26:39.438 ] Compiler cache size is now 23,02 MB
