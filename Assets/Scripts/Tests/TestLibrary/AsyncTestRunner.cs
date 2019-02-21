@@ -23,7 +23,6 @@ namespace Loom.ZombieBattleground.Test
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
 
-        private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
         private Exception _cancellationReason;
 
         public CancellationToken CurrentTestCancellationToken
@@ -81,12 +80,12 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             Debug.Log(LogTag + nameof(GameTearDown));
-            await Task.Delay(500);
+            await new WaitForSecondsRealtime(0.5f);
             await TestHelper.Instance.TearDown_Cleanup();
 
             await new WaitForUpdate();
             GameClient.ClearInstance();
-            await new WaitForUpdate();
+            await new WaitForSecondsRealtime(1);
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
         }
@@ -232,9 +231,9 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    _errorMessages.Add(new LogMessage(condition, stacktrace, type));
                     string[] knownErrors = new []{
-                        "Sub-emitters must be children of the system that spawns them"
+                        "Sub-emitters must be children of the system that spawns them",
+                        "Invalid SortingGroup index set in Renderer"
                     }.Select(s => s.ToLowerInvariant()).ToArray();
 
                     if (knownErrors.Any(error => condition.ToLowerInvariant().Contains(error)))

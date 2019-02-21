@@ -1665,11 +1665,11 @@ namespace Loom.ZombieBattleground.Test
 
                 await LetsThink();
 
-                Debug.Log("!a 0");
+                //Debug.Log("!a 0");
 
                 await WaitUntilInputIsUnblocked();
 
-                Debug.Log("!a 1");
+                //Debug.Log("!a 1");
 
                 Assert.True(_playerController.IsActive, "_playerController.IsActive");
                 await TaskAsIEnumerator(currentTurnTask());

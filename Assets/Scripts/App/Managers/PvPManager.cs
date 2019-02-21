@@ -140,6 +140,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            StopMatchmaking();
         }
 
         public bool IsFirstPlayer()
