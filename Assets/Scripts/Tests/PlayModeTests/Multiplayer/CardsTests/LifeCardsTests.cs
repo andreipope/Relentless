@@ -426,7 +426,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardPlay(opponentBloomer2Id, ItemPosition.Start);
                        },
-                       player => {}
+                       player => {},
+                       opponent => {}
                 };
 
                 Action validateEndState = () =>

@@ -16,14 +16,25 @@ namespace Loom.ZombieBattleground.Test
     public class AsyncTestRunner
     {
         private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
-        private const int FlappyErrorMaxRetryCount = 2;
+        private const int FlappyErrorMaxRetryCount = 4;
+
+        private static readonly string[] KnownErrors =
+        {
+            "Sub-emitters must be children of the system that spawns them",
+            "Invalid SortingGroup index set in Renderer"
+        };
+
+        private static readonly string[] FlappyTestErrorSubstrings =
+        {
+            "RpcClientException",
+            "Call took longer than"
+        };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
 
-        private readonly List<LogMessage> _errorMessages = new List<LogMessage>();
         private Exception _cancellationReason;
 
         public CancellationToken CurrentTestCancellationToken
@@ -81,12 +92,12 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             Debug.Log(LogTag + nameof(GameTearDown));
-            await Task.Delay(500);
+            await new WaitForSecondsRealtime(0.5f);
             await TestHelper.Instance.TearDown_Cleanup();
 
             await new WaitForUpdate();
             GameClient.ClearInstance();
-            await new WaitForUpdate();
+            await new WaitForSecondsRealtime(1);
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
         }
@@ -160,7 +171,6 @@ namespace Loom.ZombieBattleground.Test
                     Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
                     e = aggregateException.InnerException;
                 }
-                Debug.Log("e is OperationCanceledException: " + (e is OperationCanceledException));
 
                 Exception flappyException = null;
                 if (IsFlappyException(e))
@@ -207,10 +217,8 @@ namespace Loom.ZombieBattleground.Test
 
         private bool IsFlappyException(Exception e)
         {
-            string str = e.ToString();
-            return
-                str.Contains("RpcClientException") ||
-                str.Contains("Call took longer than");
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
         }
 
         private void FinishCurrentTest()
@@ -232,12 +240,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    _errorMessages.Add(new LogMessage(condition, stacktrace, type));
-                    string[] knownErrors = new []{
-                        "Sub-emitters must be children of the system that spawns them"
-                    }.Select(s => s.ToLowerInvariant()).ToArray();
-
-                    if (knownErrors.Any(error => condition.ToLowerInvariant().Contains(error)))
+                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
                         break;
 
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
@@ -246,27 +249,6 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Warning:
                 case LogType.Log:
                     break;
-            }
-        }
-
-        private struct LogMessage
-        {
-            public string Message { get; }
-
-            public string StackTrace { get; }
-
-            public LogType LogType { get; }
-
-            public LogMessage(string message, string stackTrace, LogType logType)
-            {
-                Message = message;
-                StackTrace = stackTrace;
-                LogType = logType;
-            }
-
-            public override string ToString()
-            {
-                return $"[{LogType}] {Message}";
             }
         }
     }

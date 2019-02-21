@@ -184,7 +184,76 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public PlayerAction OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public PlayerAction OverlordSkillUsed(
+            SkillId skillId,
+            IReadOnlyList<ParametrizedAbilityBoardObject> targets = null
+        )
+        {
+            List<ParametrizedAbilityInstanceId> parametrizedTargetsInstanceIds = new List<ParametrizedAbilityInstanceId>();
+
+            if (targets != null)
+            {
+                foreach (ParametrizedAbilityBoardObject target in targets)
+                {
+                    if (target.BoardObject == null)
+                        continue;
+
+                    ParametrizedAbilityInstanceId targetParametrizedInstanceId;
+                    InstanceId instanceId;
+                    Enumerators.AffectObjectType affectObjectType;
+
+                    switch (target.BoardObject)
+                    {
+                        case BoardUnitModel model:
+                            instanceId = model.Card.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Character;
+                            break;
+                        case Player player:
+                            instanceId = player.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Player;
+                            break;
+                        case HandBoardCard handCard:
+                            instanceId = handCard.CardView.WorkingCard.InstanceId;
+                            affectObjectType = Enumerators.AffectObjectType.Card;
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
+                    parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
+                }
+            }
+
+            return OverlordSkillUsed(skillId, parametrizedTargetsInstanceIds);
+        }
+
+        public PlayerAction OverlordSkillUsed(
+            SkillId skillId,
+            IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
+        {
+            List<Protobuf.Unit> unitTargets = new List<Protobuf.Unit>();
+
+            if (targets != null)
+            {
+                foreach (ParametrizedAbilityInstanceId target in targets)
+                {
+                    Protobuf.Unit targetUnit = new Protobuf.Unit
+                    {
+                        InstanceId = target.Id.ToProtobuf(),
+                        Parameter = target.Parameters.ToProtobuf()
+                    };
+
+                    unitTargets.Add(targetUnit);
+                }
+            }
+
+            return OverlordSkillUsed(skillId, unitTargets);
+        }
+
+        public PlayerAction OverlordSkillUsed(
+            SkillId skillId,
+            IReadOnlyList<Protobuf.Unit> targets = null)
         {
             return new PlayerAction
             {
@@ -193,11 +262,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 OverlordSkillUsed = new PlayerActionOverlordSkillUsed
                 {
                     SkillId = skillId.Id,
-                    Target = new Protobuf.Unit
-                    {
-                        InstanceId = target.ToProtobuf(),
-                        Parameter = new Parameter()
-                    }
+                    Targets = { targets }
                 }
             };
         }

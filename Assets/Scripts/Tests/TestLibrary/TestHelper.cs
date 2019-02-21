@@ -1367,18 +1367,23 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="target">Target.</param>
         public async Task DoBoardSkill(
             BoardSkill skill,
-            BoardObject target = null)
+            List<ParametrizedAbilityBoardObject> targets = null)
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
 
-            if (target != null)
+            if (targets != null && targets.Count > 0)
             {
-                Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
-                await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
+                if (skill.Skill.CanSelectTarget)
+                {
+                    BoardObject target = targets[0].BoardObject;
+
+                    Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
+                    await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
+                }
             }
 
-            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
             Action<GameplayQueueAction<object>> onDone = null;
             onDone = gameplayQueueAction2 =>
             {
@@ -1609,24 +1614,6 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
-        // todo: reconsider having this
-        /// <summary>
-        /// Waits until the card is added to board.
-        /// </summary>
-        /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        /// <param name="boardName">Board name.</param>
-        public async Task WaitUntilCardIsAddedToBoard(string boardName)
-        {
-            Transform boardTransform = GameObject.Find(boardName).transform;
-            int boardChildrenCount = boardTransform.childCount;
-
-            await new WaitUntil(() =>
-            {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return boardChildrenCount < boardTransform.childCount && boardChildrenCount < _battlegroundController.OpponentBoardCards.Count;
-            });
-        }
-
         /// <summary>
         /// Executes tasks on each turn of a match for the local player.
         /// </summary>
@@ -1673,16 +1660,6 @@ namespace Loom.ZombieBattleground.Test
                     break;
 
                 //Debug.Log("!a 2");
-                await WaitUntilOurTurnStarts();
-
-                if (IsGameEnded())
-                    break;
-
-                //Debug.Log("!a 3");
-
-                await WaitUntilInputIsUnblocked();
-
-                //Debug.Log("!a 4");
             }
         }
 
