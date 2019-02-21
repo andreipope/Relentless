@@ -75,13 +75,13 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
+            //enableBackendGameLogicMatch = false;
             if (!enableClientGameLogicMatch && !enableBackendGameLogicMatch)
                 throw new Exception("At least one tests must be run");
 
             if (!enableReverseMatch && onlyReverseMatch)
                 throw new Exception("!enableReverseMatch && onlyReverseMatch");
 
-            //enableBackendGameLogicMatch = false;
             if (enableClientGameLogicMatch)
             {
                 pvpTestContext.UseBackendLogic = false;

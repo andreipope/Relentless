@@ -68,6 +68,8 @@ namespace Loom.ZombieBattleground.Test
 #endif
 
             await _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
+            await Task.Delay(2000);
+
             Completed = true;
 
 #if DEBUG_SCENARIO_PLAYER
