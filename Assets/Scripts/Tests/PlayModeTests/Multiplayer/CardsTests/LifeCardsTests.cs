@@ -51,8 +51,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => player.CardAttack(playerCardId, opponentCardId),
-                       player => {},
                        opponent => {},
+                       player => {},
                 };
 
                 Action validateEndState = () =>

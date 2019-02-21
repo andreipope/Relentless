@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
 
         public Address? CustomGameModeAddress { get; set; }
 
-        public List<string> PvPTags { get; set; }
+        public List<string> PvPTags { get; } = new List<string>();
 
         public DebugCheatsConfiguration DebugCheats { get; set; } = new DebugCheatsConfiguration();
 
@@ -90,11 +90,6 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
-
-            if (PvPTags == null)
-            {
-                PvPTags = new List<string> ();
-            }
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }

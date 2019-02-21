@@ -93,6 +93,7 @@ namespace Loom.ZombieBattleground.Test
 
             Debug.Log(LogTag + nameof(GameTearDown));
             await new WaitForSecondsRealtime(0.5f);
+            GameClient.Get<IAppStateManager>()?.Dispose();
             await TestHelper.Instance.TearDown_Cleanup();
 
             await new WaitForUpdate();

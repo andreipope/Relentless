@@ -1083,25 +1083,16 @@ namespace Loom.ZombieBattleground.Test
         /// Sets tags to be used by the matchmaking system.
         /// </summary>
         /// <param name="tags">Tags</param>
-        public void SetPvPTags(IList<string> tags)
+        public void SetPvPTags(IReadOnlyList<string> tags)
         {
             if (IsTestFailed)
-            {
                 return;
-            }
 
-            if (tags == null || tags.Count <= 0)
-            {
-                _pvpManager.PvPTags = null;
+            if (tags == null)
+                throw new ArgumentNullException(nameof(tags));
 
-                return;
-            }
-
-            _pvpManager.PvPTags = new List<string>();
-            foreach (string tag in tags)
-            {
-                _pvpManager.PvPTags.Add(tag);
-            }
+            _pvpManager.PvPTags.Clear();
+            _pvpManager.PvPTags.AddRange(tags);
         }
 
         /// <summary>
@@ -1112,10 +1103,7 @@ namespace Loom.ZombieBattleground.Test
             return _pvpManager.PvPTags;
         }
 
-        public DebugCheatsConfiguration DebugCheats
-        {
-            get => _pvpManager.DebugCheats;
-        }
+        public DebugCheatsConfiguration DebugCheats => _pvpManager.DebugCheats;
 
         #endregion
 

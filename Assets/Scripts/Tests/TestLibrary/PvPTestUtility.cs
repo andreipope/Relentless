@@ -115,7 +115,14 @@ namespace Loom.ZombieBattleground.Test
                 );
             setupAction?.Invoke();
 
-            await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
+            List<string> tags = new List<string>
+            {
+                "pvpTest",
+                TestHelper.GetTestName(),
+                Guid.NewGuid().ToString()
+            };
+
+            await StartOnlineMatch(tags, selectedHordeIndex: -1, createOpponent: false);
 
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
@@ -137,8 +144,9 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.GoBackToMainScreen();
         }
 
-        public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
+        public static async Task StartOnlineMatch(IReadOnlyList<string> tags = null, int selectedHordeIndex = 0, bool createOpponent = true)
         {
+
             await TestHelper.MainMenuTransition("Button_Play");
 
             await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
@@ -154,12 +162,12 @@ namespace Loom.ZombieBattleground.Test
 
             if (tags == null)
             {
-                tags = new List<string>();
+                tags = new List<string>
+                {
+                    "onlineTest",
+                    TestHelper.GetTestName()
+                };
             }
-
-            tags.Insert(0, "pvpTest");
-            tags.Insert(1, TestHelper.GetTestName());
-
             TestHelper.SetPvPTags(tags);
             TestHelper.DebugCheats.Enabled = true;
             TestHelper.DebugCheats.CustomRandomSeed = 0;

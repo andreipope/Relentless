@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
         GameState InitialGameState { get; }
 
-        List<string> PvPTags { get; set; }
+        List<string> PvPTags { get; }
 
         DebugCheatsConfiguration DebugCheats { get; }
 
