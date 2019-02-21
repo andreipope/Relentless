@@ -73,8 +73,6 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
-            
-            ResetBoardCards();
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
         }
@@ -82,6 +80,7 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {          
             ResetBoardCards();
+            Object.Destroy(CardPlaceholders);
         }
 
         #endregion
@@ -92,7 +91,11 @@ namespace Loom.ZombieBattleground
         
         public List<Transform> CardPositions;
 
-        public GameObject CardCreaturePrefab, CardItemPrefab, CardPlaceholdersPrefab, CardPlaceholders;
+        public GameObject CardCreaturePrefab,
+                          CardItemPrefab,
+                          CardPlaceholdersPrefab;
+        
+        public GameObject CardPlaceholders;
         
         private List<BoardCard> _createdBoardCards;
 
