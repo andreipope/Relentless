@@ -1406,7 +1406,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.LibraryCard.Name == "Brook"));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
             });
         }
     }
