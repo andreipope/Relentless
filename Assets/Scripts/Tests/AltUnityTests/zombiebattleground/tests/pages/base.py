@@ -14,7 +14,6 @@ def PATH(p): return os.path.abspath(
 
 
 class CZBTests(unittest.TestCase):
-    altdriver = None
     platform = "android"  # set to `ios` or `android` to change platform
     tester_key = "c0ca1ecde904"
 
@@ -47,7 +46,7 @@ class CZBTests(unittest.TestCase):
     def setup_android(self):
         self.desired_caps['platformName'] = 'Android'
         self.desired_caps['deviceName'] = 'device'
-        self.desired_caps['app'] = PATH('../application.apk')
+        self.desired_caps['app'] = PATH('../../application.apk')
         self.desired_caps['androidInstallTimeout'] = 300000
 
     def setup_ios(self):
@@ -79,14 +78,6 @@ class CZBTests(unittest.TestCase):
                             alt_element.get_text() + '` after ' + str(timeout) + ' seconds')
         return alt_element
 
-    def pass_authentification(self):
-        self.altdriver.wait_for_element('PressAnyText').mobile_tap()
-        self.altdriver.wait_for_element('InputField_Beta').set_component_property(
-            'UnityEngine.UI.InputField', 'text', self.tester_key)
-        self.altdriver.find_element('Button_Beta').mobile_tap()
-        self.altdriver.wait_for_element(
-            'TermsPopup(Clone)/Toggle', timeout=40).mobile_tap()
-        self.altdriver.wait_for_element('Button_GotIt').mobile_tap()
 
     def check_name_is_in_list(self, list, name):
         for i in list:
@@ -94,18 +85,23 @@ class CZBTests(unittest.TestCase):
                 return True
         return False
 
-    def skip_both_tutorials(self):
-        self.altdriver.wait_for_element('Button_Play').tap()
+    def skip_tutorials(self):
+        self.altdriver.wait_for_element('HiddenUI')
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
         self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        self.altdriver.wait_for_element("NPC")
+        self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn')
+        time.sleep(2)
+        self.altdriver.wait_for_element("SkipTutorial").tap()
+        self.altdriver.wait_for_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
 
-        self.altdriver.wait_for_element('Button_Skip').mobile_tap()
-        self.altdriver.wait_for_element('Button_Yes').mobile_tap()
-        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        self.altdriver.wait_for_element("NPC")
-        self.altdriver.wait_for_element('Button_Skip').mobile_tap()
-        self.altdriver.wait_for_element('Button_Yes').mobile_tap()
-
+    def write_in_input_field(self,input_field,test):
+        self.altdriver.wait_for_element(input_field.name).set_component_property('UnityEngine.UI.InputField','text',test,'UnityEngine.UI')
+    def button_pressed(self,button):
+        button.mobile_tap()
+    def read_tmp_UGUI_text(self,alt_element):
+        return alt_element.get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
+    def read_tmp_GUI_text(self,alt_element):
+        return alt_element.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro')
 
 if __name__ == '__main__':
     unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))

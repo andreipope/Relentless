@@ -1,98 +1,93 @@
-import unittest
-from appium import webdriver
-from altunityrunner import AltrunUnityDriver,NotFoundException
-import xmlrunner
-from base import CZBTests
-import time
 import datetime
+import time
+import unittest
+
+import xmlrunner
+from appium import webdriver
+
+from altunityrunner import AltrunUnityDriver, NotFoundException
+from pages.base import CZBTests 
+from pages.login_popup_page import Login_Popup_Page
+from pages.succes_forgot_page import Succes_Forgot_Page
+from pages.register_popup_page import Regitration_Popup_Page
+from pages.forgot_password_page import Forgot_Password_Page
+from pages.main_menu_page import Main_Menu_Page
 
 
 class CZBLoginTests(CZBTests):
     def setUp(self):
         super(CZBLoginTests, self).setUp()
-
-        self.altdriver.wait_for_element('HiddenUI')
-        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
-        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        self.altdriver.wait_for_element('EndTurnButton/_1_btn_endturn')
-        time.sleep(2)
-        self.altdriver.wait_for_element("SkipTutorial").tap()
-       
-        time.sleep(1)
-        self.altdriver.find_element('Root',enabled=True).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
-
-    def test_login_with_fake_account(self):
-
-        self.altdriver.wait_for_element('Button_Login').mobile_tap()
-        self.altdriver.wait_for_element('LoginPopup(Clone)')
-        self.altdriver.wait_for_element('Email_InputField').set_component_property('UnityEngine.UI.InputField','text','fakeAccount@mailinator.com','UnityEngine.UI')
-        self.altdriver.wait_for_element('Password_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
-
-        self.altdriver.wait_for_element('Button_Login_BG/Button_Login').mobile_tap()
-
-        expectedMessage='The process could not be completed with error:\n The Username and/or Password are not correct. \n\nPlease try again.'
-        actualMessage=self.altdriver.wait_for_element('Canvas3/WarningPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
+        self.skip_tutorials()
         
-        # self.assertEqual(expectedMessage,actualMessage)
-        self.altdriver.wait_for_element('Button_GotIt').mobile_tap()
-        self.altdriver.find_element('LoginPopup(Clone)')
+        
+
+    # def test_login_with_fake_account(self):
+    #     main_menu_page=Main_Menu_Page(self.altdriver)
+    #     main_menu_page.go_to_login_form()
+    #     print(self.altdriver)
+    #     login_page=Login_Popup_Page(self.altdriver)
+    #     print(login_page.login_popup)
+    #     login_page.login('fakeAccount@testsonbitbar.com','password123')
+
+    #     expectedMessage='The process could not be completed with error:\n The Username and/or Password are not correct. \n\nPlease try again.'
+    #     actualMessage=self.altdriver.wait_for_element('Canvas3/WarningPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
+        
+    #     # self.assertEqual(expectedMessage,actualMessage)
+    #     self.altdriver.wait_for_element('Button_GotIt').mobile_tap()
+    #     self.altdriver.find_element('LoginPopup(Clone)')
 
 
     def test_login_with_good_account(self):
-        self.altdriver.wait_for_element('Button_Login').mobile_tap()
-        self.altdriver.wait_for_element('LoginPopup(Clone)')
-        self.altdriver.wait_for_element('Email_InputField').set_component_property('UnityEngine.UI.InputField','text','goodTestAccount@testEmail.test','UnityEngine.UI')
-        self.altdriver.wait_for_element('Password_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
+        main_menu_page=Main_Menu_Page(self.altdriver)
+        main_menu_page.go_to_login_form()
+        login_page=Login_Popup_Page(self.altdriver)
+        login_page.login('good2TestAccount@testsonbitbar.com','password123')
 
-        self.altdriver.wait_for_element('Button_Login_BG/Button_Login').mobile_tap()
-        self.altdriver.wait_for_element_to_not_be_present('LoginPopup(Clone)')
         try:
-            self.altdriver.find_element('Button_Login')
+            self.altdriver.find_element('Button_Login',)
             self.assertTrue(False)
         except NotFoundException:
             self.assertTrue(True)
 
         
     
-    def test_send_registration_request(self):
-        self.altdriver.wait_for_element('Button_Login').mobile_tap()
-        self.altdriver.wait_for_element('LoginPopup(Clone)')
-        self.altdriver.wait_for_element('Button_Register_BG/Button_Register').mobile_tap()
-        self.altdriver.wait_for_element('Register_Group')
-        fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testsonbitbar.com'
-        self.altdriver.wait_for_element('Register_Group/Email_BG/Email_InputField').set_component_property('UnityEngine.UI.InputField','text',fakeEmail,'UnityEngine.UI')
-        self.altdriver.wait_for_element('Register_Group/Password_BG/Password_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
-        self.altdriver.wait_for_element('Register_Group/Confirm_BG/Confirm_InputField').set_component_property('UnityEngine.UI.InputField','text','password123','UnityEngine.UI')
-        self.altdriver.wait_for_element('Register_Group/Button_Register_BG/Button_Register').mobile_tap()
-        self.altdriver.wait_for_element_to_not_be_present('LoginPopup(Clone)')
-        try:
-            self.altdriver.find_element('Button_Login')
-            self.assertTrue(False)
-        except NotFoundException:
-            self.assertTrue(True)
+    # def test_send_registration_request(self):
+    #     main_menu_page=Main_Menu_Page(self.altdriver)
+    #     main_menu_page.go_to_login_form()
+    #     login_page=Login_Popup_Page(self.altdriver)
+    #     login_page.go_to_registration_form()
+    #     registration_page=Regitration_Popup_Page(self.altdriver)
+    #     fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testsonbitbar.com'
+    #     registration_page.register(fakeEmail,'password123','password123')
+
+    #     self.altdriver.wait_for_element_to_not_be_present('LoginPopup(Clone)')
+    #     try:
+    #         self.altdriver.find_element('Button_Login')
+    #         self.assertTrue(False)
+    #     except NotFoundException:
+    #         self.assertTrue(True)
     
-    def test_send_forgot_password_request(self):
-        self.altdriver.wait_for_element('Button_Login').mobile_tap()
-        self.altdriver.wait_for_element('LoginPopup(Clone)')
-        self.altdriver.wait_for_element('Button_ForgotPassword').mobile_tap()
-        self.altdriver.wait_for_element('Forgot_Group')
-        self.altdriver.wait_for_element('Forgot_Group/Email_BG/Email_InputField').set_component_property('UnityEngine.UI.InputField','text','goodTestAccount@testEmail.test','UnityEngine.UI')
-        self.altdriver.wait_for_element('Forgot_Group/Button_Send_BG/Button_Send').mobile_tap()
-        self.altdriver.wait_for_element('Waiting_Group')
+    # def test_send_forgot_password_request(self):
+    #     main_menu_page=Main_Menu_Page(self.altdriver)
+    #     main_menu_page.go_to_login_form()
+    #     login_page=Login_Popup_Page(self.altdriver)
+    #     login_page.go_to_forgot_password_form()
+    #     forgot_password_page=Forgot_Password_Page(self.altdriver)
+    #     forgot_password_page.forgot_password('goodTestAccount@testsonbitbar.com')
 
-        self.altdriver.wait_for_element('SuccessForgot_Group')
+    #     succes_forgot_page=Succes_Forgot_Page(self.altdriver)
+        
+    #     expectedMessage='Success! Go check your Email'
+    #     actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.title_text)
+    #     self.assertEqual(expectedMessage,actualMessage)
 
-        expectedMessage='Success! Go check your Email'
-        actualMessage=self.altdriver.wait_for_element('SuccessForgot_Group/Title_Text').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
-        self.assertEqual(expectedMessage,actualMessage)
+    #     expectedMessage='We just sent you a unique link to reset your password.\nGo ahead and click that link to get back your account.\nAnd welcome back to Zombie Battleground!'
+    #     actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.desc_text)
+    #     self.assertEqual(expectedMessage,actualMessage)
 
-        expectedMessage='We just sent you a unique link to reset your password.\nGo ahead and click that link to get back your account.\nAnd welcome back to Zombie Battleground!'
-        actualMessage=self.altdriver.wait_for_element('SuccessForgot_Group/Desc_Text').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
-        self.assertEqual(expectedMessage,actualMessage)
-
-        expectedMessage='(Note: Double-check your spam folder and "Promotions" tab if you don\'t see the email.)'
-        actualMessage=self.altdriver.wait_for_element('SuccessForgot_Group/Note_Text').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
-        self.assertEqual(expectedMessage,actualMessage)
+    #     expectedMessage='(Note: Double-check your spam folder and "Promotions" tab if you don\'t see the email.)'
+    #     actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.note_text)
+    #     self.assertEqual(expectedMessage,actualMessage)
 
 
 
