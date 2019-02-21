@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground.Test
         Task EndTurn();
         Task LeaveMatch();
         Task Mulligan(IEnumerable<InstanceId> cards);
-        Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null);
+        Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false);
         Task RankBuff(InstanceId card, IEnumerable<InstanceId> units);
 
         Task CardAbilityUsed(
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
         );
 
-        Task OverlordSkillUsed(SkillId skillId, InstanceId? target);
+        Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null);
         Task CardAttack(InstanceId attacker, InstanceId target);
 
         Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets);
