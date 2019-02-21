@@ -97,8 +97,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentBurnId, ItemPosition.Start);
                            opponent.CardPlay(opponentBurn2Id, ItemPosition.Start);
                        },
-                       player => player.CardPlay(playerZpitterId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentZpitterId, ItemPosition.Start),
+                       player => {
+                           player.CardPlay(playerZpitterId, ItemPosition.Start);
+                       },  
+                       opponent => {
+                           opponent.CardPlay(opponentZpitterId, ItemPosition.Start);
+                       },
+                       player => {}
                    };
 
                 Action validateEndState = () =>
@@ -108,7 +113,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            });
+            }, 300);
         }
 
         [UnityTest]

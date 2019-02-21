@@ -36,8 +36,10 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
+            Debug.Log("ACTIVATING");
             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
             {
+                Debug.Log("FIRE ACTION");
                 Action();
             }
         }
@@ -93,7 +95,7 @@ namespace Loom.ZombieBattleground
             }
 
             _targets = new List<BoardObject>();
-            int count = Count;
+            int count = Mathf.Max(1, Count);
             while (count > 0 && possibleTargets.Count > 0)
             {   
                 int chosenIndex = MTwister.IRandom(0, possibleTargets.Count-1);
@@ -145,7 +147,7 @@ namespace Loom.ZombieBattleground
                 base.UnitDiedHandler();
             }
             
-            int damageOverride = Damage;
+            int damageOverride = Mathf.Max(1, Damage);
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
