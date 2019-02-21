@@ -59,14 +59,24 @@ namespace Loom.ZombieBattleground
                        _buttonEditDeckUpperRightArrow,
                        _buttonEditDeckLowerLeftArrow,
                        _buttonEditDeckLowerRightArrow,
-                       _buttonSaveEditDeck;               
+                       _buttonSaveEditDeck,
+                       _buttonSelectOverlordLeftArrow,
+                       _buttonSelectOverlordRightArrow,
+                       _buttonSelectOverlordContinue,
+                       _buttonSelectOverlordSkillContinue;                           
                        
         private TMP_InputField _inputFieldDeckName;
 
         private TextMeshProUGUI _textEditDeckName,
-                                _textEditDeckCardsAmount;
+                                _textEditDeckCardsAmount,
+                                _textSelectOverlordDeckName,
+                                _textSelectOverlordSkillDeckname;
 
         private List<DeckInfoObject> _deckInfoObjectList;
+
+        private Image _imageSelectOverlordGlow;
+
+        private List<Transform> _selectOverlordIconList;
 
         private const int _numberOfDeckInfo = 3;
 
@@ -78,11 +88,15 @@ namespace Loom.ZombieBattleground
             SELECT_DECK = 0,
             RENAME = 1,
             EDITING = 2,
+            SELECT_OVERLORD = 3,
+            SELECT_OVERLORD_SKILL = 4,
         }
         
         private TAB _tab;
         
         private int _selectDeckIndex;
+
+        private int _selectOverlordIndex;
 
         #endregion
 
@@ -98,6 +112,7 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _deckInfoObjectList = new List<DeckInfoObject>();
+            _selectOverlordIconList = new List<Transform>();
 
             InitBoardCardPrefabsAndLists();
         }
@@ -136,12 +151,26 @@ namespace Loom.ZombieBattleground
 
             _textEditDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+            
+            _textSelectOverlordDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
+            
+            _imageSelectOverlordGlow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
+
+            for(int i=0; i<6;++i)
+            {
+                _selectOverlordIconList.Add
+                (
+                    _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Image_DeckIcon_"+i)
+                );
+            }
+            
 
             InitBoardCardComponents();
             InitButtons();
             InitObjects();            
             InitTabs();
-            ChangeDeckIndex(0);            
+            ChangeDeckIndex(0);              
         }
         
         public void Hide()
@@ -156,6 +185,7 @@ namespace Loom.ZombieBattleground
             _selfPage = null;
             
             _deckInfoObjectList.Clear();
+            _selectOverlordIconList.Clear();
             
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
@@ -172,7 +202,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonNewDeckHandler()
         {
-            _uiManager.SetPage<HordeSelectionPage>();
+            ChangeTab(TAB.SELECT_OVERLORD);
         }
         
         private void ButtonBackHandler()
@@ -264,6 +294,32 @@ namespace Loom.ZombieBattleground
         {
 
         }
+        
+        private void ButtonSelectOverlordLeftArrowHandler()
+        {
+            ChangeOverlordIndex
+            (
+                Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
+            );
+        }
+
+        private void ButtonSelectOverlordRightArrowHandler()
+        {
+            ChangeOverlordIndex
+            (
+                Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
+            );
+        }
+        
+        private void ButtonSelectOverlordContinueHandler()
+        {
+            ChangeTab(TAB.SELECT_OVERLORD_SKILL);
+        }
+        
+        private void ButtonSelectOverlordSkillContinueHandler()
+        {
+            ChangeTab(TAB.EDITING);
+        }
 
         public void OnInputFieldEndedEdit(string value)
         {
@@ -311,14 +367,17 @@ namespace Loom.ZombieBattleground
             UpdateShowBackButton
             (
                 newTab == TAB.EDITING || 
-                newTab == TAB.RENAME
+                newTab == TAB.RENAME ||
+                newTab == TAB.SELECT_OVERLORD ||
+                newTab == TAB.SELECT_OVERLORD_SKILL
             );
             
             UpdateShowAutoButton
             (
                 newTab == TAB.EDITING
             );
-
+            
+            Deck deck = GetCurrentDeck();
             switch (newTab)
             {
                 case TAB.NONE:
@@ -326,17 +385,22 @@ namespace Loom.ZombieBattleground
                 case TAB.SELECT_DECK:
                     UpdateDeckInfoObjects();
                     break;
-                case TAB.RENAME:
-                    Deck deck = GetCurrentDeck();
+                case TAB.RENAME:                    
                     _inputFieldDeckName.text = deck.Name;
                     break;
                 case TAB.EDITING:
-                    Deck deckEdit = GetCurrentDeck();
-                    _textEditDeckName.text = deckEdit.Name;
-                    _textEditDeckCardsAmount.text =  $"{deckEdit.Cards.Count}/{Constants.MaxDeckSize}";
+                    _textEditDeckName.text = deck.Name;
+                    _textEditDeckCardsAmount.text =  $"{deck.Cards.Count}/{Constants.MaxDeckSize}";
                     LoadCollectionsCards(0,Enumerators.SetType.FIRE);
-                    LoadDeckCards(deckEdit);
+                    LoadDeckCards(deck);
                     UpdateDeckCardPage();
+                    break;
+                case TAB.SELECT_OVERLORD:
+                    _textSelectOverlordDeckName.text = deck.Name;
+                    ChangeOverlordIndex(0);
+                    break;
+                case TAB.SELECT_OVERLORD_SKILL:
+                    _textSelectOverlordSkillDeckname.text = deck.Name;
                     break;
                 default:
                     break;
@@ -351,6 +415,12 @@ namespace Loom.ZombieBattleground
             _selectDeckIndex = newIndex;
         }
         
+        private void ChangeOverlordIndex(int newIndex)
+        {
+            UpdateSelectedOverlordDisplay(newIndex);
+            _selectOverlordIndex = newIndex;
+        }
+
         private void UpdateShowBackButton(bool isShow)
         {
             _trayButtonBack.gameObject.SetActive(isShow);
@@ -554,6 +624,22 @@ namespace Loom.ZombieBattleground
             _buttonSaveEditDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
             _buttonSaveEditDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
             _buttonSaveEditDeck.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectOverlordLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonSelectOverlordLeftArrow.onClick.AddListener(ButtonSelectOverlordLeftArrowHandler);
+            _buttonSelectOverlordLeftArrow.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectOverlordRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonSelectOverlordRightArrow.onClick.AddListener(ButtonSelectOverlordRightArrowHandler);
+            _buttonSelectOverlordRightArrow.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectOverlordContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
+            _buttonSelectOverlordContinue.onClick.AddListener(ButtonSelectOverlordContinueHandler);
+            _buttonSelectOverlordContinue.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectOverlordSkillContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
+            _buttonSelectOverlordSkillContinue.onClick.AddListener(ButtonSelectOverlordSkillContinueHandler);
+            _buttonSelectOverlordSkillContinue.onClick.AddListener(PlayClickSound);
         }
 
         private void InitObjects()
@@ -574,7 +660,9 @@ namespace Loom.ZombieBattleground
             {
                 _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck").gameObject,
                 _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename").gameObject,
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing").gameObject
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing").gameObject,
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord").gameObject,
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill").gameObject
             };
         }
         
@@ -617,6 +705,11 @@ namespace Loom.ZombieBattleground
                 Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
                 deckInfoObject._button.GetComponent<Image>().sprite = sprite;
             }
+        }
+        
+        private void UpdateSelectedOverlordDisplay(int selectedOverlordIndex)
+        {
+            _imageSelectOverlordGlow.transform.position = _selectOverlordIconList[selectedOverlordIndex].position;
         }
 
         private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
