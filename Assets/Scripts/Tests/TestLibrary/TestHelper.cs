@@ -1614,24 +1614,6 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
-        // todo: reconsider having this
-        /// <summary>
-        /// Waits until the card is added to board.
-        /// </summary>
-        /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        /// <param name="boardName">Board name.</param>
-        public async Task WaitUntilCardIsAddedToBoard(string boardName)
-        {
-            Transform boardTransform = GameObject.Find(boardName).transform;
-            int boardChildrenCount = boardTransform.childCount;
-
-            await new WaitUntil(() =>
-            {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return boardChildrenCount < boardTransform.childCount && boardChildrenCount < _battlegroundController.OpponentBoardCards.Count;
-            });
-        }
-
         /// <summary>
         /// Executes tasks on each turn of a match for the local player.
         /// </summary>
@@ -1674,21 +1656,10 @@ namespace Loom.ZombieBattleground.Test
                 Assert.True(_playerController.IsActive, "_playerController.IsActive");
                 await TaskAsIEnumerator(currentTurnTask());
 
-
                 if (IsGameEnded())
                     break;
 
-                Debug.Log("!a 2");
-                /*await WaitUntilOurTurnStarts();
-
-                if (IsGameEnded())
-                    break;
-
-                Debug.Log("!a 3");
-
-                await WaitUntilInputIsUnblocked();
-
-                Debug.Log("!a 4");*/
+                //Debug.Log("!a 2");
             }
         }
 

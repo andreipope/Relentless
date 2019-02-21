@@ -133,8 +133,6 @@ namespace Loom.ZombieBattleground.Test
                 await matchScenarioPlayer.Play();
             }
 
-            await Task.Delay(2000);
-
             validateEndStateAction?.Invoke();
             await TestHelper.GoBackToMainScreen();
         }

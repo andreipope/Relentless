@@ -16,7 +16,19 @@ namespace Loom.ZombieBattleground.Test
     public class AsyncTestRunner
     {
         private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
-        private const int FlappyErrorMaxRetryCount = 2;
+        private const int FlappyErrorMaxRetryCount = 4;
+
+        private static readonly string[] KnownErrors =
+        {
+            "Sub-emitters must be children of the system that spawns them",
+            "Invalid SortingGroup index set in Renderer"
+        };
+
+        private static readonly string[] FlappyTestErrorSubstrings =
+        {
+            "RpcClientException",
+            "Call took longer than"
+        };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
@@ -205,10 +217,8 @@ namespace Loom.ZombieBattleground.Test
 
         private bool IsFlappyException(Exception e)
         {
-            string str = e.ToString();
-            return
-                str.Contains("RpcClientException") ||
-                str.Contains("Call took longer than");
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
         }
 
         private void FinishCurrentTest()
@@ -230,12 +240,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    string[] knownErrors = new []{
-                        "Sub-emitters must be children of the system that spawns them",
-                        "Invalid SortingGroup index set in Renderer"
-                    }.Select(s => s.ToLowerInvariant()).ToArray();
-
-                    if (knownErrors.Any(error => condition.ToLowerInvariant().Contains(error)))
+                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
                         break;
 
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));

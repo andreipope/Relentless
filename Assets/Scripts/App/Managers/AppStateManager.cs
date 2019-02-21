@@ -173,8 +173,11 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-            _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            if (_backendFacade?.Contract?.Client != null)
+            {
+                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
         }
 
         public void Init()
@@ -215,6 +218,7 @@ namespace Loom.ZombieBattleground
             if (!_backendFacade.IsConnected)
             {
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+
 
                 if (connectionPopup.Self == null)
                 {

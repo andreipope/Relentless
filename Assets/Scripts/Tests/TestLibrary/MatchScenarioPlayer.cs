@@ -24,13 +24,11 @@ namespace Loom.ZombieBattleground.Test
         private readonly IPlayerActionTestProxy _opponentProxy;
         private readonly QueueProxyPlayerActionTestProxy _localQueueProxy;
         private readonly QueueProxyPlayerActionTestProxy _opponentQueueProxy;
-        //private readonly SemaphoreSlim _opponentClientTurnSemaphore = new SemaphoreSlim(1);
-        private int _endTurnSemaphore = 0;
 
+        private int _endTurnSemaphore;
         private int _currentTurn;
         private bool _aborted;
         private Exception _abortException;
-        //private bool _isOpponentTurn;
 
         public bool Completed { get; private set; }
 
@@ -50,45 +48,6 @@ namespace Loom.ZombieBattleground.Test
             _opponentQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _opponentProxy);
 
             _opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
-
-            //_opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
-        }
-
-        private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)
-        {
-            // Switch to main thread
-            await new WaitForUpdate();
-
-            if (Completed)
-                return;
-
-            try
-            {
-                MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
-                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
-                    playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
-                    (bool?) null;
-
-                if (isOpponentPlayer != null && !isOpponentPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
-                {
-                    Debug.Log("OnBackendFacadeOnPlayerActionDataReceived");
-                    _endTurnSemaphore++;
-                    Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-        }
-
-        private void OnEndTurnActionReceived(GameState obj)
-        {
-            Debug.Log("OnEndTurnActionReceived!!!");
-
-            _endTurnSemaphore++;
-            Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
         }
 
         public async Task Play()
@@ -101,7 +60,7 @@ namespace Loom.ZombieBattleground.Test
             bool isOpponentTurn = await _opponentProxy.GetIsCurrentTurn();
             if (isOpponentTurn)
             {
-                await HandleOpponentClientTurn(true);
+                await PlayNextOpponentClientTurn(true);
             }
 
 #if DEBUG_SCENARIO_PLAYER
@@ -132,26 +91,9 @@ namespace Loom.ZombieBattleground.Test
         {
             if (_opponentClient?.BackendFacade != null)
             {
-                //_opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
+                _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
             }
         }
-
-        private async Task HandleOpponentClientTurn(bool isFirstTurn)
-        {
-            if (Completed)
-                return;
-
-            try
-            {
-                //await _opponentClientTurnSemaphore.WaitAsync();
-                await PlayNextOpponentClientTurn(isFirstTurn);
-            }
-            finally
-            {
-                //_opponentClientTurnSemaphore.Release();
-            }
-        }
-
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
             if (Completed)
@@ -170,12 +112,6 @@ namespace Loom.ZombieBattleground.Test
             if (!success)
                 return;
 
-            // If the opponent had first turn, it would have submitted his turn before local client realized that
-            if (!isFirstTurn)
-            {
-                //_actionsQueue.Enqueue(WaitForLocalPlayerTurnEnd);
-            }
-
             await PlayQueue();
         }
 
@@ -190,17 +126,17 @@ namespace Loom.ZombieBattleground.Test
             return async () =>
             {
                 await PlayQueue();
-                Debug.Log("await _endTurnSemaphore.WaitAsync();");
+
+                // Make sure all queue events are sent and delivered.
+                // As soon as End Turn is received, we can safely continue with the opponent's turn.
                 _endTurnSemaphore--;
-                Debug.Log("_endTurnSemaphore: " + _endTurnSemaphore);
                 while (_endTurnSemaphore < 0)
                 {
                     AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     await new WaitForUpdate();
                 }
 
-                Debug.Log("await _endTurnSemaphore.WaitAsync(); - END");
-                await HandleOpponentClientTurn(false);
+                await PlayNextOpponentClientTurn(false);
             };
         }
 
@@ -257,6 +193,33 @@ namespace Loom.ZombieBattleground.Test
             while (_testHelper.GameplayManager.IsLocalPlayerTurn())
             {
                 await new WaitForUpdate();
+            }
+        }
+
+        private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)
+        {
+            // Switch to main thread
+            await new WaitForUpdate();
+
+            if (Completed)
+                return;
+
+            try
+            {
+                MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
+                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
+                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
+                    playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
+                    (bool?) null;
+
+                if (isOpponentPlayer != null && !isOpponentPlayer.Value && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
+                {
+                    _endTurnSemaphore++;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
             }
         }
     }
