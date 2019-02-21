@@ -94,12 +94,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void OverlordSkillUsed(SkillId skillId, InstanceId? target)
+        public void OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {target})");
-                return Proxy.OverlordSkillUsed(skillId, target);
+                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {nameof(targets)}: {StringifyInstanceIds(targets)})");
+                return Proxy.OverlordSkillUsed(skillId, targets);
             });
         }
 

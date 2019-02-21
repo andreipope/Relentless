@@ -12,6 +12,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
     public class ItemsCardsTests : BaseIntegrationTest
     {
-       
+
     }
 }
