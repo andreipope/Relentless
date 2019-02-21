@@ -1679,7 +1679,10 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);
                 }
 
-                skill.EndDoSkill();
+                skill.EndDoSkill(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(target)
+                }, true);
             };
 
             if ((skill.Skill.CanSelectTarget && target != null) ||

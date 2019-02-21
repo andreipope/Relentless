@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground
             GotActionUseOverlordSkill(new UseOverlordSkillModel
             {
                 SkillId = new SkillId(actionUseOverlordSkill.SkillId),
-                TargetId = actionUseOverlordSkill.Target.InstanceId.FromProtobuf(),
+                Targets = actionUseOverlordSkill.Targets.Select(t => t.FromProtobuf()).ToList(),
             });
         }
 
@@ -558,41 +558,23 @@ namespace Loom.ZombieBattleground
                 return;
 
             BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
-            BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
 
-            if (target == null)
+            List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
+
+            foreach (Unit unit in model.Targets)
             {
-                Helpers.ExceptionReporter.LogException("GotActionUseOverlordSkill Has Error: target: " + target);
-                return;
-            }
-
-            skill.StartDoSkill();
-
-            if (skill.Skill.CanSelectTarget)
-            {
-                Action callback = () =>
-                {
-                    switch (target)
+                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
+                    _battlegroundController.GetTargetByInstanceId(unit.InstanceId),
+                    new ParametrizedAbilityParameters
                     {
-                        case Player player:
-                            skill.FightTargetingArrow.SelectedPlayer = player;
-                            break;
-                        case BoardUnitModel boardUnitModel:
-                            skill.FightTargetingArrow.SelectedCard = _battlegroundController.GetBoardUnitViewByModel(boardUnitModel);
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                        Attack = unit.Parameter.Attack,
+                        Defense = unit.Parameter.Defense,
+                        CardName = unit.Parameter.CardName,
                     }
-
-                    skill.EndDoSkill();
-                };
-
-                skill.FightTargetingArrow = _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(skill.SelfObject.transform, target, action: callback);
+                ));
             }
-            else
-            {
-                skill.EndDoSkill();
-            }
+
+            skill.UseSkillFromEvent(parametrizedAbilityObjects);
         }
 
         private void GotActionMulligan(MulliganModel model)
@@ -663,7 +645,7 @@ namespace Loom.ZombieBattleground
     public class UseOverlordSkillModel
     {
         public SkillId SkillId;
-        public InstanceId TargetId;
+        public List<Unit> Targets;
     }
 
     public class UseCardAbilityModel

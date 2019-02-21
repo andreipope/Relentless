@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -92,12 +93,12 @@ public class AttackUnit : IMove
 public class PlayOverlordSkill : IMove
 {
     public BoardSkill Skill;
-    public BoardObject Target;
+    public List<ParametrizedAbilityBoardObject> Targets;
 
-    public PlayOverlordSkill(BoardSkill skill, BoardObject target)
+    public PlayOverlordSkill(BoardSkill skill, List<ParametrizedAbilityBoardObject> targets)
     {
         Skill = skill;
-        Target = target;
+        Targets = targets;
     }
 }
 

@@ -1367,18 +1367,23 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="target">Target.</param>
         public async Task DoBoardSkill(
             BoardSkill skill,
-            BoardObject target = null)
+            List<ParametrizedAbilityBoardObject> targets = null)
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
 
-            if (target != null)
+            if (targets != null && targets.Count > 0)
             {
-                Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
-                await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
+                if (skill.Skill.CanSelectTarget)
+                {
+                    BoardObject target = targets[0].BoardObject;
+
+                    Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
+                    await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
+                }
             }
 
-            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
             Action<GameplayQueueAction<object>> onDone = null;
             onDone = gameplayQueueAction2 =>
             {
