@@ -52,17 +52,29 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
                 return;
 
-            IReadOnlyList<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
-                x => x.WorkingCard.InstanceCard.Cost <= Value &&
-                    x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
-            );
+            IReadOnlyList<BoardCard> cards = PlayerCallerOfAbility.CardsInHand
+                .FindAll(workingCard => workingCard.InstanceCard.Cost <= Value &&
+                    workingCard.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
+                .Select(card => BattlegroundController.CreateCustomHandBoardCard(card))
+                .ToList();
 
-            if(SetType != Enumerators.SetType.NONE)
+            List<BoardCard> originCards = new List<BoardCard>();
+            originCards.AddRange(cards);
+
+            if (SetType != Enumerators.SetType.NONE)
             {
                 cards = cards.FindAll(x => x.LibraryCard.CardSetType == SetType);
             }
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
+
+            foreach (BoardCard card in originCards)
+            {
+                if (!cards.Contains(card))
+                {
+                    UnityEngine.Object.Destroy(card.HandBoardCard.GameObject);
+                }
+            }
 
             if (cards.Count == 0)
                 return;

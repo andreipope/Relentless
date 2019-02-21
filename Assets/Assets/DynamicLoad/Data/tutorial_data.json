@@ -2228,6 +2228,10 @@
           "TutorialDescriptionTooltipsToActivate": [
             3
           ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            1,
+            2
+          ],
           "HandPointers": [
             {
               "StartPosition": {
@@ -3802,6 +3806,7 @@
                 {
                     "ActionToEndThisStep": "DescriptionTooltipClosed",
                     "BeginGameplayFlowManually": true,
+                    "PlayerOrderScreenCloseManually": true,
                     "TutorialDescriptionTooltipsToActivate": [
                         0
                     ]
