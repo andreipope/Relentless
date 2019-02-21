@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground.Test
             IReadOnlyList<ParametrizedAbilityInstanceId> targets = null
         );
 
-        Task OverlordSkillUsed(SkillId skillId, InstanceId? target);
+        Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null);
         Task CardAttack(InstanceId attacker, InstanceId target);
 
         Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets);

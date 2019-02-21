@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -36,7 +37,15 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> units = GetRandomEnemyUnits(1);
+                List<BoardUnitModel> units;
+                if (PredefinedTargets != null)
+                {
+                    units = PredefinedTargets.Select(x => (x.BoardObject as BoardUnitModel)).ToList();
+                }
+                else
+                {
+                    units = GetRandomEnemyUnits(1);
+                }
                 if (units.Count > 0)
                 {
                     DamageTarget(units[0]);

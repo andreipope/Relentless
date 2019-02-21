@@ -34,27 +34,27 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
-
-            Action();
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
+            {
+                Action();
+            }
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-
             if (AbilityCallType != Enumerators.AbilityCallType.END ||
           !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
-
             Action();
         }
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             Action();
         }
@@ -135,15 +135,18 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
-            if (IsPVPAbility)
+            
+            if (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer) 
             {
-                Deactivate();
+                base.Deactivate();
             }
         }
 
         private void ActionCompleted(object target, out int damageWas)
         {
-            base.UnitDiedHandler();
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
+            }
             
             int damageOverride = Damage;
 
