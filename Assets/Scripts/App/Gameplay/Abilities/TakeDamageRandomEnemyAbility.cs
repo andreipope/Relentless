@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
             {
                 Action();
@@ -69,7 +71,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _targets = new List<BoardObject>();
+                List<BoardObject> possibleTargets = new List<BoardObject>();
 
                 foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
                 {
@@ -77,35 +79,45 @@ namespace Loom.ZombieBattleground
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            _targets.AddRange(GetOpponentOverlord().BoardCards
+                            possibleTargets.AddRange(GetOpponentOverlord().BoardCards
                                 .FindAll(unit => unit.Model.CurrentHp > 0)
                                 .Select(unit => unit.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            _targets.AddRange(PlayerCallerOfAbility.BoardCards
+                            possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
                                 .FindAll(unit => unit.Model.CurrentHp > 0)
                                 .Select(unit => unit.Model));
                             break;
                         case Enumerators.AbilityTargetType.PLAYER:
-                            _targets.Add(PlayerCallerOfAbility);
+                            possibleTargets.Add(PlayerCallerOfAbility);
                             break;
                         case Enumerators.AbilityTargetType.OPPONENT:
-                            _targets.Add(GetOpponentOverlord());
+                            possibleTargets.Add(GetOpponentOverlord());
                             break;
                     }
                 }
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
+                _targets = new List<BoardObject>();
+                int count = Count;
+                while (count > 0 || possibleTargets.Count > 0)
+                {   
+                    int chosenIndex = MersenneTwister.IRandom(0, possibleTargets.Count-1);
+                    _targets.Add(possibleTargets[chosenIndex]);
+                    possibleTargets.RemoveAt(chosenIndex);
+                    count--;
+                }
             }
 
             InvokeActionTriggered(_targets);      
-
+/*
             InvokeUseAbilityEvent(
                 _targets
                     .Select(x => new ParametrizedAbilityBoardObject(x))
                     .ToList()
             );
+
+            */
         }
 
         protected override void VFXAnimationEndedHandler()

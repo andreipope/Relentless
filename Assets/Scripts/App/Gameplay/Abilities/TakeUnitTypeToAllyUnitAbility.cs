@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -80,13 +82,13 @@ namespace Loom.ZombieBattleground
                                     Target = allies[0]
                                 });
 
-
+/* 
                                 InvokeUseAbilityEvent(
                                     new List<ParametrizedAbilityBoardObject>
                                     {
                                         new ParametrizedAbilityBoardObject(allies[0])
                                     }
-                                );
+                                );*/
                             }
                         }
                         else
@@ -106,13 +108,14 @@ namespace Loom.ZombieBattleground
                                     ActionEffectType = effectType,
                                     Target = allies[random]
                                 });
-
+/* 
                                 InvokeUseAbilityEvent(
                                     new List<ParametrizedAbilityBoardObject>
                                     {
                                         new ParametrizedAbilityBoardObject(allies[random])
                                     }
                                 );
+                                */
                             }
                         }
                     }
@@ -127,7 +130,7 @@ namespace Loom.ZombieBattleground
                         });
 
                         TakeTypeToUnit(AbilityUnitOwner);
-                        InvokeUseAbilityEvent();
+                       // InvokeUseAbilityEvent();
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
@@ -148,12 +151,12 @@ namespace Loom.ZombieBattleground
                                 Target = unit
                             });
                         }
-
+/* 
                         InvokeUseAbilityEvent(
                             allies
                                 .Select(model => new ParametrizedAbilityBoardObject(model))
                                 .ToList()
-                        );
+                        );*/
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
@@ -167,12 +170,12 @@ namespace Loom.ZombieBattleground
                         {
                             TakeTypeToUnit(unit);
                         }
-
+/* 
                         InvokeUseAbilityEvent(
                             allies
                                 .Select(model => new ParametrizedAbilityBoardObject(model))
                                 .ToList()
-                        );
+                        ); */
                     }
                     break;
             }
