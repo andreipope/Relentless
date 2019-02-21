@@ -26,7 +26,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(3000);
             await SendPlayerAction(_client.PlayerActionFactory.EndTurn());
+            await Task.Delay(2000);
         }
 
         public async Task LeaveMatch()

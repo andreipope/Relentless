@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using NUnit.Framework;
 using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using NotImplementedException = System.NotImplementedException;
@@ -36,7 +37,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(3000);
             await _testHelper.EndTurn();
+            await Task.Delay(1000);
         }
 
         public Task LeaveMatch()
@@ -87,12 +90,28 @@ namespace Loom.ZombieBattleground.Test
             await _testHelper.DoBoardSkill(boardSkill, targetBoardObjects);
         }
 
-        public Task CardAttack(InstanceId attacker, InstanceId target)
+        public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
-            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            BoardUnitView boardUnitView = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            void CheckAttacker()
+            {
+                Assert.NotNull(boardUnitView.Model.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(boardUnitView.Model.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
+                Assert.True(boardUnitView.Model.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+            }
 
-            return Task.CompletedTask;
+            CheckAttacker();
+
+            await new WaitUntil(() => boardUnitView.ArrivalDone);
+
+            boardUnitView.StartAttackTargeting();
+            Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");
+            await _testHelper.SelectTargetOnFightTargetArrow(boardUnitView.FightTargetingArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            CheckAttacker();
+            boardUnitView.FinishAttackTargeting();
+
+            await Task.Delay(1000);
         }
 
         public Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
