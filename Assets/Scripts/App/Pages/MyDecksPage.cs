@@ -417,8 +417,8 @@ namespace Loom.ZombieBattleground
         
         private void ChangeOverlordIndex(int newIndex)
         {
-            UpdateSelectedOverlordDisplay(newIndex);
             _selectOverlordIndex = newIndex;
+            UpdateSelectedOverlordDisplay(newIndex);
         }
 
         private void UpdateShowBackButton(bool isShow)
