@@ -24,11 +24,12 @@ namespace Loom.ZombieBattleground.Test
         private readonly IPlayerActionTestProxy _opponentProxy;
         private readonly QueueProxyPlayerActionTestProxy _localQueueProxy;
         private readonly QueueProxyPlayerActionTestProxy _opponentQueueProxy;
-        private readonly SemaphoreSlim _opponentClientTurnSemaphore = new SemaphoreSlim(1);
+        //private readonly SemaphoreSlim _opponentClientTurnSemaphore = new SemaphoreSlim(1);
 
         private int _currentTurn;
         private bool _aborted;
         private Exception _abortException;
+        //private bool _isOpponentTurn;
 
         public bool Completed { get; private set; }
 
@@ -47,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
             _localQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _localProxy);
             _opponentQueueProxy = new QueueProxyPlayerActionTestProxy(this, () => _actionsQueue, _opponentProxy);
 
-            _opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
+            //_opponentClient.BackendFacade.PlayerActionDataReceived += OnBackendFacadeOnPlayerActionDataReceived;
         }
 
         public async Task Play()
@@ -57,7 +58,11 @@ namespace Loom.ZombieBattleground.Test
 #endif
 
             // Special handling for the first turn
-            await HandleOpponentClientTurn(true);
+            bool isOpponentTurn = await _opponentProxy.GetIsCurrentTurn();
+            if (isOpponentTurn)
+            {
+                await HandleOpponentClientTurn(true);
+            }
 
 #if DEBUG_SCENARIO_PLAYER
             Debug.Log("[ScenarioPlayer]: Play 2 - PlayMoves");
@@ -87,7 +92,7 @@ namespace Loom.ZombieBattleground.Test
         {
             if (_opponentClient?.BackendFacade != null)
             {
-                _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
+                //_opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
             }
         }
 
@@ -98,16 +103,12 @@ namespace Loom.ZombieBattleground.Test
 
             try
             {
-                await _opponentClientTurnSemaphore.WaitAsync();
-                bool isCurrentTurn = await _opponentProxy.GetIsCurrentTurn();
-                if (isCurrentTurn)
-                {
-                    await PlayNextOpponentClientTurn(isFirstTurn);
-                }
+                //await _opponentClientTurnSemaphore.WaitAsync();
+                await PlayNextOpponentClientTurn(isFirstTurn);
             }
             finally
             {
-                _opponentClientTurnSemaphore.Release();
+                //_opponentClientTurnSemaphore.Release();
             }
         }
 
@@ -124,7 +125,7 @@ namespace Loom.ZombieBattleground.Test
                 true,
                 proxy =>
                 {
-                    _actionsQueue.Enqueue(WaitForLocalPlayerTurn);
+                    _actionsQueue.Enqueue(WaitForLocalPlayerTurnEnd);
                 });
 
             if (!success)
@@ -133,7 +134,7 @@ namespace Loom.ZombieBattleground.Test
             // If the opponent had first turn, it would have submitted his turn before local client realized that
             if (!isFirstTurn)
             {
-                _actionsQueue.Enqueue(WaitForLocalPlayerTurn);
+                //_actionsQueue.Enqueue(WaitForLocalPlayerTurnEnd);
             }
 
             await PlayQueue();
@@ -147,7 +148,12 @@ namespace Loom.ZombieBattleground.Test
             if (!CreateTurn(_localQueueProxy, false))
                 return null;
 
-            return PlayQueue;
+            return async () =>
+            {
+                await PlayQueue();
+                //await Task.Delay(3000);
+                await HandleOpponentClientTurn(false);
+            };
         }
 
         private bool CreateTurn(QueueProxyPlayerActionTestProxy queueProxy, bool isOpponent, Action<QueueProxyPlayerActionTestProxy> beforeTurnActionCallback = null)
@@ -210,38 +216,11 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private async Task WaitForLocalPlayerTurn()
+        private async Task WaitForLocalPlayerTurnEnd()
         {
             while (_testHelper.GameplayManager.IsLocalPlayerTurn())
             {
                 await new WaitForUpdate();
-            }
-        }
-
-        private async void OnBackendFacadeOnPlayerActionDataReceived(byte[] bytes)
-        {
-            // Switch to main thread
-            await new WaitForUpdate();
-
-            if (Completed)
-                return;
-
-            try
-            {
-                MultiplayerDebugClient opponentClient = _testHelper.GetOpponentDebugClient();
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(bytes);
-                bool? isOpponentPlayer = playerActionEvent.PlayerAction != null ?
-                    playerActionEvent.PlayerAction.PlayerId == opponentClient.UserDataModel.UserId :
-                    (bool?) null;
-
-                if (isOpponentPlayer != null && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.EndTurn)
-                {
-                    await HandleOpponentClientTurn(false);
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
             }
         }
     }

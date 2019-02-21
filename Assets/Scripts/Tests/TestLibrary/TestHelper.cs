@@ -1660,29 +1660,30 @@ namespace Loom.ZombieBattleground.Test
 
                 await LetsThink();
 
-                //Debug.Log("!a 0");
+                Debug.Log("!a 0");
 
                 await WaitUntilInputIsUnblocked();
 
-                //Debug.Log("!a 1");
+                Debug.Log("!a 1");
 
                 Assert.True(_playerController.IsActive, "_playerController.IsActive");
                 await TaskAsIEnumerator(currentTurnTask());
 
-                if (IsGameEnded())
-                    break;
-
-                //Debug.Log("!a 2");
-                await WaitUntilOurTurnStarts();
 
                 if (IsGameEnded())
                     break;
 
-                //Debug.Log("!a 3");
+                Debug.Log("!a 2");
+                /*await WaitUntilOurTurnStarts();
+
+                if (IsGameEnded())
+                    break;
+
+                Debug.Log("!a 3");
 
                 await WaitUntilInputIsUnblocked();
 
-                //Debug.Log("!a 4");
+                Debug.Log("!a 4");*/
             }
         }
 
