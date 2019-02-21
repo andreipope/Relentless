@@ -523,7 +523,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard, BoardObject target = null)
+        public void PlayPlayerCard(Player player,
+                                   BoardCard card,
+                                   HandBoardCard handCard,
+                                   Action<PlayCardOnBoard> OnPlayPlayerCard,
+                                   BoardObject target = null,
+                                   bool skipEntryAbilities = false)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -631,7 +636,7 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
-                                        }, CallAbilityAction, target, handCard);
+                                        }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                     _actionsQueueController.ForceContinueAction(CallAbilityAction);
                                 });
@@ -661,7 +666,7 @@ namespace Loom.ZombieBattleground
                                         }
 
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard);
+                                    }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(CallAbilityAction);
                             }, 0.75f);
