@@ -39,15 +39,20 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             Action();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
-            base.UnitDiedHandler();
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                base.UnitDiedHandler();
+            }
             base.VFXAnimationEndedHandler();
 
             for (int i = _targets.Count-1; i >= 0; i--)
