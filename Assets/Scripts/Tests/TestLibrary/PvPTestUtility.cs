@@ -75,7 +75,9 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
-            //enableBackendGameLogicMatch = false;
+#if !ENABLE_BACKEND_INTEGRATION_TESTS
+            enableBackendGameLogicMatch = false;
+#endif
             if (!enableClientGameLogicMatch && !enableBackendGameLogicMatch)
                 throw new Exception("At least one tests must be run");
 
