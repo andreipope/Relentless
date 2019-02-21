@@ -95,6 +95,9 @@ namespace Loom.ZombieBattleground
             }
 
             _castedAbilitiesIds = 0;
+
+            PredefinedChoosableAbilityId = -1;
+            HasPredefinedChoosableAbility = false;
         }
 
         public void DeactivateAbility(ulong id)
@@ -738,9 +741,6 @@ namespace Loom.ZombieBattleground
         public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
                                          List<ParametrizedAbilityBoardObject> targets, WorkingCard card, Player owner)
         {
-
-            Debug.LogWarning(" PLAY ABILITY FROM EVENT !!!");
-
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
