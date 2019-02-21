@@ -669,6 +669,49 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        public IEnumerator Task328_WaitTurnActionsStuck()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1, new DeckCardData("DuZt", 2));
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1, new DeckCardData("DuZt", 2));
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerDuZtId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "DuZt", 1);
+                InstanceId playerDuZt1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "DuZt", 2);
+
+                InstanceId opponentDuZtId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "DuZt", 1);
+                InstanceId opponentDuZt1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "DuZt", 2);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => player.CardPlay(playerDuZtId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentDuZtId, ItemPosition.Start),
+                       player => player.CardPlay(playerDuZt1Id, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentDuZt1Id, ItemPosition.Start),
+                       player => player.CardAttack(playerDuZtId, opponentDuZt1Id),
+                       opponent => opponent.CardAttack(opponentDuZtId, playerDuZt1Id),
+                       player => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDuZtId));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerDuZt1Id));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDuZtId));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentDuZt1Id));
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
         public IEnumerator Task308_ZonicAttackedPlayerInsteadCard()
         {
             return AsyncTest(async () =>
@@ -782,6 +825,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
         #endregion
     }
 }
