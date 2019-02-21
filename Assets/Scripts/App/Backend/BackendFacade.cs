@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
@@ -742,9 +743,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
+        //attempt to implement a one message action policy
+        private byte[] previousData;
         private void EventHandler(object sender, JsonRpcEventData e)
         {
-            PlayerActionDataReceived?.Invoke(e.Data);
+            if (previousData == null || !previousData.SequenceEqual(e.Data)) {
+                previousData = e.Data;
+                PlayerActionDataReceived?.Invoke(e.Data);
+            }
         }
 
 #endregion
