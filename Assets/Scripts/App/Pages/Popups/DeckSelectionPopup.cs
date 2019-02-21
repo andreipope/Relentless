@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
             }            
         }
 
-        private Sprite GetDeckIconSprite(Enumerators.SetType setType)
+        public Sprite GetDeckIconSprite(Enumerators.SetType setType)
         {
             switch(setType)
             {
