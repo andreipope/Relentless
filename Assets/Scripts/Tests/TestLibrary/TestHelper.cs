@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = false;
+        private const bool DebugTests = true;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -1111,13 +1111,17 @@ namespace Loom.ZombieBattleground.Test
 
         #region Adapted from AIController
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, BoardObject entryAbilityTarget = null)
+        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, BoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
         {
             bool needTargetForAbility = false;
-            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+
+            if (!skipEntryAbilities)
             {
-                needTargetForAbility =
-                    card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0 && !HasChoosableAbilities(card.LibraryCard))
+                {
+                    needTargetForAbility =
+                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                }
             }
 
             switch (card.LibraryCard.CardKind)
@@ -1136,7 +1140,8 @@ namespace Loom.ZombieBattleground.Test
                                 PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
                                 _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
                             },
-                            entryAbilityTarget);
+                            entryAbilityTarget,
+                            skipEntryAbilities);
 
                         await new WaitForUpdate();
 
@@ -1187,7 +1192,8 @@ namespace Loom.ZombieBattleground.Test
                                     PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
                                     _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
                                 },
-                                entryAbilityTarget);
+                                entryAbilityTarget,
+                                skipEntryAbilities);
                         }
                         else
                         {
@@ -1203,6 +1209,16 @@ namespace Loom.ZombieBattleground.Test
             _testBroker.GetPlayer(_player).CurrentGoo -= card.LibraryCard.Cost;
 
             await new WaitForUpdate();
+        }
+
+        private bool HasChoosableAbilities(IReadOnlyCard card)
+        {
+            AbilityData subAbilitiesData = card.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+
+            if (subAbilitiesData != null && !(subAbilitiesData is default(AbilityData)))
+                return true;
+
+            return false;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)

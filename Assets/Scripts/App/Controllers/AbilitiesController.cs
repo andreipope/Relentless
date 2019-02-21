@@ -42,6 +42,10 @@ namespace Loom.ZombieBattleground
 
         public bool BlockEndTurnButton { get; private set; }
 
+        public bool HasPredefinedChoosableAbility { get; set; }
+
+        public int PredefinedChoosableAbilityId { get; set; } = -1;
+
         public void Init()
         {
             _activeAbilities = new List<ActiveAbility>();
@@ -410,8 +414,19 @@ namespace Loom.ZombieBattleground
             Action<bool> onCompleteCallback,
             GameplayQueueAction<object> actionInQueue,
             BoardObject target = null,
-            HandBoardCard handCard = null)
+            HandBoardCard handCard = null,
+            bool skipEntryAbilities = false)
         {
+
+            if(skipEntryAbilities)
+            {
+                actionInQueue.Action = (parameter, completeCallback) =>
+                {
+                    completeCallback?.Invoke();
+                };
+                return;
+            }
+
             actionInQueue.Action = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -640,25 +655,37 @@ namespace Loom.ZombieBattleground
 
                    if (choosableAbility != null)
                    {
-                       if (isPlayer)
+                       if (HasPredefinedChoosableAbility)
                        {
-                           Action<AbilityData.ChoosableAbility> callback = null;
+                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] =
+                                       choosableAbility.ChoosableAbilities[PredefinedChoosableAbilityId].AbilityData;
+                           abilityEndAction.Invoke();
 
-                           callback = (x) =>
-                            {
-                                libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
-                                abilityEndAction.Invoke();
-                                _cardsController.CardForAbilityChoosed -= callback;
-                            };
-
-                           _cardsController.CardForAbilityChoosed += callback;
-                           _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           PredefinedChoosableAbilityId = -1;
+                           HasPredefinedChoosableAbility = false;
                        }
                        else
                        {
-                           // TODO: improve functionality for the AI
-                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
-                           abilityEndAction.Invoke();
+                           if (isPlayer)
+                           {
+                               Action<AbilityData.ChoosableAbility> callback = null;
+
+                               callback = (x) =>
+                                {
+                                    libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                    abilityEndAction.Invoke();
+                                    _cardsController.CardForAbilityChoosed -= callback;
+                                };
+
+                               _cardsController.CardForAbilityChoosed += callback;
+                               _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           }
+                           else
+                           {
+                               // TODO: improve functionality for the AI
+                               libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                               abilityEndAction.Invoke();
+                           }
                        }
                    }
                    else
@@ -711,6 +738,9 @@ namespace Loom.ZombieBattleground
         public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
                                          List<ParametrizedAbilityBoardObject> targets, WorkingCard card, Player owner)
         {
+
+            Debug.LogWarning(" PLAY ABILITY FROM EVENT !!!");
+
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
