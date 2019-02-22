@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground
 
         public void ChangeAppState(Enumerators.AppState stateTo, bool force = false)
         {
+            Debug.LogWarning("WHAT THE FUCK");
             if (!force)
             {
                 if (AppState == stateTo)
@@ -42,6 +43,7 @@ namespace Loom.ZombieBattleground
             switch (stateTo)
             {
                 case Enumerators.AppState.APP_INIT:
+                    Debug.Log("LOADING PAGE");
                     GameClient.Get<ITimerManager>().Dispose();
                     _uiManager.SetPage<LoadingPage>();
                     GameClient.Get<ISoundManager>().PlaySound(

@@ -215,6 +215,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private void FillBasicProps(Value props)
     {
+        Debug.LogWarning("STACK");
         props[PropertyTesterKey] = _backendDataControlMediator.UserDataModel.UserId;
 
         // FIXME
