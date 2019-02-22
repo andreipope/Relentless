@@ -339,6 +339,7 @@ namespace Loom.ZombieBattleground
                         }
                         if (matchCanStart)
                         {
+                            MTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
                             MatchingStartedActionReceived?.Invoke();
                         }
                         break;
