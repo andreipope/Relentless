@@ -1137,7 +1137,7 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
                 
                 collectionCardData = _collectionData.GetCardData(card.Name);
-                UpdateCollectionsCardAmount
+                UpdateBoardCardAmount
                 (
                     true, 
                     card.Name, 
@@ -1146,7 +1146,7 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        public void UpdateCollectionsCardAmount(bool init, string cardId, int amount)
+        public void UpdateBoardCardAmount(bool init, string cardId, int amount)
         {
             foreach (BoardCard card in _createdCollectionsBoardCards)
             {
@@ -1266,7 +1266,7 @@ namespace Loom.ZombieBattleground
                 Constants.SfxSoundVolume, false, false, true);
                 
             collectionCardData.Amount--;
-            UpdateCollectionsCardAmount(false, card.Name, collectionCardData.Amount);
+            UpdateBoardCardAmount(false, card.Name, collectionCardData.Amount);
 
             
             if (!itemFound)
@@ -1306,50 +1306,48 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
             }      
         }
-
-        private BoardCard CreateBoardCard(Card card, RectTransform root, Vector3 position, float scale)
+        
+        public void RemoveCardFromDeck(IReadOnlyCard card)
         {
-            GameObject go;
-            BoardCard boardCard;
-            int amount = _collectionData.GetCardData(card.Name).Amount;
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
+                Constants.SfxSoundVolume, false, false, true);
             
-            switch (card.CardKind)
+            CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
+            collectionCardData.Amount++;
+            UpdateBoardCardAmount
+            (
+                false, 
+                card.Name, 
+                collectionCardData.Amount
+            );
+            
+            BoardCard boardCard = _createdDeckBoardCards.Find(item => item.LibraryCard.MouldId == card.MouldId);
+            boardCard.CardsAmountDeckEditing--;
+            _currentEditDeck.RemoveCard(card.Name);
+
+            if (boardCard.CardsAmountDeckEditing == 0)
             {
-                case Enumerators.CardKind.CREATURE:
-                    go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
-                    break;
-                case Enumerators.CardKind.SPELL:
-                    go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
-            }
-            
-            boardCard.Init(card, amount);
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.Transform.position = position;
-            boardCard.Transform.localScale = Vector3.one * scale;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            
-            boardCard.Transform.SetParent(_uiManager.Canvas.transform, true);
-            RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
+                _createdDeckBoardCards.Remove(boardCard);
 
-            if (root != null)
+                Object.DestroyImmediate(boardCard.GameObject);
+
+                int currentDeckPage = _deckPageIndex;
+                UpdateDeckCardPage();
+                int deckPagesAmount = GetDeckPageAmount();
+                if (currentDeckPage >= deckPagesAmount)
+                {
+                    _deckPageIndex = deckPagesAmount - 1;
+                }
+
+                UpdateDeckCardPage();
+                UpdateEditDeckCardsAmount();
+            }
+            else
             {
-                cardRectTransform.SetParent(root);
+                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.LibraryCard), boardCard.CardsAmountDeckEditing);
             }
-
-            Vector3 anchoredPos = boardCard.Transform.localPosition;
-            anchoredPos.z = 0;
-            boardCard.Transform.localPosition = anchoredPos;
-
-            return boardCard;
         }
         
-        //TODO Refactor this
         private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
             GameObject go;
@@ -1432,10 +1430,10 @@ namespace Loom.ZombieBattleground
                 {
                     if (hit.collider.gameObject == _dragAreaDeck)
                     {
-                        BoardCard armyCard = _createdCollectionsBoardCards.Find(x =>
+                        BoardCard boardCard = _createdCollectionsBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
-                        AddCardToDeck(armyCard.LibraryCard);
+                        AddCardToDeck(boardCard.LibraryCard);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
                     }
@@ -1462,10 +1460,10 @@ namespace Loom.ZombieBattleground
                 {
                     if (hit.collider.gameObject == _dragAreaCollections)
                     {
-                        BoardCard hordeCard = _createdDeckBoardCards.Find(x =>
+                        BoardCard boardCard = _createdDeckBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
-                        //RemoveCardFromDeck(null, hordeCard.LibraryCard);
+                        RemoveCardFromDeck(boardCard.LibraryCard);
                     }
                 }
             }
