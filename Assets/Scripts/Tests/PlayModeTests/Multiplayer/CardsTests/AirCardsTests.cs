@@ -427,5 +427,40 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
+        public IEnumerator Breezee()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3, new DeckCardData("Breezee", 4));
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3, new DeckCardData("Breezee", 4));
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Breezee", 1);
+                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Breezee", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => player.CardPlay(playerCardId, ItemPosition.Start),
+                       opponent =>opponent.CardPlay(opponentCardId, ItemPosition.Start),
+                       player => player.CardAttack(playerCardId, opponentCardId),
+                       opponent => {}
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId));
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            }, 400);
+        }
     }
 }
