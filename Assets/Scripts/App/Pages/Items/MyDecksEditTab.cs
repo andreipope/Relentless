@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private List<BoardCard> _createdDeckBoardCards,
                                 _createdCollectionsBoardCards;
                                
-         private GameObject _selfPage;
+        private GameObject _selfPage;
         
         private CollectionData _collectionData;
         

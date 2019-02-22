@@ -33,7 +33,11 @@ namespace Loom.ZombieBattleground
         
         private IAnalyticsManager _analyticsManager;
 
-        private MyDecksEditTab _myDecksEditTab; 
+        public MyDecksEditTab MyDecksEditTab;
+
+        public MyDecksSelectOverlordTab MyDecksSelectOverlordTab;
+
+        public MyDecksSelectOverlordSkillTab MyDecksSelectOverlordSkillTab;
         
         private GameObject _selfPage;
 
@@ -55,28 +59,16 @@ namespace Loom.ZombieBattleground
                        _buttonEdit,
                        _buttonDelete,
                        _buttonRename,
-                       _buttonAuto,                       
-                       _buttonSelectOverlordLeftArrow,
-                       _buttonSelectOverlordRightArrow,
-                       _buttonSelectOverlordContinue,
+                       _buttonAuto,   
                        _buttonSelectOverlordSkillContinue;
 
         public Button ButtonSaveRenameDeck;                           
                        
         private TMP_InputField _inputFieldDeckName;
 
-        private TextMeshProUGUI _textSelectOverlordName,
-                                _textSelectOverlordDescription,
-                                _textSelectOverlordDeckName,
-                                _textSelectOverlordSkillDeckname;
+        private TextMeshProUGUI _textSelectOverlordSkillDeckname;
 
         private List<DeckInfoObject> _deckInfoObjectList;
-
-        private Image _imageSelectOverlordGlow,
-                      _imageSelectOverlordPortrait,
-                      _imageSelectOverlordSkillPortrait;
-
-        private List<Transform> _selectOverlordIconList;    
         
         public GameObject DragAreaDeck, 
                           DragAreaCollections; 
@@ -103,9 +95,7 @@ namespace Loom.ZombieBattleground
         
         private TAB _tab;
         
-        private int _selectDeckIndex;
-
-        private int _selectOverlordIndex;
+        public int SelectDeckIndex;
 
         public Deck CurrentEditDeck;
 
@@ -127,16 +117,21 @@ namespace Loom.ZombieBattleground
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             
-            _deckInfoObjectList = new List<DeckInfoObject>();
-            _selectOverlordIconList = new List<Transform>();
+            _deckInfoObjectList = new List<DeckInfoObject>();            
 
-            _myDecksEditTab = new MyDecksEditTab();
-            _myDecksEditTab.Init();
+            MyDecksEditTab = new MyDecksEditTab();
+            MyDecksEditTab.Init();
+            MyDecksSelectOverlordTab = new MyDecksSelectOverlordTab();
+            MyDecksSelectOverlordTab.Init();
+            MyDecksSelectOverlordSkillTab = new MyDecksSelectOverlordSkillTab();
+            MyDecksSelectOverlordSkillTab.Init();
         }
 
         public void Update()
         {
-            _myDecksEditTab.Update();
+            MyDecksEditTab.Update();
+            MyDecksSelectOverlordTab.Update();
+            MyDecksSelectOverlordSkillTab.Update();
         }
 
         public void Show()
@@ -164,22 +159,17 @@ namespace Loom.ZombieBattleground
             _spriteDeckThumbnailNormal = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_normal").GetComponent<Image>().sprite;
             _spriteDeckThumbnailSelected = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_selected").GetComponent<Image>().sprite;            
 
-            _textSelectOverlordName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Text_SelectOverlord").GetComponent<TextMeshProUGUI>();
-            _textSelectOverlordDescription = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
-            _textSelectOverlordDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            
-            _imageSelectOverlordGlow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
-            _imageSelectOverlordPortrait = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
-            _imageSelectOverlordSkillPortrait = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
-            
+            _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();            
+             
             DragAreaDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/DragArea_Deck").gameObject;
             DragAreaCollections = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/DragArea_Collections").gameObject;
             
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
 
-            _myDecksEditTab.Show(_selfPage);
+            MyDecksEditTab.Show(_selfPage);
+            MyDecksSelectOverlordTab.Show(_selfPage);
+            MyDecksSelectOverlordSkillTab.Show(_selfPage);
             
             LoadButtons();
             LoadObjects();            
@@ -204,9 +194,10 @@ namespace Loom.ZombieBattleground
         
         public void Dispose()
         {
-            _myDecksEditTab.Dispose();
-            _deckInfoObjectList.Clear();
-            _selectOverlordIconList.Clear();   
+            MyDecksEditTab.Dispose();
+            MyDecksSelectOverlordTab.Dispose();
+            MyDecksSelectOverlordSkillTab.Dispose();
+            _deckInfoObjectList.Clear();            
         }
 
         #endregion
@@ -264,36 +255,12 @@ namespace Loom.ZombieBattleground
         {
             Deck deck = GetSelectedDeck();
             string newName = _inputFieldDeckName.text;
-            _myDecksEditTab.ProcessRenameDeck(deck, newName);
+            MyDecksEditTab.ProcessRenameDeck(deck, newName);
         }
         
         private void ButtonAutoHandler()
         {
            
-        }
-        
-        private void ButtonSelectOverlordLeftArrowHandler()
-        {
-            ChangeOverlordIndex
-            (
-                Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
-            );
-        }
-
-        private void ButtonSelectOverlordRightArrowHandler()
-        {
-            ChangeOverlordIndex
-            (
-                Mathf.Clamp(_selectOverlordIndex + 1, 0, _selectOverlordIconList.Count - 1)
-            );
-        }
-        
-        private void ButtonSelectOverlordContinueHandler()
-        {
-            _buttonSelectOverlordContinue.interactable = false;
-            CurrentEditHero = _dataManager.CachedHeroesData.Heroes[_selectOverlordIndex];
-            AssignCurrentDeck(true);
-            ProcessAddDeck();            
         }
         
         private async void ButtonSelectOverlordSkillContinueHandler()
@@ -356,10 +323,10 @@ namespace Loom.ZombieBattleground
         private Deck GetSelectedDeck()
         {
             List<Deck> deckList = GetDeckList();
-            return deckList[_selectDeckIndex];
+            return deckList[SelectDeckIndex];
         }
 
-        private void AssignCurrentDeck(bool isNewDeck)
+        public void AssignCurrentDeck(bool isNewDeck)
         {
             IsEditingNewDeck = isNewDeck;
             if(IsEditingNewDeck)
@@ -443,9 +410,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case TAB.EDITING:                                      
                     break;
-                case TAB.SELECT_OVERLORD:
-                    _textSelectOverlordDeckName.text = "NEW DECK";
-                    ChangeOverlordIndex(0);
+                case TAB.SELECT_OVERLORD:                    
                     break;
                 case TAB.SELECT_OVERLORD_SKILL:
                     _textSelectOverlordSkillDeckname.text = CurrentEditDeck.Name;
@@ -460,13 +425,7 @@ namespace Loom.ZombieBattleground
         private void ChangeDeckIndex(int newIndex)
         {
             UpdateSelectedDeckDisplay(newIndex);
-            _selectDeckIndex = newIndex;
-        }
-        
-        private void ChangeOverlordIndex(int newIndex)
-        {
-            _selectOverlordIndex = newIndex;
-            UpdateSelectedOverlordDisplay(_selectOverlordIndex);            
+            SelectDeckIndex = newIndex;
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -477,57 +436,6 @@ namespace Loom.ZombieBattleground
         private void UpdateShowAutoButton(bool isShow)
         {
             _trayButtonAuto.gameObject.SetActive(isShow);
-        }
-        
-        private async void ProcessAddDeck()
-        {
-            bool success = true;
-            CurrentEditDeck.HeroId = CurrentEditHero.HeroId;
-            CurrentEditDeck.PrimarySkill = CurrentEditHero.PrimarySkill;
-            CurrentEditDeck.SecondarySkill = CurrentEditHero.SecondarySkill;
-
-            try
-            {
-                long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, CurrentEditDeck);
-                CurrentEditDeck.Id = newDeckId;
-                _dataManager.CachedDecksData.Decks.Add(CurrentEditDeck);
-                _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
-                Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
-
-                if(_tutorialManager.IsTutorial)
-                {
-                    _dataManager.CachedUserLocalData.TutorialSavedDeck = CurrentEditDeck;
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                }
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.LogException(e);
-
-                success = false;
-
-                if (e is Client.RpcClientException || e is TimeoutException)
-                {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                else
-                {
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
-                }
-            }
-            
-            if (success)
-            {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)CurrentEditDeck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);                
-
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
-
-                _selectDeckIndex = GetDeckList().IndexOf(CurrentEditDeck);
-                AssignCurrentDeck(false);
-                ChangeTab(TAB.SELECT_OVERLORD_SKILL);
-            }
-            _buttonSelectOverlordContinue.interactable = true;
         }
 
         private async void ProcessDeleteDeck(Deck currentDeck)
@@ -617,18 +525,6 @@ namespace Loom.ZombieBattleground
             ButtonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);
             ButtonSaveRenameDeck.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectOverlordLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_LeftArrow").GetComponent<Button>();
-            _buttonSelectOverlordLeftArrow.onClick.AddListener(ButtonSelectOverlordLeftArrowHandler);
-            _buttonSelectOverlordLeftArrow.onClick.AddListener(PlayClickSound);
-            
-            _buttonSelectOverlordRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_RightArrow").GetComponent<Button>();
-            _buttonSelectOverlordRightArrow.onClick.AddListener(ButtonSelectOverlordRightArrowHandler);
-            _buttonSelectOverlordRightArrow.onClick.AddListener(PlayClickSound);
-            
-            _buttonSelectOverlordContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
-            _buttonSelectOverlordContinue.onClick.AddListener(ButtonSelectOverlordContinueHandler);
-            _buttonSelectOverlordContinue.onClick.AddListener(PlayClickSound);
-            
             _buttonSelectOverlordSkillContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
             _buttonSelectOverlordSkillContinue.onClick.AddListener(ButtonSelectOverlordSkillContinueHandler);
             _buttonSelectOverlordSkillContinue.onClick.AddListener(PlayClickSound);
@@ -636,21 +532,6 @@ namespace Loom.ZombieBattleground
 
         private void LoadObjects()
         {
-            for(int i=0; i<6;++i)
-            {
-                Image overlordIcon = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Image_DeckIcon_" + i).GetComponent<Image>();
-                Sprite sprite = _uiManager.GetPopup<DeckSelectionPopup>().GetDeckIconSprite
-                (
-                    _dataManager.CachedHeroesData.Heroes[i].HeroElement
-                );
-                overlordIcon.sprite = sprite;
-                
-                _selectOverlordIconList.Add
-                (
-                    overlordIcon.transform
-                );
-            }
-            
             _deckInfoObjectList.Clear();
             for(int i=0; i<3; ++i)
             {
@@ -714,22 +595,6 @@ namespace Loom.ZombieBattleground
                 deckInfoObject._button.GetComponent<Image>().sprite = sprite;
             }
         }
-        
-        private void UpdateSelectedOverlordDisplay(int selectedOverlordIndex)
-        {
-            Hero hero = _dataManager.CachedHeroesData.Heroes[selectedOverlordIndex];
-            _imageSelectOverlordGlow.transform.position = _selectOverlordIconList[selectedOverlordIndex].position;
-            _imageSelectOverlordPortrait.sprite = GetOverlordPortraitSprite
-            (
-                hero.HeroElement
-            );
-            _imageSelectOverlordSkillPortrait.sprite = GetOverlordPortraitSprite
-            (
-                hero.HeroElement
-            );
-            _textSelectOverlordName.text = hero.FullName;
-            _textSelectOverlordDescription.text = hero.ShortDescription;
-        }
 
         private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
         {
@@ -750,29 +615,6 @@ namespace Loom.ZombieBattleground
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
                     Debug.Log($"No Overlord thumbnail found for setType {heroElement}");
-                    return null;
-            }        
-        }
-        
-        private Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
-        {
-            string path = "Images/UI/MyDecks/OverlordPortrait";
-            switch(heroElement)
-            {
-                case Enumerators.SetType.AIR:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air"); 
-                case Enumerators.SetType.FIRE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire"); 
-                case Enumerators.SetType.EARTH:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth"); 
-                case Enumerators.SetType.TOXIC:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic"); 
-                case Enumerators.SetType.WATER:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water"); 
-                case Enumerators.SetType.LIFE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life"); 
-                default:
-                    Debug.Log($"No Overlord portrait found for setType {heroElement}");
                     return null;
             }        
         }
