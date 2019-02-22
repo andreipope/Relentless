@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -30,7 +31,24 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, null, Value);
+            WorkingCard card = null;
+
+            if (PredefinedTargets != null && PredefinedTargets.Count > 0)
+            {
+                card = PlayerCallerOfAbility.CardsInHand.FirstOrDefault(cardInHand => cardInHand.InstanceId.Id.ToString() == PredefinedTargets[0].Parameters.CardName);
+            }
+
+            card = CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, card, Value);
+
+            InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(PlayerCallerOfAbility,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = card.InstanceId.Id.ToString()
+                        })
+                }
+            );
         }
     }
 }
