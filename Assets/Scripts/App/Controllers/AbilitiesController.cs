@@ -1193,7 +1193,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
+        public static AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
         {
             AbilityData abilityData = null;
 

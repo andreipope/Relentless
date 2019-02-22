@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground.Test
 
         public void TestSetUp(string userId = "Loom")
         {
-            BackendEndpoint backendEndpoint = new BackendEndpoint(BackendEndpointsContainer.Endpoints[BackendPurpose.Local]);
+            BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
             BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract));
             BackendFacade.EnableRpcLogging = true;
             UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
