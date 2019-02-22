@@ -17,6 +17,9 @@ namespace Loom.ZombieBattleground
         { }
 
         protected override Task ErrorSecondChanceHandler (Exception exception) {
+            if (CancellationTokenSource.IsCancellationRequested)
+                return Task.CompletedTask;
+
             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             return Task.CompletedTask;
         }

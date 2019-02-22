@@ -34,18 +34,6 @@ namespace Loom.ZombieBattleground
 
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
-            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
-            ConfigData configData = new ConfigData();
-            if (File.Exists(configDataFilePath))
-            {
-                configData = JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
-                if (configData.Backend != null)
-                {
-                    Debug.Log("Backend overriden by config file.");
-                    backendEndpoint = configData.Backend;
-                }
-            }
-
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, true));
 
@@ -65,7 +53,7 @@ namespace Loom.ZombieBattleground
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<IDataManager>(new DataManager(configData));
+            AddService<IDataManager>(new DataManager(GetConfigData()));
             AddService<BackendFacade>(new BackendFacade(backendEndpoint, contractCallProxyFactory));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
@@ -98,6 +86,12 @@ namespace Loom.ZombieBattleground
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
+            ConfigData configData = GetConfigData();
+            if (configData.Backend != null)
+            {
+                return configData.Backend;
+            }
+
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
@@ -138,6 +132,25 @@ namespace Loom.ZombieBattleground
         public static void ClearInstance()
         {
             _instance = null;
+        }
+
+        private static ConfigData GetConfigData()
+        {
+            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
+            Debug.Log("Trying to load config file: " + configDataFilePath);
+            if (File.Exists(configDataFilePath))
+            {
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+            }
+#if UNITY_EDITOR
+            configDataFilePath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, Constants.LocalConfigDataFileName);
+            if (File.Exists(configDataFilePath))
+            {
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+            }
+#endif
+
+            return new ConfigData();
         }
     }
 }
