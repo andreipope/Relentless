@@ -8,6 +8,10 @@ from pages.base import CZBTests
 from pages.main_menu_page import Main_Menu_Page
 from pages.match_selection_page import Match_Selection_Page
 from pages.deck_selection_page import Deck_Selection_Page
+from pages.overlord_selection_page import Overlord_Selection_Page
+from pages.overlord_ability_popup_page import Overlord_Ability_Popup_Page
+from pages.horde_editing_page import Horde_Editing_Page
+
 
 import sys
 reload(sys)
@@ -27,6 +31,15 @@ class CZBHordeTests(CZBTests):
         match_selection_page.press_solo_button()
         deck_selection_page=Deck_Selection_Page(self.altdriver)
         deck_selection_page.create_new_deck()
+        overlord_selection_page=Overlord_Selection_Page(self.altdriver)
+        overlord_selection_page.press_continue()
+        overlord_ability_popup_page=Overlord_Ability_Popup_Page(self.altdriver)
+        overlord_ability_popup_page.press_continue()
+        horde_editing_page=Horde_Editing_Page(self.altdriver,self.driver)
+        horde_editing_page.add_cards_to_horde(15)
+        horde_editing_page.press_save()
+        
+
 
     # def test_default_Horde_available(self):
     #     default_deck=self.get_default_deck()

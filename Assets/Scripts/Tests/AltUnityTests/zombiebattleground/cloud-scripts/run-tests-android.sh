@@ -14,7 +14,6 @@ sudo python get-pip.py
 echo "Installing Appium Python Client 0.24 and xmlrunner 1.7.7"
 chmod 0755 requirements.txt
 sudo pip install -r requirements.txt
-sudo pip install -e altunitybindings
 
 ## AltUnityTester - Forward abd port from device
 echo "Forwarding AltUnityTester port 13000 from device to localhost..."

@@ -12,7 +12,7 @@ class Deck_Selection_Page(CZBTests):
         self.deck_container_panel=self.get_deck_container_panel()
         self.edit_button=self.get_edit_button()
         self.delete_button=self.get_delete_button()
-
+        
     
     def deck_mode_selection_page(self):
         return self.altdriver.wait_for_element('HordeSelectionPage(Clone)')
@@ -32,7 +32,7 @@ class Deck_Selection_Page(CZBTests):
         return self.altdriver.wait_for_element(self.deck_container_panel.name+'/SelectionMask/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Edit')
     def get_delete_button(self):
         return self.altdriver.wait_for_element(self.deck_container_panel.name+'/SelectionMask/Selection/Panel_SelectedBlock/Panel_SelectedHordeObjects/Button_Delete')
-
+    
 
     def start_match(self):
         self.button_pressed(self.battle_button)
@@ -45,20 +45,25 @@ class Deck_Selection_Page(CZBTests):
         self.button_pressed(self.right_arrow_button)
     def press_left_arrow(self):
         self.button_pressed(self.left_arrow_button)
-    
+    def press_edit_button(self):
+        self.button_pressed(self.get_edit_button)
+    def press_delete_button(self):
+        self.button_pressed(self.get_delete_button)
+
     def get_selected_deck(self):
         decks_present=self.altdriver.find_elements(self.deck_container_panel.name+'/Group/Item_HordeSelectionObject(Clone)/Button_Select',enabled=False)
-        print('decks_present'+ decks_present)
         for button in decks_present:
-            if button.enabled=='true':
-                return self.altdriver.wait_for_element('id('+button.id+')/..')
+            print('button enabled '+button.enabled)
+            if button.enabled=='False':
+                return self.altdriver.wait_for_element('id('+button.id+')/..',enabled=False)
         return None
 
     def get_deck_name(self,deck):
-        text_element=self.altdriver.find_element('id('+deck+')/Panel_Description/Text_Description')
+        print(deck.name+"  "+ deck.id)
+        text_element=self.altdriver.find_element('id('+deck.id+')/Panel_Description/Text_Description')
         return self.read_tmp_UGUI_text(text_element)
     def get_deck_number_of_cards(self,deck):
-        text_element=self.altdriver.find_element('id('+deck+')/Panel_DeckFillInfo/Text_CardsCount')
+        text_element=self.altdriver.find_element('id('+deck.id+')/Panel_DeckFillInfo/Text_CardsCount')
         return self.read_tmp_UGUI_text(text_element).split('/')[0]
 
     def select_last_deck(self):
@@ -78,7 +83,8 @@ class Deck_Selection_Page(CZBTests):
                 break
             selected_deck=new_selected_deck
     def select_deck(self,deck_name):
-        selected_deck=self.get_selected_deck
+        selected_deck=self.get_selected_deck()
+        print(selected_deck.name+" jlakdjla")
         selected_deck_name=self.get_deck_name(selected_deck)
         if(selected_deck_name==deck_name):
             return selected_deck

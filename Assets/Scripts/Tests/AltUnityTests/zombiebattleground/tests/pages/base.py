@@ -94,14 +94,18 @@ class CZBTests(unittest.TestCase):
         self.altdriver.wait_for_element("SkipTutorial").tap()
         self.altdriver.wait_for_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
 
-    def write_in_input_field(self,input_field,test):
-        self.altdriver.wait_for_element(input_field.name).set_component_property('UnityEngine.UI.InputField','text',test,'UnityEngine.UI')
+    def write_in_input_field(self,input_field,text):
+        self.altdriver.wait_for_element(input_field.name).set_component_property('UnityEngine.UI.InputField','text',text,'UnityEngine.UI')
+    def write_in_tmp_input_field(self,input_field,text):
+        self.altdriver.wait_for_element(input_field.name).set_component_property('TMPro .TMP_InputField','text',text,'Unity.TextMeshPro')
     def button_pressed(self,button):
         button.mobile_tap()
     def read_tmp_UGUI_text(self,alt_element):
         return alt_element.get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
     def read_tmp_GUI_text(self,alt_element):
         return alt_element.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro')
+    def read_tmp_text(self,alt_element):
+        return alt_element.get_component_property('TMPro.TMP_Text', 'text', 'Unity.TextMeshPro')
 
 if __name__ == '__main__':
     unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))

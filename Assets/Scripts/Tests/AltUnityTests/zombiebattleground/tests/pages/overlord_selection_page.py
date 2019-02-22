@@ -12,7 +12,7 @@ class Overlord_Selection_Page(CZBTests):
     def get_overlord_selection_page(self):
         return self.altdriver.wait_for_element('OverlordSelectionPage(Clone)')
     def get_back_button(self):
-        return self.altdriver.wait_for_element(self.overlord_selection_page.name+'Button_Back')
+        return self.altdriver.wait_for_element(self.overlord_selection_page.name+'/Button_Back')
     def get_left_arrow_button(self):
         return self.altdriver.wait_for_element(self.overlord_selection_page.name+'/Button_LeftArrow')
     def get_right_arrow_button(self):
