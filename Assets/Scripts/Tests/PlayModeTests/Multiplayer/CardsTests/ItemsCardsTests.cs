@@ -920,20 +920,24 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerFreshMeatId, ItemPosition.Start, null, true);
                            player.CardAbilityUsed(playerFreshMeatId, Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN, new List<ParametrizedAbilityInstanceId>(){});
+                           player.LetsThink(4);
                            player.AssertInQueue(() => {
-                               Assert.AreEqual(pvpTestContext.GetCurrentPlayer().BoardCards.Count,
-                                        pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentDamage == card.Model.Card.LibraryCard.Damage - 3));
+                               Assert.AreEqual(pvpTestContext.GetOpponentPlayer().BoardCards.Count,
+                                        pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentDamage == card.Model.Card.LibraryCard.Damage - 3).Count);
                            });
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentFreshMeatId, ItemPosition.Start, null, true);
                            opponent.CardAbilityUsed(opponentFreshMeatId, Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.LetsThink(4);
                            opponent.AssertInQueue(() => {
-                                Assert.AreEqual(pvpTestContext.GetOpponentPlayer().BoardCards.Count,
-                                        pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentDamage == card.Model.Card.LibraryCard.Damage - 3));
+                                Assert.AreEqual(pvpTestContext.GetCurrentPlayer().BoardCards.Count,
+                                        pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentDamage == card.Model.Card.LibraryCard.Damage - 3).Count);
                            });
-                       }
+                       },
+                       player => {},
+                       opponent => {},
                    };
 
                 Action validateEndState = () =>
@@ -944,7 +948,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                                     pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentDamage == card.Model.Card.LibraryCard.Damage).Count);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
