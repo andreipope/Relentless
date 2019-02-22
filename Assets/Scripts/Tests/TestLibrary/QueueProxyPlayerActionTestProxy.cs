@@ -130,12 +130,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void Assert(Action action)
+        public void AssertInQueue(Action action)
         {
             Queue.Enqueue(() =>
             {
                 LogAction($"{nameof(Assert)}()");
-                return Proxy.Assert(action);
+                return Proxy.AssertInQueue(action);
             });
         }
 
