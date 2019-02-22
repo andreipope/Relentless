@@ -710,6 +710,122 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             });
         }
 
+        [UnityTest]
+        [Timeout(int.MaxValue)]
+        public IEnumerator Task308_ZonicAttackedPlayerInsteadCard()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                    new DeckCardData("Zonic", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                    new DeckCardData("Zonic", 10)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zonic", 1);
+                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zonic", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => player.CardPlay(playerCardId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
+                       player => player.CardAttack(playerCardId, opponentCardId),
+                };
+
+                Action validateEndState = () =>
+                {
+                    BoardUnitModel playerUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    BoardUnitModel opponentUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
+                    Assert.AreEqual(playerUnit.InitialHp, playerUnit.CurrentHp);
+                    Assert.AreEqual(opponentUnit.InitialHp, opponentUnit.CurrentHp);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
+        [UnityTest]
+        [Timeout(int.MaxValue)]
+        public IEnumerator Task327_GameCrashedWhenCardDidntPlayedOnSecondClient()
+        {
+            return AsyncTest(async () =>
+            {
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                                                                  new DeckCardData("Firecaller", 2),
+                                                                  new DeckCardData("Zlinger", 6)
+
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                                                                    new DeckCardData("Firecaller", 2),
+                                                                    new DeckCardData("Zlinger", 6)
+                );
+
+                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
+                {
+                    Player1HasFirstTurn = true
+                };
+
+                InstanceId playerFirecallerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Firecaller", 1);
+                InstanceId playerZlingerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlinger", 1);
+
+                InstanceId opponentFirecallerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Firecaller", 1);
+                InstanceId opponentFirecaller1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Firecaller", 2);
+                InstanceId opponentZlingerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlinger", 1);
+
+                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
+                {
+                       player => {},
+                       opponent => opponent.CardPlay(opponentFirecallerId, ItemPosition.Start),
+                       player =>
+                       {
+                            player.CardPlay(playerFirecallerId, ItemPosition.Start);
+                            player.CardPlay(playerZlingerId, ItemPosition.Start);
+
+                            player.RankBuff(playerZlingerId, new List<InstanceId>()
+                            {
+                                playerFirecallerId
+                            });
+
+                            player.CardAttack(playerFirecallerId, opponentFirecallerId);
+                       },
+                       opponent =>
+                       {
+                            opponent.CardPlay(opponentFirecaller1Id, ItemPosition.Start);
+                            opponent.CardPlay(opponentZlingerId, ItemPosition.Start);
+                            opponent.RankBuff(opponentZlingerId, new List<InstanceId>()
+                            {
+                                opponentFirecaller1Id
+                            });
+
+                            opponent.CardAttack(opponentFirecaller1Id, playerZlingerId);
+                       },
+                       player => { },
+                       opponent => { }
+                };
+
+                Action validateEndState = () =>
+                {
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerFirecallerId));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentFirecaller1Id));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentFirecallerId));
+                    Assert.Null(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlingerId));
+                    Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlingerId)).CurrentHp);
+                };
+
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+            });
+        }
+
         #endregion
     }
 }

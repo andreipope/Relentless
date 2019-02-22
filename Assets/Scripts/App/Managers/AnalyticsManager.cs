@@ -21,6 +21,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private int _finishedMatchCounter;
 
+    public const string EventGameStarted = "Game Started";
+
     public const string EventLogIn = "Log In";
 
     public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
@@ -76,6 +78,8 @@ public class AnalyticsManager : IAnalyticsManager, IService
             LogEvent("NewInstallation", Application.platform.ToString(), 0);
             PlayerPrefs.SetInt(FirstTimeInstallKey, 1);
         }
+
+        SetEvent(EventGameStarted);
     }
 
     public void LogScreen(string title)
@@ -134,19 +138,19 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _backendFacade = GameClient.Get<BackendFacade>();
         _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-        #if USE_PRODUCTION_BACKEND
+#if USE_PRODUCTION_BACKEND
             _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
             _googleAnalytics.androidTrackingCode = "UA-124278621-1";
             _googleAnalytics.otherTrackingCode = "UA-124278621-1";
 
             Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Production"));
-        #else
+#else
             _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
             _googleAnalytics.androidTrackingCode = "UA-130846432-1";
             _googleAnalytics.otherTrackingCode = "UA-130846432-1";
 
             Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
-        #endif
+#endif
 
         _fbManager = GameClient.Get<IFacebookManager>();
     }

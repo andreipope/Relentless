@@ -36,10 +36,8 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            Debug.Log("ACTIVATING");
             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
             {
-                Debug.Log("FIRE ACTION");
                 Action();
             }
         }

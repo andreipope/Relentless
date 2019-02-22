@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -25,5 +27,13 @@ namespace Loom.ZombieBattleground.Test
         Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets);
 
         Task<bool> GetIsCurrentTurn();
+
+        Task LetsThink(
+            float thinkTime = 1f,
+            bool forceRealtime = false
+        );
+
+
+        Task AssertInQueue(Action action);
     }
 }

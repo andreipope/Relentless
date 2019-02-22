@@ -466,7 +466,7 @@ namespace Loom.ZombieBattleground
                 .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
         }
 
-        protected void InvokeActionTriggered(object info = null)
+        public void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);
         }

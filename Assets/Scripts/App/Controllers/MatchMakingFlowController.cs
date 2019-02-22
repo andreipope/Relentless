@@ -82,6 +82,8 @@ namespace Loom.ZombieBattleground {
             }
         }
 
+        protected CancellationTokenSource CancellationTokenSource => _cancellationTokenSource;
+
         public async Task Start(
             long deckId,
             Address? customGameModeAddress,
@@ -373,7 +375,11 @@ namespace Loom.ZombieBattleground {
             return true;
         }
 
-        protected virtual async Task ErrorFirstChanceHandler (Exception exception) {
+        protected virtual async Task ErrorFirstChanceHandler (Exception exception)
+        {
+            if (_cancellationTokenSource.IsCancellationRequested)
+                return;
+
             // Just restart the entire process
             // FIXME: why does this error still occur, though?
             if (IsKnownIgnorableException(exception))

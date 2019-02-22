@@ -42,6 +42,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (PvPManager.UseBackendGameLogic)
+                return;
+
             if(PredefinedTargets != null && PredefinedTargets.Count == 0)
                 return;
 
@@ -63,11 +66,7 @@ namespace Loom.ZombieBattleground
                 ));
             }
 
-            InvokeUseAbilityEvent(
-                targets
-                    .Select(x => new ParametrizedAbilityBoardObject(x.BoardObject))
-                    .ToList()
-            );
+            InvokeUseAbilityEvent(targets);
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -167,7 +166,8 @@ namespace Loom.ZombieBattleground
 	                    NewUnitPossibleCost = unit.Model.Card.InstanceCard.Cost + 1,
 	                    OldUnitView = unit,
 	                    OwnerPlayer = unit.Model.OwnerPlayer,
-	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit)
+	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit),
+                        NewUnitCardTitle = unit.Model.Card.LibraryCard.Name
 	                };
 
 	                _replaceUnitInfos.Add(replaceUnitInfo);
