@@ -920,7 +920,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardAttack(playerPolluterId, opponentSpikerId);
                            player.LetsThink(5);
-                           player.AssertInQueue(() => {
+                           player.Assert(() => {
                                 Assert.AreEqual(6, TestHelper.GetCurrentPlayer().GooVials);
                            });
                        },
@@ -928,7 +928,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardAttack(opponentPolluterId, playerSpikerbId);
                            opponent.LetsThink(5);
-                           opponent.AssertInQueue(() => {
+                           opponent.Assert(() => {
                                 Assert.AreEqual(6, TestHelper.GetOpponentPlayer().GooVials);
                            });
                        },
@@ -1118,7 +1118,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.CardAttack(playerMonZoonId, opponentChernobillId);
                            player.CardAttack(playerMonZoon2Id, opponentChernobillId);
                            player.LetsThink(10);
-                           player.AssertInQueue(() => {
+                           player.Assert(() => {
                                Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSlabId)).CurrentHp);
                                Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSlabId)).CurrentHp);
                            });
@@ -1140,7 +1140,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardAttack(opponentMonZoonId, playerChernobillId);
                            opponent.CardAttack(opponentMonZoon2Id, playerChernobillId);
                            opponent.LetsThink(10);
-                           opponent.AssertInQueue(() => {
+                           opponent.Assert(() => {
                                Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSlab2Id)).CurrentHp);
                                Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSlab2Id)).CurrentHp);
                            });
@@ -1429,7 +1429,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardAttack(playerRagerId, opponentZteroidId);
                            player.LetsThink(5);
-                           player.AssertInQueue(() => {
+                           player.Assert(() => {
                                 Assert.AreEqual(9, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCerberusId)).CurrentDamage);
                                 Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMonZoonId)).CurrentDamage);
                            });
@@ -1438,7 +1438,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardAttack(opponentRagerId, playerZteroidId);
                            opponent.LetsThink(5);
-                           opponent.AssertInQueue(() => {
+                           opponent.Assert(() => {
                                 Assert.AreEqual(9, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCerberusId)).CurrentDamage);
                                 Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMonZoonId)).CurrentDamage);
                            });

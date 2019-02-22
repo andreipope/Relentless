@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground.Test
             await _testHelper.LetsThink(thinkTime, forceRealtime);
         }
 
-        public Task AssertInQueue(Action action)
+        public Task Assert(Action action)
         {
             action();
             return Task.CompletedTask;

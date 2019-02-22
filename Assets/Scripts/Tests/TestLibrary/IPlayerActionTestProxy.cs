@@ -34,6 +34,6 @@ namespace Loom.ZombieBattleground.Test
         );
 
 
-        Task AssertInQueue(Action action);
+        Task Assert(Action action);
     }
 }
