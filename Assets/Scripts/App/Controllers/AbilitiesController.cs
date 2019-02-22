@@ -420,16 +420,6 @@ namespace Loom.ZombieBattleground
             HandBoardCard handCard = null,
             bool skipEntryAbilities = false)
         {
-
-            if(skipEntryAbilities)
-            {
-                actionInQueue.Action = (parameter, completeCallback) =>
-                {
-                    completeCallback?.Invoke();
-                };
-                return;
-            }
-
             actionInQueue.Action = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
