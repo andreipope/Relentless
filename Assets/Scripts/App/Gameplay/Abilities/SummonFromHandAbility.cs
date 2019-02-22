@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -95,6 +96,7 @@ namespace Loom.ZombieBattleground
         private void PutCardFromHandToBoard(Player owner, BoardCard boardCard,
             ref List<PastActionsPopup.TargetEffectParam> TargetEffects, ref List<HandBoardCard> cards)
         {
+            Debug.LogWarning("SUMMONING FROM HAND");
             CardsController.SummonUnitFromHand(owner, boardCard);
             cards.Add(boardCard.HandBoardCard);
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam

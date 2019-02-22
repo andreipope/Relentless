@@ -708,6 +708,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                _battlegroundController.OpponentHandCards.Remove(_battlegroundController.OpponentHandCards.FindAll(x => x.WorkingCard.InstanceId == card.WorkingCard.InstanceId)[0]);
                 _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
             }
 
@@ -732,22 +733,26 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
 
+            Debug.Log("I GOT HERE");
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
             animationSequence.OnComplete(() =>
             {
+                Debug.Log("INSIDE FIRST");
                 RemoveCard(new object[]
                 {
                         card
                 });
-
+                Debug.Log("READY FOR THE OTHER");
                 InternalTools.DoActionDelayed(() =>
                 {
+                    Debug.Log("PLAYING ANIMATION");
                     boardUnitView.PlayArrivalAnimation();
 
                     _boardController.UpdateCurrentBoardOfPlayer(player, null);
                 }, 0.1f);
             });
+            animationSequence.Play();
         }
 
         public void PlayOpponentCard(
