@@ -726,7 +726,6 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _battlegroundController.OpponentHandCards.Remove(_battlegroundController.OpponentHandCards.FindAll(x => x.WorkingCard.InstanceId == card.WorkingCard.InstanceId)[0]);
                 _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
             }
 
@@ -779,7 +778,6 @@ namespace Loom.ZombieBattleground
                     _boardController.UpdateCurrentBoardOfPlayer(player, null);
                 }, 0.1f);
             });
-            animationSequence.Play();
         }
 
         public void PlayOpponentCard(

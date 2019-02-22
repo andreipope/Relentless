@@ -101,9 +101,6 @@ namespace Loom.ZombieBattleground
 
                 targets = targets.FindAll(x => x.Model != AbilityUnitOwner);
 
-                Debug.Log("IS PLAYER: " + AbilityUnitOwner.OwnerPlayer.IsLocalPlayer);
-                Debug.Log(targets.Count);
-
                 List<BoardUnitView> finalTargets = new List<BoardUnitView>();
                 int count = Mathf.Max(1, Count);
                 while (count > 0 && targets.Count > 0)
