@@ -54,13 +54,15 @@ namespace Loom.ZombieBattleground
 
         public event Action LeaveMatchReceived;
 
+        public int CurrentActionIndex { get; set; }
+
         public MatchMetadata MatchMetadata { get; set; }
 
         public GameState InitialGameState { get; set; }
 
         public Address? CustomGameModeAddress { get; set; }
 
-        public List<string> PvPTags { get; set; }
+        public List<string> PvPTags { get; } = new List<string>();
 
         public DebugCheatsConfiguration DebugCheats { get; set; } = new DebugCheatsConfiguration();
 
@@ -88,11 +90,6 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
-
-            if (PvPTags == null)
-            {
-                PvPTags = new List<string> ();
-            }
 
             GameClient.Get<IGameplayManager>().GameEnded += GameEndedHandler;
         }
@@ -138,6 +135,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            StopMatchmaking();
         }
 
         public bool IsFirstPlayer()
@@ -282,7 +280,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand) 
+        private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand)
         {
             player.CardsInHand.Clear();
             player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => card.FromProtobuf(player)));
@@ -307,6 +305,7 @@ namespace Loom.ZombieBattleground
             Func<Task> taskFunc = async () =>
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+                CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
                 Debug.LogWarning(playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
@@ -340,6 +339,7 @@ namespace Loom.ZombieBattleground
                         }
                         if (matchCanStart)
                         {
+                            MTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
                             MatchingStartedActionReceived?.Invoke();
                         }
                         break;
@@ -361,7 +361,7 @@ namespace Loom.ZombieBattleground
 
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id == _backendDataControlMediator.UserDataModel.UserId);
-                                                                                                            
+
                                 for (int i = 0; i < 3; i++) {
                                     playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
                                 }
