@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                           _trayButtonAuto;
                           
         public Transform LocatorCollectionCards,
-                         LocatorDeckCards;                          
+                         LocatorDeckCards;
 
         private Button _buttonNewDeck,
                        _buttonBack,
@@ -59,8 +59,7 @@ namespace Loom.ZombieBattleground
                        _buttonEdit,
                        _buttonDelete,
                        _buttonRename,
-                       _buttonAuto,   
-                       _buttonSelectOverlordSkillContinue;
+                       _buttonAuto;
 
         public Button ButtonSaveRenameDeck;                           
                        
@@ -261,36 +260,6 @@ namespace Loom.ZombieBattleground
         private void ButtonAutoHandler()
         {
            
-        }
-        
-        private async void ButtonSelectOverlordSkillContinueHandler()
-        {
-            _buttonSelectOverlordSkillContinue.interactable = false;
-            Deck deck = CurrentEditDeck;
-        
-            bool success = true;
-        
-            //TODO overlord skill
-            Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
-            deck.PrimarySkill = hero.PrimarySkill;
-            deck.SecondarySkill = hero.SecondarySkill;
-
-            try
-            {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-            }
-            catch (Exception e)
-            {
-                success = false;                
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
-
-                OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-            }
-            _buttonSelectOverlordSkillContinue.interactable = true;
-
-            if (success)
-                ChangeTab(TAB.EDITING);
         }
 
         public void OnInputFieldEndedEdit(string value)
@@ -523,11 +492,7 @@ namespace Loom.ZombieBattleground
             
             ButtonSaveRenameDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
             ButtonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);
-            ButtonSaveRenameDeck.onClick.AddListener(PlayClickSound);
-            
-            _buttonSelectOverlordSkillContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
-            _buttonSelectOverlordSkillContinue.onClick.AddListener(ButtonSelectOverlordSkillContinueHandler);
-            _buttonSelectOverlordSkillContinue.onClick.AddListener(PlayClickSound);
+            ButtonSaveRenameDeck.onClick.AddListener(PlayClickSound);            
         }
 
         private void LoadObjects()
