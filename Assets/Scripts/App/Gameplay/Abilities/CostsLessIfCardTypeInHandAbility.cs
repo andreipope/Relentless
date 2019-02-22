@@ -39,6 +39,7 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
+
             if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
                 return;
 
@@ -49,9 +50,9 @@ namespace Loom.ZombieBattleground
                 MainWorkingCard,
                 MainWorkingCard.LibraryCard.Cost + gooCost,
                 BoardCard
-                );
+            );
         }
-
+        
         private void CardPlayedHandler(WorkingCard card, int position)
         {
             if (!card.Equals(MainWorkingCard))
