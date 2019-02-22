@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -117,6 +118,24 @@ namespace Loom.ZombieBattleground.Test
             {
                 LogAction($"{nameof(CheatDestroyCardsOnBoard)}({nameof(targets)}: {StringifyInstanceIds(targets)})");
                 return Proxy.CheatDestroyCardsOnBoard(targets);
+            });
+        }
+
+        public void LetsThink(float thinkTime = 1f, bool forceRealtime = false)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(LetsThink)}()");
+                return Proxy.LetsThink(thinkTime, forceRealtime);
+            });
+        }
+
+        public void Assert(Action action)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(Assert)}()");
+                return Proxy.Assert(action);
             });
         }
 
