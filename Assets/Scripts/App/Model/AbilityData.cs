@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground.Data
         }
 
         public override string ToString() {
-            return $"({nameof(Name)}: {Name}, {nameof(AbilityType)}: {nameof(AbilityType)})";
+            return $"({nameof(AbilityType)}: {AbilityType}, {nameof(CallType)}: {CallType}, {nameof(Name)}: {Name})";
         }
 
         public class VisualEffectInfo

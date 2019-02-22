@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.Test
                     .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                     .Where(method =>
                         method.GetCustomAttribute<TestAttribute>() != null || method.GetCustomAttribute<UnityTestAttribute>() != null)
-                    .Select(method => method.Name.ToLowerInvariant())
+                    .Select(method => method.Name)
                     .ToList();
 
             return TestUtility.AsyncTest(async () =>
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground.Test
                             continue;
                         }
 
-                        if (testNames.Contains(card.Name.ToLowerInvariant()))
+                        if (testNames.Any(testName => testName.IndexOf(card.Name, StringComparison.InvariantCultureIgnoreCase) != -1))
                             continue;
 
                         cardsWithMissingTests.Add(card);
