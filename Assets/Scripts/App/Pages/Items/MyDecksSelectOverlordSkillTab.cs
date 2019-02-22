@@ -40,6 +40,12 @@ namespace Loom.ZombieBattleground
         public Image ImageSelectOverlordSkillPortrait;
 
         private Button _buttonSelectOverlordSkillContinue;
+
+        private Image[] _imageSkillIcons;
+
+        private TextMeshProUGUI[] _textSkillDescriptions;
+
+        private TextMeshProUGUI _textSelectedAmount;
         
         ///
         private const int AbilityListSize = 5;
@@ -85,13 +91,17 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();            
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+
+            _imageSkillIcons = new Image[2];
+            _textSkillDescriptions = new TextMeshProUGUI[2];
             
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<MyDecksPage>();
             _myDeckPage.EventChangeTab += (MyDecksPage.TAB tab) =>
             {
                 if (tab == MyDecksPage.TAB.SELECT_OVERLORD_SKILL)
                 {
-                    ShowOldVersion();
+                    ShowOldVersion();                    
+                    UpdateSkillIconAndDescriptionDisplay();
                 }
                 else
                 {
@@ -115,6 +125,14 @@ namespace Loom.ZombieBattleground
             _buttonSelectOverlordSkillContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
             _buttonSelectOverlordSkillContinue.onClick.AddListener(ButtonSelectOverlordSkillContinueHandler);
             _buttonSelectOverlordSkillContinue.onClick.AddListener(_myDeckPage.PlayClickSound);
+            
+            _imageSkillIcons[0] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_1").GetComponent<Image>();  
+            _imageSkillIcons[1] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_2").GetComponent<Image>();  
+            
+            _textSkillDescriptions[0] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_1").GetComponent<TextMeshProUGUI>();  
+            _textSkillDescriptions[1] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_2").GetComponent<TextMeshProUGUI>();         
+            
+            _textSelectedAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SelectAmount/Text_SelectedAmount").GetComponent<TextMeshProUGUI>();
         }
         
         public void Update()
@@ -158,9 +176,28 @@ namespace Loom.ZombieBattleground
             if (success)
                 _myDeckPage.ChangeTab(MyDecksPage.TAB.EDITING);
         }
+        
+        private void UpdateSkillIconAndDescriptionDisplay()
+        {
+            List<OverlordAbilityItem> abilities = _overlordAbilities.FindAll(x => x.IsSelected);
+            for(int i=0; i<2;++i)
+            {
+                if(i < abilities.Count)
+                {
+                    _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + abilities[i].Skill.IconPath);
+                    _textSkillDescriptions[i].text = abilities[i].Skill.Title + ":"+ abilities[i].Skill.Description;
+               }
+                else
+                {
+                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    _textSkillDescriptions[i].text = "No selected skill";
+                }
+            }
+            _textSelectedAmount.text = "" + abilities.Count + "/2";
+        }
 
         #region From Old Script
-        
+
         private void InitOldVersion()
         {
             _overlordAbilities = new List<OverlordAbilityItem>();
@@ -401,6 +438,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
+                overrideLock = false;
                 abilityInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability, overrideLock);
                 abilityInstance.OverlordAbilitySelected += OverlordAbilitySelectedHandler;
 
@@ -455,6 +493,8 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
+
+            UpdateSkillIconAndDescriptionDisplay();
         }
 
         private class OverlordAbilityItem : IDisposable
@@ -497,7 +537,8 @@ namespace Loom.ZombieBattleground
 
                 _selectButton.onClick.AddListener(SelectButtonOnClickHandler);
 
-                IsUnlocked = Skill != null ? Skill.Unlocked : false;
+                //IsUnlocked = Skill != null ? Skill.Unlocked : false;
+                IsUnlocked = (Skill != null);
 
                 _abilityIconImage.sprite = IsUnlocked ?
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :

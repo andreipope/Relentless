@@ -267,17 +267,17 @@ namespace Loom.ZombieBattleground
             switch(setType)
             {
                 case Enumerators.SetType.AIR:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_air");
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_air");
                 case Enumerators.SetType.EARTH:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_earth");
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_earth");
                 case Enumerators.SetType.FIRE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_fire");
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_fire");
                 case Enumerators.SetType.WATER:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_water");
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_water");
                 case Enumerators.SetType.TOXIC:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_toxic");
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_toxic");
                 case Enumerators.SetType.LIFE:
-                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/DeckIcons/icon_life");                 
+                    return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_life");                 
                 default:
                     return null;
             }
