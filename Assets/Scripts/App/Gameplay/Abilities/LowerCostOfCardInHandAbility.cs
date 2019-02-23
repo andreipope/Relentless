@@ -20,8 +20,6 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-
-            Debug.Log("DOOOOOONE");
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
