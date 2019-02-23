@@ -917,11 +917,15 @@ namespace Loom.ZombieBattleground
                 card = player.CardsInHand[Random.Range(0, player.CardsInHand.Count)];
             }
 
+            Debug.Log("TEST:" + card);
+
             if (card == null)
                 return card;
 
             if (player.IsLocalPlayer)
             {
+
+                Debug.Log("I'M INSIDe");
                 BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
                 boardCard.ChangeCardCostOn(value, true);

@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -19,8 +20,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
 
+            Debug.Log("DOOOOOONE");
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
