@@ -1194,7 +1194,6 @@ namespace Loom.ZombieBattleground.Test
                     }
                     else
                     {
-                        Debug.Log("LOOK WHO'S HERE");
                         _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
                     }
 
@@ -1220,7 +1219,6 @@ namespace Loom.ZombieBattleground.Test
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
-            Debug.Log("INTO PLAY CARD HANDLER");
             WorkingCard workingCard = null;
 
             if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
@@ -1304,8 +1302,6 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.SPELL:
                 {
-
-                    Debug.Log("I'M in SPELL");
                     GameObject spellCard = UnityEngine.Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
