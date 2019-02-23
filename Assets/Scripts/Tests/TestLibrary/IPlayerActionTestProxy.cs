@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground.Test
         Task EndTurn();
         Task LeaveMatch();
         Task Mulligan(IEnumerable<InstanceId> cards);
-        Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false);
+        Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false);
         Task RankBuff(InstanceId card, IEnumerable<InstanceId> units);
 
         Task CardAbilityUsed(

@@ -1109,10 +1109,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentZplashId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentZplashId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(playerSlabId)
-                        });
+                        opponent.CardAbilityUsed(opponentZplashId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => {},
                     opponent => {},
@@ -1120,8 +1117,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSlabId);
-                    Assert.AreEqual(playerUnit.InitialHp - 2, playerUnit.CurrentHp);
+                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerSlabId));
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp - 4, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 

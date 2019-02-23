@@ -64,11 +64,11 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false)
+        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"}, {nameof(skipEntryAbilities)}: {skipEntryAbilities})");
+                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"}, {nameof(skipEntryAbilities)}: {skipEntryAbilities}, {nameof(forceSkipForPlayerToo)}: {forceSkipForPlayerToo})");
                 return Proxy.CardPlay(card, position, entryAbilityTarget, skipEntryAbilities);
             });
         }

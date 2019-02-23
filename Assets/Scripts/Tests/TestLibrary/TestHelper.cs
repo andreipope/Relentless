@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 1;
+        public const int TestTimeScale = DebugTests ? 5 : 1;
 
         private static TestHelper _instance;
 
