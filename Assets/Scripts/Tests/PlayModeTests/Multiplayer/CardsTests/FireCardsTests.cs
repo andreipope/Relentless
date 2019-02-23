@@ -324,7 +324,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator BlaZter_WaitForMergeOfLetsThink()
+        public IEnumerator BlaZter()
         {
             return AsyncTest(async () =>
             {
@@ -463,7 +463,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator RabieZ_To_Fix()
+        public IEnumerator RabieZ()
         {
             return AsyncTest(async () =>
             {
