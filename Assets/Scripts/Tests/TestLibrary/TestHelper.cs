@@ -1172,35 +1172,33 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case Enumerators.CardKind.SPELL:
-                    if (entryAbilityTarget != null && needTargetForAbility || !needTargetForAbility)
+                    _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
+                    _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+
+                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
-                        if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-                        {
-                            BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                            boardCard,
+                            boardCard.HandBoardCard,
+                            playCardOnBoard =>
+                            {
+                                //todo: handle abilities here
 
-                            _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                                boardCard,
-                                boardCard.HandBoardCard,
-                                playCardOnBoard =>
-                                {
-                                    //todo: handle abilities here
-
-                                    PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-                                    _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
-                                },
-                                entryAbilityTarget,
-                                skipEntryAbilities);
-                        }
-                        else
-                        {
-                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
-                        }
-
-                        _cardsController.DrawCardInfo(card);
+                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+                                _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                            },
+                            entryAbilityTarget,
+                            skipEntryAbilities);
                     }
+                    else
+                    {
+                        Debug.Log("LOOK WHO'S HERE");
+                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
+                    }
+
+                    _cardsController.DrawCardInfo(card);
 
                     break;
             }
@@ -1222,6 +1220,7 @@ namespace Loom.ZombieBattleground.Test
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
         {
+            Debug.Log("INTO PLAY CARD HANDLER");
             WorkingCard workingCard = null;
 
             if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
@@ -1305,6 +1304,8 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.SPELL:
                 {
+
+                    Debug.Log("I'M in SPELL");
                     GameObject spellCard = UnityEngine.Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 

@@ -139,24 +139,24 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.CardPlay(playerBoomstickId, ItemPosition.Start, null, true);
-                           player.CardAbilityUsed(playerBoomstickId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>(){});
+                           player.CardPlay(playerBoomstickId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentBoomstickId, ItemPosition.Start, null, true);
+                           opponent.CardPlay(opponentBoomstickId, ItemPosition.Start, skipEntryAbilities:true);
                            opponent.CardAbilityUsed(opponentBoomstickId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>(){});
-                           opponent.LetsThink(4);
-                       }
+                       },
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.InitialHp - 2).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.InitialHp - 2).Count > 0);
+                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.InitialHp - 2).Count == 3);
+                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.InitialHp - 2).Count == 3);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
