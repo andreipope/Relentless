@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
             if (decision)
             {
                 HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
-                if (page.SelfPage != null) {
+                if (_uiManager.CurrentPage == page) {
                     page.BattleButtonOnClickHandler();
                 }
             }

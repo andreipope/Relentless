@@ -35,15 +35,6 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfPage;
 
-        public GameObject SelfPage {
-            get {
-                return _selfPage;
-            }
-            set {
-                _selfPage = value;
-            }
-        }
-
         private GameObject _battleButtonGlow;
 
         private Button _backButton,
