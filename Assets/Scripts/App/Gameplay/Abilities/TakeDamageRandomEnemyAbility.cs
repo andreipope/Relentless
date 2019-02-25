@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY || (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer))
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
             {
                 Action();
             }
@@ -131,12 +131,6 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
-
-            
-            if (AbilityCallType == Enumerators.AbilityCallType.END && !AbilityUnitOwner.OwnerPlayer.IsLocalPlayer) 
-            {
-                base.Deactivate();
-            }
         }
 
         private void ActionCompleted(object target, out int damageWas)
