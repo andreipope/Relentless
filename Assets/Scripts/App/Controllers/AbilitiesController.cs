@@ -42,6 +42,10 @@ namespace Loom.ZombieBattleground
 
         public bool BlockEndTurnButton { get; private set; }
 
+        public bool HasPredefinedChoosableAbility { get; set; }
+
+        public int PredefinedChoosableAbilityId { get; set; } = -1;
+
         public void Init()
         {
             _activeAbilities = new List<ActiveAbility>();
@@ -91,6 +95,9 @@ namespace Loom.ZombieBattleground
             }
 
             _castedAbilitiesIds = 0;
+
+            PredefinedChoosableAbilityId = -1;
+            HasPredefinedChoosableAbility = false;
         }
 
         public void DeactivateAbility(ulong id)
@@ -410,7 +417,8 @@ namespace Loom.ZombieBattleground
             Action<bool> onCompleteCallback,
             GameplayQueueAction<object> actionInQueue,
             BoardObject target = null,
-            HandBoardCard handCard = null)
+            HandBoardCard handCard = null,
+            bool skipEntryAbilities = false)
         {
             actionInQueue.Action = (parameter, completeCallback) =>
                {
@@ -640,25 +648,37 @@ namespace Loom.ZombieBattleground
 
                    if (choosableAbility != null)
                    {
-                       if (isPlayer)
+                       if (HasPredefinedChoosableAbility)
                        {
-                           Action<AbilityData.ChoosableAbility> callback = null;
+                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] =
+                                       choosableAbility.ChoosableAbilities[PredefinedChoosableAbilityId].AbilityData;
+                           abilityEndAction.Invoke();
 
-                           callback = (x) =>
-                            {
-                                libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
-                                abilityEndAction.Invoke();
-                                _cardsController.CardForAbilityChoosed -= callback;
-                            };
-
-                           _cardsController.CardForAbilityChoosed += callback;
-                           _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           PredefinedChoosableAbilityId = -1;
+                           HasPredefinedChoosableAbility = false;
                        }
                        else
                        {
-                           // TODO: improve functionality for the AI
-                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
-                           abilityEndAction.Invoke();
+                           if (isPlayer)
+                           {
+                               Action<AbilityData.ChoosableAbility> callback = null;
+
+                               callback = (x) =>
+                                {
+                                    libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                    abilityEndAction.Invoke();
+                                    _cardsController.CardForAbilityChoosed -= callback;
+                                };
+
+                               _cardsController.CardForAbilityChoosed += callback;
+                               _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           }
+                           else
+                           {
+                               // TODO: improve functionality for the AI
+                               libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                               abilityEndAction.Invoke();
+                           }
                        }
                    }
                    else
@@ -1163,7 +1183,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
+        public static AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
         {
             AbilityData abilityData = null;
 

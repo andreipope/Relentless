@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
+        private IPvPManager _pvpManager;
+
         private BattlegroundController _battlegroundController;
 
         private VfxController _vfxController;
@@ -89,6 +91,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -124,7 +127,8 @@ namespace Loom.ZombieBattleground
 
         public InstanceId GetNewCardInstanceId()
         {
-            return new InstanceId(_cardInstanceId++);
+            _cardInstanceId++;
+            return new InstanceId(_cardInstanceId);
         }
 
         public InstanceId GetCardInstanceId()
@@ -193,7 +197,16 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
+                int highestInstanceId =
+                    _pvpManager.InitialGameState.PlayerStates
+                    .SelectMany(state =>
+                        state.MulliganCards
+                            .Concat(state.CardsInDeck)
+                            .Concat(state.CardsInHand)
+                            .Concat(state.CardsInPlay)
+                            .Concat(state.CardsInGraveyard))
+                    .Max(card => card.InstanceId.Id);
+                SetNewCardInstanceId(highestInstanceId);
             }
         }
 
@@ -523,7 +536,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard, BoardObject target = null)
+        public void PlayPlayerCard(Player player,
+                                   BoardCard card,
+                                   HandBoardCard handCard,
+                                   Action<PlayCardOnBoard> OnPlayPlayerCard,
+                                   BoardObject target = null,
+                                   bool skipEntryAbilities = false)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -631,7 +649,7 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
-                                        }, CallAbilityAction, target, handCard);
+                                        }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                     _actionsQueueController.ForceContinueAction(CallAbilityAction);
                                 });
@@ -661,7 +679,7 @@ namespace Loom.ZombieBattleground
                                         }
 
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard);
+                                    }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(CallAbilityAction);
                             }, 0.75f);
@@ -732,14 +750,26 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
 
+            if (!player.IsLocalPlayer)
+            {
+                card.GameObject.SetActive(false);
+            }
+
             Sequence animationSequence = DOTween.Sequence();
             animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
             animationSequence.OnComplete(() =>
             {
-                RemoveCard(new object[]
+                if (player.IsLocalPlayer)
                 {
+                    RemoveCard(new object[]
+                    {
                         card
-                });
+                    });
+                }
+                else
+                {
+                    Object.Destroy(card.GameObject);
+                }
 
                 InternalTools.DoActionDelayed(() =>
                 {

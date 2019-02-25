@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -63,12 +64,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"})");
-                return Proxy.CardPlay(card, position, entryAbilityTarget);
+                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"}, {nameof(skipEntryAbilities)}: {skipEntryAbilities}, {nameof(forceSkipForPlayerToo)}: {forceSkipForPlayerToo})");
+                return Proxy.CardPlay(card, position, entryAbilityTarget, skipEntryAbilities);
             });
         }
 
@@ -93,12 +94,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void OverlordSkillUsed(SkillId skillId, InstanceId? target)
+        public void OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {target})");
-                return Proxy.OverlordSkillUsed(skillId, target);
+                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {nameof(targets)}: {StringifyInstanceIds(targets)})");
+                return Proxy.OverlordSkillUsed(skillId, targets);
             });
         }
 
@@ -117,6 +118,24 @@ namespace Loom.ZombieBattleground.Test
             {
                 LogAction($"{nameof(CheatDestroyCardsOnBoard)}({nameof(targets)}: {StringifyInstanceIds(targets)})");
                 return Proxy.CheatDestroyCardsOnBoard(targets);
+            });
+        }
+
+        public void LetsThink(float thinkTime = 1f, bool forceRealtime = false)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(LetsThink)}()");
+                return Proxy.LetsThink(thinkTime, forceRealtime);
+            });
+        }
+
+        public void AssertInQueue(Action action)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(Assert)}()");
+                return Proxy.AssertInQueue(action);
             });
         }
 

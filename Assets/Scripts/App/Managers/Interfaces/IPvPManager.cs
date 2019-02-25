@@ -30,13 +30,15 @@ namespace Loom.ZombieBattleground
 
         event Action LeaveMatchReceived;
 
+        int CurrentActionIndex { get; set; }
+
         Address? CustomGameModeAddress { get; set; }
 
         MatchMetadata MatchMetadata { get; }
 
         GameState InitialGameState { get; }
 
-        List<string> PvPTags { get; set; }
+        List<string> PvPTags { get; }
 
         DebugCheatsConfiguration DebugCheats { get; }
 

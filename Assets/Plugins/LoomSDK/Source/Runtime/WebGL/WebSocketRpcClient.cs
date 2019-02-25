@@ -136,6 +136,7 @@ namespace Loom.Client.Unity.WebGL.Internal
                 this.webSocket.MessageReceived -= WSRPCClient_MessageReceived;
                 await SendAsync<string, object>("unsubevents", null);
             }
+            return Task.CompletedTask;
         }
 
         public override async Task<TResult> SendAsync<TResult, TArgs>(string method, TArgs args)
