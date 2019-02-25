@@ -61,16 +61,20 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(unitsViews);
         }
 
+        public void DestroyUnit(BoardUnitView unit)
+        {
+            if(!unit.Model.HasBuffShield)
+            {
+                unit.ChangeModelVisibility(false);
+            }
+            BattlegroundController.DestroyBoardUnit(unit.Model, false);
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
             OnUpdateEvent = null;
-
-            foreach(BoardUnitModel unit in _units)
-            {
-                BattlegroundController.DestroyBoardUnit(unit, false);
-            }
 
             if (_units.Count > 0)
             {

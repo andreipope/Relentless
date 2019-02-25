@@ -97,24 +97,18 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _unitsViews.Count; i++)
             {
                 unitView = _unitsViews[i];
-                if (unitView.Model.OwnerPlayer == Ability.PlayerCallerOfAbility)
+                if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
                     if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
                     {
-                        unitView.ChangeModelVisibility(false);
-                        CreateSubParticle(unitView.Transform.position);
-                        _unitsViews.Remove(unitView);
-                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+                        DestroyUnit(unitView);
                     }
                 }
                 else
                 {
                     if (opponentLineObject.transform.position.x + 1f < unitView.Transform.position.x)
                     {
-                        unitView.ChangeModelVisibility(false);
-                        CreateSubParticle(unitView.Transform.position);
-                        _unitsViews.Remove(unitView);
-                        _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+                        DestroyUnit(unitView);
                     }
                 }
             }
@@ -123,6 +117,14 @@ namespace Loom.ZombieBattleground
             {
                 Ability.OnUpdateEvent -= OnUpdateEventHandler;
             }
+        }
+
+        private void DestroyUnit(BoardUnitView unit)
+        {
+            CreateSubParticle(unit.Transform.position);
+            _unitsViews.Remove(unit);
+            _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
+            Ability.DestroyUnit(unit);
         }
 
         private void CreateSubParticle(Vector3 pos, float duration = 3)
