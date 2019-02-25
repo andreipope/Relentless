@@ -98,6 +98,15 @@ namespace Loom.ZombieBattleground
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
+        public AbilityBase()
+        {
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            BoardController = GameplayManager.GetController<BoardController>();
+            BattleController = GameplayManager.GetController<BattleController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            CardsController = GameplayManager.GetController<CardsController>();
+        }
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();

@@ -168,19 +168,17 @@ namespace Loom.ZombieBattleground
 
                 case PlayerActionOutcome.OutcomeOneofCase.AttackOverlord:
                     PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome attackOverlordOutcome = outcome.AttackOverlord;
-                    BoardObject boardObject = _battlegroundController.GetBoardObjectByInstanceId(attackOverlordOutcome.InstanceId.FromProtobuf());
 
-                    if (boardObject is Player targetOverlord)
+                    AttackOverlordOutcome attackPlayerOutcome = new AttackOverlordOutcome
                     {
-                        int currentDefence = targetOverlord.Defense;
-                        int damage = currentDefence - attackOverlordOutcome.NewDefense;
-                        _battleController.AttackPlayer(targetOverlord, damage);
-                        targetOverlord.Defense = attackOverlordOutcome.NewDefense;
-                    }
+                        PlayerInstanceId = attackOverlordOutcome.InstanceId.FromProtobuf(),
+                        Damage = attackOverlordOutcome.Damage,
+                        NewDefence = attackOverlordOutcome.NewDefense
+                    };
 
+                    AttackOverlordAbility attackOverlordAbility = new AttackOverlordAbility();
+                    attackOverlordAbility.ActivateAbility(attackPlayerOutcome);
                     break;
-
-
 
 
                 case PlayerActionOutcome.OutcomeOneofCase.Reanimate:
@@ -225,7 +223,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case PlayerActionOutcome.OutcomeOneofCase.ReplaceUnitsWithTypeOnStrongerOnes:
-                    PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome = outcome.ReplaceUnitsWithTypeOnStrongerOnes;
+                    PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome replaceUnitWithTypeStatOutcome = outcome.ReplaceUnitsWithTypeOnStrongerOnes;
                     ReplaceUnitsWithTypeOnStrongerOnes(replaceUnitWithTypeStatOutcome);
                     break;
 
@@ -234,7 +232,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome)
+        private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome replaceUnitWithTypeStatOutcome)
         {
             List<BoardUnitView> oldCardList = new List<BoardUnitView>();
             for (int i=0; i<replaceUnitWithTypeStatOutcome.OldInstanceIds.Count; i++)

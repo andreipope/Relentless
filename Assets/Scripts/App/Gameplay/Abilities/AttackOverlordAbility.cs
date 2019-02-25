@@ -12,6 +12,11 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.AbilityTargetType> TargetTypes { get; }
 
+        public AttackOverlordAbility() : base()
+        {
+
+        }
+
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -75,5 +80,26 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction?.ForceActionDone();
         }
+
+        public void ActivateAbility(AttackOverlordOutcome outcome)
+        {
+            BoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
+            if (boardObject is Player targetOverlord)
+            {
+                BattleController.AttackPlayer(targetOverlord, outcome.Damage);
+                targetOverlord.Defense = outcome.NewDefence;
+            }
+            else
+            {
+                throw new Exception("Attack overlord should apply only on Player Overlord");
+            }
+        }
+    }
+
+    public class AttackOverlordOutcome
+    {
+        public InstanceId PlayerInstanceId;
+        public int Damage;
+        public int NewDefence;
     }
 }
