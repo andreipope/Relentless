@@ -35,6 +35,15 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfPage;
 
+        public GameObject SelfPage {
+            get {
+                return _selfPage;
+            }
+            set {
+                _selfPage = value;
+            }
+        }
+
         private GameObject _battleButtonGlow;
 
         private Button _backButton,
@@ -543,7 +552,7 @@ namespace Loom.ZombieBattleground
             _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
-        private void BattleButtonOnClickHandler()
+        public void BattleButtonOnClickHandler()
         {
             if (_tutorialManager.IsButtonBlockedInTutorial(_battleButton.name))
             {
