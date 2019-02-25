@@ -543,7 +543,7 @@ namespace Loom.ZombieBattleground
             _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
-        private void BattleButtonOnClickHandler()
+        public void BattleButtonOnClickHandler()
         {
             if (_tutorialManager.IsButtonBlockedInTutorial(_battleButton.name))
             {

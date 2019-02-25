@@ -31,5 +31,7 @@ namespace Loom.ZombieBattleground
 
         void DrawPopupByName(string name, object data = null);
         void SetPageByName(string name, bool hideAll = false);
+
+        IUIElement CurrentPage {get; set;}
     }
 }

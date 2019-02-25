@@ -138,6 +138,7 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
                 QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived -= DecideToPlayAgain;
                 popup.ConfirmationReceived += DecideToPlayAgain;
             }
         }
@@ -146,11 +147,14 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                popup.ConfirmationReceived -= DecideToPlayAgain;
-                _uiManager.HidePopup<MatchMakingPopup>();
-                GameClient.Get<IMatchManager>().FindMatch();
+                HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
+                if (_uiManager.CurrentPage == page) {
+                    page.BattleButtonOnClickHandler();
+                }
             }
+
+            QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+            popup.ConfirmationReceived -= DecideToPlayAgain;
         }
 
         public void SetPausingApp(bool mustPause) {
