@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             if (!force)
             {
-                if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState)
+                if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState || _isLoadingStarted)
                     return;
             }
 
