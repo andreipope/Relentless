@@ -23,15 +23,16 @@ namespace Loom.ZombieBattleground
         {
             base.InputEndedHandler();
 
-            if (IsAbilityResolved)
-            {
-                InvokeActionTriggered();
-            }
+            InvokeActionTriggered();
+
+            Action();
         }
 
         public override void Action(object info = null)
         {
             object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
 
@@ -64,13 +65,12 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
-            Action();
         }
     }
 }
