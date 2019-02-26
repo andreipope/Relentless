@@ -91,6 +91,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new DeckSelectionPopup());
             _uiPopups.Add(new GameModePopup());
             _uiPopups.Add(new YouWonYouLostPopup());
+            _uiPopups.Add(new DeckFilterPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

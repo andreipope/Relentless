@@ -100,6 +100,8 @@ namespace Loom.ZombieBattleground
 
         public Hero CurrentEditHero;
 
+        public Enumerators.SetType FilterDeckSetType;
+
         public bool IsEditingNewDeck;
 
         #endregion
@@ -169,6 +171,8 @@ namespace Loom.ZombieBattleground
             MyDecksEditTab.Show(_selfPage);
             MyDecksSelectOverlordTab.Show(_selfPage);
             MyDecksSelectOverlordSkillTab.Show(_selfPage);
+
+            FilterDeckSetType = Enumerators.SetType.NONE;
             
             LoadButtons();
             LoadObjects();            
@@ -215,7 +219,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectDeckFilterHandler()
         {
-        
+            _uiManager.DrawPopup<DeckFilterPopup>();
         }
         
         private void ButtonSelectDeckSearchHandler()
@@ -519,21 +523,31 @@ namespace Loom.ZombieBattleground
             };
         }
         
-        private void UpdateDeckInfoObjects()
+        public void UpdateDeckInfoObjects()
         {
             List<Deck> deckList = GetDeckList();
+
+            List<Deck> deckListToDisplay = new List<Deck>();
+            for(int i=0; i<deckList.Count; ++i)
+            {
+                Hero hero = _dataManager.CachedHeroesData.Heroes[deckList[i].HeroId];
+                if( FilterDeckSetType == Enumerators.SetType.NONE || 
+                    FilterDeckSetType == hero.HeroElement )
+                        deckListToDisplay.Add(deckList[i]);                
+            }
+
             //TODO Add logic to display more than 3 decks
-            for(int i=0; i<_deckInfoObjectList.Count; ++i)
+            for (int i=0; i<_deckInfoObjectList.Count; ++i)
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
-                if(i>=deckList.Count)
+                if(i>=deckListToDisplay.Count)
                 {
                     deckInfoObject._button.gameObject.SetActive(false);
                     continue;
                 }
 
                 deckInfoObject._button.gameObject.SetActive(true);
-                Deck deck = deckList[i];
+                Deck deck = deckListToDisplay[i];
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
