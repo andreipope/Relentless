@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
                     Enumerators.QueueActionType.OverlordSkillUsage);
         }
 
-        public void UseSkill(List<ParametrizedAbilityBoardObject> targets)
+        public void UseSkill()
         {
             SetHighlightingEnabled(false);
             _cooldown = _initialCooldown;
@@ -270,8 +270,6 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
             }
 
-            SkillUsed?.Invoke(this, targets);
-
             if (_gameplayManager.UseInifiniteAbility)
             {
                 _usedInThisTurn = false;
@@ -282,6 +280,11 @@ namespace Loom.ZombieBattleground
             {
                 _coolDownTimer.Close();
             }
+        }
+
+        public void SkillUsedAction(List<ParametrizedAbilityBoardObject> targets)
+        {
+            SkillUsed?.Invoke(this, targets);
         }
 
         public void Hide()

@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
+        private IAppStateManager _appStateManager;
+
         private OverlordsTalkingController _overlordsChatController;
 
         private HandPointerController _handPointerController;
@@ -99,6 +101,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -270,6 +273,8 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
+            _uiManager.DrawPopup<TutorialSkipPopup>();
+
             StartTutorialEvent(CurrentTutorial.Id);
         }
 
@@ -388,6 +393,8 @@ namespace Loom.ZombieBattleground
             IsTutorial = false;
             BattleShouldBeWonBlocker = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            _uiManager.HidePopup<TutorialSkipPopup>();
 
             CompleteTutorialEvent(CurrentTutorial.Id);
         }
@@ -1310,6 +1317,101 @@ namespace Loom.ZombieBattleground
             {
                 //get card pack
             }
+        }
+
+        public void SkipTutorial()
+        {
+            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+
+            string tutorialSkipQuestion = "Do you really want to skip \nTutorial?";
+            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+            questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
+
+            _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+            _appStateManager.SetPausingApp(true);
+        }
+
+        private void ConfirmSkipReceivedHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSkipReceivedHandler;
+            if (status)
+            {
+                if (!IsTutorial)
+                    return;
+
+                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+                _gameplayManager.IsTutorial = false;
+                _dataManager.CachedUserLocalData.Tutorial = false;
+                _gameplayManager.IsSpecificGameplayBattleground = false;
+                StopTutorial(true);
+                _handPointerController.ResetAll();
+                CreateStarterDeck();
+
+                if (_appStateManager.AppState == Common.Enumerators.AppState.GAMEPLAY)
+                {
+                    _gameplayManager.EndGame(Common.Enumerators.EndGameType.CANCEL);
+                    GameClient.Get<IMatchManager>().FinishMatch(Common.Enumerators.AppState.MAIN_MENU);
+                }
+                else
+                {
+                    _appStateManager.ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
+                }
+
+            }
+            _appStateManager.SetPausingApp(false);
+        }
+
+        private async void CreateStarterDeck()
+        {
+            List<DeckCardData> cards = GetCardsForStarterDeck();
+
+            Deck savedTutorialDeck = _dataManager.CachedUserLocalData.TutorialSavedDeck;
+            if (savedTutorialDeck != null && _dataManager.CachedDecksData.Decks.Exists(deck => deck.Id == savedTutorialDeck.Id))
+            {
+                if(savedTutorialDeck.GetNumCards() < Constants.DeckMaxSize)
+                {
+                    savedTutorialDeck.Cards = cards;
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                }
+            }
+            else
+            {
+                string nameOfDeck = "HORDE " + _dataManager.CachedDecksData.Decks.Count;
+                savedTutorialDeck = new Deck(-1, 4, nameOfDeck, cards, 0, 0);
+
+                long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                savedTutorialDeck.Id = newDeckId;
+                _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
+            }
+            _dataManager.CachedUserLocalData.TutorialSavedDeck = savedTutorialDeck;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)savedTutorialDeck.Id;
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+        }
+
+        private List<DeckCardData> GetCardsForStarterDeck()
+        {
+            List<DeckCardData> cards =
+                _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Select(data => new DeckCardData(data.CardName, data.Amount))
+                    .ToList()
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).CardSetType != Enumerators.SetType.FIRE);
+
+            List<DeckCardData> filteredCards = new List<DeckCardData>();
+            int countCards = 0;
+            foreach (DeckCardData data in cards)
+            {
+                if (countCards >= Constants.DeckMaxSize)
+                    break;
+
+                if (countCards + data.Amount > Constants.DeckMaxSize)
+                {
+                    data.Amount = (int)Constants.DeckMaxSize - countCards;
+                }
+                countCards += data.Amount;
+                filteredCards.Add(data);
+            }
+
+            return filteredCards;
         }
     }
 }

@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         void PlayTutorialSound(string sound, float delay = 0f);
 
+        void SkipTutorial();
+
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
         SpecificTurnInfo GetCurrentTurnInfo();

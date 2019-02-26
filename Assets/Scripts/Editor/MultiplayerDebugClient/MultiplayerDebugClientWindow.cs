@@ -422,8 +422,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         }
                         else
                         {
-                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id;
-                            attackTargetInstanceId -= 2;
+                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex-2].InstanceId.Id;
                         }
 
                         await DebugClient.BackendFacade.SendPlayerAction(
