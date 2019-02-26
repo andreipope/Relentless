@@ -1340,7 +1340,7 @@ namespace Loom.ZombieBattleground
 
             _titleText.text = card.LibraryCard.Name;
             _descriptionText.text = choosableAbility.Description;
-            _gooCostText.text = card.InstanceCard.Damage.ToString();
+            _gooCostText.text = card.InstanceCard.Cost.ToString();
 
             if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1349,8 +1349,8 @@ namespace Loom.ZombieBattleground
                 _attackText = SelfObject.transform.Find("Text_Attack").GetComponent<TextMeshPro>();
                 _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
 
-                _attackText.text = card.InstanceCard.Damage.ToString();
-                _defenseText.text = card.InstanceCard.Health.ToString();
+                _attackText.text = card.LibraryCard.Damage.ToString();
+                _defenseText.text = card.LibraryCard.Health.ToString();
 
                 _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.InstanceCard.CardType + "_icon"));
             }
