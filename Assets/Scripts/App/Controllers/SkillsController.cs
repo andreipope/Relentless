@@ -1376,6 +1376,7 @@ namespace Loom.ZombieBattleground
                         InternalTools.DoActionDelayed(() =>
                             {
                                 unit.ChangeModelVisibility(true);
+                                unit.StopSleepingParticles();
                             },
                             3f);
 
@@ -1505,6 +1506,9 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard card in cards)
             {
+                if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
+                    break;
+
                 units.Add(_cardsController.SpawnUnitOnBoard(
                     owner,
                     card.LibraryCard.Name,
@@ -1534,10 +1538,12 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in units)
             {
+                unit.StopSleepingParticles();
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
                 InternalTools.DoActionDelayed(() =>
                 {
                     unit.ChangeModelVisibility(true);
+                  
                 }, 3f);
             }
         }
