@@ -57,8 +57,6 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
-            //GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
-
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
