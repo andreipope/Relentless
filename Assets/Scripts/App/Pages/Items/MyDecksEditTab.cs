@@ -53,13 +53,13 @@ namespace Loom.ZombieBattleground
         
         private GameObject _draggingObject;
 
-        private Button _buttonEditDeckFilter,
-                       _buttonEditDeckSearch,
-                       _buttonEditDeckUpperLeftArrow,
-                       _buttonEditDeckUpperRightArrow,
-                       _buttonEditDeckLowerLeftArrow,
-                       _buttonEditDeckLowerRightArrow,
-                       _buttonSaveEditDeck;
+        private Button _buttonFilter,
+                       _buttonSearch,
+                       _buttonUpperLeftArrow,
+                       _buttonUpperRightArrow,
+                       _buttonLowerLeftArrow,
+                       _buttonLowerRightArrow,
+                       _buttonSaveDeck;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;                   
@@ -150,33 +150,33 @@ namespace Loom.ZombieBattleground
             _textEditDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
             
-            _buttonEditDeckFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
-            _buttonEditDeckFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
-            _buttonEditDeckFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
+            _buttonFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonEditDeckSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
-            _buttonEditDeckSearch.onClick.AddListener(ButtonEditDeckSearchHandler);
-            _buttonEditDeckSearch.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
+            _buttonSearch.onClick.AddListener(ButtonEditDeckSearchHandler);
+            _buttonSearch.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonEditDeckUpperLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
-            _buttonEditDeckUpperLeftArrow.onClick.AddListener(ButtonEditDeckUpperLeftArrowHandler);
-            _buttonEditDeckUpperLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonUpperLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
+            _buttonUpperLeftArrow.onClick.AddListener(ButtonEditDeckUpperLeftArrowHandler);
+            _buttonUpperLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonEditDeckUpperRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
-            _buttonEditDeckUpperRightArrow.onClick.AddListener(ButtonEditDeckUpperRightArrowHandler);
-            _buttonEditDeckUpperRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonUpperRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
+            _buttonUpperRightArrow.onClick.AddListener(ButtonEditDeckUpperRightArrowHandler);
+            _buttonUpperRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonEditDeckLowerLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
-            _buttonEditDeckLowerLeftArrow.onClick.AddListener(ButtonEditDeckLowerLeftArrowHandler);
-            _buttonEditDeckLowerLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonLowerLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
+            _buttonLowerLeftArrow.onClick.AddListener(ButtonEditDeckLowerLeftArrowHandler);
+            _buttonLowerLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonEditDeckLowerRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
-            _buttonEditDeckLowerRightArrow.onClick.AddListener(ButtonEditDeckLowerRightArrowHandler);
-            _buttonEditDeckLowerRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonLowerRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
+            _buttonLowerRightArrow.onClick.AddListener(ButtonEditDeckLowerRightArrowHandler);
+            _buttonLowerRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonSaveEditDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
-            _buttonSaveEditDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
-            _buttonSaveEditDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _buttonSaveDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
+            _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
+            _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
             
             LoadBoardCardComponents();
         }
@@ -867,12 +867,12 @@ namespace Loom.ZombieBattleground
         public async void ProcessEditDeck(Deck deckToSave)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
-            _buttonSaveEditDeck.interactable = false;
+            _buttonSaveDeck.interactable = false;
             
             if (!VerifyDeckName(deckToSave.Name))
             {
                 _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-                _buttonSaveEditDeck.interactable = true;
+                _buttonSaveDeck.interactable = true;
                 return;
             }
 
@@ -883,7 +883,7 @@ namespace Loom.ZombieBattleground
                     deck.Name.Trim().Equals(deckToSave.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
                 {
                     _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-                    _buttonSaveEditDeck.interactable = true;
+                    _buttonSaveDeck.interactable = true;
                     _myDeckPage.OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
                     return;
                 }
@@ -943,7 +943,7 @@ namespace Loom.ZombieBattleground
             }
             
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-            _buttonSaveEditDeck.interactable = true;
+            _buttonSaveDeck.interactable = true;
         }
         
         private bool VerifyDeckName(string deckName)
