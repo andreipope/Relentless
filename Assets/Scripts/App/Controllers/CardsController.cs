@@ -145,10 +145,10 @@ namespace Loom.ZombieBattleground
         {
             CardDistribution = true;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
-
             if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
+
                 if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().MulliganScreenShouldAppear)
                 {
                     EndCardDistribution();
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                EndCardDistribution();
+                _uiManager.GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
             }
         }
 
