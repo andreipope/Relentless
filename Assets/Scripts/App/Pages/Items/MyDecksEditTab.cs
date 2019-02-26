@@ -62,7 +62,9 @@ namespace Loom.ZombieBattleground
                        _buttonSaveDeck;
 
         private TextMeshProUGUI _textEditDeckName,
-                                _textEditDeckCardsAmount;                   
+                                _textEditDeckCardsAmount;
+                                
+        private TMP_InputField _inputFieldSearchName;                   
        
         private int _deckPageIndex;
 
@@ -72,6 +74,16 @@ namespace Loom.ZombieBattleground
 
         private List<Card> _cacheCollectionCards;
         
+        public enum CollectionFilterType
+        {
+            NONE,
+            SEARCH_KEYWORD,
+        }
+
+        private CollectionFilterType _collectionFilterType;
+
+        private Enumerators.SetType _filterSetType;
+
         private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
             new Dictionary<Enumerators.SetType, Enumerators.SetType>
             {
@@ -129,13 +141,15 @@ namespace Loom.ZombieBattleground
                 _deckPageIndex = 0;
                 _collectionPageIndex = 0;
                 _collectionSetTypeIndex = 0;
+                _collectionFilterType = CollectionFilterType.NONE;
+                _inputFieldSearchName.text = "";
 
                 _cacheCollectionCards.Clear();                    
                 ResetDeckBoardCards();
                 ResetCollectionsBoardCards();
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
                 _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";  
-                LoadCollectionsCards();
+                LoadCollectionsCards(GetCollectionCardList());
                 LoadDeckCards(_myDeckPage.CurrentEditDeck);
                 UpdateDeckCardPage();
             };
@@ -178,6 +192,10 @@ namespace Loom.ZombieBattleground
             _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
             _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
             
+            _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
+            _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
+            _inputFieldSearchName.text = "";
+            
             LoadBoardCardComponents();
         }
 
@@ -218,7 +236,15 @@ namespace Loom.ZombieBattleground
         
         private void ButtonEditDeckFilterHandler()
         {
+            GameClient.Get<IUIManager>().DrawPopup<ElementFilterPopup>();
+            ElementFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<ElementFilterPopup>();
+            popup.ActionPopupHiding += FilterPopupHidingHandler;
+        }
         
+        private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
+        {
+            ElementFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<ElementFilterPopup>();
+            popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
         
         private void ButtonEditDeckSearchHandler()
@@ -241,18 +267,25 @@ namespace Loom.ZombieBattleground
         private void ButtonEditDeckLowerLeftArrowHandler()
         {
             MoveCollectionPageIndex(-1);
-            UpdateCollectionCardPage();
+            LoadCollectionsCards(GetCollectionCardList());
         }
         
         private void ButtonEditDeckLowerRightArrowHandler()
         {
             MoveCollectionPageIndex(1);
-            UpdateCollectionCardPage();
+            LoadCollectionsCards(GetCollectionCardList());
         }
         
         private void ButtonSaveEditDeckHandler()
         {
             ProcessEditDeck(_myDeckPage.CurrentEditDeck);            
+        }
+        
+        public void OnInputFieldSearchEndedEdit(string value)
+        {
+            _collectionFilterType = CollectionFilterType.SEARCH_KEYWORD;
+            _collectionPageIndex = 0;         
+            LoadCollectionsCards(GetCollectionCardList());
         }
         
         #endregion
@@ -314,30 +347,23 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void LoadCollectionsCards()
-        {       
+        public void LoadCollectionsCards(List<Card> collectionCardList)
+        {
+            _cacheCollectionCards = collectionCardList.ToList();
             ResetCollectionsBoardCards();
-
-            int page = _collectionPageIndex;
-            Enumerators.SetType setType = _availableCollectionSetType[_collectionSetTypeIndex];
             
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
-            List<Card> cards = set.Cards;
-
-            _cacheCollectionCards = cards.ToList();
-            
-            int startIndex = page * CollectionsCardPositions.Count;
-            int endIndex = Mathf.Min(startIndex + CollectionsCardPositions.Count, cards.Count);
+            int startIndex = _collectionPageIndex * CollectionsCardPositions.Count;
+            int endIndex = Mathf.Min(startIndex + CollectionsCardPositions.Count, collectionCardList.Count);
             
             CollectionCardData collectionCardData = null;
             RectTransform rectContainer = _myDeckPage.LocatorCollectionCards.GetComponent<RectTransform>();
 
             for (int i = startIndex; i < endIndex; i++)
             {
-                if (i >= cards.Count)
+                if (i >= collectionCardList.Count)
                     break;
 
-                Card card = cards[i];
+                Card card = collectionCardList[i];
                 CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
 
                 // hack !!!! CHECK IT!!!
@@ -369,6 +395,63 @@ namespace Loom.ZombieBattleground
             }
         }
         
+        private List<Card> GetCollectionCardList()
+        {
+            return FilterCollectionCardList();
+        }
+        
+        private List<Card> GetCollectionCardBySetType(List<Enumerators.SetType> setTypeList)
+        {
+            List<Card> cardList = new List<Card>();
+            
+            foreach(Enumerators.SetType setType in setTypeList)
+            {
+                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+                List<Card> cards = set.Cards;
+                cardList.AddRange(cards.ToList());
+            }
+            
+            return cardList;
+        }
+
+        private List<Card> FilterCollectionCardList()
+        {
+            List<Card> resultList = new List<Card>();
+            switch(_collectionFilterType)
+            {
+                case CollectionFilterType.SEARCH_KEYWORD:
+                    List<Card> cards = GetCollectionCardBySetType(_availableCollectionSetType);
+                    string keyword = _inputFieldSearchName.text.Trim().ToLower();
+
+                    if (string.IsNullOrEmpty(keyword))
+                    {
+                        resultList = cards.ToList();
+                        break;
+                    }                               
+                    
+                    foreach(Card card in cards)
+                    {
+                        string cardName = card.Name.Trim().ToLower();
+                        if (cardName.Contains(keyword))
+                            resultList.Add(card);
+                    }
+                    if(resultList.Count <= 0)
+                    {
+                        _myDeckPage.OpenAlertDialog($"No card found for keyword '{_inputFieldSearchName.text.Trim()}'");
+                        resultList = cards.ToList();;
+                    }
+                    break;
+                default:
+                    resultList = GetCollectionCardBySetType(new List<Enumerators.SetType>()
+                    {
+                        _availableCollectionSetType[_collectionSetTypeIndex]
+                    });
+                    break;
+              
+            }
+            return resultList;
+        }
+
         public void UpdateBoardCardAmount(bool init, string cardId, int amount)
         {
             foreach (BoardCard card in _createdCollectionsBoardCards)
@@ -746,11 +829,6 @@ namespace Loom.ZombieBattleground
             {
                 displayCardList[i].Transform.position = DeckCardPositions[i].position;
             }
-        }
-        
-        private void UpdateCollectionCardPage()
-        {
-            LoadCollectionsCards();
         }
 
         private void MoveDeckPageIndex(int direction)
