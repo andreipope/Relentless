@@ -139,7 +139,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224033531593619586}
   m_Layer: 0
-  m_Name: DeckFilterPopup
+  m_Name: ElementFilterPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

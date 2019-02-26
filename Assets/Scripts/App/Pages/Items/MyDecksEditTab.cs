@@ -236,14 +236,14 @@ namespace Loom.ZombieBattleground
         
         private void ButtonEditDeckFilterHandler()
         {
-            GameClient.Get<IUIManager>().DrawPopup<ElementFilterPopup>();
-            ElementFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<ElementFilterPopup>();
+            GameClient.Get<IUIManager>().DrawPopup<CardFilterPopup>();
+            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
+        private void FilterPopupHidingHandler()
         {
-            ElementFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<ElementFilterPopup>();
+            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
         
