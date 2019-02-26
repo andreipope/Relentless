@@ -378,7 +378,7 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
                         } else {
-                            if (Constants.MulliganEnabled == true && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
 
