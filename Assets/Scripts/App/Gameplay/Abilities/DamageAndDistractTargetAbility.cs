@@ -23,20 +23,16 @@ namespace Loom.ZombieBattleground
         {
             base.InputEndedHandler();
 
-            InvokeActionTriggered();
-
-            Action();
+            if (IsAbilityResolved)
+            {
+                SendAction();
+                InvokeActionTriggered();
+            }
         }
 
-        public override void Action(object info = null)
+        private void SendAction()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
-
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-
-            BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
-
-            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -44,6 +40,15 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 }
             );
+        }
+
+        public override void Action(object info = null)
+        {
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+
+            BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
+
+            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -65,12 +70,14 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
-
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }
