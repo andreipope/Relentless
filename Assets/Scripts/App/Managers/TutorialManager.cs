@@ -1376,14 +1376,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                savedTutorialDeck = new Deck(
-                    -1,
-                    4,
-                    "HORDE " + _dataManager.CachedDecksData.Decks.Count,
-                    cards,
-                    0,
-                    0
-                );
+                string nameOfDeck = "HORDE " + _dataManager.CachedDecksData.Decks.Count;
+                savedTutorialDeck = new Deck(-1, 4, nameOfDeck, cards, 0, 0);
 
                 long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
                 savedTutorialDeck.Id = newDeckId;
