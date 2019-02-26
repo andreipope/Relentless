@@ -65,8 +65,12 @@ namespace Loom.ZombieBattleground
                                 _textEditDeckCardsAmount;                   
        
         private int _deckPageIndex;
+
+        private int _collectionPageIndex;
         
         private bool _isDragging;
+
+        private List<Card> _cacheCollectionCards;
         
         private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
             new Dictionary<Enumerators.SetType, Enumerators.SetType>
@@ -89,7 +93,21 @@ namespace Loom.ZombieBattleground
                 {
                     Enumerators.SetType.WATER, Enumerators.SetType.AIR
                 }
-            };        
+            };
+
+        private readonly List<Enumerators.SetType> _availableCollectionSetType =
+            new List<Enumerators.SetType>
+            {
+                Enumerators.SetType.FIRE,
+                Enumerators.SetType.WATER,
+                Enumerators.SetType.EARTH,
+                Enumerators.SetType.AIR,
+                Enumerators.SetType.LIFE,
+                Enumerators.SetType.TOXIC,
+                Enumerators.SetType.OTHERS
+            };
+
+        private int _collectionSetTypeIndex;
 
         public void Init()
         {
@@ -107,15 +125,22 @@ namespace Loom.ZombieBattleground
             {
                 if (tab != MyDecksPage.TAB.EDITING)
                     return;
-                    
+
+                _deckPageIndex = 0;
+                _collectionPageIndex = 0;
+                _collectionSetTypeIndex = 0;
+
+                _cacheCollectionCards.Clear();                    
                 ResetDeckBoardCards();
                 ResetCollectionsBoardCards();
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
                 _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";  
-                LoadCollectionsCards(0,Enumerators.SetType.FIRE);
+                LoadCollectionsCards();
                 LoadDeckCards(_myDeckPage.CurrentEditDeck);
                 UpdateDeckCardPage();
             };
+
+            _cacheCollectionCards = new List<Card>();
         }
         
         public void Show(GameObject selfPage)
@@ -171,6 +196,8 @@ namespace Loom.ZombieBattleground
                 _draggingObject = null;
                 _isDragging = false;
             }
+            
+            _cacheCollectionCards.Clear();
         }
         
         private void InitBoardCardPrefabsAndLists()
@@ -213,12 +240,14 @@ namespace Loom.ZombieBattleground
         
         private void ButtonEditDeckLowerLeftArrowHandler()
         {
-
+            MoveCollectionPageIndex(-1);
+            UpdateCollectionCardPage();
         }
         
         private void ButtonEditDeckLowerRightArrowHandler()
         {
-
+            MoveCollectionPageIndex(1);
+            UpdateCollectionCardPage();
         }
         
         private void ButtonSaveEditDeckHandler()
@@ -255,6 +284,8 @@ namespace Loom.ZombieBattleground
             }
 
             _deckPageIndex = 0;
+            _collectionPageIndex = 0;
+            _collectionSetTypeIndex = 0;
             FillCollectionData();
         }
         
@@ -283,14 +314,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void LoadCollectionsCards(int page, Enumerators.SetType setType)
-        {
+        public void LoadCollectionsCards()
+        {       
             ResetCollectionsBoardCards();
+
+            int page = _collectionPageIndex;
+            Enumerators.SetType setType = _availableCollectionSetType[_collectionSetTypeIndex];
             
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
             List<Card> cards = set.Cards;
+            _cacheCollectionCards = cards;
+            
             int startIndex = page * CollectionsCardPositions.Count;
             int endIndex = Mathf.Min(startIndex + CollectionsCardPositions.Count, cards.Count);
+            
             CollectionCardData collectionCardData = null;
             RectTransform rectContainer = _myDeckPage.LocatorCollectionCards.GetComponent<RectTransform>();
 
@@ -709,10 +746,40 @@ namespace Loom.ZombieBattleground
                 displayCardList[i].Transform.position = DeckCardPositions[i].position;
             }
         }
+        
+        private void UpdateCollectionCardPage()
+        {
+            LoadCollectionsCards();
+        }
 
         private void MoveDeckPageIndex(int direction)
         {
             _deckPageIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount() - 1);
+        }
+        
+        private void MoveCollectionPageIndex(int direction)
+        {
+            int newPageIndex = _collectionPageIndex + direction;
+            if (newPageIndex < 0)
+            {
+                _collectionPageIndex = 0;
+                int newSetTypeIndex = _collectionSetTypeIndex - 1;
+                if (newSetTypeIndex < 0)
+                    newSetTypeIndex = _availableCollectionSetType.Count - 1;
+                _collectionSetTypeIndex = newSetTypeIndex;                    
+            }
+            else if (newPageIndex >= GetCollectionPageAmount())
+            {
+                _collectionPageIndex = 0;
+                int newSetTypeIndex = _collectionSetTypeIndex + 1;
+                if (newSetTypeIndex >= _availableCollectionSetType.Count)
+                    newSetTypeIndex = 0;
+                _collectionSetTypeIndex = newSetTypeIndex;
+            }
+            else
+            {
+                _collectionPageIndex = newPageIndex;
+            }
         }
         
         private void ResetCollectionsBoardCards()
@@ -730,9 +797,19 @@ namespace Loom.ZombieBattleground
             return Mathf.CeilToInt((float) _createdDeckBoardCards.Count / GetDeckCardAmountPerPage());
         }
         
+        private int GetCollectionPageAmount()
+        {
+            return Mathf.CeilToInt((float) _cacheCollectionCards.Count / GetCollectionCardAmountPerPage());
+        }
+        
         private int GetDeckCardAmountPerPage()
         {
             return DeckCardPositions.Count;
+        }
+        
+        private int GetCollectionCardAmountPerPage()
+        {
+            return CollectionsCardPositions.Count;
         }
 
         private void ResetDeckBoardCards()
