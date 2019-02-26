@@ -18,9 +18,9 @@ namespace Loom.ZombieBattleground
             base.Activate();
         }
 
-        public override void Action(object info = null)
+        private void SendAction()
         {
-            base.Action(info);
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -28,6 +28,12 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(TargetUnit)
                 }
             );
+        }
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
             BattlegroundController.DestroyBoardUnit(TargetUnit);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -43,6 +49,8 @@ namespace Loom.ZombieBattleground
                         }
                     }
             });
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         protected override void InputEndedHandler()
@@ -51,6 +59,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
+                SendAction();
                 InvokeActionTriggered();
             }
         }
