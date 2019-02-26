@@ -911,6 +911,11 @@ namespace Loom.ZombieBattleground
                 PlayerBoardCards.Insert(ItemPosition.End, view);
             }
 
+            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            {
+                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
+            }
+
             unit.OwnerPlayer.BoardCards.Remove(view);
             unit.OwnerPlayer.CardsOnBoard.Remove(unit.Card);
 
