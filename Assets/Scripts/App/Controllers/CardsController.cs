@@ -945,6 +945,7 @@ namespace Loom.ZombieBattleground
                     boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
                 }
 
+                card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
                 boardCard.SetCardCost(value);
 
                 bool isActive = boardCard.WorkingCard.InstanceCard.Cost < boardCard.WorkingCard.LibraryCard.Cost;
