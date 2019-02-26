@@ -588,10 +588,11 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.WorkingCard);
-                            player.BoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
+                            player.BoardCards.Insert(Mathf.Clamp(card.FuturePositionOnBoard,0, player.BoardCards.Count), boardUnitView);
                             player.AddCardToBoard(card.WorkingCard, (ItemPosition) card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.PlayerBoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
+                            _battlegroundController.PlayerBoardCards.Insert(Mathf.Clamp(card.FuturePositionOnBoard, 0,
+                            _battlegroundController.PlayerBoardCards.Count), boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             InternalTools.DoActionDelayed(
