@@ -149,8 +149,7 @@ namespace Loom.ZombieBattleground
         private void ApplySelectedSetType()
         {
             MyDecksPage myDecksPage = _uiManager.GetPage<MyDecksPage>();
-            myDecksPage.FilterDeckSetType = _selectedSetType;
-            myDecksPage.UpdateDeckInfoObjects();
+            myDecksPage.ApplyDeckFilter(_selectedSetType);
         }
 
         public void PlayClickSound()
