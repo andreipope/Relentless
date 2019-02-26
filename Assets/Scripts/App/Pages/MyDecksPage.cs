@@ -249,9 +249,18 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectDeckFilterHandler()
         {
-            _uiManager.DrawPopup<DeckFilterPopup>();
+            _uiManager.DrawPopup<ElementFilterPopup>();
+            ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
+            popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
+        private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
+        {
+            ApplyDeckFilter(selectedSetType);
+            ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
+            popup.ActionPopupHiding -= FilterPopupHidingHandler;
+        }
+
         private void ButtonSelectDeckSearchHandler()
         {
 

@@ -323,7 +323,8 @@ namespace Loom.ZombieBattleground
             
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
             List<Card> cards = set.Cards;
-            _cacheCollectionCards = cards;
+
+            _cacheCollectionCards = cards.ToList();
             
             int startIndex = page * CollectionsCardPositions.Count;
             int endIndex = Mathf.Min(startIndex + CollectionsCardPositions.Count, cards.Count);
