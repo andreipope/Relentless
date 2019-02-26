@@ -107,6 +107,7 @@ namespace Loom.ZombieBattleground
                 
                 if (_gameplayManager.OpponentHasDoneMulligan)
                 {
+                    SendMulliganEvent();
                     _cardsController.EndCardDistribution();
                     Hide();
 
