@@ -253,7 +253,8 @@ namespace Loom.ZombieBattleground
                             new ParametrizedAbilityBoardObject(targetPlayer)
                         };
 
-                        skill.UseSkill(targets);
+                        skill.UseSkill();
+                        skill.SkillUsedAction(targets);
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
                             skill.SelfObject.transform.position,
@@ -298,7 +299,7 @@ namespace Loom.ZombieBattleground
                                 new ParametrizedAbilityBoardObject(targetUnitView.Model)
                             };
                         }
-
+                        skill.UseSkill();
                         _targets = targets;
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
@@ -307,7 +308,7 @@ namespace Loom.ZombieBattleground
                             (x) =>
                             {
                                 DoActionByType(skill, targets, completeCallback);
-                                skill.UseSkill(_targets);
+                                skill.SkillUsedAction(_targets);
                             }, _isDirection);
 
                         if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -338,7 +339,7 @@ namespace Loom.ZombieBattleground
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                     }
-
+                    skill.UseSkill();
                     _targets = targets;
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
@@ -347,7 +348,7 @@ namespace Loom.ZombieBattleground
                         (x) =>
                         {
                             DoActionByType(skill, targets, completeCallback);
-                            skill.UseSkill(_targets);
+                            skill.SkillUsedAction(_targets);
                         }, _isDirection);
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
