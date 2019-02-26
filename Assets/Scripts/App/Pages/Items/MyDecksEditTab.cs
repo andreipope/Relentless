@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         
         private ITutorialManager _tutorialManager;
+
+        private IUIManager _uiManager;
         
         private IAnalyticsManager _analyticsManager;
         
@@ -107,24 +109,13 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-        private readonly List<Enumerators.SetType> _availableCollectionSetType =
-            new List<Enumerators.SetType>
-            {
-                Enumerators.SetType.FIRE,
-                Enumerators.SetType.WATER,
-                Enumerators.SetType.EARTH,
-                Enumerators.SetType.AIR,
-                Enumerators.SetType.LIFE,
-                Enumerators.SetType.TOXIC,
-                Enumerators.SetType.OTHERS
-            };
-
         private int _collectionSetTypeIndex;
 
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
@@ -241,9 +232,12 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler()
+        private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
         {
             CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
+            _collectionPageIndex = 0;
+            _collectionSetTypeIndex = 0;
+            LoadCollectionsCards(GetCollectionCardList());
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
         
@@ -420,7 +414,10 @@ namespace Loom.ZombieBattleground
             switch(_collectionFilterType)
             {
                 case CollectionFilterType.SEARCH_KEYWORD:
-                    List<Card> cards = GetCollectionCardBySetType(_availableCollectionSetType);
+                    List<Card> cards = GetCollectionCardBySetType
+                    (
+                        _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList()
+                    );
                     string keyword = _inputFieldSearchName.text.Trim().ToLower();
 
                     if (string.IsNullOrEmpty(keyword))
@@ -444,7 +441,7 @@ namespace Loom.ZombieBattleground
                 default:
                     resultList = GetCollectionCardBySetType(new List<Enumerators.SetType>()
                     {
-                        _availableCollectionSetType[_collectionSetTypeIndex]
+                        _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList()[_collectionSetTypeIndex]
                     });
                     break;
               
@@ -844,14 +841,14 @@ namespace Loom.ZombieBattleground
                 _collectionPageIndex = 0;
                 int newSetTypeIndex = _collectionSetTypeIndex - 1;
                 if (newSetTypeIndex < 0)
-                    newSetTypeIndex = _availableCollectionSetType.Count - 1;
+                    newSetTypeIndex = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList().Count - 1;
                 _collectionSetTypeIndex = newSetTypeIndex;                    
             }
             else if (newPageIndex >= GetCollectionPageAmount())
             {
                 _collectionPageIndex = 0;
                 int newSetTypeIndex = _collectionSetTypeIndex + 1;
-                if (newSetTypeIndex >= _availableCollectionSetType.Count)
+                if (newSetTypeIndex >= _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList().Count)
                     newSetTypeIndex = 0;
                 _collectionSetTypeIndex = newSetTypeIndex;
             }

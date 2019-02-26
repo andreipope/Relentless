@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -14,7 +15,7 @@ namespace Loom.ZombieBattleground
     {
         public GameObject Self { get; private set; }
         
-        public event Action ActionPopupHiding;
+        public event Action<CardFilterData> ActionPopupHiding;
         
         private IUIManager _uiManager;
 
@@ -36,7 +37,7 @@ namespace Loom.ZombieBattleground
             Enumerators.SetType.OTHERS
         };
 
-        private Dictionary<Enumerators.SetType, bool> _selectSetTypeList;
+        public CardFilterData FilterData;
 
         #region IUIPopup
 
@@ -45,7 +46,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
-            _selectSetTypeList = new Dictionary<Enumerators.SetType, bool>();            
+            FilterData = new CardFilterData(_availableSetTypeList);      
         }
 
         public void Dispose()
@@ -98,13 +99,7 @@ namespace Loom.ZombieBattleground
                 _buttonElementsDictionary.Add(setType, buttonElementIcon);
             }
 
-            _selectSetTypeList.Clear();
-            foreach(Enumerators.SetType setType in _availableSetTypeList)
-            {
-                _selectSetTypeList.Add(setType, true);
-            }
-
-            UpdateSelectedSetType(Enumerators.SetType.NONE);      
+            FilterData.Reset();     
         }
         
         public void Show(object data)
@@ -128,7 +123,7 @@ namespace Loom.ZombieBattleground
         private void ButtonSaveHandler()
         {
             _uiManager.HidePopup<CardFilterPopup>();
-            ActionPopupHiding?.Invoke();
+            ActionPopupHiding?.Invoke(FilterData);
         }
         
         private void ButtonElementIconHandler(Enumerators.SetType setType)
@@ -140,15 +135,49 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedSetType(Enumerators.SetType setType)
         {
-            _selectSetTypeList[setType] = !_selectSetTypeList[setType];
+            FilterData.SetTypeDictionary[setType] = !FilterData.SetTypeDictionary[setType];
             _buttonElementsDictionary[setType].GetComponent<Image>().color =
-                _selectSetTypeList[setType] ? Color.white : Color.gray;
+                FilterData.SetTypeDictionary[setType] ? Color.white : Color.gray;
         }
 
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-        }        
-           
+        }
+        
+        public class CardFilterData
+        {            
+            public Dictionary<Enumerators.SetType, bool> SetTypeDictionary;
+            
+            public CardFilterData(List<Enumerators.SetType> availableSetTypeList)
+            {
+                SetTypeDictionary = new Dictionary<Enumerators.SetType, bool>();
+                foreach(Enumerators.SetType setType in availableSetTypeList)
+                {
+                    SetTypeDictionary.Add(setType, true);
+                }
+            }
+            
+            public List<Enumerators.SetType> GetFilterSetTypeList()
+            {
+                List<Enumerators.SetType> setTypeList = new List<Enumerators.SetType>();
+                foreach (KeyValuePair<Enumerators.SetType, bool> kvp in SetTypeDictionary)
+                {
+                    if(kvp.Value)
+                        setTypeList.Add(kvp.Key);
+                }
+                return setTypeList;
+            }
+
+            public void Reset()
+            {
+                for(int i=0; i<SetTypeDictionary.Count;++i)
+                {
+                    KeyValuePair<Enumerators.SetType, bool> kvp = SetTypeDictionary.ElementAt(i);
+                    SetTypeDictionary[kvp.Key] = true;
+                }
+            }
+        }
+
     }
 }
