@@ -28,13 +28,13 @@ namespace Loom.ZombieBattleground
         
         private readonly List<Enumerators.SetType> _availableSetTypeList = new List<Enumerators.SetType>()
         {
-            Enumerators.SetType.AIR,
-            Enumerators.SetType.EARTH,
-            Enumerators.SetType.LIFE,
             Enumerators.SetType.FIRE,
-            Enumerators.SetType.TOXIC,
             Enumerators.SetType.WATER,
-            Enumerators.SetType.OTHERS
+            Enumerators.SetType.EARTH,
+            Enumerators.SetType.AIR,
+            Enumerators.SetType.LIFE,
+            Enumerators.SetType.TOXIC,
+            Enumerators.SetType.ITEM
         };
 
         public CardFilterData FilterData;
