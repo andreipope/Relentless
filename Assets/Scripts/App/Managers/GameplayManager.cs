@@ -84,6 +84,8 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
+        public bool OpponentHasDoneMulligan {get; set;}
+
         public AnalyticsTimer MatchDuration { get; set; }
 
         public Action TutorialStartAction { get; private set; }

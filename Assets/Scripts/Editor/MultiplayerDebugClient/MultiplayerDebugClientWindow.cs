@@ -311,6 +311,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+
+                if (GUILayout.Button("Handshake"))
+                {
+                    EnqueueAsyncTask(async () =>
+                    {
+                        List<Data.InstanceId> cardsInHandForMulligan = new List<Data.InstanceId>();
+                        foreach (CardInstance card in opponentPlayerState.CardsInHand) 
+                        {
+                            cardsInHandForMulligan.Add(card.InstanceId.FromProtobuf());
+                        }
+
+                        await DebugClient.BackendFacade.SendPlayerAction(
+                            DebugClient.MatchRequestFactory.CreateAction(DebugClient.PlayerActionFactory.Mulligan(cardsInHandForMulligan))
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
             }
             GUILayout.EndHorizontal();
 

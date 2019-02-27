@@ -81,6 +81,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new LoadingFiatPopup());
             _uiPopups.Add(new TutorialProgressInfoPopup());
             _uiPopups.Add(new RewardPopup());
+            _uiPopups.Add(new WaitingForPlayerPopup());
             _uiPopups.Add(new TutorialSkipPopup());
 
             foreach (IUIPopup popup in _uiPopups)
