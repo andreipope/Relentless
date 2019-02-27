@@ -347,7 +347,8 @@ namespace Loom.ZombieBattleground
             {   
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
-                foreach (Enumerators.SetType item in _availableSetType)
+                List<Enumerators.SetType> allAvailableSetTypeList = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
+                foreach (Enumerators.SetType item in allAvailableSetTypeList)
                 {
                     CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
                     List<Card> cards = set.Cards.ToList();

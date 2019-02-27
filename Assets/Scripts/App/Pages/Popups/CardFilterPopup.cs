@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
         
-        private readonly List<Enumerators.SetType> _availableSetTypeList = new List<Enumerators.SetType>()
+        public readonly List<Enumerators.SetType> AllAvailableSetTypeList = new List<Enumerators.SetType>()
         {
             Enumerators.SetType.FIRE,
             Enumerators.SetType.WATER,
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
-            FilterData = new CardFilterData(_availableSetTypeList);      
+            FilterData = new CardFilterData(AllAvailableSetTypeList);      
         }
 
         public void Dispose()
@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
             _buttonGooCost.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
-            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
             {
                 Button buttonElementIcon = Self.transform.Find("Scaler/Tab_Element/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectNoneHandler()
         {
-            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
             {
                 SetSelectedSetType(setType, false);
             }
@@ -178,7 +178,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectAllHandler()
         {
-            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
             {
                 SetSelectedSetType(setType, true);
             }
@@ -227,7 +227,7 @@ namespace Loom.ZombieBattleground
         private bool CheckIfAnyElementSelected()
         {
             bool selected = false;
-            foreach (Enumerators.SetType setType in _availableSetTypeList)
+            foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
             {
                 if (FilterData.SetTypeDictionary[setType])
                 {
