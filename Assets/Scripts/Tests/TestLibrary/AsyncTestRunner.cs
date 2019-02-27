@@ -146,17 +146,22 @@ namespace Loom.ZombieBattleground.Test
 
             double lastTimestamp = Utilites.GetTimestamp();
             double timeElapsed = 0;
+            bool isTimedOut = false;
             while (!currentTask.IsCompleted)
             {
-                double currentTimestamp = Utilites.GetTimestamp();
-                timeElapsed += currentTimestamp - lastTimestamp;
-                lastTimestamp = currentTimestamp;
-
-                if (timeElapsed > timeout)
+                if (!isTimedOut)
                 {
-                    string message = $"Test execution time exceeded {timeout} s";
-                    Debug.Log(message);
-                    CancelTestWithReason(new TimeoutException(message));
+                    double currentTimestamp = Utilites.GetTimestamp();
+                    timeElapsed += currentTimestamp - lastTimestamp;
+                    lastTimestamp = currentTimestamp;
+
+                    if (timeElapsed > timeout)
+                    {
+                        isTimedOut = true;
+                        string message = $"Test execution time exceeded {timeout} s";
+                        Debug.Log(message);
+                        CancelTestWithReason(new TimeoutException(message));
+                    }
                 }
 
                 yield return null;
