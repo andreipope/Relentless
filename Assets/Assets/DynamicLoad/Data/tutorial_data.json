@@ -394,7 +394,7 @@
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
               "Description": "Two can play that game.",
-              "AppearDelay": 2.5
+              "AppearDelay": 0.5
             }
           ],
           "ConnectedTurnIndex": 8,
@@ -997,7 +997,9 @@
           "ActionToEndThisStep": "ScreenChanged",
           "OpenScreen": "OverlordSelectionPage",
           "BlockedButtons": [
-            "Button_Back"
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow"
           ],
           "HandPointers": [
             {
@@ -1178,7 +1180,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -1659,13 +1662,18 @@
           ]
         },
         {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Good job Zombie Slayer!",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "END"
-          }
+          "ActionToEndThisStep": "EnemyOverlordDied"
+        },
+        {
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Gotcha.",
+              "Duration": 2.5
+            }
+          ]
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened"
@@ -2011,7 +2019,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -2388,6 +2397,17 @@
             "OPPONENT"
           ],
           "UnitsCanAttack": true
+        },
+        {
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Nice work.",
+              "Duration": 2.5
+            }
+          ]
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened"
@@ -2780,7 +2800,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -3138,13 +3159,15 @@
           "UnitsCanAttack": true
         },
         {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Good job Zombie Slayer!",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "END"
-          }
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "The goo must flow.",
+              "Duration": 2.5
+            }
+          ]
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened"
@@ -3591,7 +3614,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -3627,7 +3651,7 @@
         "MaximumCardsCount": 30,
         "CardsForArmy": [
           {
-            "Amount": 4,
+            "Amount": 2,
             "CardName": "Gloop"
           },
           {
@@ -3639,7 +3663,7 @@
             "CardName": "Harpoon"
           },
           {
-            "Amount": 2,
+            "Amount": 3,
             "CardName": "Rubble"
           },
           {
@@ -3647,7 +3671,7 @@
             "CardName": "Zwoop"
           },
           {
-            "Amount": 2,
+            "Amount": 3,
             "CardName": "Bane"
           },
           {
@@ -3657,10 +3681,6 @@
           {
             "Amount": 2,
             "CardName": "Azzazzin"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Trunk"
           },
           {
             "Amount": 1,
@@ -3693,10 +3713,6 @@
           {
             "Amount": 1,
             "CardName": "Blizzard"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Vindrom"
           }
         ]
       },
