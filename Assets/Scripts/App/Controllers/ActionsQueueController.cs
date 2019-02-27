@@ -300,6 +300,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _actionDone = true;
+            BlockedInQueue = false;
+
             OnActionDoneEvent?.Invoke(this);
         }
 
@@ -308,9 +310,7 @@ namespace Loom.ZombieBattleground
             if (_actionDone)
                 return;
 
-            _actionDone = true;
-
-            OnActionDoneEvent?.Invoke(this);
+            ForceActionDone();
         }
     }
 }
