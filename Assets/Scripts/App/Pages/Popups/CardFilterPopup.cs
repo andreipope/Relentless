@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
                        _buttonGooCost;
 
         private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
+
+        private List<Button> _buttonGooCostList;
         
         public readonly List<Enumerators.SetType> AllAvailableSetTypeList = new List<Enumerators.SetType>()
         {
@@ -44,6 +46,21 @@ namespace Loom.ZombieBattleground
         };
 
         public CardFilterData FilterData;
+        
+        public enum TAB
+        {
+            NONE = -1,
+            ELEMENT = 0,
+            RANK = 1,
+            TYPE = 2,
+            GOO_COST = 3
+        }
+        
+        private TAB _tab;
+        
+        private GameObject[] _tabObjects;
+        
+        public event Action<TAB> EventChangeTab;
 
         #region IUIPopup
 
@@ -52,7 +69,8 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
-            FilterData = new CardFilterData(AllAvailableSetTypeList);      
+            FilterData = new CardFilterData(AllAvailableSetTypeList);
+            _buttonGooCostList = new List<Button>();
         }
 
         public void Dispose()
@@ -69,6 +87,7 @@ namespace Loom.ZombieBattleground
             Self = null;
 
             _buttonElementsDictionary.Clear();
+            _buttonGooCostList.Clear();
         }
 
         public void SetMainPriority()
@@ -129,7 +148,30 @@ namespace Loom.ZombieBattleground
                 _buttonElementsDictionary.Add(setType, buttonElementIcon);
             }
 
-            FilterData.Reset();     
+            _buttonGooCostList.Clear();
+            for(int i=0;i<11;++i)
+            {
+                int gooIndex = i;
+                Button button = Self.transform.Find("Scaler/Tab_GooCost/Group_GooIcons/Button_element_goo_" + i).GetComponent<Button>();
+                button.onClick.AddListener(() =>
+                    {
+                        FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
+                        UpdateGooCostButtonDisplay(gooIndex);
+                    });
+                button.onClick.AddListener(PlayClickSound);
+                _buttonGooCostList.Add(button);
+            }
+
+            _tabObjects = new GameObject[]
+            {
+                Self.transform.Find("Scaler/Tab_Element").gameObject,
+                Self.transform.Find("Scaler/Tab_Rank").gameObject,
+                Self.transform.Find("Scaler/Tab_Type").gameObject,
+                Self.transform.Find("Scaler/Tab_GooCost").gameObject
+            };
+
+            FilterData.Reset();
+            LoadTabs();  
         }
         
         public void Show(object data)
@@ -155,12 +197,17 @@ namespace Loom.ZombieBattleground
             if (!CheckIfAnyElementSelected())
             {
                 OpenAlertDialog("No element selected!\nPlease select atleast one.");
+                return;
             }
-            else
+            
+            if (!CheckIfAnyGooCostSelected())
             {
-                _uiManager.HidePopup<CardFilterPopup>();
-                ActionPopupHiding?.Invoke(FilterData);
+                OpenAlertDialog("No goo cost selected!\nPlease select atleast one.");
+                return;
             }
+            
+            _uiManager.HidePopup<CardFilterPopup>();
+            ActionPopupHiding?.Invoke(FilterData);            
         }
         
         private void ButtonElementIconHandler(Enumerators.SetType setType)
@@ -170,41 +217,105 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectNoneHandler()
         {
-            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
+            switch (_tab)
             {
-                SetSelectedSetType(setType, false);
+                case TAB.ELEMENT:
+                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                        SetSelectedSetType(setType, false);
+                    break;
+                case TAB.GOO_COST:
+                    for(int i=0; i<FilterData.GooCostList.Count;++i)
+                    {
+                        FilterData.GooCostList[i] = false;
+                        UpdateGooCostButtonDisplay(i);
+                    }
+                    break;
+                default:
+                    return;
             }
         }
         
         private void ButtonSelectAllHandler()
         {
-            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
+            switch (_tab)
             {
-                SetSelectedSetType(setType, true);
+                case TAB.ELEMENT:
+                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                        SetSelectedSetType(setType, true);
+                    break;
+                case TAB.GOO_COST:
+                    for(int i=0; i<FilterData.GooCostList.Count;++i)
+                    {
+                        FilterData.GooCostList[i] = true;
+                        UpdateGooCostButtonDisplay(i);
+                    }
+                    break;
+                default:
+                    return;
             }
         }
         
         private void ButtonElementHandler()
         {
-
+            ChangeTab(TAB.ELEMENT);
         }
         
         private void ButtonRankHandler()
         {
-
+            ChangeTab(TAB.RANK);
         }
         
         private void ButtonTypeHandler()
         {
-
+            ChangeTab(TAB.TYPE);
         }
         
         private void ButtonGooCostHandler()
         {
-
+            ChangeTab(TAB.GOO_COST);
         }
 
         #endregion
+        
+        private void LoadTabs()
+        {
+            _tab = TAB.NONE;
+            ChangeTab(TAB.ELEMENT);
+        }
+        
+        public void ChangeTab(TAB newTab)
+        {
+            if (newTab == _tab)
+                return;
+                
+            _tab = newTab;            
+            
+            for(int i=0; i<_tabObjects.Length;++i)
+            {
+                GameObject tabObject = _tabObjects[i];
+                tabObject.SetActive(i == (int)newTab);
+            }
+            
+            switch (newTab)
+            {
+                case TAB.NONE:
+                    break;
+                case TAB.ELEMENT:
+                    break;
+                case TAB.RANK:
+                    break;
+                case TAB.TYPE:                                      
+                    break;
+                case TAB.GOO_COST:                    
+                    break;
+                default:
+                    break;
+            }            
+            
+            EventChangeTab?.Invoke(_tab);
+        }
+
+        #region Element
 
         private void SetSelectedSetType(Enumerators.SetType setType, bool status)
         {
@@ -226,16 +337,21 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfAnyElementSelected()
         {
-            bool selected = false;
-            foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
-            {
-                if (FilterData.SetTypeDictionary[setType])
-                {
-                    selected = true;
-                    break;
-                }
-            }
-            return selected;            
+            return FilterData.SetTypeDictionary.Any(kvp => kvp.Value);           
+        }
+
+        #endregion
+        
+        private void UpdateGooCostButtonDisplay(int gooIndex)
+        {
+            _buttonGooCostList[gooIndex].GetComponent<Image>().color =
+                FilterData.GooCostList[gooIndex] ? Color.white : Color.gray;
+            _buttonGooCostList[gooIndex].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = _buttonGooCostList[gooIndex].GetComponent<Image>().color;
+        }
+        
+        private bool CheckIfAnyGooCostSelected()
+        {
+            return FilterData.GooCostList.Any(selected => selected);
         }
 
         public void PlayClickSound()
@@ -253,6 +369,7 @@ namespace Loom.ZombieBattleground
         public class CardFilterData
         {            
             public Dictionary<Enumerators.SetType, bool> SetTypeDictionary;
+            public List<bool> GooCostList;
             
             public CardFilterData(List<Enumerators.SetType> availableSetTypeList)
             {
@@ -260,6 +377,11 @@ namespace Loom.ZombieBattleground
                 foreach(Enumerators.SetType setType in availableSetTypeList)
                 {
                     SetTypeDictionary.Add(setType, true);
+                }
+                GooCostList = new List<bool>();
+                for(int i=0; i<11; ++i)
+                {
+                    GooCostList.Add(true);
                 }
             }
             
@@ -280,6 +402,10 @@ namespace Loom.ZombieBattleground
                 {
                     KeyValuePair<Enumerators.SetType, bool> kvp = SetTypeDictionary.ElementAt(i);
                     SetTypeDictionary[kvp.Key] = true;
+                }
+                for (int i = 0; i < GooCostList.Count; ++i)
+                {
+                    GooCostList[i] = true;
                 }
             }
         }

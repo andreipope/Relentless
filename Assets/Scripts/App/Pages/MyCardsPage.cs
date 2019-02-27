@@ -341,13 +341,30 @@ namespace Loom.ZombieBattleground
                 Enumerators.SetType setType = _availableSetType[_currentSetTypeIndex];
                 CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
                 List<Card> cards = set.Cards.ToList();
-                UpdateCacheFilteredCardList(cards);
+                List<Card> resultList = new List<Card>();
+                foreach(Card card in cards)
+                {
+                    if (card.Cost < 0)
+                        continue;
+                        
+                    if(card.Cost >= 10)
+                    {
+                        if (_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[10])
+                            resultList.Add(card);
+                    }
+                    else
+                    {
+                        if(_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[card.Cost])
+                            resultList.Add(card);
+                    }
+                }
+                UpdateCacheFilteredCardList(resultList);
             }
             else
             {   
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
-                List<Enumerators.SetType> allAvailableSetTypeList = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
+                List<Enumerators.SetType> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
                 foreach (Enumerators.SetType item in allAvailableSetTypeList)
                 {
                     CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);

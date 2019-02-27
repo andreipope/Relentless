@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
     
         private MyDecksPage _myDeckPage;
+
+        private CardFilterPopup _cardFilterPopup;
         
         public List<Transform> CollectionsCardPositions,
                                DeckCardPositions;
@@ -113,9 +115,9 @@ namespace Loom.ZombieBattleground
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             
-            _myDeckPage = GameClient.Get<IUIManager>().GetPage<MyDecksPage>();
             InitBoardCardPrefabsAndLists();
 
+            _myDeckPage = _uiManager.GetPage<MyDecksPage>();
             _myDeckPage.EventChangeTab += (MyDecksPage.TAB tab) =>
             {
                 if (tab != MyDecksPage.TAB.EDITING)
@@ -140,6 +142,8 @@ namespace Loom.ZombieBattleground
         public void Show(GameObject selfPage)
         {   
             _selfPage = selfPage;
+            
+            _cardFilterPopup = _uiManager.GetPopup<CardFilterPopup>();            
             
             _textEditDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
@@ -216,15 +220,15 @@ namespace Loom.ZombieBattleground
         
         private void ButtonEditDeckFilterHandler()
         {
-            GameClient.Get<IUIManager>().DrawPopup<CardFilterPopup>();
-            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
+            _uiManager.DrawPopup<CardFilterPopup>();
+            CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
         private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
         {
             ResetCollectionPageState();
-            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();            
+            CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();            
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
         
@@ -784,7 +788,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetCollectionPageState()
         {
-            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList();
+            _availableSetType = _cardFilterPopup.FilterData.GetFilterSetTypeList();
             _currentCollectionSetTypeIndex = 0;
             _currentCollectionPage = 0;
             UpdateAvailableCollectionCards();
@@ -799,13 +803,30 @@ namespace Loom.ZombieBattleground
                 Enumerators.SetType setType = _availableSetType[_currentCollectionSetTypeIndex];
                 CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
                 List<Card> cards = set.Cards.ToList();
-                UpdateCacheFilteredCardList(cards);
+                List<Card> resultList = new List<Card>();
+                foreach(Card card in cards)
+                {
+                    if (card.Cost < 0)
+                        continue;
+                        
+                    if(card.Cost >= 10)
+                    {
+                        if (_cardFilterPopup.FilterData.GooCostList[10])
+                            resultList.Add(card);
+                    }
+                    else
+                    {
+                        if(_cardFilterPopup.FilterData.GooCostList[card.Cost])
+                            resultList.Add(card);
+                    }
+                }
+                UpdateCacheFilteredCardList(resultList);
             }
             else
             {   
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
-                List<Enumerators.SetType> allAvailableSetTypeList = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
+                List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
                 foreach (Enumerators.SetType item in allAvailableSetTypeList)
                 {
                     CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
