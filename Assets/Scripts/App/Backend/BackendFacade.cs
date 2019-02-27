@@ -703,13 +703,29 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(IList<string> topics)
         {
-            await _reader.UnsubscribeAsync(EventHandler);
-            await _reader.SubscribeAsync(EventHandler, topics);
+            await UnsubscribeEvent();
+            try
+            {
+                await _reader.SubscribeAsync(EventHandler, topics);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+                //Log the message and wait, the connection error popup is handled elsewhere
+            }
         }
 
         public async Task UnsubscribeEvent()
         {
-            await _reader.UnsubscribeAsync(EventHandler);
+            try
+            {
+                await _reader.UnsubscribeAsync(EventHandler);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message);
+                //Log the message and wait, the connection error popup is handled elsewhere
+            }
         }
 
         public async Task SendPlayerAction(PlayerActionRequest request)
