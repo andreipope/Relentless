@@ -9,6 +9,7 @@ using System.Linq;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
+    [Category("QuickSubset")]
     public class LifeCardsTests : BaseIntegrationTest
     {
         [UnityTest]
