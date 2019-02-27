@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground
 
         public List<Deck> GetDeckList()
         {
-            return _dataManager.CachedDecksData.Decks;
+            return _dataManager.CachedDecksData.Decks.ToList();
         }
         
         private Deck GetSelectedDeck()
