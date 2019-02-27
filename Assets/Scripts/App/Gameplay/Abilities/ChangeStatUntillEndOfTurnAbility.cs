@@ -26,12 +26,12 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-
-            InvokeUseAbilityEvent();
 
             InvokeActionTriggered();
         }
