@@ -159,8 +159,15 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
-            ResetCheckPlayerStatus();
-            await _backendFacade.UnsubscribeEvent();
+            try
+            {
+                ResetCheckPlayerStatus();
+                await _backendFacade.UnsubscribeEvent();
+            }
+            catch(Exception e)
+            {
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, false, false);
+            }
         }
 
         public async Task StartMatchmaking(int deckId)
