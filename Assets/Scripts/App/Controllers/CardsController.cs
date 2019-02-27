@@ -243,7 +243,7 @@ namespace Loom.ZombieBattleground
             {
                 if (player.CardsInDeck.Count == 0)
                 {
-                    if (!_tutorialManager.IsTutorial)
+                    if (!_tutorialManager.IsTutorial || (_tutorialManager.CurrentTutorial != null && _tutorialManager.IsLastTutorial))
                     {
                         player.DamageByNoMoreCardsInDeck++;
                         player.Defense -= player.DamageByNoMoreCardsInDeck;
