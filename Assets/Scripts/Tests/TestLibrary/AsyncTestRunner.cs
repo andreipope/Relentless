@@ -154,7 +154,9 @@ namespace Loom.ZombieBattleground.Test
 
                 if (timeElapsed > timeout)
                 {
-                    CancelTestWithReason(new TimeoutException($"Test execution time exceeded {timeout} s"));
+                    string message = $"Test execution time exceeded {timeout} s";
+                    Debug.Log(message);
+                    CancelTestWithReason(new TimeoutException(message));
                 }
 
                 yield return null;
