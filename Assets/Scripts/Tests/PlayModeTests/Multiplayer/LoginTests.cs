@@ -13,6 +13,7 @@ using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class LoginTests : BaseIntegrationTest
     {
         [UnityTest]
