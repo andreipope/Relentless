@@ -704,15 +704,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task SubscribeEvent(IList<string> topics)
         {
             await UnsubscribeEvent();
-            try
-            {
-                await _reader.SubscribeAsync(EventHandler, topics);
-            }
-            catch (Exception e)
-            {
-                Debug.LogWarning(e.Message);
-                //Log the message and wait, the connection error popup is handled elsewhere
-            }
+            await _reader.SubscribeAsync(EventHandler, topics);
         }
 
         public async Task UnsubscribeEvent()
@@ -723,8 +715,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e.Message);
-                //Log the message and wait, the connection error popup is handled elsewhere
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
         }
 
