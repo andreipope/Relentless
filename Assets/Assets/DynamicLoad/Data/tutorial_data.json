@@ -848,8 +848,7 @@
             "Button_Settings",
             "Button_Credits",
             "Button_Play",
-            "Button_Shop",
-            "ButtonPackType",
+            "Button_Shop"
           ],
           "ConnectedActivities": [
             2
@@ -875,8 +874,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            " Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "ConnectedActivities": [
             3
@@ -899,8 +898,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            " Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -910,9 +909,9 @@
             "ButtonMinus",
             "ButtonPlus",
             "ButtonMax",
-            "ButtonPackType",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -1860,8 +1859,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -1881,8 +1880,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -1890,11 +1889,11 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
-            "ButtonPackType",
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -2644,8 +2643,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -2665,8 +2664,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -2677,7 +2676,8 @@
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -3460,8 +3460,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -3481,8 +3481,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "ButtonPackType",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -3492,9 +3492,9 @@
             "ButtonMinus",
             "ButtonPlus",
             "ButtonMax",
-            "ButtonPackType",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
@@ -3683,7 +3683,7 @@
             "CardName": "Zwoop"
           },
           {
-            "Amount": 3,
+            "Amount": 2,
             "CardName": "Bane"
           },
           {
@@ -3725,6 +3725,10 @@
           {
             "Amount": 1,
             "CardName": "Blizzard"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Shale"
           }
         ]
       },
@@ -3756,13 +3760,13 @@
             "Name": "Pushhh"
           },
           {
-            "Name": "Blizzard"
+            "Name": "Rubble"
           },
           {
-            "Name": "Vindrom"
+            "Name": "Shale"
           },
           {
-            "Name": "Trunk"
+            "Name": "Shale"
           }
         ]
       },
