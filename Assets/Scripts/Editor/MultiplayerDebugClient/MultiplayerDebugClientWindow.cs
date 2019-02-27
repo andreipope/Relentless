@@ -311,6 +311,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+
+                if (GUILayout.Button("Handshake"))
+                {
+                    EnqueueAsyncTask(async () =>
+                    {
+                        List<Data.InstanceId> cardsInHandForMulligan = new List<Data.InstanceId>();
+                        foreach (CardInstance card in opponentPlayerState.CardsInHand) 
+                        {
+                            cardsInHandForMulligan.Add(card.InstanceId.FromProtobuf());
+                        }
+
+                        await DebugClient.BackendFacade.SendPlayerAction(
+                            DebugClient.MatchRequestFactory.CreateAction(DebugClient.PlayerActionFactory.Mulligan(cardsInHandForMulligan))
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
             }
             GUILayout.EndHorizontal();
 
@@ -404,8 +422,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         }
                         else
                         {
-                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id;
-                            attackTargetInstanceId -= 2;
+                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex-2].InstanceId.Id;
                         }
 
                         await DebugClient.BackendFacade.SendPlayerAction(

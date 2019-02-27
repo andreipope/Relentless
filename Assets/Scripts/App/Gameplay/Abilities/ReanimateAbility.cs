@@ -91,6 +91,7 @@ namespace Loom.ZombieBattleground
             }
 
             boardUnitView.PlayArrivalAnimation();
+            boardUnitView.StopSleepingParticles();
 
             GameplayManager.CanDoDragActions = true;
 

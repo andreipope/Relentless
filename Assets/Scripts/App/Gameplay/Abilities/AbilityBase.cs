@@ -196,8 +196,6 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
@@ -271,9 +269,26 @@ namespace Loom.ZombieBattleground
             AbilitiesController.DeactivateAbility(ActivityId);
         }
 
+        public void ChangePlayerCallerOfAbility(Player player)
+        {
+            PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
+
+            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+
+            PlayerCallerOfAbility = player;
+
+            PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             Deactivate();
+        }
+
+        protected virtual void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)

@@ -324,7 +324,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator BlaZter_WaitForMergeOfLetsThink()
+        public IEnumerator BlaZter()
         {
             return AsyncTest(async () =>
             {
@@ -463,7 +463,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator RabieZ_To_Fix()
+        public IEnumerator RabieZ()
         {
             return AsyncTest(async () =>
             {
@@ -1013,28 +1013,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent => {},
                     player => {
                         player.CardPlay(playerCardId, ItemPosition.Start);
-                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().InstanceId)
-                        });
+                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
                     },
                     opponent => {},
-                    player => {
-                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().InstanceId)
-                        });},
+                    player => {},
                     opponent =>
                     {},
-                    player => {
-                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().InstanceId)
-                        });
-                    },
-                    opponent => {
-
-                    }
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>

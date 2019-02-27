@@ -29,10 +29,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerCardId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                        player => player.CardAttack(playerCardId, opponentCardId)
@@ -43,7 +39,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentHp);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -66,10 +62,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                     player => player.CardAttack(playerCardId, opponentCardId),
@@ -105,10 +97,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start)
                 };
@@ -142,10 +130,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent =>
                     {
@@ -186,8 +170,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                     player => {},
-                    opponent => {},
-                    player => {},
                     opponent => opponent.CardPlay(opponentBolderrId, ItemPosition.Start),
                     player => player.CardPlay(playerBolderrId, ItemPosition.Start, opponentBolderrId),
                     opponent =>
@@ -197,9 +179,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         {
                             new ParametrizedAbilityInstanceId(playerBolderrId)
                         });
+                        opponent.LetsThink(2);
                     },
-                    player => {},
-                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -232,22 +213,20 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => player.CardPlay(playerPebbleId, ItemPosition.Start),
-                    opponent => {},
-                    player => {},
+                    player => 
+                    {
+                        player.CardPlay(playerPebbleId, ItemPosition.Start);
+                        player.LetsThink(2);
+                    },
                     opponent =>
                     {
                         opponent.CardPlay(opponentPebbleId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentPebbleId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(playerPebbleId)
-                        });
                     },
-                    player => player.CardPlay(playerPebble1Id, ItemPosition.Start)
+                    player => 
+                    {
+                        player.CardPlay(playerPebble1Id, ItemPosition.Start);
+                    },
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -256,7 +235,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentPebbleId)).CurrentHp);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -268,11 +247,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new DeckCardData("Protector", 1),
-                    new DeckCardData("Slab", 10)
+                    new DeckCardData("Pyromaz", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Protector", 1),
-                    new DeckCardData("Slab", 10)
+                    new DeckCardData("Pyromaz", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -287,28 +266,22 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player =>
                     {
                         player.CardPlay(playerPyromazId, ItemPosition.Start);
                         player.CardPlay(playerProtectorId, ItemPosition.Start);
+                        player.CardAbilityUsed(playerProtectorId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
                     },
                     opponent =>
                     {
                         opponent.CardPlay(opponentPyromazId, ItemPosition.Start);
                         opponent.CardPlay(opponentProtectorId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentProtectorId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(opponentPyromazId)
-                        });
+                        opponent.CardAbilityUsed(opponentProtectorId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => player.CardAttack(playerProtectorId, opponentProtectorId),
                     opponent => opponent.CardAttack(opponentProtectorId, playerProtectorId),
                     player => {},
-                    opponent => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -343,10 +316,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                     player => player.CardAttack(playerCardId, opponentCardId),
@@ -382,13 +351,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
-                    player => {}
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -420,10 +386,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                     player => player.CardAttack(playerCardId, opponentCardId),
@@ -461,10 +423,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player =>
                     {
                         player.CardPlay(playerCardId, ItemPosition.Start);
@@ -477,7 +435,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
                         opponent.CardAttack(opponentCardId, pvpTestContext.GetCurrentPlayer().InstanceId);
                     },
-                    player => {}
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -511,10 +470,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start)
                 };
@@ -589,10 +544,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start)
                 };
@@ -636,15 +587,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     player => {},
                     opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerPyromazId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentPyromazId, ItemPosition.Start),
                     player => player.CardPlay(playerPyromaz1Id, ItemPosition.End),
                     opponent => opponent.CardPlay(opponentPyromaz1Id, ItemPosition.Start),
                     player => player.CardPlay(playerWalleyId, ItemPosition.End),
                     opponent => opponent.CardPlay(opponentWalleyId, new ItemPosition(1)),
-                    player => {}
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -676,10 +626,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
                     player => {},
@@ -715,17 +661,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
                     },
-                    player => { }
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -757,18 +700,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerCardId, ItemPosition.Start),
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
+                           opponent.LetsThink(2);
                        },
-                       player => {},
-                       opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -806,8 +744,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerGroundyId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentGroundyId, ItemPosition.Start),
                        player => player.CardPlay(playerEarthshakerId, ItemPosition.Start, opponentGroundyId),
@@ -818,9 +754,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            {
                                new ParametrizedAbilityInstanceId(playerGroundyId)
                            });
+                           opponent.LetsThink(2);
                        },
-                       player => {},
-                       opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -893,8 +828,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
                        player => player.CardPlay(playerCardId, ItemPosition.Start),
                        opponent =>
                        {
@@ -937,13 +870,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
-                    player => {}
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
@@ -983,8 +913,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
                        player => {},
                        opponent => {},
                        player =>
@@ -1049,13 +977,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardAbilityUsed(opponentMountain1Id, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => player.CardAttack(playerMountainId, opponentMountainId),
-                       opponent => opponent.CardAttack(opponentMountain1Id, playerMountain1Id),
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {}
+                       opponent =>
+                       {
+                           opponent.CardAttack(opponentMountain1Id, playerMountain1Id);
+                           opponent.LetsThink(6);
+                       }
                 };
 
                 Action validateEndState = () =>

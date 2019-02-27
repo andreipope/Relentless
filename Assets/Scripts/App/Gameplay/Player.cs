@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
         {
             if (shuffle)
             {
-                CardsInDeck.Insert(Random.Range(0, CardsInDeck.Count), card);
+                CardsInDeck.Insert(MTwister.IRandom(0, CardsInDeck.Count), card);
             }
             else
             {
