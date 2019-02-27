@@ -273,8 +273,6 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
-            _uiManager.DrawPopup<TutorialSkipPopup>();
-
             StartTutorialEvent(CurrentTutorial.Id);
         }
 
@@ -393,8 +391,6 @@ namespace Loom.ZombieBattleground
             IsTutorial = false;
             BattleShouldBeWonBlocker = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
-            _uiManager.HidePopup<TutorialSkipPopup>();
 
             CompleteTutorialEvent(CurrentTutorial.Id);
         }
@@ -1321,44 +1317,13 @@ namespace Loom.ZombieBattleground
 
         public void SkipTutorial()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            string tutorialSkipQuestion = "Do you really want to skip \nTutorial?";
-            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
-            questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
-
-            _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
-            _appStateManager.SetPausingApp(true);
-        }
-
-        private void ConfirmSkipReceivedHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSkipReceivedHandler;
-            if (status)
-            {
-                if (!IsTutorial)
-                    return;
-
-                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
-                StopTutorial(true);
-                _handPointerController.ResetAll();
-                CreateStarterDeck();
-
-                if (_appStateManager.AppState == Common.Enumerators.AppState.GAMEPLAY)
-                {
-                    _gameplayManager.EndGame(Common.Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Common.Enumerators.AppState.MAIN_MENU);
-                }
-                else
-                {
-                    _appStateManager.ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
-                }
-
-            }
-            _appStateManager.SetPausingApp(false);
+            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+            _gameplayManager.IsTutorial = false;
+            _dataManager.CachedUserLocalData.Tutorial = false;
+            _gameplayManager.IsSpecificGameplayBattleground = false;
+            StopTutorial(true);
+            _handPointerController.ResetAll();
+            CreateStarterDeck();
         }
 
         private async void CreateStarterDeck()
