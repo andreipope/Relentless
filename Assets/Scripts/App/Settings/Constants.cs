@@ -216,6 +216,8 @@ namespace Loom.ZombieBattleground.Common
         
         internal const int LastTutorialId = 8;
         
-        internal const bool EnableNewUI = true;        
+        internal const bool EnableNewUI = true;
+
+        internal const string MarketPlaceLink = "https://loom.games/en/browse";
     }
 }

@@ -25,6 +25,14 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         
         private GameObject _selfPage;
+
+        private Button _buttonLeftArrow,
+                       _buttonRightArrow,
+                       _buttonFilter,
+                       _buttonBuyPacks,
+                       _buttonMarketplace;
+                       
+        private TMP_InputField _inputFieldSearchName; 
         
         #region IUIElement
         
@@ -59,7 +67,31 @@ namespace Loom.ZombieBattleground
             
             _cardCounter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Image_CardfCounter/Text_CardCounter").GetComponent<TextMeshProUGUI>();
             
-            InitObjects();
+            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonFilter.onClick.AddListener(ButtonFilterHandler);
+            _buttonFilter.onClick.AddListener(PlayClickSound);
+            
+            _buttonMarketplace = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
+            _buttonMarketplace.onClick.AddListener(ButtonMarketplace);
+            _buttonMarketplace.onClick.AddListener(PlayClickSound);
+            
+            _buttonBuyPacks = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
+            _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
+            _buttonBuyPacks.onClick.AddListener(PlayClickSound);
+            
+            _buttonLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
+            _buttonLeftArrow.onClick.AddListener(PlayClickSound);
+            
+            _buttonRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
+            _buttonRightArrow.onClick.AddListener(PlayClickSound);
+            
+            _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
+            _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
+            _inputFieldSearchName.text = "";
+            
+            LoadObjects();
 
         }
         
@@ -85,8 +117,50 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-        #region Board Cards
+        #region UI Handlers
+
+        private void ButtonFilterHandler()
+        {
+            GameClient.Get<IUIManager>().DrawPopup<CardFilterPopup>();
+            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
+            popup.ActionPopupHiding += FilterPopupHidingHandler;
+        }
         
+        private void FilterPopupHidingHandler(CardFilterPopup.CardFilterData cardFilterData)
+        {
+            CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
+            popup.ActionPopupHiding -= FilterPopupHidingHandler;
+        }
+        
+        private void ButtonBuyPacksHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
+        }
+        
+        private void ButtonLeftArrowHandler()
+        {
+            MoveCardsPage(-1);
+        }
+        
+        private void ButtonRightArrowHandler()
+        {
+            MoveCardsPage(1);
+        }
+        
+        private void ButtonMarketplace()
+        {
+            Application.OpenURL(Constants.MarketPlaceLink);
+        }
+
+        public void OnInputFieldSearchEndedEdit(string value)
+        {
+        
+        }
+
+        #endregion
+
+        #region Board Cards
+
         private TextMeshProUGUI _cardCounter;
         
         public List<Transform> CardPositions;
@@ -105,7 +179,7 @@ namespace Loom.ZombieBattleground
         
         private int _currentElementPage, _numElementPages;
         
-        private void InitObjects()
+        private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
             Vector3 cardPlaceholdersPos = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Locator_CardPosition").position;
@@ -198,8 +272,70 @@ namespace Loom.ZombieBattleground
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
-                (float) CardPositions.Count);
+            _numElementPages = Mathf.CeilToInt(
+                SetTypeUtility.GetCardSet
+                (
+                    _dataManager, _currentSet).Cards.Count / (float) CardPositions.Count
+                );
+        }
+        
+        public void MoveCardsPage(int direction)
+        {
+            CalculateNumberOfPages();
+
+            _currentElementPage += direction;
+
+            if (_currentElementPage < 0)
+            {
+                _currentSet += direction;
+
+                if (_currentSet < Enumerators.SetType.FIRE)
+                {
+                    _currentSet = Enumerators.SetType.ITEM;
+                    CalculateNumberOfPages();
+                    _currentElementPage = _numElementPages - 1;
+                }
+                else
+                {
+                    CalculateNumberOfPages();
+
+                    _currentElementPage = _numElementPages - 1;
+
+                    _currentElementPage = _currentElementPage < 0 ? 0 : _currentElementPage;
+                }
+            }
+            else if (_currentElementPage >= _numElementPages)
+            {
+                _currentSet += direction;
+
+                if (_currentSet > Enumerators.SetType.ITEM)
+                {
+                    _currentSet = Enumerators.SetType.FIRE;
+                    _currentElementPage = 0;
+                }
+                else
+                {
+                    _currentElementPage = 0;
+                }
+            }
+
+            LoadCards(_currentElementPage, _currentSet);
+        }
+
+        #endregion
+        
+        #region Util
+
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+        
+        public void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
         #endregion
