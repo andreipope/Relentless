@@ -848,7 +848,8 @@
             "Button_Settings",
             "Button_Credits",
             "Button_Play",
-            "Button_Shop"
+            "Button_Shop",
+            "ButtonPackType",
           ],
           "ConnectedActivities": [
             2
@@ -874,6 +875,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             " Button_BuyPacks"
           ],
           "ConnectedActivities": [
@@ -897,6 +899,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             " Button_BuyPacks"
           ]
         },
@@ -907,6 +910,7 @@
             "ButtonMinus",
             "ButtonPlus",
             "ButtonMax",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks"
           ],
@@ -1856,6 +1860,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ],
           "HandPointers": [
@@ -1876,6 +1881,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ]
         },
@@ -1884,6 +1890,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
+            "ButtonPackType",
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
@@ -2637,6 +2644,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ],
           "HandPointers": [
@@ -2657,6 +2665,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ]
         },
@@ -3451,6 +3460,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ],
           "HandPointers": [
@@ -3471,6 +3481,7 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
+            "ButtonPackType",
             "Button_BuyPacks"
           ]
         },
@@ -3481,6 +3492,7 @@
             "ButtonMinus",
             "ButtonPlus",
             "ButtonMax",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks"
           ],
