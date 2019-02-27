@@ -1,4 +1,4 @@
-#define DEBUG_SCENARIO_PLAYER
+//#define DEBUG_SCENARIO_PLAYER
 
 using System;
 using System.Collections;
@@ -96,6 +96,7 @@ namespace Loom.ZombieBattleground.Test
                 _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
             }
         }
+
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
             if (Completed)
