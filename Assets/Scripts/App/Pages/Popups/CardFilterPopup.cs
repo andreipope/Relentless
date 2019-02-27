@@ -22,7 +22,13 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
 
         private Button _buttonClose,
-                       _buttonSave;
+                       _buttonSave,
+                       _buttonSelectNone,
+                       _buttonSelectAll,
+                       _buttonElement,
+                       _buttonRank,
+                       _buttonType,
+                       _buttonGooCost;
 
         private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
         
@@ -85,6 +91,30 @@ namespace Loom.ZombieBattleground
             _buttonSave = Self.transform.Find("Scaler/Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
             _buttonSave.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectNone = Self.transform.Find("Scaler/Button_SelectNone").GetComponent<Button>();                        
+            _buttonSelectNone.onClick.AddListener(ButtonSelectNoneHandler);
+            _buttonSelectNone.onClick.AddListener(PlayClickSound);
+            
+            _buttonSelectAll = Self.transform.Find("Scaler/Button_SelectAll").GetComponent<Button>();                        
+            _buttonSelectAll.onClick.AddListener(ButtonSelectAllHandler);
+            _buttonSelectAll.onClick.AddListener(PlayClickSound);
+            
+            _buttonElement = Self.transform.Find("Scaler/Button_Element").GetComponent<Button>();                        
+            _buttonElement.onClick.AddListener(ButtonElementHandler);
+            _buttonElement.onClick.AddListener(PlayClickSound);
+            
+            _buttonRank = Self.transform.Find("Scaler/Button_Rank").GetComponent<Button>();                        
+            _buttonRank.onClick.AddListener(ButtonRankHandler);
+            _buttonRank.onClick.AddListener(PlayClickSound);
+            
+            _buttonType = Self.transform.Find("Scaler/Button_Type").GetComponent<Button>();                        
+            _buttonType.onClick.AddListener(ButtonTypeHandler);
+            _buttonType.onClick.AddListener(PlayClickSound);
+            
+            _buttonGooCost = Self.transform.Find("Scaler/Button_GooCost").GetComponent<Button>();                        
+            _buttonGooCost.onClick.AddListener(ButtonGooCostHandler);
+            _buttonGooCost.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.SetType setType in _availableSetTypeList)
@@ -121,28 +151,103 @@ namespace Loom.ZombieBattleground
         }
         
         private void ButtonSaveHandler()
-        {
-            _uiManager.HidePopup<CardFilterPopup>();
-            ActionPopupHiding?.Invoke(FilterData);
+        {            
+            if (!CheckIfAnyElementSelected())
+            {
+                OpenAlertDialog("No element selected!\nPlease select atleast one.");
+            }
+            else
+            {
+                _uiManager.HidePopup<CardFilterPopup>();
+                ActionPopupHiding?.Invoke(FilterData);
+            }
         }
         
         private void ButtonElementIconHandler(Enumerators.SetType setType)
         {
-            UpdateSelectedSetType(setType);            
+            ToggleSelectedSetType(setType);            
+        }
+
+        private void ButtonSelectNoneHandler()
+        {
+            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            {
+                SetSelectedSetType(setType, false);
+            }
+        }
+        
+        private void ButtonSelectAllHandler()
+        {
+            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            {
+                SetSelectedSetType(setType, true);
+            }
+        }
+        
+        private void ButtonElementHandler()
+        {
+
+        }
+        
+        private void ButtonRankHandler()
+        {
+
+        }
+        
+        private void ButtonTypeHandler()
+        {
+
+        }
+        
+        private void ButtonGooCostHandler()
+        {
+
         }
 
         #endregion
+
+        private void SetSelectedSetType(Enumerators.SetType setType, bool status)
+        {
+            FilterData.SetTypeDictionary[setType] = status;
+            UpdateSetTypeButtonDisplay(setType);
+        }
         
-        private void UpdateSelectedSetType(Enumerators.SetType setType)
+        private void ToggleSelectedSetType(Enumerators.SetType setType)
         {
             FilterData.SetTypeDictionary[setType] = !FilterData.SetTypeDictionary[setType];
+            UpdateSetTypeButtonDisplay(setType);
+        }
+        
+        private void UpdateSetTypeButtonDisplay(Enumerators.SetType setType)
+        {
             _buttonElementsDictionary[setType].GetComponent<Image>().color =
                 FilterData.SetTypeDictionary[setType] ? Color.white : Color.gray;
+        }
+        
+        private bool CheckIfAnyElementSelected()
+        {
+            bool selected = false;
+            foreach (Enumerators.SetType setType in _availableSetTypeList)
+            {
+                if (FilterData.SetTypeDictionary[setType])
+                {
+                    selected = true;
+                    break;
+                }
+            }
+            return selected;            
         }
 
         public void PlayClickSound()
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+        
+        public void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            _uiManager.DrawPopup<WarningPopup>(msg);
         }
         
         public class CardFilterData
