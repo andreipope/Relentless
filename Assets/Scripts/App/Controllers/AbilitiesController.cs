@@ -803,6 +803,19 @@ namespace Loom.ZombieBattleground
             activeAbility.Ability.Activate();
         }
 
+        public void ActivateAbilitiesOnCard(BoardObject abilityCaller, WorkingCard card, Player owner)
+        {
+            foreach(AbilityData abilityData in card.LibraryCard.Abilities )
+            {
+                ActiveAbility activeAbility;
+                if(abilityData.CallType != Enumerators.AbilityCallType.ENTRY)
+                {
+                    activeAbility = CreateActiveAbility(abilityData, card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
+                    activeAbility.Ability.Activate();
+                }
+            }
+        }
+
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
         {
             ability = null;
