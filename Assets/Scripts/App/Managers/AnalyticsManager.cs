@@ -84,18 +84,18 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogScreen(string title)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         Debug.Log("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        //Mixpanel.Track(title);
+        //Mixpanel.Track(title); 
 #endif
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -169,7 +169,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -184,7 +184,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName, Dictionary<string, object> paramters)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -204,7 +204,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetPoepleProperty(string identityId, string property, string value)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         if (string.IsNullOrEmpty(identityId))
             return;
 
@@ -215,14 +215,14 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetSuperProperty(string property, string value)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         Mixpanel.Register(property, value);
 #endif
     }
 
     public void SetPoepleIncrement(string property, int value)
     {
-#if DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS
         Mixpanel.people.Increment(property, value);
 #endif
     }
