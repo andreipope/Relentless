@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -20,8 +21,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -64,29 +63,64 @@ namespace Loom.ZombieBattleground
                 )
                 return;
 
+            List<ParametrizedAbilityBoardObject> targets = null;
+
+            WorkingCard card = null;
+
             if (AbilityTargetTypes.Count > 0)
             {
                 Enumerators.AbilityTargetType abilityTargetType = AbilityTargetTypes[0];
+                Player targetPlayer = null;
                 switch (abilityTargetType)
                 {
                     case Enumerators.AbilityTargetType.PLAYER:
+                        targetPlayer = PlayerCallerOfAbility;
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
-                            PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                        targetPlayer = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                                 GameplayManager.OpponentPlayer :
-                                GameplayManager.CurrentPlayer);
+                                GameplayManager.CurrentPlayer;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
                 }
+
+                if (PredefinedTargets != null && PredefinedTargets.Count > 0)
+                {
+                    card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(cardInDeck => cardInDeck.InstanceId.Id.ToString() == PredefinedTargets[0].Parameters.CardName);
+                }
+
+                card = CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, targetPlayer, card);
             }
             else
             {
+                if (PredefinedTargets != null && PredefinedTargets.Count > 0)
+                {
+                    card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(cardInDeck => cardInDeck.InstanceId.Id.ToString() == PredefinedTargets[0].Parameters.CardName);                    
+                }
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                View.IView viewCard = CardsController.AddCardToHand(PlayerCallerOfAbility, card);
+
+                if(card == null && viewCard is BoardCard boardCard)
+                {
+                    card = boardCard.WorkingCard;
+                }
             }
+
+            if (card != null)
+            {
+                targets = new List<ParametrizedAbilityBoardObject>();
+                {
+                    new ParametrizedAbilityBoardObject(PlayerCallerOfAbility,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = card.InstanceId.Id.ToString()
+                        });
+                };
+            }
+
+            InvokeUseAbilityEvent(targets);
         }
     }
 }

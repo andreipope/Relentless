@@ -273,7 +273,7 @@ namespace Loom.ZombieBattleground
             return cardView;
         }
 
-        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        public WorkingCard AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
         {
             if (card == null)
             {
@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground
                         otherPlayer.Defense -= otherPlayer.DamageByNoMoreCardsInDeck;
                         _vfxController.SpawnGotDamageEffect(otherPlayer, -otherPlayer.DamageByNoMoreCardsInDeck);
                     }
-                    return;
+                    return null;
                 }
 
                 card = otherPlayer.CardsInDeck[0];
@@ -294,7 +294,7 @@ namespace Loom.ZombieBattleground
             otherPlayer.RemoveCardFromDeck(card);
 
             if (CheckIsMoreThanMaxCards(card, player))
-                return;
+                return null;
 
             if (player.Equals(otherPlayer))
             {
@@ -310,6 +310,8 @@ namespace Loom.ZombieBattleground
                 //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.Types.Enum.Player, card.LibraryCard.Name);
                 MulliganCards?.Add(card);
             }
+
+            return card;
         }
 
         public BoardCard AddCardToHand(WorkingCard card, bool silent = false)
