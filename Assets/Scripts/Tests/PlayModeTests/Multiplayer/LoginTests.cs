@@ -226,7 +226,8 @@ namespace Loom.ZombieBattleground.Test
         {
             LoginPopup loginPopup = GameClient.Get<IUIManager>().GetPopup<LoginPopup>();
 
-            await new WaitUntil(()=>{
+            await new WaitUntil(() => {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                 return loginPopup.Self == null;
             });
         }

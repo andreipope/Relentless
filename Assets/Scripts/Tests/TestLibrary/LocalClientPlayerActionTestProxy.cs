@@ -109,7 +109,11 @@ namespace Loom.ZombieBattleground.Test
 
             CheckAttacker();
 
-            await new WaitUntil(() => boardUnitView.ArrivalDone);
+            await new WaitUntil(() =>
+            {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                return boardUnitView.ArrivalDone;
+            });
 
             boardUnitView.StartAttackTargeting();
             Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");

@@ -206,10 +206,10 @@ namespace Loom.ZombieBattleground.Test
 
                 await new WaitUntil(() =>
                 {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     if (_appStateManager == null)
                         return false;
 
-                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU);
                 });
 
@@ -964,6 +964,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
+            AsyncTestRunner.Instance.ThrowIfCancellationRequested();
             WaitStart(5);
             GameObject menuButtonGameObject;
             bool clickTimeout = false;
