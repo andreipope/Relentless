@@ -189,6 +189,7 @@ public class HandBoardCard : OwnableBoardObject
         }
         else
         {
+            _canceledPlay = false;
             ReturnToHandAnim();
 
             if (_tutorialManager.IsTutorial)
