@@ -489,24 +489,27 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     ValidateGameState(pvpControlGameState);
-                     EndTurn();
-
-                     if (_gameplayManager.IsLocalPlayerTurn())
+                     InternalTools.DoActionDelayed(() =>
                      {
-                         _uiManager.DrawPopup<YourTurnPopup>();
+                         ValidateGameState(pvpControlGameState);
+                         EndTurn();
 
-                         _timerManager.AddTimer((x) =>
+                         if (_gameplayManager.IsLocalPlayerTurn())
+                         {
+                             _uiManager.DrawPopup<YourTurnPopup>();
+
+                             _timerManager.AddTimer((x) =>
+                             {
+                                 StartTurn();
+                                 completeCallback?.Invoke();
+                             }, null, Constants.DelayBetweenYourTurnPopup);
+                         }
+                         else
                          {
                              StartTurn();
                              completeCallback?.Invoke();
-                         }, null, Constants.DelayBetweenYourTurnPopup);
-                     }
-                     else
-                     {
-                         StartTurn();
-                         completeCallback?.Invoke();
-                     }
+                         }
+                     }, 4);
                  },  Enumerators.QueueActionType.StopTurn);
         }
 

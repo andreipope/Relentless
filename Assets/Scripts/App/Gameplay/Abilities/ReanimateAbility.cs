@@ -7,9 +7,15 @@ namespace Loom.ZombieBattleground
 {
     public class ReanimateAbility : AbilityBase
     {
+        private IGameplayManager _gameplayManager;
+
+        private AbilitiesController _abilitiesController;
+
         public ReanimateAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
@@ -46,15 +52,24 @@ namespace Loom.ZombieBattleground
             if (owner.IsLocalPlayer)
             {
                 BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
+                _abilitiesController.ActivateAbilitiesOnCard(unit.Model, card, owner);
             }
             else
             {
                 BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
             }
 
-            BoardController.UpdateCurrentBoardOfPlayer(owner, null);
-
             InvokeActionTriggered(unit);
+        }
+
+        protected override void UnitHpChangedHandler()
+        {
+            base.UnitHpChangedHandler();
+
+            if (AbilityUnitOwner.CurrentHp == 0 && !AbilityUnitOwner.IsReanimated)
+            {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            }
         }
 
         protected override void UnitDiedHandler()
@@ -66,7 +81,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            Action();
+            AbilityProcessingAction?.ForceActionDone();
 
             base.UnitDiedHandler();
         }
