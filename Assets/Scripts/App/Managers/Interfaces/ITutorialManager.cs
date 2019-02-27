@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         int TutorialsCount { get; }
 
+        bool IsLastTutorial { get; }
+
         bool PlayerWon { get; set; }
 
         bool UnfinishedTutorial { get; set; }

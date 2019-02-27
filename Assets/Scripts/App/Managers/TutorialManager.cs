@@ -89,6 +89,11 @@ namespace Loom.ZombieBattleground
             get { return _tutorials.FindAll(tutor => !tutor.HiddenTutorial).Count; }
         }
 
+        public bool IsLastTutorial
+        {
+            get { return CurrentTutorial.Id == _tutorials[_tutorials.Count - 1].Id; }
+        }
+
         public void Dispose()
         {
         }
