@@ -715,6 +715,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (Exception e)
             {
+                Helpers.ExceptionReporter.LogException(e);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
         }
