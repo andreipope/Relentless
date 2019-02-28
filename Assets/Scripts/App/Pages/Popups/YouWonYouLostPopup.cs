@@ -1,6 +1,7 @@
 ﻿using System;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,15 +24,23 @@ namespace Loom.ZombieBattleground
         
         private ITutorialManager _tutorialManager;
 
+        private BackendDataControlMediator _backendDataControlMediator;
+
         private IMatchManager _matchManager;
         
         private IDataManager _dataManager;
 
-        private Button _buttonRematch,
+        private Button _buttonPlayAgain,
                        _buttonContinue;
 
         private GameObject _groupYouWin,
                            _groupYouLost;
+
+        private Image _imageOverlordPortrait;
+
+        private TextMeshProUGUI _textDeckName,
+                                _textPlayerName,
+                                _textLevel;
 
         private bool _isWin;
         
@@ -46,6 +55,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _isWin = true;
         }
 
@@ -73,25 +83,48 @@ namespace Loom.ZombieBattleground
                 return;
 
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopupEdited"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
-            _groupYouWin = Self.transform.Find("Scaler/Group_YouWin").GetComponent<GameObject>(); 
-            _groupYouLost = Self.transform.Find("Scaler/Group_YouLost").GetComponent<GameObject>(); 
+            _groupYouWin = Self.transform.Find("Scaler/Image_Panel_Win").gameObject; 
+            _groupYouLost = Self.transform.Find("Scaler/Image_Panel_Lose").gameObject;
             
-            _buttonRematch = Self.transform.Find("Scaler/Button_Rematch").GetComponent<Button>();                        
-            _buttonRematch.onClick.AddListener(ButtonRematchHandler);
+            _buttonPlayAgain = Self.transform.Find("Scaler/Button_PlayAgain").GetComponent<Button>();                        
+            _buttonPlayAgain.onClick.AddListener(ButtonPlayAgainHandler);
+            _buttonPlayAgain.onClick.AddListener(PlayClickSound);
+            
             _buttonContinue = Self.transform.Find("Scaler/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
-
+            _buttonContinue.onClick.AddListener(PlayClickSound);
+            
             _groupYouWin.SetActive(_isWin);
             _groupYouLost.SetActive(!_isWin);
+
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            
+            Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
+            
+            _imageOverlordPortrait = Self.transform.Find("Scaler/Image_OverlordPortrait").GetComponent<Image>();
+            _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
+            (
+                hero.HeroElement
+            );
+            
+            _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _textPlayerName = Self.transform.Find("Scaler/Group_PlayerInfo/Text_PlayerName").GetComponent<TextMeshProUGUI>();
+            _textLevel = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Circle/Text_LevelNumber").GetComponent<TextMeshProUGUI>();
+
+            _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
+            _textDeckName.text = deck.Name;
+            _textLevel.text = "1";
         }
         
         public void Show(object data)
         {
-            bool isWin = (bool)data;
-            _isWin = isWin;
+            if (data is object[] param)
+            {
+                _isWin = (bool)param[0];
+            }
             Show();
         }
 
@@ -103,28 +136,27 @@ namespace Loom.ZombieBattleground
 
         #region Buttons Handlers
 
-        private void ButtonRematchHandler()
+        private void ButtonPlayAgainHandler()
         {
+            //TODO Play Again
+            if(_isWin)
+                ContinueOnWin();
+            else
+                ContinueOnLost();
         }
         
         private void ButtonContinueHandler()
         {
             if(_isWin)
-            {
                 ContinueOnWin();
-            }
             else
-            {
                 ContinueOnLost();
-            }
         }
 
         #endregion
         
         private void ContinueOnWin()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
             _uiManager.HidePopup<YouWonYouLostPopup>();
 
             if (_tutorialManager.IsTutorial)
@@ -145,23 +177,31 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _matchManager.FinishMatch(Enumerators.AppState.HordeSelection);
+                _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
             }
         }
         
         private void ContinueOnLost()
         {
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
             if(_tutorialManager.IsTutorial)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupClosed);
             }
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.HordeSelection);
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
             _uiManager.HidePopup<YouWonYouLostPopup>();
+        }
+        
+        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        {
+            string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+heroElement.ToString().ToLower();
+            return _loadObjectsManager.GetObjectByPath<Sprite>(path);       
+        }
+        
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

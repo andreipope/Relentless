@@ -126,11 +126,23 @@ namespace Loom.ZombieBattleground
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
+            StartMatch();        
+        }
+
+        private void ButtonChangeModeHandler()
+        {
+            _uiManager.DrawPopup<GameModePopup>();
+        }
+
+        #endregion
+        
+        public void StartMatch()
+        {
             Action startMatch = () =>
             {
-                Deck selectedDeck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)selectedDeck.Id;
-                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = selectedDeck;
+                Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                 GameClient.Get<IMatchManager>().FindMatch();
             };
 
@@ -142,17 +154,9 @@ namespace Loom.ZombieBattleground
             else
             {
                 startMatch?.Invoke();
-            }
-            //_stateManager.ChangeAppState(Enumerators.AppState.PlaySelection);           
+            }  
         }
 
-        private void ButtonChangeModeHandler()
-        {
-            _uiManager.DrawPopup<GameModePopup>();
-        }
-
-        #endregion
-        
         public void SetOverlordPortrait(Enumerators.SetType setType)
         {
             switch(setType)

@@ -128,12 +128,6 @@ namespace Loom.ZombieBattleground
                 defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
             }
             
-            Debug.Log("Decks: " + _dataManager.CachedDecksData.Decks.Count);
-            Debug.Log("defaultSelectedDeckId: " + defaultSelectedDeckId);
-            foreach(Deck deck in _dataManager.CachedDecksData.Decks)
-            {
-                Debug.Log($"Deck id: {deck.Id} Hero id: {deck.HeroId}");
-            }
             Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
             
             if(selectedDeck == null)
