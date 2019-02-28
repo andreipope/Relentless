@@ -520,6 +520,8 @@ namespace Loom.ZombieBattleground
                                    _activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
+                                           Debug.LogError("222222222");
+
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
@@ -669,7 +671,7 @@ namespace Loom.ZombieBattleground
 
                    AbilityData choosableAbility = libraryCard.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
-                   if (choosableAbility != null)
+                   if (choosableAbility != null && !(choosableAbility is default(AbilityData)))
                    {
                        if (HasPredefinedChoosableAbility)
                        {
@@ -686,15 +688,21 @@ namespace Loom.ZombieBattleground
                            {
                                Action<AbilityData.ChoosableAbility> callback = null;
 
-                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null,
-                                                                                                   Enumerators.QueueActionType.AbilityUsageBlocker,
-                                                                                                   blockQueue: true);
                                callback = (x) =>
                                {
                                     libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
                                     abilityEndAction.Invoke();
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
+
+                               Debug.LogError("3333333333");
+
+                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null,
+                                                                                   Enumerators.QueueActionType.AbilityUsageBlocker,
+                                                                                   blockQueue: true);
+
+
+                              
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);

@@ -507,6 +507,8 @@ namespace Loom.ZombieBattleground
 
         protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
         {
+            Debug.LogError("InvokeUseAbilityEvent " + AbilityData.AbilityType);
+
             AbilitiesController.InvokeUseAbilityEvent(
                 MainWorkingCard,
                 AbilityData.AbilityType,
