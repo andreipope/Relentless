@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                     ReviveUnit(unit);
                 }
             }
+
+            GameplayManager.CanDoDragActions = true;
         }
 
         private void ReviveUnit(WorkingCard workingCard)
