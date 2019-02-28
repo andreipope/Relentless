@@ -47,7 +47,6 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textSelectedAmount;
         
-        ///
         private const int AbilityListSize = 5;
 
         private const int MaxSelectedAbilities = 2;
@@ -79,7 +78,6 @@ namespace Loom.ZombieBattleground
         private bool _isPrimarySkillSelected = true;
 
         private List<HeroSkill> _selectedSkills;
-        ///
         
         public void Init()
         {
@@ -542,7 +540,7 @@ namespace Loom.ZombieBattleground
 
                 _abilityIconImage.sprite = IsUnlocked ?
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :
-                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/overlordability_locked");
+                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
 
                 _selectButton.interactable = IsUnlocked;
 

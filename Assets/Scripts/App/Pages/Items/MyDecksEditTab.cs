@@ -63,12 +63,15 @@ namespace Loom.ZombieBattleground
                        _buttonUpperRightArrow,
                        _buttonLowerLeftArrow,
                        _buttonLowerRightArrow,
-                       _buttonSaveDeck;
+                       _buttonSaveDeck,
+                       _buttonAbilities;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
                                 
-        private TMP_InputField _inputFieldSearchName;                   
+        private TMP_InputField _inputFieldSearchName;
+        
+        private Image[] _imageAbilityIcons;                   
        
         private int _deckPageIndex;
         
@@ -134,6 +137,7 @@ namespace Loom.ZombieBattleground
                 ResetCollectionPageState();
                 LoadDeckCards(_myDeckPage.CurrentEditDeck);
                 UpdateDeckCardPage();
+                UpdateOverlordAbilitiesButton();                
             };
 
             _cacheCollectionCardsList = new List<Card>();
@@ -176,10 +180,20 @@ namespace Loom.ZombieBattleground
             _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
             _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
             
+            _buttonAbilities = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
+            _buttonAbilities.onClick.AddListener(ButtonOverlordAbilitiesHandler);
+            _buttonAbilities.onClick.AddListener(_myDeckPage.PlayClickSound);
+            
             _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
-            
+
+            _imageAbilityIcons = new Image[]
+            {
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_1").GetComponent<Image>(),
+                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_2").GetComponent<Image>()
+            };
+
             LoadBoardCardComponents();
         }
 
@@ -200,6 +214,7 @@ namespace Loom.ZombieBattleground
             }
             
             _cacheCollectionCardsList.Clear();
+            _imageAbilityIcons = null;
         }
         
         private void InitBoardCardPrefabsAndLists()
@@ -262,6 +277,11 @@ namespace Loom.ZombieBattleground
             ProcessEditDeck(_myDeckPage.CurrentEditDeck);            
         }
         
+        private void ButtonOverlordAbilitiesHandler()
+        {
+            _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD_SKILL);
+        }
+
         public void OnInputFieldSearchEndedEdit(string value)
         {
             ResetCollectionPageState();
@@ -713,6 +733,29 @@ namespace Loom.ZombieBattleground
         }
         
         #endregion
+        
+        private void UpdateOverlordAbilitiesButton()
+        {
+            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];            
+            if(hero.PrimarySkill == Enumerators.OverlordSkill.NONE)
+            {
+                _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+            }
+            else
+            {
+                string iconPath = hero.GetSkill(hero.PrimarySkill).IconPath;
+                _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+            }                
+            if(hero.SecondarySkill == Enumerators.OverlordSkill.NONE)
+            {
+                _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+            }
+            else
+            {
+                string iconPath = hero.GetSkill(hero.SecondarySkill).IconPath;
+                _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
+            }
+        }
 
         private void UpdateEditDeckCardsAmount()
         {
