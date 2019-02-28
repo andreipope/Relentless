@@ -344,19 +344,13 @@ namespace Loom.ZombieBattleground
                 List<Card> resultList = new List<Card>();
                 foreach(Card card in cards)
                 {
-                    if (card.Cost < 0)
-                        continue;
-                        
-                    if(card.Cost >= 10)
-                    {
-                        if (_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[10])
-                            resultList.Add(card);
-                    }
-                    else
-                    {
-                        if(_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[card.Cost])
-                            resultList.Add(card);
-                    }
+                    if
+                    ( 
+                        CheckIfSatisfyGooCostFilter(card) &&
+                        CheckIfSatisfyRankFilter(card) &&
+                        CheckIfSatisfyTypeFilter(card)
+                    )
+                        resultList.Add(card);
                 }
                 UpdateCacheFilteredCardList(resultList);
             }
@@ -376,6 +370,35 @@ namespace Loom.ZombieBattleground
 
                 UpdateCacheFilteredCardList(resultList);
             }
+        }
+        
+        private bool CheckIfSatisfyGooCostFilter(Card card)
+        {
+            if (card.Cost < 0)
+                return false;
+                
+            if(card.Cost >= 10)
+            {
+                if (_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[10])
+                    return true;
+            }
+            else
+            {
+                if(_uiManager.GetPopup<CardFilterPopup>().FilterData.GooCostList[card.Cost])
+                    return true;
+            }
+
+            return false;
+        }
+        
+        private bool CheckIfSatisfyRankFilter(Card card)
+        {
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.CardRank];
+        }
+        
+        private bool CheckIfSatisfyTypeFilter(Card card)
+        {
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.CardType];
         }
         
         private void UpdateCacheFilteredCardList(List<Card> cardList)

@@ -804,21 +804,16 @@ namespace Loom.ZombieBattleground
                 CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
                 List<Card> cards = set.Cards.ToList();
                 List<Card> resultList = new List<Card>();
+                
                 foreach(Card card in cards)
                 {
-                    if (card.Cost < 0)
-                        continue;
-                        
-                    if(card.Cost >= 10)
-                    {
-                        if (_cardFilterPopup.FilterData.GooCostList[10])
-                            resultList.Add(card);
-                    }
-                    else
-                    {
-                        if(_cardFilterPopup.FilterData.GooCostList[card.Cost])
-                            resultList.Add(card);
-                    }
+                    if
+                    ( 
+                        CheckIfSatisfyGooCostFilter(card) &&
+                        CheckIfSatisfyRankFilter(card) &&
+                        CheckIfSatisfyTypeFilter(card)
+                    )
+                        resultList.Add(card);
                 }
                 UpdateCacheFilteredCardList(resultList);
             }
@@ -839,7 +834,36 @@ namespace Loom.ZombieBattleground
                 UpdateCacheFilteredCardList(resultList);
             }
         }
-                    
+        
+        private bool CheckIfSatisfyGooCostFilter(Card card)
+        {
+            if (card.Cost < 0)
+                return false;
+                
+            if(card.Cost >= 10)
+            {
+                if (_cardFilterPopup.FilterData.GooCostList[10])
+                    return true;
+            }
+            else
+            {
+                if(_cardFilterPopup.FilterData.GooCostList[card.Cost])
+                    return true;
+            }
+
+            return false;
+        }
+        
+        private bool CheckIfSatisfyRankFilter(Card card)
+        {
+            return _cardFilterPopup.FilterData.RankDictionary[card.CardRank];
+        }
+        
+        private bool CheckIfSatisfyTypeFilter(Card card)
+        {
+            return _cardFilterPopup.FilterData.TypeDictionary[card.CardType];
+        }
+
         private void UpdateCacheFilteredCardList(List<Card> cardList)
         {
             _cacheCollectionCardsList = cardList.ToList();
