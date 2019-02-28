@@ -1665,9 +1665,6 @@
           ]
         },
         {
-          "ActionToEndThisStep": "EnemyOverlordDied"
-        },
-        {
           "ActionToEndThisStep": "OverlordSayPopupHided",
           "OverlordSayTooltips": [
             {
