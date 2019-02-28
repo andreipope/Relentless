@@ -1,4 +1,4 @@
-//#define DEBUG_SCENARIO_PLAYER
+#define DEBUG_SCENARIO_PLAYER
 
 using System;
 using System.Collections;
