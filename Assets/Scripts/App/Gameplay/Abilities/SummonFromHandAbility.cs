@@ -12,12 +12,18 @@ namespace Loom.ZombieBattleground
         public int Count { get; }
         public Enumerators.SetType SetType { get; }
 
+        private IGameplayManager _gameplayManager;
+        private AbilitiesController _abilitiesController;
+
         public SummonFromHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
             SetType = ability.AbilitySetType;
+
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
@@ -44,7 +50,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in boardCardsTargets)
                 {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
+                    PutCardFromHandToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards, false);
                 }
                 return;
             }
@@ -52,14 +58,9 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
                 return;
 
-            IReadOnlyList<BoardCard> cards = PlayerCallerOfAbility.CardsInHand
-                .FindAll(workingCard => workingCard.InstanceCard.Cost <= Value &&
-                    workingCard.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
-                .Select(card => BattlegroundController.CreateCustomHandBoardCard(card))
-                .ToList();
-
-            List<BoardCard> originCards = new List<BoardCard>();
-            originCards.AddRange(cards);
+            IReadOnlyList<BoardCard> cards = BattlegroundController.PlayerHandCards.FindAll(
+                x => x.WorkingCard.InstanceCard.Cost <= Value &&
+                    x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
             if (SetType != Enumerators.SetType.NONE)
             {
@@ -67,14 +68,6 @@ namespace Loom.ZombieBattleground
             }
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
-
-            foreach (BoardCard card in originCards)
-            {
-                if (!cards.Contains(card))
-                {
-                    UnityEngine.Object.Destroy(card.HandBoardCard.GameObject);
-                }
-            }
 
             if (cards.Count == 0)
                 return;
@@ -86,12 +79,12 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
                     break;
 
-                PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref TargetEffects, ref boardCards);
+                PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref TargetEffects, ref boardCards, true);
             }
 
             InvokeUseAbilityEvent(
                 boardCards
-                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .Select(target => new ParametrizedAbilityBoardObject(target))
                     .ToList()
             );
 
@@ -105,9 +98,9 @@ namespace Loom.ZombieBattleground
 
 
         private void PutCardFromHandToBoard(Player owner, BoardCard boardCard,
-            ref List<PastActionsPopup.TargetEffectParam> TargetEffects, ref List<HandBoardCard> cards)
+            ref List<PastActionsPopup.TargetEffectParam> TargetEffects, ref List<HandBoardCard> cards, bool activateAbility)
         {
-            CardsController.SummonUnitFromHand(owner, boardCard);
+            CardsController.SummonUnitFromHand(owner, boardCard, activateAbility);
             cards.Add(boardCard.HandBoardCard);
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam
             {

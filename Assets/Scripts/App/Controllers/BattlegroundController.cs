@@ -489,6 +489,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
+                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
                      InternalTools.DoActionDelayed(() =>
                      {
                          ValidateGameState(pvpControlGameState);
@@ -509,7 +510,7 @@ namespace Loom.ZombieBattleground
                              StartTurn();
                              completeCallback?.Invoke();
                          }
-                     }, 4);
+                     }, delay);
                  },  Enumerators.QueueActionType.StopTurn);
         }
 
