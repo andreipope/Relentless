@@ -96,6 +96,7 @@ namespace Loom.ZombieBattleground.Test
                 _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
             }
         }
+
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
             if (Completed)

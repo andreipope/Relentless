@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     {
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Cactuz()
         {
             return AsyncTest(async () =>
@@ -69,6 +70,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Huzk()
         {
             return AsyncTest(async () =>
@@ -121,6 +123,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Yggdrazil()
         {
             return AsyncTest(async () =>
@@ -230,6 +233,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Puffer()
         {
             return AsyncTest(async () =>
@@ -311,6 +315,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Azuraz()
         {
             return AsyncTest(async () =>
@@ -374,6 +379,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Bloomer()
         {
             return AsyncTest(async () =>
@@ -430,6 +436,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Zap()
         {
             return AsyncTest(async () =>
@@ -478,6 +485,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Amber()
         {
             return AsyncTest(async () =>
@@ -527,6 +535,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Bark()
         {
             return AsyncTest(async () =>
@@ -574,6 +583,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator PreZerver()
         {
             return AsyncTest(async () =>
@@ -634,6 +644,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Grower()
         {
             return AsyncTest(async () =>
@@ -695,6 +706,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Keeper()
         {
             return AsyncTest(async () =>
@@ -800,6 +812,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Shroom()
         {
             return AsyncTest(async () =>
@@ -854,6 +867,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Sapper()
         {
             return AsyncTest(async () =>
@@ -915,6 +929,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator EverlaZting()
         {
             return AsyncTest(async () =>
@@ -1017,6 +1032,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset")]
         public IEnumerator Healz()
         {
             return AsyncTest(async () =>

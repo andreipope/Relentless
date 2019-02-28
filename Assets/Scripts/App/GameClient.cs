@@ -137,7 +137,6 @@ namespace Loom.ZombieBattleground
         private static ConfigData GetConfigData()
         {
             string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
-            Debug.Log("Trying to load config file: " + configDataFilePath);
             if (File.Exists(configDataFilePath))
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
