@@ -883,12 +883,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 2.5
             }
           ]
@@ -916,12 +918,15 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 0.5
             }
           ]
@@ -1862,12 +1867,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 5.5
             }
           ]
@@ -1895,12 +1902,15 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 7.5
             }
           ]
@@ -2646,12 +2656,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 7.5
             }
           ]
@@ -2679,11 +2691,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 7.5
             }
@@ -3463,11 +3478,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 7.5
             }
@@ -3496,12 +3513,15 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 7.5
             }
           ]

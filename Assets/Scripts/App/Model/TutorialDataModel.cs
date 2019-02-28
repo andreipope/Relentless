@@ -328,6 +328,8 @@ namespace Loom.ZombieBattleground
         public float AppearDelay;
         public float HandPointerSpeed;
         public int TutorialObjectIdStepOwner;
+        public string TutorialUIElementOwnerName;
+        public float Rotation;
         public int TargetTutorialObjectId;
         public List<int> AdditionalObjectIdOwners;
         public List<int> AdditionalObjectIdTargets;
