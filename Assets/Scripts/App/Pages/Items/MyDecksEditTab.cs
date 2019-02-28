@@ -71,7 +71,9 @@ namespace Loom.ZombieBattleground
                                 
         private TMP_InputField _inputFieldSearchName;
         
-        private Image[] _imageAbilityIcons;                   
+        private Image[] _imageAbilityIcons;
+
+        private Image _imageAbilitiesPanel;
        
         private int _deckPageIndex;
         
@@ -193,6 +195,8 @@ namespace Loom.ZombieBattleground
                 _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_1").GetComponent<Image>(),
                 _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_2").GetComponent<Image>()
             };
+
+            _imageAbilitiesPanel = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
 
             LoadBoardCardComponents();
         }
@@ -736,25 +740,28 @@ namespace Loom.ZombieBattleground
         
         private void UpdateOverlordAbilitiesButton()
         {
+            Deck deck = _myDeckPage.CurrentEditDeck;
             Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];            
-            if(hero.PrimarySkill == Enumerators.OverlordSkill.NONE)
+            if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
             {
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(hero.PrimarySkill).IconPath;
+                string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }                
-            if(hero.SecondarySkill == Enumerators.OverlordSkill.NONE)
+            if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
             {
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(hero.SecondarySkill).IconPath;
+                string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
             }
+
+            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+hero.HeroElement.ToString().ToLower());
         }
 
         private void UpdateEditDeckCardsAmount()

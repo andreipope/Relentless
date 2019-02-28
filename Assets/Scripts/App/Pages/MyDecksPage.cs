@@ -673,23 +673,23 @@ namespace Loom.ZombieBattleground
                 deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
                 deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
 
-                if(hero.PrimarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
                 {
                     deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(hero.PrimarySkill).IconPath;
+                    string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
                     deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
                 }
                 
-                if(hero.SecondarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
                 {
                     deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(hero.SecondarySkill).IconPath;
+                    string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
                     deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 

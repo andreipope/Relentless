@@ -215,15 +215,11 @@ namespace Loom.ZombieBattleground
             (
                 hero.HeroElement
             );
-            _myDeckPage.MyDecksSelectOverlordSkillTab.ImageSelectOverlordSkillPortrait.sprite = GetOverlordPortraitSprite
-            (
-                hero.HeroElement
-            );
             _textSelectOverlordName.text = hero.FullName;
             _textSelectOverlordDescription.text = hero.ShortDescription;
         }
         
-        private Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordPortrait";
             switch(heroElement)
