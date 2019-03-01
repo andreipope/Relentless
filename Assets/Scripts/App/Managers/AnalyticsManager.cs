@@ -25,7 +25,11 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private int _finishedMatchCounter;
 
+    public const string EventGameStarted = "Game Started";
+
     public const string EventLogIn = "Log In";
+
+    public const string SkipTutorial = "Skip Tutorial";
 
     public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
     public const string EventCompletedTutorialBasic = "Completed Tutorial Basic Stage";

@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-            if (!CurrentTutorial.IsGameplayTutorial())
+            if (CurrentTutorial != null && !CurrentTutorial.IsGameplayTutorial())
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
@@ -381,9 +381,7 @@ namespace Loom.ZombieBattleground
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
+                CompletelyFinishTutorial();
             }
 
             if (!CheckAvailableTutorial())
@@ -401,6 +399,15 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompletelyFinishTutorial()
+        {
+            _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
+
+            _gameplayManager.IsTutorial = false;
+            _dataManager.CachedUserLocalData.Tutorial = false;
+            _gameplayManager.IsSpecificGameplayBattleground = false;
         }
 
         private void CompleteTutorialEvent(int currentTutorialId)
@@ -737,7 +744,9 @@ namespace Loom.ZombieBattleground
                                 handPointer.AdditionalObjectIdOwners,
                                 handPointer.AdditionalObjectIdTargets,
                                 handPointer.TutorialHandLayer,
-                                handPointer.HandPointerSpeed);
+                                handPointer.HandPointerSpeed,
+                                handPointer.TutorialUIElementOwnerName,
+                                handPointer.Rotation);
                 }
             }
 
@@ -1043,7 +1052,9 @@ namespace Loom.ZombieBattleground
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
                                 Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
-                                float handPointerSpeed = Constants.HandPointerSpeed)
+                                float handPointerSpeed = Constants.HandPointerSpeed,
+                                string tutorialUIElementOwnerName = Constants.Empty,
+                                float rotation = 0)
         {
             _handPointerController.DrawPointer(type,
                                                owner,
@@ -1056,7 +1067,9 @@ namespace Loom.ZombieBattleground
                                                additionalObjectIdOwners,
                                                additionalObjectIdTargets,
                                                handLayer,
-                                               handPointerSpeed);
+                                               handPointerSpeed,
+                                               tutorialUIElementOwnerName,
+                                               rotation);
         }
 
         public void DrawDescriptionTooltip(int id,
@@ -1326,9 +1339,7 @@ namespace Loom.ZombieBattleground
         public void SkipTutorial()
         {
             _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
-            _gameplayManager.IsTutorial = false;
-            _dataManager.CachedUserLocalData.Tutorial = false;
-            _gameplayManager.IsSpecificGameplayBattleground = false;
+            CompletelyFinishTutorial();
             StopTutorial(true);
             _handPointerController.ResetAll();
             CreateStarterDeck();

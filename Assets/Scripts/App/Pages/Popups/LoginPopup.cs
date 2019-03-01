@@ -98,12 +98,13 @@ namespace Loom.ZombieBattleground
 
         private string _lastErrorMessage;
 
-
         private LoginState _state;
 
         private LoginState _lastPopupState;
 
         private string _lastGUID;
+
+        private bool _gameStarted = false;
 
         public GameObject Self { get; private set; }
 
@@ -628,6 +629,12 @@ namespace Loom.ZombieBattleground
                 _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
 
                 SuccessfulLogin();
+
+                if(!_gameStarted)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
+                    _gameStarted = true;
+                }
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
