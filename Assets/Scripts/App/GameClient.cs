@@ -31,7 +31,6 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            ConfigureLoggers();
             Log.Info("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
 
             DOTween.KillAll();
@@ -144,18 +143,6 @@ namespace Loom.ZombieBattleground
         public static void ClearInstance()
         {
             _instance = null;
-        }
-
-        private void ConfigureLoggers()
-        {
-#if UNITY_EDITOR && !FORCE_ENABLE_ALL_LOGS
-            // Disable non-essential logs in Editor
-            Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
-            backendFacadeRpc.Level = Level.Warn;
-
-            Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
-            timeMetricsContractCallProxy.Level = Level.Warn;
-#endif
         }
 
         private static ConfigData GetConfigData()
