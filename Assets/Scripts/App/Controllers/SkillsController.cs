@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private AbilitiesController _abilitiesController;
+
         private bool _skillsInitialized;
 
         private bool _isDirection;
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
 
             _gameplayManager.GameEnded += GameplayManagerGameEnded;
         }
@@ -1366,7 +1369,7 @@ namespace Loom.ZombieBattleground
             {
                 unit = _cardsController.SpawnUnitOnBoard(
                     owner,
-                    card.LibraryCard.Name,
+                    card,
                     ItemPosition.End,
                     onComplete: () =>
                     {
@@ -1378,6 +1381,16 @@ namespace Loom.ZombieBattleground
                             {
                                 unit.ChangeModelVisibility(true);
                                 unit.StopSleepingParticles();
+
+                                if (!unit.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                                {
+                                    unit.Model.IsPlayable = true;
+                                }
+
+                                if (unit.Model.OwnerPlayer.IsLocalPlayer)
+                                {
+                                    _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model.Card, unit.Model.OwnerPlayer);
+                                }
                             },
                             3f);
 
@@ -1512,13 +1525,14 @@ namespace Loom.ZombieBattleground
 
                 units.Add(_cardsController.SpawnUnitOnBoard(
                     owner,
-                    card.LibraryCard.Name,
+                    card,
                     ItemPosition.End,
                     onComplete: () =>
                     {
                         ReanimateUnit(units);
                     }));
                 units[units.Count - 1].ChangeModelVisibility(false);
+                owner.RemoveCardFromGraveyard(card);
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -1544,7 +1558,16 @@ namespace Loom.ZombieBattleground
                 InternalTools.DoActionDelayed(() =>
                 {
                     unit.ChangeModelVisibility(true);
-                  
+
+                    if (!unit.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    {
+                        unit.Model.IsPlayable = true;
+                    }
+
+                    if (unit.Model.OwnerPlayer.IsLocalPlayer)
+                    {
+                        _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model.Card, unit.Model.OwnerPlayer);
+                    }
                 }, 3f);
             }
         }
