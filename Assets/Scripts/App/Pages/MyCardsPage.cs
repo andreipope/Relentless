@@ -11,6 +11,7 @@ using Loom.ZombieBattleground.Gameplay;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -192,6 +193,8 @@ namespace Loom.ZombieBattleground
 
         private CardHighlightingVFXItem _highlightingVFXItem;
         
+        private bool _isDragging;
+        
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
@@ -248,7 +251,39 @@ namespace Loom.ZombieBattleground
                     position                    
                 );
                 _createdBoardCards.Add(boardCard);
+                
+                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardDragEndedHandler; 
+                eventHandler.MouseUpTriggered += BoardCardMouseUpTriggeredHandler;
             }
+
+            _isDragging = false;
+        }
+        
+        private void BoardCardMouseUpTriggeredHandler(GameObject go)
+        {
+            if (_isDragging ||
+                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
+                return;    
+                
+            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.LibraryCard).ToList();   
+            BoardCard boardCard = _createdBoardCards.First(x => x.GameObject == go);            
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
+            {
+                cardList,
+                boardCard.LibraryCard
+            });
+        }
+        
+        private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
+        {
+            _isDragging = true;
+        }
+        
+        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
+        {
+            _isDragging = false;
         }
         
         private BoardCard CreateBoardCard(Card card, CollectionCardData cardData, Vector3 position)

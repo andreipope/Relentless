@@ -652,7 +652,8 @@ namespace Loom.ZombieBattleground
         
         private void BoardCardDeckMouseUpTriggeredHandler(GameObject go)
         {
-            if (_isDragging)
+            if (_isDragging ||
+                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
             List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.LibraryCard).ToList(); 
@@ -667,7 +668,8 @@ namespace Loom.ZombieBattleground
         
         private void BoardCardCollectionMouseUpTriggeredHandler(GameObject go)
         {
-            if (_isDragging)
+            if (_isDragging ||
+                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
             List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.LibraryCard).ToList();   

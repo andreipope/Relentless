@@ -258,6 +258,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 int newIndex = _currentCardIndex + direction;
+
                 if (newIndex < 0)
                     newIndex = _filteredCardList.Count - 1;
                 else if (newIndex >= _filteredCardList.Count)
@@ -266,7 +267,6 @@ namespace Loom.ZombieBattleground
                 _currentCardIndex = newIndex;
             }
             UpdateBoardCard();
-
         }
 
         private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
