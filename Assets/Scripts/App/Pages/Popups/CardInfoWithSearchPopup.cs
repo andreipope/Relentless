@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
@@ -30,8 +32,6 @@ namespace Loom.ZombieBattleground
 
         private Transform _groupCreatureCard;
         
-        private IReadOnlyCard _currentCard;
-        
         private GameObject _cardCreaturePrefab, 
                            _cardItemPrefab;
 
@@ -39,16 +39,31 @@ namespace Loom.ZombieBattleground
 
         private const float BoardCardScale = 0.5858f;
 
+        private List<IReadOnlyCard> _cardList,
+                                    _filteredCardList;
+
+        private int _currentCardIndex;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+
+            _cardList = new List<IReadOnlyCard>();
+            _filteredCardList = new List<IReadOnlyCard>();
+            _currentCardIndex = -1;
         }
         
         public void Dispose()
         {
             if (_createdBoardCard != null)
                 Object.Destroy(_createdBoardCard);
+
+            if (_cardList != null)
+                _cardList.Clear();
+
+            if (_filteredCardList != null)
+                _filteredCardList.Clear();
         }
 
         public void Hide()
@@ -115,16 +130,20 @@ namespace Loom.ZombieBattleground
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
             _buttonAdd.gameObject.SetActive(false);
-            _buttonRemove.gameObject.SetActive(false);
-            _buttonLeftArrow.gameObject.SetActive(false);
-            _buttonRightArrow.gameObject.SetActive(false);
-
+            _buttonRemove.gameObject.SetActive(false);            
+            
+            UpdateFilteredCardList();
             UpdateBoardCard();
         }
 
         public void Show(object data)
         {
-            _currentCard = (IReadOnlyCard) data;
+            if (data is object[] param)
+            {
+                _cardList = (List<IReadOnlyCard>)param[0];
+                IReadOnlyCard card = (IReadOnlyCard)param[1];
+                _currentCardIndex = _cardList.IndexOf(card);               
+            }
             Show();
         }
 
@@ -151,17 +170,19 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftArrowHandler()
         {
-
+            MoveCardIndex(-1);
         }
         
         private void ButtonRightArrowHandler()
         {
-
+            MoveCardIndex(1);
         }
         
         public void OnInputFieldSearchEndedEdit(string value)
         {
-        
+            UpdateFilteredCardList();
+            _currentCardIndex = 0;
+            MoveCardIndex(0);
         }
 
         #endregion
@@ -171,26 +192,81 @@ namespace Loom.ZombieBattleground
             if (_createdBoardCard != null)
                 Object.Destroy(_createdBoardCard);
 
-            if (_currentCard == null)
+            if (_cardList == null)
             {
-                Debug.Log($"Current card in {nameof(CardInfoWithSearchPopup)} is null");
+                Debug.Log($"Current _cardList in {nameof(CardInfoWithSearchPopup)} is null");
                 return;
             }
+
+            if (_currentCardIndex < 0 || _currentCardIndex >= _filteredCardList.Count)
+            {                
+                Debug.Log($"No matching card index for {nameof(CardInfoWithSearchPopup)}");
+                return;
+            }
+
+            IReadOnlyCard card = _filteredCardList[_currentCardIndex];
                 
             RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
             BoardCard boardCard = CreateBoardCard
             (
-                _currentCard, 
+                card, 
                 rectContainer,
                 _groupCreatureCard.position, 
                 BoardCardScale
             );
-
             boardCard.Transform.SetParent(_groupCreatureCard);
+            
             _createdBoardCard = boardCard.GameObject;
 
-            _textCardName.text = _currentCard.Name;
-            _textCardDescription.text = _currentCard.Description;
+            _textCardName.text = card.Name;
+            _textCardDescription.text = card.Description;
+        }
+        
+        private void UpdateFilteredCardList()
+        {
+            string keyword = _inputFieldSearch.text.Trim();
+            if (string.IsNullOrEmpty(keyword))
+            {
+                _filteredCardList = _cardList.ToList();
+            }
+            else
+            {
+                _filteredCardList.Clear();
+                keyword = keyword.ToLower();
+                foreach (IReadOnlyCard card in _cardList)
+                {
+                    if (card.Name.ToLower().Contains(keyword))
+                        _filteredCardList.Add(card);
+                }
+                if(_filteredCardList.Count <= 0)
+                {
+                    OpenAlertDialog($"No card found for keyword {_inputFieldSearch.text.Trim()}");
+                    _filteredCardList = _cardList.ToList();
+                }
+            }
+        }
+
+        private void MoveCardIndex(int direction)
+        {
+            if(_filteredCardList == null)
+                Debug.Log($"Current _filteredCardList in {nameof(CardInfoWithSearchPopup)} is null");
+
+            if (_filteredCardList.Count <= 1)
+            {
+                _currentCardIndex = _filteredCardList.Count-1;
+            }
+            else
+            {
+                int newIndex = _currentCardIndex + direction;
+                if (newIndex < 0)
+                    newIndex = _filteredCardList.Count - 1;
+                else if (newIndex >= _filteredCardList.Count)
+                    newIndex = 0;
+
+                _currentCardIndex = newIndex;
+            }
+            UpdateBoardCard();
+
         }
 
         private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)

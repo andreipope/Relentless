@@ -655,17 +655,28 @@ namespace Loom.ZombieBattleground
             if (_isDragging)
                 return;
 
+            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.LibraryCard).ToList(); 
             BoardCard boardCard = _createdDeckBoardCards.First(x => x.GameObject == go);            
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(boardCard.LibraryCard);
+            
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
+            {
+                cardList,
+                boardCard.LibraryCard
+            });
         }
         
         private void BoardCardCollectionMouseUpTriggeredHandler(GameObject go)
         {
             if (_isDragging)
-                return;
+                return;    
                 
-            BoardCard boardCard = _createdCollectionsBoardCards.First(x => x.GameObject == go);          
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(boardCard.LibraryCard);   
+            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.LibraryCard).ToList();   
+            BoardCard boardCard = _createdCollectionsBoardCards.First(x => x.GameObject == go);            
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
+            {
+                cardList,
+                boardCard.LibraryCard
+            });
         }
 
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
