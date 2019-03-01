@@ -394,7 +394,7 @@
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
               "Description": "Two can play that game.",
-              "AppearDelay": 2.5
+              "AppearDelay": 0.5
             }
           ],
           "ConnectedTurnIndex": 8,
@@ -874,7 +874,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            " Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "ConnectedActivities": [
             3
@@ -882,12 +883,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 2.5
             }
           ]
@@ -897,7 +900,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            " Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -908,17 +912,21 @@
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 0.5
             }
           ]
@@ -997,7 +1005,9 @@
           "ActionToEndThisStep": "ScreenChanged",
           "OpenScreen": "OverlordSelectionPage",
           "BlockedButtons": [
-            "Button_Back"
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow"
           ],
           "HandPointers": [
             {
@@ -1178,7 +1188,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -1659,13 +1670,15 @@
           ]
         },
         {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Good job Zombie Slayer!",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "END"
-          }
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Gotcha.",
+              "Duration": 2.5
+            }
+          ]
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened"
@@ -1848,17 +1861,20 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 5.5
             }
           ]
@@ -1868,7 +1884,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -1879,17 +1896,21 @@
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 7.5
             }
           ]
@@ -2011,7 +2032,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -2390,6 +2412,17 @@
           "UnitsCanAttack": true
         },
         {
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "Nice work.",
+              "Duration": 2.5
+            }
+          ]
+        },
+        {
           "ActionToEndThisStep": "YouWonPopupOpened"
         },
         {
@@ -2617,17 +2650,20 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "AppearDelay": 7.5
             }
           ]
@@ -2637,7 +2673,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -2648,16 +2685,20 @@
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 7.5
             }
@@ -2780,7 +2821,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -3138,13 +3180,15 @@
           "UnitsCanAttack": true
         },
         {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Good job Zombie Slayer!",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "END"
-          }
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "OverlordSayTooltips": [
+            {
+              "TutorialTooltipAlign": "CenterLeft",
+              "TutorialTooltipOwner": "PlayerOverlord",
+              "Description": "The goo must flow.",
+              "Duration": 2.5
+            }
+          ]
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened"
@@ -3428,16 +3472,19 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.8,
-                "Y": -2.5,
+                "X": 0,
+                "Y": 1.15,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "ButtonOpenPacks",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
               "AppearDelay": 7.5
             }
@@ -3448,7 +3495,8 @@
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ]
         },
         {
@@ -3459,17 +3507,21 @@
             "ButtonPlus",
             "ButtonMax",
             "ButtonOpenPacks",
-            "Button_BuyPacks"
+            "Button_BuyPacks",
+            "ButtonPackType"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": 7.8,
+                "X": 1,
+                "Y": -1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialHandPointerOwner": "UI",
+              "Rotation": 180,
               "AppearDelay": 7.5
             }
           ]
@@ -3591,7 +3643,8 @@
             "Image_Skill",
             "Image_Skill",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_BaackgroundGeneral"
           ],
           "ConnectedActivities": [
             0
@@ -3627,7 +3680,7 @@
         "MaximumCardsCount": 30,
         "CardsForArmy": [
           {
-            "Amount": 4,
+            "Amount": 2,
             "CardName": "Gloop"
           },
           {
@@ -3639,7 +3692,7 @@
             "CardName": "Harpoon"
           },
           {
-            "Amount": 2,
+            "Amount": 3,
             "CardName": "Rubble"
           },
           {
@@ -3657,10 +3710,6 @@
           {
             "Amount": 2,
             "CardName": "Azzazzin"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Trunk"
           },
           {
             "Amount": 1,
@@ -3695,8 +3744,8 @@
             "CardName": "Blizzard"
           },
           {
-            "Amount": 1,
-            "CardName": "Vindrom"
+            "Amount": 2,
+            "CardName": "Shale"
           }
         ]
       },
@@ -3722,19 +3771,19 @@
             "Name": "Burrrnn"
           },
           {
-            "Name": "Trunk"
+            "Name": "Rubble"
           },
           {
             "Name": "Pushhh"
           },
           {
-            "Name": "Blizzard"
+            "Name": "Rubble"
           },
           {
-            "Name": "Vindrom"
+            "Name": "Shale"
           },
           {
-            "Name": "Trunk"
+            "Name": "Shale"
           }
         ]
       },

@@ -1040,6 +1040,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => {},
                        opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
                        player => {
                            player.CardPlay(playerCardId, ItemPosition.Start);
                            player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS, new List<ParametrizedAbilityInstanceId>());

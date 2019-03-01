@@ -375,7 +375,7 @@ namespace Loom.ZombieBattleground
             {
                 List<BoardUnitView> creatures = new List<BoardUnitView>();
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     if (_playerController == null || !card.GameObject)
                     {
@@ -393,14 +393,19 @@ namespace Loom.ZombieBattleground
 
                 creatures.Clear();
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     card.SetHighlightingEnabled(true);
+                }
+
+                foreach (BoardUnitView card in _gameplayManager.OpponentPlayer.BoardCards)
+                {
+                    card.SetHighlightingEnabled(false);
                 }
             }
             else
             {
-                foreach (BoardUnitView card in OpponentBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.OpponentPlayer.BoardCards)
                 {
                     card.Model.OnStartTurn();
                 }
@@ -410,7 +415,7 @@ namespace Loom.ZombieBattleground
                     card.SetHighlightingEnabled(false);
                 }
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -492,24 +497,28 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     ValidateGameState(pvpControlGameState);
-                     EndTurn();
-
-                     if (_gameplayManager.IsLocalPlayerTurn())
+                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
+                     InternalTools.DoActionDelayed(() =>
                      {
-                         _uiManager.DrawPopup<YourTurnPopup>();
+                         ValidateGameState(pvpControlGameState);
+                         EndTurn();
 
-                         _timerManager.AddTimer((x) =>
+                         if (_gameplayManager.IsLocalPlayerTurn())
+                         {
+                             _uiManager.DrawPopup<YourTurnPopup>();
+
+                             _timerManager.AddTimer((x) =>
+                             {
+                                 StartTurn();
+                                 completeCallback?.Invoke();
+                             }, null, Constants.DelayBetweenYourTurnPopup);
+                         }
+                         else
                          {
                              StartTurn();
                              completeCallback?.Invoke();
-                         }, null, Constants.DelayBetweenYourTurnPopup);
-                     }
-                     else
-                     {
-                         StartTurn();
-                         completeCallback?.Invoke();
-                     }
+                         }
+                     }, delay);
                  },  Enumerators.QueueActionType.StopTurn);
         }
 

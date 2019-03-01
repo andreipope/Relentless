@@ -17,7 +17,9 @@ using Object = UnityEngine.Object;
 namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
-    {    
+    {
+        private const string PackButtonName = "ButtonPackType";
+
         private ITutorialManager _tutorialManager;
 
         private IDataManager _dataManager;
@@ -870,6 +872,11 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPackTypeHandler( int id )
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(PackButtonName))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             ChangeSelectedPackType(id);
         }
 

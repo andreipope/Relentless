@@ -89,6 +89,11 @@ namespace Loom.ZombieBattleground
             get { return _tutorials.FindAll(tutor => !tutor.HiddenTutorial).Count; }
         }
 
+        public bool IsLastTutorial
+        {
+            get { return CurrentTutorial.Id == _tutorials[_tutorials.Count - 1].Id; }
+        }
+
         public void Dispose()
         {
         }
@@ -146,7 +151,7 @@ namespace Loom.ZombieBattleground
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-            if (!CurrentTutorial.IsGameplayTutorial())
+            if (CurrentTutorial != null && !CurrentTutorial.IsGameplayTutorial())
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
@@ -273,8 +278,6 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
-            _uiManager.DrawPopup<TutorialSkipPopup>();
-
             StartTutorialEvent(CurrentTutorial.Id);
         }
 
@@ -375,9 +378,7 @@ namespace Loom.ZombieBattleground
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
+                CompletelyFinishTutorial();
             }
 
             if (!CheckAvailableTutorial())
@@ -394,9 +395,16 @@ namespace Loom.ZombieBattleground
             BattleShouldBeWonBlocker = false;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
-            _uiManager.HidePopup<TutorialSkipPopup>();
-
             CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompletelyFinishTutorial()
+        {
+            _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
+
+            _gameplayManager.IsTutorial = false;
+            _dataManager.CachedUserLocalData.Tutorial = false;
+            _gameplayManager.IsSpecificGameplayBattleground = false;
         }
 
         private void CompleteTutorialEvent(int currentTutorialId)
@@ -733,7 +741,9 @@ namespace Loom.ZombieBattleground
                                 handPointer.AdditionalObjectIdOwners,
                                 handPointer.AdditionalObjectIdTargets,
                                 handPointer.TutorialHandLayer,
-                                handPointer.HandPointerSpeed);
+                                handPointer.HandPointerSpeed,
+                                handPointer.TutorialUIElementOwnerName,
+                                handPointer.Rotation);
                 }
             }
 
@@ -1039,7 +1049,9 @@ namespace Loom.ZombieBattleground
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
                                 Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
-                                float handPointerSpeed = Constants.HandPointerSpeed)
+                                float handPointerSpeed = Constants.HandPointerSpeed,
+                                string tutorialUIElementOwnerName = Constants.Empty,
+                                float rotation = 0)
         {
             _handPointerController.DrawPointer(type,
                                                owner,
@@ -1052,7 +1064,9 @@ namespace Loom.ZombieBattleground
                                                additionalObjectIdOwners,
                                                additionalObjectIdTargets,
                                                handLayer,
-                                               handPointerSpeed);
+                                               handPointerSpeed,
+                                               tutorialUIElementOwnerName,
+                                               rotation);
         }
 
         public void DrawDescriptionTooltip(int id,
@@ -1321,44 +1335,11 @@ namespace Loom.ZombieBattleground
 
         public void SkipTutorial()
         {
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-
-            string tutorialSkipQuestion = "Do you really want to skip \nTutorial?";
-            QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
-            questionPopup.ConfirmationReceived += ConfirmSkipReceivedHandler;
-
-            _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
-            _appStateManager.SetPausingApp(true);
-        }
-
-        private void ConfirmSkipReceivedHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSkipReceivedHandler;
-            if (status)
-            {
-                if (!IsTutorial)
-                    return;
-
-                _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
-                StopTutorial(true);
-                _handPointerController.ResetAll();
-                CreateStarterDeck();
-
-                if (_appStateManager.AppState == Common.Enumerators.AppState.GAMEPLAY)
-                {
-                    _gameplayManager.EndGame(Common.Enumerators.EndGameType.CANCEL);
-                    GameClient.Get<IMatchManager>().FinishMatch(Common.Enumerators.AppState.MAIN_MENU);
-                }
-                else
-                {
-                    _appStateManager.ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
-                }
-
-            }
-            _appStateManager.SetPausingApp(false);
+            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+            CompletelyFinishTutorial();
+            StopTutorial(true);
+            _handPointerController.ResetAll();
+            CreateStarterDeck();
         }
 
         private async void CreateStarterDeck()

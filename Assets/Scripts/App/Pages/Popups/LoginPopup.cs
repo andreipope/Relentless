@@ -29,6 +29,10 @@ namespace Loom.ZombieBattleground
 
         private IAppStateManager _appStateManager;
 
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
+
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -91,12 +95,13 @@ namespace Loom.ZombieBattleground
 
         private string _lastErrorMessage;
 
-
         private LoginState _state;
 
         private LoginState _lastPopupState;
 
         private string _lastGUID;
+
+        private bool _gameStarted = false;
 
         public GameObject Self { get; private set; }
 
@@ -108,6 +113,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
         }
 
         public void Dispose()
@@ -620,6 +627,12 @@ namespace Loom.ZombieBattleground
 
                 SuccessfulLogin();
 
+                if(!_gameStarted)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
+                    _gameStarted = true;
+                }
+
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
             catch (TimeoutException e)
@@ -652,46 +665,58 @@ namespace Loom.ZombieBattleground
 
         private async void SuccessfulLogin()
         {
-            if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+            if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
 #if USE_REBALANCE_BACKEND
                 GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 #else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
-                (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
+                (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
-                GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+                _tutorialManager.SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-                if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                if (_tutorialManager.CurrentTutorial.IsGameplayTutorial())
                 {
-                    Data.Deck savedTutorialDeck = GameClient.Get<IDataManager>().CachedUserLocalData.TutorialSavedDeck;
+                    Data.Deck savedTutorialDeck = _dataManager.CachedUserLocalData.TutorialSavedDeck;
 
                     if (savedTutorialDeck != null)
                     {
-                        if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                        if (_dataManager.CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
                         {
-                            GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
+                            _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
                             await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
                         }
                     }
                     else
                     {
-                        savedTutorialDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                        savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
-                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
+                    if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
+                    {
+                        _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                        GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
-                    GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                        string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                        QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+                        questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
+
+                        _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                    }
+                    else
+                    {
+                        GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                    }
                 }
                 else
                 {
                     _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
-                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (!_tutorialManager.IsTutorial)
                     {
-                        GameClient.Get<ITutorialManager>().StartTutorial();
+                        _tutorialManager.StartTutorial();
                     }
                 }
 #endif
@@ -702,6 +727,19 @@ namespace Loom.ZombieBattleground
             }
             Hide();
             OnLoginSuccess?.Invoke();
+        }
+
+        private void ConfirmTutorialReceivedHandler(bool state)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmTutorialReceivedHandler;
+            if (state)
+            {
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                _tutorialManager.SkipTutorial();
+            }
         }
 
         private void SetUIState(LoginState state, string errorMsg = "")

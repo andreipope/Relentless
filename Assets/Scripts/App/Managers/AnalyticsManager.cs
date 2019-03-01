@@ -1,3 +1,7 @@
+#if UNITY_EDITOR && !FORCE_ENABLE_EDITOR_ANALYTICS
+#define DISABLE_ANALYTICS
+#endif
+
 using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground;
@@ -21,7 +25,11 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private int _finishedMatchCounter;
 
+    public const string EventGameStarted = "Game Started";
+
     public const string EventLogIn = "Log In";
+
+    public const string SkipTutorial = "Skip Tutorial";
 
     public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
     public const string EventCompletedTutorialBasic = "Completed Tutorial Basic Stage";
@@ -80,15 +88,18 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogScreen(string title)
     {
+#if !DISABLE_ANALYTICS
         Debug.Log("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        //Mixpanel.Track(title);
+        //Mixpanel.Track(title); 
+#endif
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
+#if !DISABLE_ANALYTICS
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -101,6 +112,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
                     "value", value
                 }
             });
+#endif
     }
 
     public void NotifyStartedMatch()
@@ -161,6 +173,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName)
     {
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -170,10 +183,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FB
         _fbManager.LogEvent(eventName, null, new Dictionary<string, object>());
+#endif
     }
 
     public void SetEvent(string eventName, Dictionary<string, object> paramters)
     {
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -188,25 +203,32 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FB
         _fbManager.LogEvent(eventName, null, paramters);
+#endif
     }
 
     public void SetPoepleProperty(string identityId, string property, string value)
     {
+#if !DISABLE_ANALYTICS
         if (string.IsNullOrEmpty(identityId))
             return;
 
         Mixpanel.Identify(identityId);
         Mixpanel.people.Set(property, value);
+#endif
     }
 
     public void SetSuperProperty(string property, string value)
     {
+#if !DISABLE_ANALYTICS
         Mixpanel.Register(property, value);
+#endif
     }
 
     public void SetPoepleIncrement(string property, int value)
     {
+#if !DISABLE_ANALYTICS
         Mixpanel.people.Increment(property, value);
+#endif
     }
 
     private void FillBasicProps(Value props)
