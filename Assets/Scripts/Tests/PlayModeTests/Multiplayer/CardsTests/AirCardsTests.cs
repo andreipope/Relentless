@@ -1016,10 +1016,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                          opponent.LetsThink(2);
                      },
                   };
-
+                  
                   Action validateEndState = () =>
                  {
-                     Assert.AreEqual(6, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                     Assert.AreEqual(5, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
                      Assert.AreEqual(6, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                  };
 
@@ -1165,13 +1165,19 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           Assert.NotNull(playerUnitFromDeck);
-                           Assert.IsTrue(playerUnitFromDeck.Model.IsPlayable);
+                           player.LetsThink(2);
+                           player.AssertInQueue(() => {
+                               Assert.NotNull(playerUnitFromDeck);
+                               Assert.IsTrue(playerUnitFromDeck.Model.UnitCanBeUsable());
+                           });
                        },
                        opponent =>
                        {
-                           Assert.NotNull(opponentZnowman);
-                           Assert.IsTrue(opponentZnowman.IsPlayable);
+                           opponent.LetsThink(2);
+                           opponent.AssertInQueue(() => {
+                               Assert.NotNull(opponentZnowman);
+                               Assert.IsTrue(opponentZnowman.UnitCanBeUsable());
+                           });
                        },
                    };
 
@@ -1230,24 +1236,29 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerZquallId, ItemPosition.Start);
                            player.LetsThink(2);
-
                        },
                        opponent =>
                        {
                            opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZhockerId);
                            opponentZnowman2 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZhocker2Id);
-                           Assert.NotNull(opponentZnowman);
-                           Assert.IsTrue(opponentZnowman.IsPlayable);
-                           Assert.NotNull(opponentZnowman2);
-                           Assert.IsTrue(opponentZnowman2.IsPlayable);
+                           opponent.LetsThink(2);
+                           opponent.AssertInQueue(() => {
+                               Assert.NotNull(opponentZnowman);
+                               Assert.IsTrue(opponentZnowman.UnitCanBeUsable());
+                               Assert.NotNull(opponentZnowman2);
+                               Assert.IsTrue(opponentZnowman2.UnitCanBeUsable());
+                           });
                        },
                        player =>
                        {
-                           foreach (BoardUnitView unit in pvpTestContext.GetCurrentPlayer().BoardCards)
-                           {
-                               Assert.NotNull(unit);
-                               Assert.IsTrue(unit.Model.IsPlayable);
-                           }
+                           player.LetsThink(2);
+                           player.AssertInQueue(() => {
+                               foreach (BoardUnitView unit in pvpTestContext.GetCurrentPlayer().BoardCards)
+                               {
+                                   Assert.NotNull(unit);
+                                   Assert.IsTrue(unit.Model.UnitCanBeUsable());
+                               }
+                           });
                        },
                    };
 

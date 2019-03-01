@@ -1399,17 +1399,23 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           Assert.NotNull(playerZnowman);
-                           Assert.IsTrue(playerZnowman.IsPlayable);
-                           Assert.NotNull(playerUnitFromDeck);
-                           Assert.IsTrue(playerUnitFromDeck.Model.IsPlayable);
+                           player.LetsThink(2);
+                           player.AssertInQueue(() => {
+                               Assert.NotNull(playerZnowman);
+                               Assert.IsTrue(playerZnowman.UnitCanBeUsable());
+                               Assert.NotNull(playerUnitFromDeck);
+                               Assert.IsTrue(playerUnitFromDeck.Model.UnitCanBeUsable());
+                           });
                        },
                        opponent =>
                        {
-                           Assert.NotNull(opponentZnowman);
-                           Assert.IsTrue(opponentZnowman.IsPlayable);
-                           Assert.NotNull(opponentUnitFromDeck);
-                           Assert.IsTrue(opponentUnitFromDeck.Model.IsPlayable);
+                           opponent.LetsThink(2);
+                           opponent.AssertInQueue(() => {
+                               Assert.NotNull(opponentZnowman);
+                               Assert.IsTrue(opponentZnowman.UnitCanBeUsable());
+                               Assert.NotNull(opponentUnitFromDeck);
+                               Assert.IsTrue(opponentUnitFromDeck.Model.UnitCanBeUsable());
+                           });
                        },
                    };
 
