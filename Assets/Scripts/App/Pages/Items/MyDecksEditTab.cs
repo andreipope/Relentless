@@ -388,7 +388,15 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragEnded += BoardCardCollectionDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
                 
-                eventHandler.MouseUpTriggered += BoardCardCollectionMouseUpTriggeredHandler;
+                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
+                multiPointerClickHandler.SingleClickReceived += ()=>
+                {
+                    BoardCardCollectionSingleClickHandler(boardCard);
+                };
+                multiPointerClickHandler.DoubleClickReceived += ()=> 
+                {
+                    AddCardToDeck(boardCard.LibraryCard);
+                };
                 
                 collectionCardData = _collectionData.GetCardData(card.Name);
                 UpdateBoardCardAmount
@@ -458,7 +466,15 @@ namespace Loom.ZombieBattleground
                     eventHandler.DragEnded += BoardCardDeckDragEndedHandler; 
                     eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
                     
-                    eventHandler.MouseUpTriggered += BoardCardDeckMouseUpTriggeredHandler;
+                    MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
+                    multiPointerClickHandler.SingleClickReceived += ()=>
+                    {
+                        BoardCardDeckSingleClickHandler(boardCard);
+                    };
+                    multiPointerClickHandler.DoubleClickReceived += ()=> 
+                    {
+                        RemoveCardFromDeck(boardCard.LibraryCard);
+                    };
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
 
@@ -544,7 +560,15 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragEnded += BoardCardDeckDragEndedHandler; 
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
-                eventHandler.MouseUpTriggered += BoardCardDeckMouseUpTriggeredHandler;
+                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
+                multiPointerClickHandler.SingleClickReceived += ()=>
+                {
+                    BoardCardDeckSingleClickHandler(boardCard);
+                };
+                multiPointerClickHandler.DoubleClickReceived += ()=> 
+                {
+                    RemoveCardFromDeck(boardCard.LibraryCard);
+                };
 
                 _createdDeckBoardCards.Add(boardCard);
 
@@ -650,14 +674,13 @@ namespace Loom.ZombieBattleground
 
         #region Boardcard Handler
         
-        private void BoardCardDeckMouseUpTriggeredHandler(GameObject go)
+        private void BoardCardDeckSingleClickHandler(BoardCard boardCard)
         {
             if (_isDragging ||
                 _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
-            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.LibraryCard).ToList(); 
-            BoardCard boardCard = _createdDeckBoardCards.First(x => x.GameObject == go);            
+            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.LibraryCard).ToList();           
             
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
@@ -666,14 +689,13 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private void BoardCardCollectionMouseUpTriggeredHandler(GameObject go)
+        private void BoardCardCollectionSingleClickHandler(BoardCard boardCard)
         {
             if (_isDragging ||
                 _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
-            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.LibraryCard).ToList();   
-            BoardCard boardCard = _createdCollectionsBoardCards.First(x => x.GameObject == go);            
+            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.LibraryCard).ToList();    
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,

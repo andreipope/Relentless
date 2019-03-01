@@ -188,17 +188,18 @@ namespace Loom.ZombieBattleground
                           CardPlaceholdersPrefab;
         
         public GameObject CardPlaceholders;
+
+        private Transform _locatorPlaceHolder;
         
         private List<BoardCard> _createdBoardCards;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
         
-        private bool _isDragging;
-        
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
-            Vector3 cardPlaceholdersPos = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Locator_CardPosition").position;
+            _locatorPlaceHolder = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Locator_CardPosition");
+            Vector3 cardPlaceholdersPos = _locatorPlaceHolder.position;
             cardPlaceholdersPos.z = 0f;
             CardPlaceholders.transform.position = cardPlaceholdersPos;
             
@@ -243,32 +244,34 @@ namespace Loom.ZombieBattleground
                 if (cardData == null)
                     continue;
                 Vector3 position = CardPositions[i % CardPositions.Count].position;
-
+                RectTransform rectContainer = _locatorPlaceHolder.GetComponent<RectTransform>();
                 BoardCard boardCard = CreateBoardCard
                 (
                     card,
+                    rectContainer,
                     cardData,
                     position                    
                 );
                 _createdBoardCards.Add(boardCard);
                 
-                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
-                eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardDragEndedHandler; 
-                eventHandler.MouseUpTriggered += BoardCardMouseUpTriggeredHandler;
+                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
+                multiPointerClickHandler.SingleClickReceived += ()=>
+                {
+                    BoardCardSingleClickHandler(boardCard);
+                };
+                multiPointerClickHandler.DoubleClickReceived += ()=>
+                {
+                    BoardCardSingleClickHandler(boardCard);
+                };
             }
-
-            _isDragging = false;
         }
         
-        private void BoardCardMouseUpTriggeredHandler(GameObject go)
+        private void BoardCardSingleClickHandler(BoardCard boardCard)
         {
-            if (_isDragging ||
-                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
+            if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
-            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.LibraryCard).ToList();   
-            BoardCard boardCard = _createdBoardCards.First(x => x.GameObject == go);            
+            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.LibraryCard).ToList();           
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
@@ -276,17 +279,7 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
-        {
-            _isDragging = true;
-        }
-        
-        private void BoardCardDragEndedHandler(PointerEventData eventData, GameObject onOnject)
-        {
-            _isDragging = false;
-        }
-        
-        private BoardCard CreateBoardCard(Card card, CollectionCardData cardData, Vector3 position)
+        private BoardCard CreateBoardCard(Card card, RectTransform root, CollectionCardData cardData, Vector3 position)
         {
             GameObject go;
             BoardCard boardCard;
@@ -311,6 +304,18 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.localScale = Vector3.one * 0.3f;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
+            
+            boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
+            RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
+
+            if (root != null)
+            {
+                cardRectTransform.SetParent(root);
+            }
+
+            Vector3 anchoredPos = boardCard.Transform.localPosition;
+            anchoredPos.z = 0;
+            boardCard.Transform.localPosition = anchoredPos;
             
             if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
             {
