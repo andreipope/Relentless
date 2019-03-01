@@ -311,6 +311,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+
+                if (GUILayout.Button("Handshake"))
+                {
+                    EnqueueAsyncTask(async () =>
+                    {
+                        List<Data.InstanceId> cardsInHandForMulligan = new List<Data.InstanceId>();
+                        foreach (CardInstance card in opponentPlayerState.CardsInHand) 
+                        {
+                            cardsInHandForMulligan.Add(card.InstanceId.FromProtobuf());
+                        }
+
+                        await DebugClient.BackendFacade.SendPlayerAction(
+                            DebugClient.MatchRequestFactory.CreateAction(DebugClient.PlayerActionFactory.Mulligan(cardsInHandForMulligan))
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
             }
             GUILayout.EndHorizontal();
 
@@ -376,15 +394,13 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         attackers.Select(GameStateGUI.SimpleFormatCardInstance).ToArray()
                     );
 
-                DrawMinWidthLabel("Affect Object Type");
-                _gameActionsState.CardAttackAffectObjectType =
-                    (Enumerators.AffectObjectType) EditorGUILayout.EnumPopup(_gameActionsState.CardAttackAffectObjectType);
-
                 DrawMinWidthLabel("Target");
                 _gameActionsState.CardAttackTargetIndex =
                     EditorGUILayout.Popup(
                         _gameActionsState.CardAttackTargetIndex,
-                        targets.Select(GameStateGUI.SimpleFormatCardInstance).ToArray()
+                        new[] { "Enemy Overlord", "Own Overlord" }.Concat(
+                                targets.Select(GameStateGUI.SimpleFormatCardInstance))
+                            .ToArray()
                     );
 
                 EditorGUI.BeginDisabledGroup(attackers.Count == 0);
@@ -392,12 +408,28 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 {
                     EnqueueAsyncTask(async () =>
                     {
+                        int attackTargetInstanceId;
+                        if (_gameActionsState.CardAttackTargetIndex == 0 || _gameActionsState.CardAttackTargetIndex == 1)
+                        {
+                            // enemy overlord id
+                            PlayerState firstPlayerState = _initialGameState.Instance.PlayerStates[_initialGameState.Instance.CurrentPlayerIndex];
+                            attackTargetInstanceId =
+                                firstPlayerState.Id == _debugClientWrapper.Instance.UserDataModel.UserId ? 1 : 0;
+                            if (_gameActionsState.CardAttackTargetIndex == 1)
+                            {
+                                attackTargetInstanceId = 1 - attackTargetInstanceId;
+                            }
+                        }
+                        else
+                        {
+                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex-2].InstanceId.Id;
+                        }
+
                         await DebugClient.BackendFacade.SendPlayerAction(
                             DebugClient.MatchRequestFactory.CreateAction(
                                 DebugClient.PlayerActionFactory.CardAttack(
                                     new Data.InstanceId(attackers[_gameActionsState.CardAttackAttackerIndex].InstanceId.Id),
-                                    _gameActionsState.CardAttackAffectObjectType,
-                                    new Data.InstanceId(targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id)
+                                    new Data.InstanceId(attackTargetInstanceId)
                                 )
                             )
                         );
@@ -607,7 +639,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             public int CardAttackAttackerIndex;
             public int CardAttackTargetIndex;
-            public Enumerators.AffectObjectType CardAttackAffectObjectType;
 
             public int CardToDestroyIndex;
         }

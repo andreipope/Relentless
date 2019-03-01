@@ -13,6 +13,7 @@ using Hero = Loom.ZombieBattleground.Data.Hero;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class DataTest
     {
         [Test]

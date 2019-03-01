@@ -13,6 +13,7 @@ using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -81,25 +82,28 @@ namespace Loom.ZombieBattleground
             return str.Substring(0, maxLength);
         }
 
-        // FIXME: this has only drawbacks compared to using PlayerPrefs directly, what's the purpose of it?
-        public static int GetIntValueFromPlayerPrefs(string key)
+        public static double GetTimestamp()
         {
-            return PlayerPrefs.GetInt(key, 0);
+            return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
         }
 
-        public static void SetIntValueInPlayerPrefs(string key, int value)
+        public static GameObject[] CollectAllSceneRootGameObjects(GameObject dontDestroyOnLoadGameObject)
         {
-            PlayerPrefs.SetInt(key, value);
-        }
+            Scene[] scenes = new Scene[SceneManager.sceneCount];
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                scenes[i] = SceneManager.GetSceneAt(i);
+            }
 
-        public static string GetStringFromPlayerPrefs(string key)
-        {
-            return PlayerPrefs.GetString(key, string.Empty);
-        }
-
-        public static void SetStringInPlayerPrefs(string key, string value)
-        {
-            PlayerPrefs.SetString(key, value);
+            return 
+                scenes
+                    .Concat(new[]
+                    {
+                        dontDestroyOnLoadGameObject.scene
+                    })
+                    .Distinct()
+                    .SelectMany(scene => scene.GetRootGameObjects())
+                    .ToArray();
         }
 
         #region asset bundles and cache

@@ -286,8 +286,8 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Helpers.ExceptionReporter.LogException(actionSystemException);
                 Debug.LogException(actionSystemException);
+                Helpers.ExceptionReporter.LogException(actionSystemException);
 
                 ActionDoneCallback();
                 throw actionSystemException;

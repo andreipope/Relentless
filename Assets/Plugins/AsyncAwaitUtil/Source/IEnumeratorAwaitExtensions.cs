@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -39,14 +40,14 @@ public static class IEnumeratorAwaitExtensions
         return GetAwaiterReturnVoid(instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitUntil instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitUntil instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter((IEnumerator) instruction);
     }
 
-    public static SimpleCoroutineAwaiter GetAwaiter(this WaitWhile instruction)
+    public static SimpleCoroutineAwaiter<object> GetAwaiter(this WaitWhile instruction)
     {
-        return GetAwaiterReturnVoid(instruction);
+        return GetAwaiter((IEnumerator) instruction);
     }
 
     public static SimpleCoroutineAwaiter<AsyncOperation> GetAwaiter(this AsyncOperation instruction)
@@ -154,6 +155,7 @@ public static class IEnumeratorAwaitExtensions
 
             if (_exception != null)
             {
+                ExceptionDispatchInfo.Capture(_exception).Throw();
                 throw _exception;
             }
 

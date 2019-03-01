@@ -543,7 +543,7 @@ namespace Loom.ZombieBattleground
             _appStateManager.ChangeAppState(Enumerators.AppState.PlaySelection);
         }
 
-        private void BattleButtonOnClickHandler()
+        public void BattleButtonOnClickHandler()
         {
             if (_tutorialManager.IsButtonBlockedInTutorial(_battleButton.name))
             {
@@ -562,12 +562,8 @@ namespace Loom.ZombieBattleground
 
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
-                {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-                    startMatch?.Invoke();
-                };
-                _uiManager.DrawPopup<TutorialProgressInfoPopup>();
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                startMatch?.Invoke();
             }
             else
             {

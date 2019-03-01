@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -195,8 +196,6 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
@@ -270,9 +269,26 @@ namespace Loom.ZombieBattleground
             AbilitiesController.DeactivateAbility(ActivityId);
         }
 
+        public void ChangePlayerCallerOfAbility(Player player)
+        {
+            PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
+
+            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+
+            PlayerCallerOfAbility = player;
+
+            PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             Deactivate();
+        }
+
+        protected virtual void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)
@@ -460,10 +476,12 @@ namespace Loom.ZombieBattleground
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count).Select(x => x.Model).ToList();
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
+                .Select(x => x.Model).ToList()
+                .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
         }
 
-        protected void InvokeActionTriggered(object info = null)
+        public void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);
         }
@@ -476,6 +494,24 @@ namespace Loom.ZombieBattleground
         protected void ReportAbilityDoneAction(List<BoardObject> targets)
         {
 
+        }
+
+        protected int GetAbilityIndex()
+        {
+            int index = MainWorkingCard.LibraryCard.Abilities.IndexOf(AbilityData);
+            if (index == -1)
+                throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
+
+            return index;
+        }
+
+        protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
+        {
+            AbilitiesController.InvokeUseAbilityEvent(
+                MainWorkingCard,
+                AbilityData.AbilityType,
+                targets ?? new List<ParametrizedAbilityBoardObject>()
+            );
         }
     }
 }

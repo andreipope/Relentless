@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+            InvokeUseAbilityEvent();
         }
 
         protected override void UnitDiedHandler()
@@ -31,6 +31,17 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitHpChangedHandler()
+        {
+            base.UnitHpChangedHandler();
+
+            if (AbilityUnitOwner.CurrentHp <= 0) 
+            {   
+                AbilityProcessingAction?.ForceActionDone();
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
+            }
+        }
+
         public override void Action(object param = null)
         {
             base.Action(param);
@@ -40,6 +51,7 @@ namespace Loom.ZombieBattleground
                 // FIXME: doesn't this cause de-sync?
                 PlayerCallerOfAbility.AddCardToDeck(MainWorkingCard, true);
             }
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

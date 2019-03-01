@@ -196,7 +196,6 @@ namespace Loom.ZombieBattleground
                 switch (_aiBrainType)
                 {
                     case Enumerators.AiBrainType.Tutorial:
-                        await LetsThink(_aiBrainCancellationTokenSource.Token);
                         await DoAiBrainForTutorial(_aiBrainCancellationTokenSource.Token);
                         break;
                     default:
@@ -284,11 +283,14 @@ namespace Loom.ZombieBattleground
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
-            await LetsThink(cancellationToken);
+            if (!_tutorialManager.IsTutorial)
+            {
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
+                await LetsThink(cancellationToken);
 
-            await LetsWaitForQueue(cancellationToken);
+                await LetsWaitForQueue(cancellationToken);
+            }
 
             await UseUnitsOnBoard(cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -301,18 +303,13 @@ namespace Loom.ZombieBattleground
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
-
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
-
             }
-            else
+            if (!_tutorialManager.IsTutorial)
             {
                 await LetsThink(cancellationToken);
                 await LetsThink(cancellationToken);
-                _battlegroundController.StopTurn();
             }
+            _battlegroundController.StopTurn();
         }
 
         private async Task DoAiBrainForTutorial(CancellationToken cancellationToken)
@@ -326,7 +323,7 @@ namespace Loom.ZombieBattleground
             await LetsWaitForQueue(cancellationToken);
 
             List<Enumerators.TutorialActivityAction> requiredActivitiesToDoneDuringTurn = step.ToGameplayStep().RequiredActivitiesToDoneDuringStep;
-            if(requiredActivitiesToDoneDuringTurn.Count == 0)
+            if(requiredActivitiesToDoneDuringTurn == null)
             {
                 requiredActivitiesToDoneDuringTurn = _tutorialManager.GetCurrentTurnInfo().RequiredActivitiesToDoneDuringTurn;
             }
@@ -370,8 +367,6 @@ namespace Loom.ZombieBattleground
 
             if (step.ActionToEndThisStep == Enumerators.TutorialActivityAction.EndTurn)
             {
-                await LetsThink(cancellationToken);
-                await LetsThink(cancellationToken);
                 _battlegroundController.StopTurn();
             }
         }
@@ -502,7 +497,7 @@ namespace Loom.ZombieBattleground
 
                     BoardUnitModel unit = GetUnitsOnBoard().Find(unitOnBoard => !unitOnBoard.AttackedThisTurn &&
                                                                        unitOnBoard.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                       _tutorialManager.GetCardNameById(frame.TutorialObjectId).
+                                                                       _tutorialManager.GetCardNameByTutorialObjectId(frame.TutorialObjectId).
                                                                        ToLowerInvariant() &&
                                                                        UnitCanBeUsable(unitOnBoard));
                     BoardObject target = null;
@@ -510,7 +505,7 @@ namespace Loom.ZombieBattleground
                     if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
                     {
                         target = GetOpponentUnitsOnBoard().Find(targetUnit => targetUnit.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                     _tutorialManager.GetCardNameById(frame.TargetTutorialObjectId).
+                                                                     _tutorialManager.GetCardNameByTutorialObjectId(frame.TargetTutorialObjectId).
                                                                      ToLowerInvariant() &&
                                                                      targetUnit.CurrentHp > 0);
                     }
@@ -586,7 +581,10 @@ namespace Loom.ZombieBattleground
                     if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
                         continue;
 
-                    await LetsWaitForQueue(cancellationToken);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        await LetsWaitForQueue(cancellationToken);
+                    }
 
                     while (UnitCanBeUsable(unit))
                     {
@@ -602,7 +600,10 @@ namespace Loom.ZombieBattleground
                     if (unit.AttackTargetsAvailability.Count == 0)
                         continue;
 
-                    await LetsWaitForQueue(cancellationToken);
+                    if (!_tutorialManager.IsTutorial)
+                    {
+                        await LetsWaitForQueue(cancellationToken);
+                    }
 
                     while (UnitCanBeUsable(unit))
                     {
@@ -717,7 +718,7 @@ namespace Loom.ZombieBattleground
                 if (cards[i].LibraryCard.Abilities != null)
                 {
                     AbilityData attackOverlordAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.ATTACK_OVERLORD);
                     if (attackOverlordAbility != null)
                     {
                         if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
@@ -725,7 +726,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     overflowGooAbility = cards[i].LibraryCard.Abilities
-                        .Find(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
+                        .FirstOrDefault(x => x.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO);
                     if (overflowGooAbility != null)
                     {
                         if (_gameplayManager.OpponentPlayer.BoardCards.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
@@ -776,11 +777,11 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.Clear();
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalUnitCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
                 _normalSpellCardInHand.Clear();
                 _normalSpellCardInHand.AddRange(GetSpellCardsInHand());
                 _normalSpellCardInHand.RemoveAll(x =>
-                    x.LibraryCard.Abilities.Exists(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.LibraryCard.Abilities.Any(z => z.AbilityType == Enumerators.AbilityType.OVERFLOW_GOO));
             }
 
             await LetsThink(cancellationToken);
@@ -873,7 +874,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_gameplayManager.IsTutorial && playCardActionInfo != null)
                     {
-                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)))
+                        if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)))
                         {
                             switch (playCardActionInfo.TargetType)
                             {
@@ -882,7 +883,7 @@ namespace Loom.ZombieBattleground
                                     break;
                                 case Enumerators.SkillTargetType.OPPONENT_CARD:
                                     target = GetOpponentUnitsOnBoard().Find(x => x.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                            _tutorialManager.GetCardNameById(playCardActionInfo.TargetTutorialObjectId)
+                                                                            _tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)
                                                                             .ToLowerInvariant());
                                     break;
                             }
@@ -1678,7 +1679,10 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(selectedObjectType), selectedObjectType, null);
                 }
 
-                skill.EndDoSkill();
+                skill.EndDoSkill(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(target)
+                }, true);
             };
 
             if ((skill.Skill.CanSelectTarget && target != null) ||

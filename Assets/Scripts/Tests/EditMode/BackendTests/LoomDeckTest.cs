@@ -10,6 +10,7 @@ using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class LoomDeckTest
     {
         public readonly LoomTestContext LoomTestContext = new LoomTestContext();

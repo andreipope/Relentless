@@ -16,6 +16,7 @@ namespace Loom.Client
     public class NonceTxMiddleware : ITxMiddlewareHandler
     {
         protected readonly string publicKeyHex;
+        protected readonly object nonceSetLock = new object();
 
         /// <summary>
         /// Public key for which the nonce should be set.
@@ -47,6 +48,8 @@ namespace Loom.Client
         public virtual async Task<byte[]> Handle(byte[] txData)
         {
             var nextNonce = await GetNextNonceAsync();
+
+            this.Client.Logger.Log($"[NonceLog] Using nonce {this.NextNonce} for a TX");
             var tx = new NonceTx
             {
                 Inner = ByteString.CopyFrom(txData),
@@ -57,6 +60,11 @@ namespace Loom.Client
 
         public void HandleTxResult(BroadcastTxResult result)
         {
+            lock (this.nonceSetLock)
+            {
+                this.NextNonce++;
+                this.Client.Logger.Log($"[NonceLog] Call succeeded, speculating next nonce {this.NextNonce}");
+            }
         }
 
         public void HandleTxException(LoomException e)
@@ -64,6 +72,10 @@ namespace Loom.Client
             if (e is InvalidTxNonceException)
             {
                 this.NextNonce = null;
+                this.Client.Logger.Log("[NonceLog] Got InvalidTxNonceException, will retrieve nonce from node next time");
+            } else if (e is TxCommitException)
+            {
+                this.Client.Logger.Log($"[NonceLog] Got {e.GetType().Name} ({e.Message}), so next nonce is still {this.NextNonce}");
             }
         }
 
@@ -71,13 +83,14 @@ namespace Loom.Client
         {
             if (this.NextNonce == null)
             {
+                this.Client.Logger.Log("[NonceLog] NextNonce == null, retrieving from node...");
                 ulong nonce = await GetNonceFromNodeAsync();
-                this.NextNonce = nonce;
-                //Debug.Log($"NonceLog: unknown current nonce, got nonce {nonce}");
+                lock (this.nonceSetLock)
+                {
+                    this.NextNonce = nonce + 1;
+                    this.Client.Logger.Log($"[NonceLog] Got nonce {nonce} from the node, using {this.NextNonce}");
+                }
             }
-
-            this.NextNonce++;
-            //Debug.Log($"NonceLog: using nonce {this.NextNonce} for the call");
 
             return this.NextNonce.Value;
         }

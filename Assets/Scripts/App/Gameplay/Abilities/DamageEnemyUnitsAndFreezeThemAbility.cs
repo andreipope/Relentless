@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private List<BoardObject> _targets;
 
+        private const int CountOfStun = 1;
+
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -24,7 +26,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -70,11 +72,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Player player:
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
-                        player.Stun(Enumerators.StunType.FREEZE, Value);
+                        player.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     case BoardUnitModel unit:
                         BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
-                        unit.Stun(Enumerators.StunType.FREEZE, Value);
+                        unit.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

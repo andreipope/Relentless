@@ -36,15 +36,15 @@ namespace Loom.ZombieBattleground
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent();
             }
             else if(AbilityCallType == Enumerators.AbilityCallType.ENTRY &&
                     AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
             {
                 if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
-                    IReadOnlyList<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
-
+                    IReadOnlyList<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(
+                                    x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner);
                     units = InternalTools.GetRandomElementsFromList(units, Count);
 
                     foreach (BoardUnitView unit in units)
@@ -69,8 +69,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
-        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (AbilityCallType != Enumerators.AbilityCallType.TURN)
                 return;
 
             ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
@@ -100,9 +99,19 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                targets = InternalTools.GetRandomElementsFromList(targets, Count);
+                targets = targets.FindAll(x => x.Model != AbilityUnitOwner);
 
-                foreach (BoardUnitView target in targets)
+                List<BoardUnitView> finalTargets = new List<BoardUnitView>();
+                int count = Mathf.Max(1, Count);
+                while (count > 0 && targets.Count > 0)
+                {   
+                    int chosenIndex = MTwister.IRandom(0, targets.Count-1);
+                    finalTargets.Add(targets[chosenIndex]);
+                    targets.RemoveAt(chosenIndex);
+                    count--;
+                }
+
+                foreach (BoardUnitView target in finalTargets)
                 {
                     ModificateStats(target.Model, false);
                 }
@@ -157,10 +166,12 @@ namespace Loom.ZombieBattleground
 
                             if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
                             {
-                                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                                {
-                                    boardUnit
-                                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                                InvokeUseAbilityEvent(
+                                    new List<ParametrizedAbilityBoardObject>
+                                    {
+                                        new ParametrizedAbilityBoardObject(boardUnit)
+                                    }
+                                );
                             }
                         }
                     }

@@ -14,8 +14,6 @@ using Loom.Client.Protobuf;
 using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
 #endif
 
-using UnityUserReporting = Unity.Cloud.UserReporting.Plugin.UnityUserReporting;
-
 namespace Loom.Client
 {
     /// <summary>
@@ -102,6 +100,9 @@ namespace Loom.Client
         /// <param name="callExecutor">Blockchain call execution flow controller.</param>
         public DAppChainClient(IRpcClient writeClient, IRpcClient readClient, DAppChainClientConfiguration configuration = null, IDAppChainClientCallExecutor callExecutor = null)
         {
+            if (writeClient == null && readClient == null)
+                throw new ArgumentException("Both write and read clients can't be null");
+
             this.writeClient = writeClient;
             this.readClient = readClient;
 
@@ -122,17 +123,11 @@ namespace Loom.Client
         /// <returns>The nonce.</returns>
         public async Task<ulong> GetNonceAsync(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
         public async Task<ulong> GetNonceAsyncNonBlocking(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key));
         }
 
@@ -172,7 +167,7 @@ namespace Loom.Client
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
 
-            return await this.CallExecutor.Call<BroadcastTxResult>(async () =>
+            return await this.CallExecutor.Call(async () =>
             {
                 await EnsureConnected();
 
@@ -200,8 +195,6 @@ namespace Loom.Client
                     return result;
                 } catch (LoomException e)
                 {
-                    UnityUserReporting.CurrentClient.LogException(e);
-
                     if (this.TxMiddleware != null)
                     {
                         this.TxMiddleware.HandleTxException(e);
@@ -261,11 +254,10 @@ namespace Loom.Client
 
         private async Task<ulong> GetNonceAsyncRaw(string key)
         {
-            if (this.readClient == null)
-                throw new InvalidOperationException("Read client is not set");
-
             await EnsureConnected();
-            string nonce = await this.readClient.SendAsync<string, NonceParams>(
+
+            IRpcClient client = this.writeClient ?? this.readClient;
+            string nonce = await client.SendAsync<string, NonceParams>(
                 "nonce",
                 new NonceParams { Key = key }
             );

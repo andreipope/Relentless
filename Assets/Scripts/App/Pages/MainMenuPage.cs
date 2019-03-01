@@ -161,6 +161,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPlay.name))
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TriedToPressPlayButton);
                 return;
             }
             else if (_isReturnToTutorial)

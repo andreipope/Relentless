@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
 
         private readonly AbilitiesController _abilitiesController;
 
+        private readonly IPvPManager _pvpManager;
+
         private int _stunTurns;
 
         public bool IsDead { get; private set; }
@@ -63,6 +65,7 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
             AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
@@ -175,8 +178,6 @@ namespace Loom.ZombieBattleground
         public bool HasBuffShield { get; set; }
 
         public bool TakeFreezeToAttacked { get; set; }
-
-        public int AdditionalDamage { get; set; }
 
         public int DamageDebuffUntillEndOfTurn { get; set; }
 
@@ -461,8 +462,11 @@ namespace Loom.ZombieBattleground
         {
             Card = card;
 
-            CurrentDamage = card.InstanceCard.Damage;
-            CurrentHp = card.InstanceCard.Health;
+            CurrentDamage = card.LibraryCard.Damage;
+            CurrentHp = card.LibraryCard.Health;
+
+            card.InstanceCard.Damage = CurrentDamage;
+            card.InstanceCard.Health = CurrentHp;
 
             BuffedDamage = 0;
             BuffedHp = 0;
@@ -557,7 +561,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            if (AttackedThisTurn || NumTurnsOnBoard == 0)
+            if (AttackedThisTurn || NumTurnsOnBoard == 0 || !_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
                 turns++;
 
             if (turns > _stunTurns)
@@ -663,7 +667,8 @@ namespace Loom.ZombieBattleground
                                 targetPlayer,
                                 () =>
                                 {
-                                    _battleController.AttackPlayerByUnit(this, targetPlayer);
+                                    if(!_pvpManager.UseBackendGameLogic)
+                                        _battleController.AttackPlayerByUnit(this, targetPlayer);
                                 },
                                 () =>
                                 {
@@ -721,7 +726,7 @@ namespace Loom.ZombieBattleground
                                 targetCardModel,
                                 () =>
                                 {
-                                    _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
+                                    _battleController.AttackUnitByUnit(this, targetCardModel);
 
                                     if (HasSwing)
                                     {
@@ -729,7 +734,7 @@ namespace Loom.ZombieBattleground
 
                                         foreach (BoardUnitView unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit.Model, AdditionalDamage, false);
+                                            _battleController.AttackUnitByUnit(this, unit.Model,false);
                                         }
                                     }
 

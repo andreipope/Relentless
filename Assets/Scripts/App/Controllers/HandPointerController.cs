@@ -71,7 +71,9 @@ namespace Loom.ZombieBattleground
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
                                 Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
-                                float handPointerSpeed = Constants.HandPointerSpeed)
+                                float handPointerSpeed = Constants.HandPointerSpeed,
+                                string tutorialUIElementOwnerName = Constants.Empty,
+                                float rotation = 0)
         {
             HandPointerPopup popup = new HandPointerPopup(type,
                                                           owner,
@@ -83,7 +85,9 @@ namespace Loom.ZombieBattleground
                                                           targetTutorialObjectId,
                                                           additionalObjectIdOwners,
                                                           additionalObjectIdTargets, handLayer,
-                                                          handPointerSpeed);
+                                                          handPointerSpeed,
+                                                          tutorialUIElementOwnerName,
+                                                          rotation);
             _handPointerPopups.Add(popup);
         }
     }
@@ -129,6 +133,8 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView _targetUnit;
 
+        private GameObject _uiElementOwner;
+
         private float _maxValue = 3;
         private float _startValue = 0;
         private float _sideTurn;
@@ -143,6 +149,8 @@ namespace Loom.ZombieBattleground
 
         private bool _wasDisposed = false;
 
+        private string _tutorialUIElementOwnerName;
+
         private List<Sequence> _allSequences;
 
         public HandPointerPopup(Enumerators.TutorialHandPointerType type,
@@ -156,7 +164,9 @@ namespace Loom.ZombieBattleground
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
                                 Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
-                                float handPointerSpeed = Constants.HandPointerSpeed)
+                                float handPointerSpeed = Constants.HandPointerSpeed,
+                                string tutorialUIElementOwnerName = Constants.Empty,
+                                float rotation = 0)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -172,21 +182,25 @@ namespace Loom.ZombieBattleground
             _type = type;
             Owner = owner;
             _speedMove = handPointerSpeed;
+            _tutorialUIElementOwnerName = tutorialUIElementOwnerName;
 
             _selfObject = MonoBehaviour.Instantiate(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/HandPointer"));
 
+            _selfObject.transform.eulerAngles = new Vector3(0, 0, rotation);
+
+
             if(tutorialObjectIdStepOwner != 0)
             {
                 _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameById(tutorialObjectIdStepOwner)
+                                                                                _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner)
                                                                                 .ToLowerInvariant());
                 if(_ownerUnit == null && additionalObjectIdOwners != null)
                 {
                     foreach (int id in additionalObjectIdOwners)
                     {
                         _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameById(id)
+                                                                                _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
                         if (_ownerUnit != null)
                             break;
@@ -202,14 +216,14 @@ namespace Loom.ZombieBattleground
             if(targetTutorialObjectId != 0)
             {
                 _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameById(targetTutorialObjectId)
+                                                                                _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId)
                                                                                 .ToLowerInvariant());
                 if (_targetUnit == null && additionalObjectIdTargets != null)
                 {
                     foreach (int id in additionalObjectIdTargets)
                     {
                         _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameById(id)
+                                                                                _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
                         if (_targetUnit != null)
                             break;
@@ -269,6 +283,11 @@ namespace Loom.ZombieBattleground
         {
             if (_wasDisposed)
                 return;
+
+            if (Owner == Enumerators.TutorialObjectOwner.UI)
+            {
+                _uiElementOwner = GameObject.Find(_tutorialUIElementOwnerName);
+            }
 
             _selfObject.SetActive(true);
 
@@ -401,6 +420,10 @@ namespace Loom.ZombieBattleground
             if (unit != null)
             {
                 return unit.Transform.TransformPoint(_startPosition);
+            }
+            else if(Owner == Enumerators.TutorialObjectOwner.UI && _uiElementOwner != null)
+            {
+                return _uiElementOwner.transform.position + position;
             }
             return position;
         }

@@ -86,9 +86,9 @@ namespace Loom.ZombieBattleground
 
             _text = Self.transform.Find("Description/Text").GetComponent<TextMeshProUGUI>();
 
-            _hideButton = Self.transform.Find("Description/Button_Ok").GetComponent<ButtonShiftingContent>();
+            _hideButton = Self.transform.Find("Button_Ok").GetComponent<ButtonShiftingContent>();
 
-            _hideButtonText = _hideButton.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _hideButtonText = Self.transform.Find("Description/Button_Ok/Text").GetComponent<TextMeshProUGUI>();
 
             _janeImage = Self.transform.Find("NPC").GetComponent<Image>();
 

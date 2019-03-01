@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private IAppStateManager _appStateManager;
 
+        private bool _appInitLoaded;
+
         public event Action<Enumerators.AppState> SceneForAppStateWasLoadedEvent;
 
         public Enumerators.AppState CurrentAppStateScene { get; set; }
@@ -26,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             if (!force)
             {
-                if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState)
+                if (appState == Enumerators.AppState.NONE || CurrentAppStateScene == appState || _isLoadingStarted)
                     return;
             }
 
@@ -34,7 +36,7 @@ namespace Loom.ZombieBattleground
             _isLoadingStarted = true;
 
             GameClient.Get<IAnalyticsManager>().LogScreen(appState.ToString());
-            MainApp.Instance.StartCoroutine(LoadLevelAsync(appState.ToString()));
+            MainApp.Instance.StartCoroutine(LoadLevelAsync(appState));
         }
 
         public void Dispose()
@@ -50,7 +52,7 @@ namespace Loom.ZombieBattleground
 
             _appStateManager = GameClient.Get<IAppStateManager>();
 
-            LevelLoadedHandler(null);
+            LevelLoadedHandler(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
 
         public void Update()
@@ -64,30 +66,65 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void LevelLoadedHandler(object param)
+        private void LevelLoadedHandler(Scene scene, LoadSceneMode loadSceneMode)
         {
-            CurrentAppStateScene =
-                (Enumerators.AppState) Enum.Parse(typeof(Enumerators.AppState), SceneManager.GetActiveScene().name);
+            LevelLoadedHandlerInternal((Enumerators.AppState) Enum.Parse(typeof(Enumerators.AppState), scene.name));
+        }
+
+        private void LevelLoadedHandlerInternal(Enumerators.AppState appState)
+        {
+            CurrentAppStateScene = appState;
+            if (CurrentAppStateScene == Enumerators.AppState.APP_INIT)
+            {
+                _appInitLoaded = true;
+            }
+
             _isLoadingStarted = false;
             IsLoadedScene = true;
             SceneLoadingProgress = 0;
 
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName(appState.ToString()));
             SceneForAppStateWasLoadedEvent?.Invoke(CurrentAppStateScene);
         }
 
-        private IEnumerator LoadLevelAsync(string levelName)
+        private IEnumerator LoadLevelAsync(Enumerators.AppState appState)
         {
-            AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(levelName);
+            if (_appInitLoaded && appState == Enumerators.AppState.APP_INIT)
+            {
+                // Unload all other scenes
+                Scene[] scenes = new Scene[SceneManager.sceneCount];
+                for (int i = 0; i < SceneManager.sceneCount; ++i)
+                {
+                    scenes[i] = SceneManager.GetSceneAt(i);
+                }
+
+                foreach (Scene scene in scenes)
+                {
+                    if (scene.name == Enumerators.AppState.APP_INIT.ToString())
+                        continue;
+
+                    AsyncOperation unloadSceneAsync = SceneManager.UnloadSceneAsync(scene);
+                    while (!unloadSceneAsync.isDone)
+                    {
+                        yield return null;
+                    }
+                }
+
+                LevelLoadedHandlerInternal(appState);
+                yield break;
+            }
+
             float delayTime = Constants.LoadingTimeBetweenGameplayAndAppInit;
-            if (levelName != Enumerators.AppState.APP_INIT.ToString())
+            if (appState != Enumerators.AppState.APP_INIT)
             {
                 delayTime = 0;
             }
 
-            while (!asyncOperation.isDone || delayTime > 0)
+            AsyncOperation loadAsyncOperation = SceneManager.LoadSceneAsync(appState.ToString(), LoadSceneMode.Additive);
+            while (!loadAsyncOperation.isDone || delayTime > 0)
             {
                 delayTime -= Time.deltaTime;
-                SceneLoadingProgress = Mathf.RoundToInt(asyncOperation.progress * 100f);
+                SceneLoadingProgress = Mathf.RoundToInt(loadAsyncOperation.progress * 100f);
                 if (delayTime > 0)
                 {
                     SceneLoadingProgress = Mathf.Min(SceneLoadingProgress, 90);

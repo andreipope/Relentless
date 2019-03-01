@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        public List<BoardUnitView> Units => _units;
+
         private List<BoardUnitView> _units;
 
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -21,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
@@ -40,7 +42,9 @@ namespace Loom.ZombieBattleground
             _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
             _units =
                 _units
-                    .Where(x => x.Model != AbilityUnitOwner)
+                    .Where(card => card.Model != AbilityUnitOwner &&
+                        card.Model.CurrentHp > 0 &&
+                        !card.Model.IsDead)
                     .ToList();
 
             if (Value > 0)

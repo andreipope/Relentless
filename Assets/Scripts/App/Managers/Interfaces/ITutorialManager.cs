@@ -14,9 +14,13 @@ namespace Loom.ZombieBattleground
 
         int TutorialsCount { get; }
 
+        bool IsLastTutorial { get; }
+
         bool PlayerWon { get; set; }
 
         bool UnfinishedTutorial { get; set; }
+
+        //TutorialReward RewardFromLastTutorial { get; }
 
         void StartTutorial();
 
@@ -34,15 +38,21 @@ namespace Loom.ZombieBattleground
 
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
+        void PlayTutorialSound(string sound, float delay = 0f);
+
+        void SkipTutorial();
+
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 
         SpecificTurnInfo GetCurrentTurnInfo();
         bool IsCompletedActivitiesForThisTurn();
-        string GetCardNameById(int id);
+        string GetCardNameByTutorialObjectId(int id);
 
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
 
+        int GetIndexOfCurrentTutorial();
+        List<Data.Card> GetCardForCardPack(int count);
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
 

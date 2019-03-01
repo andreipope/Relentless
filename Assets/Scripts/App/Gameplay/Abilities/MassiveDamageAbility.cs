@@ -25,8 +25,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
+            InvokeUseAbilityEvent();
             if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
                 return;
 
@@ -38,21 +37,22 @@ namespace Loom.ZombieBattleground
             OnUpdateEvent?.Invoke();
         }
 
-        public override void Dispose()
-        {
-        }
-
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             Action();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            {
+                base.UnitDiedHandler();
+            }
             base.VFXAnimationEndedHandler();
 
             for (int i = _targets.Count-1; i >= 0; i--)

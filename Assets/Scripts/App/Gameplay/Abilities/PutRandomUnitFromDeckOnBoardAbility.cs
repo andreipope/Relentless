@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in targets)
                 {
-                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
                 }
             }
             else
@@ -71,14 +71,19 @@ namespace Loom.ZombieBattleground
                     if (filteredCards.Count == 0)
                         continue;
 
-                    boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-
-                    PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards);
+                    if (playerOwner.BoardCards.Count < Constants.MaxBoardUnits) 
+                    {
+                        boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+                        PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards, true);
+                    }
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            InvokeUseAbilityEvent(
+                boardCards
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -90,11 +95,11 @@ namespace Loom.ZombieBattleground
 
         private void PutCardFromDeckToBoard(Player owner, BoardCard boardCard,
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
-                                            ref List<HandBoardCard> cards)
+                                            ref List<HandBoardCard> cards, bool activateAbility)
         {
             owner.RemoveCardFromDeck(boardCard.WorkingCard);
 
-            CardsController.SummonUnitFromHand(owner, boardCard);
+            CardsController.SummonUnitFromHand(owner, boardCard, activateAbility);
 
             cards.Add(boardCard.HandBoardCard);
 

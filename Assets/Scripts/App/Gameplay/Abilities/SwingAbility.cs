@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)
@@ -34,17 +34,7 @@ namespace Loom.ZombieBattleground
 
             _unit = (BoardUnitModel) info;
            
-            _targetIndex = -1;
-            for (int i = 0; i < _unit.OwnerPlayer.BoardCards.Count; i++)
-            {
-                if (_unit.OwnerPlayer.BoardCards[i].Model == _unit)
-                {
-                    _targetIndex = i;
-                    break;
-                }
-            }
-
-            if (_targetIndex > -1)
+            if (_unit != null)
             {
                 InvokeActionTriggered(info);
             }
@@ -71,19 +61,10 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
-            List<BoardObject> targets = new List<BoardObject>();
-
-            if (_targetIndex - 1 > -1)
+ 
+            foreach(BoardUnitView unit in BattlegroundController.GetAdjacentUnitsToUnit(_unit))
             {
-                targets.Add(_unit.OwnerPlayer.BoardCards[_targetIndex - 1].Model);
-                TakeDamageToUnit(_unit.OwnerPlayer.BoardCards[_targetIndex - 1]);
-            }
-
-            if (_targetIndex + 1 < _unit.OwnerPlayer.BoardCards.Count)
-            {
-                targets.Add(_unit.OwnerPlayer.BoardCards[_targetIndex + 1].Model);
-                TakeDamageToUnit(_unit.OwnerPlayer.BoardCards[_targetIndex + 1]);
+                TakeDamageToUnit(unit);
             }
 
             AbilityProcessingAction?.ForceActionDone();

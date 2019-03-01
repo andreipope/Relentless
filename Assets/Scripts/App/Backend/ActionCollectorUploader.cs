@@ -243,12 +243,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
+            private void CardAttackedHandler(WorkingCard attacker, Data.InstanceId instanceId)
             {
-                if (type != Enumerators.AffectObjectType.Player && instanceId == null)
-                    throw new ArgumentNullException(nameof(instanceId));
-
-                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, type, instanceId ?? new Data.InstanceId(-1)));
+                AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }
 
             private void AbilityUsedHandler(
@@ -264,27 +261,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
 
-            private void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            private void SkillUsedHandler(BoardSkill skill, List<ParametrizedAbilityBoardObject> targets = null)
             {
-                Enumerators.AffectObjectType affectObjectType =
-                    target is Player ?
-                        Enumerators.AffectObjectType.Player :
-                        Enumerators.AffectObjectType.Character;
-
-                Data.InstanceId targetInstanceId;
-                switch (target)
-                {
-                    case BoardUnitModel unit:
-                        targetInstanceId = unit.Card.InstanceId;
-                        break;
-                    case Player player:
-                        targetInstanceId = new Data.InstanceId(player.InstanceId.Id);
-                        break;
-                    default:
-                        throw new Exception($"Unhandled target type {target}");
-                }
-
-                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, affectObjectType, targetInstanceId));
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targets));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)

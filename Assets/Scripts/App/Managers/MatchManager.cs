@@ -25,8 +25,6 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.AppState _finishMatchAppState;
 
-        private int _onPvPManagerGameStartedActionHandlerCounter;
-
         public Enumerators.MatchType MatchType { get; set; }
 
         public AnalyticsTimer FindOpponentTime { get; set; }
@@ -56,7 +54,7 @@ namespace Loom.ZombieBattleground
             _sceneManager.ChangeScene(Enumerators.AppState.APP_INIT);
         }
 
-        public async void FindMatch()
+        public async Task FindMatch()
         {
             switch (MatchType)
             {
@@ -70,25 +68,14 @@ namespace Loom.ZombieBattleground
                             FindOpponentTime.StartTimer();
                             GameClient.Get<IQueueManager>().Clear();
 
-                            if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
-                                _onPvPManagerGameStartedActionHandlerCounter = 0;
-                                Debug.Log("OnPvPManagerGameStartedActionReceived was unsubscribed more than required.");
-                            }
-
-                            while (_onPvPManagerGameStartedActionHandlerCounter > 0) {
-                                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
-                                _onPvPManagerGameStartedActionHandlerCounter--;
-                                Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
-                            }
-
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Show();
-                            await _pvpManager.StartMatchmaking(_uiManager.GetPage<GameplayPage>().CurrentDeckId);
+                            await _pvpManager.StartMatchmaking((int)_gameplayManager.CurrentPlayerDeck.Id);
                             _pvpManager.MatchMakingFlowController.StateChanged += MatchMakingFlowControllerOnStateChanged;
 
+                            _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
                             _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                            _onPvPManagerGameStartedActionHandlerCounter++;
                         }
                         catch (Exception e) {
 
@@ -105,45 +92,12 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new NotImplementedException(MatchType + " not implemented yet.");
             }
-
         }
 
         private void MatchMakingFlowControllerOnStateChanged(MatchMakingFlowController.MatchMakingState state)
         {
             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
             matchMakingPopup.SetUIState(state);
-        }
-
-        public async void DebugFindPvPMatch(Deck deck)
-        {
-            /*
-            try
-            {
-                _uiManager.DrawPopup<ConnectionPopup>();
-
-                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
-                connectionPopup.ShowLookingForMatch();
-                connectionPopup.CancelMatchmakingClicked += ConnectionPopupOnCancelMatchmakingClicked;
-
-                bool success = await _pvpManager.DebugFindMatch(deck);
-                if (!success)
-                    return;
-
-                if (_pvpManager.MatchMetadata.Status == Match.Types.Status.Started)
-                {
-                    StartPvPMatch();
-                }
-                else
-                {
-                    _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                }
-            }
-            catch (Exception e) {
-                Debug.LogWarning(e);
-                _uiManager.GetPopup<ConnectionPopup>().Hide();
-                _uiManager.DrawPopup<WarningPopup>($"Error while finding a match:\n{e.Message}");
-            }
-            */
         }
 
         private async void MatchMakingPopupOnCancelMatchmakingClicked()
@@ -169,10 +123,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void FindMatch(Enumerators.MatchType matchType)
+        public async Task FindMatch(Enumerators.MatchType matchType)
         {
             MatchType = matchType;
-            FindMatch();
+            await FindMatch();
         }
 
         public void Dispose()
@@ -208,8 +162,17 @@ namespace Loom.ZombieBattleground
 
         private void StartPvPMatch()
         {
+            _gameplayManager.OpponentHasDoneMulligan = false;
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OpponentSentMulliganEventHandler;
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
+        }
+
+        private void OpponentSentMulliganEventHandler(PlayerActionMulligan mulligan)
+        {
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _gameplayManager.OpponentHasDoneMulligan = true;
         }
 
         private void OnPvPManagerGameStartedActionReceived()
@@ -229,7 +192,6 @@ namespace Loom.ZombieBattleground
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
-            _onPvPManagerGameStartedActionHandlerCounter--;
         }
 
         private void OnPvPManagerMatchingFailed()

@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
+using System.Threading.Tasks;
 
 namespace Loom.ZombieBattleground
 {
@@ -12,10 +13,8 @@ namespace Loom.ZombieBattleground
 
         void FinishMatch(Enumerators.AppState appStateAfterMatch);
 
-        void FindMatch();
-        void FindMatch(Enumerators.MatchType matchType);
-        void DebugFindPvPMatch(Deck deck);
-
+        Task FindMatch();
+        Task FindMatch(Enumerators.MatchType matchType);
         AnalyticsTimer FindOpponentTime { get; set; }
     }
 }

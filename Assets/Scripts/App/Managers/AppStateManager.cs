@@ -70,12 +70,39 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.DECK_EDITING:
                     _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:
-                    _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                case Enumerators.AppState.SHOP:            
+                    if (Constants.EnableShopPage)
+                    {
+                        if (string.IsNullOrEmpty(
+                            _backendDataControlMediator.UserDataModel.AccessToken
+                        ))
+                        {   
+                            LoginPopup loginPopup = _uiManager.GetPopup<LoginPopup>();
+                            loginPopup.Show();
+                            return;
+                        }
+                        else
+                        {
+                            _uiManager.SetPage<ShopPage>();
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.PACK_OPENER:
-                    _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                    return;
+                    if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
+                    {
+                        _uiManager.SetPage<PackOpenerPage>();
+                        break;
+                    }
+                    else
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
+                        return;
+                    }
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
@@ -111,6 +138,7 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
                 QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived -= DecideToPlayAgain;
                 popup.ConfirmationReceived += DecideToPlayAgain;
             }
         }
@@ -119,11 +147,14 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                popup.ConfirmationReceived -= DecideToPlayAgain;
-                _uiManager.HidePopup<MatchMakingPopup>();
-                GameClient.Get<IMatchManager>().FindMatch();
+                HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
+                if (_uiManager.CurrentPage == page) {
+                    page.BattleButtonOnClickHandler();
+                }
             }
+
+            QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+            popup.ConfirmationReceived -= DecideToPlayAgain;
         }
 
         public void SetPausingApp(bool mustPause) {
@@ -146,6 +177,11 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            if (_backendFacade?.Contract?.Client != null)
+            {
+                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
         }
 
         public void Init()
@@ -176,7 +212,7 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}"), false, true);
+                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1, null), false, true);
                 }
             }, null);
         }
@@ -186,6 +222,7 @@ namespace Loom.ZombieBattleground
             if (!_backendFacade.IsConnected)
             {
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+
 
                 if (connectionPopup.Self == null)
                 {
@@ -211,7 +248,20 @@ namespace Loom.ZombieBattleground
 
         public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
         {
-            Debug.LogWarning("Handled network exception: " + exception);
+#if UNITY_EDITOR
+            if (!ScenePlaybackDetector.IsPlaying) {
+                throw exception;
+            }
+#endif
+
+            string message = "Handled network exception: ";
+            if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)
+            {
+                message += $"[URL: {webSocketRpcClient.Url}] ";
+            }
+            message += exception;
+
+            Debug.LogWarning(message);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
             {

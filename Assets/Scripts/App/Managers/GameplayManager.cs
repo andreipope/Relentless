@@ -84,6 +84,8 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
+        public bool OpponentHasDoneMulligan {get; set;}
+
         public AnalyticsTimer MatchDuration { get; set; }
 
         public Action TutorialStartAction { get; private set; }
@@ -117,18 +119,20 @@ namespace Loom.ZombieBattleground
             {
                 InternalTools.DoActionDelayed(() =>
                      {
-                         switch (endGameType)
-                         {
-                             case Enumerators.EndGameType.WIN:
-                                 _uiManager.DrawPopup<YouWonPopup>();
-                                 break;
-                             case Enumerators.EndGameType.LOSE:
-                                 _uiManager.DrawPopup<YouLosePopup>();
-                                 break;
-                             case Enumerators.EndGameType.CANCEL:
-                                 break;
-                             default:
-                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                         if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.GAMEPLAY) {
+                            switch (endGameType)
+                            {
+                                case Enumerators.EndGameType.WIN:
+                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    break;
+                                case Enumerators.EndGameType.LOSE:
+                                    _uiManager.DrawPopup<YouLosePopup>();
+                                    break;
+                                case Enumerators.EndGameType.CANCEL:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                            }
                          }
                      },
                      timer);
@@ -195,9 +199,15 @@ namespace Loom.ZombieBattleground
             return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
         }
 
-        public Player GetPlayerById(int id)
+        public Player GetPlayerByInstanceId(InstanceId id)
         {
-            return CurrentPlayer.InstanceId.Id == id ? CurrentPlayer : OpponentPlayer;
+            if (CurrentPlayer.InstanceId == id)
+                return CurrentPlayer;
+
+            if (OpponentPlayer.InstanceId == id)
+                return OpponentPlayer;
+
+            throw new Exception($"No player with instance id {id} found");
         }
 
         public void ResetWholeGameplayScene()
@@ -307,10 +317,12 @@ namespace Loom.ZombieBattleground
                     GetController<AIController>().InitializePlayer(new InstanceId(1));
                     break;
                 case Enumerators.MatchType.PVP:
-                    bool localPlayerHasZeroIndex =
-                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId;
-                    GetController<PlayerController>().InitializePlayer(new InstanceId(localPlayerHasZeroIndex ? 0 : 1));
-                    GetController<OpponentController>().InitializePlayer(new InstanceId(!localPlayerHasZeroIndex ? 0 : 1));
+                    int localPlayerIndex =
+                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId ?
+                            0 : 1;
+
+                    GetController<PlayerController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[localPlayerIndex].InstanceId.FromProtobuf());
+                    GetController<OpponentController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[1 - localPlayerIndex].InstanceId.FromProtobuf());
                     AvoidGooCost = _pvpManager.DebugCheats.Enabled && _pvpManager.DebugCheats.IgnoreGooRequirements;
                     break;
                 default:

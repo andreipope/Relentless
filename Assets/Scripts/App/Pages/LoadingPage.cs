@@ -65,6 +65,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //this makes us skip the initial "bar fill"
             _percentage = 100f;
 #endif
 
@@ -93,30 +94,34 @@ namespace Loom.ZombieBattleground
                     Debug.Log(e.Message);
                     _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
                 }
-                finally
-                {
-                    if (_backendDataControlMediator.LoadUserDataModel() &&
-                        _backendDataControlMediator.UserDataModel.IsValid)
-                    {
-                        LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-                        popup.Show();
 
-                        if (!_backendDataControlMediator.UserDataModel.IsRegistered)
-                        {
-                            popup.SetLoginAsGuestState(_backendDataControlMediator.UserDataModel.GUID);
-                        }
-                        else
-                        {
-                            popup.SetLoginFieldsData(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
-                            popup.SetLoginFromDataState();
-                        }
+                if (_backendDataControlMediator.UserDataModel != null)
+                {
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                    return;
+                }
+
+                if (_backendDataControlMediator.LoadUserDataModel() &&
+                    _backendDataControlMediator.UserDataModel.IsValid)
+                {
+                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                    popup.Show();
+
+                    if (!_backendDataControlMediator.UserDataModel.IsRegistered)
+                    {
+                        popup.SetLoginAsGuestState(_backendDataControlMediator.UserDataModel.GUID);
                     }
                     else
                     {
-                        LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-                        popup.Show();
-                        popup.SetLoginAsGuestState();
+                        popup.SetLoginFieldsData(_backendDataControlMediator.UserDataModel.Email, _backendDataControlMediator.UserDataModel.Password);
+                        popup.SetLoginFromDataState();
                     }
+                }
+                else
+                {
+                    LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                    popup.Show();
+                    popup.SetLoginAsGuestState();
                 }
             }
         }
