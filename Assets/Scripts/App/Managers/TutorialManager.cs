@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-            if (!CurrentTutorial.IsGameplayTutorial())
+            if (CurrentTutorial != null && !CurrentTutorial.IsGameplayTutorial())
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
