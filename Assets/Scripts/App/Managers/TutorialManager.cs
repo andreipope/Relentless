@@ -11,12 +11,15 @@ using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
     public class TutorialManager : IService, ITutorialManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialManager));
+
         private const string TutorialDataPath = "Data/tutorial_data";
 
         private const string InGameTutorialDataPath = "Data/ingame_tutorial";
@@ -128,7 +131,7 @@ namespace Loom.ZombieBattleground
                 TypeNameHandling = TypeNameHandling.Auto,
                 Error = (sender, args) =>
                 {
-                    Debug.LogException(args.ErrorContext.Error);
+                    Log.Error("", args.ErrorContext.Error);
                 }
             };
 

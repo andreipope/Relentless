@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Helpers
 
         public static void LogException(string e)
         {
-            UnityEngine.Debug.LogWarning(e);
+            UnityEngine.Debug.Log(e);
             Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient.LogException(new Exception(e));
         }
     }

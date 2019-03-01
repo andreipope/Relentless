@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.Client;
 using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 {
     public class CustomGameModeListPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CustomGameModeListPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -121,7 +124,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.LogException(e);
-                Debug.Log("save deck exception === " + e.Message);
+                Log.Info("save deck exception === " + e.Message);
             }
         }
 
@@ -215,7 +218,7 @@ namespace Loom.ZombieBattleground
                 catch (Exception e)
                 {
                     Helpers.ExceptionReporter.LogException(e);
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                    Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
                 }
             }
         }

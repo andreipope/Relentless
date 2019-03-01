@@ -64,17 +64,17 @@ namespace Loom.ZombieBattleground
 
                 if (product != null && product.availableToPurchase)
                 {
-                    Debug.Log(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
+                    Log.Info(string.Format("Purchasing product asychronously: '{0}'", product.definition.id));
                     m_StoreController.InitiatePurchase(product);
                 }
                 else
                 { 
-                    Debug.Log("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
+                    Log.Info("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
                 }
             }
             else
             {
-                Debug.Log("BuyProductID FAIL. Not initialized.");
+                Log.Info("BuyProductID FAIL. Not initialized.");
             }
         }
 
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
         public void OnInitialized(IStoreController controller, IExtensionProvider extensions)
         {
-            Debug.Log("OnInitialized: PASS");
+            Log.Info("OnInitialized: PASS");
 
             m_StoreController = controller;
             m_StoreExtensionProvider = extensions;
@@ -112,12 +112,12 @@ namespace Loom.ZombieBattleground
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
-            Debug.Log("OnInitializeFailed InitializationFailureReason:" + error);
+            Log.Info("OnInitializeFailed InitializationFailureReason:" + error);
         }
 
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
-            Debug.Log(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
+            Log.Info(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
@@ -128,10 +128,10 @@ namespace Loom.ZombieBattleground
                 case Constants.PRODUCT_BOOSTER_PACK_2:
                 case Constants.PRODUCT_BOOSTER_PACK_5:
                 case Constants.PRODUCT_BOOSTER_PACK_10:
-                    Debug.Log(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
+                    Log.Info(string.Format("ProcessPurchase: PASS. Product: '{0}'", args.purchasedProduct.definition.id));
                     break;
                 default:
-                    Debug.Log(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", args.purchasedProduct.definition.id));
+                    Log.Info(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", args.purchasedProduct.definition.id));
                     break;
             }
             

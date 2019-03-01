@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(AppStateManager));
+
         private const float BackButtonResetDelay = 0.5f;
 
         private IUIManager _uiManager;
@@ -261,7 +264,7 @@ namespace Loom.ZombieBattleground
             }
             message += exception;
 
-            Debug.LogWarning(message);
+            Log.Warn(message);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
             {

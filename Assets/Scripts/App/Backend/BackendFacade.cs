@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using System.Text;
+using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
@@ -34,25 +36,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        public ILogger Logger { get; set; } = Debug.unityLogger;
-
-        public bool EnableRpcLogging { get; set; } = false;
-
         public IContractCallProxy ContractCallProxy => _contractCallProxy;
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory)
+        public ILog Log { get; }
+
+        public ILog RpcLog { get; }
+
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
         {
             BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
             _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
+            RpcLog = rpcLog ?? throw new ArgumentNullException(nameof(rpcLog));
         }
 
         public void Init()
         {
-            Logger?.Log("Auth Host: " + BackendEndpoint.AuthHost);
-            Logger?.Log("Reader Host: " + BackendEndpoint.ReaderHost);
-            Logger?.Log("Writer Host: " + BackendEndpoint.WriterHost);
-            Logger?.Log("Vault Host: " + BackendEndpoint.VaultHost);
-            Logger?.Log("Card Data Version: " + BackendEndpoint.DataVersion);
+            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
+            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
+            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
+            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
+            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -74,7 +78,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            ILogger logger = EnableRpcLogging ? Logger ?? NullLogger.Instance : NullLogger.Instance;
+            ILogger logger = RpcLog != null ? (ILogger) new UnityLoggerWrapper(RpcLog) : NullLogger.Instance;
 
             IRpcClient writer =
                 RpcClientFactory
@@ -327,7 +331,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
                 httpResponseMessage.ReadToEnd());
             return loginData;
@@ -350,7 +354,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
@@ -392,7 +396,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
@@ -413,13 +417,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
             vaultTokenRequest.access_token = accessToken;
 
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
-            Debug.Log(JsonConvert.SerializeObject(vaultTokenRequest));
+            Log.Debug(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
@@ -442,7 +446,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -478,7 +482,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -495,12 +499,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
-            Debug.Log(webrequestCreationInfo.Url);
+            Log.Debug(webrequestCreationInfo.Url);
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
 
@@ -802,7 +806,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
         public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
         {
-            Debug.Log("GetRewardTutorialCompletedResponse");
+            Log.Debug("GetRewardTutorialCompletedResponse");
             RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
             return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
         }

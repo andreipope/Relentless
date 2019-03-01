@@ -5,6 +5,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
@@ -25,6 +26,8 @@ using UnityEngine.UI;
 /// </remarks>
 public class UserReportingScript : MonoBehaviour
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(UserReportingScript));
+
     #region Constructors
 
     /// <summary>
@@ -218,7 +221,7 @@ public class UserReportingScript : MonoBehaviour
     public void ExitApplication()
     {
 #if UNITY_EDITOR
-        Debug.Log("Application.Quit();");
+        Log.Info("Application.Quit();");
 #endif
         Application.Quit();
     }
@@ -268,7 +271,7 @@ public class UserReportingScript : MonoBehaviour
         _isCrashing = isCrashing;
         _exceptionStacktrace = exceptionStacktrace;
         _exceptionCondition = exceptionCondition;
-        Debug.Log($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
+        Log.Info($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
         StartCoroutine(DelayedCreateBugReport());
     }
 
@@ -277,7 +280,7 @@ public class UserReportingScript : MonoBehaviour
         CreateUserReport(false, false, "", "");
     }
 
-        /// <summary>
+    /// <summary>
     /// Submits the user report.
     /// </summary>
     public void SubmitUserReport()
@@ -332,7 +335,7 @@ public class UserReportingScript : MonoBehaviour
             }
         }, (success, br2) =>
         {
-            Debug.Log("Successfully sent bug report: " + success);
+            Log.Info("Successfully sent bug report: " + success);
 
             if (!success)
             {
@@ -439,7 +442,7 @@ public class UserReportingScript : MonoBehaviour
             // Ensure Project Identifier
             if (string.IsNullOrEmpty(br.ProjectIdentifier))
             {
-                Debug.LogWarning("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
+                Log.Warn("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
             }
 
             // Attachments
@@ -473,7 +476,7 @@ public class UserReportingScript : MonoBehaviour
             catch (Exception e)
             {
                 UnityUserReporting.CurrentClient.LogException(e);
-                Debug.LogWarning("Error while getting call metrics:" + e);
+                Log.Warn("Error while getting call metrics:" + e);
             }
 
             br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));

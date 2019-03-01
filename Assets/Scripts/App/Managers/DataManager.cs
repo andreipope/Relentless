@@ -8,6 +8,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -24,6 +25,8 @@ namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
+
         private static readonly JsonSerializerSettings JsonSerializerSettings =
             new JsonSerializerSettings
             {
@@ -35,7 +38,7 @@ namespace Loom.ZombieBattleground
                 MissingMemberHandling = MissingMemberHandling.Error,
                 Error = (sender, args) =>
                 {
-                    Debug.LogException(args.ErrorContext.Error);
+                    Log.Error("", args.ErrorContext.Error);
                 }
             };
 
@@ -107,7 +110,7 @@ namespace Loom.ZombieBattleground
 
         public async Task StartLoadCache()
         {
-            Debug.Log("=== Start loading server ==== ");
+            Log.Info("=== Start loading server ==== ");
 
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
@@ -196,8 +199,8 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            Debug.Log("Encryption: " + ConfigData.EncryptData);
-            Debug.Log("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
+            Log.Info("Encryption: " + ConfigData.EncryptData);
+            Log.Info("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
 
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -308,7 +311,7 @@ namespace Loom.ZombieBattleground
                     List<Card> cardList;
                     if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
                     {
-                        Debug.LogWarning("===== Loading Card Library from persistent data ===== ");
+                        Log.Warn("===== Loading Card Library from persistent data ===== ");
                         cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
                     }
                     else
@@ -384,7 +387,7 @@ namespace Loom.ZombieBattleground
                     catch (Exception e)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Decks Data");
-                        Debug.LogWarning(e);
+                        Log.Warn(e);
                         throw;
                     }
 

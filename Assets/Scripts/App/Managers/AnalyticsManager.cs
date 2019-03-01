@@ -85,7 +85,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void LogScreen(string title)
     {
 #if !DISABLE_ANALYTICS
-        Debug.Log("=== Log screen = " + title);
+        Log.Info("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 

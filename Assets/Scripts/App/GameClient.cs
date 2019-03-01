@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using DG.Tweening;
+using log4net;
+using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -8,11 +10,14 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Newtonsoft.Json;
 using UnityEngine;
+using Logger = log4net.Repository.Hierarchy.Logger;
 
 namespace Loom.ZombieBattleground
 {
     public class GameClient : ServiceLocatorBase
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(GameClient));
+
         public event Action ServicesInitialized;
 
         public bool UpdateServices { get; set; } = true;
@@ -26,7 +31,8 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
-            Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+            ConfigureLoggers();
+            Log.Info("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
 
             DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
@@ -35,7 +41,7 @@ namespace Loom.ZombieBattleground
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, true));
+                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, true, true));
 
             AddService<IApplicationSettingsManager>(new ApplicationSettingsManager());
             AddService<ILoadObjectsManager>(loadObjectsManager);
@@ -54,7 +60,13 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(GetConfigData()));
-            AddService<BackendFacade>(new BackendFacade(backendEndpoint, contractCallProxyFactory));
+            AddService<BackendFacade>(
+                new BackendFacade(
+                    backendEndpoint,
+                    contractCallProxyFactory,
+                    Logging.GetLog(nameof(BackendFacade)),
+                    Logging.GetLog(nameof(BackendFacade) + "Rpc")
+                ));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
             AddService<IFacebookManager>(new FacebookManager());
@@ -132,6 +144,18 @@ namespace Loom.ZombieBattleground
         public static void ClearInstance()
         {
             _instance = null;
+        }
+
+        private void ConfigureLoggers()
+        {
+#if UNITY_EDITOR && !FORCE_ENABLE_ALL_LOGS
+            // Disable non-essential logs in Editor
+            Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
+            backendFacadeRpc.Level = Level.Warn;
+
+            Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
+            timeMetricsContractCallProxy.Level = Level.Warn;
+#endif
         }
 
         private static ConfigData GetConfigData()

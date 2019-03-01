@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardsController));
+
         public event Action<AbilityData.ChoosableAbility> CardForAbilityChoosed;
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
@@ -807,7 +810,7 @@ namespace Loom.ZombieBattleground
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
                 Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogException(exception);
+                Log.Error("", exception);
                 return;
             }
 

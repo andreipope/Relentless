@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
 {
     public class OverlordAbilitySelectionPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(OverlordAbilitySelectionPopup));
+
         private const int AbilityListSize = 5;
 
         private const int MaxSelectedAbilities = 2;
@@ -253,7 +256,7 @@ namespace Loom.ZombieBattleground
                 {
                     Helpers.ExceptionReporter.LogException(e);
 
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                    Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
 
                     OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
                 }
