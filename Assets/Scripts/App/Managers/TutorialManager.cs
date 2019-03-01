@@ -378,9 +378,7 @@ namespace Loom.ZombieBattleground
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
+                CompletelyFinishTutorial();
             }
 
             if (!CheckAvailableTutorial())
@@ -398,6 +396,15 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompletelyFinishTutorial()
+        {
+            _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
+
+            _gameplayManager.IsTutorial = false;
+            _dataManager.CachedUserLocalData.Tutorial = false;
+            _gameplayManager.IsSpecificGameplayBattleground = false;
         }
 
         private void CompleteTutorialEvent(int currentTutorialId)
@@ -1329,9 +1336,7 @@ namespace Loom.ZombieBattleground
         public void SkipTutorial()
         {
             _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
-            _gameplayManager.IsTutorial = false;
-            _dataManager.CachedUserLocalData.Tutorial = false;
-            _gameplayManager.IsSpecificGameplayBattleground = false;
+            CompletelyFinishTutorial();
             StopTutorial(true);
             _handPointerController.ResetAll();
             CreateStarterDeck();
