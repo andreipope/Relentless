@@ -388,6 +388,8 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragEnded += BoardCardCollectionDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
                 
+                eventHandler.MouseUpTriggered += BoardCardCollectionMouseUpTriggeredHandler;
+                
                 collectionCardData = _collectionData.GetCardData(card.Name);
                 UpdateBoardCardAmount
                 (
@@ -455,6 +457,8 @@ namespace Loom.ZombieBattleground
                     eventHandler.DragBegan += BoardCardDragBeganHandler;
                     eventHandler.DragEnded += BoardCardDeckDragEndedHandler; 
                     eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
+                    
+                    eventHandler.MouseUpTriggered += BoardCardDeckMouseUpTriggeredHandler;
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
 
@@ -539,6 +543,8 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragBegan += BoardCardDragBeganHandler;
                 eventHandler.DragEnded += BoardCardDeckDragEndedHandler; 
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
+
+                eventHandler.MouseUpTriggered += BoardCardDeckMouseUpTriggeredHandler;
 
                 _createdDeckBoardCards.Add(boardCard);
 
@@ -642,7 +648,25 @@ namespace Loom.ZombieBattleground
             return boardCard;
         }
 
-        #region Drag Handler
+        #region Boardcard Handler
+        
+        private void BoardCardDeckMouseUpTriggeredHandler(GameObject go)
+        {
+            if (_isDragging)
+                return;
+
+            BoardCard boardCard = _createdDeckBoardCards.First(x => x.GameObject == go);            
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(boardCard.LibraryCard);
+        }
+        
+        private void BoardCardCollectionMouseUpTriggeredHandler(GameObject go)
+        {
+            if (_isDragging)
+                return;
+                
+            BoardCard boardCard = _createdCollectionsBoardCards.First(x => x.GameObject == go);          
+            _uiManager.DrawPopup<CardInfoWithSearchPopup>(boardCard.LibraryCard);   
+        }
 
         private void BoardCardDragBeganHandler(PointerEventData eventData, GameObject onOnject)
         {
@@ -670,7 +694,7 @@ namespace Loom.ZombieBattleground
         private void BoardCardCollectionDragEndedHandler(PointerEventData eventData, GameObject onOnject)
         {
             if (!_isDragging)
-                return;            
+                return;     
 
             Vector3 point = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
