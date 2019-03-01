@@ -14,6 +14,8 @@ namespace Loom.ZombieBattleground
 
         int TutorialsCount { get; }
 
+        bool IsLastTutorial { get; }
+
         bool PlayerWon { get; set; }
 
         bool UnfinishedTutorial { get; set; }
@@ -37,6 +39,8 @@ namespace Loom.ZombieBattleground
         void ActivateDescriptionTooltipByOwner(Enumerators.TutorialObjectOwner owner, Vector3 position);
 
         void PlayTutorialSound(string sound, float delay = 0f);
+
+        void SkipTutorial();
 
         TutorialDescriptionTooltipItem GetDescriptionTooltip(int id);
 

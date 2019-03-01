@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
                         List<BoardUnitModel> allies;
 
                         allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                        .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType)
+                        .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead)
                         .ToList();
 
                         if (allies.Count > 0)
@@ -87,7 +87,9 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner).Count() == 0)
+                    if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner &&
+                                                               !unit.Model.IsDead &&
+                                                               unit.Model.CurrentHp > 0).Count() == 0)
                     {
                         TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
@@ -103,7 +105,7 @@ namespace Loom.ZombieBattleground
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                            .Where(unit => unit != AbilityUnitOwner &&
                                    unit.Card.LibraryCard.CardSetType == SetType &&
-                                   unit.InitialUnitType != UnitType)
+                                   unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
                         foreach(BoardUnitModel unit in allies)
@@ -122,7 +124,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
-                                      unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType)
+                                      unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 
                         foreach (BoardUnitModel unit in allies)

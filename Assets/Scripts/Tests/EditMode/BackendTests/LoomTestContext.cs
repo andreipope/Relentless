@@ -13,14 +13,14 @@ namespace Loom.ZombieBattleground.Test
     {
         public BackendFacade BackendFacade;
 
-        public UserDataModel UserDataModel;
+        private UserDataModel _userDataModel;
 
-        public void TestSetUp(string userId = "Loom")
+        public void TestSetUp()
         {
             BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
             BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract));
             BackendFacade.EnableRpcLogging = true;
-            UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
+            _userDataModel = new UserDataModel(TestHelper.Instance.CreateTestUserName(), CryptoUtils.GeneratePrivateKey());
         }
 
         public void TestTearDown()
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground.Test
             if (BackendFacade.IsConnected)
                 return;
 
-            await BackendFacade.CreateContract(UserDataModel.PrivateKey);
+            await BackendFacade.CreateContract(_userDataModel.PrivateKey);
         }
     }
 }

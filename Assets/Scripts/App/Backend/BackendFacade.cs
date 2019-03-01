@@ -703,13 +703,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task SubscribeEvent(IList<string> topics)
         {
-            await _reader.UnsubscribeAsync(EventHandler);
+            await UnsubscribeEvent();
             await _reader.SubscribeAsync(EventHandler, topics);
         }
 
         public async Task UnsubscribeEvent()
         {
-            await _reader.UnsubscribeAsync(EventHandler);
+            try
+            {
+                await _reader.UnsubscribeAsync(EventHandler);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogException(e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
+            }
         }
 
         public async Task SendPlayerAction(PlayerActionRequest request)

@@ -96,6 +96,7 @@ namespace Loom.ZombieBattleground.Test
                 _opponentClient.BackendFacade.PlayerActionDataReceived -= OnBackendFacadeOnPlayerActionDataReceived;
             }
         }
+
         private async Task PlayNextOpponentClientTurn(bool isFirstTurn)
         {
             if (Completed)
@@ -128,6 +129,7 @@ namespace Loom.ZombieBattleground.Test
             return async () =>
             {
                 await PlayQueue();
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
 
                 // Make sure all queue events are sent and delivered.
                 // As soon as End Turn is received, we can safely continue with the opponent's turn.
@@ -138,6 +140,7 @@ namespace Loom.ZombieBattleground.Test
                     await new WaitForUpdate();
                 }
 
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                 await PlayNextOpponentClientTurn(false);
             };
         }
@@ -185,15 +188,19 @@ namespace Loom.ZombieBattleground.Test
         {
             while (_actionsQueue.Count > 0)
             {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                 Func<Task> turnFunc = _actionsQueue.Dequeue();
                 await turnFunc();
             }
+
+            AsyncTestRunner.Instance.ThrowIfCancellationRequested();
         }
 
         private async Task WaitForLocalPlayerTurnEnd()
         {
             while (_testHelper.GameplayManager.IsLocalPlayerTurn())
             {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                 await new WaitForUpdate();
             }
         }

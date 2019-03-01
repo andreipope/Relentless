@@ -162,8 +162,17 @@ namespace Loom.ZombieBattleground
 
         private void StartPvPMatch()
         {
+            _gameplayManager.OpponentHasDoneMulligan = false;
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OpponentSentMulliganEventHandler;
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
+        }
+
+        private void OpponentSentMulliganEventHandler(PlayerActionMulligan mulligan)
+        {
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _gameplayManager.OpponentHasDoneMulligan = true;
         }
 
         private void OnPvPManagerGameStartedActionReceived()

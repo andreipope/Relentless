@@ -81,6 +81,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new LoadingFiatPopup());
             _uiPopups.Add(new TutorialProgressInfoPopup());
             _uiPopups.Add(new RewardPopup());
+            _uiPopups.Add(new WaitingForPlayerPopup());
+            _uiPopups.Add(new TutorialSkipPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
@@ -176,7 +178,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
-                if (popup is WarningPopup || popup is ConnectionPopup)
+                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup)
                     return;
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);

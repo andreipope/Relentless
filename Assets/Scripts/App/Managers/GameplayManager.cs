@@ -84,6 +84,8 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
+        public bool OpponentHasDoneMulligan {get; set;}
+
         public AnalyticsTimer MatchDuration { get; set; }
 
         public Action TutorialStartAction { get; private set; }
@@ -117,18 +119,20 @@ namespace Loom.ZombieBattleground
             {
                 InternalTools.DoActionDelayed(() =>
                      {
-                         switch (endGameType)
-                         {
-                             case Enumerators.EndGameType.WIN:
-                                 _uiManager.DrawPopup<YouWonPopup>();
-                                 break;
-                             case Enumerators.EndGameType.LOSE:
-                                 _uiManager.DrawPopup<YouLosePopup>();
-                                 break;
-                             case Enumerators.EndGameType.CANCEL:
-                                 break;
-                             default:
-                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                         if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.GAMEPLAY) {
+                            switch (endGameType)
+                            {
+                                case Enumerators.EndGameType.WIN:
+                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    break;
+                                case Enumerators.EndGameType.LOSE:
+                                    _uiManager.DrawPopup<YouLosePopup>();
+                                    break;
+                                case Enumerators.EndGameType.CANCEL:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                            }
                          }
                      },
                      timer);

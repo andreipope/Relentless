@@ -253,7 +253,8 @@ namespace Loom.ZombieBattleground
                             new ParametrizedAbilityBoardObject(targetPlayer)
                         };
 
-                        skill.UseSkill(targets);
+                        skill.UseSkill();
+                        skill.SkillUsedAction(targets);
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
                             skill.SelfObject.transform.position,
@@ -298,7 +299,7 @@ namespace Loom.ZombieBattleground
                                 new ParametrizedAbilityBoardObject(targetUnitView.Model)
                             };
                         }
-
+                        skill.UseSkill();
                         _targets = targets;
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
@@ -307,7 +308,7 @@ namespace Loom.ZombieBattleground
                             (x) =>
                             {
                                 DoActionByType(skill, targets, completeCallback);
-                                skill.UseSkill(_targets);
+                                skill.SkillUsedAction(_targets);
                             }, _isDirection);
 
                         if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -338,7 +339,7 @@ namespace Loom.ZombieBattleground
                     {
                         _soundManager.PlaySound(Enumerators.SoundType.OVERLORD_ABILITIES, soundFile, Constants.OverlordAbilitySoundVolume, false);
                     }
-
+                    skill.UseSkill();
                     _targets = targets;
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
@@ -347,7 +348,7 @@ namespace Loom.ZombieBattleground
                         (x) =>
                         {
                             DoActionByType(skill, targets, completeCallback);
-                            skill.UseSkill(_targets);
+                            skill.SkillUsedAction(_targets);
                         }, _isDirection);
 
                     if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
@@ -1376,6 +1377,7 @@ namespace Loom.ZombieBattleground
                         InternalTools.DoActionDelayed(() =>
                             {
                                 unit.ChangeModelVisibility(true);
+                                unit.StopSleepingParticles();
                             },
                             3f);
 
@@ -1505,6 +1507,9 @@ namespace Loom.ZombieBattleground
 
             foreach (WorkingCard card in cards)
             {
+                if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
+                    break;
+
                 units.Add(_cardsController.SpawnUnitOnBoard(
                     owner,
                     card.LibraryCard.Name,
@@ -1534,10 +1539,12 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in units)
             {
+                unit.StopSleepingParticles();
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ResurrectVFX"), unit, delay: 6, isIgnoreCastVfx: true);
                 InternalTools.DoActionDelayed(() =>
                 {
                     unit.ChangeModelVisibility(true);
+                  
                 }, 3f);
             }
         }

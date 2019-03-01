@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = true;
+        private const bool DebugTests = false;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 1;
+        public const int TestTimeScale = DebugTests ? 1 : 5;
 
         private static TestHelper _instance;
 
@@ -206,10 +206,10 @@ namespace Loom.ZombieBattleground.Test
 
                 await new WaitUntil(() =>
                 {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     if (_appStateManager == null)
                         return false;
 
-                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU);
                 });
 
@@ -964,6 +964,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
+            AsyncTestRunner.Instance.ThrowIfCancellationRequested();
             WaitStart(5);
             GameObject menuButtonGameObject;
             bool clickTimeout = false;
@@ -1172,35 +1173,32 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case Enumerators.CardKind.SPELL:
-                    if (entryAbilityTarget != null && needTargetForAbility || !needTargetForAbility)
+                    _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
+                    _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+
+                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
-                        if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-                        {
-                            BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                            boardCard,
+                            boardCard.HandBoardCard,
+                            playCardOnBoard =>
+                            {
+                                //todo: handle abilities here
 
-                            _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                                boardCard,
-                                boardCard.HandBoardCard,
-                                playCardOnBoard =>
-                                {
-                                    //todo: handle abilities here
-
-                                    PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-                                    _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
-                                },
-                                entryAbilityTarget,
-                                skipEntryAbilities);
-                        }
-                        else
-                        {
-                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
-                        }
-
-                        _cardsController.DrawCardInfo(card);
+                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+                                _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                            },
+                            entryAbilityTarget,
+                            skipEntryAbilities);
                     }
+                    else
+                    {
+                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
+                    }
+
+                    _cardsController.DrawCardInfo(card);
 
                     break;
             }

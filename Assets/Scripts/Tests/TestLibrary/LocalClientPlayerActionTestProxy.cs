@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             BoardObject entryAbilityTargetBoardObject = null;
             if (entryAbilityTarget != null)
@@ -62,6 +62,12 @@ namespace Loom.ZombieBattleground.Test
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
             WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
+
+            if (!forceSkipForPlayerToo)
+            {
+                skipEntryAbilities = false;
+            }
+            
             await _testHelper.PlayCardFromHandToBoard(workingCard, position, entryAbilityTargetBoardObject, skipEntryAbilities);
         }
 
@@ -103,7 +109,11 @@ namespace Loom.ZombieBattleground.Test
 
             CheckAttacker();
 
-            await new WaitUntil(() => boardUnitView.ArrivalDone);
+            await new WaitUntil(() =>
+            {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                return boardUnitView.ArrivalDone;
+            });
 
             boardUnitView.StartAttackTargeting();
             Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");

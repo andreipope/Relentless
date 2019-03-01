@@ -489,24 +489,28 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     ValidateGameState(pvpControlGameState);
-                     EndTurn();
-
-                     if (_gameplayManager.IsLocalPlayerTurn())
+                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
+                     InternalTools.DoActionDelayed(() =>
                      {
-                         _uiManager.DrawPopup<YourTurnPopup>();
+                         ValidateGameState(pvpControlGameState);
+                         EndTurn();
 
-                         _timerManager.AddTimer((x) =>
+                         if (_gameplayManager.IsLocalPlayerTurn())
+                         {
+                             _uiManager.DrawPopup<YourTurnPopup>();
+
+                             _timerManager.AddTimer((x) =>
+                             {
+                                 StartTurn();
+                                 completeCallback?.Invoke();
+                             }, null, Constants.DelayBetweenYourTurnPopup);
+                         }
+                         else
                          {
                              StartTurn();
                              completeCallback?.Invoke();
-                         }, null, Constants.DelayBetweenYourTurnPopup);
-                     }
-                     else
-                     {
-                         StartTurn();
-                         completeCallback?.Invoke();
-                     }
+                         }
+                     }, delay);
                  },  Enumerators.QueueActionType.StopTurn);
         }
 
@@ -909,6 +913,11 @@ namespace Loom.ZombieBattleground
             {
                 OpponentBoardCards.Remove(view);
                 PlayerBoardCards.Insert(ItemPosition.End, view);
+            }
+
+            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            {
+                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
             }
 
             unit.OwnerPlayer.BoardCards.Remove(view);

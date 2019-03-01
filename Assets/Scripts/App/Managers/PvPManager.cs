@@ -159,8 +159,15 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
-            ResetCheckPlayerStatus();
-            await _backendFacade.UnsubscribeEvent();
+            try
+            {
+                ResetCheckPlayerStatus();
+                await _backendFacade.UnsubscribeEvent();
+            }
+            catch(Exception e)
+            {
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, false, false);
+            }
         }
 
         public async Task StartMatchmaking(int deckId)
@@ -355,7 +362,7 @@ namespace Loom.ZombieBattleground
 
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
 
@@ -378,7 +385,7 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
                         } else {
-                            if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                 GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
 

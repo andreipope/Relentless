@@ -659,6 +659,7 @@ namespace Loom.ZombieBattleground
             if (_sleepingParticles != null)
             {
                 _sleepingParticles.Stop();
+                _sleepingParticles.gameObject.SetActive(false);
             }
         }
 

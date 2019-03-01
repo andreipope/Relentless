@@ -2396,7 +2396,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 int playerDifference1 = 0;
                 int playerDifference2 = 0;
-                int opponentDiference = 0;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
@@ -2442,8 +2441,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponentDiference = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmaz2Id)).CurrentDamage +
-                               ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmaz4Id)).CurrentDamage;
                            opponent.OverlordSkillUsed(new SkillId(0), new List<ParametrizedAbilityInstanceId>()
                            {
                                 new ParametrizedAbilityInstanceId(opponentHazmaz2Id,
@@ -2458,19 +2455,19 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                                     }),
                            });
                        },
+                       player => {},
+                       opponent => {},
                    };
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerUnit2 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHazmaz2Id);
-                    BoardUnitModel playerUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHazmaz3Id);
                     BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmazId);
                     BoardUnitModel opponentUnit3 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmaz3Id);
 
-                    Assert.AreEqual(playerUnit3.InitialHp - opponentDiference, playerUnit3.CurrentHp);
                     Assert.AreEqual(opponentUnit3.InitialHp - playerDifference1, opponentUnit3.CurrentHp);
                     Assert.AreEqual(opponentUnit1.InitialHp - playerDifference2, opponentUnit1.CurrentHp);
                     Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHazmazId));
+                    Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHazmaz3Id));
                     Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHazmaz4Id));
                     Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmaz2Id));
                     Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHazmaz4Id));

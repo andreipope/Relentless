@@ -462,8 +462,11 @@ namespace Loom.ZombieBattleground
         {
             Card = card;
 
-            CurrentDamage = card.InstanceCard.Damage;
-            CurrentHp = card.InstanceCard.Health;
+            CurrentDamage = card.LibraryCard.Damage;
+            CurrentHp = card.LibraryCard.Health;
+
+            card.InstanceCard.Damage = CurrentDamage;
+            card.InstanceCard.Health = CurrentHp;
 
             BuffedDamage = 0;
             BuffedHp = 0;

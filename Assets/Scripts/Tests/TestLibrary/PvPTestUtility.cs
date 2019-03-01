@@ -135,6 +135,10 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.WaitUntilPlayerOrderIsDecided();
             Assert.IsFalse(canceled, "canceled");
 
+            GameClient.Get<IGameplayManager>().OpponentHasDoneMulligan = true;
+
+
+
             using (matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns))
             {
                 await matchScenarioPlayer.Play();

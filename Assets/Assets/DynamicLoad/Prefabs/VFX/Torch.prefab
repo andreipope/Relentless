@@ -19,7 +19,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4374557296991222}
-  - component: {fileID: 95328468774825358}
   - component: {fileID: 114465625874430160}
   m_Layer: 0
   m_Name: Torch
@@ -746,24 +745,6 @@ MeshCollider:
   m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &95328468774825358
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1035977678989836}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 8d164ffcaa6b3c04e87f5d3f490af784, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!114 &114465625874430160
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -780,9 +761,11 @@ MonoBehaviour:
   delayBeforeEffect: 3.5
   delayAfterEffect: 2
   delayForChangeState: 1
-  offset: {x: 0, y: 0, z: 0}
-  delayForSound: 0
   soundName: ZB_AUD_Active_Torch_F1_EXP
+  delayForSound: 0
+  offset: {x: 0, y: 0, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
   positionInfo:
     type: 0
 --- !u!198 &198028970614323412

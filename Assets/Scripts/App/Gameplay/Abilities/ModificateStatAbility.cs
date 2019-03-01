@@ -99,9 +99,19 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                targets = InternalTools.GetRandomElementsFromList(targets, Count);
+                targets = targets.FindAll(x => x.Model != AbilityUnitOwner);
 
-                foreach (BoardUnitView target in targets)
+                List<BoardUnitView> finalTargets = new List<BoardUnitView>();
+                int count = Mathf.Max(1, Count);
+                while (count > 0 && targets.Count > 0)
+                {   
+                    int chosenIndex = MTwister.IRandom(0, targets.Count-1);
+                    finalTargets.Add(targets[chosenIndex]);
+                    targets.RemoveAt(chosenIndex);
+                    count--;
+                }
+
+                foreach (BoardUnitView target in finalTargets)
                 {
                     ModificateStats(target.Model, false);
                 }
