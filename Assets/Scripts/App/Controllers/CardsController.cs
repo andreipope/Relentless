@@ -1213,6 +1213,38 @@ namespace Loom.ZombieBattleground
             return unit;
         }
 
+        public BoardUnitView SpawnUnitOnBoard(Player owner, WorkingCard card, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null)
+        {
+            if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
+                return null;
+
+            BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
+
+            owner.AddCardToBoard(card, ItemPosition.End);
+
+            if (isPVPNetwork)
+            {
+                owner.BoardCards.Insert(ItemPosition.End, unit);
+            }
+            else
+            {
+                if (position.GetIndex(owner.BoardCards) <= Constants.MaxBoardUnits)
+                {
+                    owner.BoardCards.Insert(position, unit);
+                }
+                else
+                {
+                    owner.BoardCards.Insert(ItemPosition.End, unit);
+                }
+            }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
+
+            _boardController.UpdateCurrentBoardOfPlayer(owner, onComplete);
+
+            return unit;
+        }
+
         private BoardUnitView CreateBoardUnitForSpawn(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ? _battlegroundController.PlayerBoardObject : _battlegroundController.OpponentBoardObject;
