@@ -43,6 +43,15 @@ namespace Loom.ZombieBattleground
                                     _filteredCardList;
 
         private int _currentCardIndex;
+        
+        public enum PopupType
+        {
+            NONE,
+            ADD_CARD,
+            REMOVE_CARD
+        }
+
+        private PopupType _currentPopupType;
 
         public void Init()
         {
@@ -129,9 +138,7 @@ namespace Loom.ZombieBattleground
 
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
-            _buttonAdd.gameObject.SetActive(false);
-            _buttonRemove.gameObject.SetActive(false);            
-            
+            UpdatePopupType();
             UpdateFilteredCardList();
             UpdateBoardCard();
         }
@@ -142,7 +149,9 @@ namespace Loom.ZombieBattleground
             {
                 _cardList = (List<IReadOnlyCard>)param[0];
                 IReadOnlyCard card = (IReadOnlyCard)param[1];
-                _currentCardIndex = _cardList.IndexOf(card);               
+                _currentCardIndex = _cardList.IndexOf(card);
+                _currentPopupType = (PopupType)param[2];
+                            
             }
             Show();
         }
@@ -160,12 +169,20 @@ namespace Loom.ZombieBattleground
         
         private void ButtonAddCardHandler()
         {
-
+            _uiManager.GetPage<MyDecksPage>().MyDecksEditTab.AddCardToDeck
+            (
+                _filteredCardList[_currentCardIndex]
+            );
+            Hide();
         }
         
         private void ButtonRemoveCardHandler()
         {
-
+            _uiManager.GetPage<MyDecksPage>().MyDecksEditTab.RemoveCardFromDeck
+            (
+                _filteredCardList[_currentCardIndex]
+            ); 
+            Hide();
         }
         
         private void ButtonLeftArrowHandler()
@@ -187,6 +204,27 @@ namespace Loom.ZombieBattleground
 
         #endregion
         
+        private void UpdatePopupType()
+        {
+            switch(_currentPopupType)
+            {
+                case PopupType.NONE:
+                    _buttonAdd.gameObject.SetActive(false);
+                    _buttonRemove.gameObject.SetActive(false);
+                    break;
+                case PopupType.ADD_CARD:
+                    _buttonAdd.gameObject.SetActive(true);
+                    _buttonRemove.gameObject.SetActive(false);
+                    break;
+                case PopupType.REMOVE_CARD:
+                    _buttonAdd.gameObject.SetActive(false);
+                    _buttonRemove.gameObject.SetActive(true);
+                    break;
+                default:
+                    return;
+            }
+        }
+
         private void UpdateBoardCard()
         {
             if (_createdBoardCard != null)

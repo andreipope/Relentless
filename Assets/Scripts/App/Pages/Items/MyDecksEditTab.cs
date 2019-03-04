@@ -395,6 +395,7 @@ namespace Loom.ZombieBattleground
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=> 
                 {
+                    PlayAddCardSound();
                     AddCardToDeck(boardCard.LibraryCard);
                 };
                 
@@ -473,6 +474,7 @@ namespace Loom.ZombieBattleground
                     };
                     multiPointerClickHandler.DoubleClickReceived += ()=> 
                     {
+                        PlayRemoveCardSound();
                         RemoveCardFromDeck(boardCard.LibraryCard);
                     };
 
@@ -516,7 +518,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (_myDeckPage.CurrentEditDeck.GetNumCards() == Constants.DeckMaxSize)
-            {
+            {                               
                 _myDeckPage.OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize + " Cards in a single Horde.");
                 return;
             }
@@ -533,9 +535,6 @@ namespace Loom.ZombieBattleground
                     break;
                 }
             }
-
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,
-                Constants.SfxSoundVolume, false, false, true);
                 
             collectionCardData.Amount--;
             UpdateBoardCardAmount(false, card.Name, collectionCardData.Amount);
@@ -590,10 +589,7 @@ namespace Loom.ZombieBattleground
         }
         
         public void RemoveCardFromDeck(IReadOnlyCard card)
-        {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
-                Constants.SfxSoundVolume, false, false, true);
-            
+        {      
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
             collectionCardData.Amount++;
             UpdateBoardCardAmount
@@ -685,7 +681,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard
+                boardCard.LibraryCard,
+                CardInfoWithSearchPopup.PopupType.REMOVE_CARD
             });
         }
         
@@ -699,7 +696,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard
+                boardCard.LibraryCard,
+                CardInfoWithSearchPopup.PopupType.ADD_CARD
             });
         }
 
@@ -744,6 +742,7 @@ namespace Loom.ZombieBattleground
                         BoardCard boardCard = _createdCollectionsBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
+                        PlayAddCardSound();
                         AddCardToDeck(boardCard.LibraryCard);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
@@ -774,6 +773,7 @@ namespace Loom.ZombieBattleground
                         BoardCard boardCard = _createdDeckBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
+                        PlayRemoveCardSound();
                         RemoveCardFromDeck(boardCard.LibraryCard);
                     }
                 }
@@ -1167,6 +1167,17 @@ namespace Loom.ZombieBattleground
             }
 
             ProcessEditDeck(deckToSave);
+        }
+        
+        private void PlayAddCardSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,                 Constants.SfxSoundVolume, false, false, true);
+        }
+        
+        private void PlayRemoveCardSound()
+        {
+             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
+                Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

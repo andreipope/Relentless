@@ -275,7 +275,8 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard
+                boardCard.LibraryCard,
+                CardInfoWithSearchPopup.PopupType.NONE
             });
         }
         
