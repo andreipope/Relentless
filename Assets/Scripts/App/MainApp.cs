@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
     {
         public delegate void MainAppDelegate(object param);
 
-        public event MainAppDelegate LevelLoaded;
+        public event Action<Scene, LoadSceneMode> LevelLoaded;
 
         public event Action LateUpdateEvent;
 
@@ -31,7 +31,6 @@ namespace Loom.ZombieBattleground
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
@@ -77,6 +76,7 @@ namespace Loom.ZombieBattleground
             if (Instance == this)
             {
                 GameClient.Instance.Dispose();
+                Instance = null;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
         {
             if (Instance == this)
             {
-                LevelLoaded?.Invoke(arg0.buildIndex);
+                LevelLoaded?.Invoke(arg0, arg1);
             }
         }
 

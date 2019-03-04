@@ -154,6 +154,16 @@ namespace Loom.ZombieBattleground
             if (boardUpdated != null)
             {
                 updateSequence.TweensEnded += boardUpdated;
+
+                // update board timeout
+                InternalTools.DoActionDelayed(() =>
+                {
+                    if (!updateSequence.SequenceDone)
+                    {
+                        updateSequence.SequenceDone = true;
+                        boardUpdated?.Invoke();
+                    }
+                }, Duration * 2f);
             }
         }
 
@@ -188,7 +198,7 @@ namespace Loom.ZombieBattleground
                 TweenObject tweenObject = new TweenObject();
                 tweenObject.Tween = tween;
                 tweenObject.IsDone = false;
-                tweenObject.timeout = duration + 0.1f;
+                tweenObject.timeout = duration * 1.25f;
 
                 Tweens.Add(tweenObject);
             }

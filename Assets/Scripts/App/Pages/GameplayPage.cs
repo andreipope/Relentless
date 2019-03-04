@@ -207,6 +207,11 @@ namespace Loom.ZombieBattleground
             _buttonBack.gameObject.SetActive(true);
             _settingsButton.gameObject.SetActive(false);
 #endif
+            if (_gameplayManager.IsTutorial)
+            {
+                _buttonBack.gameObject.SetActive(false);
+                _settingsButton.gameObject.SetActive(false);
+            }
 
             StartGame();
             KeepButtonVisibility(false);
@@ -254,6 +259,15 @@ namespace Loom.ZombieBattleground
                         _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
                         _gameplayManager.OpponentIdCheat = -1;
+
+                        if(_gameplayManager.IsTutorial && _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
+                        {
+                            _gameplayManager.OpponentPlayerDeck.PrimarySkill =
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility;
+                            _gameplayManager.OpponentPlayerDeck.SecondarySkill =
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility;
+
+                        }
                     }
                     break;
                 case Enumerators.MatchType.PVP:

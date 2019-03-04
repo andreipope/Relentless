@@ -46,12 +46,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
             }
 
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-            GameClient.Get<ITutorialManager>().StopTutorial();
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = 0;
+            GameClient.Get<ITutorialManager>().StopTutorial(true);
             GameClient.Get<IGameplayManager>().IsTutorial = false;
+            GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
         }
     }
 }

@@ -15,16 +15,18 @@ namespace Loom.ZombieBattleground
         private const string PersistentFileName = "CheatsSettings.json";
 
         private readonly List<Action> _updateBinds = new List<Action>();
-
         private IPvPManager _pvpManager;
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
+
+        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
 
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            GUILayout.BeginArea(new Rect(20, 20, 200, 150), "PvP Cheats", Styles.OpaqueWindow);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
 
@@ -57,13 +59,21 @@ namespace Loom.ZombieBattleground
                 if (GUILayout.Button("Find Match"))
                 {
                     Deck deck = _dataManager.CachedDecksData.Decks[0];
-                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+                    GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
                     GameClient.Get<IMatchManager>().MatchType = Enumerators.MatchType.PVP;
                     GameClient.Get<IMatchManager>().FindMatch();
                 }
 
                 GUI.enabled = true;
+            }
+            GUILayout.EndArea();
+
+            pvpCheatsRect.y += pvpCheatsRect.height + 15;
+            pvpCheatsRect.height = 75;
+            GUILayout.BeginArea(pvpCheatsRect, "PvP Options", Styles.OpaqueWindow);
+            {
+                _pvpManager.UseBackendGameLogic = GUILayout.Toggle(_pvpManager.UseBackendGameLogic, "Use Backend Logic");
             }
             GUILayout.EndArea();
 
@@ -108,8 +118,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
-
         private class CustomDeckEditor
         {
             private readonly CheatUI _cheatUI;
@@ -119,6 +127,7 @@ namespace Loom.ZombieBattleground
             private bool _visible;
             private Vector2 _customDeckScrollPosition;
             private Vector2 _cardLibraryScrollPosition;
+            private string _nameFilterString = "";
 
             public bool Visible => _visible;
 
@@ -194,15 +203,24 @@ namespace Loom.ZombieBattleground
                         // Card Library
                         GUILayout.BeginVertical("Card Library", Styles.OpaqueWindow, GUILayout.Height(Screen.height * (1f - customDeckScreenHeightRatio) / UIScaleFactor));
                         {
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
+                                _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
+                            }
+
+                            GUILayout.EndHorizontal();
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
                                 foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
                                 {
+                                    if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                        continue;
+
                                     GUILayout.BeginHorizontal();
                                     {
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
-                                        GUILayout.FlexibleSpace();
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
                                             if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))

@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
 
         bool IsGameplayReady();
 
-        Player GetPlayerById(int id);
+        Player GetPlayerByInstanceId(InstanceId id);
 
         PlayerMoveAction PlayerMoves { get; set; }
 
@@ -76,5 +76,6 @@ namespace Loom.ZombieBattleground
         int OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
+        bool OpponentHasDoneMulligan { get; set; }
     }
 }

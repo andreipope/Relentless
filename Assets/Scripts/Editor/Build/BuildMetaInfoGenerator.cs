@@ -46,7 +46,6 @@ namespace Loom.ZombieBattleground.Editor
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
                 buildMetaInfo.GitBranchName = "[error]";
                 Debug.LogException(e);
             }
@@ -61,7 +60,6 @@ namespace Loom.ZombieBattleground.Editor
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
                 buildMetaInfo.GitCommitHash = "[error]";
                 Debug.LogException(e);
             }

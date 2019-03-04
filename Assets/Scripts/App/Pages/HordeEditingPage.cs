@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
 
         private ToggleGroup _toggleGroup;
 
+        private CanvasGroup _elementsCanvasGroup;
+
         private RectTransform _armyCardsContainer;
 
         private RectTransform _hordeCardsContainer;
@@ -163,6 +165,7 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _toggleGroup = _selfPage.transform.Find("ElementsToggles").GetComponent<ToggleGroup>();
+            _elementsCanvasGroup = _toggleGroup.GetComponent<CanvasGroup>();
             _airToggle = _selfPage.transform.Find("ElementsToggles/Air").GetComponent<Toggle>();
             _lifeToggle = _selfPage.transform.Find("ElementsToggles/Life").GetComponent<Toggle>();
             _waterToggle = _selfPage.transform.Find("ElementsToggles/Water").GetComponent<Toggle>();
@@ -296,6 +299,12 @@ namespace Loom.ZombieBattleground
 
             _hordeAreaObject = _selfPage.transform.Find("Horde/ScrollArea").gameObject;
             _armyAreaObject = _selfPage.transform.Find("Army/ScrollArea").gameObject;
+
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.OnMenuStepUpdated += OnMenuStepUpdatedHandler;
+                OnMenuStepUpdatedHandler();
+            }
         }
 
         public void Hide()
@@ -322,6 +331,10 @@ namespace Loom.ZombieBattleground
             ResetArmyCards();
             ResetHordeItems();
             _uiManager.GetPopup<WarningPopup>().PopupHiding -= OnCloseAlertDialogEventHandler;
+            if (_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.OnMenuStepUpdated -= OnMenuStepUpdatedHandler;
+            }
 
             _cardInfoPopupHandler.Dispose();
         }
@@ -371,9 +384,18 @@ namespace Loom.ZombieBattleground
         {
             _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
 
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+            List<Card> cards;
 
-            List<Card> cards = set.Cards;
+            if(_tutorialManager.IsTutorial)
+            {
+                cards = _tutorialManager.GetSpecificCardsBySet(setType);
+            }
+            else
+            {
+                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+
+                cards = set.Cards;
+            }
 
             int startIndex = page * CardsPerPage;
             int endIndex = Mathf.Min(startIndex + CardsPerPage, cards.Count);
@@ -388,7 +410,17 @@ namespace Loom.ZombieBattleground
                 }
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+
+                CollectionCardData cardData;
+
+                if(_tutorialManager.IsTutorial)
+                {
+                    cardData = _tutorialManager.GetCardData(card.Name);
+                }
+                else
+                {
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                }
 
                 if (cardData == null)
                 {
@@ -675,7 +707,7 @@ namespace Loom.ZombieBattleground
                 Canvas.ForceUpdateCanvases();
             }
 
-            if(_currentDeck.GetNumCards() >= Constants.DeckMaxSize/2)
+            if(_tutorialManager.IsTutorial && _currentDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
             }      
@@ -731,7 +763,14 @@ namespace Loom.ZombieBattleground
         {
             if (_currentDeck != null)
             {
-                _cardAmountText.text = _currentDeck.GetNumCards() + " / " + Constants.DeckMaxSize;
+                if (_tutorialManager.IsTutorial)
+                {
+                    _cardAmountText.text = _currentDeck.GetNumCards() + " / " + _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount;
+                }
+                else
+                {
+                    _cardAmountText.text = _currentDeck.GetNumCards() + " / " + Constants.DeckMaxSize;
+                }
             }
         }
 
@@ -770,6 +809,12 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                     Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+
+                    if(_tutorialManager.IsTutorial)
+                    {
+                        _dataManager.CachedUserLocalData.TutorialSavedDeck = _currentDeck;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -885,7 +930,18 @@ namespace Loom.ZombieBattleground
         {
             _collectionData.Cards.Clear();
             CollectionCardData cardData;
-            foreach (CollectionCardData card in _dataManager.CachedCollectionData.Cards)
+
+            List<CollectionCardData> data;
+            if (_tutorialManager.IsTutorial)
+            {
+                data = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy;
+            }
+            else
+            {
+                data = _dataManager.CachedCollectionData.Cards;
+            }
+
+            foreach (CollectionCardData card in data)
             {
                 cardData = new CollectionCardData();
                 cardData.Amount = card.Amount;
@@ -934,11 +990,18 @@ namespace Loom.ZombieBattleground
 
         private void InitObjects()
         {
-            Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
-                .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
+            if (_tutorialManager.IsTutorial)
+            {
+                _currentSet = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet;
+            }
+            else
+            {
+                Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
+                    .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
 
+                _currentSet = heroSetType;
+            }
             _currentElementPage = 0;
-            _currentSet = heroSetType;
             CalculateNumberOfPages();
             LoadCards(_currentElementPage, _currentSet);
         }
@@ -947,7 +1010,14 @@ namespace Loom.ZombieBattleground
         {
             CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
             setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);
-            cardIndex = set.Cards.FindIndex(c => c.MouldId == card.MouldId);
+            if (_tutorialManager.IsTutorial)
+            {
+                cardIndex = _tutorialManager.GetSpecificCardsBySet(set.Name).FindIndex(info => info.MouldId == card.MouldId);
+            }
+            else
+            {
+                cardIndex = set.Cards.FindIndex(c => c.MouldId == card.MouldId);
+            }
         }
 
         private void UpdateCardsPage()
@@ -958,7 +1028,17 @@ namespace Loom.ZombieBattleground
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
+            int count = 0;
+            if(_tutorialManager.IsTutorial)
+            {
+                count = _tutorialManager.GetSpecificCardsBySet(_currentSet).Count;
+            }
+            else
+            {
+                count = SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count;
+            }
+
+            _numElementPages = Mathf.CeilToInt(count /
                 (float) CardsPerPage);
         }
 
@@ -1129,6 +1209,11 @@ namespace Loom.ZombieBattleground
             _draggingObject.transform.position = position;
         }
 
+        private void OnMenuStepUpdatedHandler()
+        {
+            _elementsCanvasGroup.blocksRaycasts = !_tutorialManager.IsButtonBlockedInTutorial(_toggleGroup.name);
+        }
+
         #region button handlers
 
         private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
@@ -1215,6 +1300,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyArrowLeftButtonHandler()
         {
+            if (_tutorialManager.IsButtonBlockedInTutorial(_buttonArmyArrowLeft.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(-1);
@@ -1222,6 +1313,12 @@ namespace Loom.ZombieBattleground
 
         private void ArmyArrowRightButtonHandler()
         {
+            if (_tutorialManager.IsButtonBlockedInTutorial(_buttonArmyArrowRight.name))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             MoveCardsPage(1);

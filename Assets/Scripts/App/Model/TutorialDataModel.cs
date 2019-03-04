@@ -15,6 +15,8 @@ namespace Loom.ZombieBattleground
 
         public bool Ignore;
 
+        public bool HiddenTutorial;
+
         public bool IsGameplayTutorial()
         {
             return TutorialContent is TutorialGameplayContent;
@@ -27,6 +29,8 @@ namespace Loom.ZombieBattleground
 
         public List<TutorialDescriptionTooltip> TutorialDescriptionTooltips;
 
+        public TutorialReward TutorialReward;
+
         [JsonConverter(typeof(TutorialStepConverter))]
         public List<TutorialStep> TutorialSteps;
 
@@ -35,6 +39,8 @@ namespace Loom.ZombieBattleground
             ActionActivityHandlers = new List<ActionActivityHandler>();
 
             TutorialDescriptionTooltips = new List<TutorialDescriptionTooltip>();
+
+            TutorialReward = new TutorialReward();
 
             TutorialSteps = new List<TutorialStep>();
         }
@@ -50,6 +56,8 @@ namespace Loom.ZombieBattleground
 
         public bool GameplayFlowBeginsManually;
 
+        public int RewardCardPackCount;
+
         public SpecificBattlegroundInfo SpecificBattlegroundInfo;
 
         public List<SpecificTurnInfo> SpecificTurnInfos;
@@ -63,6 +71,8 @@ namespace Loom.ZombieBattleground
     public class TutorialMenusContent : TutorialContent
     {
         public bool HasBlockedInteractivityInGameScreens;
+
+        public SpecificHordeInfo SpecificHordeInfo;
 
         public TutorialMenusContent() : base()
         {
@@ -114,6 +124,7 @@ namespace Loom.ZombieBattleground
         public bool MatchShouldBePaused;
         public bool AIShouldBePaused;
         public bool PlayerOverlordAbilityShouldBeUnlocked;
+        public bool PlayerOrderScreenCloseManually;
         public bool CanEndTurn;
         public bool UnitsCanAttack;
         public bool CanInteractWithGameplay;
@@ -129,7 +140,6 @@ namespace Loom.ZombieBattleground
         public TutorialGameplayStep()
         {
             SelectableTargets = new List<Enumerators.SkillTargetType>();
-            RequiredActivitiesToDoneDuringStep = new List<Enumerators.TutorialActivityAction>();
 
             OverlordSayTooltips = new List<OverlordSayTooltipInfo>();
         }
@@ -148,6 +158,8 @@ namespace Loom.ZombieBattleground
         public bool AISpecificOrderEnabled;
 
         public bool DisabledInitialization;
+
+        public bool EnableCustomDeckForOpponent;
 
         public SpecificBattlegroundOverlordInfo PlayerInfo;
         public SpecificBattlegroundOverlordInfo OpponentInfo;
@@ -236,9 +248,13 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.TooltipAlign TutorialTooltipAlign;
         public Enumerators.TutorialObjectOwner TutorialTooltipOwner;
+        public Enumerators.TutorialActivityAction ActionToHideThisPopup;
         public string Description;
+        public string SoundToPlay;
         public float AppearDelay;
         public float Duration = Constants.OverlordTalkingPopupDuration;
+        public float SoundToPlayBeginDelay;
+        public float MinimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime;
     }
 
     public class DrawDescriptionTooltipsInfo : TutorialActivityActionHandlerData
@@ -270,6 +286,7 @@ namespace Loom.ZombieBattleground
         public bool Resizable;
         public bool DynamicPosition;
         public float AppearDelay;
+        public float MinimumShowTime = Constants.DescriptionTooltipMinimumShowTime;
         public Enumerators.TutorialObjectLayer TutorialTooltipLayer;
 
         public TutorialDescriptionTooltip()
@@ -282,6 +299,13 @@ namespace Loom.ZombieBattleground
     public class UseBattleframeActionInfo
     {
         public int TutorialObjectId;
+        public Enumerators.SkillTargetType TargetType;
+        public int TargetTutorialObjectId;
+    }
+
+    public class UseOverlordSkillActionInfo
+    {
+        public Enumerators.SkillType SkillType;
         public Enumerators.SkillTargetType TargetType;
         public int TargetTutorialObjectId;
     }
@@ -304,6 +328,8 @@ namespace Loom.ZombieBattleground
         public float AppearDelay;
         public float HandPointerSpeed;
         public int TutorialObjectIdStepOwner;
+        public string TutorialUIElementOwnerName;
+        public float Rotation;
         public int TargetTutorialObjectId;
         public List<int> AdditionalObjectIdOwners;
         public List<int> AdditionalObjectIdTargets;
@@ -328,6 +354,7 @@ namespace Loom.ZombieBattleground
         public List<Enumerators.TutorialActivityAction> RequiredActivitiesToDoneDuringTurn;
         public List<PlayCardActionInfo> PlayCardsSequence;
         public List<UseBattleframeActionInfo> UseBattleframesSequence;
+        public List<UseOverlordSkillActionInfo> UseOverlordSkillsSequence;
         public List<ActionActivityHandler> ActionActivityHandlers;
 
         public SpecificTurnInfo()
@@ -336,7 +363,36 @@ namespace Loom.ZombieBattleground
             UseBattleframesSequence = new List<UseBattleframeActionInfo>();
             RequiredActivitiesToDoneDuringTurn = new List<Enumerators.TutorialActivityAction>();
             ActionActivityHandlers = new List<ActionActivityHandler>();
+            UseOverlordSkillsSequence = new List<UseOverlordSkillActionInfo>();
         }
+    }
+
+    public class SpecificHordeInfo
+    {
+        public Enumerators.SetType MainSet;
+        public List<Data.CollectionCardData> CardsForArmy;
+        public int MaximumCardsCount;
+
+        public SpecificHordeInfo()
+        {
+            CardsForArmy = new List<Data.CollectionCardData>();
+        }
+    }
+
+    public class TutorialReward
+    {
+        public List<CardRewardInfo> CardPackReward;
+        public int CardPackCount;
+
+        public TutorialReward()
+        {
+            CardPackReward = new List<CardRewardInfo>();
+        }
+    }
+
+    public class CardRewardInfo
+    {
+        public string Name;
     }
 
     public class TutorialMenuStep : TutorialStep

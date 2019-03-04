@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private IGameplayManager _gameplayManager;
 
+        private ITutorialManager _tutorialManager;
+
         private Camera _raysCamera;
 
         private List<BoardUnitView> _selectedUnitsList;
@@ -47,13 +49,14 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _selectedUnitsList = new List<BoardUnitView>();
         }
 
         public void Update()
         {
-            if (!_gameplayManager.IsGameplayReady())
+            if (!_gameplayManager.IsGameplayReady() && !_tutorialManager.IsTutorial)
                 return;
 
             HandleInput();

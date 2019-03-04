@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class ListTests
     {
         [Test]

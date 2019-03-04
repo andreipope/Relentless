@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
     public class LoginPopup : IUIPopup
     {
         public static Action OnHidePopupEvent;
+        public static Action OnLoginSuccess;
 
         public bool IsRegisteredUser;
 
@@ -27,6 +28,10 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
 
         private IAppStateManager _appStateManager;
+
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
 
         private BackendFacade _backendFacade;
 
@@ -90,12 +95,13 @@ namespace Loom.ZombieBattleground
 
         private string _lastErrorMessage;
 
-
         private LoginState _state;
 
         private LoginState _lastPopupState;
 
         private string _lastGUID;
+
+        private bool _gameStarted = false;
 
         public GameObject Self { get; private set; }
 
@@ -107,6 +113,8 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
         }
 
         public void Dispose()
@@ -230,6 +238,19 @@ namespace Loom.ZombieBattleground
             _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
+        }
+
+        public void SetRegistrationFieldsData(string _email, string _password)
+        {
+            _emailFieldRegister.text = _email;
+            _passwordFieldRegister.text = _password;
+            _confirmFieldRegister.text = _password;
+        }
+
+        public void Logout() 
+        {
+            Show();
+            SetLoginAsGuestState();
         }
 
         private void PressedSendOTPHandler()
@@ -527,6 +548,8 @@ namespace Loom.ZombieBattleground
 
                 _backendDataControlMediator.SetUserDataModel(userDataModel);
 
+                _loginButton.enabled = true;
+
                 if (authyId != 0)
                 {
                     SetUIState(LoginState.PromptOTP);
@@ -534,8 +557,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 _OTPFieldOTP.text = "";
-
-                _loginButton.enabled = true;
 
                 if (isGuest)
                 {
@@ -606,6 +627,12 @@ namespace Loom.ZombieBattleground
 
                 SuccessfulLogin();
 
+                if(!_gameStarted)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
+                    _gameStarted = true;
+                }
+
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
             catch (TimeoutException e)
@@ -636,33 +663,60 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SuccessfulLogin()
+        private async void SuccessfulLogin()
         {
-            if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+            if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
 #if USE_REBALANCE_BACKEND
                 GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 #else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
-                (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
+                (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
-                GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+                _tutorialManager.SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-                if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                if (_tutorialManager.CurrentTutorial.IsGameplayTutorial())
                 {
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)GameClient.Get<IDataManager>().CachedDecksData.Decks.Last().Id;
-                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                    Data.Deck savedTutorialDeck = _dataManager.CachedUserLocalData.TutorialSavedDeck;
 
-                    GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                    if (savedTutorialDeck != null)
+                    {
+                        if (_dataManager.CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                        {
+                            _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
+                            await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                        }
+                    }
+                    else
+                    {
+                        savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
+                    }
+
+                    if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
+                    {
+                        _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+                        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                        GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
+
+                        string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                        QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+                        questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
+
+                        _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                    }
+                    else
+                    {
+                        GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                    }
                 }
                 else
                 {
                     _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
-                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (!_tutorialManager.IsTutorial)
                     {
-                        GameClient.Get<ITutorialManager>().StartTutorial();
+                        _tutorialManager.StartTutorial();
                     }
                 }
 #endif
@@ -672,6 +726,20 @@ namespace Loom.ZombieBattleground
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
             Hide();
+            OnLoginSuccess?.Invoke();
+        }
+
+        private void ConfirmTutorialReceivedHandler(bool state)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmTutorialReceivedHandler;
+            if (state)
+            {
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                _tutorialManager.SkipTutorial();
+            }
         }
 
         private void SetUIState(LoginState state, string errorMsg = "")

@@ -77,7 +77,11 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _allies, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                _allies
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             AbilityProcessingAction?.ForceActionDone();
         }

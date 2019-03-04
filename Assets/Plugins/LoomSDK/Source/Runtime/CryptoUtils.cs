@@ -9,6 +9,7 @@ namespace Loom.Client
     {
         private static readonly RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
         private static readonly RIPEMD160 ripemd160 = RIPEMD160.Create();
+        private static readonly SHA256Managed sha256Managed = new SHA256Managed();
 
         /// <summary>
         /// Generates a cryptographically strong sequence of random bytes.
@@ -132,6 +133,11 @@ namespace Loom.Client
             {
                 return ripemd160.ComputeHash(publicKey);
             }
+        }
+
+        public static byte[] CalculateSha256Hash(byte[] bytes)
+        {
+            return sha256Managed.ComputeHash(bytes);
         }
     }
 }

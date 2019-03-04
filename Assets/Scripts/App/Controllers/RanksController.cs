@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardUnitView unit in units)
                 {
-                    if (unit == null)
+                    if (unit == null || unit.Model == null)
                     {
                         Helpers.ExceptionReporter.LogException("Tried to Buff Null Unit in Ranks System");
                         continue;

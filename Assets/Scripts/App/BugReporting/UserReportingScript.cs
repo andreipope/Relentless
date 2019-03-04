@@ -423,20 +423,8 @@ public class UserReportingScript : MonoBehaviour
         // Kill everything else to make sure no more exceptions are being thrown
         if (_isCrashing)
         {
-            Scene[] scenes = new Scene[SceneManager.sceneCount];
-            for (int i = 0; i < SceneManager.sceneCount; ++i)
-            {
-                scenes[i] = SceneManager.GetSceneAt(i);
-            }
-
             IEnumerable<GameObject> rootGameObjects =
-                scenes
-                    .Concat(new[]
-                    {
-                        gameObject.scene
-                    })
-                    .Distinct()
-                    .SelectMany(scene => scene.GetRootGameObjects())
+                Utilites.CollectAllSceneRootGameObjects(gameObject)
                     .Where((go, i) => go != transform.root.gameObject);
 
             foreach (GameObject rootGameObject in rootGameObjects)

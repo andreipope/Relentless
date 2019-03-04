@@ -12,7 +12,11 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
-        public event Action<WorkingCard, Enumerators.AbilityType, List<ParametrizedAbilityBoardObject>> AbilityUsed;
+        public delegate void AbilityUsedEventHandler(
+            WorkingCard card,
+            Enumerators.AbilityType abilityType,
+            List<ParametrizedAbilityBoardObject> targets = null);
+        public event AbilityUsedEventHandler AbilityUsed;
 
         private readonly object _lock = new object();
 
@@ -37,6 +41,10 @@ namespace Loom.ZombieBattleground
         private List<ActiveAbility> _activeAbilities;
 
         public bool BlockEndTurnButton { get; private set; }
+
+        public bool HasPredefinedChoosableAbility { get; set; }
+
+        public int PredefinedChoosableAbilityId { get; set; } = -1;
 
         public void Init()
         {
@@ -87,6 +95,9 @@ namespace Loom.ZombieBattleground
             }
 
             _castedAbilitiesIds = 0;
+
+            PredefinedChoosableAbilityId = -1;
+            HasPredefinedChoosableAbility = false;
         }
 
         public void DeactivateAbility(ulong id)
@@ -406,7 +417,8 @@ namespace Loom.ZombieBattleground
             Action<bool> onCompleteCallback,
             GameplayQueueAction<object> actionInQueue,
             BoardObject target = null,
-            HandBoardCard handCard = null)
+            HandBoardCard handCard = null,
+            bool skipEntryAbilities = false)
         {
             actionInQueue.Action = (parameter, completeCallback) =>
                {
@@ -437,7 +449,7 @@ namespace Loom.ZombieBattleground
 
                        if (canUseAbility)
                        {
-                           AbilityData ability = libraryCard.Abilities.Find(x => IsAbilityCanActivateTargetAtStart(x));
+                           AbilityData ability = libraryCard.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
                            if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
                                !HasSpecialUnitOnBoard(workingCard, ability) ||
@@ -632,29 +644,41 @@ namespace Loom.ZombieBattleground
                        }
                    };
 
-                   AbilityData choosableAbility = libraryCard.Abilities.Find(x => x.HasChoosableAbilities());
+                   AbilityData choosableAbility = libraryCard.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
                    if (choosableAbility != null)
                    {
-                       if (isPlayer)
+                       if (HasPredefinedChoosableAbility)
                        {
-                           Action<AbilityData.ChoosableAbility> callback = null;
+                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] =
+                                       choosableAbility.ChoosableAbilities[PredefinedChoosableAbilityId].AbilityData;
+                           abilityEndAction.Invoke();
 
-                           callback = (x) =>
-                            {
-                                libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
-                                abilityEndAction.Invoke();
-                                _cardsController.CardForAbilityChoosed -= callback;
-                            };
-
-                           _cardsController.CardForAbilityChoosed += callback;
-                           _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           PredefinedChoosableAbilityId = -1;
+                           HasPredefinedChoosableAbility = false;
                        }
                        else
                        {
-                           // TODO: improve functionality for the AI
-                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
-                           abilityEndAction.Invoke();
+                           if (isPlayer)
+                           {
+                               Action<AbilityData.ChoosableAbility> callback = null;
+
+                               callback = (x) =>
+                                {
+                                    libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                    abilityEndAction.Invoke();
+                                    _cardsController.CardForAbilityChoosed -= callback;
+                                };
+
+                               _cardsController.CardForAbilityChoosed += callback;
+                               _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);
+                           }
+                           else
+                           {
+                               // TODO: improve functionality for the AI
+                               libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                               abilityEndAction.Invoke();
+                           }
                        }
                    }
                    else
@@ -664,33 +688,15 @@ namespace Loom.ZombieBattleground
                };
         }
 
-        public void ThrowUseAbilityEvent(WorkingCard card, List<ParametrizedAbilityBoardObject> targets,
-                                         Enumerators.AbilityType abilityType,
-                                         /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType = Enumerators.AffectObjectType.None)
+        public void InvokeUseAbilityEvent(
+            WorkingCard card,
+            Enumerators.AbilityType abilityType,
+            List<ParametrizedAbilityBoardObject> targets)
         {
             if (!CanHandleAbiityUseEvent(card))
                 return;
 
             AbilityUsed?.Invoke(card, abilityType, targets);
-        }
-
-        public void ThrowUseAbilityEvent(
-            WorkingCard card,
-            List<BoardObject> targets,
-            Enumerators.AbilityType abilityType,
-            /* FIXME: unused, remove later */ Enumerators.AffectObjectType affectObjectType)
-        {
-            if (!CanHandleAbiityUseEvent(card))
-                return; 
-
-            List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
-
-            foreach(BoardObject boardObject in targets)
-            {
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(boardObject));
-            }
-
-            AbilityUsed?.Invoke(card, abilityType, parametrizedAbilityBoardObjects);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
@@ -729,15 +735,25 @@ namespace Loom.ZombieBattleground
             //We should absolutely change the backend API to support an index field.
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
             AbilityData abilityData;
-            if (_PvPToggleFirstLastAbility)
+
+            AbilityData subAbilitiesData = card.LibraryCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+
+            if (subAbilitiesData != null)
             {
-                abilityData = card.LibraryCard.Abilities.Find(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = false;
+                abilityData = subAbilitiesData.ChoosableAbilities.Find(x => x.AbilityData.AbilityType == ability).AbilityData;
             }
             else
             {
-                abilityData = card.LibraryCard.Abilities.FindLast(x => x.AbilityType == ability);
-                _PvPToggleFirstLastAbility = true;
+                if (_PvPToggleFirstLastAbility)
+                {
+                    abilityData = card.LibraryCard.Abilities.First(x => x.AbilityType == ability);
+                    _PvPToggleFirstLastAbility = false;
+                }
+                else
+                {
+                    abilityData = card.LibraryCard.Abilities.Last(x => x.AbilityType == ability);
+                    _PvPToggleFirstLastAbility = true;
+                }
             }
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData,
@@ -785,6 +801,19 @@ namespace Loom.ZombieBattleground
             }
 
             activeAbility.Ability.Activate();
+        }
+
+        public void ActivateAbilitiesOnCard(BoardObject abilityCaller, WorkingCard card, Player owner)
+        {
+            foreach(AbilityData abilityData in card.LibraryCard.Abilities )
+            {
+                ActiveAbility activeAbility;
+                if(abilityData.CallType != Enumerators.AbilityCallType.ENTRY)
+                {
+                    activeAbility = CreateActiveAbility(abilityData, card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
+                    activeAbility.Ability.Activate();
+                }
+            }
         }
 
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
@@ -1167,7 +1196,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
+        public static AbilityData GetAbilityDataByType(Enumerators.AbilityType ability)
         {
             AbilityData abilityData = null;
 

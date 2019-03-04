@@ -97,7 +97,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
                 timedOut = true;
                 throw;
             }

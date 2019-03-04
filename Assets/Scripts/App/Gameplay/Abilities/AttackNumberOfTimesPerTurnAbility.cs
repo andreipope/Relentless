@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.AttackRestriction = AttackInfo;
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

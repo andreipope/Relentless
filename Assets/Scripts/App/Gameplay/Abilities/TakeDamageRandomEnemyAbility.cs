@@ -34,29 +34,29 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            InvokeUseAbilityEvent();
 
-            Action();
+            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            {
+                Action();
+            }
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-
             if (AbilityCallType != Enumerators.AbilityCallType.END ||
-          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
-
             Action();
         }
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             Action();
         }
@@ -65,45 +65,44 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PredefinedTargets != null)
-            {
-                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
-            }
-            else
-            {
-                _targets = new List<BoardObject>();
+            List<BoardObject> possibleTargets = new List<BoardObject>();
 
-                foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+            foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+            {
+                switch (abilityTarget)
                 {
-                    switch (abilityTarget)
-                    {
-                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            _targets.AddRange(GetOpponentOverlord().BoardCards
-                                .FindAll(unit => unit.Model.CurrentHp > 0)
-                                .Select(unit => unit.Model));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            _targets.AddRange(PlayerCallerOfAbility.BoardCards
-                                .FindAll(unit => unit.Model.CurrentHp > 0)
-                                .Select(unit => unit.Model));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER:
-                            _targets.Add(PlayerCallerOfAbility);
-                            break;
-                        case Enumerators.AbilityTargetType.OPPONENT:
-                            _targets.Add(GetOpponentOverlord());
-                            break;
-                    }
+                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        possibleTargets.AddRange(GetOpponentOverlord().BoardCards
+                            .FindAll(unit => unit.Model.CurrentHp > 0)
+                            .Select(unit => unit.Model));
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                        possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
+                            .FindAll(unit => unit.Model.CurrentHp > 0)
+                            .Select(unit => unit.Model));
+                        break;
+                    case Enumerators.AbilityTargetType.PLAYER:
+                        possibleTargets.Add(PlayerCallerOfAbility);
+                        break;
+                    case Enumerators.AbilityTargetType.OPPONENT:
+                        possibleTargets.Add(GetOpponentOverlord());
+                        break;
                 }
+            }
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
+            _targets = new List<BoardObject>();
+            int count = Mathf.Max(1, Count);
+            while (count > 0 && possibleTargets.Count > 0)
+            {   
+                int chosenIndex = MTwister.IRandom(0, possibleTargets.Count-1);
+                _targets.Add(possibleTargets[chosenIndex]);
+                possibleTargets.RemoveAt(chosenIndex);
+                count--;
             }
 
             InvokeActionTriggered(_targets);      
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -132,16 +131,15 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = TargetEffects
             });
-
-            if (IsPVPAbility)
-            {
-                Deactivate();
-            }
         }
 
         private void ActionCompleted(object target, out int damageWas)
         {
-            int damageOverride = Damage;
+            if (AbilityCallType == Enumerators.AbilityCallType.DEATH) {
+                base.UnitDiedHandler();
+            }
+            
+            int damageOverride = Mathf.Max(1, Damage);
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {

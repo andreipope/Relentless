@@ -358,6 +358,8 @@ namespace Loom.ZombieBattleground
                             GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
+
+                        await ProcessCardsInCollectionValidation();
                     }
                     catch (Exception)
                     {
@@ -376,6 +378,8 @@ namespace Loom.ZombieBattleground
                                     listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
                                     new List<Deck>()
                             );
+
+                       await ProcessCardsInDeckValidation();
                     }
                     catch (Exception e)
                     {
@@ -410,6 +414,50 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
+        }
+
+        private async Task ProcessCardsInDeckValidation()
+        {
+            bool hasChanges;
+            Card foundCard;
+            foreach (Deck deck in CachedDecksData.Decks)
+            {
+                hasChanges = false;
+                for (int i = 0; i < deck.Cards.Count; i++)
+                {
+                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == deck.Cards[i].CardName);
+
+                    if(foundCard == null || foundCard is default(Card))
+                    {
+                        deck.Cards.Remove(deck.Cards[i]);
+                        i--;
+
+                        hasChanges = true;
+                    }
+                }
+
+                if (hasChanges)
+                {
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+                }
+            }
+        }
+
+        private async Task ProcessCardsInCollectionValidation()
+        {
+            Card foundCard;
+            for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
+            {
+                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
+
+                if (foundCard == null || foundCard is default(Card))
+                {
+                    CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
+                    i--;
+                }
+            }
+
+            await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void LoadLocalCachedData()

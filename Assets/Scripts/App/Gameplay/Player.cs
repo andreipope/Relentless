@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<WorkingCard, int> CardPlayed;
 
-        public event Action<WorkingCard, Enumerators.AffectObjectType, Data.InstanceId?> CardAttacked;
+        public event Action<WorkingCard, Data.InstanceId> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
         {
             if (shuffle)
             {
-                CardsInDeck.Insert(Random.Range(0, CardsInDeck.Count), card);
+                CardsInDeck.Insert(MTwister.IRandom(0, CardsInDeck.Count), card);
             }
             else
             {
@@ -749,9 +749,9 @@ namespace Loom.ZombieBattleground
             CardPlayed?.Invoke(card, position);
         }
 
-        public void ThrowCardAttacked(WorkingCard card, Enumerators.AffectObjectType type, Data.InstanceId? instanceId)
+        public void ThrowCardAttacked(WorkingCard card, Data.InstanceId instanceId)
         {
-            CardAttacked?.Invoke(card, type, instanceId);
+            CardAttacked?.Invoke(card, instanceId);
         }
 
         public void ThrowLeaveMatch()

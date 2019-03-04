@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private IAnalyticsManager _analyticsManager;
 
+        private IAppStateManager _appStateManager;
+
         private OverlordsTalkingController _overlordsChatController;
 
         private HandPointerController _handPointerController;
@@ -61,6 +63,12 @@ namespace Loom.ZombieBattleground
 
         private List<TutorialDescriptionTooltipItem> _ingameTutorialActiveTooltips;
 
+        private bool _playerOrderScreenCloseManually;
+
+        private List<Card> _cardsForOpenPack;
+
+        //public TutorialReward RewardFromLastTutorial { get; private set; }
+
         public TutorialData CurrentTutorial { get; private set; }
         public TutorialStep CurrentTutorialStep { get; private set; }
 
@@ -68,6 +76,7 @@ namespace Loom.ZombieBattleground
 
         public List<string> BlockedButtons { get; private set; }
 
+        public event Action OnMenuStepUpdated;
 
         public bool BattleShouldBeWonBlocker;
 
@@ -77,7 +86,12 @@ namespace Loom.ZombieBattleground
 
         public int TutorialsCount
         {
-            get { return _tutorials.Count; }
+            get { return _tutorials.FindAll(tutor => !tutor.HiddenTutorial).Count; }
+        }
+
+        public bool IsLastTutorial
+        {
+            get { return CurrentTutorial.Id == _tutorials[_tutorials.Count - 1].Id; }
         }
 
         public void Dispose()
@@ -92,6 +106,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -136,7 +151,7 @@ namespace Loom.ZombieBattleground
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-            if (!CurrentTutorial.IsGameplayTutorial())
+            if (CurrentTutorial != null && !CurrentTutorial.IsGameplayTutorial())
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
@@ -184,6 +199,12 @@ namespace Loom.ZombieBattleground
                 return false;
 
             return BlockedButtons.Contains(name);
+        }
+
+        public int GetIndexOfCurrentTutorial()
+        {
+            return _tutorials.FindAll(tutor => !tutor.HiddenTutorial)
+                .FindIndex(info => info.Id == CurrentTutorial.Id);
         }
 
         public void SetupTutorialById(int id)
@@ -235,6 +256,10 @@ namespace Loom.ZombieBattleground
                 {
                     _battlegroundController.SetupBattlegroundAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
                 }
+                else if(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
+                {
+                    _battlegroundController.SetOpponentDeckAsSpecific(CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo);
+                }
 
                 _battlegroundController.TurnStarted += TurnStartedHandler;
 
@@ -266,27 +291,27 @@ namespace Loom.ZombieBattleground
                     break;
 
                 // Abilities
-                case 1:
+                case 2:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
                     break;
 
                 // Rank
-                case 2:
+                case 4:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
                     break;
 
                 // Overflow
-                case 3:
+                case 6:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
                     break;
 
                 // Deck
-                case 4:
+                case 7:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
                     break;
 
                 // battle
-                case 5:
+                case 8:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
                     break;
             }
@@ -318,7 +343,7 @@ namespace Loom.ZombieBattleground
             _activitiesDoneDuringThisTurn.Clear();
         }
 
-        public void StopTutorial()
+        public void StopTutorial(bool isManual = false)
         {
             if (!IsTutorial)
                 return;
@@ -335,7 +360,7 @@ namespace Loom.ZombieBattleground
 
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
 
-            if (BattleShouldBeWonBlocker)
+            if (BattleShouldBeWonBlocker && !isManual)
                 return;
 
             ClearToolTips();
@@ -343,14 +368,17 @@ namespace Loom.ZombieBattleground
             if (!UnfinishedTutorial)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId++;
+
+                if (CurrentTutorial.IsGameplayTutorial())
+                {
+                    ApplyReward();
+                }
             }
 
             if (_dataManager.CachedUserLocalData.CurrentTutorialId >= _tutorials.Count)
             {
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
-                _gameplayManager.IsTutorial = false;
-                _dataManager.CachedUserLocalData.Tutorial = false;
-                _gameplayManager.IsSpecificGameplayBattleground = false;
+                CompletelyFinishTutorial();
             }
 
             if (!CheckAvailableTutorial())
@@ -368,6 +396,15 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             CompleteTutorialEvent(CurrentTutorial.Id);
+        }
+
+        private void CompletelyFinishTutorial()
+        {
+            _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
+
+            _gameplayManager.IsTutorial = false;
+            _dataManager.CachedUserLocalData.Tutorial = false;
+            _gameplayManager.IsSpecificGameplayBattleground = false;
         }
 
         private void CompleteTutorialEvent(int currentTutorialId)
@@ -441,7 +478,7 @@ namespace Loom.ZombieBattleground
 
         public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
         {
-            if (!IsTutorial)
+            if (!IsTutorial && Constants.UsingCardTooltips)
             {
                 HandleNonTutorialActions(activityAction, sender, tag);
             }
@@ -457,24 +494,16 @@ namespace Loom.ZombieBattleground
                 HideAllActiveDescriptionTooltip();
             }
 
-            bool skip = false;
-            foreach (TutorialData tutorial in _tutorials)
+            if (CurrentTutorial.TutorialContent.ActionActivityHandlers != null)
             {
-                if (tutorial.TutorialContent.ActionActivityHandlers != null)
+                foreach (ActionActivityHandler activityHandler in CurrentTutorial.TutorialContent.ActionActivityHandlers)
                 {
-                    foreach (ActionActivityHandler activityHandler in tutorial.TutorialContent.ActionActivityHandlers)
+                    if (activityHandler.TutorialActivityAction == action && !activityHandler.HasSpecificConnection)
                     {
-                        if (activityHandler.TutorialActivityAction == action && !activityHandler.HasSpecificConnection)
-                        {
-                            DoActionByActivity(activityHandler);
-                            skip = true;
-                            break;
-                        }
+                        DoActionByActivity(activityHandler);
+                        break;
                     }
                 }
-
-                if (skip)
-                    break;
             }
 
             if (CurrentTutorial.IsGameplayTutorial())
@@ -522,6 +551,8 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
+
+                _overlordsChatController.UpdatePopupsByReportActivityAction(action);
             }
 
             if (CurrentTutorialStep.ConnectedActivities != null)
@@ -710,7 +741,9 @@ namespace Loom.ZombieBattleground
                                 handPointer.AdditionalObjectIdOwners,
                                 handPointer.AdditionalObjectIdTargets,
                                 handPointer.TutorialHandLayer,
-                                handPointer.HandPointerSpeed);
+                                handPointer.HandPointerSpeed,
+                                handPointer.TutorialUIElementOwnerName,
+                                handPointer.Rotation);
                 }
             }
 
@@ -729,7 +762,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.Resizable,
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
-                                           tooltip.TutorialTooltipLayer);
+                                           tooltip.TutorialTooltipLayer,
+                                           tooltip.MinimumShowTime);
                 }
             }
 
@@ -763,7 +797,11 @@ namespace Loom.ZombieBattleground
                                                 tooltip.TutorialTooltipOwner,
                                                 tooltip.AppearDelay,
                                                 true,
-                                                tooltip.Duration);
+                                                tooltip.Duration,
+                                                tooltip.SoundToPlay,
+                                                tooltip.SoundToPlayBeginDelay,
+                                                tooltip.ActionToHideThisPopup,
+                                                tooltip.MinimumShowTime);
                         }
                     }
 
@@ -814,6 +852,15 @@ namespace Loom.ZombieBattleground
                         (_gameplayManager as GameplayManager).TutorialStartAction?.Invoke();
                     }
 
+                    if (!gameStep.PlayerOrderScreenCloseManually && _playerOrderScreenCloseManually)
+                    {
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            _uiManager.GetPopup<PlayerOrderPopup>().AnimationEnded();
+                        }, Time.deltaTime);
+                    }
+                    _playerOrderScreenCloseManually = gameStep.PlayerOrderScreenCloseManually;
+
                     break;
                 case TutorialMenuStep menuStep:
 
@@ -840,6 +887,8 @@ namespace Loom.ZombieBattleground
                     {
                         BattleShouldBeWonBlocker = true;
                     }
+
+                    OnMenuStepUpdated?.Invoke();
 
                     break;
             }
@@ -891,7 +940,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public string GetCardNameById(int id)
+        public string GetCardNameByTutorialObjectId(int id)
         {
             SpecificBattlegroundInfo battleInfo = CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo;
 
@@ -923,6 +972,7 @@ namespace Loom.ZombieBattleground
             List<TutorialDescriptionTooltip> tooltips = CurrentTutorial.TutorialContent.TutorialDescriptionTooltips.FindAll(tooltip => tooltip.TutorialTooltipOwnerId == ownerId &&
                 (tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.EnemyBattleframe ||
                 tooltip.TutorialTooltipOwner == Enumerators.TutorialObjectOwner.PlayerBattleframe));
+
             foreach (TutorialDescriptionTooltip tooltip in tooltips)
             {
                 step = CurrentTutorial.TutorialContent.TutorialSteps.Find(info => info.ToGameplayStep().TutorialDescriptionTooltipsToActivate.Exists(id => id == tooltip.Id));
@@ -999,7 +1049,9 @@ namespace Loom.ZombieBattleground
                                 List<int> additionalObjectIdOwners = null,
                                 List<int> additionalObjectIdTargets = null,
                                 Enumerators.TutorialObjectLayer handLayer = Enumerators.TutorialObjectLayer.Default,
-                                float handPointerSpeed = Constants.HandPointerSpeed)
+                                float handPointerSpeed = Constants.HandPointerSpeed,
+                                string tutorialUIElementOwnerName = Constants.Empty,
+                                float rotation = 0)
         {
             _handPointerController.DrawPointer(type,
                                                owner,
@@ -1012,7 +1064,9 @@ namespace Loom.ZombieBattleground
                                                additionalObjectIdOwners,
                                                additionalObjectIdTargets,
                                                handLayer,
-                                               handPointerSpeed);
+                                               handPointerSpeed,
+                                               tutorialUIElementOwnerName,
+                                               rotation);
         }
 
         public void DrawDescriptionTooltip(int id,
@@ -1024,7 +1078,8 @@ namespace Loom.ZombieBattleground
                                            bool resizable,
                                            float appearDelay,
                                            bool dynamicPosition,
-                                           Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default)
+                                           Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
+                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
         {
             if (appearDelay > 0)
             {
@@ -1038,7 +1093,8 @@ namespace Loom.ZombieBattleground
                                                                                                     resizable,
                                                                                                     dynamicPosition,
                                                                                                     ownerId,
-                                                                                                    layer);
+                                                                                                    layer,
+                                                                                                    minimumShowTime: minimumShowTime);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
@@ -1053,7 +1109,8 @@ namespace Loom.ZombieBattleground
                                                                                                 resizable,
                                                                                                 dynamicPosition,
                                                                                                 ownerId,
-                                                                                                layer);
+                                                                                                layer,
+                                                                                                minimumShowTime: minimumShowTime);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -1076,7 +1133,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer);
+                                       tooltipInfo.TutorialTooltipLayer,
+                                       tooltipInfo.MinimumShowTime);
             }
             else
             {
@@ -1104,7 +1162,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.Resizable,
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
-                                       tooltipInfo.TutorialTooltipLayer);
+                                       tooltipInfo.TutorialTooltipLayer,
+                                       tooltipInfo.MinimumShowTime);
             }
             else
             {
@@ -1124,9 +1183,9 @@ namespace Loom.ZombieBattleground
 
         public void HideAllActiveDescriptionTooltip()
         {
-            foreach (TutorialDescriptionTooltipItem tooltip in _tutorialDescriptionTooltipItems)
+            for (int i = 0; i < _tutorialDescriptionTooltipItems.Count; i++)
             {
-                tooltip?.Hide();
+                _tutorialDescriptionTooltipItems[i]?.Hide();
             }
         }
 
@@ -1155,11 +1214,15 @@ namespace Loom.ZombieBattleground
                                         Enumerators.TutorialObjectOwner owner,
                                         float appearDelay,
                                         bool ofStep = false,
-                                        float duration = Constants.OverlordTalkingPopupDuration)
+                                        float duration = Constants.OverlordTalkingPopupDuration,
+                                        string soundToPlay = Constants.Empty,
+                                        float soundToPlayBeginDelay = 0,
+                                        Enumerators.TutorialActivityAction actionToHideThisPopup = Enumerators.TutorialActivityAction.Undefined,
+                                        float minimumShowTime = Constants.OverlordTalkingPopupMinimumShowTime)
         {
             Sequence sequence = InternalTools.DoActionDelayed(() =>
             {
-                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration);
+                _overlordsChatController.DrawOverlordSayPopup(description, align, owner, duration, soundToPlay, soundToPlayBeginDelay, actionToHideThisPopup, minimumShowTime);
             }, appearDelay);
 
             if (ofStep)
@@ -1194,7 +1257,15 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialActivityActionHandler.OverlordSayTooltip:
                     {
                         OverlordSayTooltipInfo data = activity.TutorialActivityActionHandlerData as OverlordSayTooltipInfo;
-                        DrawOverlordSayPopup(data.Description, data.TutorialTooltipAlign, data.TutorialTooltipOwner, data.AppearDelay, duration: data.Duration);
+                        DrawOverlordSayPopup(data.Description,
+                                            data.TutorialTooltipAlign,
+                                            data.TutorialTooltipOwner,
+                                            data.AppearDelay,
+                                            duration: data.Duration,
+                                            soundToPlay: data.SoundToPlay,
+                                            soundToPlayBeginDelay: data.SoundToPlayBeginDelay,
+                                            actionToHideThisPopup: data.ActionToHideThisPopup,
+                                            minimumShowTime: data.MinimumShowTime);
                     }
                     break;
                 case Enumerators.TutorialActivityActionHandler.DrawDescriptionTooltips:
@@ -1207,6 +1278,121 @@ namespace Loom.ZombieBattleground
                     }
                     break;
             }
+        }
+
+        public List<Card> GetSpecificCardsBySet(Enumerators.SetType setType)
+        {
+            List<Card> cards = null;
+            if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
+            {
+                cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
+                    .ToList()
+                    .FindAll(card => card.CardSetType == setType)
+                    .OrderBy(sort => sort.Cost)
+                    .ToList();
+            }
+            return cards;
+        }
+
+        public CollectionCardData GetCardData(string id)
+        {
+            CollectionCardData cardData = null;
+            if (CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
+            {
+                cardData = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Find(info => info.CardName == id);
+            }
+            return cardData;
+        }
+
+        public List<Card> GetCardForCardPack(int count)
+        {
+            List<Card> cards = new List<Card>();
+            if (_cardsForOpenPack == null || _cardsForOpenPack.Count == 0)
+            {
+                _cardsForOpenPack = CurrentTutorial.TutorialContent.TutorialReward.CardPackReward
+                    .Select(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.Name))
+                    .ToList();
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                cards.Add(_cardsForOpenPack[0]);
+                _cardsForOpenPack.Remove(_cardsForOpenPack[0]);
+            }
+
+            return cards;
+        }
+
+        public void ApplyReward()
+        {
+            for (int i = 0; i < CurrentTutorial.TutorialContent.ToGameplayContent().RewardCardPackCount; i++)
+            {
+                //get card pack
+            }
+        }
+
+        public void SkipTutorial()
+        {
+            _dataManager.CachedUserLocalData.CurrentTutorialId = _tutorials.Count;
+            CompletelyFinishTutorial();
+            StopTutorial(true);
+            _handPointerController.ResetAll();
+            CreateStarterDeck();
+        }
+
+        private async void CreateStarterDeck()
+        {
+            List<DeckCardData> cards = GetCardsForStarterDeck();
+
+            Deck savedTutorialDeck = _dataManager.CachedUserLocalData.TutorialSavedDeck;
+            if (savedTutorialDeck != null && _dataManager.CachedDecksData.Decks.Exists(deck => deck.Id == savedTutorialDeck.Id))
+            {
+                if(savedTutorialDeck.GetNumCards() < Constants.DeckMaxSize)
+                {
+                    savedTutorialDeck.Cards = cards;
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                }
+            }
+            else
+            {
+                string nameOfDeck = "HORDE " + _dataManager.CachedDecksData.Decks.Count;
+                savedTutorialDeck = new Deck(-1, 4, nameOfDeck, cards, 0, 0);
+
+                long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
+                savedTutorialDeck.Id = newDeckId;
+                _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
+            }
+            _dataManager.CachedUserLocalData.TutorialSavedDeck = savedTutorialDeck;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)savedTutorialDeck.Id;
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+        }
+
+        private List<DeckCardData> GetCardsForStarterDeck()
+        {
+            List<DeckCardData> cards =
+                _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                    .Select(data => new DeckCardData(data.CardName, data.Amount))
+                    .ToList()
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).CardSetType != Enumerators.SetType.FIRE);
+
+            List<DeckCardData> filteredCards = new List<DeckCardData>();
+            int countCards = 0;
+            foreach (DeckCardData data in cards)
+            {
+                if (countCards >= Constants.DeckMaxSize)
+                    break;
+
+                if (countCards + data.Amount > Constants.DeckMaxSize)
+                {
+                    data.Amount = (int)Constants.DeckMaxSize - countCards;
+                }
+                countCards += data.Amount;
+                filteredCards.Add(data);
+            }
+
+            return filteredCards;
         }
     }
 }

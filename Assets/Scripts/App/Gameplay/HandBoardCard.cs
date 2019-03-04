@@ -113,6 +113,8 @@ public class HandBoardCard : OwnableBoardObject
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
                         return;
                     }
+
+                    _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerCardInHand);
                 }
             }
 
@@ -189,6 +191,7 @@ public class HandBoardCard : OwnableBoardObject
         }
         else
         {
+            _canceledPlay = false;
             ReturnToHandAnim();
 
             if (_tutorialManager.IsTutorial)

@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 throw new Exception("Game must be PVP");
 
             return CreateGameState(
+                _pvpManager.CurrentActionIndex,
                 _pvpManager.IsFirstPlayer(),
                 _pvpManager.InitialGameState.Id,
                 _pvpManager.InitialGameState.RandomSeed,
@@ -49,6 +50,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             bool isFirstPlayer = _gameplayManager.StartingTurn == Enumerators.StartingTurn.Player;
             return CreateGameState(
+                -1,
                 isFirstPlayer,
                 -1,
                 -1,
@@ -62,6 +64,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             PlayerState playerState = new PlayerState
             {
                 Id = playerId,
+                InstanceId = player.InstanceId.ToProtobuf(),
                 Defense = player.Defense,
                 GooVials = player.GooVials,
                 CurrentGoo = player.CurrentGoo,
@@ -108,7 +111,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return playerState;
         }
 
-        private  GameState CreateGameState(bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
+        private  GameState CreateGameState(int currentActionIndex, bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
         {
             Player player0 = isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
             Player player1 = !isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
@@ -123,7 +126,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     CreateFakePlayerStateFromPlayer(isFirstPlayer ? currentPlayerId : opponentPlayerId, player0, removeNonEssentialData),
                     CreateFakePlayerStateFromPlayer(!isFirstPlayer ? currentPlayerId : opponentPlayerId, player1, removeNonEssentialData)
-                }
+                },
+                CurrentActionIndex = currentActionIndex
             };
 
             return gameState;

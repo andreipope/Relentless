@@ -1,3 +1,8 @@
+# Ignore everything under root
+/*
+# But descend into directories
+!*/
+
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
@@ -7,6 +12,8 @@
 /[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/StreamingAssets/AssetBundles/*
+
+!/TestSubsetCategories.txt
 
 # Visual Studio 2015 cache directory
 /.vs/
@@ -53,6 +60,8 @@ StyleCop.Cache
 # Local-only files
 Assets/Resources/BuildMetaInfo.asset
 Assets/Resources/BuildMetaInfo.asset.meta
+Assets/InitTestScene*.unity
+Assets/InitTestScene*.unity.meta
 
 TypeCache.asset
 TypeCache.asset.meta

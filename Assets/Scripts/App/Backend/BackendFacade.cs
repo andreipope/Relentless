@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
@@ -15,7 +16,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private int _subscribeCount;
         private IRpcClient _reader;
         private IContractCallProxy _contractCallProxy;
         private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
@@ -277,7 +277,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
+#if USE_PRODUCTION_BACKEND
+        private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
+#else
         private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
+#endif
 
         private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
@@ -438,9 +442,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
-            Debug.Log(httpResponseMessage.StatusCode.ToString());
-            Debug.Log(httpResponseMessage.StatusCode);
+            Debug.Log(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -491,7 +493,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             const string queryURLsEndPoint = "/zbversion";
 
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
-            webrequestCreationInfo.Url = "http://stage-auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=staging";
+            webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
             Debug.Log(webrequestCreationInfo.Url);
 
@@ -567,10 +569,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public bool IsValid;
         }
 
-        #endregion
+#endregion
 
 
-        #region VersionCheck
+#region VersionCheck
 
         private const string GetVersionMethod = "GetVersions";
 
@@ -580,10 +582,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetVersionsResponse>(GetVersionMethod, request);
         }
 
-        #endregion
+#endregion
 
 
-        #region PVP
+#region PVP
 
         private const string FindMatchMethod = "FindMatch";
         private const string DebugFindMatchMethod = "DebugFindMatch";
@@ -700,38 +702,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         public async Task SubscribeEvent(IList<string> topics)
-         {
-#warning Fix the multiple subscription issue once and for all
-
-            for (int i = _subscribeCount; i > 0; i--) {
-                await UnsubscribeEvent();
-            }
-
+        {
+            await UnsubscribeEvent();
             await _reader.SubscribeAsync(EventHandler, topics);
-            _subscribeCount++;
         }
 
-         public async Task UnsubscribeEvent()
-         {
-            //TODO Remove the logs once we fix the multiple subscription issue once and for all
-            if (_subscribeCount > 0)
+        public async Task UnsubscribeEvent()
+        {
+            try
             {
-                Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
-                try
-                {
-                    await _reader.UnsubscribeAsync(EventHandler);
-                    _subscribeCount--;
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.LogException(e);
-                    Debug.Log("Unsubscribe Error " + e);
-                }
-
+                await _reader.UnsubscribeAsync(EventHandler);
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
+                Helpers.ExceptionReporter.LogException(e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
         }
 
@@ -766,9 +751,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
+        //attempt to implement a one message action policy
+        private byte[] previousData;
         private void EventHandler(object sender, JsonRpcEventData e)
         {
-            PlayerActionDataReceived?.Invoke(e.Data);
+            if (previousData == null || !previousData.SequenceEqual(e.Data)) {
+                previousData = e.Data;
+                PlayerActionDataReceived?.Invoke(e.Data);
+            }
         }
 
 #endregion
@@ -806,6 +796,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(CallCustomGameModeFunctionMethod, request);
         }
 
+#endregion
+
+#region RewardTutorial
+        private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
+        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
+        {
+            Debug.Log("GetRewardTutorialCompletedResponse");
+            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
+        }
+
+        private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
+        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
+        {
+            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
+        }
 #endregion
     }
 }

@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 
         void BackAppState();
 
+        void Dispose();
+
         void QuitApplication();
 
         void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true);

@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
             Action();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)
@@ -38,8 +38,6 @@ namespace Loom.ZombieBattleground
             increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedHp += increaseOn;
             AbilityUnitOwner.CurrentHp += increaseOn;
-
-            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedDamage += increaseOn;
             AbilityUnitOwner.CurrentDamage += increaseOn;
 

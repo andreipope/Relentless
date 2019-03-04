@@ -3,6 +3,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,35 +36,50 @@ namespace Loom.ZombieBattleground
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 List<BoardUnitView> units = new List<BoardUnitView>();
-                foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
-                {
-                    switch (targetType)
-                    {
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
-                    }
-                }
 
-                units = InternalTools.GetRandomElementsFromList(units, Count);
+                if (PredefinedTargets != null)
+                {
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().
+                             Select(model => BattlegroundController.GetBoardUnitViewByModel(model)).ToList();
+                }
+                else
+                {
+                    foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                    {
+                        switch (targetType)
+                        {
+                            case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                                break;
+                            case Enumerators.AbilityTargetType.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                                break;
+                        }
+                    }
+
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
+                }
 
                 foreach (BoardUnitView unit in units)
                 {
                     TakeBlitzToUnit(unit.Model);
                 }
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Select(x => x.Model).Cast<BoardObject>().ToList(),
-                                          AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    units
+                        .Select(x => new ParametrizedAbilityBoardObject(x.Model))
+                        .ToList()
+                );
             }
             else
             {
                 TakeBlitzToUnit(AbilityUnitOwner);
-
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { AbilityUnitOwner },
-                                             AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(AbilityUnitOwner)
+                    }
+                );
             }
         }
 

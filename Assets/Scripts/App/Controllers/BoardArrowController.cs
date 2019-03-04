@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public T DoAutoTargetingArrowFromTo<T>(Transform from, object to, float delayTillDestroyArrow = 1f,
+        public T DoAutoTargetingArrowFromTo<T>(Transform from, BoardObject to, float delayTillDestroyArrow = 1f,
                                                Action action = null, bool isManuallyDoAction = false) where T : BoardArrow
         {
             if (isManuallyDoAction)
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 arrow.Dispose();
-                if (arrow.gameObject != null)
+                if (arrow?.SelfObject != null)
                 {
                     UnityEngine.Object.Destroy(arrow.gameObject);
                 }

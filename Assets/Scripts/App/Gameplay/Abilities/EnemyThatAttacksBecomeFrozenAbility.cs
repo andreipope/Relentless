@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         protected override void UnitDamagedHandler(BoardObject from)

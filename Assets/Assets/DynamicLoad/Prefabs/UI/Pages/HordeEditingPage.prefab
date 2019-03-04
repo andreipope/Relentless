@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 224895132773291754}
   - component: {fileID: 114489473905223158}
   - component: {fileID: 114715312087114030}
+  - component: {fileID: 225444277392571162}
   m_Layer: 0
   m_Name: ElementsToggles
   m_TagString: Untagged
@@ -4186,3 +4187,14 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 12.5}
   m_SizeDelta: {x: 0, y: 25}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!225 &225444277392571162
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1119469064985308}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

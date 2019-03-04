@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using DG.Tweening;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -12,6 +13,10 @@ namespace Loom.ZombieBattleground
 {
     public class GameClient : ServiceLocatorBase
     {
+        public event Action ServicesInitialized;
+
+        public bool UpdateServices { get; set; } = true;
+
         private static readonly object Sync = new object();
 
         private static GameClient _instance;
@@ -21,22 +26,13 @@ namespace Loom.ZombieBattleground
         /// </summary>
         internal GameClient()
         {
+            Debug.Log("Starting game, version " + BuildMetaInfo.Instance.FullVersionName);
+
+            DOTween.KillAll();
             LoadObjectsManager loadObjectsManager = new LoadObjectsManager();
             loadObjectsManager.LoadAssetBundleFromFile(Constants.AssetBundleMain);
 
             BackendEndpoint backendEndpoint = GetDefaultBackendEndpoint();
-
-            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
-            ConfigData configData = new ConfigData();
-            if (File.Exists(configDataFilePath))
-            {
-                configData = JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
-                if (configData.Backend != null)
-                {
-                    Debug.Log("Backend overriden by config file.");
-                    backendEndpoint = configData.Backend;
-                }
-            }
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
                 contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, true));
@@ -57,7 +53,7 @@ namespace Loom.ZombieBattleground
             AddService<ITutorialManager>(new TutorialManager());
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
-            AddService<IDataManager>(new DataManager(configData));
+            AddService<IDataManager>(new DataManager(GetConfigData()));
             AddService<BackendFacade>(new BackendFacade(backendEndpoint, contractCallProxyFactory));
             AddService<ActionCollectorUploader>(new ActionCollectorUploader());
             AddService<BackendDataControlMediator>(new BackendDataControlMediator());
@@ -70,10 +66,32 @@ namespace Loom.ZombieBattleground
             AddService<FiatBackendManager>(new FiatBackendManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
+            AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
+            AddService<TutorialRewardManager>(new TutorialRewardManager());
+        }
+
+        public override void InitServices() {
+            base.InitServices();
+
+            ServicesInitialized?.Invoke();
+        }
+
+        public override void Update()
+        {
+            if (!UpdateServices)
+                return;
+
+            base.Update();
         }
 
         public static BackendEndpoint GetDefaultBackendEndpoint()
         {
+            ConfigData configData = GetConfigData();
+            if (configData.Backend != null)
+            {
+                return configData.Backend;
+            }
+
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
             const BackendPurpose backend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
@@ -109,6 +127,29 @@ namespace Loom.ZombieBattleground
         public static T Get<T>()
         {
             return Instance.GetService<T>();
+        }
+
+        public static void ClearInstance()
+        {
+            _instance = null;
+        }
+
+        private static ConfigData GetConfigData()
+        {
+            string configDataFilePath = Path.Combine(Application.persistentDataPath, Constants.LocalConfigDataFileName);
+            if (File.Exists(configDataFilePath))
+            {
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+            }
+#if UNITY_EDITOR
+            configDataFilePath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, Constants.LocalConfigDataFileName);
+            if (File.Exists(configDataFilePath))
+            {
+                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
+            }
+#endif
+
+            return new ConfigData();
         }
     }
 }

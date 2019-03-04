@@ -512,11 +512,11 @@ static class BattleCommandsHandler
 
     private static void RevertIceWall(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
             unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
@@ -527,11 +527,11 @@ static class BattleCommandsHandler
 
     private static void RevertFireball(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -541,7 +541,7 @@ static class BattleCommandsHandler
 
     private static void RevertMend(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -550,11 +550,11 @@ static class BattleCommandsHandler
 
     private static void RevertHealingTouch(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertHealUnityBySkill(unit, playOverlordSkill.Skill);
         }
@@ -564,7 +564,7 @@ static class BattleCommandsHandler
 
     private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
             unit.RevertStun();
@@ -574,11 +574,11 @@ static class BattleCommandsHandler
 
     private static void RevertFreeze(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             player.RevertStun();
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.RevertStun();
         }
@@ -588,7 +588,7 @@ static class BattleCommandsHandler
 
     private static void RevertRabies(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.SetInitialUnitType();
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -597,11 +597,11 @@ static class BattleCommandsHandler
 
     private static void RevertFireBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -611,7 +611,7 @@ static class BattleCommandsHandler
 
     private static void RevertStoneSkin(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
             unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
@@ -621,7 +621,7 @@ static class BattleCommandsHandler
 
     private static void RevertHarden(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -631,7 +631,7 @@ static class BattleCommandsHandler
     private static void RevertPush(PlayOverlordSkill playOverlordSkill)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
+        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
         WorkingCard workingCard = targetUnit.Card;
 
         BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == workingCard);
@@ -647,7 +647,7 @@ static class BattleCommandsHandler
 
     private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
@@ -660,11 +660,11 @@ static class BattleCommandsHandler
 
     private static void RevertPosionDartAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }

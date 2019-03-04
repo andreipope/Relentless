@@ -807,6 +807,7 @@ namespace Loom.ZombieBattleground.Common
 
             TapOnScreen,
             AvatarTooltipClosed,
+            DescriptionTooltipClosed,
 
             OverlordSayPopupHided,
 
@@ -821,6 +822,9 @@ namespace Loom.ZombieBattleground.Common
             ScreenChanged,
             PopupClosed,
 
+            CardPackOpened,
+            CardPackCollected,
+
             CardDragged,
             CardRemoved,
             CardAdded,
@@ -829,6 +833,7 @@ namespace Loom.ZombieBattleground.Common
             HordeFilled,
 
             IncorrectButtonTapped,
+            TriedToPressPlayButton,
 
             SceneChanged,
 
@@ -873,6 +878,20 @@ namespace Loom.ZombieBattleground.Common
             AbovePages,
             AbovePopups,
             AboveUI
+        }
+        
+        public enum MarketplaceCardPackType
+        {
+            Booster = 0,
+            Super = 1,
+            Air = 2,
+            Earth = 3,
+            Fire = 4,
+            Life = 5,
+            Toxic = 6,
+            Water = 7,
+            Small = 8,
+            Minion = 9            
         }
     }
 }

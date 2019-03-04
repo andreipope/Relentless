@@ -1,4 +1,6 @@
+using DG.Tweening;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _selfObject;
 
-        private SpriteRenderer _currentBackground;
+        private GameObject _currentBackground;
 
         private TextMeshPro _textDescription;
 
@@ -52,6 +54,14 @@ namespace Loom.ZombieBattleground
 
         private bool _isDrawing;
 
+        private int _ownerId;
+
+        private bool _canBeClosed = false;
+
+        private float _minimumShowTime;
+
+        private Sequence _showingSequence;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
@@ -61,7 +71,8 @@ namespace Loom.ZombieBattleground
                                                 bool dynamicPosition,
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                                BoardObject boardObjectOwner = null)
+                                                BoardObject boardObjectOwner = null,
+                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -69,10 +80,12 @@ namespace Loom.ZombieBattleground
 
             this.Id = id;
             OwnerType = owner;
+            _ownerId = ownerId;
             _align = align;
             _dynamicPosition = dynamicPosition;
             _currentPosition = position;
             _layer = layer;
+            _minimumShowTime = minimumShowTime;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -102,7 +115,6 @@ namespace Loom.ZombieBattleground
                 _currentBackground.transform.localScale = Vector3.one * value;
             }
             UpdateTextPosition();
-            Width = _currentBackground.bounds.size.x;
 
             if (ownerId > 0)
             {
@@ -139,6 +151,8 @@ namespace Loom.ZombieBattleground
             UpdatePosition();
 
             _isDrawing = true;
+
+            StartShowTimer();
         }
 
         public void UpdatePosition()
@@ -159,15 +173,36 @@ namespace Loom.ZombieBattleground
 
                         distance = Mathf.Abs(_selfObject.transform.position.x - tooltip._selfObject.transform.position.x);
 
-                        if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
-                            (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                        if (tooltip.Align == Enumerators.TooltipAlign.CenterLeft ||
+                            tooltip.Align == Enumerators.TooltipAlign.CenterRight)
                         {
-                            _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+
+                            if ((_align == tooltip.Align && distance < Width + AdditionalInterval) ||
+                                (_align != tooltip.Align && distance < MinIntervalFromDifferentAlign))
+                            {
+                                _align = _align == Enumerators.TooltipAlign.CenterLeft ? Enumerators.TooltipAlign.CenterRight : Enumerators.TooltipAlign.CenterLeft;
+                                SetBackgroundType(_align);
+                                _currentPosition.x *= -1f;
+                                SetPosition();
+                                UpdateTextPosition();
+                                Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
+                            }
+                        }
+                        else
+                        {
+                            if(_selfObject.transform.position.x > tooltip._selfObject.transform.position.x)
+                            {
+                                _align = Enumerators.TooltipAlign.CenterLeft;
+                                _currentPosition.x = Mathf.Abs(_currentPosition.x);
+                            }
+                            else
+                            {
+                                _align = Enumerators.TooltipAlign.CenterRight;
+                                _currentPosition.x = -Mathf.Abs(_currentPosition.x);
+                            }
                             SetBackgroundType(_align);
-                            _currentPosition.x *= -1f;
-                            UpdateTextPosition();
                             SetPosition();
-                            Helpers.InternalTools.DoActionDelayed(tooltip.UpdatePosition, Time.deltaTime);
+                            UpdateTextPosition();
                         }
                     }
                 }
@@ -177,22 +212,28 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.TutorialObjectLayer.Default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBackground.sortingOrder = 1;
+                    UpdateBackgroundLayers(SRSortingLayers.GameUI2, 1);
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 case Enumerators.TutorialObjectLayer.AboveUI:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI3;
-                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI3;
-                    _currentBackground.sortingOrder = 1;
+                    UpdateBackgroundLayers(SRSortingLayers.GameUI3, 1);
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 default:
                     _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBackground.sortingLayerName = SRSortingLayers.GameUI2;
-                    _currentBackground.sortingOrder = 0;
+                    UpdateBackgroundLayers(SRSortingLayers.GameUI2, 0);
                     _textDescription.renderer.sortingOrder = 1;
                     break;
+            }
+        }
+
+        private void UpdateBackgroundLayers(string name, int order)
+        {
+            foreach (SpriteRenderer child in _currentBackground.GetComponentsInChildren<SpriteRenderer>())
+            {
+                child.sortingLayerName = name;
+                child.sortingOrder = order;
             }
         }
 
@@ -206,17 +247,30 @@ namespace Loom.ZombieBattleground
                 SetPosition();
             }
             _isDrawing = true;
+            UpdatePossibilityForClose();
         }
 
         public void Hide()
         {
+            if (!_isDrawing || !_canBeClosed)
+                return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DescriptionTooltipClosed);
+
             _selfObject?.SetActive(false);
 
             _isDrawing = false;
+
+            if(_showingSequence != null)
+            {
+                _showingSequence.Kill();
+                _showingSequence = null;
+            }
         }
 
         public void Dispose()
         {
+            _isDrawing = false;
             if (_selfObject != null)
             {
                 MonoBehaviour.Destroy(_selfObject);
@@ -232,9 +286,14 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        if (_ownerUnit != null)
+                        if (_ownerUnit != null && !_ownerUnit.Model.IsDead && _ownerUnit.GameObject != null && _ownerUnit.GameObject)
                         {
                             _selfObject.transform.position = _ownerUnit.Transform.TransformPoint(_currentPosition);
+                        }
+                        else if(_ownerId != 0)
+                        {
+                            UpdatePossibilityForClose();
+                            Hide();
                         }
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
@@ -243,27 +302,47 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void StartShowTimer()
+        {
+            _canBeClosed = false;
+            if (_minimumShowTime > 0f)
+            {
+                _showingSequence = InternalTools.DoActionDelayed(UpdatePossibilityForClose, _minimumShowTime);
+            }
+            else
+            {
+                UpdatePossibilityForClose();
+            }
+        }
+
+        private void UpdatePossibilityForClose()
+        {
+            _canBeClosed = true;
+        }
+
         private void UpdateTextPosition()
         {
-            Vector3 textPosition = Vector3.zero;
+            Vector3 centerOfChilds = Vector3.zero;
+            SpriteRenderer[] childs = _currentBackground.GetComponentsInChildren<SpriteRenderer>();
+            Width = childs[0].bounds.size.x * 4;
+
+            foreach (SpriteRenderer child in childs)
+            {
+                centerOfChilds += child.transform.position;
+            }
+            centerOfChilds /= childs.Length;
+            Vector3 textPosition = centerOfChilds;
+
             switch (_align)
             {
-                case Enumerators.TooltipAlign.TopMiddle:
-                    textPosition.y = -_currentBackground.bounds.size.y * 0.52f;
-                    break;
-                case Enumerators.TooltipAlign.CenterLeft:
-                    textPosition.x = _currentBackground.bounds.size.x * 0.51f;
-                    break;
                 case Enumerators.TooltipAlign.CenterRight:
-                    textPosition.x = -_currentBackground.bounds.size.x * 0.51f;
-                    break;
-                case Enumerators.TooltipAlign.BottomMiddle:
-                    textPosition.y = _currentBackground.bounds.size.y * 0.52f;
+                case Enumerators.TooltipAlign.CenterLeft:
+                    textPosition.x *= 1.03f;
                     break;
                 default:
                     break;
             }
-            _textDescription.transform.localPosition = textPosition;
+            _textDescription.transform.position = textPosition;
         }
 
         private void SetPosition()
@@ -293,7 +372,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TooltipAlign.CenterRight:
                 case Enumerators.TooltipAlign.TopMiddle:
                 case Enumerators.TooltipAlign.BottomMiddle:
-                    _currentBackground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).GetComponent<SpriteRenderer>();
+                    _currentBackground = _selfObject.transform.Find("ArrowType/Arrow_" + align.ToString()).gameObject;
                     _currentBackground.gameObject.SetActive(true);
                     break;
                 default:

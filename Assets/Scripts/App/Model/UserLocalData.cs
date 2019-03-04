@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground.Data
 
         public List<int> TutorialTooltipsPassed;
 
+        public Deck TutorialSavedDeck;
+
         public UserLocalData()
         {
             Reset();
@@ -52,8 +54,15 @@ namespace Loom.ZombieBattleground.Data
 #if !UNITY_ANDROID && !UNITY_IOS
             AppScreenMode = Enumerators.ScreenMode.FullScreen;
 
-            Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
-            AppResolution = new Vector2Int(resolution.width, resolution.height);
+            if (Screen.resolutions.Length > 0)
+            {
+                Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+                AppResolution = new Vector2Int(resolution.width, resolution.height);
+            }
+            else
+            {
+                AppResolution = new Vector2Int(1280, 720);
+            }
 #endif
             TutorialTooltipsPassed = new List<int>();
         }

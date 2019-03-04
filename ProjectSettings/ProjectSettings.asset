@@ -651,7 +651,6 @@ PlayerSettings:
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
     1: 
-    7: 
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

@@ -40,10 +40,12 @@ namespace Loom.ZombieBattleground
 
             CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                TargetUnit
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                }
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

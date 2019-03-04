@@ -6,13 +6,6 @@ namespace Loom.ZombieBattleground.Data
     {
         public int Attack;
         public int Defense;
-        public string CardName;
-
-        public ParametrizedAbilityParameters()
-        {
-            Attack = 0;
-            Defense = 0;
-            CardName = String.Empty;
-        }
+        public string CardName = String.Empty;
     }
 }

@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground.Helpers
 
             Sequence sequence = DOTween.Sequence();
             sequence.PrependInterval(delay);
-            sequence.OnComplete(action);
+            sequence.AppendCallback(action);
 
             return sequence;
         }
