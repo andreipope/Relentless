@@ -57,10 +57,14 @@ namespace Loom.ZombieBattleground
         {
             get
             {
+#if FORCE_ENABLE_FILE_LOG
+                return true;
+#else
                 if (GetLogFilePathFromEnvVar() != null)
                     return true;
 
                 return Application.isEditor;
+#endif
             }
         }
 
@@ -81,7 +85,7 @@ namespace Loom.ZombieBattleground
             // Unity console
             PatternLayout unityConsolePattern = new PatternLayout();
             unityConsolePattern.ConversionPattern = "[%logger] %message";
-            if (Application.isEditor)
+            if (Application.isEditor && !Application.isBatchMode)
             {
                 unityConsolePattern.ConversionPattern = "<i>[%logger]</i> %message";
             }
