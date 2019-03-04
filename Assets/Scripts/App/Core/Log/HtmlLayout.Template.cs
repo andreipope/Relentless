@@ -32,6 +32,11 @@ namespace Loom.ZombieBattleground {
             word-break: break-all;
         }
 
+        #loading-modal
+        {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
         {{CUSTOM_CSS}}
     </style>
     <script>
@@ -59,6 +64,36 @@ namespace Loom.ZombieBattleground {
         		if (callNow) func.apply(context, args);
         	};
         };
+        
+        function handleFilter() {
+            var value = $(""#filter"").val().toLowerCase().trim();
+            if (currentMark != null) {
+                currentMark.unmark()
+            }
+
+            filteredCells = []
+            logsRows.forEach(function(row) {
+                visible = false
+                for (index = 0; index < row.cells.length; ++index) {
+                    cellText = row.cellsText[index]
+                    if (cellText.includes(value)) {
+                        visible = true
+                        filteredCells.push(row.cells[index])
+                    }
+                }
+    
+                if (visible) {
+                    $(row.row).show()
+                } else {
+                    $(row.row).hide()
+                }
+            })
+    
+            if (value.length > 1) {
+                currentMark = new Mark(filteredCells)
+                currentMark.mark(value)
+            }
+        }
 
         var logsRows = $(""#log-table tr:not(.special-row)"").toArray().splice(1)
         var currentMark = null
@@ -93,38 +128,29 @@ namespace Loom.ZombieBattleground {
 
         // Handle filter field
         $(""#filter"").on(""keyup"", debounce(function() {
-            var value = $(this).val().toLowerCase().trim();
-            if (currentMark != null) {
-                currentMark.unmark()
-            }
-
-            filteredCells = []
-            logsRows.forEach(function(row) {
-                visible = false
-                for (index = 0; index < row.cells.length; ++index) {
-                    cellText = row.cellsText[index]
-                    if (cellText.includes(value)) {
-                        visible = true
-                        filteredCells.push(row.cells[index])
-                    }
-                }
-
-                if (visible) {
-                    $(row.row).show()
-                } else {
-                    $(row.row).hide()
-                }
-            })
-
-            currentMark = new Mark(filteredCells)
-            currentMark.mark(value)
+            handleFilter()
         }, 250, false));
+
+        handleFilter()
+        
+        // Finish loading
+        $('#loading-modal').hide()
     });
     </script>
   </head>
 <body>
 
         <div class=""container-fluid"">
+                <div class=""modal"" id=""loading-modal"" style=""display: block;"">
+                    <div class=""modal-dialog modal-dialog-centered"">
+                        <div class=""modal-content"">
+                            <div class=""modal-header"">
+                                <h4 class=""modal-title text-center"" style=""width: 100%;"">Loading...</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <br>
                 <h4>{{LOG_NAME}} Log</h4>
                 <h6>Started at {{START_DATE}}</h6>
