@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground
                         }
                         catch(Exception e)
                         {
-                            Helpers.ExceptionReporter.LogException(e);
+                            Helpers.ExceptionReporter.SilentReportException(e);
                         }
                         connectionPopup.Hide();
                     };

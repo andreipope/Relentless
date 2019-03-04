@@ -63,19 +63,19 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" Time out == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Client.RpcClientException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" RpcException == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" other == " + exception);
                             ShowConnectionPopup();
                         }
@@ -88,19 +88,19 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" Time out == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Client.RpcClientException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" RpcException == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
                             Log.Warn(" other == " + exception);
                             ShowConnectionPopup();
                         }

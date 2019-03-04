@@ -112,19 +112,19 @@ namespace Loom.ZombieBattleground
                     }
                     catch (TimeoutException exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
                         Log.Warn(" Time out == " + exception);
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                     }
                     catch (Client.RpcClientException exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
                         Log.Warn(" RpcException == " + exception);
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                     }
                     catch (Exception exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
                         Log.Warn(" other == " + exception);
                     }
                 }
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
             {
@@ -271,19 +271,19 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" Time out == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
             catch (Client.RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Info("Exception not handled, restarting matchmaking:" + e.Message);
                 await Task.Delay(1000); // avoids endless loop on repeated exceptions
                 await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());

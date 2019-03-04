@@ -247,19 +247,19 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" Time out == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Client.RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Info("Result === " + e);
                 OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
                 return;

@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Info("save deck exception === " + e.Message);
             }
         }
@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(e);
+                    Helpers.ExceptionReporter.SilentReportException(e);
                     Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
                 }
             }

@@ -806,7 +806,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                Helpers.ExceptionReporter.LogException(ex);
+                Helpers.ExceptionReporter.SilentReportException(ex);
                 Log.Warn(ex.Message);
             }
         }

@@ -17,22 +17,8 @@ namespace Loom.ZombieBattleground.Helpers.Tools
 {
     public class CardLibraryEditTool : EditorWindow
     {
-        private static readonly JsonSerializerSettings JsonSerializerSettings =
-            new JsonSerializerSettings
-            {
-                Culture = CultureInfo.InvariantCulture,
-                Converters = {
-                        new StringEnumConverter()
-                },
-                CheckAdditionalContent = true,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                Error = (sender, args) =>
-                {
-                   UnityEngine.Debug.LogException(args.ErrorContext.Error);
-                }
-            };
-
-
+        private JsonSerializerSettings _jsonSerializerSettings =
+            JsonUtility.CreateStrictSerializerSettings((sender, args) => UnityEngine.Debug.LogException(args.ErrorContext.Error));
         private CardList _currentWorkingCardsLibrary;
 
         private string _importedCollectionPath;
@@ -71,7 +57,11 @@ namespace Loom.ZombieBattleground.Helpers.Tools
                 _importedCollectionPath = EditorUtility.OpenFilePanel("Select card collection", "", "json");
                 if (_importedCollectionPath.Length != 0)
                 {
-                    _currentWorkingCardsLibrary = JsonConvert.DeserializeObject<CardList>(File.ReadAllText(_importedCollectionPath), JsonSerializerSettings);
+                    _currentWorkingCardsLibrary =
+                        JsonConvert.DeserializeObject<CardList>(
+                            File.ReadAllText(_importedCollectionPath),
+                            _jsonSerializerSettings
+                        );
                     _isCardsImported = true;
                 }
                 else
@@ -203,7 +193,13 @@ namespace Loom.ZombieBattleground.Helpers.Tools
 
                     if (!string.IsNullOrEmpty(pathToFile))
                     {
-                        File.WriteAllText(pathToFile, JsonConvert.SerializeObject(_currentWorkingCardsLibrary, Formatting.Indented, JsonSerializerSettings));
+                        File.WriteAllText(
+                            pathToFile,
+                            JsonConvert.SerializeObject(
+                                _currentWorkingCardsLibrary,
+                                Formatting.Indented,
+                                _jsonSerializerSettings
+                                ));
                         Process.Start(new FileInfo(pathToFile).Directory.FullName);
                     }
                 }

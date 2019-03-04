@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         }
                         catch (Exception e)
                         {
-                            Helpers.ExceptionReporter.LogException(e);
+                            Helpers.ExceptionReporter.SilentReportException(e);
                             Log.Warn("Unable to read call metrics: " + e);
                         }
                     }

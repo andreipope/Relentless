@@ -120,20 +120,9 @@ namespace Loom.ZombieBattleground
 
             _overlordSaysPopupSequences = new List<Sequence>();
 
-            var settings = new JsonSerializerSettings
-            {
-                Culture = CultureInfo.InvariantCulture,
-                Converters = {
-                    new StringEnumConverter()
-                },
-                CheckAdditionalContent = true,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Error = (sender, args) =>
-                {
-                    Log.Error("", args.ErrorContext.Error);
-                }
-            };
+            JsonSerializerSettings settings =
+                JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
+            settings.TypeNameHandling = TypeNameHandling.Auto;
 
             _tutorials = JsonConvert.DeserializeObject<List<TutorialData>>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>(TutorialDataPath).text, settings);

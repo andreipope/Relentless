@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
                 Log.Error("", actionSystemException);
-                Helpers.ExceptionReporter.LogException(actionSystemException);
+                Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 ActionDoneCallback();
                 throw actionSystemException;

@@ -901,9 +901,8 @@ namespace Loom.ZombieBattleground
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
 
-                Helpers.ExceptionReporter.LogException("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
-                                                        " | targetCardView.GameObject: " + targetCardView?.GameObject);
-
+                ExceptionReporter.LogException(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                    " | targetCardView.GameObject: " + targetCardView?.GameObject));
                 return;
             }
 

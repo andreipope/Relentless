@@ -178,7 +178,7 @@ namespace Loom.ZombieBattleground
             }
             catch (OperationCanceledException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Info("brain canceled!");
             }
 

@@ -390,7 +390,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 if (e.Message == Constants.VaultEmptyErrorCode)
                 {
@@ -429,7 +429,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
@@ -448,7 +448,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
@@ -478,7 +478,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 Log.Info(e.ToString());
                 string errorMsg = string.Empty;
@@ -574,7 +574,7 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
@@ -583,7 +583,7 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -593,7 +593,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -603,7 +603,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
@@ -640,7 +640,7 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -649,7 +649,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -658,7 +658,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 Log.Warn(e);
                 _lastErrorMessage = e.Message;

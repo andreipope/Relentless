@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
@@ -15,7 +16,8 @@ namespace Loom.ZombieBattleground.Test
 {
     public class AsyncTestRunner
     {
-        private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
+        private static readonly ILog Log = Logging.GetLog(nameof(AsyncTestRunner));
+
         private const int FlappyErrorMaxRetryCount = 4;
 
         private static readonly string[] KnownErrors =
@@ -62,7 +64,7 @@ namespace Loom.ZombieBattleground.Test
                 throw new ArgumentOutOfRangeException(nameof(timeout));
 
             Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must have [Timeout(int.MaxValue)] attribute");
-            Debug.Log("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
+            Log.Info("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
 
             IEnumerator enumerator =
                 RunAsyncTestInternal(async () =>
@@ -91,7 +93,7 @@ namespace Loom.ZombieBattleground.Test
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log(LogTag + nameof(GameTearDown));
+            Log.Info(nameof(GameTearDown));
             await new WaitForSecondsRealtime(0.5f);
             GameClient.Get<IAppStateManager>()?.Dispose();
             await TestHelper.Instance.TearDown_Cleanup();
@@ -108,7 +110,7 @@ namespace Loom.ZombieBattleground.Test
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log(LogTag + nameof(GameSetUp));
+            Log.Info(nameof(GameSetUp));
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
@@ -124,7 +126,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 try
                 {
-                    Debug.Log("Previous test still running, tearing down the world");
+                    Log.Info("Previous test still running, tearing down the world");
                     yield return TestHelper.TaskAsIEnumerator(GameTearDown);
 
                     while (!_currentRunningTestTask.IsCompleted)
@@ -159,7 +161,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         isTimedOut = true;
                         string message = $"Test execution time exceeded {timeout} s";
-                        Debug.Log(message);
+                        Log.Info(message);
                         CancelTestWithReason(new TimeoutException(message));
                     }
                 }
@@ -192,18 +194,18 @@ namespace Loom.ZombieBattleground.Test
                 if (flappyException != null && retry <= FlappyErrorMaxRetryCount)
                 {
                     mustRetry = true;
-                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry + 1} out of {FlappyErrorMaxRetryCount})");
+                    Log.Warn($"Test had flappy error, retrying (retry {retry + 1} out of {FlappyErrorMaxRetryCount})");
                 }
                 else
                 {
                     if (e is OperationCanceledException)
                     {
-                        Debug.LogException(_cancellationReason);
+                        Log.Error("", _cancellationReason);
                         ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
                     }
                     else
                     {
-                        Debug.LogException(e);
+                        Log.Error("", e);
                         ExceptionDispatchInfo.Capture(e).Throw();
                     }
                 }

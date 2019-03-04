@@ -28,19 +28,7 @@ namespace Loom.ZombieBattleground
         private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
 
         private static readonly JsonSerializerSettings JsonSerializerSettings =
-            new JsonSerializerSettings
-            {
-                Culture = CultureInfo.InvariantCulture,
-                Converters = {
-                    new StringEnumConverter()
-                },
-                CheckAdditionalContent = true,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                Error = (sender, args) =>
-                {
-                    Log.Error("", args.ErrorContext.Error);
-                }
-            };
+            JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
 
         private ILocalizationManager _localizationManager;
 

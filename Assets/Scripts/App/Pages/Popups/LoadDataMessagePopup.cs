@@ -100,13 +100,13 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 success = false;
                 _uiManager.GetPopup<LoginPopup>().Show(e);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 Log.Warn(e);
                 success = false;
                 _uiManager.DrawPopup<LoginPopup>();

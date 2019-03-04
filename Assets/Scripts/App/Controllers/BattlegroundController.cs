@@ -858,7 +858,7 @@ namespace Loom.ZombieBattleground
         {
             if (boardUnitModel == null)
             {
-                Helpers.ExceptionReporter.LogException("Trying to get BoardUnitView from 'null' BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("Trying to get BoardUnitView from 'null' BoardUnitModel"));
                 return null;
             }
 
@@ -870,7 +870,7 @@ namespace Loom.ZombieBattleground
 
             if (unitView is default(BoardUnitView))
             {
-                Helpers.ExceptionReporter.LogException("BoardUnitView couldnt found for BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("BoardUnitView couldnt found for BoardUnitModel"));
                 return null;
             }
 
