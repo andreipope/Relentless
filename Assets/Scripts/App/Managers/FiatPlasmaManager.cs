@@ -138,7 +138,6 @@ namespace Loom.ZombieBattleground
                     throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
                 }
             }
-            return "";
         }
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)

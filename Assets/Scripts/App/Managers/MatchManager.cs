@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
-using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground
 {

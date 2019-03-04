@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
             /// global and instance rules on the <see cref="T:log4net.Util.PatternParser" />.
             /// </para>
             /// </remarks>
-            public PatternParser CreatePatternParser(string pattern)
+            public new PatternParser CreatePatternParser(string pattern)
             {
                 return base.CreatePatternParser(pattern);
             }

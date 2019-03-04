@@ -145,8 +145,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float MatchmakingTimeOut = 120;
-
         internal const float TurnTime = 120;
 
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
