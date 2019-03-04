@@ -491,9 +491,6 @@ namespace Loom.ZombieBattleground
 
         public void StopTurn(GameState pvpControlGameState = null)
         {
-
-            Debug.LogError("55555555555");
-
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {

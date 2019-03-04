@@ -520,8 +520,6 @@ namespace Loom.ZombieBattleground
                                    _activeAbility.Ability.ActivateSelectTarget(
                                        callback: () =>
                                        {
-                                           Debug.LogError("222222222");
-
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.WorkingCard.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
@@ -695,7 +693,6 @@ namespace Loom.ZombieBattleground
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
 
-                               Debug.LogError("3333333333");
 
                                abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null,
                                                                                    Enumerators.QueueActionType.AbilityUsageBlocker,
