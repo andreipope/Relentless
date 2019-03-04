@@ -448,22 +448,18 @@ public class UserReportingScript : MonoBehaviour
                 Log.Warn("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
             }
 
-            // Attachments
-            if (!String.IsNullOrEmpty(_exceptionStacktrace))
-            {
-                string exception = _exceptionCondition + "\r\n" + _exceptionStacktrace;
-                AddAttachment(br, "Exception", exception);
-                Log.Error(exception);
-                if (Logging.GetRepository() is IFlushable flushable)
-                {
-                    flushable.Flush(1000);
-                }
-            }
-
             // Fields
             if (matchId != null)
             {
                 br.Fields.Add(new UserReportNamedValue("Online Match Id", matchId.Value.ToString()));
+            }
+
+            // Exception
+            if (!String.IsNullOrEmpty(_exceptionStacktrace))
+            {
+                string exception = _exceptionCondition + Environment.NewLine + _exceptionStacktrace;
+                AddTextAttachment(br, "Exception.txt", exception);
+                Log.Error(exception);
             }
 
             // Call metrics
@@ -475,13 +471,7 @@ public class UserReportingScript : MonoBehaviour
                     threadedCallProxy.WrappedProxy is TimeMetricsContractCallProxy timeMetricsCallProxy)
                 {
                     string callMetricsJson = dataManager.SerializeToJson(timeMetricsCallProxy.MethodToCallRoundabouts, true);
-                    br.Attachments.Add(
-                        new UserReportAttachment(
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            "application/json",
-                            Encoding.UTF8.GetBytes(callMetricsJson)
-                        ));
+                    AddTextAttachment(br, TimeMetricsContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
                 }
             }
             catch (Exception e)
@@ -493,6 +483,11 @@ public class UserReportingScript : MonoBehaviour
             // HTML log
             try
             {
+                if (Logging.GetRepository() is IFlushable flushable)
+                {
+                    flushable.Flush(5000);
+                }
+
                 byte[] htmlLog;
                 using(FileStream fileStream = new FileStream(
                     Logging.GetLogFilePath(),
@@ -613,16 +608,16 @@ public class UserReportingScript : MonoBehaviour
 
     #endregion
 
-    private void AddAttachment(UserReport report, string name, string text, string extension = ".txt", string contentType = "text/plain")
+    private void AddTextAttachment(UserReport report, string name, string text,  string contentType = "text/plain")
     {
         // Convert to Windows encoding for easy viewing
         text = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
         report.Attachments.Add(
             new UserReportAttachment(
                 name,
-                name + extension,
+                name,
                 contentType,
-                System.Text.Encoding.UTF8.GetBytes(text)
+                Encoding.UTF8.GetBytes(text)
             ));
     }
 }

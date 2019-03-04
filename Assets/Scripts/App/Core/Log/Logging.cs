@@ -81,7 +81,9 @@ namespace Loom.ZombieBattleground
                 Layout = htmlLayout,
                 Encoding = Encoding.UTF8,
                 RollingStyle = RollingFileAppender.RollingMode.Once,
-                MaxSizeRollBackups = 3
+                MaxSizeRollBackups = 3,
+                PreserveLogFileNameExtension = true,
+                ImmediateFlush = false
             };
 
             fileAppender.ActivateOptions();
