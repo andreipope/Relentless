@@ -906,7 +906,6 @@ namespace Loom.ZombieBattleground
             unit.OwnerPlayer.BoardCards.Remove(view);
             unit.OwnerPlayer.CardsOnBoard.Remove(unit.Card);
 
-            unit.OwnerPlayer = newPlayerOwner;
             unit.Card.Owner = newPlayerOwner;
 
             newPlayerOwner.CardsOnBoard.Insert(ItemPosition.End, unit.Card);
@@ -967,8 +966,6 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.SetParent(playerBoard.transform);
             boardUnitView.Transform.position = new Vector2(1.9f * owner.BoardCards.Count, 0);
-            boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();
 
@@ -1132,7 +1129,6 @@ namespace Loom.ZombieBattleground
             boardCard.SetHighlightingEnabled(false);
 
             boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
-            boardCard.HandBoardCard.OwnerPlayer = card.Owner;
 
             return boardCard;
         }
@@ -1275,7 +1271,6 @@ namespace Loom.ZombieBattleground
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
                 workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.OpponentPlayer, cardInfo.Name, ItemPosition.End);
-                workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
                 OpponentBoardCards.Insert(ItemPosition.End, workingUnitView);
             }

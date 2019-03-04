@@ -1088,7 +1088,6 @@ namespace Loom.ZombieBattleground
             boardCard.Init(new BoardUnitModel(card));
 
             HandBoardCard handCard = new HandBoardCard(go, boardCard);
-            handCard.OwnerPlayer = card.Owner;
             handCard.BoardZone = _playerBoard;
             boardCard.HandBoardCard = handCard;
             handCard.CheckStatusOfHighlight();
@@ -1164,12 +1163,13 @@ namespace Loom.ZombieBattleground
 
             float unitYPositionOnBoard = owner.IsLocalPlayer ? -1.66f : 1.66f;
 
+            if (card.Owner != owner)
+                throw new Exception("card.Owner != owner, shouldn't those be the same");
+
             BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card), playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, unitYPositionOnBoard);
-            boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             boardUnitView.PlayArrivalAnimation();
 

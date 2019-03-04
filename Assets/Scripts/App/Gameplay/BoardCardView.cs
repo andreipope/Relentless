@@ -163,7 +163,7 @@ namespace Loom.ZombieBattleground
 
             NameText.text = BoardUnitModel.Card.LibraryCard.Name;
             BodyText.text = BoardUnitModel.Card.LibraryCard.Description;
-            CostText.text = BoardUnitModel.Card.LibraryCard.ToString();
+            CostText.text = BoardUnitModel.Card.LibraryCard.Cost.ToString();
 
             IsNewCard = true;
 

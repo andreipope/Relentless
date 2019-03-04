@@ -50,9 +50,11 @@ namespace Loom.ZombieBattleground
 
         public InstanceId InstanceId => Card.InstanceId;
 
+        public override Player OwnerPlayer => Card.Owner;
+
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
-        public int TutorialObjectId;
+        public int TutorialObjectId => Card.TutorialObjectId;
 
         public BoardUnitModel(WorkingCard card)
         {

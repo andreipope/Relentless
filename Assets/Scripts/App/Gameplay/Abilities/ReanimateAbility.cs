@@ -78,8 +78,6 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {

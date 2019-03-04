@@ -61,6 +61,8 @@ public class HandBoardCard : OwnableBoardObject
 
     public GameObject GameObject { get; }
 
+    public override Player OwnerPlayer => CardView.BoardUnitModel.OwnerPlayer;
+
     public void UpdatingHandler(GameObject obj)
     {
         if (!Enabled)
