@@ -677,23 +677,26 @@ namespace Loom.ZombieBattleground
                                                  _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                                                  SpecificBattlegroundInfo.DisabledInitialization))
             {
-                _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
+                InternalTools.DoActionDelayed(() =>
                 {
-                    _actionsQueueController.ClearActions();
-
-                    _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                    _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+                    if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                     {
-                        _queueManager.AddAction(
-                            new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
-                            )
-                        );
+                        _actionsQueueController.ClearActions();
 
-                        completeCallback?.Invoke();
-                    }, Enumerators.QueueActionType.EndMatch);
-                }
+                        _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                        {
+                            _queueManager.AddAction(
+                                new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                                )
+                            );
+
+                            completeCallback?.Invoke();
+                        }, Enumerators.QueueActionType.EndMatch);
+                    }
+                }, 2f);
             }
             else
             {
