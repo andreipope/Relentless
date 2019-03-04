@@ -45,10 +45,11 @@ namespace Loom.ZombieBattleground {
             switch (GetPatternConverterName(patternConverter))
             {
                 case "Logger":
-                    double colorHash =
+                    // Use name hashcode as a hue
+                    double hue =
                         unchecked((uint) loggingEvent.LoggerName.GetHashCode()) /
                         (double) uint.MaxValue * 360f;
-                    (int r, int g, int b) = ColorFromHsv(colorHash, 1, 0.7);
+                    (int r, int g, int b) = ColorFromHsv(hue, 1, 0.7);
                     return $"color: rgb({r}, {g}, {b});";
                 default:
                     return base.GetLogItemCellStyle(patternConverter, loggingEvent);
@@ -73,6 +74,8 @@ namespace Loom.ZombieBattleground {
             {
                 case "Message":
                     base.WriteCell(loggingEvent, patternConverter, htmlWriter);
+
+                    // Write exception in the same cell, at the end of the cell
                     string exceptionString = loggingEvent.GetExceptionString();
                     if (!String.IsNullOrWhiteSpace(exceptionString))
                     {
@@ -86,7 +89,7 @@ namespace Loom.ZombieBattleground {
             }
         }
 
-        protected override void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent, int converterCount)
+        protected override void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent)
         {
         }
 

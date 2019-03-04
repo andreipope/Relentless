@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
             }
             writer.WriteLine("</tr>");
 
-            WriteException(writer, htmlWriter, loggingEvent, _converterCount);
+            WriteException(writer, htmlWriter, loggingEvent);
         }
 
         public override string ContentType => "text/html";
@@ -152,13 +152,13 @@ namespace Loom.ZombieBattleground
             patternConverter.Format(htmlWriter, loggingEvent);
         }
 
-        protected virtual void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent, int converterCount)
+        protected virtual void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent)
         {
             string exceptionString = loggingEvent.GetExceptionString();
             if (!String.IsNullOrWhiteSpace(exceptionString))
             {
                 writer.WriteLine("<tr class=\"table-danger special-row\">");
-                writer.WriteLine($"<td colspan=\"{converterCount}\">");
+                writer.WriteLine($"<td colspan=\"{ConverterCount}\">");
                 htmlWriter.WriteLine(exceptionString);
                 writer.WriteLine("</td>");
                 writer.WriteLine("</tr>");
