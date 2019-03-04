@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
             //    return;
             //}
 
-            _uiManager.DrawPopup<SettingsPopup>(true);
+            _uiManager.DrawPopup<MySettingPopups>(true);
         }
         
         private void ButtonLoginHandler()
