@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -10,6 +11,8 @@ namespace Loom.ZombieBattleground
 {
     public class RanksController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(RanksController));
+
         public event Action<WorkingCard, List<BoardUnitView>> RanksUpdated;
 
         private ITutorialManager _tutorialManager;
@@ -272,7 +275,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (unit == null || unit.Model == null)
                     {
-                        Helpers.ExceptionReporter.LogException("Tried to Buff Null Unit in Ranks System");
+                        ExceptionReporter.LogException(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
                         continue;
                     }
 

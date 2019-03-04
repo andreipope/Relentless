@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class QueueProxyPlayerActionTestProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MatchScenarioPlayer));
+
         private readonly Func<Queue<Func<Task>>> _getQueueFunc;
         private readonly MatchScenarioPlayer _matchScenarioPlayer;
 
@@ -141,7 +144,7 @@ namespace Loom.ZombieBattleground.Test
 
         private void LogAction(string log)
         {
-            Debug.Log($"[ScenarioPlayer] {Proxy.GetType().Name}: " + log);
+            Log.Info($"{Proxy.GetType().Name}: " + log);
         }
 
         private static string StringifyInstanceIds(IEnumerable<InstanceId> cards)

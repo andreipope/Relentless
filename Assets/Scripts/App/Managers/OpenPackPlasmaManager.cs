@@ -12,12 +12,15 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
 
     public class OpenPackPlasmaManager : IService 
     {    
+        private static readonly ILog Log = Logging.GetLog(nameof(OpenPackPlasmaManager));
+
         public List<Card> CardsReceived { get; private set; }
         
         #region Contract
@@ -110,7 +113,7 @@ namespace Loom.ZombieBattleground
         
         public async Task<int> CallPackBalanceContract(int packTypeId)
         {        
-            Debug.Log($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
+            Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
             EvmContract packContract = await GetContract(
                 PrivateKey,
                 PublicKey,
@@ -129,7 +132,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch
                 {
-                    Debug.Log($"smart contract [balanceOf] error or reverted");
+                    Log.Info($"smart contract [balanceOf] error or reverted");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
@@ -137,7 +140,7 @@ namespace Loom.ZombieBattleground
                 {
                     throw new Exception($"{nameof(CallPackBalanceContract)} with packTypeId {packTypeId}  failed after {count} attempts");
                 }
-                Debug.Log($"Retry CallPackBalance: {count}");
+                Log.Info($"Retry CallPackBalance: {count}");
             }
             return amount;            
         }
@@ -196,7 +199,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch
                 {
-                    Debug.Log($"smart contract [open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] error or reverted");
+                    Log.Info($"smart contract [open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] error or reverted");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
@@ -204,7 +207,7 @@ namespace Loom.ZombieBattleground
                 {
                     throw new Exception($"{nameof(CallOpenPack)} with packTypeId {packTypeId}  failed after {count} attempts");
                 }
-                Debug.Log($"Retry CallOpenPack: {count}");
+                Log.Info($"Retry CallOpenPack: {count}");
             }
             return resultList;                                   
         }
@@ -251,14 +254,14 @@ namespace Loom.ZombieBattleground
                 throw new Exception("Contract not signed in!");
             }
             
-            Debug.Log($"Calling smart contract [{BalanceOfMethod}]");
+            Log.Info($"Calling smart contract [{BalanceOfMethod}]");
             int result = await contract.StaticCallSimpleTypeOutputAsync<int>(
                 BalanceOfMethod,
                  Address.FromPublicKey(PublicKey).ToString()
             );        
-            Debug.Log("<color=green>" + "balanceOf RESULT: " + result + "</color>");
+            Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
         
-            Debug.Log($"Smart contract method [{BalanceOfMethod}] finished executing.");
+            Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
             return result;
         }
         
@@ -270,13 +273,13 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log("Calling smart contract [approve]");
+            Log.Info("Calling smart contract [approve]");
     
             int amountToApprove = 1;
         
             await contract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
         
-            Debug.Log($"Smart contract method [{ApproveMethod}] finished executing.");
+            Log.Info($"Smart contract method [{ApproveMethod}] finished executing.");
         }
         
         private const string OpenPackMethod = "openBoosterPack";
@@ -287,11 +290,11 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [{OpenPackMethod}] with packId: {packTypeId}");
+            Log.Info( $"Calling smart contract [{OpenPackMethod}] with packId: {packTypeId}");
         
             await contract.CallAsync(OpenPackMethod, packTypeId);
         
-            Debug.Log($"Smart contract method [{OpenPackMethod}] with packId: {packTypeId} finished executing.");
+            Log.Info($"Smart contract method [{OpenPackMethod}] with packId: {packTypeId} finished executing.");
         }
         
         [Event("GeneratedCard")]
@@ -306,15 +309,15 @@ namespace Loom.ZombieBattleground
 
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
-            Debug.LogFormat("Received smart contract event: " + e.EventName);
+            Log.InfoFormat("Received smart contract event: " + e.EventName);
             OnOpenPackEvent onOpenPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
-            Debug.Log($"<color=red>CardId: {onOpenPackEvent.CardId}, BoosterType: {onOpenPackEvent.BoosterType}</color>");
+            Log.Info($"<color=red>CardId: {onOpenPackEvent.CardId}, BoosterType: {onOpenPackEvent.BoosterType}</color>");
 
             if ((int)onOpenPackEvent.CardId % 10 == 0)
             {
                 int mouldId = (int)onOpenPackEvent.CardId / 10;
                 Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
-                Debug.Log($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
                 CardsReceived.Add(card);
             }
         }                   

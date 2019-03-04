@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public class LoadingPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoadingPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -91,7 +94,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e.Message);
+                    Log.Info(e.Message);
                     _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
                 }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 {
     public class HordeSelectionPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionPage));
+
         private const int HordeItemSpace = 570, HordeContainerXoffset = 60;
 
         private IUIManager _uiManager;
@@ -240,24 +243,24 @@ namespace Loom.ZombieBattleground
                     deck.SelfDeck.Id
                 );
 
-                Debug.Log($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
+                Log.Info($" ====== Delete Deck {deck.SelfDeck.Id} Successfully ==== ");
             }
             catch (TimeoutException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogWarning(" Time out == " + exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn(" Time out == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Client.RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogWarning(" RpcException == " + exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.Log("Result === " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result === " + e);
                 OpenAlertDialog($"Not able to Delete Deck {deck.SelfDeck.Id}: " + e.Message);
                 return;
             }

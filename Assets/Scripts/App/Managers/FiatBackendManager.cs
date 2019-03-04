@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Globalization;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
 {
     public class FiatBackendManager : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(FiatBackendManager));
+
         private BackendDataControlMediator _backendDataControlMediator;
     
         public void Init()
@@ -36,7 +39,7 @@ namespace Loom.ZombieBattleground
         
         public async Task<FiatValidationResponse> CallFiatValidationGoogle(string productId, string purchaseToken, string storeTxId, string storeName)
         {  
-            Debug.Log($"{nameof(CallFiatValidationGoogle)}");
+            Log.Info($"{nameof(CallFiatValidationGoogle)}");
             
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
@@ -58,15 +61,15 @@ namespace Loom.ZombieBattleground
                 throw new Exception($"{nameof(CallFiatValidationGoogle)} failed with error code {httpResponseMessage.StatusCode}");            
             
             string json = httpResponseMessage.ReadToEnd();          
-            Debug.Log(json);        
+            Log.Info(json);
             FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
-            Debug.Log($"Finish {nameof(CallFiatValidationGoogle)}");
+            Log.Info($"Finish {nameof(CallFiatValidationGoogle)}");
             return response;
         }
         
         public async Task<FiatValidationResponse> CallFiatValidationApple(string productId, string transactionId, string receiptData, string storeName)
         {  
-            Debug.Log($"{nameof(CallFiatValidationApple)}");
+            Log.Info($"{nameof(CallFiatValidationApple)}");
             
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
@@ -88,15 +91,15 @@ namespace Loom.ZombieBattleground
                 throw new Exception($"{nameof(CallFiatValidationApple)} failed with error code {httpResponseMessage.StatusCode}");                        
 
             string json = httpResponseMessage.ReadToEnd();                
-            Debug.Log(json);        
+            Log.Info(json);
             FiatValidationResponse response = JsonConvert.DeserializeObject<FiatValidationResponse>(json);
-            Debug.Log($"Finish {nameof(CallFiatValidationApple)}");
+            Log.Info($"Finish {nameof(CallFiatValidationApple)}");
             return response;            
         }
         
         public async Task<List<FiatTransactionResponse>> CallFiatTransaction()
         {    
-            Debug.Log($"{nameof(CallFiatTransaction)}");
+            Log.Info($"{nameof(CallFiatTransaction)}");
                  
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatTransactionURL;
@@ -109,13 +112,13 @@ namespace Loom.ZombieBattleground
                 throw new Exception($"{nameof(CallFiatTransaction)} failed with error code {httpResponseMessage.StatusCode}");
         
             string json = httpResponseMessage.ReadToEnd();   
-            Debug.Log(json);   
+            Log.Info(json);
             
             List<FiatTransactionResponse> fiatResponseList = JsonConvert.DeserializeObject<List<FiatTransactionResponse>>(json);           
     
             foreach(FiatTransactionResponse reponse in fiatResponseList)
             {
-                Debug.Log("FiatTransactionResponse hash: " + reponse.VerifyHash.hash);
+                Log.Info("FiatTransactionResponse hash: " + reponse.VerifyHash.hash);
             }
 
             return fiatResponseList;
@@ -130,7 +133,7 @@ namespace Loom.ZombieBattleground
 
         public async Task<bool> CallFiatClaim(int userId, List<int> transactionIds)
         {
-            Debug.Log($"{nameof(CallFiatClaim)}");
+            Log.Info($"{nameof(CallFiatClaim)}");
             
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
