@@ -2,14 +2,14 @@
 using System;
 using System.Security.Cryptography;
 using System.Text;
-using Loom.Org.BouncyCastle.Crypto.Digests;
 
 namespace Loom.Client
 {
     public static class CryptoUtils
     {
         private static readonly RNGCryptoServiceProvider rngCsp = new RNGCryptoServiceProvider();
-        private static readonly RipeMD160Digest ripeMd160Digest = new RipeMD160Digest();
+        private static readonly RIPEMD160 ripemd160 = RIPEMD160.Create();
+        private static readonly SHA256Managed sha256Managed = new SHA256Managed();
 
         /// <summary>
         /// Generates a cryptographically strong sequence of random bytes.
@@ -129,15 +129,15 @@ namespace Loom.Client
         /// <returns>Array of bytes representing a local address.</returns>
         public static byte[] LocalAddressFromPublicKey(byte[] publicKey)
         {
-            lock (ripeMd160Digest)
+            lock (ripemd160)
             {
-                ripeMd160Digest.Reset();
-                ripeMd160Digest.BlockUpdate(publicKey, 0, publicKey.Length);
-
-                byte[] address = new byte[ripeMd160Digest.GetDigestSize()];
-                ripeMd160Digest.DoFinal(address, 0);
-                return address;
+                return ripemd160.ComputeHash(publicKey);
             }
+        }
+
+        public static byte[] CalculateSha256Hash(byte[] bytes)
+        {
+            return sha256Managed.ComputeHash(bytes);
         }
     }
 }
