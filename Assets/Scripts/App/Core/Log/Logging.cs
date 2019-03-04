@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 {
     public static class Logging
     {
-        private const string LogFileNameEnvVariable = "ZB_LOG_FILE_NAME";
+        private const string LogFilePathEnvVariable = "ZB_LOG_FILE_PATH";
         private const string DefaultLogFileName = "Log.html";
         private const string RepositoryName = "ZBLogRepository";
 
@@ -44,7 +44,11 @@ namespace Loom.ZombieBattleground
 
         public static string GetLogFilePath()
         {
-            return Path.Combine(Application.persistentDataPath, GetLogFileName());
+            string logFilePath = Environment.GetEnvironmentVariable(LogFilePathEnvVariable);
+            if (!String.IsNullOrWhiteSpace(logFilePath))
+                return logFilePath;
+
+            return Path.Combine(Application.persistentDataPath, DefaultLogFileName);
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -96,15 +100,6 @@ namespace Loom.ZombieBattleground
             // Finish up
             hierarchy.Root.Level = Level.All;
             hierarchy.Configured = true;
-        }
-
-        private static string GetLogFileName()
-        {
-            string logFileName = Environment.GetEnvironmentVariable(LogFileNameEnvVariable);
-            if (!String.IsNullOrWhiteSpace(logFileName))
-                return logFileName.Trim();
-
-            return DefaultLogFileName;
         }
     }
 }
