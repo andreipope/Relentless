@@ -64,7 +64,8 @@ namespace Loom.ZombieBattleground
                        _buttonLowerLeftArrow,
                        _buttonLowerRightArrow,
                        _buttonSaveDeck,
-                       _buttonAbilities;
+                       _buttonAbilities,
+                       _buttonAuto;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
@@ -128,18 +129,14 @@ namespace Loom.ZombieBattleground
                 if (tab != MyDecksPage.TAB.EDITING)
                     return;
 
-                _deckPageIndex = 0;
-                _inputFieldSearchName.text = "";
-
-                _cacheCollectionCardsList.Clear();                    
-                ResetDeckBoardCards();
-                ResetCollectionsBoardCards();
-                _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
-                _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";
+                FillCollectionData();                
                 ResetCollectionPageState();
-                LoadDeckCards(_myDeckPage.CurrentEditDeck);
-                UpdateDeckCardPage();
-                UpdateOverlordAbilitiesButton();                
+                ResetDeckPageState();
+                
+                UpdateOverlordAbilitiesButton();  
+                _inputFieldSearchName.text = "";
+                _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
+                _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";              
             };
 
             _cacheCollectionCardsList = new List<Card>();
@@ -185,6 +182,10 @@ namespace Loom.ZombieBattleground
             _buttonAbilities = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
             _buttonAbilities.onClick.AddListener(ButtonOverlordAbilitiesHandler);
             _buttonAbilities.onClick.AddListener(_myDeckPage.PlayClickSound);
+            
+            _buttonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
+            _buttonAuto.onClick.AddListener(ButtonAutoHandler);
+            _buttonAuto.onClick.AddListener(_myDeckPage.PlayClickSound);
             
             _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
@@ -285,6 +286,19 @@ namespace Loom.ZombieBattleground
         {
             _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD_SKILL);
         }
+        
+        private void ButtonAutoHandler()
+        {
+            FillCollectionData();
+            GameClient.Get<DeckGeneratorManager>().GenerateCardsToDeck
+            (
+                _myDeckPage.CurrentEditDeck,
+                _collectionData
+            );            
+                        
+            ResetCollectionPageState();
+            ResetDeckPageState();
+        }
 
         public void OnInputFieldSearchEndedEdit(string value)
         {
@@ -318,11 +332,6 @@ namespace Loom.ZombieBattleground
             {
                 CollectionsCardPositions.Add(placeholder);
             }
-
-            _deckPageIndex = 0;
-            _currentCollectionPage = 0;
-            _currentCollectionSetTypeIndex = 0;
-            FillCollectionData();
         }
         
         private void FillCollectionData()
@@ -483,6 +492,8 @@ namespace Loom.ZombieBattleground
                     UpdateEditDeckCardsAmount();
                 }
             }
+
+            UpdateDeckCardPage();
         }
         
         public void AddCardToDeck(IReadOnlyCard card)
@@ -570,9 +581,6 @@ namespace Loom.ZombieBattleground
                 };
 
                 _createdDeckBoardCards.Add(boardCard);
-
-                UpdateEditDeckCardsAmount();
-                UpdateDeckCardPage();
             }
 
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
@@ -581,6 +589,7 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.LibraryCard.Name).Amount);
 
             UpdateDeckCardPage();
+            UpdateEditDeckCardsAmount();
 
             if(_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
@@ -610,20 +619,19 @@ namespace Loom.ZombieBattleground
                 Object.DestroyImmediate(boardCard.GameObject);
 
                 int currentDeckPage = _deckPageIndex;
-                UpdateDeckCardPage();
                 int deckPagesAmount = GetDeckPageAmount();
                 if (currentDeckPage >= deckPagesAmount)
                 {
                     _deckPageIndex = deckPagesAmount - 1;
                 }
-
-                UpdateDeckCardPage();
-                UpdateEditDeckCardsAmount();
             }
             else
             {
                 boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.LibraryCard), boardCard.CardsAmountDeckEditing);
             }
+            
+            UpdateDeckCardPage();
+            UpdateEditDeckCardsAmount();
         }
         
         private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
@@ -868,6 +876,12 @@ namespace Loom.ZombieBattleground
             UpdateDeckCardPage();
         }
         
+        private void ResetDeckPageState()
+        {
+            _deckPageIndex = 0;
+            LoadDeckCards(_myDeckPage.CurrentEditDeck);
+        }
+
         public void MoveCollectionPageIndex(int direction)
         {
             _currentCollectionPage += direction;

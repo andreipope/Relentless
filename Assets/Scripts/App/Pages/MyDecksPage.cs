@@ -59,8 +59,7 @@ namespace Loom.ZombieBattleground
                        _buttonSelectDeckSearch,
                        _buttonEdit,
                        _buttonDelete,
-                       _buttonRename,
-                       _buttonAuto,
+                       _buttonRename,                       
                        _buttonLeftArrow,
                        _buttonRightArrow;
 
@@ -233,13 +232,15 @@ namespace Loom.ZombieBattleground
         private void ButtonLeftArrowHandler()
         {
             MoveDeckPageIndex(-1);
-            UpdateDeckInfoObjects();            
+            UpdateDeckInfoObjects(); 
+            ChangeSelectDeckIndex(0);           
         }
         
         private void ButtonRightArrowHandler()
         {
             MoveDeckPageIndex(1);
             UpdateDeckInfoObjects();
+            ChangeSelectDeckIndex(0);          
         }
         
         private void ButtonBackHandler()
@@ -298,11 +299,6 @@ namespace Loom.ZombieBattleground
             Deck deck = GetSelectedDeck();
             string newName = _inputFieldRenameDeckName.text;
             MyDecksEditTab.ProcessRenameDeck(deck, newName);
-        }
-        
-        private void ButtonAutoHandler()
-        {
-           
         }
 
         public void OnInputFieldRenameEndedEdit(string value)
@@ -440,10 +436,10 @@ namespace Loom.ZombieBattleground
             EventChangeTab?.Invoke(_tab);
         }
         
-        private void ChangeSelectDeckIndex(int newIndex)
+        private void ChangeSelectDeckIndex(int newIndexInPage)
         {
-            UpdateSelectedDeckDisplay(newIndex);
-            SelectDeckIndex = newIndex;
+            UpdateSelectedDeckDisplay(newIndexInPage);
+            SelectDeckIndex = newIndexInPage + _deckPageIndex * _deckInfoAmountPerPage;
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -590,10 +586,6 @@ namespace Loom.ZombieBattleground
             _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonBackTray/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
             _buttonBack.onClick.AddListener(PlayClickSound);
-            
-            _buttonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
-            _buttonAuto.onClick.AddListener(ButtonAutoHandler);
-            _buttonAuto.onClick.AddListener(PlayClickSound);
             
             _buttonSelectDeckFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonSelectDeckFilter.onClick.AddListener(ButtonSelectDeckFilterHandler);

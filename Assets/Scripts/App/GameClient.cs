@@ -80,6 +80,7 @@ namespace Loom.ZombieBattleground
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
+            AddService<DeckGeneratorManager>(new DeckGeneratorManager());
         }
 
         public override void InitServices() {
