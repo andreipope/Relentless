@@ -1,4 +1,7 @@
+using log4net.Core;
+using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
+using Logger = log4net.Repository.Hierarchy.Logger;
 
 #if UNITY_EDITOR
 using UnityEditor.Callbacks;
@@ -16,14 +19,14 @@ namespace Loom.ZombieBattleground
         {
             Logging.Setup();
 
-#if UNITY_EDITOR && !FORCE_ENABLE_ALL_LOGS
-            // Disable non-essential logs in Editor
-            Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
-            backendFacadeRpc.Level = Level.Warn;
+            if (Logging.NonEssentialLogsDisabled)
+            {
+                Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
+                backendFacadeRpc.Level = Level.Warn;
 
-            Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
-            timeMetricsContractCallProxy.Level = Level.Warn;
-#endif
+                Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
+                timeMetricsContractCallProxy.Level = Level.Warn;
+            }
         }
     }
 }
