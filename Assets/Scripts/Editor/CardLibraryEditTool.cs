@@ -11,14 +11,15 @@ using Newtonsoft.Json.Converters;
 using UnityEditor;
 using UnityEngine;
 using CardList = Loom.ZombieBattleground.Data.CardList;
-
+using Logger = Loom.WebSocketSharp.Logger;
 
 namespace Loom.ZombieBattleground.Helpers.Tools
 {
     public class CardLibraryEditTool : EditorWindow
     {
-        private JsonSerializerSettings _jsonSerializerSettings =
+        private readonly JsonSerializerSettings _jsonSerializerSettings =
             JsonUtility.CreateStrictSerializerSettings((sender, args) => UnityEngine.Debug.LogException(args.ErrorContext.Error));
+
         private CardList _currentWorkingCardsLibrary;
 
         private string _importedCollectionPath;

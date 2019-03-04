@@ -459,7 +459,7 @@ public class UserReportingScript : MonoBehaviour
             {
                 string exception = _exceptionCondition + Environment.NewLine + _exceptionStacktrace;
                 AddTextAttachment(br, "Exception.txt", exception);
-                Log.Error(exception);
+                Log.Fatal(exception);
             }
 
             // Call metrics
