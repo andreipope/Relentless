@@ -268,12 +268,13 @@ namespace Loom.ZombieBattleground
         
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
-            _selfPage = null;
+            _selfPage = null; 
         }
         
         public void Dispose()
         {
-            DestroyCreatedObject();            
+            DestroyCreatedObject();
+            _cardInfoPopupHandler.Dispose();
         }
         
         #endregion
