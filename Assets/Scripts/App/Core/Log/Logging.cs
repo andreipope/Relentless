@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 using log4net;
@@ -10,15 +11,13 @@ using log4netUnitySupport;
 using UnityEditor.Callbacks;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Loom.ZombieBattleground
 {
     public static class Logging
     {
-        public const string LogFileName = "Log.html";
+        private const string LogFileNameEnvVariable = "ZB_LOG_FILE_NAME";
+        private const string DefaultLogFileName = "Log.html";
         private const string RepositoryName = "ZBLogRepository";
 
         private static bool _isConfigured;
@@ -41,6 +40,11 @@ namespace Loom.ZombieBattleground
         public static Logger GetLogger(string name)
         {
             return (Logger) LogManager.GetLogger(RepositoryName, name).Logger;
+        }
+
+        public static string GetLogFilePath()
+        {
+            return Path.Combine(Application.persistentDataPath, GetLogFileName());
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -82,8 +86,7 @@ namespace Loom.ZombieBattleground
                 Encoding = Encoding.UTF8,
                 RollingStyle = RollingFileAppender.RollingMode.Once,
                 MaxSizeRollBackups = 3,
-                PreserveLogFileNameExtension = true,
-                ImmediateFlush = false
+                PreserveLogFileNameExtension = true
             };
 
             fileAppender.ActivateOptions();
@@ -93,28 +96,15 @@ namespace Loom.ZombieBattleground
             // Finish up
             hierarchy.Root.Level = Level.All;
             hierarchy.Configured = true;
-
-#if UNITY_EDITOR
-            //EditorApplication.playModeStateChanged -= EditorApplicationOnPlayModeStateChanged;
-            //EditorApplication.playModeStateChanged += EditorApplicationOnPlayModeStateChanged;
-#endif
         }
 
-        public static string GetLogFilePath()
+        private static string GetLogFileName()
         {
-            return Path.Combine(Application.persistentDataPath, LogFileName);
-        }
+            string logFileName = Environment.GetEnvironmentVariable(LogFileNameEnvVariable);
+            if (!String.IsNullOrWhiteSpace(logFileName))
+                return logFileName.Trim();
 
-#if UNITY_EDITOR
-        private static void EditorApplicationOnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            Hierarchy hierarchy = (Hierarchy) LogManager.GetRepository();
-            hierarchy.Shutdown();
-            hierarchy.Clear();
-            _isConfigured = false;
+            return DefaultLogFileName;
         }
-#endif
-
     }
-
 }

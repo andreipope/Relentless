@@ -488,6 +488,8 @@ public class UserReportingScript : MonoBehaviour
                     flushable.Flush(5000);
                 }
 
+                string logFilePath = Logging.GetLogFilePath();
+                string logFileName = Path.GetFileName(logFilePath);
                 byte[] htmlLog;
                 using(FileStream fileStream = new FileStream(
                     Logging.GetLogFilePath(),
@@ -495,7 +497,7 @@ public class UserReportingScript : MonoBehaviour
                     FileAccess.Read,
                     FileShare.ReadWrite))
                 {
-                    using(BinaryReader binaryReader = new BinaryReader(fileStream))
+                    using (BinaryReader binaryReader = new BinaryReader(fileStream))
                     {
                         htmlLog = binaryReader.ReadBytes(int.MaxValue);
                     }
@@ -506,14 +508,14 @@ public class UserReportingScript : MonoBehaviour
                     using (ZipArchive zipArchive = ZipArchive.Create())
                     {
                         zipArchive.DeflateCompressionLevel = CompressionLevel.BestCompression;
-                        zipArchive.AddEntry(Logging.LogFileName, new MemoryStream(htmlLog), true);
+                        zipArchive.AddEntry(logFileName, new MemoryStream(htmlLog), true);
                         zipArchive.SaveTo(zipStream);
                     }
 
                     br.Attachments.Add(
                         new UserReportAttachment(
-                            "Log.html.zip",
-                            "Log.html.zip",
+                            logFileName + ".zip",
+                            logFileName + ".zip",
                             "application/zip",
                             zipStream.ToArray()
                         ));
