@@ -8,9 +8,11 @@ using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
 using log4netUnitySupport;
-using UnityEditor.Callbacks;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
+#if UNITY_EDITOR
+using UnityEditor.Callbacks;
+#endif
 
 namespace Loom.ZombieBattleground
 {
@@ -52,7 +54,9 @@ namespace Loom.ZombieBattleground
         }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+#if UNITY_EDITOR
         [DidReloadScripts]
+#endif
         public static void Setup()
         {
             if (_isConfigured)
