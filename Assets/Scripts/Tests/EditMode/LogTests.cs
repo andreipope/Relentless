@@ -17,8 +17,9 @@ namespace Loom.ZombieBattleground.Test
         {
             ILoggerRepository repository = LogManager.CreateRepository(Guid.NewGuid().ToString());
             Hierarchy hierarchy = (Hierarchy) LogManager.GetRepository(repository.Name);
-            HtmlLayout htmlLayout = new Logging.CustomHtmlLayout("%utcdate{HH:mm:ss}%level%logger%message");
+            HtmlLayout htmlLayout = new CustomHtmlLayout("%utcdate{HH:mm:ss}%level%logger%message");
             htmlLayout.LogName = "Test";
+            htmlLayout.MaxTextLengthBeforeCollapse = 50;
             htmlLayout.ActivateOptions();
 
             StringWriter stringWriter = new StringWriter();

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Text;
 using log4net;
@@ -7,7 +6,6 @@ using log4net.Core;
 using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
-using log4net.Util;
 using log4netUnitySupport;
 using UnityEditor.Callbacks;
 using UnityEngine;
@@ -58,6 +56,10 @@ namespace Loom.ZombieBattleground
             // Unity console
             PatternLayout unityConsolePattern = new PatternLayout();
             unityConsolePattern.ConversionPattern = "[%logger] %message";
+            if (Application.isEditor)
+            {
+                unityConsolePattern.ConversionPattern = "<i>[%logger]</i> %message";
+            }
             unityConsolePattern.ActivateOptions();
 
             UnityConsoleAppender unityConsoleAppender = new UnityConsoleAppender
@@ -111,67 +113,6 @@ namespace Loom.ZombieBattleground
         }
 #endif
 
-        public class CustomHtmlLayout : HtmlLayout
-        {
-            public CustomHtmlLayout(string pattern) : base(pattern) { }
-
-            protected override bool IsFilteredPatternConverter(PatternConverter patternConverter)
-            {
-                switch (GetPatternConverterName(patternConverter))
-                {
-                    case "Logger":
-                    case "Message":
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-
-            protected override string GetLogItemCellClass(PatternConverter patternConverter, LoggingEvent loggingEvent)
-            {
-                switch (GetPatternConverterName(patternConverter))
-                {
-                    case "Time":
-                        return "text-monospace small";
-                    default:
-                        return base.GetLogItemCellClass(patternConverter, loggingEvent);
-                }
-            }
-
-            protected override string CreatePatternConverterName(PatternConverter patternConverter)
-            {
-                string typeName = patternConverter.GetType().Name;
-                switch (typeName)
-                {
-                    case "UtcDatePatternConverter":
-                        return "Time";
-                    default:
-                        return base.CreatePatternConverterName(patternConverter);
-                }
-            }
-
-            protected override void WriteCell(LoggingEvent loggingEvent, PatternConverter patternConverter, TextWriter htmlWriter)
-            {
-                switch (GetPatternConverterName(patternConverter))
-                {
-                    case "Message":
-                        base.WriteCell(loggingEvent, patternConverter, htmlWriter);
-                        string exceptionString = loggingEvent.GetExceptionString();
-                        if (!String.IsNullOrWhiteSpace(exceptionString))
-                        {
-                            htmlWriter.WriteLine("");
-                            htmlWriter.WriteLine(exceptionString);
-                        }
-                        break;
-                    default:
-                        base.WriteCell(loggingEvent, patternConverter, htmlWriter);
-                        break;
-                }
-            }
-
-            protected override void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent, int converterCount)
-            {
-            }
-        }
     }
+
 }

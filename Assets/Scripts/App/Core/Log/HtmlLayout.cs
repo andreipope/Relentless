@@ -9,13 +9,21 @@ using log4net.Util;
 
 namespace Loom.ZombieBattleground
 {
-    public class HtmlLayout : LayoutSkeleton
+    public partial class HtmlLayout : LayoutSkeleton
     {
         public string Pattern { get; set; }
 
         public string LogName { get; set; } = "";
 
         public string StartDateFormat { get; set; } = "ddd, d MMM yyyy HH:mm:ss UTC";
+
+        public int MaxTextLengthBeforeCollapse { get; set; } = 1000;
+
+        public int CollapsedTextHeight { get; set; } = 250;
+
+        public string CustomCss { get; set; } = "";
+
+        public int ConverterCount => _converterCount;
 
         private readonly List<int> _filteredCellIndexes = new List<int>();
         private readonly Dictionary<Type, string> _converterNames = new Dictionary<Type, string>();
@@ -60,7 +68,6 @@ namespace Loom.ZombieBattleground
             htmlWriter.Write(GetLogItemRowClass(loggingEvent));
             writer.WriteLine("\">");
 
-
             for (PatternConverter patternConverter = PatternConverterHead; patternConverter != null; patternConverter = patternConverter.Next)
             {
                 writer.Write("<td");
@@ -70,6 +77,14 @@ namespace Loom.ZombieBattleground
                 {
                     writer.Write(" class=\"");
                     htmlWriter.Write(cellClass);
+                    writer.Write("\" ");
+                }
+
+                string cellStyle = GetLogItemCellStyle(patternConverter, loggingEvent);
+                if (!String.IsNullOrWhiteSpace(cellStyle))
+                {
+                    writer.Write(" style=\"");
+                    htmlWriter.Write(cellStyle);
                     writer.Write("\"");
                 }
 
@@ -99,7 +114,11 @@ namespace Loom.ZombieBattleground
                 headerPart1
                     .Replace("{{LOG_NAME}}", LogName)
                     .Replace("{{START_DATE}}", DateTime.UtcNow.ToString(StartDateFormat, CultureInfo.InvariantCulture))
-                    .Replace("{{FILTERED_CELL_INDEXES}}", String.Join(", ", _filteredCellIndexes));
+                    .Replace("{{FILTERED_CELL_INDEXES}}", String.Join(", ", _filteredCellIndexes))
+                    .Replace("{{MAX_TEXT_LENGTH_BEFORE_COLLAPSE}}", MaxTextLengthBeforeCollapse.ToString())
+                    .Replace("{{COLLAPSED_TEXT_HEIGHT}}", CollapsedTextHeight.ToString())
+                    .Replace("{{CUSTOM_CSS}}", CustomCss)
+                ;
 
             writer.Write(headerPart1);
             for (PatternConverter patternConverter = PatternConverterHead; patternConverter != null; patternConverter = patternConverter.Next)
@@ -173,13 +192,17 @@ namespace Loom.ZombieBattleground
             return "";
         }
 
+        protected virtual string GetLogItemCellStyle(PatternConverter patternConverter, LoggingEvent loggingEvent)
+        {
+            return "";
+        }
+
         protected string GetPatternConverterName(PatternConverter patternConverter)
         {
             Type type = patternConverter.GetType();
             if (!_converterNames.TryGetValue(type, out string name))
             {
                 name = CreatePatternConverterName(patternConverter);
-
                 _converterNames.Add(type, name);
             }
 
@@ -261,99 +284,5 @@ namespace Loom.ZombieBattleground
                 WebUtility.HtmlEncode(value, Writer);
             }
         }
-
-        //language=html
-        private const string HeaderPart1 = @"<!DOCTYPE html>
-<html>
-  <head>
-    <title>{{LOG_NAME}} Log Messages </title>
-    <meta charset=""utf-8"">
-
-    <!-- Latest compiled and minified CSS -->
-    <link rel=""stylesheet"" href=""https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"">
-
-    <!-- jQuery library -->
-    <script src=""https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js""></script>
-
-    <!-- mark.js -->
-    <script src=""https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js""></script>
-
-    <style type=""text/css"">
-        .table td.fit,
-        .table th.fit {
-            white-space: nowrap;
-            width: 1%;
-        }
-
-        .preformatted {
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-    </style>
-    <script>
-    var filteredCellIndexes = [ {{FILTERED_CELL_INDEXES}} ]
-    
-    $(document).ready(function() {
-        var logsRows = $(""#log-table tr:not(.special-row)"").toArray().splice(1)
-        var currentMark = null
-        logsRows = logsRows.map(function(row) {
-            cells = Array.from(row.querySelectorAll('td'))
-            cells = filteredCellIndexes.map(function(x) { return cells[x] })
-            cellsText = cells.map(function(x) { return x.innerText.toLowerCase() })
-            return {
-                'row': row,
-                'cells': cells,
-                'cellsText': cellsText
-            }
-        })
-        $(""#filter"").on(""keyup"", function() {
-            var value = $(this).val().toLowerCase().trim();
-            if (currentMark != null) {
-                currentMark.unmark()
-            }
-
-            filteredCells = []
-            logsRows.forEach(function(row) {
-                visible = false
-                for (index = 0; index < row.cells.length; ++index) {
-                    cellText = row.cellsText[index]
-                    if (cellText.includes(value)) {
-                        visible = true
-                        filteredCells.push(row.cells[index])
-                    }
-                }
-
-                if (visible) {
-                    $(row.row).show()
-                } else {
-                    $(row.row).hide()
-                }
-            })
-
-            currentMark = new Mark(filteredCells)
-            currentMark.mark(value)
-        });
-    });
-    </script>
-  </head>
-<body>
-
-        <div class=""container-fluid"">
-                <br>
-                <h4>{{LOG_NAME}} Log</h4>
-                <h6>Started at {{START_DATE}}</h6>
-
-<input id=""filter"" type=""text"" placeholder=""Filter"" class=""form-control"">
-<br>
-
-<table class=""table table-sm table-striped table-bordered"" id=""log-table"">
-
-<thead class=""thead-light"">
-<tr>
-";
-        //language=html
-        private const string HeaderPart2 = @"</tr>
-</thead>
-";
     }
 }
