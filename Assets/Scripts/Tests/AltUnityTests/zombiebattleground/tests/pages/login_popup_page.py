@@ -42,3 +42,5 @@ class Login_Popup_Page(CZBTests):
         self.write_in_input_field(self.password_input_field,password)
         self.button_pressed(self.login_button)
 
+
+

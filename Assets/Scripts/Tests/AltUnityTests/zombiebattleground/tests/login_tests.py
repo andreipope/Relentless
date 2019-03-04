@@ -11,6 +11,7 @@ from pages.succes_forgot_page import Succes_Forgot_Page
 from pages.register_popup_page import Regitration_Popup_Page
 from pages.forgot_password_page import Forgot_Password_Page
 from pages.main_menu_page import Main_Menu_Page
+from pages.wait_page import Wait_Page
 
 
 class CZBLoginTests(CZBTests):
@@ -40,11 +41,12 @@ class CZBLoginTests(CZBTests):
         main_menu_page=Main_Menu_Page(self.altdriver)
         main_menu_page.go_to_login_form()
         login_page=Login_Popup_Page(self.altdriver)
-        login_page.login('good2TestAccount@testsonbitbar.com','password123')
+        login_page.login('secondTestAccount@testsonbitbar.com','password123')
+        Wait_Page(self.altdriver)
 
         try:
             self.altdriver.find_element('Button_Login',)
-            self.assertTrue(False)
+            self.assertTrue(False,"Failed to login")
         except NotFoundException:
             self.assertTrue(True)
 
