@@ -146,7 +146,6 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
 
             _sceneManager.SceneForAppStateWasLoadedEvent += SceneForAppStateWasLoadedEventHandler;
-            _pvpManager.MatchingFailed += OnPvPManagerMatchingFailed;
 
             FindOpponentTime = new AnalyticsTimer();
         }
@@ -193,12 +192,6 @@ namespace Loom.ZombieBattleground
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
-        }
-
-        private void OnPvPManagerMatchingFailed()
-        {
-            _uiManager.GetPopup<ConnectionPopup>().Hide();
-            _uiManager.DrawPopup<WarningPopup>("Couldn't find an opponent.");
         }
 
         private void StartLoadMatch()

@@ -27,11 +27,6 @@ namespace Loom.ZombieBattleground
 
         public event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
 
-        // FIXME: do we still want matchmaking timeout?
-#pragma warning disable 0067
-        public event Action MatchingFailed;
-#pragma warning restore 0067
-
         // game status actions
         public event Action GameStartedActionReceived;
 
