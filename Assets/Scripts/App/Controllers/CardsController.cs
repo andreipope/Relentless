@@ -584,8 +584,8 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Transform.tag = SRTags.PlayerOwned;
                             boardUnitView.Transform.parent = _playerBoard.transform;
                             boardUnitView.Transform.position = new Vector2(1.9f * player.BoardCards.Count, 0);
-                            boardUnitView.Model.OwnerPlayer = card.BoardUnitModel.Card.Owner;
-                            boardUnitView.Model.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
+                            boardUnitView.Model.Card.Owner = card.BoardUnitModel.Card.Owner;
+                            boardUnitView.Model.Card.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.BoardUnitModel.Card);
                             player.BoardCards.Insert(Mathf.Clamp(card.FuturePositionOnBoard,0, player.BoardCards.Count), boardUnitView);
@@ -716,14 +716,14 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.tag = player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * player.BoardCards.Count, 0);
-            boardUnitView.Model.OwnerPlayer = card.BoardUnitModel.Card.Owner;
-            boardUnitView.Model.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
+            boardUnitView.Model.Card.Owner = card.BoardUnitModel.Card.Owner;
+            boardUnitView.Model.Card.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
 
             OpponentHandCard opponentHandCard = null;
 
             if(activateAbility)
             {
-                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.WorkingCard, player);
+                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.BoardUnitModel.Card, player);
             }
 
 
@@ -734,7 +734,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.WorkingCard.InstanceId == card.WorkingCard.InstanceId);
+                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.WorkingCard.InstanceId == card.BoardUnitModel.Card.InstanceId);
                 _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
                 _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
             }

@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 stopwatch.Restart();
                 await task;
             }
-            catch (TimeoutException e)
+            catch (TimeoutException)
             {
                 timedOut = true;
                 throw;

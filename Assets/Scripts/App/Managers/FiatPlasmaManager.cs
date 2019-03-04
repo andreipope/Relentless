@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
          public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
         {
             ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);
-            _fiatPurchaseContract = await GetContract
+            _fiatPurchaseContract = GetContract
             (
                 PrivateKey,
                 PublicKey,
@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
             _eventResponse = e.EventName;
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
             IRpcClient writer = RpcClientFactory
                 .Configure()

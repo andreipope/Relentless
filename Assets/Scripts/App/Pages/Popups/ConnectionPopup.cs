@@ -128,8 +128,10 @@ namespace Loom.ZombieBattleground
 
         public async Task ExecuteConnectionFailedInGamePlay()
         {
-            Task task = ConnectFuncInGameplay?.Invoke();
-
+            if (ConnectFuncInGameplay != null)
+            {
+                await ConnectFuncInGameplay.Invoke();
+            }
         }
 
         public void ShowFailedInGame()

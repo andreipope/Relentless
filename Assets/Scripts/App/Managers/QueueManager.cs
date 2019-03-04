@@ -126,13 +126,14 @@ namespace Loom.ZombieBattleground
 
             if (connectionPopup.Self == null)
             {
-                Func<Task> connectFuncInGame = async () =>
+                Func<Task> connectFuncInGame = () =>
                 {
                     GameClient.Get<IQueueManager>().Clear();
                     gameplayManager.CurrentPlayer.ThrowLeaveMatch();
                     gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                     GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
                     connectionPopup.Hide();
+                    return Task.CompletedTask;
                 };
 
                 connectionPopup.ConnectFuncInGameplay = connectFuncInGame;

@@ -183,11 +183,11 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = false;
+        public static readonly bool AlwaysGuestLogin = false;
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public const bool DevModeEnabled = false;
+        public static readonly bool DevModeEnabled = false;
 
         public const bool UsingCardTooltips = false;
 
@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const bool EnableShopPage = false;
+        internal static readonly bool EnableShopPage = false;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";

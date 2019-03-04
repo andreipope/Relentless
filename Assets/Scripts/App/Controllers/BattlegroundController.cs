@@ -1009,7 +1009,7 @@ namespace Loom.ZombieBattleground
             WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
-                BoardCard boardCard = CreateCustomHandBoardCard(card);
+                BoardCardView boardCard = CreateCustomHandBoardCard(card);
                 Object.Destroy(boardCard.GameObject);
                 return boardCard.HandBoardCard;
             }
@@ -1256,7 +1256,7 @@ namespace Loom.ZombieBattleground
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in playerCards)
             {
                 workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name, ItemPosition.End);
-                workingUnitView.Model.TutorialObjectId = cardInfo.TutorialObjectId;
+                workingUnitView.Model.Card.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
                 workingUnitView.Model.CurrentHp += cardInfo.BuffedHealth;
                 workingUnitView.Model.BuffedHp += cardInfo.BuffedHealth;

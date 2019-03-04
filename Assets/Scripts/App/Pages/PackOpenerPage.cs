@@ -89,9 +89,11 @@ namespace Loom.ZombieBattleground
         }
         
         private STATE _state;
-        
+
+#pragma warning disable 414
         private bool _isTransitioningState;
-        
+#pragma warning restore 414
+
         private bool _isWaitingForTapToReveal;
 
         private int _lastPackBalanceIdRequest;
@@ -104,7 +106,9 @@ namespace Loom.ZombieBattleground
         
         private const int MaxRequestRetryAttempt = 2;
 
-        private bool _isCollectedTutorialCards = false;
+#pragma warning disable 414
+        private bool _isCollectedTutorialCards;
+#pragma warning restore 414
         
         #region IUIElement
         
@@ -128,7 +132,7 @@ namespace Loom.ZombieBattleground
             _cardsToReveal = new List<Transform>();
         }
         
-        public void Update()
+        public async void Update()
         {
             if (!_dataLoading)
             {
@@ -137,7 +141,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (Constants.EnableShopPage)
                         {
-                            RetrievePackBalanceAmount();
+                            await RetrievePackBalanceAmount();
                         }
                         _dataLoading = true;
                     }
@@ -478,19 +482,21 @@ namespace Loom.ZombieBattleground
                     _retryPackBalanceRequestCount = 0;
                     _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                    popup.ConfirmationReceived += RetryRequestPackBalance;
+                    popup.ConfirmationReceived += async x => await RetryRequestPackBalance(x);
                 }
                 else
                 {
-                    RetryRequestPackBalance(true);
+                    await RetryRequestPackBalance(true);
                 }
             }
         }
 
-        private void RetryRequestPackBalance(bool confirmRetry)
+        private async Task RetryRequestPackBalance(bool confirmRetry)
         {
-            if(confirmRetry)             
-                RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+            if (confirmRetry)
+            {
+                await RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+            }
         }
         
         private async Task RetriveCardsFromPack(int packTypeId)
@@ -515,11 +521,11 @@ namespace Loom.ZombieBattleground
                     _retryOpenPackRequestCount = 0;
                     _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                    popup.ConfirmationReceived += RetryRequestOpenPack;
+                    popup.ConfirmationReceived += async x => await RetryRequestOpenPack(x);
                 }
                 else
                 {
-                    RetryRequestOpenPack(true);
+                    await RetryRequestOpenPack(true);
                 }
             }
         }
@@ -536,11 +542,11 @@ namespace Loom.ZombieBattleground
             ChangeState(STATE.CARD_EMERGED);          
         }
 
-        private void RetryRequestOpenPack(bool confirmRetry)
+        private async Task RetryRequestOpenPack(bool confirmRetry)
         {
             if (confirmRetry)
             {
-                RetriveCardsFromPack(_lastOpenPackIdRequest);
+                await RetriveCardsFromPack(_lastOpenPackIdRequest);
             }
             else
             {

@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
 
             if (SetType != Enumerators.SetType.NONE)
             {
-                cards = cards.FindAll(x => x.LibraryCard.CardSetType == SetType);
+                cards = cards.FindAll(x => x.BoardUnitModel.Card.LibraryCard.CardSetType == SetType);
             }
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();

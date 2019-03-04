@@ -707,7 +707,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                        await GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                     }
                 }
                 else

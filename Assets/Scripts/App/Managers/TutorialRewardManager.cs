@@ -87,15 +87,15 @@ namespace Loom.ZombieBattleground
                
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            await _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
-        private void WarningPopupConfirmationReceived()
+        private async void WarningPopupConfirmationReceived()
         {
             WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
             popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
 
-            CallRewardTutorialFlow();
+            await CallRewardTutorialFlow();
         }
 
         public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()
@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
         public async Task CallTutorialRewardContract(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {            
             ContractRequest contractParams = ParseContractRequestFromRewardTutorialCompletedResponse(rewardTutorialCompletedResponse);
-            _tutorialRewardContract = await GetContract
+            _tutorialRewardContract = GetContract
             (
                 PrivateKey,
                 PublicKey,
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");            
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
             IRpcClient writer = RpcClientFactory
                 .Configure()

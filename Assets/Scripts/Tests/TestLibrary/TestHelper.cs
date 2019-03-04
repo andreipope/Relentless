@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Test
         private float _waitAmount;
         private bool _waitUnscaledTime;
 
-        public BoardCard CurrentSpellCard;
+        public BoardCardView CurrentSpellCard;
 
         private readonly Random _random = new Random();
 
@@ -1128,9 +1128,9 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
+                        BoardCardView boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel.Card == card);
                         Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
-                        Assert.True(boardCard.CanBePlayed(boardCard.WorkingCard.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
+                        Assert.True(boardCard.CanBePlayed(boardCard.BoardUnitModel.Card.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1178,7 +1178,7 @@ namespace Loom.ZombieBattleground.Test
 
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == card);
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1234,13 +1234,12 @@ namespace Loom.ZombieBattleground.Test
             {
                 case Enumerators.CardKind.CREATURE:
                 {
-                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
+                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(workingCard), GameObject.Find("OpponentBoard").transform);
                     GameObject boardUnit = boardUnitViewElement.GameObject;
                     boardUnit.tag = SRTags.OpponentOwned;
                     boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
-                    boardUnitViewElement.Model.OwnerPlayer = card.Owner;
-                    boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
-                    boardUnitViewElement.SetObjectInfo(workingCard);
+                    boardUnitViewElement.Model.Card.Owner = card.Owner;
+                    boardUnitViewElement.Model.Card.TutorialObjectId = card.TutorialObjectId;
                     _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
                     _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
@@ -1308,7 +1307,7 @@ namespace Loom.ZombieBattleground.Test
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                    CurrentSpellCard.Init(workingCard);
+                    CurrentSpellCard.Init(workingCard.LibraryCard);
                     CurrentSpellCard.SetHighlightingEnabled(false);
 
                     BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);

@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
         public async Task<int> CallPackBalanceContract(int packTypeId)
         {        
             Debug.Log($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
-            EvmContract packContract = await GetContract(
+            EvmContract packContract = GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiPacks[packTypeId].ToString(),
@@ -145,13 +145,13 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
-            EvmContract cardFaucetContract = await GetContract(
+            EvmContract cardFaucetContract = GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiCardFaucet.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressCardFaucet
             );
-            EvmContract packContract = await GetContract(
+            EvmContract packContract = GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiPacks[packTypeId].ToString(),
@@ -209,7 +209,7 @@ namespace Loom.ZombieBattleground
             return resultList;                                   
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
             IRpcClient writer = RpcClientFactory
                 .Configure()

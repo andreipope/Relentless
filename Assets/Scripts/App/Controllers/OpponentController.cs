@@ -305,13 +305,12 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.PlayerBoardObject :
                 _battlegroundController.OpponentBoardObject;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card), playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.SetObjectInfo(card);
-            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
+            boardUnitView.Model.Card.Owner = owner;
+            boardUnitView.Model.Card.TutorialObjectId = card.TutorialObjectId;
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
             {
@@ -412,8 +411,8 @@ namespace Loom.ZombieBattleground
                         case Enumerators.CardKind.CREATURE:
                             boardUnitViewElement = new BoardUnitView(new BoardUnitModel(workingCard), _battlegroundController.OpponentBoardObject.transform);
                             GameObject boardUnit = boardUnitViewElement.GameObject;
-                            boardUnitViewElement.Model.OwnerPlayer = workingCard.Owner;
-                            boardUnitViewElement.Model.TutorialObjectId = workingCard.TutorialObjectId;
+                            boardUnitViewElement.Model.Card.Owner = workingCard.Owner;
+                            boardUnitViewElement.Model.Card.TutorialObjectId = workingCard.TutorialObjectId;
 
                             boardUnit.tag = SRTags.OpponentOwned;
                             boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
@@ -439,7 +438,7 @@ namespace Loom.ZombieBattleground
                         case Enumerators.CardKind.SPELL:
                             BoardSpell spell = new BoardSpell(null, workingCard); // todo improve it with game Object aht will be aniamted
                             _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
-                            spell.OwnerPlayer = _gameplayManager.OpponentPlayer;
+                            spell.Card.Owner = _gameplayManager.OpponentPlayer;
                             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                             {
                                 ActionType = Enumerators.ActionType.PlayCardFromHand,

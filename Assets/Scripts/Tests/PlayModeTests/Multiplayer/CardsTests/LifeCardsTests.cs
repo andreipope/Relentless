@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
                     Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.LibraryCard.MouldId)).ToList()[0]);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.LibraryCard.MouldId)).ToList()[0]);
                     Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId)).ToList()[0]);
                 };
 
@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Tainted Goo";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.WorkingCard.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.LibraryCard.Name == cardToFind));
                     Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.Name == cardToFind));
                 };
 
@@ -995,9 +995,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         }
                     }
 
-                    foreach (BoardCard card in TestHelper.BattlegroundController.PlayerHandCards)
+                    foreach (BoardCardView card in TestHelper.BattlegroundController.PlayerHandCards)
                     {
-                        if (card.LibraryCard.Name == cardToFind)
+                        if (card.BoardUnitModel.Card.LibraryCard.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
                             break;

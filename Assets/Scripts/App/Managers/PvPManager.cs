@@ -135,7 +135,10 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            // This is only used by test framework to restart the game, so it seems fine here to ignore the warning
+#pragma warning disable 4014
             StopMatchmaking();
+#pragma warning restore 4014
         }
 
         public bool IsFirstPlayer()
