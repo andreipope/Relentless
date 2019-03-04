@@ -84,20 +84,24 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             LoadUserDataModel();
             Debug.Log("User Id: " + UserDataModel.UserId);
-            
-            await _backendFacade.CreateContract(UserDataModel.PrivateKey);
 
             try
             {
+                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
                 await _backendFacade.SignUp(UserDataModel.UserId);
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
             }
-            
-            await _dataManager.StartLoadCache();
-            
+            catch (RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+            }
+
+            await _dataManager.StartLoadCache();      
         }
     }
 }
