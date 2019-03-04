@@ -8,6 +8,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 {
     public class QueueManager : IService, IQueueManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(QueueManager));
+
         private Queue<Func<Task>> _tasks;
         private BackendFacade _backendFacade;
 
@@ -60,20 +63,20 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" Time out == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" Time out == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Client.RpcClientException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" RpcException == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" RpcException == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" other == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" other == " + exception);
                             ShowConnectionPopup();
                         }
                         break;
@@ -85,20 +88,20 @@ namespace Loom.ZombieBattleground
                         }
                         catch (TimeoutException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" Time out == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" Time out == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Client.RpcClientException exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" RpcException == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" RpcException == " + exception);
                             GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                         }
                         catch (Exception exception)
                         {
-                            Helpers.ExceptionReporter.LogException(exception);
-                            Debug.LogWarning(" other == " + exception);
+                            Helpers.ExceptionReporter.SilentReportException(exception);
+                            Log.Warn(" other == " + exception);
                             ShowConnectionPopup();
                         }
                         break;

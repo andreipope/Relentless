@@ -12,11 +12,14 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
     public class FiatPlasmaManager : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(FiatPlasmaManager));
+
         #region Contract
         private TextAsset _abiFiatPurchase;
         private EvmContract _fiatPurchaseContract;
@@ -90,7 +93,7 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [{RequestPacksMethod}]");                     
+            Log.Info( $"Calling smart contract [{RequestPacksMethod}]");
             
             int count = 0;
             while (true)
@@ -111,25 +114,25 @@ namespace Loom.ZombieBattleground
                         contractParams.amount,
                         contractParams.TxID
                     );
-                    Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");
+                    Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
                     for (int i = 0; i < 10; ++i)
                     {
                         await Task.Delay(TimeSpan.FromSeconds(1));
-                        Debug.Log($"<color=green>Wait {i + 1} sec</color>");
+                        Log.Info($"<color=green>Wait {i + 1} sec</color>");
                         if (_isEventTriggered)
                         {
                             return _eventResponse;
                         }
                     }
-                    Debug.Log($"Wait for [requestPacks] response too long");
+                    Log.Info($"Wait for [requestPacks] response too long");
                 }
                 catch
                 {
-                    Debug.Log($"smart contract [{RequestPacksMethod}] error or reverted");
+                    Log.Info($"smart contract [{RequestPacksMethod}] error or reverted");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
-                Debug.Log($"Retry {RequestPacksMethod}: {count}");
+                Log.Info($"Retry {RequestPacksMethod}: {count}");
                 if(count > MaxRequestRetryAttempt)
                 {
                     throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
@@ -140,8 +143,8 @@ namespace Loom.ZombieBattleground
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
-            Debug.LogFormat("Received smart contract event: " + e.EventName);
-            Debug.LogFormat("BlockHeight: " + e.BlockHeight);
+            Log.InfoFormat("Received smart contract event: " + e.EventName);
+            Log.InfoFormat("BlockHeight: " + e.BlockHeight);
             _isEventTriggered = true;
             _eventResponse = e.EventName;
         }
@@ -230,7 +233,7 @@ namespace Loom.ZombieBattleground
             amountStr += "]";
             log += "amount: " + amountStr + "\n";
             log += "TxID: " + TxID + "\n";
-            Debug.Log(log);
+            Log.Info(log);
     
             ContractRequest contractParams = new ContractRequest();
             contractParams.UserId = UserId;

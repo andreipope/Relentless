@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using KellermanSoftware.CompareNetObjects;
+using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
 {
     public class PvPManager : IService, IPvPManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPManager));
+
         // matching actions
         public event Action MatchCreatedActionReceived;
 
@@ -109,20 +112,20 @@ namespace Loom.ZombieBattleground
                     }
                     catch (TimeoutException exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
-                        Debug.LogWarning(" Time out == " + exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
+                        Log.Warn(" Time out == " + exception);
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                     }
                     catch (Client.RpcClientException exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
-                        Debug.LogWarning(" RpcException == " + exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
+                        Log.Warn(" RpcException == " + exception);
                         GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
                     }
                     catch (Exception exception)
                     {
-                        Helpers.ExceptionReporter.LogException(exception);
-                        Debug.LogWarning(" other == " + exception);
+                        Helpers.ExceptionReporter.SilentReportException(exception);
+                        Log.Warn(" other == " + exception);
                     }
                 }
             }
@@ -196,7 +199,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
             {
@@ -228,7 +231,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
             {
@@ -254,7 +257,7 @@ namespace Loom.ZombieBattleground
                 await LoadInitialGameState();
             }
 
-            Debug.LogWarning("Match Starting");
+            Log.Warn("Match Starting");
 
             GameStartedActionReceived?.Invoke();
 
@@ -271,20 +274,20 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogWarning(" Time out == " + exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn(" Time out == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
             catch (Client.RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogWarning(" RpcException == " + exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.Log("Exception not handled, restarting matchmaking:" + e.Message);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Exception not handled, restarting matchmaking:" + e.Message);
                 await Task.Delay(1000); // avoids endless loop on repeated exceptions
                 await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
             }
@@ -303,9 +306,9 @@ namespace Loom.ZombieBattleground
             player.CardsInDeck.Clear();
             player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => card.FromProtobuf(player)));
 
-            Debug.Log("Updating player cards");
-            Debug.Log(player.CardsInDeck.Count);
-            Debug.Log(cardsInDeck.Count);
+            Log.Info("Updating player cards");
+            Log.Info(player.CardsInDeck.Count);
+            Log.Info(cardsInDeck.Count);
 
             player.InvokeDeckChangedEvent();
         }
@@ -316,7 +319,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Debug.LogWarning(playerActionEvent); // todo delete
+                Log.Warn(playerActionEvent); // todo delete
 
                 if (playerActionEvent.Block != null)
                 {
@@ -325,7 +328,7 @@ namespace Loom.ZombieBattleground
                         HistoryEndGame endGameData = historyData.EndGame;
                         if (endGameData != null)
                         {
-                            Debug.Log(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                            Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
                             await _backendFacade.UnsubscribeEvent();
                             return;
                         }
@@ -359,7 +362,7 @@ namespace Loom.ZombieBattleground
                     case Match.Types.Status.Playing:
                         foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
                         {
-                            Debug.Log(playerActionOutcome.ToString());
+                            Log.Info(playerActionOutcome.ToString());
                             PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
                         }
 
@@ -428,8 +431,8 @@ namespace Loom.ZombieBattleground
         {
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
-            Debug.LogWarning("Initial game state:\n" + InitialGameState);
-            Debug.LogWarning("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
+            Log.Warn("Initial game state:\n" + InitialGameState);
+            Log.Warn("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
         }
 
         private void OnReceivePlayerLeftAction(PlayerActionEvent playerActionEvent)

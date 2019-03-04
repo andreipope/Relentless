@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Loom.ZombieBattleground
 {
     public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitModel));
+
         public bool AttackedThisTurn;
 
         public bool HasFeral;
@@ -807,8 +810,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                Helpers.ExceptionReporter.LogException(ex);
-                Debug.LogWarning(ex.Message);
+                Helpers.ExceptionReporter.SilentReportException(ex);
+                Log.Warn(ex.Message);
             }
         }
 

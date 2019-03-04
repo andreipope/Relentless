@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
 {
     public class AIController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(AIController));
+
         public BoardCardView CurrentSpellCard;
 
         public bool IsBrainWorking = false;
@@ -149,7 +152,7 @@ namespace Loom.ZombieBattleground
         public async Task LaunchAIBrain()
         {
             _aiBrainCancellationTokenSource = new CancellationTokenSource();
-            Debug.Log("brain started");
+            Log.Info("brain started");
 
             IsBrainWorking = true;
 
@@ -175,11 +178,11 @@ namespace Loom.ZombieBattleground
             }
             catch (OperationCanceledException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.Log("brain canceled!");
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("brain canceled!");
             }
 
-            Debug.Log("brain finished");
+            Log.Info("brain finished");
 
             if (!_tutorialManager.IsTutorial ||
                 (_aiBrainType == Enumerators.AiBrainType.Tutorial &&
@@ -204,7 +207,7 @@ namespace Loom.ZombieBattleground
             }
             catch (OperationCanceledException)
             {
-                Debug.Log("brain canceled!");
+                Log.Info("brain canceled!");
             }
         }
 

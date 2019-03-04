@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using log4net;
 using Loom.Client;
 using Loom.Google.Protobuf;
 using Newtonsoft.Json;
@@ -14,6 +15,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class TimeMetricsContractCallProxy : IContractCallProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TimeMetricsContractCallProxy));
 
         private readonly Dictionary<string, CallRoundaboutData> _methodToCallRoundabouts = new Dictionary<string, CallRoundaboutData>();
 
@@ -23,7 +25,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public Contract Contract { get; }
 
-        public bool EnableConsoleLogs { get; set; }
+        public bool EnableLogs { get; set; }
 
         public bool StoreCallMetrics { get; set; }
 
@@ -33,11 +35,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public int AverageRoundabout { get; private set; }
 
-        public TimeMetricsContractCallProxy(Contract contract, bool enableConsoleLogs, bool storeCallMetrics)
+        public TimeMetricsContractCallProxy(Contract contract, bool enableLogs, bool storeCallMetrics)
         {
             _dataManager = GameClient.Get<IDataManager>();
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));
-            EnableConsoleLogs = enableConsoleLogs;
+            EnableLogs = enableLogs;
             StoreCallMetrics = storeCallMetrics;
 
             if (StoreCallMetrics)
@@ -58,8 +60,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         }
                         catch (Exception e)
                         {
-                            Helpers.ExceptionReporter.LogException(e);
-                            Debug.LogWarning("Unable to read call metrics: " + e);
+                            Helpers.ExceptionReporter.SilentReportException(e);
+                            Log.Warn("Unable to read call metrics: " + e);
                         }
                     }
                 }
@@ -137,7 +139,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             AverageRoundabout = (int) (roundaboutSum / (double) totalEntries);
 
-            if (EnableConsoleLogs)
+            if (EnableLogs)
             {
                 string log =
                     $"{(isStatic ? "Static call" : "Call")} to '{method}' finished in {callRoundabout} ms" +
@@ -150,7 +152,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
 #endif
 
-                Debug.Log(log);
+                if (timedOut)
+                {
+                    Log.Warn(log);
+                }
+                else
+                {
+                    Log.Debug(log);
+                }
             }
         }
 

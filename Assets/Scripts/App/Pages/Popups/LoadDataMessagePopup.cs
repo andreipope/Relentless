@@ -1,4 +1,5 @@
 using System;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class LoadDataMessagePopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoadDataMessagePopup));
+
         public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -97,14 +100,14 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 success = false;
                 _uiManager.GetPopup<LoginPopup>().Show(e);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.LogWarning(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn(e);
                 success = false;
                 _uiManager.DrawPopup<LoginPopup>();
             }

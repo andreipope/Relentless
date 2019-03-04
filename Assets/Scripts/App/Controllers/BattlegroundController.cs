@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using KellermanSoftware.CompareNetObjects;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -22,6 +23,8 @@ namespace Loom.ZombieBattleground
 {
     public class BattlegroundController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BattlegroundController));
+
         public bool IsPreviewActive;
 
         public bool CardsZoomed = false;
@@ -855,7 +858,7 @@ namespace Loom.ZombieBattleground
         {
             if (boardUnitModel == null)
             {
-                Helpers.ExceptionReporter.LogException("Trying to get BoardUnitView from 'null' BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("Trying to get BoardUnitView from 'null' BoardUnitModel"));
                 return null;
             }
 
@@ -867,7 +870,7 @@ namespace Loom.ZombieBattleground
 
             if (unitView is default(BoardUnitView))
             {
-                Helpers.ExceptionReporter.LogException("BoardUnitView couldnt found for BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("BoardUnitView couldnt found for BoardUnitModel"));
                 return null;
             }
 
@@ -1160,7 +1163,7 @@ namespace Loom.ZombieBattleground
                 GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
                 UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
 #if USE_PRODUCTION_BACKEND
-                    Debug.LogError(desyncException);
+                    Log.Error(desyncException);
 
                     if (!GameClient.Get<IGameplayManager>().IsDesyncDetected)
                     {
@@ -1173,7 +1176,7 @@ namespace Loom.ZombieBattleground
                         );
                     }
 #elif UNITY_EDITOR
-                Debug.LogException(desyncException);
+                Log.Error("", desyncException);
 #else
                 throw desyncException;
 #endif

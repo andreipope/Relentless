@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(e);
+                    Helpers.ExceptionReporter.SilentReportException(e);
 
                     if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.APP_INIT)
                     {

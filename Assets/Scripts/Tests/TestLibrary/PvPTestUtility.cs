@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPTestUtility));
+
         private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
@@ -26,7 +29,7 @@ namespace Loom.ZombieBattleground.Test
         {
             void LogTestMode()
             {
-                Debug.Log($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
+                Log.Info($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
             }
 
             async Task ExecuteTest()

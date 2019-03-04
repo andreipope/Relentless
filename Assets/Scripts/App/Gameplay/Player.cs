@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Hero = Loom.ZombieBattleground.Data.Hero;
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
 {
     public class Player : BoardObject, IView, IInstanceIdOwner
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(Player));
+
         public int Turn { get; set; }
 
         public int InitialHp { get; private set; }
@@ -503,7 +506,7 @@ namespace Loom.ZombieBattleground
         {
             if (CardsOnBoard.Contains(card))
             {
-                Debug.LogWarning($"Attempt to add card {card} to CardsOnBoard when it is already added");
+                Log.Warn($"Attempt to add card {card} to CardsOnBoard when it is already added");
                 return;
             }
             CardsOnBoard.Insert(position, card);

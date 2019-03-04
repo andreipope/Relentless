@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class ActionsQueueController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
+
         public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
 
         private long _nextActionId = 0;
@@ -113,7 +116,7 @@ namespace Loom.ZombieBattleground
 
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; add <color=yellow>generated action " +
+                Log.Warn(_actionsToDo.Count + " was actions; add <color=yellow>generated action " +
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
@@ -141,7 +144,7 @@ namespace Loom.ZombieBattleground
         {
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+                Log.Warn(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
             }
 
             if (ActionInProgress != null)
@@ -164,7 +167,7 @@ namespace Loom.ZombieBattleground
             {
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; action <color=orange>" +
+                    Log.Warn(_actionsToDo.Count + " was actions; action <color=orange>" +
                     action.ActionType + " : " + action.Id + " force block disable and try run </color> from >>>> ");
                 }
 
@@ -181,7 +184,7 @@ namespace Loom.ZombieBattleground
         {
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; action <color=cyan>" +
+                Log.Warn(_actionsToDo.Count + " was actions; action <color=cyan>" +
                 previousAction.ActionType + " : " + previousAction.Id + " DONE </color> from >>>> ");
             }
 
@@ -214,7 +217,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_isDebugMode)
                     {
-                        UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
+                        Log.Warn(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
                         actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                     }
 
@@ -227,7 +230,7 @@ namespace Loom.ZombieBattleground
 
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
+                    Log.Warn(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
                     actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                 }
 
@@ -243,6 +246,8 @@ namespace Loom.ZombieBattleground
 
     public class GameplayQueueAction<T>
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
+
         private readonly ITimerManager _timerManager;
 
         private bool _actionDone;
@@ -286,8 +291,8 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Debug.LogException(actionSystemException);
-                Helpers.ExceptionReporter.LogException(actionSystemException);
+                Log.Error("", actionSystemException);
+                Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 ActionDoneCallback();
                 throw actionSystemException;

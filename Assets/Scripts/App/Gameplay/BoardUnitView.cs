@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.View;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground
 {
     public class BoardUnitView : IFightSequenceHandler, IView
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
+
         private readonly IGameplayManager _gameplayManager;
 
         private readonly ITutorialManager _tutorialManager;
@@ -178,7 +181,7 @@ namespace Loom.ZombieBattleground
 
         public void DisposeGameObject()
         {
-            Debug.Log($"GameObject of BoardUnitView was disposed");
+            Log.Info($"GameObject of BoardUnitView was disposed");
 
             Transform.DOKill();
             Object.Destroy(GameObject);
@@ -186,7 +189,7 @@ namespace Loom.ZombieBattleground
 
         public void ForceSetGameObject(GameObject overrideObject)
         {
-            Debug.Log($"GameObject of BoardUnitView was overrided. from: {GameObject} on: {overrideObject}");
+            Log.Info($"GameObject of BoardUnitView was overrided. from: {GameObject} on: {overrideObject}");
 
             GameObject = overrideObject;
         }
@@ -898,9 +901,8 @@ namespace Loom.ZombieBattleground
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
 
-                Helpers.ExceptionReporter.LogException("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
-                                                        " | targetCardView.GameObject: " + targetCardView?.GameObject);
-
+                ExceptionReporter.LogException(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                    " | targetCardView.GameObject: " + targetCardView?.GameObject));
                 return;
             }
 

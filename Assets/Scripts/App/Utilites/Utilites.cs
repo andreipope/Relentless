@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
             }
             catch (CryptographicException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 return null;
             }
 

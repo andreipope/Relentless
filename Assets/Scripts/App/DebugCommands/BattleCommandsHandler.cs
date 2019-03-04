@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -9,6 +10,8 @@ using UnityEngine;
 
 static class BattleCommandsHandler
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(BattleCommandsHandler));
+
     private static IGameplayManager _gameplayManager;
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
@@ -53,7 +56,7 @@ static class BattleCommandsHandler
         {
             if (_skillController.PlayerPrimarySkill == null)
             {
-                Debug.LogError("Primary Skill is Not set");
+                Log.Error("Primary Skill is Not set");
             }
             else
             {
@@ -64,7 +67,7 @@ static class BattleCommandsHandler
         {
             if (_skillController.PlayerSecondarySkill == null)
             {
-                Debug.LogError("Secondary Skill is Not set");
+                Log.Error("Secondary Skill is Not set");
             }
             else
             {
@@ -106,7 +109,7 @@ static class BattleCommandsHandler
 
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
@@ -117,7 +120,7 @@ static class BattleCommandsHandler
         }
         else
         {
-            Debug.LogError(cardName + " not Found.");
+            Log.Error(cardName + " not Found.");
         }
     }
 
@@ -150,8 +153,8 @@ static class BattleCommandsHandler
 
         cardsInDeck = cardsInDeck.TrimEnd(',');
         cardsInHand = cardsInHand.TrimEnd(',');
-        Debug.Log(cardsInDeck);
-        Debug.Log(cardsInHand);
+        Log.Info(cardsInDeck);
+        Log.Info(cardsInHand);
     }
 
     [CommandHandler(Description = "Sets the number of goo vials / bottles for the player where x is the number of goo vials")]
@@ -160,13 +163,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogWarning("Please Wait For Your Turn");
+            Log.Warn("Please Wait For Your Turn");
             return;
         }
 
         if (gooVials <= 0 || gooVials > player.MaxGooVials)
         {
-            Debug.LogError("Vials should not be less than zero or more than " + player.MaxGooVials);
+            Log.Error("Vials should not be less than zero or more than " + player.MaxGooVials);
             return;
         }
 
@@ -179,13 +182,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
         if (gooAmount < 0)
         {
-            Debug.LogError("Goo Amount should not be less than zero");
+            Log.Error("Goo Amount should not be less than zero");
             return;
         }
 
@@ -205,13 +208,13 @@ static class BattleCommandsHandler
 
         if (hero == null)
         {
-            Debug.LogError(" Hero not found");
+            Log.Error(" Hero not found");
             return;
         }
 
         if (xpAmount <= 0)
         {
-            Debug.LogError("Xp Amount should be higher than zero");
+            Log.Error("Xp Amount should be higher than zero");
             return;
         }
 
@@ -232,13 +235,13 @@ static class BattleCommandsHandler
 
         if (hero == null)
         {
-            Debug.LogError(" Hero not found");
+            Log.Error(" Hero not found");
             return;
         }
 
         if (level <= 0 || level > 20)
         {
-            Debug.LogError("Level cant be set less than 1 nor max than 20");
+            Log.Error("Level cant be set less than 1 nor max than 20");
             return;
         }
 
@@ -264,7 +267,7 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
         _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
@@ -276,13 +279,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
         if (_skillController.PlayerPrimarySkill == null)
         {
-            Debug.LogError("Primary Skill is Not set");
+            Log.Error("Primary Skill is Not set");
         }
         else
         {
@@ -293,7 +296,7 @@ static class BattleCommandsHandler
 
         if (_skillController.PlayerSecondarySkill == null)
         {
-            Debug.LogError("Secondary Skill is Not set");
+            Log.Error("Secondary Skill is Not set");
         }
         else
         {
@@ -310,7 +313,7 @@ static class BattleCommandsHandler
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
-            Debug.LogError("Please Wait For Opponent Turn");
+            Log.Error("Please Wait For Opponent Turn");
             return;
         }
         WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
@@ -323,7 +326,7 @@ static class BattleCommandsHandler
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
-            Debug.LogError("Please Wait For Opponent Turn");
+            Log.Error("Please Wait For Opponent Turn");
             return;
         }
 
@@ -336,7 +339,7 @@ static class BattleCommandsHandler
         }
         else
         {
-            Debug.LogError(cardName + " not Found.");
+            Log.Error(cardName + " not Found.");
         }
     }
 
@@ -363,14 +366,14 @@ static class BattleCommandsHandler
     {
         if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.CurrentPlayer)
         {
-            Debug.LogError("Please Wait for Your turn");
+            Log.Error("Please Wait for Your turn");
             return;
         }
 
         PlayerMove playerMove = _gameplayManager.PlayerMoves.GetPlayerMove();
         if (playerMove == null)
         {
-            Debug.LogError(" No Moves Exists");
+            Log.Error(" No Moves Exists");
             return;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -9,6 +10,8 @@ using UnityEngine;
 
 static class QuickPlayCommandsHandler
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(QuickPlayCommandsHandler));
+
     private static IGameplayManager _gameplayManager;
     private static IUIManager _uiManager;
     private static IDataManager _dataManager;
@@ -34,7 +37,7 @@ static class QuickPlayCommandsHandler
 
         string opponentDeckName = _dataManager.CachedAiDecksData.Decks.First(deck => deck.Deck.Id == opponentDeckId).Deck.Name;
 
-        Debug.Log($"(1). Player Horde : {playerDeckName}\n"+
+        Log.Info($"(1). Player Horde : {playerDeckName}\n"+
                   $"(2). Enemy AI Horde : {opponentDeckName}\n" +
                   $"(3). Starting Turn : {_gameplayManager.StartingTurn}\n");
     }
@@ -58,7 +61,7 @@ static class QuickPlayCommandsHandler
         int opponentDeckId = _gameplayManager.OpponentIdCheat;
         if (opponentDeckId == -1)
         {
-            Debug.LogError("Select Opponent Deck ID");
+            Log.Error("Select Opponent Deck ID");
             return;
         }
 
@@ -77,7 +80,7 @@ static class QuickPlayCommandsHandler
         int index = _dataManager.CachedDecksData.Decks.FindIndex(deck => deck.Name == deckName);
         if (index == -1)
         {
-            Debug.LogError(deckName + " Not found");
+            Log.Error(deckName + " Not found");
             return;
         }
 
@@ -90,7 +93,7 @@ static class QuickPlayCommandsHandler
         int index = _dataManager.CachedAiDecksData.Decks.FindIndex(aiDeck => aiDeck.Deck.Name == deckName);
         if (index == -1)
         {
-            Debug.LogError(deckName + " Not found");
+            Log.Error(deckName + " Not found");
             return;
         }
 

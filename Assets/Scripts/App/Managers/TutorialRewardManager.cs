@@ -13,12 +13,14 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
-
     public class TutorialRewardManager : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialRewardManager));
+
         #region Contract
         private TextAsset _abiTutorialReward;
         private EvmContract _tutorialRewardContract;
@@ -78,7 +80,7 @@ namespace Loom.ZombieBattleground
                 await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
-                Debug.Log($"{nameof(CallRewardTutorialFlow)} failed {e.Message}");
+                Log.Info($"{nameof(CallRewardTutorialFlow)} failed {e.Message}");
                 _uiManager.DrawPopup<WarningPopup>($"{nameof(CallRewardTutorialFlow)} failed \n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupConfirmationReceived;                
@@ -101,14 +103,14 @@ namespace Loom.ZombieBattleground
         public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()
         { 
             RewardTutorialCompletedResponse response = await _backendFacade.GetRewardTutorialCompletedResponse();
-            Debug.Log($"RewardTutorialCompletedResponse");
+            Log.Info($"RewardTutorialCompletedResponse");
             
-            Debug.Log($"Hash: {response.Hash}");
-            Debug.Log($"R: {response.R}");
-            Debug.Log($"S: {response.S}");
-            Debug.Log($"V: {response.V}");
-            Debug.Log($"RewardType: {response.RewardType}");   
-            Debug.Log($"Amount: {BigUIntToSByte(response.Amount)}");                    
+            Log.Info($"Hash: {response.Hash}");
+            Log.Info($"R: {response.R}");
+            Log.Info($"S: {response.S}");
+            Log.Info($"V: {response.V}");
+            Log.Info($"RewardType: {response.RewardType}");
+            Log.Info($"Amount: {BigUIntToSByte(response.Amount)}");
             
             return response;
         }
@@ -145,7 +147,7 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log($"{nameof(CallTutorialRewardContract)} {RequestPacksMethod}");
+            Log.Info($"{nameof(CallTutorialRewardContract)} {RequestPacksMethod}");
             await contract.CallAsync
             (
                 RequestPacksMethod,
@@ -156,7 +158,7 @@ namespace Loom.ZombieBattleground
                 contractParams.amount
             );
             
-            Debug.Log($"Smart contract method [{RequestPacksMethod}] finished executing.");            
+            Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
         }
         
         private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
@@ -215,7 +217,7 @@ namespace Loom.ZombieBattleground
             log += "v: " + v + "\n";
             log += "hash: " + hash + "\n";        
             log += "amount: " + amount + "\n";
-            Debug.Log(log);
+            Log.Info(log);
     
             ContractRequest contractParams = new ContractRequest();
             contractParams.r = CryptoUtils.HexStringToBytes(r);
