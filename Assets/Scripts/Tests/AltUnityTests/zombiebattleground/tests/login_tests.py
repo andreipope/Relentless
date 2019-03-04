@@ -50,7 +50,7 @@ class CZBLoginTests(CZBTests):
 
         
     
-    # def test_send_registration_request(self):
+    def test_send_registration_request(self):
         main_menu_page=Main_Menu_Page(self.altdriver)
         main_menu_page.go_to_login_form()
         login_page=Login_Popup_Page(self.altdriver)

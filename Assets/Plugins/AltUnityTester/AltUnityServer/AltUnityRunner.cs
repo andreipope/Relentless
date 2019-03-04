@@ -752,14 +752,18 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
                 }
             case 3:
                 var id = Convert.ToInt32(pathList[pathListStep].Substring(3, pathList[pathListStep].Length - 4));
-                if (obj.GetInstanceID() != id)
+                if (obj.GetInstanceID() == id)
                 {
-                    return null;
+                    if (pathListStep == pathList.Length - 1){
+                        return objectsFound;
+                    }
+                    else
+                    {
+                        return CheckNextElementInPathForMultipleElements(obj, pathList, pathListStep, enabled);
+                    }
                 }
-                else
-                {
-                    return CheckNextElementInPathForMultipleElements(obj, pathList, pathListStep, enabled);
-                }
+                return null;
+
             default:
                 if (!(obj.name.Equals(pathList[pathListStep]) || (pathList[pathListStep].Equals("") && pathList.Length == 1)))
                     return null;
