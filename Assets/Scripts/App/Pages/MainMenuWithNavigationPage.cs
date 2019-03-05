@@ -62,14 +62,14 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MainMenuWithNavigationPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
             
-            _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();                        
+            _buttonPlay = _selfPage.transform.Find("Anchor_BottomRight/Panel_BattleSwitch/Button_Battle").GetComponent<Button>();                        
             _buttonPlay.onClick.AddListener(ButtonPlayHandler);
-            _buttonChangeMode = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Battle_Mode").GetComponent<Button>();
+            _buttonChangeMode = _selfPage.transform.Find("Anchor_BottomRight/Panel_Battle_Mode").GetComponent<Button>();
             _buttonChangeMode.onClick.AddListener(ButtonChangeModeHandler);
             
             _imageOverlordPortrait = _selfPage.transform.Find("Image_OverlordPortrait").GetComponent<Image>();
             
-            _textGameMode = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Battle_Mode/Text_BattleMode").GetComponent<TextMeshProUGUI>();
+            _textGameMode = _selfPage.transform.Find("Anchor_BottomRight/Panel_Battle_Mode/Text_BattleMode").GetComponent<TextMeshProUGUI>();
             
             _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
 
