@@ -383,21 +383,29 @@ namespace Loom.ZombieBattleground
 
         public void TurnOffSound()
         {
-            foreach (SoundContainer container in _soundContainers)
-            {
-                container.AudioSource.Stop();
-                container.ForceClose = true;
-            }
+            StopMusicInContatiners(_soundContainers);
         }
 
         private void StopBackroundMusic()
         {
-            List<SoundContainer> oldContainers = _soundContainers.FindAll(x => x.SoundParameters.IsBackground);
+            StopMusicInContatiners(_soundContainers.FindAll(x => x.SoundParameters.IsBackground));
+        }
 
-            foreach (SoundContainer oldCotainer in oldContainers)
+        private void StopMusicInContatiners(List<SoundContainer> containers)
+        {
+            if (containers == null)
+                return;
+
+            for (int i = 0; i < containers.Count; i++)
             {
-                oldCotainer.AudioSource.Stop();
-                oldCotainer.ForceClose = true;
+                if (containers[i] == null)
+                {
+                    containers.RemoveAt(i--);
+                    continue;
+                }
+
+                containers[i].AudioSource?.Stop();
+                containers[i].ForceClose = true;
             }
         }
 
@@ -685,7 +693,7 @@ namespace Loom.ZombieBattleground
         {
             if (Container != null)
             {
-                AudioSource.Stop();
+                AudioSource?.Stop();
                 Object.Destroy(Container);
             }
         }
