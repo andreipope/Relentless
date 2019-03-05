@@ -9,6 +9,7 @@ using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
 using Convert = System.Convert;
 using Object = UnityEngine.Object;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
