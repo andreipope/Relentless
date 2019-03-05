@@ -514,6 +514,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
+                    if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
+                        continue;
+
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)
                     {
