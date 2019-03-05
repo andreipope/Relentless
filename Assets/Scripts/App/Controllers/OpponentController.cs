@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 {
     public class OpponentController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(OpponentController));
+
         private IGameplayManager _gameplayManager;
         private IPvPManager _pvpManager;
         private BackendFacade _backendFacade;
@@ -85,7 +88,7 @@ namespace Loom.ZombieBattleground
                             deck.Add(cardInstance.FromProtobuf(player));
                         }
 
-                        Debug.Log(
+                        Log.Info(
                             $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
                             String.Join(
                                 "\n",
@@ -490,7 +493,7 @@ namespace Loom.ZombieBattleground
                 if (attackerUnit == null || target == null)
                 {
                     Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
-                    Debug.LogException(exception);
+                    Log.Error("", exception);
                     Helpers.ExceptionReporter.LogException(exception);
                     return;
                 }
@@ -508,7 +511,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    Debug.LogWarning("Attacker with card Id " + model.CardId + " not found on this client in match.");
+                    Log.Warn("Attacker with card Id " + model.CardId + " not found on this client in match.");
                 }
 
                 completeCallback?.Invoke();
@@ -633,7 +636,7 @@ namespace Loom.ZombieBattleground
                 BoardUnitModel card = (BoardUnitModel)_battlegroundController.GetTargetByInstanceId(cardId);
                 if (card == null)
                 {
-                    Debug.LogError($"Card {cardId} not found on board");
+                    Log.Error($"Card {cardId} not found on board");
                 }
                 else
                 {

@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using log4net;
+using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Test;
@@ -17,10 +19,11 @@ namespace Loom.ZombieBattleground.Test
 
         public void TestSetUp()
         {
-            BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
-            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract));
-            BackendFacade.EnableRpcLogging = true;
             _userDataModel = new UserDataModel(TestHelper.Instance.CreateTestUserName(), CryptoUtils.GeneratePrivateKey());
+            BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
+            TaggedLoggerWrapper taggedLoggerWrapper = new TaggedLoggerWrapper(Logging.GetLog(nameof(BackendFacade)).Logger, _userDataModel.UserId);
+            ILog log = new LogImpl(taggedLoggerWrapper);
+            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract), log, log);
         }
 
         public void TestTearDown()

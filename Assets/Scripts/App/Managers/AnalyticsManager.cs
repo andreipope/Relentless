@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -14,6 +15,8 @@ using mixpanel;
 
 public class AnalyticsManager : IAnalyticsManager, IService
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(AnalyticsManager));
+
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
     private const string FirstTimeInstallKey = "Analytics_FirstTimeInstall";
 
@@ -89,7 +92,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
     public void LogScreen(string title)
     {
 #if !DISABLE_ANALYTICS
-        Debug.Log("=== Log screen = " + title);
+        Log.Info("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardsController));
+
         public event Action<AbilityData.ChoosableAbility> CardForAbilityChoosed;
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
@@ -821,8 +824,8 @@ namespace Loom.ZombieBattleground
             if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Error("", exception);
                 return;
             }
 
@@ -1213,6 +1216,38 @@ namespace Loom.ZombieBattleground
             return unit;
         }
 
+        public BoardUnitView SpawnUnitOnBoard(Player owner, WorkingCard card, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null)
+        {
+            if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
+                return null;
+
+            BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
+
+            owner.AddCardToBoard(card, ItemPosition.End);
+
+            if (isPVPNetwork)
+            {
+                owner.BoardCards.Insert(ItemPosition.End, unit);
+            }
+            else
+            {
+                if (position.GetIndex(owner.BoardCards) <= Constants.MaxBoardUnits)
+                {
+                    owner.BoardCards.Insert(position, unit);
+                }
+                else
+                {
+                    owner.BoardCards.Insert(ItemPosition.End, unit);
+                }
+            }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
+
+            _boardController.UpdateCurrentBoardOfPlayer(owner, onComplete);
+
+            return unit;
+        }
+
         private BoardUnitView CreateBoardUnitForSpawn(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ? _battlegroundController.PlayerBoardObject : _battlegroundController.OpponentBoardObject;
@@ -1351,9 +1386,7 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                card.LibraryCard.Picture.ToLowerInvariant()));
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.LibraryCard.Picture.ToLowerInvariant()}");
 
             _titleText.text = card.LibraryCard.Name;
             _descriptionText.text = choosableAbility.Description;

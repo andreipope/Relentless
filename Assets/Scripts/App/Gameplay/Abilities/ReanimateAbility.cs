@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         private AbilitiesController _abilitiesController;
 
+        private BoardUnitView _reanimatedUnit;
+
         public ReanimateAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -41,25 +43,28 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            Card libraryCard = new Card(AbilityUnitOwner.Card.LibraryCard);
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
-            BoardUnitView unit = CreateBoardUnit(card, owner);
-            unit.Model.IsReanimated = true;
+            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner.Card, owner);
+            _reanimatedUnit.Model.IsReanimated = true;
 
-            owner.AddCardToBoard(card, ItemPosition.End);
-            owner.BoardCards.Insert(ItemPosition.End, unit);
+            if (owner.CardsInGraveyard.Contains(AbilityUnitOwner.Card))
+            {
+                owner.CardsInGraveyard.Remove(AbilityUnitOwner.Card);
+            }
+
+            owner.AddCardToBoard(AbilityUnitOwner.Card, ItemPosition.End);
+            owner.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
 
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
-                _abilitiesController.ActivateAbilitiesOnCard(unit.Model, card, owner);
+                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner.Card, owner);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
+                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
             }
 
-            InvokeActionTriggered(unit);
+            InvokeActionTriggered(_reanimatedUnit);
         }
 
         protected override void UnitHpChangedHandler()
@@ -84,6 +89,11 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction?.ForceActionDone();
 
             base.UnitDiedHandler();
+
+            if (_reanimatedUnit != null)
+            {
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+            }
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)

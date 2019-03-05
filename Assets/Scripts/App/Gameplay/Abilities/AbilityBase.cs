@@ -401,7 +401,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void TurnEndedHandler()
         {
-            if (TargettingArrow != null)
+            if (TargettingArrow != null && !GameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
             {
                 InputEndedHandler();
             }

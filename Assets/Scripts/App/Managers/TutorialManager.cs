@@ -11,12 +11,15 @@ using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using log4net;
 using UnityEngine.UI;
 
 namespace Loom.ZombieBattleground
 {
     public class TutorialManager : IService, ITutorialManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialManager));
+
         private const string TutorialDataPath = "Data/tutorial_data";
 
         private const string InGameTutorialDataPath = "Data/ingame_tutorial";
@@ -117,20 +120,9 @@ namespace Loom.ZombieBattleground
 
             _overlordSaysPopupSequences = new List<Sequence>();
 
-            var settings = new JsonSerializerSettings
-            {
-                Culture = CultureInfo.InvariantCulture,
-                Converters = {
-                    new StringEnumConverter()
-                },
-                CheckAdditionalContent = true,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                TypeNameHandling = TypeNameHandling.Auto,
-                Error = (sender, args) =>
-                {
-                    Debug.LogException(args.ErrorContext.Error);
-                }
-            };
+            JsonSerializerSettings settings =
+                JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
+            settings.TypeNameHandling = TypeNameHandling.Auto;
 
             _tutorials = JsonConvert.DeserializeObject<List<TutorialData>>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>(TutorialDataPath).text, settings);
@@ -151,7 +143,7 @@ namespace Loom.ZombieBattleground
         {
             SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-            if (!CurrentTutorial.IsGameplayTutorial())
+            if (CurrentTutorial != null && !CurrentTutorial.IsGameplayTutorial())
             {
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
