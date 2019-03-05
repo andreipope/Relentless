@@ -8,7 +8,8 @@
         "GoogleAnalytics",
         "DOTween.Modules",
         "AdvancedFPSCounter",
-        "ZombieBattleground.RuntimeEditorOnly"
+        "ZombieBattleground.RuntimeEditorOnly",
+        "Mixpanel.Runtime"
     ],
     "optionalUnityReferences": [],
     "includePlatforms": [],

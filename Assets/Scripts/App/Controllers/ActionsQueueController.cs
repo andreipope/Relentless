@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using UnityEngine;
@@ -8,6 +9,8 @@ namespace Loom.ZombieBattleground
 {
     public class ActionsQueueController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
+
         public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
 
         private long _nextActionId = 0;
@@ -98,6 +101,12 @@ namespace Loom.ZombieBattleground
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Add(gameAction);
 
+            if (_actionsToDo.Find(x => x.ActionType == Enumerators.QueueActionType.StopTurn) != null &&
+                gameAction.ActionType != Enumerators.QueueActionType.StopTurn)
+            {
+                MoveActionBeforeAction(gameAction, Enumerators.QueueActionType.StopTurn);
+            }
+
             if (ActionInProgress == null && _actionsToDo.Count < 2)
             {
                 TryCallNewActionFromQueue();
@@ -113,21 +122,21 @@ namespace Loom.ZombieBattleground
 
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; add <color=yellow>generated action " +
+                Log.Warn(_actionsToDo.Count + " was actions; add <color=yellow>generated action " +
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
             return new GameplayQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
         }
 
-        public void MoveActionAfterAction(GameplayQueueAction<object> actionToInsert, GameplayQueueAction<object> actionInsertAfter)
+        public void MoveActionBeforeAction(GameplayQueueAction<object> actionToInsert, Enumerators.QueueActionType actionBefore)
         {
             if (_actionsToDo.Contains(actionToInsert))
             {
                 _actionsToDo.Remove(actionToInsert);
             }
 
-            int position = _actionsToDo.IndexOf(actionInsertAfter);
+            int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore)-1;
 
             _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
         }
@@ -141,7 +150,7 @@ namespace Loom.ZombieBattleground
         {
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+                Log.Warn(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
             }
 
             if (ActionInProgress != null)
@@ -164,7 +173,7 @@ namespace Loom.ZombieBattleground
             {
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; action <color=orange>" +
+                    Log.Warn(_actionsToDo.Count + " was actions; action <color=orange>" +
                     action.ActionType + " : " + action.Id + " force block disable and try run </color> from >>>> ");
                 }
 
@@ -181,22 +190,25 @@ namespace Loom.ZombieBattleground
         {
             if (_isDebugMode)
             {
-                UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; action <color=cyan>" +
+                Log.Warn(_actionsToDo.Count + " was actions; action <color=cyan>" +
                 previousAction.ActionType + " : " + previousAction.Id + " DONE </color> from >>>> ");
             }
 
             if (_actionsToDo.Contains(previousAction))
             {
-                _actionsToDo.Remove(previousAction);
+                if (_actionsToDo.IndexOf(previousAction) == 0)
+                {
+                    if (ActionInProgress == previousAction || ActionInProgress == null)
+                    {
+                        TryCallNewActionFromQueue();
+                    }
+                    else
+                    {
+                        ActionInProgress = null;
+                    }
+                }
 
-                if (ActionInProgress == previousAction || ActionInProgress == null)
-                {
-                    TryCallNewActionFromQueue();
-                }
-                else
-                {
-                    ActionInProgress = null;
-                }
+                _actionsToDo.Remove(previousAction);
             }
             else
             {
@@ -214,7 +226,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (_isDebugMode)
                     {
-                        UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
+                        Log.Warn(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
                         actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                     }
 
@@ -227,7 +239,7 @@ namespace Loom.ZombieBattleground
 
                 if (_isDebugMode)
                 {
-                    UnityEngine.Debug.LogWarning(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
+                    Log.Warn(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
                     actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
                 }
 
@@ -243,6 +255,8 @@ namespace Loom.ZombieBattleground
 
     public class GameplayQueueAction<T>
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
+
         private readonly ITimerManager _timerManager;
 
         private bool _actionDone;
@@ -286,8 +300,8 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Debug.LogException(actionSystemException);
-                Helpers.ExceptionReporter.LogException(actionSystemException);
+                Log.Error("", actionSystemException);
+                Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 ActionDoneCallback();
                 throw actionSystemException;
@@ -300,6 +314,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _actionDone = true;
+            BlockedInQueue = false;
+
             OnActionDoneEvent?.Invoke(this);
         }
 
@@ -308,9 +324,7 @@ namespace Loom.ZombieBattleground
             if (_actionDone)
                 return;
 
-            _actionDone = true;
-
-            OnActionDoneEvent?.Invoke(this);
+            ForceActionDone();
         }
     }
 }

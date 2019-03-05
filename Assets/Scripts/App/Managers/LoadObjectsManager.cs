@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Debug = UnityEngine.Debug;
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 {
     public class LoadObjectsManager : IService, ILoadObjectsManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoadObjectsManager));
+
         private readonly Dictionary<string, AssetBundle> _loadedAssetBundles = new Dictionary<string, AssetBundle>();
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
         private const string DynamicLoadAssetsRoot = "Assets/Assets/DynamicLoad";
@@ -47,7 +50,7 @@ namespace Loom.ZombieBattleground
             string fileName = Path.GetFileNameWithoutExtension(path).ToLowerInvariant();
             T asset = Load<T>(fileName, assetBundle, bundleName);
             if (asset == null)
-                UnityEngine.Debug.LogWarning($"Failed to load '{path}' from bundle '{bundleName}'");
+                Log.Warn($"Failed to load '{path}' from bundle '{bundleName}'");
 
             return asset;
         }
@@ -63,7 +66,7 @@ namespace Loom.ZombieBattleground
                 string fileName = Path.GetFileNameWithoutExtension(paths[i]).ToLowerInvariant();
                 assets[i] = Load<T>(fileName, assetBundle, bundleName);
                 if (assets[i] == null)
-                    UnityEngine.Debug.LogWarning($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
+                    Log.Warn($"Failed to load '{paths[i]}' from bundle '{bundleName}'");
             }
 
             return assets;
@@ -86,7 +89,7 @@ namespace Loom.ZombieBattleground
             _loadedAssetBundles.Add(name, assetBundle);
 
             stopwatch.Stop();
-            UnityEngine.Debug.Log($"Loading '{name}' bundle took {stopwatch.ElapsedMilliseconds} ms");
+            Log.Info($"Loading '{name}' bundle took {stopwatch.ElapsedMilliseconds} ms");
         }
 
         public async Task LoadAssetBundleFromFileAsync(string name, IProgress<float> progress = null)

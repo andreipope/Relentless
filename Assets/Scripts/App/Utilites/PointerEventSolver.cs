@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 
@@ -6,6 +6,10 @@ namespace Loom.ZombieBattleground
 {
     public class PointerEventSolver
     {
+        public static float DefaultDelta = Application.isMobilePlatform ?
+                                           Constants.PointerMinDragDelta * 2f :
+                                           Constants.PointerMinDragDeltaMobile;
+
         private float _pressTimer;
 
         private float _dragDelta;

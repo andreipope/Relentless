@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.View;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using Hero = Loom.ZombieBattleground.Data.Hero;
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
 {
     public class Player : BoardObject, IView, IInstanceIdOwner
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(Player));
+
         public int Turn { get; set; }
 
         public int InitialHp { get; private set; }
@@ -503,7 +506,7 @@ namespace Loom.ZombieBattleground
         {
             if (CardsOnBoard.Contains(card))
             {
-                Debug.LogWarning($"Attempt to add card {card} to CardsOnBoard when it is already added");
+                Log.Warn($"Attempt to add card {card} to CardsOnBoard when it is already added");
                 return;
             }
             CardsOnBoard.Insert(position, card);
@@ -677,23 +680,26 @@ namespace Loom.ZombieBattleground
                                                  _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                                                  SpecificBattlegroundInfo.DisabledInitialization))
             {
-                _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
+                InternalTools.DoActionDelayed(() =>
                 {
-                    _actionsQueueController.ClearActions();
-
-                    _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                    _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+                    if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                     {
-                        _queueManager.AddAction(
-                            new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
-                            )
-                        );
+                        _actionsQueueController.ClearActions();
 
-                        completeCallback?.Invoke();
-                    }, Enumerators.QueueActionType.EndMatch);
-                }
+                        _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                        {
+                            _queueManager.AddAction(
+                                new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                                )
+                            );
+
+                            completeCallback?.Invoke();
+                        }, Enumerators.QueueActionType.EndMatch);
+                    }
+                }, 2f);
             }
             else
             {

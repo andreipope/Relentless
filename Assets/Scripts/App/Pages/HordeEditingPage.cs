@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -16,6 +17,8 @@ namespace Loom.ZombieBattleground
 {
     public class HordeEditingPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(HordeEditingPage));
+
         private const int CardsPerPage = 5;
 
         private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _against =
@@ -808,7 +811,7 @@ namespace Loom.ZombieBattleground
                     _currentDeck.Id = newDeckId;
                     _dataManager.CachedDecksData.Decks.Add(_currentDeck);
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
-                    Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                    Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
 
                     if(_tutorialManager.IsTutorial)
                     {
@@ -818,7 +821,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(e);
+                    Helpers.ExceptionReporter.SilentReportException(e);
 
                     success = false;
 
@@ -848,11 +851,11 @@ namespace Loom.ZombieBattleground
                     }
 
                     _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
-                    Debug.Log(" ====== Edit Deck Successfully ==== ");
+                    Log.Info(" ====== Edit Deck Successfully ==== ");
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(e);
+                    Helpers.ExceptionReporter.SilentReportException(e);
 
                     success = false;
 
