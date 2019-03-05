@@ -21,8 +21,6 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _stateManager;
         
         private ISoundManager _soundManager;
-
-        private List<Transform> _locatorList;
         
         private Button _buttonBattle, 
                        _buttonShop, 
@@ -31,8 +29,6 @@ namespace Loom.ZombieBattleground
                        _buttonMyCards;
 
         private List<Sprite> _selectedSpriteList;
-        
-        private List<Sprite> _normalSpriteList;
         
         public enum MENU
         {
@@ -45,8 +41,6 @@ namespace Loom.ZombieBattleground
         }
 
         private MENU _currentMenu = MENU.NONE;
-
-        private const bool _isAnimateTransition = false;
         
         #region IUIPopup
 
@@ -56,6 +50,28 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
+            
+            _selectedSpriteList = new List<Sprite>();
+            _selectedSpriteList.Add(_loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/Sidebar/sidebar_battle_selected"
+            ));
+            _selectedSpriteList.Add(_loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/Sidebar/sidebar_shop_selected"
+            ));
+            _selectedSpriteList.Add(_loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/Sidebar/sidebar_my_decks_selected"
+            ));
+            _selectedSpriteList.Add(_loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/Sidebar/sidebar_my_packs_selected"
+            ));
+            _selectedSpriteList.Add(_loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/Sidebar/sidebar_my_cards_selected"
+            ));
         }
 
         public void Dispose()
@@ -85,37 +101,6 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SideMenuPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
-            _locatorList = new List<Transform>();
-            _locatorList.Add
-            (
-                Self.transform.Find("Locator/Button_Battle")
-            );
-            _locatorList.Add
-            (
-                Self.transform.Find("Locator/Button_Shop")
-            );
-            _locatorList.Add
-            (
-                Self.transform.Find("Locator/Button_MyDecks")
-            );
-            _locatorList.Add
-            (
-                Self.transform.Find("Locator/Button_MyPacks")
-            );
-            _locatorList.Add
-            (
-                Self.transform.Find("Locator/Button_MyCards")
-            );
-            _selectedSpriteList = new List<Sprite>();
-            for(int i=0; i<_locatorList.Count;++i)
-            {
-                _selectedSpriteList.Add
-                (
-                    _locatorList[i].GetComponent<Image>().sprite
-                );
-            }
-            Self.transform.Find("Locator").gameObject.SetActive(false);
-
             _buttonBattle = Self.transform.Find("Group/Button_Battle").GetComponent<Button>();
             _buttonShop = Self.transform.Find("Group/Button_Shop").GetComponent<Button>();           
             _buttonMyDecks = Self.transform.Find("Group/Button_MyDecks").GetComponent<Button>();
@@ -128,48 +113,7 @@ namespace Loom.ZombieBattleground
             _buttonMyPacks.onClick.AddListener(ButtonMyPacksHander);
             _buttonMyCards.onClick.AddListener(ButtonMyCardsHandler);
 
-            List<Transform> buttonTransformList = new List<Transform>();
-            buttonTransformList.Add(_buttonBattle.transform);
-            buttonTransformList.Add(_buttonShop.transform);
-            buttonTransformList.Add(_buttonMyDecks.transform);
-            buttonTransformList.Add(_buttonMyPacks.transform);
-            buttonTransformList.Add(_buttonMyCards.transform);
-            _normalSpriteList = new List<Sprite>();
-            for(int i=0; i<buttonTransformList.Count;++i)
-            {
-                _normalSpriteList.Add
-                (
-                    buttonTransformList[i].GetComponent<Image>().sprite
-                );
-            }
-
-            if (_isAnimateTransition)
-            {
-                for (int i = 0; i < _locatorList.Count; ++i)
-                {
-                    Transform locator = _locatorList[i];
-                    Transform button = buttonTransformList[i];
-                    button.position = locator.position - Vector3.right * 3.5f;
-
-                    Sequence sequence = DOTween.Sequence();
-                    sequence.AppendInterval(0.1f * i);
-                    sequence.Append(button.DOMove(locator.position, .5f).SetEase(Ease.OutQuad));
-                }
-            }
-            else
-            {
-                for (int i = 0; i < _locatorList.Count; ++i)
-                {
-                    Transform locator = _locatorList[i];
-                    Transform button = buttonTransformList[i];
-                    button.position = locator.position;
-                }
-            }
-
-            if (_currentMenu != MENU.NONE)
-            {
-                buttonTransformList[(int)_currentMenu].GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
-            }
+            UpdateButtonSprite();
         }
 
         public void Show(object data)
@@ -183,6 +127,28 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void UpdateButtonSprite()
+        {
+            switch(_currentMenu)
+            {
+                case MENU.BATTLE:
+                    _buttonBattle.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    break;
+                case MENU.SHOP:
+                    _buttonShop.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    break;
+                case MENU.MY_DECKS:
+                    _buttonMyDecks.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    break;
+                case MENU.MY_PACKS:
+                    _buttonMyPacks.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    break;
+                case MENU.MY_CARDS:
+                    _buttonMyCards.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    break;
+            }
+        }
 
         #region Buttons Handlers
 
