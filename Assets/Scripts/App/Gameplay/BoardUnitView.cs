@@ -200,11 +200,8 @@ namespace Loom.ZombieBattleground
 
             Enumerators.SetType setType = _cardsController.GetSetOfCard(Model.Card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
-            string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
-            string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
-
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
+            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.LibraryCard.Picture.ToLowerInvariant()}");
 
             _pictureSprite.transform.localPosition = (Vector3)Model.Card.LibraryCard.CardViewInfo.Position;
             _pictureSprite.transform.localScale = (Vector3)Model.Card.LibraryCard.CardViewInfo.Scale;

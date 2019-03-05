@@ -1384,9 +1384,7 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                card.LibraryCard.Picture.ToLowerInvariant()));
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.LibraryCard.Picture.ToLowerInvariant()}");
 
             _titleText.text = card.LibraryCard.Name;
             _descriptionText.text = choosableAbility.Description;

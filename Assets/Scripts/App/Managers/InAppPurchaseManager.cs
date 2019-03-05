@@ -9,6 +9,7 @@ using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
 using Convert = System.Convert;
 using Object = UnityEngine.Object;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
@@ -23,7 +24,7 @@ namespace Loom.ZombieBattleground
 #if UNITY_IOS || UNITY_ANDROID
         #region Variable Field
 
-
+        private static readonly ILog Log = Logging.GetLog(nameof(InAppPurchaseManager));
         private static IStoreController m_StoreController;       
         private static IExtensionProvider m_StoreExtensionProvider;
 

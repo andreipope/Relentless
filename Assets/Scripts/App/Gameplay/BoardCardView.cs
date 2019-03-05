@@ -181,9 +181,7 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                BoardUnitModel.Card.LibraryCard.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{BoardUnitModel.Card.LibraryCard.Picture.ToLowerInvariant()}");
 
             AmountText.transform.parent.gameObject.SetActive(false);
             AmountTextForArmy.transform.parent.gameObject.SetActive(false);
@@ -227,8 +225,7 @@ namespace Loom.ZombieBattleground
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(), card.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.Picture.ToLowerInvariant()}");
 
             DistibuteCardObject.SetActive(false);
         }
@@ -482,6 +479,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
+                    if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
+                        continue;
+
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)
                     {
