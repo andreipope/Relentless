@@ -79,35 +79,37 @@ namespace Loom.ZombieBattleground
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
             
-            _cardCounter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Image_CardfCounter/Text_CardCounter").GetComponent<TextMeshProUGUI>();
+            _cardCounter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Image_CardfCounter/Text_CardCounter").GetComponent<TextMeshProUGUI>();
             
-            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonFilter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonFilterHandler);
             _buttonFilter.onClick.AddListener(PlayClickSound);
             
-            _buttonMarketplace = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
+            _buttonMarketplace = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
             _buttonMarketplace.onClick.AddListener(ButtonMarketplace);
             _buttonMarketplace.onClick.AddListener(PlayClickSound);
             
-            _buttonBuyPacks = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
+            _buttonBuyPacks = _selfPage.transform.Find("Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
             _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
             _buttonBuyPacks.onClick.AddListener(PlayClickSound);
             
-            _buttonLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrow = _selfPage.transform.Find("Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
             _buttonLeftArrow.onClick.AddListener(PlayClickSound);
             
-            _buttonRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrow = _selfPage.transform.Find("Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
             _buttonRightArrow.onClick.AddListener(PlayClickSound);
             
-            _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
+            _inputFieldSearchName = _selfPage.transform.Find("Panel_Frame/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
             _uiManager.GetPopup<CardFilterPopup>().FilterData.Reset();            
             
             LoadObjects();
+
+            UpdatePageScaleToMatchResolution();
         }
         
         public void Hide()
@@ -133,6 +135,15 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void UpdatePageScaleToMatchResolution()
+        {
+            float screenRatio = (float)Screen.width/Screen.height;
+            if(screenRatio < 1.76f)
+            {
+                _selfPage.transform.localScale = Vector3.one * 0.93f;
+            }
+        }
 
         #region UI Handlers
 
@@ -198,7 +209,7 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
-            _locatorPlaceHolder = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Content/Locator_CardPosition");
+            _locatorPlaceHolder = _selfPage.transform.Find("Panel_Content/Locator_CardPosition");
             Vector3 cardPlaceholdersPos = _locatorPlaceHolder.position;
             cardPlaceholdersPos.z = 0f;
             CardPlaceholders.transform.position = cardPlaceholdersPos;
