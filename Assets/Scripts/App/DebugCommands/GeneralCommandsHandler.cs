@@ -1,5 +1,6 @@
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Opencoding.CommandHandlerSystem;
 
 namespace Loom.ZombieBattleground
@@ -54,6 +55,29 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITutorialManager>().StopTutorial(true);
             GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
+        }
+        [CommandHandler(Description = "Jumps to desired tutorial")]
+        public static void JumpToTutorialNumber(int tutorialNumber)
+        {
+            GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = true;
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = tutorialNumber;
+
+            if (tutorialNumber % 2 == 0)
+            {
+                
+                GameClient.Get<IGameplayManager>().IsTutorial = true;
+                GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = 0;
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                GameClient.Get<ITutorialManager>().SetupTutorialById(tutorialNumber);
+                GameClient.Get<ITutorialManager>().StartTutorial();
+            }
+
+
+
+
         }
     }
 }

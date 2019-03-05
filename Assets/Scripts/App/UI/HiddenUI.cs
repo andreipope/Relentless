@@ -95,6 +95,11 @@ namespace Loom.ZombieBattleground
             GeneralCommandsHandler.SkipTutorialFlow();
         }
 
+        public void JumpToTutorial(int number)
+        {
+            GeneralCommandsHandler.JumpToTutorialNumber(number);
+        }
+
         public void DumpState()
         {
             Protobuf.GameState currentGameState = null;
