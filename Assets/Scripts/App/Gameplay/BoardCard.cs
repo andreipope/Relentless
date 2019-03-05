@@ -193,9 +193,7 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                WorkingCard.LibraryCard.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{WorkingCard.LibraryCard.Picture.ToLowerInvariant()}");
 
             AmountText.transform.parent.gameObject.SetActive(false);
             AmountTextForArmy.transform.parent.gameObject.SetActive(false);
@@ -242,8 +240,7 @@ namespace Loom.ZombieBattleground
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(), card.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.Picture.ToLowerInvariant()}");
 
             DistibuteCardObject.SetActive(false);
         }
