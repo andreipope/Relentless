@@ -29,8 +29,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonLeft, _buttonRight;
 
-        private GameObject _deckIconPrefab,
-                           _glowBorderPrefab;
+        private GameObject _deckIconPrefab;
 
         private List<GameObject> _createdDeckIconList;
 
@@ -52,6 +51,12 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+
+            LoginPopup.OnLoginSuccess += () =>
+            {
+                if (Self != null)
+                    ReloadDeckDataAndDisplay();
+            };
         }
 
         public void Dispose()
@@ -84,22 +89,18 @@ namespace Loom.ZombieBattleground
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
 
             _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
-            _glowBorderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/GlowBorder");
 
             _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _deckIconGroup = Self.transform.Find("Scaler/Panel_DeckContent/Group");
+            
+            _glowBorderVFX = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").gameObject;
 
             _buttonRight = Self.transform.Find("Scaler/Button_Right").GetComponent<Button>();
             _buttonLeft = Self.transform.Find("Scaler/Button_Left").GetComponent<Button>();
             _buttonRight.onClick.AddListener(ButtonRightHandler);
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
-            LoadDefaultDeckData();
-            LoadDeckObjects();
-            UpdateSelectedDeckDisplay
-            (
-                GetSelectedDeck()
-            );            
+            ReloadDeckDataAndDisplay();                        
         }
 
         public void Show(object data)
@@ -112,6 +113,16 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        public void ReloadDeckDataAndDisplay()
+        {
+            LoadDefaultDeckData();
+            LoadDeckObjects();
+            UpdateSelectedDeckDisplay
+            (
+                GetSelectedDeck()
+            );
+        }
 
         #region Deck Data
 
@@ -201,15 +212,18 @@ namespace Loom.ZombieBattleground
         #endregion
 
         #region Deck Display
-        
+
         private void LoadDeckObjects()
         {
             DisposeCreatedObject();
             _createdDeckIconList = new List<GameObject>();
+            List<Vector3> positionList = GetIconPositionList(_dataManager.CachedDecksData.Decks.Count);
+            
             for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
             {
                 GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
                 deckIcon.transform.SetParent(_deckIconGroup);
+                deckIcon.transform.localPosition = positionList[i];
                 deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
 
                 Deck deck = _dataManager.CachedDecksData.Decks[i];
@@ -220,6 +234,18 @@ namespace Loom.ZombieBattleground
                 
                 _createdDeckIconList.Add(deckIcon);
             }
+        }
+        
+        private List<Vector3> GetIconPositionList(int amount)
+        {
+            List<Vector3> positionList = new List<Vector3>();
+            for(int i=0; i<amount; ++i)
+            {
+                Vector3 position = new Vector3(0f, 0f, 0f);
+                position.x += (i * 184f);
+                positionList.Add(position);
+            }
+            return positionList;
         }
 
         private void UpdateSelectedDeckDisplay(Deck selectedDeck)
@@ -234,20 +260,7 @@ namespace Loom.ZombieBattleground
                 if(deck == selectedDeck)
                 {
                     _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
-                    if(_glowBorderVFX == null)
-                    {
-                        //_glowBorderVFX = Object.Instantiate(_glowBorderPrefab);
-                        _glowBorderVFX = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").gameObject;
-                    }
-                    Transform deckIcon = _createdDeckIconList[i].transform;
-                    Sequence sequence = DOTween.Sequence();
-                    sequence.AppendInterval(0.1f);
-                    sequence.OnComplete(()=> 
-                    {
-                        Vector3 glowBorderPosition = deckIcon.position;
-                        glowBorderPosition.z = 0;
-                        _glowBorderVFX.transform.position = glowBorderPosition;  
-                    });   
+                    _deckIconGroup.localPosition = -Vector3.right * (i * 184f);
                 }
                 else
                 {
@@ -287,10 +300,6 @@ namespace Loom.ZombieBattleground
                 }
                 _createdDeckIconList.Clear();
                 _createdDeckIconList = null;
-            }
-            if(_glowBorderVFX != null)
-            {
-                Object.Destroy(_glowBorderVFX);
             }
         }
 
