@@ -41,5 +41,5 @@ class Gameplay_Page(CZBTests):
         time.sleep(5)#sleep is to wait for the card player draws go to player hand
     
     def swipe_card_to_opponent_face(self,card):
-        card.mobile_dragToElement(self.opponent_face,2)
+        card.mobile_dragToElement(self.opponent_face,2000)
     
