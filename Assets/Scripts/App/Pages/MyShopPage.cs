@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -27,37 +28,13 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         
         private GameObject _selfPage;
-        
-        private readonly string[] _itemCosts =
-        {
-            "$1.99",
-            "$2.99", 
-            "$4.99",
-            "$9.99"
-        };
-
-        private readonly string[] _itemNames =
-        {    
-            "1 PACK",
-            "2 PACKS",
-            "5 PACKS",
-            "10 PACKS"
-        };
-        
-        private readonly string[] _itemDescriptions =
-        {    
-            "1 pack of cards",
-            "2 packs of cards",
-            "5 packs of cards",
-            "10 packs of cards"
-        };
-
-        private const int _numberOfItems = 4;
 
         private List<Button> _itemButtonList;
 
         private List<TextMeshProUGUI> _textItemNameList,
                                       _textItemPriceList;
+
+        private ShopData _shopData;
         
         #region IUIElement
         
@@ -70,7 +47,8 @@ namespace Loom.ZombieBattleground
             _textItemNameList = new List<TextMeshProUGUI>();
             _textItemPriceList = new List<TextMeshProUGUI>();
 
-            InitPurchaseLogic();           
+            InitPurchaseLogic();
+            LoadShopData();         
         }
 
         public void Update()
@@ -123,7 +101,7 @@ namespace Loom.ZombieBattleground
         private void BuyButtonHandler( int id )
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
-            _inAppPurchaseManager.BuyProductID( _productID[id] );           
+            _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );           
         }
         
         #endregion   
@@ -136,7 +114,7 @@ namespace Loom.ZombieBattleground
             _textItemNameList.Clear();
             _textItemPriceList.Clear();
             
-            for(int i=0; i<_numberOfItems; ++i)
+            for(int i=0; i<_shopData.NumberOfItems; ++i)
             {
                 int index = i;
                 Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();
@@ -148,18 +126,23 @@ namespace Loom.ZombieBattleground
                 button.onClick.AddListener(PlayClickSound);
                 
                 TextMeshProUGUI textName = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_PackName").GetComponent<TextMeshProUGUI>();
-                textName.text = _itemNames[i];
+                textName.text = _shopData.ItemNames[i];
                 _textItemNameList.Add(textName);
                 
                 TextMeshProUGUI textPrice = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_Price").GetComponent<TextMeshProUGUI>();
-                textPrice.text = _itemCosts[i];
+                textPrice.text = _shopData.ItemCosts[i];
                 _textItemPriceList.Add(textPrice);
             }
+        }
+        
+        private void LoadShopData()
+        {
+            _shopData = JsonConvert.DeserializeObject<ShopData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/shop_data").text);            
         }
 
         #region Purchasing Logic
 
-        #if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID
         private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
         private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
         #endif       
@@ -171,14 +154,6 @@ namespace Loom.ZombieBattleground
         private FiatPlasmaManager _fiatPlasmaManager;
         
         event Action _finishRequestPack;
-        
-        private readonly string[] _productID =
-        {    
-            "booster_pack_1",
-            "booster_pack_2",
-            "booster_pack_5",
-            "booster_pack_10"
-        };
 
         public void InitPurchaseLogic()
         {

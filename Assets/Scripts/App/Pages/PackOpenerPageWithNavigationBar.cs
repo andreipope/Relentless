@@ -22,7 +22,8 @@ namespace Loom.ZombieBattleground
 
         private IDataManager _dataManager;
 
-        private TextMeshProUGUI[] _packTypeAmountLabels, _packTypeNames;
+        private TextMeshProUGUI[] _packTypeAmountLabels, 
+                                  _packTypeNames;
 
         private Button[] _packTypeButtons;
     
@@ -38,13 +39,21 @@ namespace Loom.ZombieBattleground
         
         private GameObject _selfPage;
         
-        private GameObject _gooPoolPrefab, _buttonOpenPackVFXPrefab, _cardCreaturePrefab, _cardItemPrefab;
+        private GameObject _gooPoolPrefab, 
+                           _buttonOpenPackVFXPrefab, 
+                           _cardCreaturePrefab, 
+                           _cardItemPrefab;
         
-        private GameObject _vfxMinionPrefab, _vfxOfficerPrefab, _vfxCommanderPrefab, _vfxGeneralPrefab;
+        private GameObject _vfxMinionPrefab, 
+                           _vfxOfficerPrefab, 
+                           _vfxCommanderPrefab, 
+                           _vfxGeneralPrefab;
         
-        private GameObject _createdGooPool, _createdbuttonOpenPackVFX;
+        private GameObject _createdGooPool, 
+                           _createdbuttonOpenPackVFX;
         
-        private Image _rightPanelLight, _leftPanelLight;
+        private Image _rightPanelLight, 
+                      _leftPanelLight;
         
         private List<BoardCard> _createdBoardCards;
         
@@ -52,15 +61,27 @@ namespace Loom.ZombieBattleground
         
         private CardHighlightingVFXItem _createdHighlightingVFXItem;
         
-        private Button _buttonBack, _buttonPlus, _buttonMinus, _buttonMax, _buttonOpenPack, _butttonPanelCollect, _buttonCollect, _buttonBuyPack;
+        private Button _buttonBack, 
+                       _buttonPlus, 
+                       _buttonMinus, 
+                       _buttonMax, 
+                       _buttonOpenPack, 
+                       _butttonPanelCollect, 
+                       _buttonCollect, 
+                       _buttonBuyPack;
         
         private TextMeshProUGUI _packsAmountText;
         
-        private Transform _packTray, _trayStart, _trayEnd, _panelCollect, _greenPoolVFX;
+        private Transform _packTray, 
+                          _trayStart, 
+                          _trayEnd, 
+                          _panelCollect, 
+                          _greenPoolVFX;
         
         private SpriteRenderer _vignetteCollectCard;
 
-        private Sprite _packHolderSelectedSprite, _packHolderNormalSprite;
+        private Sprite _packHolderSelectedSprite, 
+                       _packHolderNormalSprite;
         
         private Animator _gooPoolAnimator;
         

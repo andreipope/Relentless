@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground
         private void ButtonAutoHandler()
         {
             FillCollectionData();
-            GameClient.Get<DeckGeneratorManager>().GenerateCardsToDeck
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateCardsToDeck
             (
                 _myDeckPage.CurrentEditDeck,
                 _collectionData
