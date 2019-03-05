@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
             _unitContentObject = GameObject.transform.Find("Other").gameObject;
             _unitContentObject.SetActive(false);
 
-            _inputController.UnitSelectedEvent += UnitSelectedEventHandler;
+            _inputController.DragOnBoardObjectEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
 #if UNITY_EDITOR
@@ -758,12 +758,12 @@ namespace Loom.ZombieBattleground
             sequence.Play();
         }
 
-        private void UnitSelectedEventHandler(BoardUnitView unit)
+        private void UnitSelectedEventHandler(BoardObject boardObject)
         {
             if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
                 return;
 
-            if (unit == this)
+            if (boardObject == Model)
             {
                 OnMouseDown();
             }
