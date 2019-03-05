@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -51,15 +51,15 @@ namespace Loom.ZombieBattleground
                 Player playerOwner;
                 UniquePositionedList<WorkingCard> filteredCards = null;
 
-                foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
+                foreach (Enumerators.AbilityTarget targetType in AbilityData.AbilityTarget)
                 {
                     playerOwner = null;
                     switch (targetType)
                     {
-                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.AbilityTarget.PLAYER:
                             playerOwner = PlayerCallerOfAbility;
                             break;
-                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.AbilityTarget.OPPONENT:
                             playerOwner = GetOpponentOverlord();
                             break;
                         default:

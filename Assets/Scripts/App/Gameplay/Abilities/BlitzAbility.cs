@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     public class BlitzAbility : AbilityBase
     {
         private int Count { get; }
-        private Enumerators.SetType SetType { get; }
+        private Enumerators.Faction SetType { get; }
 
         public BlitzAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -44,15 +44,15 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                    foreach (Enumerators.AbilityTarget targetType in AbilityTargetTypes)
                     {
                         switch (targetType)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                            case Enumerators.AbilityTarget.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.Faction == SetType));
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                            case Enumerators.AbilityTarget.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.Faction == SetType));
                                 break;
                         }
                     }

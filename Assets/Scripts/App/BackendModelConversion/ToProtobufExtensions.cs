@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground.Data
                 Trigger = (CardAbilityTrigger.Types.Enum) ability.CallType,
                 TargetTypes =
                 {
-                    ability.AbilityTargetTypes.Select(t => (CardAbilityTarget.Types.Enum) t)
+                    ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)
                 },
                 Stat = (StatType.Types.Enum) ability.AbilityStatType,
                 Set = (CardSetType.Types.Enum) ability.AbilitySetType,
@@ -125,18 +125,18 @@ namespace Loom.ZombieBattleground.Data
                 FlavorText = card.FlavorText,
                 Picture = card.Picture,
                 Attack = card.Damage,
-                Defense = card.Health,
-                Set = (CardSetType.Types.Enum) card.CardSetType,
+                Defense = card.Defense,
+                Set = (CardSetType.Types.Enum) card.Faction,
                 Frame = card.Frame,
                 Kind = (CardKind.Types.Enum) card.CardKind,
                 Rank = (CreatureRank.Types.Enum) card.CardRank,
                 Type = (CreatureType.Types.Enum) card.CardType,
-                CardViewInfo = card.CardViewInfo.ToProtobuf(),
+                CardViewInfo = card.PictureTransform.ToProtobuf(),
                 Abilities =
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
-                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
+                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimation
             };
 
             return protoCard;
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.CardViewInfo ToProtobuf(this CardViewInfo cardViewInfo)
+        public static Protobuf.CardViewInfo ToProtobuf(this PictureTransform cardViewInfo)
         {
             if (cardViewInfo == null)
                 return null;

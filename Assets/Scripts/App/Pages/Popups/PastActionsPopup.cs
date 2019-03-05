@@ -283,7 +283,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case WorkingCard workingCard:
-                        if(workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+                        if(workingCard.LibraryCard.CardKind == Enumerators.CardKind.ITEM)
                         {
                             _rightBlockCardSpellElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
@@ -420,7 +420,7 @@ namespace Loom.ZombieBattleground
                 _bodyText.text = libraryCard.Description;
                 _gooText.text = libraryCard.Cost.ToString();
                 Damage = libraryCard.Damage;
-                Health = libraryCard.Health;
+                Health = libraryCard.Defense;
 
                 _initialDamage = Damage;
                 _initialHp = Health;
@@ -438,7 +438,7 @@ namespace Loom.ZombieBattleground
 
                 string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = libraryCard.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -554,7 +554,7 @@ namespace Loom.ZombieBattleground
 
                 string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = libraryCard.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -772,11 +772,11 @@ namespace Loom.ZombieBattleground
                 _bodyText.text = libraryCard.Description;
                 _gooText.text = libraryCard.Cost.ToString();
                 _attackText.text = libraryCard.Damage.ToString();
-                _defenseText.text = libraryCard.Health.ToString();
+                _defenseText.text = libraryCard.Defense.ToString();
 
                 string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = libraryCard.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -873,7 +873,7 @@ namespace Loom.ZombieBattleground
 
                 string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = libraryCard.Faction.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 

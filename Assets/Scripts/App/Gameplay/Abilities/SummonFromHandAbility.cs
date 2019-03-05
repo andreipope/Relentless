@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
         public int Count { get; }
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction SetType { get; }
 
         private IGameplayManager _gameplayManager;
         private AbilitiesController _abilitiesController;
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -62,10 +62,7 @@ namespace Loom.ZombieBattleground
                 x => x.WorkingCard.InstanceCard.Cost <= Value &&
                     x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
 
-            if (SetType != Enumerators.SetType.NONE)
-            {
-                cards = cards.FindAll(x => x.LibraryCard.CardSetType == SetType);
-            }
+            cards = cards.FindAll(x => x.LibraryCard.Faction == SetType);
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
 

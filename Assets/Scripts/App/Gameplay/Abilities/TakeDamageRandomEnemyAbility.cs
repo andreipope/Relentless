@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public int Count { get; }
 
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction SetType;
 
         private List<BoardObject> _targets;
 
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 Action();
             }
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
           !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
             Action();
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
                 base.UnitDiedHandler();
                 return;
             }
@@ -67,26 +67,26 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> possibleTargets = new List<BoardObject>();
 
-            foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+            foreach (Enumerators.AbilityTarget abilityTarget in AbilityData.AbilityTarget)
             {
                 switch (abilityTarget)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTarget.OPPONENT_CARD:
                         possibleTargets.AddRange(GetOpponentOverlord().BoardCards
                             .FindAll(unit => unit.Model.CurrentHp > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
+                    case Enumerators.AbilityTarget.PLAYER_CARD:
                         possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
                             .FindAll(unit => unit.Model.CurrentHp > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.AbilityTarget.PLAYER:
                         possibleTargets.Add(PlayerCallerOfAbility);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTarget.OPPONENT:
                         possibleTargets.Add(GetOpponentOverlord());
                         break;
                 }
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted(object target, out int damageWas)
         {
-            if (AbilityCallType == Enumerators.AbilityCallType.DEATH) {
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH) {
                 base.UnitDiedHandler();
             }
             
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
-                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.Faction == SetType).Count;
             }
 
             damageWas = damageOverride;

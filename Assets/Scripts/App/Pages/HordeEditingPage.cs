@@ -18,26 +18,26 @@ namespace Loom.ZombieBattleground
     {
         private const int CardsPerPage = 5;
 
-        private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _against =
-            new Dictionary<Enumerators.SetType, Enumerators.SetType>
+        private readonly Dictionary<Enumerators.Faction, Enumerators.Faction> _against =
+            new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.WATER
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.LIFE
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.EARTH
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.AIR
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
                 }
             };
 
@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         private int _currentElementPage, _numElementPages, _numHordePages, _currentHordePage;
 
-        private Enumerators.SetType _currentSet;
+        private Enumerators.Faction _currentSet;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.AIR);
                     }
                 });
             _lifeToggle.onValueChanged.AddListener(
@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.LIFE);
                     }
                 });
             _waterToggle.onValueChanged.AddListener(
@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.WATER);
                     }
                 });
             _toxicTogggle.onValueChanged.AddListener(
@@ -229,7 +229,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.TOXIC);
                     }
                 });
             _fireToggle.onValueChanged.AddListener(
@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.FIRE);
                     }
                 });
             _earthToggle.onValueChanged.AddListener(
@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.EARTH);
                     }
                 });
             _itemsToggle.onValueChanged.AddListener(
@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.ITEM);
                     }
                 });
 
@@ -347,9 +347,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < Enumerators.SetType.FIRE)
+                if (_currentSet < Enumerators.Faction.FIRE)
                 {
-                    _currentSet = Enumerators.SetType.ITEM;
+                    _currentSet = Enumerators.Faction.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -366,9 +366,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet > Enumerators.SetType.ITEM)
+                if (_currentSet > Enumerators.Faction.ITEM)
                 {
-                    _currentSet = Enumerators.SetType.FIRE;
+                    _currentSet = Enumerators.Faction.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -380,9 +380,9 @@ namespace Loom.ZombieBattleground
             UpdateCardsPage();
         }
 
-        public void LoadCards(int page, Enumerators.SetType setType)
+        public void LoadCards(int page, Enumerators.Faction setType)
         {
-            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(setType - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
             List<Card> cards;
 
@@ -458,7 +458,7 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(_cardCreaturePrefab);
                     boardCard = new UnitBoardCard(go);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;
@@ -608,7 +608,7 @@ namespace Loom.ZombieBattleground
                 return;
             
 
-            if (_against[_currentHero.HeroElement] == card.CardSetType)
+            if (_against[_currentHero.HeroElement] == card.Faction)
             {
                 OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -718,9 +718,9 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            Enumerators.SetType setType = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
+            Enumerators.Faction setType = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setType == Enumerators.SetType.ITEM)
+            if (setType == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -996,7 +996,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                Enumerators.SetType heroSetType = _dataManager.CachedHeroesData.Heroes
+                Enumerators.Faction heroSetType = _dataManager.CachedHeroesData.Heroes
                     .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
 
                 _currentSet = heroSetType;
@@ -1216,7 +1216,7 @@ namespace Loom.ZombieBattleground
 
         #region button handlers
 
-        private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
+        private void ToggleChooseOnValueChangedHandler(Enumerators.Faction type)
         {
             if (type == _currentSet)
                 return;

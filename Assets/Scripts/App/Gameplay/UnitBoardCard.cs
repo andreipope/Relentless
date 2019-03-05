@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             base.Init(card, amount);
 
             Damage = card.Damage;
-            Health = card.Health;
+            Health = card.Defense;
 
             _initialDamage = Damage;
             _initialHp = Health;

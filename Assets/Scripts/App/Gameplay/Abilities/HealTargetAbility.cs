@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
             }
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
                 {
                     _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.Card.LibraryCard.MouldId != ZedKitId))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER) && (BoardSpell == null || BoardSpell.Card.LibraryCard.MouldId != ZedKitId))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }

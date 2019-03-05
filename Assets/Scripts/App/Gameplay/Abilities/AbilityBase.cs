@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilityActivityType AbilityActivityType;
 
-        public Enumerators.AbilityCallType AbilityCallType;
+        public Enumerators.AbilityTrigger AbilityTrigger;
 
         public Enumerators.AffectObjectType AffectObjectType;
 
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
-        public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
+        public List<Enumerators.AbilityTarget> AbilityTargetTypes;
 
         public Enumerators.CardKind CardKind;
 
@@ -119,8 +119,8 @@ namespace Loom.ZombieBattleground
             AbilityData = ability;
             CardKind = cardKind;
             AbilityActivityType = ability.ActivityType;
-            AbilityCallType = ability.CallType;
-            AbilityTargetTypes = ability.AbilityTargetTypes;
+            AbilityTrigger = ability.CallType;
+            AbilityTargetTypes = ability.AbilityTarget;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponenentAvatar = GameplayManager.OpponentPlayer;
@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                     TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
                     TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position);
                     break;
                 default:
@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     if (BoardSpell != null)
                     {
                         BoardSpell.Used += UsedHandler;

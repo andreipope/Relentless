@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
         public Enumerators.CardType UnitType;
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction SetType;
 
         public int Cost { get; }
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.LibraryCard.CardSetType == SetType &&
+                                   unit.Card.LibraryCard.Faction == SetType &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.Faction == SetType &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 

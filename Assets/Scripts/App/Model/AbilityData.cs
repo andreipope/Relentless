@@ -14,16 +14,16 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.AbilityActivityType ActivityType { get; private set; }
 
         [JsonProperty("call_type")]
-        public Enumerators.AbilityCallType CallType { get; private set; }
+        public Enumerators.AbilityTrigger CallType { get; private set; }
 
         [JsonProperty("target_type")]
-        public List<Enumerators.AbilityTargetType> AbilityTargetTypes { get; private set; }
+        public List<Enumerators.AbilityTarget> AbilityTarget { get; private set; }
 
         [JsonProperty("stat_type")]
         public Enumerators.StatType AbilityStatType { get; private set; }
 
         [JsonProperty("set_type")]
-        public Enumerators.SetType AbilitySetType { get; private set; }
+        public Enumerators.Faction AbilitySetType { get; private set; }
 
         [JsonProperty("effect_type")]
         public Enumerators.AbilityEffectType AbilityEffectType { get; private set; }
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.GameMechanicDescriptionType GameMechanicDescriptionType { get; private set; }
 
         [JsonProperty("target_set")]
-        public Enumerators.SetType TargetSetType { get; private set; }
+        public Enumerators.Faction TargetSetType { get; private set; }
 
         [JsonProperty("sub_trigger")]
         public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
@@ -86,10 +86,10 @@ namespace Loom.ZombieBattleground.Data
         public AbilityData(
             Enumerators.AbilityType abilityType,
             Enumerators.AbilityActivityType activityType,
-            Enumerators.AbilityCallType callType,
-            List<Enumerators.AbilityTargetType> abilityTargetTypes,
+            Enumerators.AbilityTrigger callType,
+            List<Enumerators.AbilityTarget> abilityTargetTypes,
             Enumerators.StatType abilityStatType,
-            Enumerators.SetType abilitySetType,
+            Enumerators.Faction abilitySetType,
             Enumerators.AbilityEffectType abilityEffectType,
             Enumerators.AttackRestriction attackRestriction,
             Enumerators.CardType targetCardType,
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Data
             int delay,
             List<VisualEffectInfo> visualEffectsToPlay,
             Enumerators.GameMechanicDescriptionType gameMechanicDescriptionType,
-            Enumerators.SetType targetSetType,
+            Enumerators.Faction targetSetType,
             Enumerators.AbilitySubTrigger abilitySubTrigger,
             List<ChoosableAbility> choosableAbilities,
             int defense,
@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground.Data
             AbilityType = abilityType;
             ActivityType = activityType;
             CallType = callType;
-            AbilityTargetTypes = abilityTargetTypes ?? new List<Enumerators.AbilityTargetType>();
+            AbilityTarget = abilityTargetTypes ?? new List<Enumerators.AbilityTarget>();
             AbilityStatType = abilityStatType;
             AbilitySetType = abilitySetType;
             AbilityEffectType = abilityEffectType;
@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground.Data
             AbilityType = source.AbilityType;
             ActivityType = source.ActivityType;
             CallType = source.CallType;
-            AbilityTargetTypes = source.AbilityTargetTypes.ToList();
+            AbilityTarget = source.AbilityTarget.ToList();
             AbilityStatType = source.AbilityStatType;
             AbilitySetType = source.AbilitySetType;
             AbilityEffectType = source.AbilityEffectType;

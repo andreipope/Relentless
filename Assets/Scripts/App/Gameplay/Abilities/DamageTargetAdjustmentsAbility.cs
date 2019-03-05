@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if(AbilityCallType == Enumerators.AbilityCallType.ATTACK)
+            if(AbilityTrigger == Enumerators.AbilityTrigger.ATTACK)
             {
                 InvokeUseAbilityEvent();
             }
@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             Action(info);

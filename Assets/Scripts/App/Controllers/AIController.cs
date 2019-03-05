@@ -299,7 +299,7 @@ namespace Loom.ZombieBattleground
 
             await LetsWaitForQueue(cancellationToken);
 
-            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -359,7 +359,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.SetType.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -853,13 +853,13 @@ namespace Loom.ZombieBattleground
 
                 if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
                 {
-                    List<AbilityData> abilitiesWithTargets = card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0);
+                    List<AbilityData> abilitiesWithTargets = card.LibraryCard.Abilities.FindAll(x => x.AbilityTarget.Count > 0);
 
                     if (abilitiesWithTargets.Count > 0)
                     {
                         foreach(AbilityData data in abilitiesWithTargets)
                         {
-                            if (data.CallType == Enumerators.AbilityCallType.ENTRY &&
+                            if (data.CallType == Enumerators.AbilityTrigger.ENTRY &&
                                 data.ActivityType == Enumerators.AbilityActivityType.ACTIVE)
                             {
                                 needTargetForAbility = true;
@@ -907,7 +907,7 @@ namespace Loom.ZombieBattleground
 
                         _cardsController.DrawCardInfo(card);
                         break;
-                    case Enumerators.CardKind.SPELL:
+                    case Enumerators.CardKind.ITEM:
                         {
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
@@ -1016,7 +1016,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
 
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     {
                         GameObject spellCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                         spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
@@ -1049,7 +1049,7 @@ namespace Loom.ZombieBattleground
                         {
                             Action callback = () =>
                             {
-                                _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction, target);
+                                _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.ITEM, boardSpell, null, false, null, callAbilityAction, target);
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             };
 
@@ -1057,7 +1057,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.SPELL, boardSpell, null, false, null, callAbilityAction);
+                            _abilitiesController.CallAbility(card.LibraryCard, null, card, Enumerators.CardKind.ITEM, boardSpell, null, false, null, callAbilityAction);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();
@@ -1078,11 +1078,11 @@ namespace Loom.ZombieBattleground
             bool needsToSelectTarget = false;
             foreach (AbilityData ability in libraryCard.Abilities)
             {
-                foreach (Enumerators.AbilityTargetType item in ability.AbilityTargetTypes)
+                foreach (Enumerators.AbilityTarget item in ability.AbilityTarget)
                 {
                     switch (item)
                     {
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        case Enumerators.AbilityTarget.OPPONENT_CARD:
                             if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 ||
                                 ability.AbilityType == Enumerators.AbilityType.CARD_RETURN &&
                                 _gameplayManager.CurrentPlayer.BoardCards.Count > 0)
@@ -1092,9 +1092,9 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                        case Enumerators.AbilityTarget.PLAYER_CARD:
                             if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 ||
-                                libraryCard.CardKind == Enumerators.CardKind.SPELL ||
+                                libraryCard.CardKind == Enumerators.CardKind.ITEM ||
                                 ability.AbilityType == Enumerators.AbilityType.CARD_RETURN &&
                                 _gameplayManager.OpponentPlayer.BoardCards.Count > 0)
                             {
@@ -1103,9 +1103,9 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.AbilityTargetType.PLAYER:
-                        case Enumerators.AbilityTargetType.OPPONENT:
-                        case Enumerators.AbilityTargetType.ALL:
+                        case Enumerators.AbilityTarget.PLAYER:
+                        case Enumerators.AbilityTarget.OPPONENT:
+                        case Enumerators.AbilityTarget.ALL:
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
                             break;
@@ -1207,11 +1207,11 @@ namespace Loom.ZombieBattleground
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)
         {
-            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+            if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT_CARD))
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+            else if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -1219,7 +1219,7 @@ namespace Loom.ZombieBattleground
 
         private void GetTargetByType(AbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
-            if (ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+            if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT_CARD))
             {
                 IReadOnlyList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -1229,7 +1229,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (checkPlayerAlso && target == null &&
-                    ability.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                    ability.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
                 {
                     target = _gameplayManager.CurrentPlayer;
 
@@ -1344,7 +1344,7 @@ namespace Loom.ZombieBattleground
         private IReadOnlyList<WorkingCard> GetSpellCardsInHand()
         {
             return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
-                x.LibraryCard.CardKind == Enumerators.CardKind.SPELL);
+                x.LibraryCard.CardKind == Enumerators.CardKind.ITEM);
         }
 
         private List<BoardUnitModel> GetUnitsOnBoard()
@@ -1475,7 +1475,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.INFECT:
                 case Enumerators.OverlordSkill.TOXIC_POWER:
                     {
-                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
+                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.Faction ==
                                                                         _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
                         if (units.Count > 0)
                         {
@@ -1502,7 +1502,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.OverlordSkill.ICE_WALL:
                 case Enumerators.OverlordSkill.ENHANCE:
                     {
-                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.CardSetType ==
+                        List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.LibraryCard.Faction ==
                                                                         _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
 
                         if (units.Count > 0)
@@ -1528,7 +1528,7 @@ namespace Loom.ZombieBattleground
                             {
                                 _unitsToIgnoreThisTurn =
                                     _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.Faction) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                             }
@@ -1553,7 +1553,7 @@ namespace Loom.ZombieBattleground
                         _unitsToIgnoreThisTurn =
                             _gameplayManager.OpponentPlayer.BoardCards.FindAll(x =>
                             skill.Skill.ElementTargetTypes.Count > 0 && !x.Model.IsDead &&
-                            !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) ||
+                            !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.Faction) ||
                             x.Model.NumTurnsOnBoard > 0 || x.Model.HasFeral)
                                 .Select(x => x.Model)
                                 .ToList();
@@ -1597,7 +1597,7 @@ namespace Loom.ZombieBattleground
                         {
                             _unitsToIgnoreThisTurn =
                                 _gameplayManager.OpponentPlayer.BoardCards
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.CardSetType) && !x.Model.IsDead)
+                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Model.Card.LibraryCard.Faction) && !x.Model.IsDead)
                                     .Select(x => x.Model)
                                     .ToList();
                         }

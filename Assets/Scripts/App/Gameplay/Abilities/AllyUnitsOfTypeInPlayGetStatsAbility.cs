@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction SetType { get; }
 
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Model.Card.LibraryCard.CardSetType.Equals(SetType) && unit.Model != AbilityUnitOwner)
+                if (unit.Model.Card.LibraryCard.Faction.Equals(SetType) && unit.Model != AbilityUnitOwner)
                 {
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;

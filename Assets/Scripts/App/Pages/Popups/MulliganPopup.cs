@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                     _cardElement = new UnitCardElement(selfObject);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     _cardElement = new SpellCardElement(selfObject);
                     break;
                 default:

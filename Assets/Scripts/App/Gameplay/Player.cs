@@ -659,12 +659,12 @@ namespace Loom.ZombieBattleground
 
             switch (SelfHero.HeroElement)
             {
-                case Enumerators.SetType.FIRE:
-                case Enumerators.SetType.WATER:
-                case Enumerators.SetType.EARTH:
-                case Enumerators.SetType.AIR:
-                case Enumerators.SetType.LIFE:
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.FIRE:
+                case Enumerators.Faction.WATER:
+                case Enumerators.Faction.EARTH:
+                case Enumerators.Faction.AIR:
+                case Enumerators.Faction.LIFE:
+                case Enumerators.Faction.TOXIC:
                     var soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfHero.HeroElement);
                     _soundManager.PlaySound(soundType, Constants.HeroDeathSoundVolume);
                     break;

@@ -1119,7 +1119,7 @@ namespace Loom.ZombieBattleground.Test
                 if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0 && !HasChoosableAbilities(card.LibraryCard))
                 {
                     needTargetForAbility =
-                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTarget.Count > 0).Count > 0;
                 }
             }
 
@@ -1172,7 +1172,7 @@ namespace Loom.ZombieBattleground.Test
                     _cardsController.DrawCardInfo(card);
 
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
                     _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
 
@@ -1301,7 +1301,7 @@ namespace Loom.ZombieBattleground.Test
                         });
                     break;
                 }
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                 {
                     GameObject spellCard = UnityEngine.Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
@@ -1330,7 +1330,7 @@ namespace Loom.ZombieBattleground.Test
                             _abilitiesController.CallAbility(card.LibraryCard,
                                 null,
                                 workingCard,
-                                Enumerators.CardKind.SPELL,
+                                Enumerators.CardKind.ITEM,
                                 boardSpell,
                                 null,
                                 false,
@@ -1349,7 +1349,7 @@ namespace Loom.ZombieBattleground.Test
                         _abilitiesController.CallAbility(card.LibraryCard,
                             null,
                             workingCard,
-                            Enumerators.CardKind.SPELL,
+                            Enumerators.CardKind.ITEM,
                             boardSpell,
                             null,
                             false,

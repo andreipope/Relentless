@@ -81,14 +81,14 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType target in Ability.AbilityTargetTypes)
+                    foreach (Enumerators.AbilityTarget target in Ability.AbilityTargetTypes)
                     {
                         switch (target)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                            case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
                                 CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                            case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
                                 foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
                                 {
                                     CreateVfx(cardPlayer.Transform.position, true);

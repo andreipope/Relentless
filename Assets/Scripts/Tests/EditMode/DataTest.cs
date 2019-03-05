@@ -7,7 +7,7 @@ using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
 using Card = Loom.ZombieBattleground.Data.Card;
-using CardViewInfo = Loom.ZombieBattleground.Data.CardViewInfo;
+using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Hero = Loom.ZombieBattleground.Data.Hero;
 
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
                 "awesomePicture",
                 4,
                 5,
-                Enumerators.SetType.ITEM,
+                Enumerators.Faction.ITEM,
                 "awesomeFrame",
                 Enumerators.CardKind.CREATURE,
                 Enumerators.CardRank.GENERAL,
@@ -62,12 +62,12 @@ namespace Loom.ZombieBattleground.Test
                             new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null))
                         })
                 },
-                new CardViewInfo(
+                new PictureTransform(
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
                 ),
-                Enumerators.UniqueAnimationType.ShammannArrival,
-                Enumerators.SetType.ITEM
+                Enumerators.UniqueAnimation.ShammannArrival,
+                false
             );
 
             Card deserialized = original.ToProtobuf().FromProtobuf();
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground.Test
                 "long desc",
                 100500,
                 373,
-                Enumerators.SetType.LIFE,
+                Enumerators.Faction.LIFE,
                 new List<HeroSkill>
                 {
                     new HeroSkill(
@@ -147,10 +147,10 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.SkillTargetType.ALL_CARDS
                         },
                         Enumerators.UnitStatusType.FROZEN,
-                        new List<Enumerators.SetType>
+                        new List<Enumerators.Faction>
                         {
-                            Enumerators.SetType.FIRE,
-                            Enumerators.SetType.LIFE
+                            Enumerators.Faction.FIRE,
+                            Enumerators.Faction.LIFE
                         },
                         true,
                         true,
@@ -176,14 +176,14 @@ namespace Loom.ZombieBattleground.Test
                 new AbilityData(
                     Enumerators.AbilityType.RAGE,
                     Enumerators.AbilityActivityType.ACTIVE,
-                    Enumerators.AbilityCallType.IN_HAND,
-                    new List<Enumerators.AbilityTargetType>
+                    Enumerators.AbilityTrigger.IN_HAND,
+                    new List<Enumerators.AbilityTarget>
                     {
-                        Enumerators.AbilityTargetType.ITSELF,
-                        Enumerators.AbilityTargetType.PLAYER
+                        Enumerators.AbilityTarget.ITSELF,
+                        Enumerators.AbilityTarget.PLAYER
                     },
                     Enumerators.StatType.DAMAGE,
-                    Enumerators.SetType.TOXIC,
+                    Enumerators.Faction.TOXIC,
                     Enumerators.AbilityEffectType.TARGET_ROCK,
                     Enumerators.AttackRestriction.ONLY_DIFFERENT,
                     Enumerators.CardType.WALKER,
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.Test
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Moving, "path2")
                     },
                     Enumerators.GameMechanicDescriptionType.Death,
-                    Enumerators.SetType.LIFE,
+                    Enumerators.Faction.LIFE,
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,
                     7,

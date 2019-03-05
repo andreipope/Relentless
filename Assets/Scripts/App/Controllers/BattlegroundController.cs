@@ -631,7 +631,7 @@ namespace Loom.ZombieBattleground
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                     boardCard = new UnitBoardCard(CurrentBoardCard);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                     boardCard = new SpellBoardCard(CurrentBoardCard);
                     break;

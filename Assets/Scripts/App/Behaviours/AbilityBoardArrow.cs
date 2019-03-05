@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilityBoardArrow : BoardArrow
     {
-        public List<Enumerators.AbilityTargetType> PossibleTargets = new List<Enumerators.AbilityTargetType>();
+        public List<Enumerators.AbilityTarget> PossibleTargets = new List<Enumerators.AbilityTarget>();
 
         public BoardUnitView SelfBoardCreature;
 
@@ -54,11 +54,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
+            if (PossibleTargets.Contains(Enumerators.AbilityTarget.PLAYER_CARD) &&
                 unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) &&
+                PossibleTargets.Contains(Enumerators.AbilityTarget.OPPONENT_CARD) &&
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+                PossibleTargets.Contains(Enumerators.AbilityTarget.ALL))
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
@@ -113,11 +113,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
+            if (PossibleTargets.Contains(Enumerators.AbilityTarget.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) &&
+                PossibleTargets.Contains(Enumerators.AbilityTarget.OPPONENT) &&
                 player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+                PossibleTargets.Contains(Enumerators.AbilityTarget.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);

@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !_isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !_isAttacker)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);

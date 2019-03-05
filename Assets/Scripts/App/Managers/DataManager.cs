@@ -218,12 +218,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private uint GetMaxCopiesValue(Data.Card card, Enumerators.SetType setName)
+        private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
         {
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            if (setName == Enumerators.SetType.ITEM)
+            if (setName == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

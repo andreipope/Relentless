@@ -720,8 +720,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(TestHelper.GetCurrentPlayer().CardsInHand.FindAll(card => card.LibraryCard.CardSetType == Enumerators.SetType.ITEM).Count > 0);
-                    Assert.IsTrue(TestHelper.GetOpponentPlayer().CardsInHand.FindAll(card => card.LibraryCard.CardSetType == Enumerators.SetType.ITEM).Count > 0);
+                    Assert.IsTrue(TestHelper.GetCurrentPlayer().CardsInHand.FindAll(card => card.LibraryCard.Faction == Enumerators.Faction.ITEM).Count > 0);
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().CardsInHand.FindAll(card => card.LibraryCard.Faction == Enumerators.Faction.ITEM).Count > 0);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

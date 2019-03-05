@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
                 base.UnitDiedHandler();
                 return;
             }
@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         protected override void VFXAnimationEndedHandler()
         {
-            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
             {
                 base.UnitDiedHandler();
             }
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
                 OneActionCompleted(_targets[i]);
             }
 
-            if (TutorialManager.IsTutorial && AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            if (TutorialManager.IsTutorial && AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
             {
                 TutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DeathAbilityCompleted);
             }
@@ -75,20 +75,20 @@ namespace Loom.ZombieBattleground
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.AbilityTarget target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
                         _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
                         _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTarget.OPPONENT:
                         _targets.Add(opponent);
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.AbilityTarget.PLAYER:
                         _targets.Add(PlayerCallerOfAbility);
                         break;
                     default:

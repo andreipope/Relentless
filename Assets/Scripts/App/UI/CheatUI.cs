@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (Card card in cardsLibraryData.Cards)
                 {
-                    _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
+                    _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 
@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
-                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                                 {
                                     if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
                                         continue;

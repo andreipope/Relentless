@@ -656,7 +656,7 @@ namespace Loom.ZombieBattleground
                                 });
                             break;
                         }
-                    case Enumerators.CardKind.SPELL:
+                    case Enumerators.CardKind.ITEM:
                         {
                             player.CardsInHand.Remove(card.WorkingCard);
                             _battlegroundController.PlayerHandCards.Remove(card);
@@ -672,7 +672,7 @@ namespace Loom.ZombieBattleground
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(libraryCard, card, card.WorkingCard,
-                                    Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
+                                    Enumerators.CardKind.ITEM, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
                                         if(status)
                                         {
@@ -894,7 +894,7 @@ namespace Loom.ZombieBattleground
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
                     boardCard = new UnitBoardCard(go);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
                     boardCard = new SpellBoardCard(go);
@@ -978,8 +978,8 @@ namespace Loom.ZombieBattleground
                     card.LibraryCard.FlavorText,
                     card.LibraryCard.Picture,
                     card.LibraryCard.Damage,
-                    card.LibraryCard.Health,
-                    card.LibraryCard.CardSetType,
+                    card.LibraryCard.Defense,
+                    card.LibraryCard.Faction,
                     card.LibraryCard.Frame,
                     card.LibraryCard.CardKind,
                     card.LibraryCard.CardRank,
@@ -987,19 +987,19 @@ namespace Loom.ZombieBattleground
                     card.LibraryCard.Abilities
                         .Select(a => new AbilityData(a))
                         .ToList(),
-                    new CardViewInfo(card.LibraryCard.CardViewInfo),
-                    card.LibraryCard.UniqueAnimationType,
-                    card.LibraryCard.HiddenCardSetType
+                    new PictureTransform(card.LibraryCard.PictureTransform),
+                    card.LibraryCard.UniqueAnimation,
+                    card.LibraryCard.Hidden
                 );
             }
         }
 
-        public Enumerators.SetType GetSetOfCard(IReadOnlyCard card)
+        public Enumerators.Faction GetSetOfCard(IReadOnlyCard card)
         {
             CardSet set =
                 _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
 
-            return set?.Name ?? Enumerators.SetType.NONE;
+            return set.Name;
         }
 
         public WorkingCard CreateNewCardByNameAndAddToHand(Player player, string name)
@@ -1131,7 +1131,7 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(CreatureCardViewPrefab);
                     boardCard = new UnitBoardCard(go);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(ItemCardViewPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;
@@ -1373,7 +1373,7 @@ namespace Loom.ZombieBattleground
             _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             _behaviourHandler.MouseUpTriggered += MouseUpTriggered;
 
-            string setName = card.LibraryCard.CardSetType.ToString();
+            string setName = card.LibraryCard.Faction.ToString();
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.LibraryCard.CardRank);
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -1399,7 +1399,7 @@ namespace Loom.ZombieBattleground
                 _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
 
                 _attackText.text = card.LibraryCard.Damage.ToString();
-                _defenseText.text = card.LibraryCard.Health.ToString();
+                _defenseText.text = card.LibraryCard.Defense.ToString();
 
                 _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.InstanceCard.CardType + "_icon"));
             }

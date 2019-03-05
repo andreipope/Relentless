@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         public int Defense { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public List<Enumerators.AbilityTarget> TargetTypes { get; }
 
         public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
             Value = AbilityData.Value;
             Health = AbilityData.Health;
             Defense = AbilityData.Defense;
-            TargetTypes = AbilityData.AbilityTargetTypes;
+            TargetTypes = AbilityData.AbilityTarget;
         }
 
         public override void Activate()
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
+            if (TargetTypes.Contains(Enumerators.AbilityTarget.PLAYER))
             {
                 int defenseToBuff = Value;
 

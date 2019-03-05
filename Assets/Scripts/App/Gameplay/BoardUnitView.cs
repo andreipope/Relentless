@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
 
             Model.SetObjectInfo(card);
 
-            Enumerators.SetType setType = _cardsController.GetSetOfCard(card.LibraryCard);
+            Enumerators.Faction setType = _cardsController.GetSetOfCard(card.LibraryCard);
             string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
             string picture = Model.Card.LibraryCard.Picture.ToLowerInvariant();
 
@@ -203,8 +203,8 @@ namespace Loom.ZombieBattleground
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
 
-            _pictureSprite.transform.localPosition = (Vector3)Model.Card.LibraryCard.CardViewInfo.Position;
-            _pictureSprite.transform.localScale = (Vector3)Model.Card.LibraryCard.CardViewInfo.Scale;
+            _pictureSprite.transform.localPosition = (Vector3)Model.Card.LibraryCard.PictureTransform.Position;
+            _pictureSprite.transform.localScale = (Vector3)Model.Card.LibraryCard.PictureTransform.Scale;
 
             _attackText.text = Model.CurrentDamage.ToString();
             _healthText.text = Model.CurrentHp.ToString();

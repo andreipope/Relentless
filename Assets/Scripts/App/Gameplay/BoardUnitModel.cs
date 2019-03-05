@@ -85,8 +85,6 @@ namespace Loom.ZombieBattleground
             IsAllAbilitiesResolvedAtStart = true;
 
             _gameplayManager.CanDoDragActions = false;
-
-            LastAttackingSetType = Enumerators.SetType.NONE;
         }
 
         public event Action TurnStarted;
@@ -193,7 +191,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType UnitStatus { get; set; }
 
-        public Enumerators.SetType LastAttackingSetType { get; set; }
+        public Enumerators.Faction LastAttackingSetType { get; set; }
 
         public bool CantAttackInThisTurnBlocker { get; set; } = false;
 
@@ -463,7 +461,7 @@ namespace Loom.ZombieBattleground
             Card = card;
 
             CurrentDamage = card.LibraryCard.Damage;
-            CurrentHp = card.LibraryCard.Health;
+            CurrentHp = card.LibraryCard.Defense;
 
             card.InstanceCard.Damage = CurrentDamage;
             card.InstanceCard.Health = CurrentHp;

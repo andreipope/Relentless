@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();

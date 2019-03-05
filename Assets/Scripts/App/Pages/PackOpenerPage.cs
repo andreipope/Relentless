@@ -581,7 +581,7 @@ namespace Loom.ZombieBattleground
         private List<Card> RetrieveDummyCards(int amount)
         {
             List<Card> cards = new List<Card>();            
-            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.SetType.FIRE);            
+            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.Faction.FIRE);            
             foreach( Card card in set.Cards)
             {
                 cards.Add(card);
@@ -1031,7 +1031,7 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(_cardCreaturePrefab);
                     boardCard = new UnitBoardCard(go);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
                     boardCard = new SpellBoardCard(go);
                     break;

@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction SetType;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -32,10 +32,10 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             IReadOnlyList<WorkingCard> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.Faction == SetType);
 
             UniquePositionedList<BoardUnitView> playerBoardCards =
-                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.Faction == SetType);
 
             foreach (WorkingCard unit in units)
             {
@@ -53,10 +53,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.Faction == SetType);
 
             UniquePositionedList<BoardUnitView> opponentBoardCards =
-                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.Faction == SetType);
 
             foreach (WorkingCard unit in units)
             {

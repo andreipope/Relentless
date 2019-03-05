@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardAbility : AbilityBase
     {
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction SetType { get; }
         public Enumerators.UnitStatusType UnitStatusType { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitKilledUnitHandler(BoardUnitModel unit)
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.KILL_UNIT)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
 
             Action();
@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -51,28 +51,25 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (UnitStatusType != Enumerators.UnitStatusType.NONE &&
-                 PlayerCallerOfAbility
+            if (PlayerCallerOfAbility
                     .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (SetType != Enumerators.SetType.NONE &&
-                (SetType == Enumerators.SetType.NONE ||
-                    PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner)
-                    .Count <= 0)
+            else if (PlayerCallerOfAbility
+                    .BoardCards.FindAll(x => x.Model.Card.LibraryCard.Faction == SetType && x.Model != AbilityUnitOwner)
+                    .Count <= 0
                 )
                 return;
 
             if (AbilityTargetTypes.Count > 0)
             {
-                Enumerators.AbilityTargetType abilityTargetType = AbilityTargetTypes[0];
+                Enumerators.AbilityTarget abilityTargetType = AbilityTargetTypes[0];
                 switch (abilityTargetType)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.AbilityTarget.PLAYER:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTarget.OPPONENT:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
                             PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                                 GameplayManager.OpponentPlayer :

@@ -12,14 +12,14 @@ namespace Loom.ZombieBattleground
 
         public string Name;
 
-        public List<Enumerators.AbilityTargetType> TargetTypes;
+        public List<Enumerators.AbilityTarget> TargetTypes;
 
         public SummonsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Name = ability.Name;
             Count = ability.Count;
-            TargetTypes = ability.AbilityTargetTypes;
+            TargetTypes = ability.AbilityTarget;
         }
 
         public override void Activate()
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -40,13 +40,13 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (Enumerators.AbilityTargetType target in TargetTypes)
+            foreach (Enumerators.AbilityTarget target in TargetTypes)
             {
                 BoardUnitView unit = null;
 
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTarget.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
                             unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, ItemPosition.End, IsPVPAbility);
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.AbilityTarget.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
                             unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End, IsPVPAbility);
@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.TURN ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.TURN ||
                 !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 

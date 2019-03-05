@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardByFactionAbility : AbilityBase
     {
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction SetType { get; }
 
         public DrawCardByFactionAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitKilledUnitHandler(BoardUnitModel unit)
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.KILL_UNIT)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
 
             Action();
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.LibraryCard.CardSetType == SetType);
+            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Faction == SetType);
 
             if (card != null)
             {

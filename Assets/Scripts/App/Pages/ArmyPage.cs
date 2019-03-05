@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private int _currentElementPage, _numElementPages;
 
-        private Enumerators.SetType _currentSet = Enumerators.SetType.FIRE;
+        private Enumerators.Faction _currentSet = Enumerators.Faction.FIRE;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.AIR);
                     }
                 });
             _lifeToggle.onValueChanged.AddListener(
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.LIFE);
                     }
                 });
             _waterToggle.onValueChanged.AddListener(
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.WATER);
                     }
                 });
             _toxicTogggle.onValueChanged.AddListener(
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.TOXIC);
                     }
                 });
             _fireToggle.onValueChanged.AddListener(
@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.FIRE);
                     }
                 });
             _earthToggle.onValueChanged.AddListener(
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.EARTH);
                     }
                 });
             _itemsToggle.onValueChanged.AddListener(
@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.ITEM);
                     }
                 });
 
@@ -238,9 +238,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < Enumerators.SetType.FIRE)
+                if (_currentSet < Enumerators.Faction.FIRE)
                 {
-                    _currentSet = Enumerators.SetType.ITEM;
+                    _currentSet = Enumerators.Faction.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -257,9 +257,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet > Enumerators.SetType.ITEM)
+                if (_currentSet > Enumerators.Faction.ITEM)
                 {
-                    _currentSet = Enumerators.SetType.FIRE;
+                    _currentSet = Enumerators.Faction.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -271,9 +271,9 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        public void LoadCards(int page, Enumerators.SetType setType)
+        public void LoadCards(int page, Enumerators.Faction setType)
         {
-            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(setType - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
             CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
 
@@ -306,7 +306,7 @@ namespace Loom.ZombieBattleground
                         go = Object.Instantiate(CardCreaturePrefab);
                         boardCard = new UnitBoardCard(go);
                         break;
-                    case Enumerators.CardKind.SPELL:
+                    case Enumerators.CardKind.ITEM:
                         go = Object.Instantiate(CardItemPrefab);
                         boardCard = new SpellBoardCard(go);
                         break;
@@ -366,7 +366,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
             {
                 GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                c.SetActive(i == _currentSet - Enumerators.SetType.FIRE);
+                c.SetActive(i == _currentSet - Enumerators.Faction.FIRE);
             }
         }
 
@@ -378,7 +378,7 @@ namespace Loom.ZombieBattleground
 
         #region Buttons Handlers
 
-        private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
+        private void ToggleChooseOnValueChangedHandler(Enumerators.Faction type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);

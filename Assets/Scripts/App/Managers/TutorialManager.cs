@@ -1280,7 +1280,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public List<Card> GetSpecificCardsBySet(Enumerators.SetType setType)
+        public List<Card> GetSpecificCardsBySet(Enumerators.Faction setType)
         {
             List<Card> cards = null;
             if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
@@ -1288,7 +1288,7 @@ namespace Loom.ZombieBattleground
                 cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
                     .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
                     .ToList()
-                    .FindAll(card => card.CardSetType == setType)
+                    .FindAll(card => card.Faction == setType)
                     .OrderBy(sort => sort.Cost)
                     .ToList();
             }
@@ -1375,7 +1375,7 @@ namespace Loom.ZombieBattleground
                 _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
                     .Select(data => new DeckCardData(data.CardName, data.Amount))
                     .ToList()
-                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).CardSetType != Enumerators.SetType.FIRE);
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).Faction != Enumerators.Faction.FIRE);
 
             List<DeckCardData> filteredCards = new List<DeckCardData>();
             int countCards = 0;

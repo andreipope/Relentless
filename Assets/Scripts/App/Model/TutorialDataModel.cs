@@ -369,7 +369,7 @@ namespace Loom.ZombieBattleground
 
     public class SpecificHordeInfo
     {
-        public Enumerators.SetType MainSet;
+        public Enumerators.Faction MainSet;
         public List<Data.CollectionCardData> CardsForArmy;
         public int MaximumCardsCount;
 

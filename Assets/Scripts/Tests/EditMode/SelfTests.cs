@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground.Test
 
                     cardsWithMissingTests =
                         cardsWithMissingTests
-                            .OrderBy(card => card.CardSetType)
+                            .OrderBy(card => card.Faction)
                             .ThenBy(card => card.Name.ToLowerInvariant())
                             .ToList();
 

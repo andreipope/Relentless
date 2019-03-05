@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
         private VfxController _vfxController;
 
-        private Dictionary<Enumerators.SetType, Enumerators.SetType> _strongerElemental, _weakerElemental;
+        private Dictionary<Enumerators.Faction, Enumerators.Faction> _strongerElemental, _weakerElemental;
 
         public void Dispose()
         {
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.Faction;//LastAttackingUnit = attackingUnit;
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
                             attackingUnitModel.HasUsedBuffShield = true;
                         }
 
-                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
+                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.Faction;
                         attackingUnitModel.CurrentHp -= damageAttacked;
 
                         if (attackingUnitModel.CurrentHp <= 0)
@@ -251,10 +251,10 @@ namespace Loom.ZombieBattleground
                 switch (attacker)
                 {
                     case BoardUnitModel model:
-                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.CardSetType;
+                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.Faction;
                         break;
                     case BoardSpell spell:
-                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
+                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.Faction;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
@@ -321,47 +321,47 @@ namespace Loom.ZombieBattleground
 
         private void FillStrongersAndWeakers()
         {
-            _strongerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
+            _strongerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.FIRE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.EARTH
+                    Enumerators.Faction.LIFE, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.AIR
+                    Enumerators.Faction.EARTH, Enumerators.Faction.AIR
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.WATER
+                    Enumerators.Faction.AIR, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.FIRE
+                    Enumerators.Faction.WATER, Enumerators.Faction.FIRE
                 }
             };
 
-            _weakerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
+            _weakerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.WATER
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.LIFE
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.EARTH
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.AIR
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
                 }
             };
         }

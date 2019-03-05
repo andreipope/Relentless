@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
@@ -53,16 +53,16 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+            foreach (Enumerators.AbilityTarget targetType in AbilityTargetTypes)
             {
                 switch (targetType)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
+                    case Enumerators.AbilityTarget.PLAYER_CARD:
                         _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTarget.OPPONENT_CARD:
                         _boardUnits.AddRange(GetOpponentOverlord().BoardCards);
                         break;
                 }

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         int GetIndexOfCurrentTutorial();
         List<Data.Card> GetCardForCardPack(int count);
-        List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
+        List<Data.Card> GetSpecificCardsBySet(Enumerators.Faction setType);
         Data.CollectionCardData GetCardData(string id);
 
         event Action OnMenuStepUpdated;

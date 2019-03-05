@@ -437,7 +437,7 @@ namespace Loom.ZombieBattleground
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
 
                             break;
-                        case Enumerators.CardKind.SPELL:
+                        case Enumerators.CardKind.ITEM:
                             BoardSpell spell = new BoardSpell(null, workingCard); // todo improve it with game Object aht will be aniamted
                             _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
                             spell.OwnerPlayer = _gameplayManager.OpponentPlayer;

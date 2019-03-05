@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), WorkingCard.LibraryCard.CardRank);
 
-            string setName = LibraryCard.CardSetType.ToString();
+            string setName = LibraryCard.Faction.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -231,7 +231,7 @@ namespace Loom.ZombieBattleground
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.CardRank);
 
-            string setName = LibraryCard.CardSetType.ToString();
+            string setName = LibraryCard.Faction.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -484,7 +484,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == unit.Model.Card.LibraryCard.CardSetType);
+                        y => y.Element == unit.Model.Card.LibraryCard.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -611,7 +611,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+            if (boardCard.WorkingCard.LibraryCard.CardKind == Enumerators.CardKind.ITEM)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -630,7 +630,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == boardCard.WorkingCard.LibraryCard.CardSetType);
+                        y => y.Element == boardCard.WorkingCard.LibraryCard.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo

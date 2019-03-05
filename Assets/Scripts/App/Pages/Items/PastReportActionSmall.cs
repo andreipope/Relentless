@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
+                        Enumerators.Faction setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
                         string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
 
@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardSpell spell:
                     {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
+                        Enumerators.Faction setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
                         string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
                         string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
 
