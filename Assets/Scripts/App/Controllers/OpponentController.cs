@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
                             $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
                             String.Join(
                                 "\n",
-                                (IList<WorkingCard>) deck
+                                (IList<WorkingCard>)deck
                                     .OrderBy(card => card.InstanceId)
                                     .ToArray()
                                 )
@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case PlayerActionOutcome.OutcomeOneofCase.ChangeStat:
-                    PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome  = outcome.ChangeStat;
+                    PlayerActionOutcome.Types.CardAbilityChangeStatOutcome changeStatOutcome = outcome.ChangeStat;
 
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
 
@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
         private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome)
         {
             List<BoardUnitView> oldCardList = new List<BoardUnitView>();
-            for (int i=0; i<replaceUnitWithTypeStatOutcome.OldInstanceIds.Count; i++)
+            for (int i = 0; i < replaceUnitWithTypeStatOutcome.OldInstanceIds.Count; i++)
             {
                 InstanceId id = replaceUnitWithTypeStatOutcome.OldInstanceIds[i].FromProtobuf();
                 BoardUnitModel unitModel = _battlegroundController.GetBoardUnitModelByInstanceId(id);
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
             }
             ClearOldUnitsOnBoard(oldCardList);
 
-            for (int i=0; i<replaceUnitWithTypeStatOutcome.NewCardInstances.Count; i++)
+            for (int i = 0; i < replaceUnitWithTypeStatOutcome.NewCardInstances.Count; i++)
             {
                 Player owner = _gameplayManager.CurrentPlayer;
                 if (replaceUnitWithTypeStatOutcome.NewCardInstances[i].CardInstance.Owner != _backendDataControlMediator.UserDataModel.UserId)
@@ -360,7 +360,7 @@ namespace Loom.ZombieBattleground
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
-                AbilityType = (Enumerators.AbilityType) actionUseCardAbility.AbilityType,
+                AbilityType = (Enumerators.AbilityType)actionUseCardAbility.AbilityType,
             });
         }
 
@@ -484,33 +484,39 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
-
-            BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
-            BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
-
-            if(attackerUnit == null || target == null)
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
             {
-                Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
-                Log.Error("", exception);
-                Helpers.ExceptionReporter.SilentReportException(exception);
-                return;
-            }
 
-            Action callback = () =>
-            {
-                attackerUnit.DoCombat(target);
-            };
+                BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
+                BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
 
-            BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
+                if (attackerUnit == null || target == null)
+                {
+                    Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
+                    Log.Error("", exception);
+                    Helpers.ExceptionReporter.LogException(exception);
+                    return;
+                }
 
-            if (attackerUnitView != null)
-            {
-                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
-            }
-            else
-            {
-                Log.Warn("Attacker with card Id " + model.CardId + " not found on this client in match.");
-            }
+                Action callback = () =>
+                {
+                    attackerUnit.DoCombat(target);
+                };
+
+                BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
+
+                if (attackerUnitView != null)
+                {
+                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
+                }
+                else
+                {
+                    Log.Warn("Attacker with card Id " + model.CardId + " not found on this client in match.");
+                }
+
+                completeCallback?.Invoke();
+
+            }, Enumerators.QueueActionType.UnitCombat);
         }
 
         private void GotActionUseCardAbility(UseCardAbilityModel model)
@@ -627,7 +633,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (InstanceId cardId in cards)
             {
-                BoardUnitModel card = (BoardUnitModel) _battlegroundController.GetTargetByInstanceId(cardId);
+                BoardUnitModel card = (BoardUnitModel)_battlegroundController.GetTargetByInstanceId(cardId);
                 if (card == null)
                 {
                     Log.Error($"Card {cardId} not found on board");
