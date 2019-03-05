@@ -163,9 +163,26 @@ namespace Loom.ZombieBattleground
                     boardUnit.BuffedDamage = rageOutcome.NewAttack;
                     boardUnit.CurrentDamage = rageOutcome.NewAttack;
                     break;
+
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
                     // TODO
                     break;
+
+
+                case PlayerActionOutcome.OutcomeOneofCase.AttackOverlord:
+                    PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome attackOverlordOutcome = outcome.AttackOverlord;
+
+                    AttackOverlordOutcome attackPlayerOutcome = new AttackOverlordOutcome
+                    {
+                        PlayerInstanceId = attackOverlordOutcome.InstanceId.FromProtobuf(),
+                        Damage = attackOverlordOutcome.Damage,
+                        NewDefence = attackOverlordOutcome.NewDefense
+                    };
+
+                    AttackOverlordAbility attackOverlordAbility = new AttackOverlordAbility();
+                    attackOverlordAbility.ActivateAbility(attackPlayerOutcome);
+                    break;
+
 
                 case PlayerActionOutcome.OutcomeOneofCase.Reanimate:
                     PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome = outcome.Reanimate;
@@ -209,7 +226,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 case PlayerActionOutcome.OutcomeOneofCase.ReplaceUnitsWithTypeOnStrongerOnes:
-                    PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome = outcome.ReplaceUnitsWithTypeOnStrongerOnes;
+                    PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome replaceUnitWithTypeStatOutcome = outcome.ReplaceUnitsWithTypeOnStrongerOnes;
                     ReplaceUnitsWithTypeOnStrongerOnes(replaceUnitWithTypeStatOutcome);
                     break;
 
@@ -218,7 +235,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes replaceUnitWithTypeStatOutcome)
+        private void ReplaceUnitsWithTypeOnStrongerOnes(PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome replaceUnitWithTypeStatOutcome)
         {
             List<BoardUnitView> oldCardList = new List<BoardUnitView>();
             for (int i = 0; i < replaceUnitWithTypeStatOutcome.OldInstanceIds.Count; i++)
