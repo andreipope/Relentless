@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
                 if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
                     IReadOnlyList<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(
-                                    x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner);
+                                    x => x.Model.Card.CardPrototype.CardSetType == SetType && x.Model != AbilityUnitOwner);
                     units = InternalTools.GetRandomElementsFromList(units, Count);
 
                     foreach (BoardUnitView unit in units)
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (SetType != Enumerators.SetType.NONE)
                     {
-                        if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner).Count > 0)
+                        if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == SetType && x.Model != AbilityUnitOwner).Count > 0)
                         {
                             ModificateStats(AbilityUnitOwner, !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
                         }
@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitModel boardUnit:
                     {
-                        if (boardUnit.Card.LibraryCard.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
+                        if (boardUnit.Card.CardPrototype.CardSetType == SetType || SetType == Enumerators.SetType.NONE)
                         {
                             switch (StatType)
                             {

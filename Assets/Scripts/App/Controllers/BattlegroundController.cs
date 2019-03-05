@@ -628,7 +628,7 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCard;
-            switch (card.LibraryCard.CardKind)
+            switch (card.CardPrototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);

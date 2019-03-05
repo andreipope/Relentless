@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
                     _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.Card.LibraryCard.MouldId != ZedKitId))
+                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.Card.CardPrototype.MouldId != ZedKitId))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }

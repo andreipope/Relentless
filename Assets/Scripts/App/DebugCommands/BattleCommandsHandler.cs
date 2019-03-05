@@ -113,7 +113,7 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.CardPrototype.Name == cardName);
         if (workingCard != null)
         {
             _cardsController.AddCardToHand(player, workingCard);
@@ -130,7 +130,7 @@ static class BattleCommandsHandler
         string[] deckNames = new string[player.CardsInDeck.Count];
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            deckNames[i] = player.CardsInDeck[i].LibraryCard.Name;
+            deckNames[i] = player.CardsInDeck[i].CardPrototype.Name;
         }
         return deckNames;
     }
@@ -143,12 +143,12 @@ static class BattleCommandsHandler
         string cardsInHand = "Cards In Hand = ";
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            cardsInDeck += player.CardsInDeck[i].LibraryCard.Name + ",";
+            cardsInDeck += player.CardsInDeck[i].CardPrototype.Name + ",";
         }
 
         for (var i = 0; i < player.CardsInHand.Count; i++)
         {
-            cardsInHand += player.CardsInHand[i].LibraryCard.Name + ",";
+            cardsInHand += player.CardsInHand[i].CardPrototype.Name + ",";
         }
 
         cardsInDeck = cardsInDeck.TrimEnd(',');
@@ -330,11 +330,11 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
+        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.CardPrototype.Name == cardName);
         if (workingCard != null)
         {
             _cardsController.AddCardToHand(opponentPlayer, workingCard);
-            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.LibraryCard.Name == cardName);
+            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.CardPrototype.Name == cardName);
             _aiController.PlayCardOnBoard(workingCard, true);
         }
         else
@@ -414,7 +414,7 @@ static class BattleCommandsHandler
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        Card libraryCard = new Card(unit.Model.Card.LibraryCard);
+        Card libraryCard = new Card(unit.Model.Card.CardPrototype);
         WorkingCard workingCard = new WorkingCard(libraryCard, libraryCard, player);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
 

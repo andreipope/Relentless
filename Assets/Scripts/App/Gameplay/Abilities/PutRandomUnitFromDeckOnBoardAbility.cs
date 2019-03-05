@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.CardPrototype.CardKind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;

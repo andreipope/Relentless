@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             CardInstance cardInstance = new CardInstance
             {
                 InstanceId = workingCard.InstanceId.ToProtobuf(),
-                Prototype = workingCard.LibraryCard.ToProtobuf(),
+                Prototype = workingCard.CardPrototype.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };
 

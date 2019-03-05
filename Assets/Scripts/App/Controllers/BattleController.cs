@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.CardPrototype.CardSetType;//LastAttackingUnit = attackingUnit;
                 attackedUnitModel.CurrentHp -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
                             attackingUnitModel.HasUsedBuffShield = true;
                         }
 
-                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
+                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.CardPrototype.CardSetType;
                         attackingUnitModel.CurrentHp -= damageAttacked;
 
                         if (attackingUnitModel.CurrentHp <= 0)
@@ -251,10 +251,10 @@ namespace Loom.ZombieBattleground
                 switch (attacker)
                 {
                     case BoardUnitModel model:
-                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.CardSetType;
+                        attackedUnitModel.LastAttackingSetType = model.Card.CardPrototype.CardSetType;
                         break;
                     case BoardSpell spell:
-                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
+                        attackedUnitModel.LastAttackingSetType = spell.Card.CardPrototype.CardSetType;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);

@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.LibraryCard.CardSetType == SetType &&
+                                   unit.Card.CardPrototype.CardSetType == SetType &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.CardPrototype.CardSetType == SetType &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 

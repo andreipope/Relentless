@@ -76,10 +76,10 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.CardSetType == SetType));
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.CardPrototype.CardSetType == SetType));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.CardSetType == SetType));
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.CardPrototype.CardSetType == SetType));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
 	                    OldUnitView = unit,
 	                    OwnerPlayer = unit.Model.OwnerPlayer,
 	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit),
-                        NewUnitCardTitle = unit.Model.Card.LibraryCard.Name
+                        NewUnitCardTitle = unit.Model.Card.CardPrototype.Name
 	                };
 
 	                _replaceUnitInfos.Add(replaceUnitInfo);

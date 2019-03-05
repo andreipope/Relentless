@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayAttackVfx(BoardUnitModel model, Vector3 target)
         {
-            Enumerators.CardType type = model.Card.LibraryCard.CardType;
+            Enumerators.CardType type = model.Card.CardPrototype.CardType;
             int damage = model.CurrentDamage;
             GameObject effect;
             GameObject vfxPrefab;
@@ -532,7 +532,7 @@ namespace Loom.ZombieBattleground
 
         private void PlayDeathSound()
         {
-            string cardDeathSoundName = BoardUnitView.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
+            string cardDeathSoundName = BoardUnitView.Model.Card.CardPrototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
 
             if (!BoardUnitView.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
             {

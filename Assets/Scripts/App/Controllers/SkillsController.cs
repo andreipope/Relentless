@@ -522,8 +522,8 @@ namespace Loom.ZombieBattleground
             switch (skill.Skill.OverlordSkill)
             {
                 case Enumerators.OverlordSkill.RESSURECT:
-                    state = skill.OwnerPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                               && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                    state = skill.OwnerPlayer.CardsInGraveyard.FindAll(x => x.CardPrototype.CardSetType == Enumerators.SetType.LIFE
+                               && x.CardPrototype.CardKind == Enumerators.CardKind.CREATURE
                                && x.InstanceCard.Cost == skill.Skill.Value
                                && !skill.OwnerPlayer.BoardCards.Any(c => c.Model.Card == x)).Count > 0;
                     break;
@@ -741,7 +741,7 @@ namespace Loom.ZombieBattleground
             {
                 units =
                 InternalTools.GetRandomElementsFromList(
-                    owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.AIR),
+                    owner.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == Enumerators.SetType.AIR),
                     skill.Value);
 
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
@@ -1120,7 +1120,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.TOXIC);
+                units = owner.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == Enumerators.SetType.TOXIC);
                 units = InternalTools.GetRandomElementsFromList(units, skill.Count);
                 count = units.Count;
                 opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).BoardCards, skill.Count);
@@ -1347,8 +1347,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                                                       && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                cards = owner.CardsInGraveyard.FindAll(x => x.CardPrototype.CardSetType == Enumerators.SetType.LIFE
+                                                       && x.CardPrototype.CardKind == Enumerators.CardKind.CREATURE
                                                        && x.InstanceCard.Cost == skill.Value
                                                        && !owner.BoardCards.Any(c => c.Model.Card == x));
 
@@ -1425,7 +1425,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 boardObjects.Add(owner);
-                boardObjects.AddRange(owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.LIFE).Select(unit => unit.Model));
+                boardObjects.AddRange(owner.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == Enumerators.SetType.LIFE).Select(unit => unit.Model));
 
                 _targets = boardObjects.Select(target => new ParametrizedAbilityBoardObject(target)).ToList();
             }
@@ -1501,8 +1501,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cards = owner.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == Enumerators.SetType.LIFE
-                                                        && x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE
+                cards = owner.CardsInGraveyard.FindAll(x => x.CardPrototype.CardSetType == Enumerators.SetType.LIFE
+                                                        && x.CardPrototype.CardKind == Enumerators.CardKind.CREATURE
                                                         && !owner.BoardCards.Any(c => c.Model.Card == x));
 
                 cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
@@ -1958,7 +1958,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = owner.BoardCards.FindAll(
-                    x => !x.Model.HasFeral && x.Model.Card.LibraryCard.CardSetType == owner.SelfHero.HeroElement);
+                    x => !x.Model.HasFeral && x.Model.Card.CardPrototype.CardSetType == owner.SelfHero.HeroElement);
 
                 units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
@@ -2192,7 +2192,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                units = owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH);
+                units = owner.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == Enumerators.SetType.EARTH);
 
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();
             }
@@ -2244,7 +2244,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = InternalTools.GetRandomElementsFromList(
-                        owner.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == Enumerators.SetType.EARTH),
+                        owner.BoardCards.FindAll(x => x.Model.Card.CardPrototype.CardSetType == Enumerators.SetType.EARTH),
                         skill.Count);
 
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target.Model)).ToList();

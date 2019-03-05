@@ -192,14 +192,14 @@ namespace Loom.ZombieBattleground
 
             if(tutorialObjectIdStepOwner != 0)
             {
-                _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.CardPrototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner)
                                                                                 .ToLowerInvariant());
                 if(_ownerUnit == null && additionalObjectIdOwners != null)
                 {
                     foreach (int id in additionalObjectIdOwners)
                     {
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.CardPrototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
                         if (_ownerUnit != null)
@@ -215,14 +215,14 @@ namespace Loom.ZombieBattleground
             }
             if(targetTutorialObjectId != 0)
             {
-                _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.CardPrototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId)
                                                                                 .ToLowerInvariant());
                 if (_targetUnit == null && additionalObjectIdTargets != null)
                 {
                     foreach (int id in additionalObjectIdTargets)
                     {
-                        _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.CardPrototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
                         if (_targetUnit != null)

@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
             _isFirstActive = true;
             ChangeState(true);
-            MouldId = card.BoardUnitModel.Card.LibraryCard.MouldId;
+            MouldId = card.BoardUnitModel.Card.CardPrototype.MouldId;
             selfObject.transform.position = card.Transform.position;
             selfObject.transform.localPosition -= Vector3.up * OFFSET;
         }

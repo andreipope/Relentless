@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
 
         protected int GetAbilityIndex()
         {
-            int index = MainWorkingCard.LibraryCard.Abilities.IndexOf(AbilityData);
+            int index = MainWorkingCard.CardPrototype.Abilities.IndexOf(AbilityData);
             if (index == -1)
                 throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
 

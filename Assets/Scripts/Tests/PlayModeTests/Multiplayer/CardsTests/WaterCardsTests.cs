@@ -407,8 +407,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(card => card.LibraryCard.MouldId == 155).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(card => card.LibraryCard.MouldId == 155).Count > 0);
+                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(card => card.CardPrototype.MouldId == 155).Count > 0);
+                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(card => card.CardPrototype.MouldId == 155).Count > 0);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -650,8 +650,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(pvpTestContext.GetCurrentPlayer().CardsInHand.Select(card => card.LibraryCard.MouldId == 156));
-                    Assert.IsNotNull(pvpTestContext.GetOpponentPlayer().CardsInHand.Select(card => card.LibraryCard.MouldId == 156));
+                    Assert.IsNotNull(pvpTestContext.GetCurrentPlayer().CardsInHand.Select(card => card.CardPrototype.MouldId == 156));
+                    Assert.IsNotNull(pvpTestContext.GetOpponentPlayer().CardsInHand.Select(card => card.CardPrototype.MouldId == 156));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1405,10 +1405,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.LibraryCard.Name == "FroZen"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.LibraryCard.Name == "HoZer"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.LibraryCard.Name == "Znowman"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.LibraryCard.Name == "Brook"));
+                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.CardPrototype.Name == "FroZen"));
+                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.CardPrototype.Name == "HoZer"));
+                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.CardPrototype.Name == "Znowman"));
+                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.CardPrototype.Name == "Brook"));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
