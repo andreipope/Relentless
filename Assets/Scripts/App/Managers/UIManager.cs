@@ -94,7 +94,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new ElementFilterPopup());
             _uiPopups.Add(new CardFilterPopup());
             _uiPopups.Add(new CardInfoWithSearchPopup());
-            _uiPopups.Add(new MySettingPopups());
+            _uiPopups.Add(new MySettingPopup());
+            _uiPopups.Add(new LoadingBarPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
