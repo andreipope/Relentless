@@ -101,6 +101,12 @@ namespace Loom.ZombieBattleground
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
             _actionsToDo.Add(gameAction);
 
+            if (_actionsToDo.Find(x => x.ActionType == Enumerators.QueueActionType.StopTurn) != null &&
+                gameAction.ActionType != Enumerators.QueueActionType.StopTurn)
+            {
+                MoveActionBeforeAction(gameAction, Enumerators.QueueActionType.StopTurn);
+            }
+
             if (ActionInProgress == null && _actionsToDo.Count < 2)
             {
                 TryCallNewActionFromQueue();
@@ -123,14 +129,14 @@ namespace Loom.ZombieBattleground
             return new GameplayQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
         }
 
-        public void MoveActionAfterAction(GameplayQueueAction<object> actionToInsert, GameplayQueueAction<object> actionInsertAfter)
+        public void MoveActionBeforeAction(GameplayQueueAction<object> actionToInsert, Enumerators.QueueActionType actionBefore)
         {
             if (_actionsToDo.Contains(actionToInsert))
             {
                 _actionsToDo.Remove(actionToInsert);
             }
 
-            int position = _actionsToDo.IndexOf(actionInsertAfter);
+            int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore)-1;
 
             _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
         }
@@ -190,16 +196,19 @@ namespace Loom.ZombieBattleground
 
             if (_actionsToDo.Contains(previousAction))
             {
-                _actionsToDo.Remove(previousAction);
+                if (_actionsToDo.IndexOf(previousAction) == 0)
+                {
+                    if (ActionInProgress == previousAction || ActionInProgress == null)
+                    {
+                        TryCallNewActionFromQueue();
+                    }
+                    else
+                    {
+                        ActionInProgress = null;
+                    }
+                }
 
-                if (ActionInProgress == previousAction || ActionInProgress == null)
-                {
-                    TryCallNewActionFromQueue();
-                }
-                else
-                {
-                    ActionInProgress = null;
-                }
+                _actionsToDo.Remove(previousAction);
             }
             else
             {
@@ -305,6 +314,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _actionDone = true;
+            BlockedInQueue = false;
+
             OnActionDoneEvent?.Invoke(this);
         }
 
@@ -313,9 +324,7 @@ namespace Loom.ZombieBattleground
             if (_actionDone)
                 return;
 
-            _actionDone = true;
-
-            OnActionDoneEvent?.Invoke(this);
+            ForceActionDone();
         }
     }
 }
