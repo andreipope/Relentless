@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
 using UnityEngine;
@@ -18,8 +19,14 @@ namespace Loom.ZombieBattleground
         private IAppStateManager _appStateManager;
         private IApplicationSettingsManager _applicationSettingsManager;
         private ITutorialManager _tutorialManager;
+        private BackendDataControlMediator _backendDataControlMediator;
 
-        private Button _buttonClose;
+        private Button _buttonClose,
+                       _buttonLogin,
+                       _buttonLogoff,
+                       _buttonHelp,
+                       _buttonSupport,
+                       _buttonCredits;
                                       
         private Slider _sfxVolumeSlider,
                        _musicVolumeSlider;
@@ -38,6 +45,7 @@ namespace Loom.ZombieBattleground
             _appStateManager = GameClient.Get<IAppStateManager>();
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
         public void Dispose()
@@ -67,8 +75,28 @@ namespace Loom.ZombieBattleground
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
             _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();
-            _buttonClose.onClick.AddListener(CloseButtonHandler);
+            _buttonClose.onClick.AddListener(ButtonCloseHandler);
             _buttonClose.onClick.AddListener(PlayClickSound);
+            
+            _buttonLogin = Self.transform.Find("Scaler/Button_Login").GetComponent<Button>();
+            _buttonLogin.onClick.AddListener(ButtonLoginHandler);
+            _buttonLogin.onClick.AddListener(PlayClickSound);
+            
+            _buttonLogoff = Self.transform.Find("Scaler/Button_Logoff").GetComponent<Button>();
+            _buttonLogoff.onClick.AddListener(ButtonLogoffHandler);
+            _buttonLogoff.onClick.AddListener(PlayClickSound);
+            
+            _buttonHelp = Self.transform.Find("Scaler/Button_Help").GetComponent<Button>();
+            _buttonHelp.onClick.AddListener(ButtonHelpHandler);
+            _buttonHelp.onClick.AddListener(PlayClickSound);
+            
+            _buttonSupport = Self.transform.Find("Scaler/Button_Support").GetComponent<Button>();
+            _buttonSupport.onClick.AddListener(ButtonSupportHandler);
+            _buttonSupport.onClick.AddListener(PlayClickSound);
+            
+            _buttonCredits = Self.transform.Find("Scaler/Button_Credits").GetComponent<Button>();
+            _buttonCredits.onClick.AddListener(ButtonCreditsHandler);
+            _buttonCredits.onClick.AddListener(PlayClickSound);
             
             _sfxVolumeSlider = Self.transform.Find("Scaler/Group_Sounds/Slider_SFXVolume").GetComponent<Slider>();
             _musicVolumeSlider = Self.transform.Find("Scaler/Group_Music/Slider_MusicVolume").GetComponent<Slider>();     
@@ -89,6 +117,33 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (Self != null)
+            {
+                if (!Constants.AlwaysGuestLogin && 
+                    _backendDataControlMediator.UserDataModel != null && 
+                    (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
+                {
+                    if (!_buttonLogin.gameObject.activeSelf)
+                    {
+                        _buttonLogin.gameObject.SetActive(true);
+                        _buttonLogoff.gameObject.SetActive
+                        (
+                            !_buttonLogin.gameObject.activeSelf
+                        );
+                    }
+                }
+                else
+                {
+                    if (_buttonLogin.gameObject.activeSelf)
+                    {
+                        _buttonLogin.gameObject.SetActive(false);
+                        _buttonLogoff.gameObject.SetActive
+                        (
+                            !_buttonLogin.gameObject.activeSelf
+                        );
+                    }
+                }
+            }
         }
 
 
@@ -102,10 +157,38 @@ namespace Loom.ZombieBattleground
         }
 
 
-        private void CloseButtonHandler()
+        private void ButtonCloseHandler()
         {
-
             _uiManager.HidePopup<MySettingPopup>();
+        }
+        
+        private void ButtonLoginHandler()
+        {
+            Hide();
+            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+            popup.Show();
+        }
+        
+        private void ButtonLogoffHandler()
+        {
+            Hide();
+            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+            popup.Logout();
+        }
+        
+        private void ButtonHelpHandler()
+        {
+            Application.OpenURL(Constants.HelpLink);
+        }
+        
+        private void ButtonSupportHandler()
+        {
+            Application.OpenURL(Constants.SupportLink);
+        }
+        
+        private void ButtonCreditsHandler()
+        {
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.CREDITS);
         }
         
         private void SFXVolumeChangedHandler(float value)

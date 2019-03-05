@@ -219,5 +219,9 @@ namespace Loom.ZombieBattleground.Common
         internal const bool EnableNewUI = true;
 
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
+        
+        internal const string HelpLink = "https://loom.games/en/how-to-play";
+        
+        internal const string SupportLink = "https://loom.games/en/";
     }
 }
