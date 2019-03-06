@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
                 switch(boardObject)
                 {
                     case BoardCardView card:
-                        activeAbility.Ability.BoardCard = card;
+                        activeAbility.Ability.boardCardView = card;
                         break;
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;
@@ -579,8 +579,8 @@ namespace Loom.ZombieBattleground
                                            workingCard.Owner.CardsInHand.Insert(ItemPosition.End, card.BoardUnitModel.Card);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            workingCard.Owner.CardsOnBoard.Remove(card.BoardUnitModel.Card);
-                                           BoardUnitView boardCardUnitView = workingCard.Owner.BoardCards.FirstOrDefault(boardCard =>
-                                               boardCard.Model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
+                                           BoardUnitView boardCardUnitView = workingCard.Owner.BoardCards.FirstOrDefault(boardCardView =>
+                                               boardCardView.Model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
                                            if (boardCardUnitView != null)
                                            {
                                                workingCard.Owner.BoardCards.Remove(boardCardUnitView);
@@ -745,13 +745,13 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void CallAbilitiesInHand(BoardCardView boardCard, WorkingCard card)
+        public void CallAbilitiesInHand(BoardCardView boardCardView, WorkingCard card)
         {
             List<AbilityData> handAbilities =
                 card.Prototype.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
-                CreateActiveAbility(ability, card.Prototype.CardKind, boardCard, card.Owner, card.Prototype, card)
+                CreateActiveAbility(ability, card.Prototype.CardKind, boardCardView, card.Owner, card.Prototype, card)
                     .Ability
                     .Activate();
             }

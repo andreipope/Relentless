@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public BoardSpell BoardSpell;
 
-        public BoardCardView BoardCard;
+        public BoardCardView boardCardView;
 
         public BoardUnitModel TargetUnit;
 

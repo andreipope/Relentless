@@ -572,11 +572,11 @@ namespace Loom.ZombieBattleground
             InternalTools.GroupVerticalObjects(parent, 0f, centerOffset, cardSize);
         }
 
-        public void DrawTooltipInfoOfCard(BoardCardView boardCard)
+        public void DrawTooltipInfoOfCard(BoardCardView boardCardView)
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCard.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.SPELL)
+            if (boardCardView.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.SPELL)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -589,13 +589,13 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCard.BoardUnitModel.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
+            if (boardCardView.BoardUnitModel.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCard.BoardUnitModel.Card.Prototype.CardRank);
+                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.BoardUnitModel.Card.Prototype.CardRank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == boardCard.BoardUnitModel.Card.Prototype.CardSetType);
+                        y => y.Element == boardCardView.BoardUnitModel.Card.Prototype.CardSetType);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -608,9 +608,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.BoardUnitModel.Card.InstanceCard.CardType != Enumerators.CardType.WALKER)
+            if (boardCardView.BoardUnitModel.Card.InstanceCard.CardType != Enumerators.CardType.WALKER)
             {
-                TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCard.BoardUnitModel.Card.InstanceCard.CardType);
+                TooltipContentData.CardTypeInfo cardTypeInfo = DataManager.GetCardTypeInfo(boardCardView.BoardUnitModel.Card.InstanceCard.CardType);
                 if (cardTypeInfo != null)
                 {
                     buffs.Add(
@@ -624,9 +624,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCard.BoardUnitModel.Card.Prototype.Abilities != null)
+            if (boardCardView.BoardUnitModel.Card.Prototype.Abilities != null)
             {
-                foreach (AbilityData abil in boardCard.BoardUnitModel.Card.Prototype.Abilities)
+                foreach (AbilityData abil in boardCardView.BoardUnitModel.Card.Prototype.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)

@@ -98,15 +98,15 @@ namespace Loom.ZombieBattleground
         }
 
 
-        private void PutCardFromHandToBoard(Player owner, BoardCardView boardCard,
+        private void PutCardFromHandToBoard(Player owner, BoardCardView boardCardView,
             ref List<PastActionsPopup.TargetEffectParam> TargetEffects, ref List<HandBoardCard> cards, bool activateAbility)
         {
-            CardsController.SummonUnitFromHand(owner, boardCard, activateAbility);
-            cards.Add(boardCard.HandBoardCard);
+            CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
+            cards.Add(boardCardView.HandBoardCard);
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayFromHand,
-                Target = boardCard.HandBoardCard
+                Target = boardCardView.HandBoardCard
             });
         }
     }

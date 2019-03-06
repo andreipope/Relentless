@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility,
                 MainWorkingCard,
                 MainWorkingCard.Prototype.Cost + gooCost,
-                BoardCard
+                boardCardView
             );
         }
         

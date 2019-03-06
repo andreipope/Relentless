@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCardView boardCard = null, bool isManaBar = false)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCardView boardCardView = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {
@@ -228,7 +228,7 @@ namespace Loom.ZombieBattleground
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
                     }
-                    else if (boardCard != null)
+                    else if (boardCardView != null)
                     {
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
                     }
@@ -312,15 +312,15 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    BoardCardView boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+                    BoardCardView boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
 
-                    if (boardCard != null)
+                    if (boardCardView != null)
                     {
                         hasPoinerTarget = true;
 
                         if (isHovering)
                         {
-                            UpdateHovering(collider.gameObject, boardCard: boardCard);
+                            UpdateHovering(collider.gameObject, boardCardView: boardCardView);
                         }
                     }
                 }

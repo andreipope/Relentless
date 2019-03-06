@@ -794,10 +794,10 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
+                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
                 GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
-                particle.transform.position = boardCard.Transform.position;
-                particle.transform.SetParent(boardCard.Transform, true);
+                particle.transform.position = boardCardView.Transform.position;
+                particle.transform.SetParent(boardCardView.Transform, true);
                 particle.transform.localEulerAngles = Vector3.zero;
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(particle, true, 6f);
             }

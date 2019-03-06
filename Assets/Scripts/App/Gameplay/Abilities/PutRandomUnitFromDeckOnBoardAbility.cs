@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardCardView boardCard;
+                BoardCardView boardCardView;
                 Player playerOwner;
                 UniquePositionedList<WorkingCard> filteredCards = null;
 
@@ -73,8 +73,8 @@ namespace Loom.ZombieBattleground
 
                     if (playerOwner.BoardCards.Count < Constants.MaxBoardUnits) 
                     {
-                        boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-                        PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards, true);
+                        boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref TargetEffects, ref boardCards, true);
                     }
                 }
             }
@@ -93,20 +93,20 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCard,
+        private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCardView,
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.RemoveCardFromDeck(boardCard.BoardUnitModel.Card);
+            owner.RemoveCardFromDeck(boardCardView.BoardUnitModel.Card);
 
-            CardsController.SummonUnitFromHand(owner, boardCard, activateAbility);
+            CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
 
-            cards.Add(boardCard.HandBoardCard);
+            cards.Add(boardCardView.HandBoardCard);
 
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCard,
+                Target = boardCardView,
             });
         }
     }
