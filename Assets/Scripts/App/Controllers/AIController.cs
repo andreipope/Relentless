@@ -1021,9 +1021,7 @@ namespace Loom.ZombieBattleground
                         GameObject spellCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                         spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
-                        CurrentSpellCard = new SpellBoardCard(spellCard);
-
-                        CurrentSpellCard.Init(new BoardUnitModel(card));
+                        CurrentSpellCard = new SpellBoardCard(spellCard, new BoardUnitModel(card));
                         CurrentSpellCard.SetHighlightingEnabled(false);
 
                         BoardSpell boardSpell = new BoardSpell(spellCard, card);

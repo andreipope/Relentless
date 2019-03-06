@@ -889,23 +889,23 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCardView;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
-                    boardCardView = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
-                    boardCardView = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCardView.Init(new BoardUnitModel(card));
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
             boardCardView.SetHighlightingEnabled(false);
@@ -1128,21 +1128,20 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCardView;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(ItemCardViewPrefab);
-                    boardCardView = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            boardCardView.Init(new BoardUnitModel(card));
 
             HandBoardCard handCard = new HandBoardCard(go, boardCardView);
             handCard.BoardZone = _playerBoard;

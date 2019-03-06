@@ -628,21 +628,21 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCardView;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(CurrentBoardCard);
+                    boardCardView = new UnitBoardCard(CurrentBoardCard, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new SpellBoardCard(CurrentBoardCard);
+                    boardCardView = new SpellBoardCard(CurrentBoardCard, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCardView.Init(new BoardUnitModel(card));
             if (highlight)
             {
                 highlight = boardCardView.CanBePlayed(card.Owner) && boardCardView.CanBeBuyed(card.Owner);
@@ -1128,8 +1128,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView CreateCustomHandBoardCard(WorkingCard card)
         {
-            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
-            boardCardView.Init(new BoardUnitModel(card));
+            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), new BoardUnitModel(card));
             boardCardView.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
             boardCardView.GameObject.transform.localScale = Vector3.one * .3f;

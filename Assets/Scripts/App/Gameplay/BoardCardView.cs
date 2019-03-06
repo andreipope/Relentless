@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCardView(GameObject selfObject)
+        public BoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -139,6 +139,8 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
+
+            Init(boardUnitModel);
         }
 
         public SpriteRenderer PictureSprite { get; protected set; }
@@ -168,7 +170,7 @@ namespace Loom.ZombieBattleground
 
         public int FuturePositionOnBoard = 0;
 
-        public virtual void Init(BoardUnitModel boardUnitModel)
+        protected virtual void Init(BoardUnitModel boardUnitModel)
         {
             BoardUnitModel = boardUnitModel;
 
@@ -177,8 +179,6 @@ namespace Loom.ZombieBattleground
             CostText.text = BoardUnitModel.Card.Prototype.Cost.ToString();
 
             IsNewCard = true;
-
-            BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), BoardUnitModel.Card.Prototype.CardRank);
 
@@ -211,6 +211,11 @@ namespace Loom.ZombieBattleground
                     ParentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
                     ParentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
                 }
+            }
+
+            if (BoardUnitModel.Card.Owner != null)
+            {
+                BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
             }
         }
 
@@ -745,8 +750,16 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (BoardUnitModel.Card == null)
-                return;
+            try
+            {
+                if (BoardUnitModel.Card == null)
+                    return;
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
 
             DebugCardInfoDrawer.Draw(Transform.position, BoardUnitModel.Card.InstanceId.Id, BoardUnitModel.Card.Prototype.Name);
         }

@@ -13,15 +13,15 @@ namespace Loom.ZombieBattleground
 
         protected TextMeshPro DefenseText;
 
-        public UnitBoardCard(GameObject selfObject)
-            : base(selfObject)
+        public UnitBoardCard(GameObject selfObject, BoardUnitModel boardUnitModel)
+            : base(selfObject, boardUnitModel)
         {
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
             DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
             TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
         }
 
-        public override void Init(BoardUnitModel boardUnitModel)
+        protected override void Init(BoardUnitModel boardUnitModel)
         {
             base.Init(boardUnitModel);
 
