@@ -56,7 +56,6 @@ namespace Loom.ZombieBattleground
         private Button _buttonNewDeck,
                        _buttonBack,
                        _buttonSelectDeckFilter,
-                       _buttonSelectDeckSearch,
                        _buttonEdit,
                        _buttonDelete,
                        _buttonRename,                       
@@ -70,8 +69,8 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textSelectOverlordSkillDeckname;
 
-        private Image _imagePageDotNormal,
-                      _imagePageDotSelected;
+        private GameObject _imagePageDotNormal,
+                        _imagePageDotSelected;
 
         private List<DeckInfoObject> _deckInfoObjectList;
         
@@ -153,36 +152,35 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_DECKS);
             _uiManager.DrawPopup<AreaBarPopup>();
             
-            _inputFieldRenameDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_Content/InputText_DeckName").GetComponent<TMP_InputField>();
+            _inputFieldRenameDeckName = _selfPage.transform.Find("Tab_Rename/Panel_Content/InputText_DeckName").GetComponent<TMP_InputField>();
             _inputFieldRenameDeckName.onEndEdit.AddListener(OnInputFieldRenameEndedEdit);
             _inputFieldRenameDeckName.text = "Deck Name";
             
-            _inputFieldSearchDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/InputText_SearchDeckName").GetComponent<TMP_InputField>();
+            _inputFieldSearchDeckName = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Upper_Items/InputText_SearchDeckName").GetComponent<TMP_InputField>();
             _inputFieldSearchDeckName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchDeckName.text = "SEARCH";
 
-            _trayButtonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonBackTray");
+            _trayButtonBack = _selfPage.transform.Find("Panel_Frame/Image_ButtonBackTray");
             _trayButtonBack.gameObject.SetActive(false);
             
-            _trayButtonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray");
+            _trayButtonAuto = _selfPage.transform.Find("Panel_Frame/Image_ButtonAutoTray");
             _trayButtonAuto.gameObject.SetActive(false);
             
-            _paginationGroup = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Pagination_Group");
-            
-            _imagePageDotNormal = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Image_CircleDot_Normal").GetComponent<Image>();
-            _imagePageDotSelected = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Image_CircleDot_Selected").GetComponent<Image>();
-            
-            
-            LocatorCollectionCards = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Locator_CollectionCards");            
-            LocatorDeckCards = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Locator_DeckCards");
-            
-            _spriteDeckThumbnailNormal = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_normal").GetComponent<Image>().sprite;
-            _spriteDeckThumbnailSelected = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Sprite_deck_thumbnail_selected").GetComponent<Image>().sprite;            
+            _paginationGroup = _selfPage.transform.Find("Tab_SelectDeck/Panel_Content/Pagination_Group");
 
-            _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();            
+            _imagePageDotNormal = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_CircleDot_Normal");
+            _imagePageDotSelected = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_CircleDot_Selected");            
+            
+            LocatorCollectionCards = _selfPage.transform.Find("Tab_Editing/Panel_Content/Locator_CollectionCards");            
+            LocatorDeckCards = _selfPage.transform.Find("Tab_Editing/Panel_Content/Locator_DeckCards");
+
+            _spriteDeckThumbnailNormal = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/deck_thumbnail_normal");
+            _spriteDeckThumbnailSelected = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/deck_thumbnail_selected");           
+
+            _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();            
              
-            DragAreaDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/DragArea_Deck").gameObject;
-            DragAreaCollections = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/DragArea_Collections").gameObject;
+            DragAreaDeck = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Deck").gameObject;
+            DragAreaCollections = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Collections").gameObject;
             
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
@@ -193,7 +191,9 @@ namespace Loom.ZombieBattleground
             
             LoadButtons();
             LoadObjects();            
-            LoadTabs();             
+            LoadTabs();
+
+            UpdatePageScaleToMatchResolution();          
         }
         
         public void Hide()
@@ -221,6 +221,15 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void UpdatePageScaleToMatchResolution()
+        {
+            float screenRatio = (float)Screen.width/Screen.height;
+            if(screenRatio < 1.76f)
+            {
+                _selfPage.transform.localScale = Vector3.one * 0.93f;
+            }
+        } 
 
         #region UI Handlers
 
@@ -260,11 +269,6 @@ namespace Loom.ZombieBattleground
             ApplyDeckFilter(selectedSetType);
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
-        }
-
-        private void ButtonSelectDeckSearchHandler()
-        {
-
         }
 
         private void ButtonEditHandler()
@@ -571,43 +575,39 @@ namespace Loom.ZombieBattleground
         
         private void LoadButtons()
         {
-            _buttonNewDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
+            _buttonNewDeck = _selfPage.transform.Find("Tab_SelectDeck/Panel_Content/Button_BuildNewDeck").GetComponent<Button>();
             _buttonNewDeck.onClick.AddListener(ButtonNewDeckHandler);
             _buttonNewDeck.onClick.AddListener(PlayClickSound);
             
-            _buttonLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonLeftArrow = _selfPage.transform.Find("Tab_SelectDeck/Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
             _buttonLeftArrow.onClick.AddListener(PlayClickSound);
             
-            _buttonRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonRightArrow = _selfPage.transform.Find("Tab_SelectDeck/Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
             _buttonRightArrow.onClick.AddListener(PlayClickSound);
             
-            _buttonBack = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonBackTray/Button_Back").GetComponent<Button>();
+            _buttonBack = _selfPage.transform.Find("Panel_Frame/Image_ButtonBackTray/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
             _buttonBack.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectDeckFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonSelectDeckFilter = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonSelectDeckFilter.onClick.AddListener(ButtonSelectDeckFilterHandler);
-            _buttonSelectDeckFilter.onClick.AddListener(PlayClickSound);
+            _buttonSelectDeckFilter.onClick.AddListener(PlayClickSound);            
             
-            _buttonSelectDeckSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
-            _buttonSelectDeckSearch.onClick.AddListener(ButtonSelectDeckSearchHandler);
-            _buttonSelectDeckSearch.onClick.AddListener(PlayClickSound);
-            
-            _buttonEdit = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Edit").GetComponent<Button>();
+            _buttonEdit = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Edit").GetComponent<Button>();
             _buttonEdit.onClick.AddListener(ButtonEditHandler);
             _buttonEdit.onClick.AddListener(PlayClickSound);
             
-            _buttonDelete = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Delete").GetComponent<Button>();
+            _buttonDelete = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Delete").GetComponent<Button>();
             _buttonDelete.onClick.AddListener(ButtonDeleteHandler);
             _buttonDelete.onClick.AddListener(PlayClickSound);
             
-            _buttonRename = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
+            _buttonRename = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
             _buttonRename.onClick.AddListener(PlayClickSound);
             
-            ButtonSaveRenameDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
+            ButtonSaveRenameDeck = _selfPage.transform.Find("Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
             ButtonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);
             ButtonSaveRenameDeck.onClick.AddListener(PlayClickSound);            
         }
@@ -618,7 +618,7 @@ namespace Loom.ZombieBattleground
             for(int i=0; i<3; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Anchor_BottomRight/Scaler/Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
+                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
                 deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
@@ -633,11 +633,11 @@ namespace Loom.ZombieBattleground
 
             _tabObjects = new GameObject[]
             {
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectDeck").gameObject,
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Rename").gameObject,
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing").gameObject,
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord").gameObject,
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill").gameObject
+                _selfPage.transform.Find("Tab_SelectDeck").gameObject,
+                _selfPage.transform.Find("Tab_Rename").gameObject,
+                _selfPage.transform.Find("Tab_Editing").gameObject,
+                _selfPage.transform.Find("Tab_SelectOverlord").gameObject,
+                _selfPage.transform.Find("Tab_SelectOverlordSkill").gameObject
             };
         }
         
@@ -709,7 +709,7 @@ namespace Loom.ZombieBattleground
             {
                 GameObject pageDot = Object.Instantiate
                 (
-                    i == page? _imagePageDotSelected.gameObject:_imagePageDotNormal.gameObject
+                    i == page? _imagePageDotSelected:_imagePageDotNormal
                 );
                 pageDot.transform.SetParent(_paginationGroup);
                 pageDot.transform.localScale = _imagePageDotNormal.transform.localScale;

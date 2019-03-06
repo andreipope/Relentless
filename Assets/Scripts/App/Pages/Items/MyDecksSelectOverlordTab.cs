@@ -76,29 +76,29 @@ namespace Loom.ZombieBattleground
         {
             _selfPage = selfPage;
             
-            _textSelectOverlordDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _textSelectOverlordDeckName = _selfPage.transform.Find("Tab_SelectOverlord/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
            
-            _buttonSelectOverlordLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_LeftArrow").GetComponent<Button>();
+            _buttonSelectOverlordLeftArrow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonSelectOverlordLeftArrow.onClick.AddListener(ButtonSelectOverlordLeftArrowHandler);
             _buttonSelectOverlordLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonSelectOverlordRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Button_RightArrow").GetComponent<Button>();
+            _buttonSelectOverlordRightArrow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonSelectOverlordRightArrow.onClick.AddListener(ButtonSelectOverlordRightArrowHandler);
             _buttonSelectOverlordRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonSelectOverlordContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
+            _buttonSelectOverlordContinue = _selfPage.transform.Find("Tab_SelectOverlord/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
             _buttonSelectOverlordContinue.onClick.AddListener(ButtonSelectOverlordContinueHandler);
             _buttonSelectOverlordContinue.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _textSelectOverlordName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Text_SelectOverlord").GetComponent<TextMeshProUGUI>();
-            _textSelectOverlordDescription = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
+            _textSelectOverlordName = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Text_SelectOverlord").GetComponent<TextMeshProUGUI>();
+            _textSelectOverlordDescription = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
             
-            _imageSelectOverlordGlow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
-            _imageSelectOverlordPortrait = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();            
+            _imageSelectOverlordGlow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
+            _imageSelectOverlordPortrait = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();            
             
             for(int i=0; i<6;++i)
             {
-                Image overlordIcon = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Image_DeckIcon_" + i).GetComponent<Image>();
+                Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Image_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
                 (
                     _dataManager.CachedHeroesData.Heroes[i].HeroElement

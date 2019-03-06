@@ -39,8 +39,6 @@ namespace Loom.ZombieBattleground
         
         private Image _imageSelectOverlordSkillPortrait;
 
-        private Button _buttonSelectOverlordSkillContinue;
-
         private Image[] _imageSkillIcons;
 
         private TextMeshProUGUI[] _textSkillDescriptions;
@@ -57,13 +55,7 @@ namespace Loom.ZombieBattleground
 
         private Button _continueButton;
 
-        private Button _cancelButton;
-
         private GameObject _abilitiesGroup;
-
-        private TextMeshProUGUI _skillName;
-
-        private TextMeshProUGUI _skillDescription;
 
         private List<OverlordAbilityItem> _overlordAbilities;
 
@@ -104,30 +96,23 @@ namespace Loom.ZombieBattleground
                     Dispose();
                 }
             };
-           
-            PopupHiding += ()=>
-            {
-                ButtonSelectOverlordSkillContinueHandler();
-            };
+
+            PopupHiding += ProcessEditOverlordSkills;
         }
         
         public void Show(GameObject selfPage)
         {
             _selfPage = selfPage;
             
-            _imageSelectOverlordSkillPortrait = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();            
+            _imageSelectOverlordSkillPortrait = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();                        
             
-            _buttonSelectOverlordSkillContinue = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_FrameComponents/Lower_Items/Button_Continue").GetComponent<Button>();
-            _buttonSelectOverlordSkillContinue.onClick.AddListener(ButtonSelectOverlordSkillContinueHandler);
-            _buttonSelectOverlordSkillContinue.onClick.AddListener(_myDeckPage.PlayClickSound);
+            _imageSkillIcons[0] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_1").GetComponent<Image>();  
+            _imageSkillIcons[1] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_2").GetComponent<Image>();  
             
-            _imageSkillIcons[0] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_1").GetComponent<Image>();  
-            _imageSkillIcons[1] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Image_SkillIcon_2").GetComponent<Image>();  
+            _textSkillDescriptions[0] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_1").GetComponent<TextMeshProUGUI>();  
+            _textSkillDescriptions[1] = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_2").GetComponent<TextMeshProUGUI>();         
             
-            _textSkillDescriptions[0] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_1").GetComponent<TextMeshProUGUI>();  
-            _textSkillDescriptions[1] = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SkillSlots/Text_Desc_2").GetComponent<TextMeshProUGUI>();         
-            
-            _textSelectedAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_Content/Image_SelectAmount/Text_SelectedAmount").GetComponent<TextMeshProUGUI>();
+            _textSelectedAmount = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_Content/Image_SelectAmount/Text_SelectedAmount").GetComponent<TextMeshProUGUI>();
         }
         
         public void Update()
@@ -140,10 +125,8 @@ namespace Loom.ZombieBattleground
             ResetOverlordAbilities();
         }
         
-        private async void ButtonSelectOverlordSkillContinueHandler()
-        {
-            _buttonSelectOverlordSkillContinue.interactable = false;            
-        
+        private async void ProcessEditOverlordSkills()
+        { 
             bool success = true;
 
             Hero hero = _myDeckPage.CurrentEditHero;
@@ -166,7 +149,6 @@ namespace Loom.ZombieBattleground
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
             }
-            _buttonSelectOverlordSkillContinue.interactable = true;
 
             if (success)
                 _myDeckPage.ChangeTab(MyDecksPage.TAB.EDITING);
@@ -199,29 +181,18 @@ namespace Loom.ZombieBattleground
             );
         }
 
-        #region From Old Script
-
         private void UpdateTabShow()
         {
             _singleSelectionMode = false;
             _isPrimarySkillSelected = false;
         
-            GameObject Self = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_SelectOverlordSkill/Panel_OldContent").gameObject;
-            _backLayerCanvas = Self.transform.Find("Canvas_BackLayer").GetComponent<Canvas>();
+            _backLayerCanvas = _selfPage.transform.Find("Tab_SelectOverlordSkill/Canvas_BackLayer").GetComponent<Canvas>();
 
             _continueButton = _backLayerCanvas.transform.Find("Button_Continue").GetComponent<Button>();
-            _cancelButton = _backLayerCanvas.transform.Find("Button_Cancel").GetComponent<Button>();
-
             _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
-            _cancelButton.onClick.AddListener(CancelButtonOnClickHandler);
-
-            _skillName = _backLayerCanvas.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
-            _skillDescription = _backLayerCanvas.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
-
-            _abilitiesGroup = Self.transform.Find("Canvas_BackLayer/Abilities").gameObject;
-
-            _skillName.text = "No Skills selected";
-            _skillDescription.text = string.Empty;
+            _continueButton.onClick.AddListener(_myDeckPage.PlayClickSound);
+            
+            _abilitiesGroup = _backLayerCanvas.transform.Find("Abilities").gameObject;
             
             FillOverlordAbilities();
 
@@ -339,18 +310,6 @@ namespace Loom.ZombieBattleground
             PopupHiding?.Invoke();
         }
 
-        public void CancelButtonOnClickHandler()
-        {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_cancelButton.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
-                return;
-            }
-
-            _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            _uiManager.HidePopup<OverlordAbilitySelectionPopup>();
-        }
-
         #endregion
 
         private void OpenAlertDialog(string msg)
@@ -431,9 +390,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 ability.Select();
-
-                _skillName.text = ability.Skill.Title;
-                _skillDescription.text = ability.Skill.Description;
             }
             else
             {
@@ -446,9 +402,6 @@ namespace Loom.ZombieBattleground
                     if (_overlordAbilities.FindAll(x => x.IsSelected).Count < 2)
                     {
                         ability.Select();
-
-                        _skillName.text = ability.Skill.Title;
-                        _skillDescription.text = ability.Skill.Description;
                     }
                 }
             }
@@ -538,7 +491,5 @@ namespace Loom.ZombieBattleground
                 OverlordAbilitySelected?.Invoke(this);
             }
         }
-
-        #endregion
     }
 }

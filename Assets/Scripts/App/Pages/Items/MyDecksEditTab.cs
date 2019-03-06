@@ -58,7 +58,6 @@ namespace Loom.ZombieBattleground
         private GameObject _draggingObject;
 
         private Button _buttonFilter,
-                       _buttonSearch,
                        _buttonUpperLeftArrow,
                        _buttonUpperRightArrow,
                        _buttonLowerLeftArrow,
@@ -148,56 +147,52 @@ namespace Loom.ZombieBattleground
             
             _cardFilterPopup = _uiManager.GetPopup<CardFilterPopup>();            
             
-            _textEditDeckName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            _textEditDeckCardsAmount = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+            _textEditDeckName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _textEditDeckCardsAmount = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
             
-            _buttonFilter = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
+            _buttonFilter = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
             _buttonFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonSearch = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_SearchBar").GetComponent<Button>();
-            _buttonSearch.onClick.AddListener(ButtonEditDeckSearchHandler);
-            _buttonSearch.onClick.AddListener(_myDeckPage.PlayClickSound);
-            
-            _buttonUpperLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
+            _buttonUpperLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
             _buttonUpperLeftArrow.onClick.AddListener(ButtonEditDeckUpperLeftArrowHandler);
             _buttonUpperLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonUpperRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
+            _buttonUpperRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
             _buttonUpperRightArrow.onClick.AddListener(ButtonEditDeckUpperRightArrowHandler);
             _buttonUpperRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonLowerLeftArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
+            _buttonLowerLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
             _buttonLowerLeftArrow.onClick.AddListener(ButtonEditDeckLowerLeftArrowHandler);
             _buttonLowerLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonLowerRightArrow = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
+            _buttonLowerRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
             _buttonLowerRightArrow.onClick.AddListener(ButtonEditDeckLowerRightArrowHandler);
             _buttonLowerRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonSaveDeck = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
+            _buttonSaveDeck = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
             _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
             _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonAbilities = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
+            _buttonAbilities = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
             _buttonAbilities.onClick.AddListener(ButtonOverlordAbilitiesHandler);
             _buttonAbilities.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _buttonAuto = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
+            _buttonAuto = _selfPage.transform.Find("Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
             _buttonAuto.onClick.AddListener(ButtonAutoHandler);
             _buttonAuto.onClick.AddListener(_myDeckPage.PlayClickSound);
             
-            _inputFieldSearchName = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
+            _inputFieldSearchName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
             _imageAbilityIcons = new Image[]
             {
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_1").GetComponent<Image>(),
-                _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_2").GetComponent<Image>()
+                _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_1").GetComponent<Image>(),
+                _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities/Image_SkillIcon_2").GetComponent<Image>()
             };
 
-            _imageAbilitiesPanel = _selfPage.transform.Find("Anchor_BottomRight/Scaler/Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
+            _imageAbilitiesPanel = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
 
             LoadBoardCardComponents();
         }
@@ -250,11 +245,6 @@ namespace Loom.ZombieBattleground
             ResetCollectionPageState();
             CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();            
             popup.ActionPopupHiding -= FilterPopupHidingHandler;
-        }
-        
-        private void ButtonEditDeckSearchHandler()
-        {
-
         }
         
         private void ButtonEditDeckUpperLeftArrowHandler()
