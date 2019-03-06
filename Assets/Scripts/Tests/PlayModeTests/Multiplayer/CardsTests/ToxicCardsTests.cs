@@ -640,7 +640,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp - 2, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, true,
+                    true, true);
             });
         }
 

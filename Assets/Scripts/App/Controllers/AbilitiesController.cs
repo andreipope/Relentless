@@ -420,6 +420,9 @@ namespace Loom.ZombieBattleground
             HandBoardCard handCard = null,
             bool skipEntryAbilities = false)
         {
+
+            GameplayQueueAction<object> abilityHelperAction = null;
+
             actionInQueue.Action = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
@@ -467,8 +470,10 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
-                               completeCallback?.Invoke();
+                               abilityHelperAction?.ForceActionDone();
+                               abilityHelperAction = null;
 
+                               completeCallback?.Invoke();
                                return;
                            }
 
@@ -501,6 +506,9 @@ namespace Loom.ZombieBattleground
                                        onCompleteCallback?.Invoke(true);
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
+
+                                       abilityHelperAction?.ForceActionDone();
+                                       abilityHelperAction = null;
 
                                        completeCallback?.Invoke();
                                    });
@@ -552,6 +560,9 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
+                                           abilityHelperAction?.ForceActionDone();
+                                           abilityHelperAction = null;
+
                                            completeCallback?.Invoke();
                                        },
                                        failedCallback: () =>
@@ -586,6 +597,9 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
+                                           abilityHelperAction?.ForceActionDone();
+                                           abilityHelperAction = null;
+
                                            completeCallback?.Invoke();
 
                                        });
@@ -619,6 +633,9 @@ namespace Loom.ZombieBattleground
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
 
+                                       abilityHelperAction?.ForceActionDone();
+                                       abilityHelperAction = null;
+
                                        completeCallback?.Invoke();
                                    });
                                }
@@ -630,6 +647,9 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
+                               abilityHelperAction?.ForceActionDone();
+                               abilityHelperAction = null;
+
                                completeCallback?.Invoke();
                            }
                        }
@@ -640,13 +660,16 @@ namespace Loom.ZombieBattleground
 
                            ResolveAllAbilitiesOnUnit(boardObject);
 
+                           abilityHelperAction?.ForceActionDone();
+                           abilityHelperAction = null;
+
                            completeCallback?.Invoke();
                        }
                    };
 
                    AbilityData choosableAbility = libraryCard.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
-                   if (choosableAbility != null)
+                   if (choosableAbility != null && !(choosableAbility is default(AbilityData)))
                    {
                        if (HasPredefinedChoosableAbility)
                        {
@@ -664,11 +687,19 @@ namespace Loom.ZombieBattleground
                                Action<AbilityData.ChoosableAbility> callback = null;
 
                                callback = (x) =>
-                                {
+                               {
                                     libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
                                     abilityEndAction.Invoke();
                                     _cardsController.CardForAbilityChoosed -= callback;
-                                };
+                               };
+
+
+                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null,
+                                                                                   Enumerators.QueueActionType.AbilityUsageBlocker,
+                                                                                   blockQueue: true);
+
+
+                              
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, workingCard);

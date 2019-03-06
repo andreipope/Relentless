@@ -269,6 +269,11 @@ namespace Loom.ZombieBattleground
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
+            AttackPlayer(attackedPlayer, damage);
+        }
+
+        public void AttackPlayer(Player attackedPlayer, int damage)
+        {
             if (attackedPlayer != null)
             {
                 attackedPlayer.Defense -= damage;
