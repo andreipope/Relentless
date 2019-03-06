@@ -255,17 +255,16 @@ namespace Loom.ZombieBattleground
 
         public void ChangeCardCostOn(int value, bool changeRealCost = false)
         {
+            int calculatedCost = Mathf.Clamp(WorkingCard.InstanceCard.Cost + value, 0, 99);
+
             if (changeRealCost)
             {
-                WorkingCard.InstanceCard.Cost += value;
-                ManaCost = WorkingCard.InstanceCard.Cost;
-                CostText.text = ManaCost.ToString();
+                WorkingCard.InstanceCard.Cost = calculatedCost;
             }
-            else
-            {
-                ManaCost = WorkingCard.InstanceCard.Cost + value;
-                CostText.text = ManaCost.ToString();
-            }
+
+            ManaCost = calculatedCost;
+
+            CostText.text = ManaCost.ToString();
 
             UpdateColorOfCost();
         }

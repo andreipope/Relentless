@@ -947,7 +947,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.InstanceCard.Cost += value;
+                card.InstanceCard.Cost = Mathf.Clamp(card.InstanceCard.Cost + value, 0, 99);
             }
 
             player.ThrowOnHandChanged();
