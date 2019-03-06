@@ -70,10 +70,10 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/GameModePopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
-            _buttonTutorial = Self.transform.Find("Scaler/Button_Tutorial").GetComponent<ButtonShiftingContent>();
-            _buttonSoloMode = Self.transform.Find("Scaler/Button_SoloMode").GetComponent<Button>();
-            _buttonPvPMode = Self.transform.Find("Scaler/Button_PvPMode").GetComponent<Button>();
-            _buttonBack = Self.transform.Find("Scaler/Button_Back").GetComponent<Button>();
+            _buttonTutorial = Self.transform.Find("Button_Tutorial").GetComponent<ButtonShiftingContent>();
+            _buttonSoloMode = Self.transform.Find("Button_SoloMode").GetComponent<Button>();
+            _buttonPvPMode = Self.transform.Find("Button_PvPMode").GetComponent<Button>();
+            _buttonBack = Self.transform.Find("Button_Back").GetComponent<Button>();
 
             _buttonTutorial.onClick.AddListener(ButtonTutorialHandler);
             _buttonSoloMode.onClick.AddListener(ButtonSoloModeHandler);
