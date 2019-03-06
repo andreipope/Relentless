@@ -43,7 +43,9 @@ namespace Loom.ZombieBattleground
 
         public override void ActivateOptions()
         {
-            _patternParser = new ExposedPatternLayout(Pattern).CreatePatternParser(Pattern);
+            ExposedPatternLayout exposedPatternLayout = new ExposedPatternLayout(Pattern);
+            ProcessPatternLayout(exposedPatternLayout);
+            _patternParser = exposedPatternLayout.CreatePatternParser(Pattern);
             _patternConverterHead = _patternParser.Parse();
             _converterCount = 0;
             _converterNames.Clear();
@@ -57,6 +59,10 @@ namespace Loom.ZombieBattleground
 
                 _converterCount++;
             }
+        }
+
+        protected virtual void ProcessPatternLayout(PatternLayout patternLayout)
+        {
         }
 
         public override void Format(TextWriter writer, LoggingEvent loggingEvent)

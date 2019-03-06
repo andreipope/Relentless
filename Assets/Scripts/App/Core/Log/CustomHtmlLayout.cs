@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using log4net.Core;
+using log4net.Layout;
 using log4net.Util;
 
 namespace Loom.ZombieBattleground {
@@ -73,6 +74,11 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 ";
         }
 
+        protected override void ProcessPatternLayout(PatternLayout patternLayout)
+        {
+            patternLayout.AddConverter("counter", typeof(CounterPatternLayoutConverter));
+        }
+
         protected override bool IsFilteredPatternConverter(PatternConverter patternConverter)
         {
             switch (GetPatternConverterName(patternConverter))
@@ -90,6 +96,8 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
             switch (GetPatternConverterName(patternConverter))
             {
                 case "Time":
+                    return "text-monospace small";
+                case "#":
                     return "text-monospace small";
                 case "Logger":
                     return "item-logger";
@@ -121,6 +129,8 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
             {
                 case "UtcDatePatternConverter":
                     return "Time";
+                case "CounterPatternLayoutConverter":
+                    return "#";
                 default:
                     return base.CreatePatternConverterName(patternConverter);
             }
