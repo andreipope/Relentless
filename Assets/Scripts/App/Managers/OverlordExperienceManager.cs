@@ -4,6 +4,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using UnityEngine;
 using Loom.ZombieBattleground.BackendCommunication;
 
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public class OverlordExperienceManager : IService, IOverlordExperienceManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(OverlordExperienceManager));
+
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
@@ -180,9 +183,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
 
                 OpenAlertDialog("Not able to Save Deck: \n" + e.Message);
             }

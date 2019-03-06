@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
             }
             catch (JsonSerializationException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 return FallbackVersion;
             }
         }

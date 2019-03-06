@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
 {
     public class PlayerController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PlayerController));
+
         private IGameplayManager _gameplayManager;
 
         private IDataManager _dataManager;
@@ -77,6 +80,8 @@ namespace Loom.ZombieBattleground
             _pointerEventSolver.DragStarted += PointerSolverDragStartedHandler;
             _pointerEventSolver.Clicked += PointerEventSolverClickedHandler;
             _pointerEventSolver.Ended += PointerEventSolverEndedHandler;
+
+            _gameplayManager.GetController<InputController>().ClickedOnBoardObjectEvent += ClickedOnBoardObjectEventHandler;
         }
 
         public void Dispose()
@@ -146,7 +151,7 @@ namespace Loom.ZombieBattleground
                             workingDeck.Add(cardInstance.FromProtobuf(player));
                         }
 
-                        Debug.Log(
+                        Log.Info(
                             $"Player ID {instanceId}, local: {player.IsLocalPlayer}, added CardsInDeck:\n" +
                             String.Join("\n", workingDeck.Cast<object>().ToArray())
                         );
@@ -187,7 +192,7 @@ namespace Loom.ZombieBattleground
                         .Select(instance => instance.FromProtobuf(player))
                         .ToList();
 
-                    Debug.Log(
+                    Log.Info(
                         $"Player ID {player.InstanceId}, local: {player.IsLocalPlayer}, added CardsInHand:\n" +
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
@@ -471,11 +476,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (_battlegroundController.CardsZoomed || _topmostBoardCard == null)
-            {
-                CheckCardPreviewShow();
-            }
-            else if (!_gameplayManager.IsTutorial ||
+            if (!_gameplayManager.IsTutorial ||
                      (_gameplayManager.IsTutorial &&
                      _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                      SpecificBattlegroundInfo.DisabledInitialization))
@@ -490,6 +491,28 @@ namespace Loom.ZombieBattleground
             else
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
+            }
+        }
+
+        private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
+        {
+            switch (boardObject)
+            {
+                case BoardUnitModel unit:
+                    if (!unit.IsAttacking)
+                    {
+                        StopHandTimer();
+                        _battlegroundController.DestroyCardPreview();
+
+                        if (!_boardArrowController.IsBoardArrowNowInTheBattle)
+                        {
+                            HandCardPreview(new object[]
+                            {
+                                _battlegroundController.GetBoardUnitViewByModel(unit)
+                            });
+                        }
+                    }
+                    break;
             }
         }
 
