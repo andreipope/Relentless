@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground {
 
                 link.innerText = isCollapsed ? expandString : collapseString
                 height = isCollapsed ? ""{{COLLAPSED_TEXT_HEIGHT}}"" + ""px"" : ""auto""
-                $(container).css({ height: height })
+                $(container).css({ maxHeight: height })
                 link.setAttribute(collapsedAttributeName, isCollapsed)
             }
 

@@ -64,7 +64,9 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 
         exceptionSwitchCheckbox.onchange = function() {
             showExceptions = !showExceptions
+            logTable.hide()
             setShowLogExceptions(showExceptions)
+            logTable.show()
         }
 
         setShowLogExceptions(showExceptions)
