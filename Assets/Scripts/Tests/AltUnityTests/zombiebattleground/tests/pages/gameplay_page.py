@@ -19,13 +19,17 @@ class Gameplay_Page(CZBTests):
         cards=[]
         cards = self.altdriver.find_elements('CreatureCard(Clone)')
         cards.extend(self.altdriver.find_elements('ItemCard(Clone)'))
+        cards.sort(key=lambda element:float(element.x))
         return cards
 
-    def swipe_card_from_hand_to_board(self,card):
+    def swipe_card_from_hand_to_board(self,cardPosition):
+        cards=self.get_cards_that_are_in_hand()
         cardGoo = self.altdriver.wait_for_element(
-            'id('+str(card.id)+')/GooText')
+            'id('+str(cards[cardPosition].id)+')/GooText')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
                           int(self.player_board.x), int(self.player_board.mobileY), 2000)
+        time.sleep(3)
+
     def get_player_board_creatures(self):
         cards=self.altdriver.find_elements('PlayerBoard/BoardCreature(Clone)')
         cards.sort(key=lambda element:float(element.x))
@@ -37,9 +41,27 @@ class Gameplay_Page(CZBTests):
 
     def end_turn_and_wait_for_your_turn(self):
         self.end_turn_button.mobile_tap()
+        self.altdriver.wait_for_element_to_not_be_present('id('+str(self.end_turn_button.id)+')/EndTurnGlowEffect', timeout=60)
         self.altdriver.wait_for_element('id('+str(self.end_turn_button.id)+')/EndTurnGlowEffect', timeout=60)
         time.sleep(5)#sleep is to wait for the card player draws go to player hand
     
-    def swipe_card_to_opponent_face(self,card):
-        card.mobile_dragToElement(self.opponent_face,2000)
+    def swipe_board_card_to_opponent_face(self,cardPosition):
+        player_board_creature=self.get_player_board_creatures()
+        player_board_creature[cardPosition].mobile_dragToElement(self.opponent_face,2000)
+        time.sleep(4)
+
+    def swipe_primary_spell_to_opponent_face(self):
+        self.player_primary_spell.mobile_dragToElement(self.opponent_face,2000)
+        time.sleep(4)
     
+    def swipe_primary_spell_to_opponent_creature(self,cardPosition):
+        enemy_board_creature=self.get_opponent_board_creatures()
+        self.player_primary_spell.mobile_dragToElement(enemy_board_creature[cardPosition],2000)
+        time.sleep(4)
+
+    
+    def swipe_board_card_to_opponent_creature(self,player_card_position,opponent_card_position):
+        player_board_creature=self.get_player_board_creatures()
+        enemy_board_creature=self.get_opponent_board_creatures()
+        player_board_creature[player_card_position].mobile_dragToElement(enemy_board_creature[opponent_card_position],2000)
+        time.sleep(6)

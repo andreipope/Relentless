@@ -95,6 +95,14 @@ class CZBTests(unittest.TestCase):
         # self.altdriver.wait_for_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
         questionPopUp=self.altdriver.wait_for_element('QuestionPopup(Clone)')
         self.altdriver.find_element(questionPopUp.name+'/Button_No').mobile_tap()
+    def jump_to_tutorial(self, tutorialNumber):
+        self.skip_tutorials()
+        self.altdriver.wait_for_element('HiddenUI')
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
+        self.altdriver.find_element('InputField').set_component_property('UnityEngine.UI.InputField','text',tutorialNumber,'UnityEngine.UI')
+        self.altdriver.find_element('JumpToTutorial').mobile_tap()
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
+
 
     def write_in_input_field(self,input_field,text):
         self.altdriver.wait_for_element(input_field.name).set_component_property('UnityEngine.UI.InputField','text',text,'UnityEngine.UI')
