@@ -61,6 +61,10 @@ namespace Loom.ZombieBattleground.Test
             barLog.Error("something awful!!1");
 
             Debug.Log(stringWriter.ToString());
+
+#if UNITY_EDITOR
+            UnityEditor.EditorGUIUtility.systemCopyBuffer = stringWriter.ToString();
+#endif
         }
     }
 }

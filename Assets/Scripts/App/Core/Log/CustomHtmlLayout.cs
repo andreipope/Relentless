@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Text;
 using log4net.Core;
 using log4net.Util;
 
@@ -8,10 +9,65 @@ namespace Loom.ZombieBattleground {
     {
         public CustomHtmlLayout(string pattern) : base(pattern)
         {
+            //language=css
             CustomCss = @"
         .item-logger {
             font-weight: 600;
         }
+
+        .log-message-exception {
+            display: none;
+            margin-top: 0.5em;
+        }
+";
+
+            //language=javascript
+            CustomJavascriptBeforeLoad = @"
+checkIfMustUseExpandCollapseFunction = function(row, index) {
+    var result = row.cellsText[index].length > maxTextLengthBeforeCollapse
+    if (!result)
+        return false;
+
+    var logException = row.cells[index].querySelector('.log-message-exception')
+    if (logException != null) {
+        result = (row.cellsText[index].length - logException.innerText.length) > maxTextLengthBeforeCollapse
+    }
+    return result;
+}
+";
+
+            //language=javascript
+            CustomJavascriptAfterLoad = @"
+         var showExceptions = false
+        var logExceptions = $("".log-message-exception"")
+
+        var exceptionSwitchCheckbox = document.createElement('input')
+        exceptionSwitchCheckbox.type = ""checkbox"";
+        exceptionSwitchCheckbox.name = ""name"";
+        exceptionSwitchCheckbox.id = ""exception-switch"";
+
+        var exceptionSwitchCheckboxLabel = document.createElement('label')
+        exceptionSwitchCheckboxLabel.htmlFor = exceptionSwitchCheckbox.id
+        exceptionSwitchCheckboxLabel.innerHTML = ""&nbsp;Show stacktraces"";
+
+        filterInput[0].parentNode.insertBefore(exceptionSwitchCheckbox, filterInput[0].nextSibling)
+        filterInput[0].parentNode.insertBefore(exceptionSwitchCheckboxLabel, exceptionSwitchCheckbox.nextSibling)
+
+        function setShowLogExceptions(show) {
+            exceptionSwitchCheckbox.checked = show
+            if (show) {
+                logExceptions.show()
+            } else {
+                logExceptions.hide()
+            }
+        }
+
+        exceptionSwitchCheckbox.onchange = function() {
+            showExceptions = !showExceptions
+            setShowLogExceptions(showExceptions)
+        }
+
+        setShowLogExceptions(showExceptions)
 ";
         }
 
@@ -68,23 +124,30 @@ namespace Loom.ZombieBattleground {
             }
         }
 
-        protected override void WriteCell(LoggingEvent loggingEvent, PatternConverter patternConverter, TextWriter htmlWriter)
+        protected override void WriteCell(LoggingEvent loggingEvent, PatternConverter patternConverter, TextWriter writer, TextWriter htmlWriter)
         {
             switch (GetPatternConverterName(patternConverter))
             {
                 case "Message":
-                    base.WriteCell(loggingEvent, patternConverter, htmlWriter);
+                    base.WriteCell(loggingEvent, patternConverter, writer, htmlWriter);
 
                     // Write exception in the same cell, at the end of the cell
                     string exceptionString = loggingEvent.GetExceptionString();
                     if (!String.IsNullOrWhiteSpace(exceptionString))
                     {
-                        htmlWriter.WriteLine("");
+                        writer.WriteLine("");
                         htmlWriter.WriteLine(exceptionString);
+                    }
+                    else
+                    {
+                        writer.WriteLine("");
+                        writer.Write(@"<div class=""log-message-exception text-monospace small"">");
+                        htmlWriter.Write(GetStackTrace(loggingEvent.LocationInformation.StackFrames));
+                        writer.WriteLine(@"</div>");
                     }
                     break;
                 default:
-                    base.WriteCell(loggingEvent, patternConverter, htmlWriter);
+                    base.WriteCell(loggingEvent, patternConverter, writer, htmlWriter);
                     break;
             }
         }
@@ -117,6 +180,60 @@ namespace Loom.ZombieBattleground {
                     return (t, p, v);
                 default:
                     return (v, p, q);
+            }
+        }
+
+        private static string GetStackTrace(StackFrameItem[] stackFrames)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0; i < stackFrames.Length; i++)
+            {
+                StackFrameItem frame = stackFrames[i];
+                stringBuilder.Append(frame.ClassName);
+                stringBuilder.Append('.');
+                AppendMethodInformation(stringBuilder, frame.Method);
+
+                if (!String.IsNullOrEmpty(frame.FileName))
+                {
+                    stringBuilder.Append(" (");
+                    stringBuilder.Append(frame.FileName);
+                    stringBuilder.Append(':');
+                    stringBuilder.Append(frame.LineNumber);
+                    stringBuilder.Append(')');
+                }
+
+                stringBuilder.AppendLine();
+            }
+
+            return stringBuilder.ToString();
+        }
+
+        private static void AppendMethodInformation(StringBuilder stringBuilder, MethodItem method)
+        {
+            try
+            {
+                stringBuilder.Append(method.Name);
+                stringBuilder.Append('(');
+
+                string[] parameters = method.Parameters;
+                if (parameters != null && parameters.GetUpperBound(0) > 0)
+                {
+                    int upperBound = parameters.GetUpperBound(0);
+                    for (int i = 0; i <= upperBound; ++i)
+                    {
+                        stringBuilder.Append(parameters[i]);
+                        if (i != upperBound)
+                        {
+                            stringBuilder.Append(", ");
+                        }
+                    }
+                }
+
+                stringBuilder.Append(')');
+            }
+            catch (Exception ex)
+            {
+                stringBuilder.AppendLine("An exception occurred while retrieving method information. " + ex);
             }
         }
     }
