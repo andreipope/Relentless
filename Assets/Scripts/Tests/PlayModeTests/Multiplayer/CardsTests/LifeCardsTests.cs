@@ -60,8 +60,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
                     Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.CardPrototype.MouldId)).ToList()[0]);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.CardPrototype.MouldId)).ToList()[0]);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.Prototype.MouldId)).ToList()[0]);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.Prototype.MouldId)).ToList()[0]);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableBackendGameLogicMatch: true);
@@ -475,8 +475,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Tainted Goo";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.CardPrototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.CardPrototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -746,8 +746,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Ember";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -802,8 +802,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "WiZp";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -997,7 +997,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (BoardCardView card in TestHelper.BattlegroundController.PlayerHandCards)
                     {
-                        if (card.BoardUnitModel.Card.CardPrototype.Name == cardToFind)
+                        if (card.BoardUnitModel.Card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
                             break;
@@ -1015,7 +1015,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
                     {
-                        if (card.WorkingCard.CardPrototype.Name == cardToFind)
+                        if (card.WorkingCard.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
                             break;
@@ -1144,8 +1144,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Bark";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1277,8 +1277,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Azuraz";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1326,8 +1326,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Zplitter";
 
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind).ToList().Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind).ToList().Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1377,8 +1377,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Blightling";
 
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind).ToList().Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.CardPrototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.Prototype.Name == cardToFind).ToList().Count);
 
                     cardToFind = "Blight";
 
@@ -1387,7 +1387,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (BoardUnitView card in TestHelper.BattlegroundController.PlayerBoardCards)
                     {
-                        if (card.Model.Card.CardPrototype.Name == cardToFind)
+                        if (card.Model.Card.Prototype.Name == cardToFind)
                         {
                             playerHasBlight = true;
                             break;
@@ -1396,7 +1396,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (BoardUnitView card in TestHelper.BattlegroundController.OpponentBoardCards)
                     {
-                        if (card.Model.Card.CardPrototype.Name == cardToFind)
+                        if (card.Model.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasBlight = true;
                             break;

@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
             int index = 0;
             foreach (WorkingCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                prefab = card.CardPrototype.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _spellCardPrefab;
+                prefab = card.Prototype.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _spellCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
                 _mulliganCardItems.Add(item);
                 item.eventHandler.DragBegan += DragBeganEventHandler;
@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
 
             eventHandler = selfObject.transform.GetComponent<OnBehaviourHandler>();
 
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     _cardElement = new UnitCardElement(selfObject);

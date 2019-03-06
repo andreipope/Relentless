@@ -731,8 +731,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(pvpTestContext.GetCurrentPlayer().CardsInHand.Select(card => card.CardPrototype.MouldId == 32));
-                    Assert.IsNotNull(pvpTestContext.GetOpponentPlayer().CardsInHand.Select(card => card.CardPrototype.MouldId == 32));
+                    Assert.IsNotNull(pvpTestContext.GetCurrentPlayer().CardsInHand.Select(card => card.Prototype.MouldId == 32));
+                    Assert.IsNotNull(pvpTestContext.GetOpponentPlayer().CardsInHand.Select(card => card.Prototype.MouldId == 32));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -2066,8 +2066,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     WorkingCard playerCardInHand = TestHelper.BattlegroundController.GetWorkingCardByInstanceId(playerWhizparId);
                     WorkingCard opponentCardInHand = TestHelper.BattlegroundController.GetWorkingCardByInstanceId(opponentWhizpar2Id);
 
-                    Assert.AreEqual(playerCardInHand.CardPrototype.Cost - 1, playerCardInHand.InstanceCard.Cost);
-                    Assert.AreEqual(opponentCardInHand.CardPrototype.Cost - 1, playerCardInHand.InstanceCard.Cost);
+                    Assert.AreEqual(playerCardInHand.Prototype.Cost - 1, playerCardInHand.InstanceCard.Cost);
+                    Assert.AreEqual(opponentCardInHand.Prototype.Cost - 1, playerCardInHand.InstanceCard.Cost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

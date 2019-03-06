@@ -1116,14 +1116,14 @@ namespace Loom.ZombieBattleground.Test
 
             if (!skipEntryAbilities)
             {
-                if (card.CardPrototype.Abilities != null && card.CardPrototype.Abilities.Count > 0 && !HasChoosableAbilities(card.CardPrototype))
+                if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0 && !HasChoosableAbilities(card.Prototype))
                 {
                     needTargetForAbility =
-                        card.CardPrototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        card.Prototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
                 }
             }
 
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
@@ -1203,7 +1203,7 @@ namespace Loom.ZombieBattleground.Test
                     break;
             }
 
-            _testBroker.GetPlayer(_player).CurrentGoo -= card.CardPrototype.Cost;
+            _testBroker.GetPlayer(_player).CurrentGoo -= card.Prototype.Cost;
 
             await new WaitForUpdate();
         }
@@ -1230,7 +1230,7 @@ namespace Loom.ZombieBattleground.Test
             if (workingCard == null || card == null)
                 return;
 
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                 {
@@ -1258,18 +1258,18 @@ namespace Loom.ZombieBattleground.Test
                         {
                             bool createTargetArrow = false;
 
-                            if (card.CardPrototype.Abilities != null && card.CardPrototype.Abilities.Count > 0)
+                            if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
                             {
                                 createTargetArrow =
                                     _abilitiesController.IsAbilityCanActivateTargetAtStart(
-                                        card.CardPrototype.Abilities[0]);
+                                        card.Prototype.Abilities[0]);
                             }
 
                             if (target != null)
                             {
                                 Action callback = () =>
                                 {
-                                    _abilitiesController.CallAbility(card.CardPrototype,
+                                    _abilitiesController.CallAbility(card.Prototype,
                                         null,
                                         workingCard,
                                         Enumerators.CardKind.CREATURE,
@@ -1287,7 +1287,7 @@ namespace Loom.ZombieBattleground.Test
                             }
                             else
                             {
-                                _abilitiesController.CallAbility(card.CardPrototype,
+                                _abilitiesController.CallAbility(card.Prototype,
                                     null,
                                     workingCard,
                                     Enumerators.CardKind.CREATURE,
@@ -1307,7 +1307,7 @@ namespace Loom.ZombieBattleground.Test
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                    CurrentSpellCard.Init(workingCard.CardPrototype);
+                    CurrentSpellCard.Init(workingCard.Prototype);
                     CurrentSpellCard.SetHighlightingEnabled(false);
 
                     BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
@@ -1316,17 +1316,17 @@ namespace Loom.ZombieBattleground.Test
 
                     bool createTargetArrow = false;
 
-                    if (card.CardPrototype.Abilities != null && card.CardPrototype.Abilities.Count > 0)
+                    if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
                     {
                         createTargetArrow =
-                            _abilitiesController.IsAbilityCanActivateTargetAtStart(card.CardPrototype.Abilities[0]);
+                            _abilitiesController.IsAbilityCanActivateTargetAtStart(card.Prototype.Abilities[0]);
                     }
 
                     if (target != null)
                     {
                         Action callback = () =>
                         {
-                            _abilitiesController.CallAbility(card.CardPrototype,
+                            _abilitiesController.CallAbility(card.Prototype,
                                 null,
                                 workingCard,
                                 Enumerators.CardKind.SPELL,
@@ -1345,7 +1345,7 @@ namespace Loom.ZombieBattleground.Test
                     }
                     else
                     {
-                        _abilitiesController.CallAbility(card.CardPrototype,
+                        _abilitiesController.CallAbility(card.Prototype,
                             null,
                             workingCard,
                             Enumerators.CardKind.SPELL,

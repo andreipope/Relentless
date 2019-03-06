@@ -44,11 +44,11 @@ namespace Loom.ZombieBattleground
                 return;
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
-                .FindAll(x => x.CardPrototype.CardSetType == SetType && x != MainWorkingCard).Count * Value;
+                .FindAll(x => x.Prototype.CardSetType == SetType && x != MainWorkingCard).Count * Value;
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
                 MainWorkingCard,
-                MainWorkingCard.CardPrototype.Cost + gooCost,
+                MainWorkingCard.Prototype.Cost + gooCost,
                 BoardCard
             );
         }

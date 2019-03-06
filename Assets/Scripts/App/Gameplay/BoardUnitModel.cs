@@ -281,8 +281,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.REANIMATE_UNIT,
                         this,
-                        Card.CardPrototype.CardKind,
-                        Card.CardPrototype,
+                        Card.Prototype.CardKind,
+                        Card.Prototype,
                         OwnerPlayer
                         );
                     break;
@@ -290,8 +290,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.CardPrototype.CardKind,
-                        Card.CardPrototype,
+                        Card.Prototype.CardKind,
+                        Card.Prototype,
                         OwnerPlayer
                         );
                     break;
@@ -433,7 +433,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            InitialUnitType = Card.CardPrototype.CardType;
+            InitialUnitType = Card.Prototype.CardType;
 
             CardTypeChanged?.Invoke(InitialUnitType);
         }
@@ -469,8 +469,8 @@ namespace Loom.ZombieBattleground
         {
             Card = card;
 
-            CurrentDamage = card.CardPrototype.Damage;
-            CurrentHp = card.CardPrototype.Health;
+            CurrentDamage = card.Prototype.Damage;
+            CurrentHp = card.Prototype.Health;
 
             card.InstanceCard.Damage = CurrentDamage;
             card.InstanceCard.Health = CurrentHp;
@@ -481,7 +481,7 @@ namespace Loom.ZombieBattleground
             InitialDamage = CurrentDamage;
             InitialHp = CurrentHp;
 
-            InitialUnitType = Card.CardPrototype.CardType;
+            InitialUnitType = Card.Prototype.CardType;
 
             ClearUnitTypeEffects();
 
@@ -501,9 +501,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (Card.CardPrototype.Abilities != null)
+            if (Card.Prototype.Abilities != null)
             {
-                foreach (AbilityData ability in Card.CardPrototype.Abilities)
+                foreach (AbilityData ability in Card.Prototype.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescriptionType);
 
