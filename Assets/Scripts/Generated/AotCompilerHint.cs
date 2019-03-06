@@ -70,6 +70,8 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAdditionalDamageToHeavyInAttack>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityAttackOverlord>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityChangeStat>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityDealDamageToThisAndAdjacentUnits>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityDevourZombieAndCombineStats>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityInstance>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityRage>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.CardAbilityPriorityAttack>();
@@ -245,14 +247,16 @@ namespace Loom.ZombieBattleground
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAdditionalDamageToHeavyInAttackOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityAttackOverlordOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityChangeStatOutcome>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityDevourZombieAndCombineStatsOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityPriorityAttackOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityRageOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReanimateOutcome>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes.Types.NewCardInstance>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes>();
-            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnes.Types.NewCardInstance>>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome.Types.NewCardInstance>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.Google.Protobuf.Collections.RepeatedField<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityReplaceUnitsWithTypeOnStrongerOnesOutcome.Types.NewCardInstance>>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAttackOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome>();
+            Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.Types.CardAbilityDealDamageToThisAndAdjacentUnitsOutcome>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionOutcome.OutcomeOneofCase>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionRequest>();
             Loom.Google.Protobuf.Reflection.FileDescriptor.ForceReflectionInitialization<global::Loom.ZombieBattleground.Protobuf.PlayerActionResponse>();

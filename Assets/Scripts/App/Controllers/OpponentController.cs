@@ -511,7 +511,7 @@ namespace Loom.ZombieBattleground
                 {
                     Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
                     Log.Error("", exception);
-                    Helpers.ExceptionReporter.LogException(exception);
+                    Helpers.ExceptionReporter.LogException(Log, exception);
                     return;
                 }
 

@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.LogException(Log, exception);
                 Debug.LogWarning(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
