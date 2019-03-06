@@ -421,7 +421,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitHpChangedHandler()
+        protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
         }
 
@@ -498,7 +498,7 @@ namespace Loom.ZombieBattleground
 
         protected int GetAbilityIndex()
         {
-            int index = MainWorkingCard.CardPrototype.Abilities.IndexOf(AbilityData);
+            int index = MainWorkingCard.Prototype.Abilities.IndexOf(AbilityData);
             if (index == -1)
                 throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
 

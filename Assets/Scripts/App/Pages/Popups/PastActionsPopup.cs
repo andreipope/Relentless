@@ -166,8 +166,8 @@ namespace Loom.ZombieBattleground
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unitBoardCard.Damage;
-                    unitCardElement.Health = unitBoardCard.Health;
+                    unitCardElement.Damage = unitBoardCard.BoardUnitModel.CurrentDamage;
+                    unitCardElement.Health = unitBoardCard.BoardUnitModel.CurrentHp;
                     break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
@@ -264,11 +264,11 @@ namespace Loom.ZombieBattleground
                     case BoardCardView card when card is SpellBoardCard:
                         _rightBlockCardSpellElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCardView card when card is UnitBoardCard:
-                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                    case BoardCardView card when card is UnitBoardCard boardCard:
+                        _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = (card as UnitBoardCard).Damage;
-                        unitCardElement.Health = (card as UnitBoardCard).Health;
+                        unitCardElement.Damage = boardCard.BoardUnitModel.CurrentDamage;
+                        unitCardElement.Health = boardCard.BoardUnitModel.CurrentHp;
                         break;
                     case HandBoardCard card:
                         _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -283,7 +283,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case WorkingCard workingCard:
-                        if(workingCard.CardPrototype.CardKind == Enumerators.CardKind.SPELL)
+                        if(workingCard.Prototype.CardKind == Enumerators.CardKind.SPELL)
                         {
                             _rightBlockCardSpellElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
@@ -414,7 +414,7 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.CardPrototype;
+                IReadOnlyCard libraryCard = workingCard.Prototype;
 
                 _titleText.text = libraryCard.Name;
                 _bodyText.text = libraryCard.Description;
@@ -545,7 +545,7 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.CardPrototype;
+                IReadOnlyCard libraryCard = workingCard.Prototype;
 
                 _titleText.text = libraryCard.Name;
                 _bodyText.text = libraryCard.Description;
@@ -764,7 +764,7 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.CardPrototype;
+                IReadOnlyCard libraryCard = workingCard.Prototype;
 
                 _titleText.text = libraryCard.Name;
                 _bodyText.text = libraryCard.Description;
@@ -862,7 +862,7 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.CardPrototype;
+                IReadOnlyCard libraryCard = workingCard.Prototype;
 
                 _titleText.text = libraryCard.Name;
                 _bodyText.text = libraryCard.Description;

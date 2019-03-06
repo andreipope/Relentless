@@ -669,7 +669,7 @@ namespace Loom.ZombieBattleground
         private void CreateCardVFX(BoardCardView boardCard)
         {
             GameObject vfxPrefab;
-            switch(boardCard.BoardUnitModel.Card.CardPrototype.CardRank)
+            switch(boardCard.BoardUnitModel.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;
@@ -1048,7 +1048,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
         
-            boardCard.Init(card);
+            boardCard.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
             boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;

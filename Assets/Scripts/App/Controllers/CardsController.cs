@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground
 
         public void HoverPlayerCardOnBattleground(Player player, BoardCardView card, HandBoardCard handCard)
         {
-            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.CardPrototype;
+            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
             if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
         {
             if (card.CanBePlayed(card.BoardUnitModel.Card.Owner))
             {
-                IReadOnlyCard libraryCard = card.BoardUnitModel.Card.CardPrototype;
+                IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
@@ -634,8 +634,8 @@ namespace Loom.ZombieBattleground
                                                 if (card is UnitBoardCard)
                                                 {
                                                     UnitBoardCard unitBoardCard = card as UnitBoardCard;
-                                                    unitBoardCard.Damage = boardUnitView.Model.MaxCurrentDamage;
-                                                    unitBoardCard.Health = boardUnitView.Model.MaxCurrentHp;
+                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Attack = boardUnitView.Model.MaxCurrentDamage;
+                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentHp;
                                                 }
                                             }
                                             else
@@ -701,7 +701,7 @@ namespace Loom.ZombieBattleground
 
         public void SummonUnitFromHand(Player player, BoardCardView card, bool activateAbility)
         {
-            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.CardPrototype;
+            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
 
             card.Transform.DORotate(Vector3.zero, .1f);
 
@@ -889,7 +889,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCard;
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
@@ -967,33 +967,12 @@ namespace Loom.ZombieBattleground
                 boardCard.BoardUnitModel.Card.InstanceCard.Cost = value;
                 boardCard.UpdateCardCost();
 
-                bool isActive = boardCard.BoardUnitModel.Card.InstanceCard.Cost < boardCard.BoardUnitModel.Card.CardPrototype.Cost;
+                bool isActive = boardCard.BoardUnitModel.Card.InstanceCard.Cost < boardCard.BoardUnitModel.Card.Prototype.Cost;
                 boardCard.costHighlightObject.SetActive(isActive);
             }
             else
             {
                 card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
-                card.CardPrototype = new Card(
-                    card.CardPrototype.MouldId,
-                    card.CardPrototype.Name,
-                    card.CardPrototype.Cost,
-                    card.CardPrototype.Description,
-                    card.CardPrototype.FlavorText,
-                    card.CardPrototype.Picture,
-                    card.CardPrototype.Damage,
-                    card.CardPrototype.Health,
-                    card.CardPrototype.CardSetType,
-                    card.CardPrototype.Frame,
-                    card.CardPrototype.CardKind,
-                    card.CardPrototype.CardRank,
-                    card.CardPrototype.CardType,
-                    card.CardPrototype.Abilities
-                        .Select(a => new AbilityData(a))
-                        .ToList(),
-                    new CardViewInfo(card.CardPrototype.CardViewInfo),
-                    card.CardPrototype.UniqueAnimationType,
-                    card.CardPrototype.HiddenCardSetType
-                );
             }
         }
 
@@ -1077,7 +1056,7 @@ namespace Loom.ZombieBattleground
             Player unitOwner = unit.Model.OwnerPlayer;
             WorkingCard returningCard = unit.Model.Card;
 
-            returningCard.InstanceCard.Cost = returningCard.CardPrototype.Cost;
+            returningCard.InstanceCard.Cost = returningCard.Prototype.Cost;
 
             Vector3 unitPosition = unit.Transform.position;
 
@@ -1128,7 +1107,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCard;
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CreatureCardViewPrefab);
@@ -1358,7 +1337,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
-            string prefabName = card.CardPrototype.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
+            string prefabName = card.Prototype.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
 
             SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName),
                                             parent,
@@ -1374,31 +1353,31 @@ namespace Loom.ZombieBattleground
             _behaviourHandler = SelfObject.GetComponent<OnBehaviourHandler>();
             _behaviourHandler.MouseUpTriggered += MouseUpTriggered;
 
-            string setName = card.CardPrototype.CardSetType.ToString();
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.CardPrototype.CardRank);
+            string setName = card.Prototype.CardSetType.ToString();
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.Prototype.CardRank);
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-            if (!string.IsNullOrEmpty(card.CardPrototype.Frame))
+            if (!string.IsNullOrEmpty(card.Prototype.Frame))
             {
-                frameName = "Images/Cards/Frames/" + card.CardPrototype.Frame;
+                frameName = "Images/Cards/Frames/" + card.Prototype.Frame;
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.CardPrototype.Picture.ToLowerInvariant()}");
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.Prototype.Picture.ToLowerInvariant()}");
 
-            _titleText.text = card.CardPrototype.Name;
+            _titleText.text = card.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;
             _gooCostText.text = card.InstanceCard.Cost.ToString();
 
-            if (card.CardPrototype.CardKind == Enumerators.CardKind.CREATURE)
+            if (card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
             {
                 _unitType = SelfObject.transform.Find("Image_Type").GetComponent<SpriteRenderer>();
 
                 _attackText = SelfObject.transform.Find("Text_Attack").GetComponent<TextMeshPro>();
                 _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
 
-                _attackText.text = card.CardPrototype.Damage.ToString();
-                _defenseText.text = card.CardPrototype.Health.ToString();
+                _attackText.text = card.Prototype.Damage.ToString();
+                _defenseText.text = card.Prototype.Health.ToString();
 
                 _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.InstanceCard.CardType + "_icon"));
             }

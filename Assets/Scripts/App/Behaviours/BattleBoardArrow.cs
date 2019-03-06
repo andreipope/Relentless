@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.CardPrototype.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.CardSetType))
                 return;
 
             if (BlockedUnitStatusTypes == null) 

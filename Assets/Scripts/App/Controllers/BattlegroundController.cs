@@ -628,7 +628,7 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCard;
-            switch (card.CardPrototype.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
@@ -658,8 +658,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView boardUnit:
                     boardCard.DrawTooltipInfoOfUnit(boardUnit);
                     UnitBoardCard boardCardUnit = boardCard as UnitBoardCard;
-                    boardCardUnit.Damage = boardUnit.Model.MaxCurrentDamage;
-                    boardCardUnit.Health = boardUnit.Model.MaxCurrentHp;
+                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
+                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentHp;
                     break;
                 case BoardCardView tooltipCard:
                     boardCard.DrawTooltipInfoOfCard(tooltipCard);

@@ -231,7 +231,7 @@ namespace Loom.ZombieBattleground.Test
 
         public static bool CardNameEqual(string name, WorkingCard card)
         {
-            return CardNameEqual(name, card.CardPrototype.Name);
+            return CardNameEqual(name, card.Prototype.Name);
         }
 
         public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)

@@ -60,12 +60,12 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardCardView> cards = BattlegroundController.PlayerHandCards.FindAll(
                 x => x.BoardUnitModel.Card.InstanceCard.Cost <= Value &&
-                    x.BoardUnitModel.Card.CardPrototype.CardKind == Enumerators.CardKind.CREATURE
+                    x.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE
             );
 
             if (SetType != Enumerators.SetType.NONE)
             {
-                cards = cards.FindAll(x => x.BoardUnitModel.Card.CardPrototype.CardSetType == SetType);
+                cards = cards.FindAll(x => x.BoardUnitModel.Card.Prototype.CardSetType == SetType);
             }
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();

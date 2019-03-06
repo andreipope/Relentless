@@ -25,12 +25,12 @@ namespace Loom.ZombieBattleground
 
         public bool HasUniqueAnimation(WorkingCard card)
         {
-            return card.CardPrototype.UniqueAnimationType != Enumerators.UniqueAnimationType.None;
+            return card.Prototype.UniqueAnimationType != Enumerators.UniqueAnimationType.None;
         }
 
         public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
-            UniqueAnimation animation = GetUniqueAnimationByType(card.CardPrototype.UniqueAnimationType);
+            UniqueAnimation animation = GetUniqueAnimationByType(card.Prototype.UniqueAnimationType);
             animation.Play(boardObject, startGeneralArrivalCallback, endArrivalCallback);
         }
 

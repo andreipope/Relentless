@@ -314,8 +314,9 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
                 }
 
-                int amount = cardData.Amount;
-                boardCard.Init(card, amount);
+                boardCard.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
+                boardCard.SetAmount(cardData.Amount);
+                boardCard.SetShowAmountEnabled(true);
                 boardCard.SetHighlightingEnabled(false);
                 boardCard.Transform.position = CardPositions[i % CardPositions.Count].position;
                 boardCard.Transform.localScale = Vector3.one * 0.32f;
@@ -323,7 +324,7 @@ namespace Loom.ZombieBattleground
 
                 _createdBoardCards.Add(boardCard);
 
-                if (boardCard.BoardUnitModel.Card.CardPrototype.MouldId == _highlightingVFXItem.MouldId)
+                if (boardCard.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }

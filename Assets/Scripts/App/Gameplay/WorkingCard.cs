@@ -8,9 +8,11 @@ namespace Loom.ZombieBattleground
 
         public Player Owner;
 
-        public IReadOnlyCard CardPrototype;
+        public IReadOnlyCard Prototype { get; set; }
 
-        public CardInstanceSpecificData InstanceCard;
+        public CardInstanceSpecificData InstanceCard { get; }
+
+        //public IReadOnlyCardInstanceSpecificData InitialInstanceCard { get; }
 
         public InstanceId InstanceId { get; set; }
 
@@ -24,8 +26,9 @@ namespace Loom.ZombieBattleground
         public WorkingCard(IReadOnlyCard cardPrototype, CardInstanceSpecificData cardInstanceData, Player player, InstanceId? id = null)
         {
             Owner = player;
-            CardPrototype = new Card(cardPrototype);
+            Prototype = new Card(cardPrototype);
             InstanceCard = cardInstanceData;
+            //InitialInstanceCard = new CardInstanceSpecificData(InstanceCard);
 
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
@@ -46,7 +49,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"{{InstanceId: {InstanceId}, Name: {CardPrototype.Name}}}";
+            return $"{{InstanceId: {InstanceId}, Name: {Prototype.Name}}}";
         }
     }
 

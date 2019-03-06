@@ -67,9 +67,9 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(_reanimatedUnit);
         }
 
-        protected override void UnitHpChangedHandler()
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            base.UnitHpChangedHandler();
+            base.UnitHpChangedHandler(oldValue, newValue);
 
             if (AbilityUnitOwner.CurrentHp == 0 && !AbilityUnitOwner.IsReanimated)
             {

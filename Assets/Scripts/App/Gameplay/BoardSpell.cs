@@ -10,8 +10,6 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform;
 
-        public BoardArrow TargetingArrow;
-
         public WorkingCard Card;
 
         private readonly OnBehaviourHandler _eventHandler;
@@ -35,12 +33,6 @@ namespace Loom.ZombieBattleground
 
         private void DestroyingHandler(GameObject obj)
         {
-            if (TargetingArrow != null)
-            {
-                Object.Destroy(TargetingArrow.gameObject);
-                TargetingArrow = null;
-            }
-
             Used?.Invoke();
         }
     }
