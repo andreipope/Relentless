@@ -524,50 +524,50 @@ namespace Loom.ZombieBattleground
 
         public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
         {
-            BoardUnitView boardCard = PlayerBoardCards.FirstOrDefault(x => x.Model.Card == card);
-            if (boardCard == null)
+            BoardUnitView boardCardView = PlayerBoardCards.FirstOrDefault(x => x.Model.Card == card);
+            if (boardCardView == null)
                 return;
 
-            if (!boardCard.WasDestroyed)
+            if (!boardCardView.WasDestroyed)
             {
-                boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
-                boardCard.Transform.localPosition.y, -0.2f);
+                boardCardView.Transform.localPosition = new Vector3(boardCardView.Transform.localPosition.x,
+                boardCardView.Transform.localPosition.y, -0.2f);
             }
 
-            PlayerBoardCards.Remove(boardCard);
-            PlayerGraveyardCards.Insert(ItemPosition.End, boardCard);
+            PlayerBoardCards.Remove(boardCardView);
+            PlayerGraveyardCards.Insert(ItemPosition.End, boardCardView);
 
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.StopSleepingParticles();
+            boardCardView.SetHighlightingEnabled(false);
+            boardCardView.StopSleepingParticles();
 
-            if (!boardCard.WasDestroyed)
+            if (!boardCardView.WasDestroyed)
             {
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
-                Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
+                boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                Object.Destroy(boardCardView.GameObject.GetComponent<BoxCollider2D>());
             }
         }
 
         public void RemoveOpponentCardFromBoardToGraveyard(WorkingCard card)
         {
             Vector3 graveyardPos = OpponentGraveyardObject.transform.position + new Vector3(0.0f, -0.2f, 0.0f);
-            BoardUnitView boardCard = OpponentBoardCards.FirstOrDefault(x => x.Model.Card == card);
-            if (boardCard != null)
+            BoardUnitView boardCardView = OpponentBoardCards.FirstOrDefault(x => x.Model.Card == card);
+            if (boardCardView != null)
             {
-                if (!boardCard.WasDestroyed)
+                if (!boardCardView.WasDestroyed)
                 {
-                    boardCard.Transform.localPosition = new Vector3(boardCard.Transform.localPosition.x,
-                        boardCard.Transform.localPosition.y, -0.2f);
+                    boardCardView.Transform.localPosition = new Vector3(boardCardView.Transform.localPosition.x,
+                        boardCardView.Transform.localPosition.y, -0.2f);
                 }
 
-                OpponentBoardCards.Remove(boardCard);
+                OpponentBoardCards.Remove(boardCardView);
 
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.StopSleepingParticles();
+                boardCardView.SetHighlightingEnabled(false);
+                boardCardView.StopSleepingParticles();
 
-                if (!boardCard.WasDestroyed)
+                if (!boardCardView.WasDestroyed)
                 {
-                    boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
-                    Object.Destroy(boardCard.GameObject.GetComponent<BoxCollider2D>());
+                    boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
+                    Object.Destroy(boardCardView.GameObject.GetComponent<BoxCollider2D>());
                 }
             }
             else if (_aiController.CurrentSpellCard != null && card == _aiController.CurrentSpellCard.BoardUnitModel.Card)
@@ -627,42 +627,42 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
-            BoardCardView boardCard;
+            BoardCardView boardCardView;
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCard = new UnitBoardCard(CurrentBoardCard);
+                    boardCardView = new UnitBoardCard(CurrentBoardCard);
                     break;
                 case Enumerators.CardKind.SPELL:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCard = new SpellBoardCard(CurrentBoardCard);
+                    boardCardView = new SpellBoardCard(CurrentBoardCard);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(new BoardUnitModel(card));
+            boardCardView.Init(new BoardUnitModel(card));
             if (highlight)
             {
-                highlight = boardCard.CanBePlayed(card.Owner) && boardCard.CanBeBuyed(card.Owner);
+                highlight = boardCardView.CanBePlayed(card.Owner) && boardCardView.CanBeBuyed(card.Owner);
             }
 
-            boardCard.SetHighlightingEnabled(highlight);
-            boardCard.IsPreview = true;
+            boardCardView.SetHighlightingEnabled(highlight);
+            boardCardView.IsPreview = true;
 
-            InternalTools.SetLayerRecursively(boardCard.GameObject, 0);
+            InternalTools.SetLayerRecursively(boardCardView.GameObject, 0);
 
             switch (target)
             {
                 case BoardUnitView boardUnit:
-                    boardCard.DrawTooltipInfoOfUnit(boardUnit);
-                    UnitBoardCard boardCardUnit = boardCard as UnitBoardCard;
+                    boardCardView.DrawTooltipInfoOfUnit(boardUnit);
+                    UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
                     boardCardUnit.BoardUnitModel.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
                     boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentHp;
                     break;
                 case BoardCardView tooltipCard:
-                    boardCard.DrawTooltipInfoOfCard(tooltipCard);
+                    boardCardView.DrawTooltipInfoOfCard(tooltipCard);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -1012,9 +1012,9 @@ namespace Loom.ZombieBattleground
             WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
-                BoardCardView boardCard = CreateCustomHandBoardCard(card);
-                Object.Destroy(boardCard.GameObject);
-                return boardCard.HandBoardCard;
+                BoardCardView boardCardView = CreateCustomHandBoardCard(card);
+                Object.Destroy(boardCardView.GameObject);
+                return boardCardView.HandBoardCard;
             }
 
             return null;
@@ -1128,16 +1128,16 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView CreateCustomHandBoardCard(WorkingCard card)
         {
-            BoardCardView boardCard = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
-            boardCard.Init(new BoardUnitModel(card));
-            boardCard.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
+            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab));
+            boardCardView.Init(new BoardUnitModel(card));
+            boardCardView.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
-            boardCard.GameObject.transform.localScale = Vector3.one * .3f;
-            boardCard.SetHighlightingEnabled(false);
+            boardCardView.GameObject.transform.localScale = Vector3.one * .3f;
+            boardCardView.SetHighlightingEnabled(false);
 
-            boardCard.HandBoardCard = new HandBoardCard(boardCard.GameObject, boardCard);
+            boardCardView.HandBoardCard = new HandBoardCard(boardCardView.GameObject, boardCardView);
 
-            return boardCard;
+            return boardCardView;
         }
 
         private static void ValidateGameState(GameState pvpControlGameState)

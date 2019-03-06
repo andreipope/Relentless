@@ -38,11 +38,11 @@ public class HandBoardCard : OwnableBoardObject
 
     private bool _canceledPlay;
 
-    public HandBoardCard(GameObject selfObject, BoardCardView boardCard)
+    public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
         GameObject = selfObject;
 
-        CardView = boardCard;
+        CardView = boardCardView;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();

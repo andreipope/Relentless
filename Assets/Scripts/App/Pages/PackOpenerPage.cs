@@ -389,11 +389,11 @@ namespace Loom.ZombieBattleground
             for( int i=0; i<cards.Count; ++i)
             {
                 Card card = cards[i];
-                BoardCardView boardCard = CreateCard(card, Vector3.up * 12f);
-                boardCard.Transform.parent = _cardPositions[i];
-                boardCard.Transform.localPosition = Vector3.zero;
-                boardCard.Transform.localRotation = Quaternion.identity;
-                _createdBoardCards.Add(boardCard);
+                BoardCardView boardCardView = CreateCard(card, Vector3.up * 12f);
+                boardCardView.Transform.parent = _cardPositions[i];
+                boardCardView.Transform.localPosition = Vector3.zero;
+                boardCardView.Transform.localRotation = Quaternion.identity;
+                _createdBoardCards.Add(boardCardView);
             }
         }
         
@@ -667,10 +667,10 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private void CreateCardVFX(BoardCardView boardCard)
+        private void CreateCardVFX(BoardCardView boardCardView)
         {
             GameObject vfxPrefab;
-            switch(boardCard.BoardUnitModel.Card.Prototype.CardRank)
+            switch(boardCardView.BoardUnitModel.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;
@@ -689,7 +689,7 @@ namespace Loom.ZombieBattleground
             }
             
             GameObject vfxParent = new GameObject("VFX");
-            vfxParent.transform.parent = boardCard.GameObject.transform;
+            vfxParent.transform.parent = boardCardView.GameObject.transform;
             vfxParent.transform.localPosition = Vector3.zero;
             vfxParent.transform.localScale = Vector3.one;            
             
@@ -744,11 +744,11 @@ namespace Loom.ZombieBattleground
                 .OnComplete(
                 () =>
                 {
-                    foreach(BoardCardView boardCard in _createdBoardCards)
+                    foreach(BoardCardView boardCardView in _createdBoardCards)
                     {
-                        if( boardCard.Transform == cardFace)
+                        if( boardCardView.Transform == cardFace)
                         {
-                            CreateCardVFX(boardCard);
+                            CreateCardVFX(boardCardView);
                             break;
                         }
                     }
@@ -1034,29 +1034,29 @@ namespace Loom.ZombieBattleground
         private BoardCardView CreateCard(IReadOnlyCard card, Vector3 worldPos)
         {        
             GameObject go;
-            BoardCardView boardCard;
+            BoardCardView boardCardView;
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go);
                     break;
                 default:                
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
         
-            boardCard.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.Transform.position = worldPos;
-            boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+            boardCardView.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
+            boardCardView.SetHighlightingEnabled(false);
+            boardCardView.Transform.position = worldPos;
+            boardCardView.Transform.localScale = Vector3.one * 0.32f * 0.72f;
+            boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
+            boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
-            return boardCard;        
+            return boardCardView;
         }
 
 #endregion

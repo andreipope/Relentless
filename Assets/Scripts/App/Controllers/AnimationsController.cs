@@ -83,17 +83,17 @@ namespace Loom.ZombieBattleground
                 });
         }
 
-        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCard)
+        public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCardView)
         {
-            boardCard.DrawCardFromOpponentDeckToPlayer();
+            boardCardView.DrawCardFromOpponentDeckToPlayer();
         }
 
-        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCard)
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCardView)
         {
-            Animator animator = boardCard.GameObject.GetComponent<Animator>();
+            Animator animator = boardCardView.GameObject.GetComponent<Animator>();
 
-            boardCard.Transform.localScale = Vector3.zero;
-            boardCard.Transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
+            boardCardView.Transform.localScale = Vector3.zero;
+            boardCardView.Transform.DOScale(new Vector3(0.9f, 0.9f, 0.9f), 0.15f);
 
             animator.enabled = true;
             animator.StopPlayback();
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                 {
                     animator.enabled = false;
 
-                    _battlegroundController.OpponentHandCards.Insert(ItemPosition.End, boardCard);
+                    _battlegroundController.OpponentHandCards.Insert(ItemPosition.End, boardCardView);
 
                     _battlegroundController.UpdatePositionOfCardsInOpponentHand(true);
                 },

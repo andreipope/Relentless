@@ -317,34 +317,34 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView AddCardToHand(WorkingCard card, bool silent = false)
         {
-            BoardCardView boardCard = CreateBoardCard(card);
+            BoardCardView boardCardView = CreateBoardCard(card);
 
             if (_battlegroundController.CurrentTurn == 0)
             {
-                boardCard.SetDefaultAnimation();
+                boardCardView.SetDefaultAnimation();
             }
 
-            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, boardCard);
+            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, boardCardView);
 
             if (silent)
             {
-                boardCard.HandBoardCard.Enabled = false;
+                boardCardView.HandBoardCard.Enabled = false;
 
                 _timerManager.AddTimer(
                     x =>
                     {
-                        boardCard.HandBoardCard.Enabled = true;
-                        boardCard.HandBoardCard.CheckStatusOfHighlight();
+                        boardCardView.HandBoardCard.Enabled = true;
+                        boardCardView.HandBoardCard.CheckStatusOfHighlight();
                     },
                     null,
                     2f);
             }
             else
             {
-                boardCard.HandBoardCard.CheckStatusOfHighlight();
+                boardCardView.HandBoardCard.CheckStatusOfHighlight();
             }
 
-            return boardCard;
+            return boardCardView;
         }
 
         public OpponentHandCard AddCardToOpponentHand(WorkingCard card, bool silent = false)
@@ -888,27 +888,27 @@ namespace Loom.ZombieBattleground
         public void DrawCardInfo(WorkingCard card)
         {
             GameObject go;
-            BoardCardView boardCard;
+            BoardCardView boardCardView;
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
-                    boardCard = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
-                    boardCard = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(new BoardUnitModel(card));
+            boardCardView.Init(new BoardUnitModel(card));
             go.transform.position = new Vector3(-6, 0, 0);
             go.transform.localScale = Vector3.one * .3f;
-            boardCard.SetHighlightingEnabled(false);
+            boardCardView.SetHighlightingEnabled(false);
 
             Object.Destroy(go, 2f);
         }
@@ -940,10 +940,10 @@ namespace Loom.ZombieBattleground
 
             if (player.IsLocalPlayer)
             {
-                BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
+                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
 
-                boardCard.BoardUnitModel.Card.InstanceCard.Cost += value;
-                boardCard.UpdateCardCost();
+                boardCardView.BoardUnitModel.Card.InstanceCard.Cost += value;
+                boardCardView.UpdateCardCost();
             }
             else
             {
@@ -955,20 +955,20 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void SetGooCostOfCardInHand(Player player, WorkingCard card, int value, BoardCardView boardCard = null)
+        public void SetGooCostOfCardInHand(Player player, WorkingCard card, int value, BoardCardView boardCardView = null)
         {
             if (player.IsLocalPlayer)
             {
-                if (boardCard == null)
+                if (boardCardView == null)
                 {
-                    boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
+                    boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
                 }
 
-                boardCard.BoardUnitModel.Card.InstanceCard.Cost = value;
-                boardCard.UpdateCardCost();
+                boardCardView.BoardUnitModel.Card.InstanceCard.Cost = value;
+                boardCardView.UpdateCardCost();
 
-                bool isActive = boardCard.BoardUnitModel.Card.InstanceCard.Cost < boardCard.BoardUnitModel.Card.Prototype.Cost;
-                boardCard.costHighlightObject.SetActive(isActive);
+                bool isActive = boardCardView.BoardUnitModel.Card.InstanceCard.Cost < boardCardView.BoardUnitModel.Card.Prototype.Cost;
+                boardCardView.costHighlightObject.SetActive(isActive);
             }
             else
             {
@@ -1021,12 +1021,12 @@ namespace Loom.ZombieBattleground
 
             if (player.IsLocalPlayer)
             {
-                BoardCardView boardCard = CreateBoardCard(workingCard);
+                BoardCardView boardCardView = CreateBoardCard(workingCard);
 
-                boardCard.Transform.position = Vector3.zero;
-                boardCard.Transform.localScale = Vector3.zero;
+                boardCardView.Transform.position = Vector3.zero;
+                boardCardView.Transform.localScale = Vector3.zero;
 
-                boardCard.Transform.DOScale(Vector3.one * .3f, animationDuration);
+                boardCardView.Transform.DOScale(Vector3.one * .3f, animationDuration);
 
                 InternalTools.DoActionDelayed(() =>
                 {
@@ -1035,7 +1035,7 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, boardCard);
+                    _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, boardCardView);
                     player.CardsInHand.Insert(ItemPosition.End, workingCard);
 
                     _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
@@ -1127,32 +1127,32 @@ namespace Loom.ZombieBattleground
         private BoardCardView CreateBoardCard(WorkingCard card)
         {
             GameObject go;
-            BoardCardView boardCard;
+            BoardCardView boardCardView;
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CreatureCardViewPrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(ItemCardViewPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
 
-            boardCard.Init(new BoardUnitModel(card));
+            boardCardView.Init(new BoardUnitModel(card));
 
-            HandBoardCard handCard = new HandBoardCard(go, boardCard);
+            HandBoardCard handCard = new HandBoardCard(go, boardCardView);
             handCard.BoardZone = _playerBoard;
-            boardCard.HandBoardCard = handCard;
+            boardCardView.HandBoardCard = handCard;
             handCard.CheckStatusOfHighlight();
-            boardCard.Transform.localScale = Vector3.one * .3f;
+            boardCardView.Transform.localScale = Vector3.one * .3f;
 
-            _abilitiesController.CallAbilitiesInHand(boardCard, card);
+            _abilitiesController.CallAbilitiesInHand(boardCardView, card);
 
-            return boardCard;
+            return boardCardView;
         }
 
         private void CallCardPlay(BoardCardView card)

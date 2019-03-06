@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground.Test
             WorkingCard workingCard =
                 player
                 .BoardCards
-                .Select(boardCard => boardCard.Model.Card)
+                .Select(boardCardView => boardCardView.Model.Card)
                 .Concat(player.CardsOnBoard)
                 .FirstOrDefault(card => CardNameEqual(name, card));
 

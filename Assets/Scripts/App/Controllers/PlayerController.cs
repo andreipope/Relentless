@@ -429,20 +429,20 @@ namespace Loom.ZombieBattleground
 
         private void CheckColliders(Collider2D collider)
         {
-            BoardCardView boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+            BoardCardView boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
 
-            if (boardCard != null)
+            if (boardCardView != null)
             {
-                UpdateHovering(boardCard);
+                UpdateHovering(boardCardView);
             }
         }
 
-        private void UpdateHovering(BoardCardView boardCard)
+        private void UpdateHovering(BoardCardView boardCardView)
         {
-            if (_hoveringBoardCard != boardCard)
+            if (_hoveringBoardCard != boardCardView)
             {
                 _isHovering = false;
-                _hoveringBoardCard = boardCard;
+                _hoveringBoardCard = boardCardView;
                 _timeHovering = 0;
             }
             else if (!_isHovering)

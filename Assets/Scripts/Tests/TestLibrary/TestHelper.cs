@@ -1128,13 +1128,13 @@ namespace Loom.ZombieBattleground.Test
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCardView boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel.Card == card);
-                        Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
-                        Assert.True(boardCard.CanBePlayed(boardCard.BoardUnitModel.Card.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
+                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel.Card == card);
+                        Assert.NotNull(boardCardView, $"Card {card} not found in local player hand");
+                        Assert.True(boardCardView.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner), "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCard,
-                            boardCard.HandBoardCard,
+                            boardCardView,
+                            boardCardView.HandBoardCard,
                             playCardOnBoard =>
                             {
                                 PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
@@ -1178,11 +1178,11 @@ namespace Loom.ZombieBattleground.Test
 
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCardView boardCard = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == card);
+                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == card);
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCard,
-                            boardCard.HandBoardCard,
+                            boardCardView,
+                            boardCardView.HandBoardCard,
                             playCardOnBoard =>
                             {
                                 //todo: handle abilities here

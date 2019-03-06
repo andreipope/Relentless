@@ -298,32 +298,32 @@ namespace Loom.ZombieBattleground
                     continue;
 
                 GameObject go;
-                BoardCardView boardCard;
+                BoardCardView boardCardView;
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         go = Object.Instantiate(CardCreaturePrefab);
-                        boardCard = new UnitBoardCard(go);
+                        boardCardView = new UnitBoardCard(go);
                         break;
                     case Enumerators.CardKind.SPELL:
                         go = Object.Instantiate(CardItemPrefab);
-                        boardCard = new SpellBoardCard(go);
+                        boardCardView = new SpellBoardCard(go);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
                 }
 
-                boardCard.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
-                boardCard.SetAmount(cardData.Amount);
-                boardCard.SetShowAmountEnabled(true);
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.Transform.position = CardPositions[i % CardPositions.Count].position;
-                boardCard.Transform.localScale = Vector3.one * 0.32f;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+                boardCardView.Init(new BoardUnitModel(new WorkingCard(card, card, null)));
+                boardCardView.SetAmount(cardData.Amount);
+                boardCardView.SetShowAmountEnabled(true);
+                boardCardView.SetHighlightingEnabled(false);
+                boardCardView.Transform.position = CardPositions[i % CardPositions.Count].position;
+                boardCardView.Transform.localScale = Vector3.one * 0.32f;
+                boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
 
-                _createdBoardCards.Add(boardCard);
+                _createdBoardCards.Add(boardCardView);
 
-                if (boardCard.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
+                if (boardCardView.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }
