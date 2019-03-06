@@ -1170,6 +1170,8 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            deckToSave.Name = newName;
+
             ProcessEditDeck(deckToSave);
         }
         
