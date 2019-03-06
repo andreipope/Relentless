@@ -1307,7 +1307,7 @@ namespace Loom.ZombieBattleground.Test
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                    CurrentSpellCard.Init(workingCard.Prototype);
+                    CurrentSpellCard.Init(new BoardUnitModel(workingCard));
                     CurrentSpellCard.SetHighlightingEnabled(false);
 
                     BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
