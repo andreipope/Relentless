@@ -98,11 +98,21 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                 case "Time":
                     return "text-monospace small";
                 case "#":
-                    return "text-monospace small";
+                    return "text-monospace small text-center";
                 case "Logger":
                     return "item-logger";
                 default:
                     return base.GetLogItemCellClass(patternConverter, loggingEvent);
+            }
+        }
+
+        protected override string GetLogItemHeaderCellClass(PatternConverter patternConverter)
+        {
+            switch (GetPatternConverterName(patternConverter)) {
+                case "#":
+                    return "text-center";
+                default:
+                    return base.GetLogItemHeaderCellClass(patternConverter);
             }
         }
 
