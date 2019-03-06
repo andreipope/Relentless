@@ -136,42 +136,6 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
 
-#if UNITY_EDITOR
-            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
-#endif
-
-            Init(boardUnitModel);
-        }
-
-        public SpriteRenderer PictureSprite { get; protected set; }
-
-        public ParticleSystem RemoveCardParticle { get; protected set; }
-
-        public Transform Transform => GameObject.transform;
-
-        public GameObject GameObject { get; }
-
-        public GameObject costHighlightObject { get; protected set; }
-
-        public BoardUnitModel BoardUnitModel { get; private set; }
-
-        public HandBoardCard HandBoardCard { get; set; }
-
-        public void SetAmount(int amount)
-        {
-            AmountText.text = amount.ToString();
-        }
-
-        public void SetShowAmountEnabled(bool show)
-        {
-            AmountText.transform.parent.gameObject.SetActive(show);
-            AmountTextForArmy.transform.parent.gameObject.SetActive(show);
-        }
-
-        public int FuturePositionOnBoard = 0;
-
-        protected virtual void Init(BoardUnitModel boardUnitModel)
-        {
             BoardUnitModel = boardUnitModel;
 
             NameText.text = BoardUnitModel.Card.Prototype.Name;
@@ -217,7 +181,38 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
             }
+
+#if UNITY_EDITOR
+            MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
+#endif
         }
+
+        public SpriteRenderer PictureSprite { get; protected set; }
+
+        public ParticleSystem RemoveCardParticle { get; protected set; }
+
+        public Transform Transform => GameObject.transform;
+
+        public GameObject GameObject { get; }
+
+        public GameObject costHighlightObject { get; protected set; }
+
+        public BoardUnitModel BoardUnitModel { get; private set; }
+
+        public HandBoardCard HandBoardCard { get; set; }
+
+        public void SetAmount(int amount)
+        {
+            AmountText.text = amount.ToString();
+        }
+
+        public void SetShowAmountEnabled(bool show)
+        {
+            AmountText.transform.parent.gameObject.SetActive(show);
+            AmountTextForArmy.transform.parent.gameObject.SetActive(show);
+        }
+
+        public int FuturePositionOnBoard = 0;
 
         public void UpdateCardCost()
         {

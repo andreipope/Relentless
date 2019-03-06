@@ -19,11 +19,6 @@ namespace Loom.ZombieBattleground
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
             DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
             TypeSprite = selfObject.transform.Find("TypeIcon").GetComponent<SpriteRenderer>();
-        }
-
-        protected override void Init(BoardUnitModel boardUnitModel)
-        {
-            base.Init(boardUnitModel);
 
             DrawStats();
 
