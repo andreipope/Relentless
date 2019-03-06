@@ -5,6 +5,7 @@ using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
@@ -448,11 +449,11 @@ namespace Loom.ZombieBattleground
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                                 boardUnit.SetActive(false);
 
-                                _gameplayManager.OpponentPlayer.BoardCards.Insert(Mathf.Clamp(position, 0,
-                                    _gameplayManager.OpponentPlayer.BoardCards.Count),
+                                _gameplayManager.OpponentPlayer.BoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
+                                    _gameplayManager.OpponentPlayer.BoardCards),
                                     boardUnitViewElement);
-                                _battlegroundController.OpponentBoardCards.Insert(Mathf.Clamp(position, 0,
-                                    _battlegroundController.OpponentBoardCards.Count),
+                                _battlegroundController.OpponentBoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
+                                    _battlegroundController.OpponentBoardCards),
                                     boardUnitViewElement);
 
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam

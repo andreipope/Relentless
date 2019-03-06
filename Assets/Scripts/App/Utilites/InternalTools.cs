@@ -132,5 +132,15 @@ namespace Loom.ZombieBattleground.Helpers
         {
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(root.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
         }
+
+        public static ItemPosition GetSafePositionToInsert<T>(ItemPosition position, IReadOnlyCollection<T> list)
+        {
+            return new ItemPosition(Mathf.Clamp(position.GetIndex(list), 0, list.Count));
+        }
+
+        public static ItemPosition GetSafePositionToInsert<T>(int position, IReadOnlyCollection<T> list)
+        {
+            return new ItemPosition(Mathf.Clamp(position, 0, list.Count));
+        }
     }
 }
