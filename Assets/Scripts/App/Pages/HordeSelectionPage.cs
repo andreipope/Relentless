@@ -340,12 +340,12 @@ namespace Loom.ZombieBattleground
             if (_hordeDecks.Count > 0)
             {
                 HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
-                if (foundDeck == null)
+                if (foundDeck == null || foundDeck is default(HordeDeckObject))
                 {
                     _selectedDeck =  _hordeDecks[0].SelfDeck;
                 }
 
-                if (deck == null)
+                if (deck == null || deck is default(HordeDeckObject))
                 {
                     deck = _hordeDecks[0];
                     HordeDeckSelectedHandler(deck);
