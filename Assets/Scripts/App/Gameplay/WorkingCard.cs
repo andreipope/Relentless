@@ -12,8 +12,6 @@ namespace Loom.ZombieBattleground
 
         public CardInstanceSpecificData InstanceCard { get; }
 
-        //public IReadOnlyCardInstanceSpecificData InitialInstanceCard { get; }
-
         public InstanceId InstanceId { get; set; }
 
         public int TutorialObjectId;
@@ -28,7 +26,6 @@ namespace Loom.ZombieBattleground
             Owner = player;
             Prototype = new Card(cardPrototype);
             InstanceCard = cardInstanceData;
-            //InitialInstanceCard = new CardInstanceSpecificData(InstanceCard);
 
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 

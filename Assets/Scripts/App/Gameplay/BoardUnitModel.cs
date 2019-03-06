@@ -85,8 +85,6 @@ namespace Loom.ZombieBattleground
 
             IsAllAbilitiesResolvedAtStart = true;
 
-            _gameplayManager.CanDoDragActions = false;
-
             LastAttackingSetType = Enumerators.SetType.NONE;
 
             SetObjectInfo(card);
@@ -483,6 +481,8 @@ namespace Loom.ZombieBattleground
 
             BuffedDamage = 0;
             BuffedHp = 0;
+
+            InitialUnitType = Card.Prototype.CardType;
 
             InitialUnitType = Card.Prototype.CardType;
 

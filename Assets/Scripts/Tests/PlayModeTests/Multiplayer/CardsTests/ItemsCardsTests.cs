@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine.TestTools;
+using System.Linq;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
@@ -1361,28 +1362,65 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Supply Drop", 1);
                 InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Supply Drop", 1);
+
+                InstanceId playerZnowmanId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowman", 1);
+                InstanceId opponentZnowmanId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowman", 1);
+
+                BoardUnitModel playerZnowman = null;
+                BoardUnitModel opponentZnowman = null;
+
+                BoardUnitView playerUnitFromDeck = null;
+                BoardUnitView opponentUnitFromDeck = null;
+
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
-                       player =>
-                       {
-                           player.CardPlay(playerCardId, ItemPosition.Start);
-                           player.LetsThink(2);
-                       },
+                       player => {},
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.PUT_RANDOM_UNIT_FROM_DECK_ON_BOARD, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().CardsInDeck[10].InstanceId),
-                               new ParametrizedAbilityInstanceId(pvpTestContext.GetOpponentPlayer().CardsInDeck[10].InstanceId)
+                               new ParametrizedAbilityInstanceId(playerZnowmanId),
+                               new ParametrizedAbilityInstanceId(opponentZnowmanId)
                            });
                            opponent.LetsThink(2);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerCardId, ItemPosition.Start);
+                           player.LetsThink(2);
+                           playerZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowmanId);
+                           opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowmanId);
+                           
+                       },
+                       opponent =>
+                       {
+                           playerUnitFromDeck = pvpTestContext.GetCurrentPlayer().BoardCards.FirstOrDefault(card => card.Model.InstanceId != playerZnowmanId);
+                           opponentUnitFromDeck = pvpTestContext.GetOpponentPlayer().BoardCards.FirstOrDefault(card => card.Model.InstanceId != opponentZnowmanId);
+                       },
+                       player =>
+                       {
+                           player.LetsThink(2);
+                           player.AssertInQueue(() => {
+                               Assert.NotNull(playerZnowman);
+                               Assert.IsTrue(playerZnowman.UnitCanBeUsable());
+                               Assert.NotNull(playerUnitFromDeck);
+                               Assert.IsTrue(playerUnitFromDeck.Model.UnitCanBeUsable());
+                           });
+                       },
+                       opponent =>
+                       {
+                           opponent.LetsThink(2);
+                           opponent.AssertInQueue(() => {
+                               Assert.NotNull(opponentZnowman);
+                               Assert.IsTrue(opponentZnowman.UnitCanBeUsable());
+                               Assert.NotNull(opponentUnitFromDeck);
+                               Assert.IsTrue(opponentUnitFromDeck.Model.UnitCanBeUsable());
+                           });
                        },
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.Name == "Znowman").Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.Name == "Znowman").Count > 0);
                     Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().BoardCards.Count);
                     Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().BoardCards.Count);
                 };
