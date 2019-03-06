@@ -62,6 +62,8 @@ namespace Loom.ZombieBattleground
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
             
             LoadItems();
+
+            UpdatePageScaleToMatchResolution();
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
             _uiManager.DrawPopup<AreaBarPopup>();
@@ -104,11 +106,20 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );           
         }
         
-        #endregion   
+        #endregion  
+        
+        private void UpdatePageScaleToMatchResolution()
+        {
+            float screenRatio = (float)Screen.width/Screen.height;
+            if(screenRatio < 1.76f)
+            {
+                _selfPage.transform.localScale = Vector3.one * 0.93f;
+            }
+        } 
         
         private void LoadItems()
         {
-            string path = "Anchor_BottomRight/Scaler/Panel_Content/Group_Packs/Content/VerticalGroup_Packs/HorizontalGroup_Packs_1";
+            string path = "Panel_Content/Group_Packs";
             
             _itemButtonList.Clear();
             _textItemNameList.Clear();
