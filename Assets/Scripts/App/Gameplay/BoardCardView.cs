@@ -745,16 +745,8 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            try
-            {
-                if (BoardUnitModel.Card == null)
-                    return;
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
-
+            if (BoardUnitModel.Card == null)
+                return;
 
             DebugCardInfoDrawer.Draw(Transform.position, BoardUnitModel.Card.InstanceId.Id, BoardUnitModel.Card.Prototype.Name);
         }
