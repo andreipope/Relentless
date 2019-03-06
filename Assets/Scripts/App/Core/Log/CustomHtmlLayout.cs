@@ -140,10 +140,9 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                     }
                     else
                     {
-                        writer.WriteLine("");
                         writer.Write(@"<div class=""log-message-exception text-monospace small"">");
                         htmlWriter.Write(GetStackTrace(loggingEvent.LocationInformation.StackFrames));
-                        writer.WriteLine(@"</div>");
+                        writer.Write(@"</div>");
                     }
                     break;
                 default:
