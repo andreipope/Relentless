@@ -89,8 +89,6 @@ namespace Loom.ZombieBattleground
 
             IsAllAbilitiesResolvedAtStart = true;
 
-            _gameplayManager.CanDoDragActions = false;
-
             LastAttackingSetType = Enumerators.SetType.NONE;
 
             SetObjectInfo(card);
