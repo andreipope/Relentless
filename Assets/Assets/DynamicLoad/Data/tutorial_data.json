@@ -134,11 +134,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -230,11 +225,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 2.4,
                 "Y": -0.4,
@@ -1331,8 +1321,8 @@
           "TutorialTooltipOwnerId": 1,
           "Description": "This is how much goo your card costs.",
           "Position": {
-            "X": 7.45,
-            "Y": -6,
+            "X": 5.65,
+            "Y": 5.7,
             "Z": 0
           },
           "AppearDelay": 2.3,
@@ -2205,11 +2195,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -2227,11 +2212,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -3006,11 +2986,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -3018,6 +2993,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
+              "TutorialObjectIdStepOwner": 10,
               "AppearDelay": 2.5
             }
           ]
@@ -3067,11 +3043,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 7.1,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 4,
                 "Y": -0.25,
@@ -3079,6 +3050,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
+              "TutorialObjectIdStepOwner": -1,
               "AppearDelay": 10
             }
           ]
@@ -3154,11 +3126,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": -1.55,
                 "Y": 3,
