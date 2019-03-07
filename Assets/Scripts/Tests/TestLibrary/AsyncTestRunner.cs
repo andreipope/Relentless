@@ -1,16 +1,12 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
 using UnityEngine;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -18,7 +14,7 @@ namespace Loom.ZombieBattleground.Test
     {
         private static readonly ILog Log = Logging.GetLog(nameof(AsyncTestRunner));
 
-        private const int FlappyErrorMaxRetryCount = 4;
+        private const int FlappyErrorMaxRetryCount = 5;
 
         private static readonly string[] KnownErrors =
         {
@@ -29,7 +25,9 @@ namespace Loom.ZombieBattleground.Test
         private static readonly string[] FlappyTestErrorSubstrings =
         {
             "RpcClientException",
-            "Call took longer than"
+            "WebSocketException",
+            "Call took longer than",
+            "invalid player"
         };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
@@ -242,6 +240,7 @@ namespace Loom.ZombieBattleground.Test
         {
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
+            Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
