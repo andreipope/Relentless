@@ -33,6 +33,8 @@ namespace Loom.ZombieBattleground
 
         private readonly BoardArrowController _boardArrowController;
 
+        private readonly BattlegroundController _battlegroundController;
+
         private readonly GameObject _glowObject;
 
         private readonly GameObject _fightTargetingArrowPrefab;
@@ -90,6 +92,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
@@ -316,7 +319,10 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle ||
+                !_gameplayManager.CanDoDragActions ||
+                _gameplayManager.IsGameplayInputBlocked ||
+                _battlegroundController.TurnWaitingForEnd)
                 return;
 
             if (!_gameplayManager.IsGameplayReady())

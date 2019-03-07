@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.13";
+        internal const string CurrentVersionBase = "0.1.14";
 
         internal const string VersionFileResolution = ".ver";
 

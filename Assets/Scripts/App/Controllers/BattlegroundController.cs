@@ -109,6 +109,8 @@ namespace Loom.ZombieBattleground
 
         public float TurnTimer { get; private set; }
 
+        public bool TurnWaitingForEnd { get; private set; }
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -494,12 +496,15 @@ namespace Loom.ZombieBattleground
 
         public void StopTurn(GameState pvpControlGameState = null)
         {
+            TurnWaitingForEnd = true;
+
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
                      float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
                      InternalTools.DoActionDelayed(() =>
                      {
+                         TurnWaitingForEnd = false;
                          ValidateGameState(pvpControlGameState);
                          EndTurn();
 
@@ -893,9 +898,9 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true, bool isForceDestroy = false)
+        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true, bool isForceDestroy = false, bool handleShield = false)
         {
-            if (!isForceDestroy && unit.HasBuffShield)
+            if (!isForceDestroy && unit.HasBuffShield && handleShield)
             {
                 unit.UseShieldFromBuff();
             }

@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         private Action _ranksUpgradeCompleteAction;
 
+        private List<BoardUnitView> _unitsForIgnoreRankBuff;
+
         public void Dispose()
         {
         }
@@ -28,6 +30,7 @@ namespace Loom.ZombieBattleground
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _unitsForIgnoreRankBuff = new List<BoardUnitView>();
         }
 
         public void Update()
@@ -53,7 +56,11 @@ namespace Loom.ZombieBattleground
                        List<BoardUnitView> filter = units.Where(unit =>
                                     unit.Model.Card.Prototype.CardSetType == card.Prototype.CardSetType &&
                                     (int)unit.Model.Card.Prototype.CardRank < (int)card.Prototype.CardRank &&
-                                    !unit.WasDestroyed && !unit.Model.IsDead).ToList();
+                                    !unit.WasDestroyed && !unit.Model.IsDead &&
+                                    !_unitsForIgnoreRankBuff.Contains(unit))
+                                    .ToList();
+
+                       _unitsForIgnoreRankBuff.Clear();
 
                        if (filter.Count > 0 && (!_tutorialManager.IsTutorial ||
                            (_tutorialManager.IsTutorial &&
@@ -177,6 +184,14 @@ namespace Loom.ZombieBattleground
             }
 
             BuffRandomAlly(units, count, buffs, card, randomly);
+        }
+
+        public void AddUnitForIgnoreRankBuff(BoardUnitView unit)
+        {
+            if (!_unitsForIgnoreRankBuff.Contains(unit))
+            {
+                _unitsForIgnoreRankBuff.Add(unit);
+            }
         }
 
         private void LifeRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)

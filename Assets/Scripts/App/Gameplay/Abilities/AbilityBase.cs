@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         protected BattlegroundController BattlegroundController;
 
+        protected RanksController RanksController;
+
         protected CardsController CardsController;
 
         protected BoardController BoardController;
@@ -105,6 +107,7 @@ namespace Loom.ZombieBattleground
             BattleController = GameplayManager.GetController<BattleController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
+            RanksController = GameplayManager.GetController<RanksController>();
         }
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
@@ -124,6 +127,7 @@ namespace Loom.ZombieBattleground
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            RanksController = GameplayManager.GetController<RanksController>();
 
             AbilityData = ability;
             CardKind = cardKind;
