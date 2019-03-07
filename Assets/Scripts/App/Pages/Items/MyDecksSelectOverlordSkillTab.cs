@@ -380,7 +380,7 @@ namespace Loom.ZombieBattleground
             {
                 IsSelected = true;
 
-                _glowObj.SetActive(IsSelected);
+                _glowObj.SetActive(IsUnlocked && IsSelected);
             }
 
             public void Deselect()
