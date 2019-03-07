@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
             // File
             if (FileLogEnabled)
             {
-                HtmlLayout htmlLayout = new CustomHtmlLayout("%utcdate{HH:mm:ss}%level%logger%message");
+                HtmlLayout htmlLayout = new CustomHtmlLayout("%counter%utcdate{HH:mm:ss}%level%logger%message");
                 htmlLayout.LogName = "Zombie Battleground " + BuildMetaInfo.Instance.ShortVersionName;
                 htmlLayout.ActivateOptions();
 
