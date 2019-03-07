@@ -48,6 +48,7 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['deviceName'] = 'device'
         self.desired_caps['app'] = PATH('../../application.apk')
         self.desired_caps['androidInstallTimeout'] = 300000
+        self.desired_caps['orientation']='LANDSCAPE'
 
     def setup_ios(self):
         try:
@@ -58,6 +59,8 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['deviceName'] = 'iOSDevice'
         self.desired_caps['automationName'] = 'XCUITest'
         self.desired_caps['app'] = PATH('../application.ipa')
+        self.desired_caps['orientation']='LANDSCAPE'
+
 
     def wait_for_element_with_tmp_text(self, name, text, camera_name='', timeout=20, interval=0.5, enabled=True):
         t = 0
@@ -102,6 +105,14 @@ class CZBTests(unittest.TestCase):
         self.altdriver.find_element('InputField').set_component_property('UnityEngine.UI.InputField','text',tutorialNumber,'UnityEngine.UI')
         self.altdriver.find_element('JumpToTutorial').mobile_tap()
         self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
+    def jump_to_tutorial_from_another_tutorial(self,tutorialNumber):
+        self.altdriver.wait_for_element('HiddenUI')
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
+        self.altdriver.find_element('SkipTutorial').mobile_tap()
+        self.altdriver.find_element('InputField').set_component_property('UnityEngine.UI.InputField','text',tutorialNumber,'UnityEngine.UI')
+        self.altdriver.find_element('JumpToTutorial').mobile_tap()
+        time.sleep(1)
+        self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
 
 
     def write_in_input_field(self,input_field,text):
@@ -110,6 +121,9 @@ class CZBTests(unittest.TestCase):
         self.altdriver.wait_for_element(input_field.name).set_component_property('TMPro.TMP_InputField','text',text,'Unity.TextMeshPro')
     def button_pressed(self,button):
         button.mobile_tap()
+    def double_tap(self,alt_element):
+        alt_element.mobile_tap(0.2)
+        alt_element.mobile_tap(0.2)
     def read_tmp_UGUI_text(self,alt_element):
         return alt_element.get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
     def read_tmp_GUI_text(self,alt_element):

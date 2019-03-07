@@ -59,6 +59,17 @@ namespace Loom.ZombieBattleground
         [CommandHandler(Description = "Jumps to desired tutorial")]
         public static void JumpToTutorialNumber(int tutorialNumber)
         {
+
+            if (GameClient.Get<IAppStateManager>().AppState == Common.Enumerators.AppState.GAMEPLAY)
+            {
+                GameClient.Get<IGameplayManager>().EndGame(Common.Enumerators.EndGameType.CANCEL);
+                GameClient.Get<IMatchManager>().FinishMatch(Common.Enumerators.AppState.MAIN_MENU);
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU, true);
+            }
+
             GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = true;
             GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = tutorialNumber;
 

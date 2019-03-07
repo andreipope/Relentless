@@ -46,9 +46,9 @@ class Deck_Selection_Page(CZBTests):
     def press_left_arrow(self):
         self.button_pressed(self.left_arrow_button)
     def press_edit_button(self):
-        self.button_pressed(self.get_edit_button)
+        self.button_pressed(self.edit_button)
     def press_delete_button(self):
-        self.button_pressed(self.get_delete_button)
+        self.button_pressed(self.delete_button)
 
     def get_selected_deck(self):
         decks_present=self.altdriver.find_elements(self.deck_container_panel.name+'/Group/Item_HordeSelectionObject(Clone)/Button_Select',enabled=False)
@@ -108,7 +108,9 @@ class Deck_Selection_Page(CZBTests):
     def create_new_deck(self):
         self.select_first_deck()
         self.altdriver.find_element('Item_HordeSelectionNewHordeLeft/Image_BaackgroundGeneral').mobile_tap()
-    
+    def create_new_deck_tutorial(self):
+        self.select_last_deck()
+        self.altdriver.find_element('Item_HordeSelectionNewHorde/Image_BaackgroundGeneral').mobile_tap()
 
 
 
