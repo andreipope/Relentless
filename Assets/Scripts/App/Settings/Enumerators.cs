@@ -839,7 +839,9 @@ namespace Loom.ZombieBattleground.Common
 
             BattleStarted,
 
-            CardWithAbilityPlayed
+            CardWithAbilityPlayed,
+
+            EndCardFlipPlayerOrderPopup
         }
 
         public enum TutorialActivityActionHandler
