@@ -216,7 +216,17 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCardCost()
         {
-            CostText.text = BoardUnitModel.Card.InstanceCard.Cost.ToString();
+            int calculatedCost = Mathf.Clamp(BoardUnitModel.Card.InstanceCard.Cost + value, 0, 99);
+
+            if (changeRealCost)
+            {
+                BoardUnitModel.Card.InstanceCard.Cost = calculatedCost;
+            }
+
+            ManaCost = calculatedCost;
+
+            CostText.text = ManaCost.ToString();
+
             UpdateColorOfCost();
         }
         public virtual void UpdateAmount(int amount)
