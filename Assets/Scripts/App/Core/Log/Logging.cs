@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
                 if (GetLogFilePathFromEnvVar() != null)
                     return true;
 
-                return Application.isEditor;
+                return !Application.isEditor;
 #endif
             }
         }
