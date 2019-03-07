@@ -928,7 +928,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public WorkingCard LowGooCostOfCardInHand(Player player, WorkingCard card = null, int value = 1)
+        public WorkingCard LowGooCostOfCardInHand(Player player, WorkingCard card, int value)
         {
             if (card == null && player.CardsInHand.Count > 0)
             {
@@ -942,7 +942,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card.Equals(card));
 
-                boardCardView.BoardUnitModel.Card.InstanceCard.Cost += value;
+                boardCardView.BoardUnitModel.Card.InstanceCard.Cost = Math.Max(boardCardView.BoardUnitModel.Card.InstanceCard.Cost + value, 0);
                 boardCardView.UpdateCardCost();
             }
             else
