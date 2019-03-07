@@ -485,7 +485,7 @@ namespace Loom.ZombieBattleground
 
             if (_withEffect)
             {
-                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UnitDeathAnimations/ZB_ANM_" +
                                                 InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
                                                 "DeathAnimation"));
 

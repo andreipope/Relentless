@@ -509,7 +509,8 @@ namespace Loom.ZombieBattleground
                 Log.Warn($"Attempt to add card {card} to CardsOnBoard when it is already added");
                 return;
             }
-            CardsOnBoard.Insert(position, card);
+
+            CardsOnBoard.Insert(InternalTools.GetSafePositionToInsert(position, CardsOnBoard), card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -680,23 +681,26 @@ namespace Loom.ZombieBattleground
                                                  _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                                                  SpecificBattlegroundInfo.DisabledInitialization))
             {
-                _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
+                InternalTools.DoActionDelayed(() =>
                 {
-                    _actionsQueueController.ClearActions();
-
-                    _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                    _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
+                    if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
                     {
-                        _queueManager.AddAction(
-                            new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
-                                _backendDataControlMediator.UserDataModel.UserId,
-                                IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
-                            )
-                        );
+                        _actionsQueueController.ClearActions();
 
-                        completeCallback?.Invoke();
-                    }, Enumerators.QueueActionType.EndMatch);
-                }
+                        _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                        {
+                            _queueManager.AddAction(
+                                new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                                )
+                            );
+
+                            completeCallback?.Invoke();
+                        }, Enumerators.QueueActionType.EndMatch);
+                    }
+                }, 2f);
             }
             else
             {
@@ -723,7 +727,9 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
-            // todo implement logic
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(this))
+                turnsCount++;
+
             _freezedHighlightObject.SetActive(true);
             IsStunned = true;
             _turnsLeftToFreeFromStun = turnsCount;
