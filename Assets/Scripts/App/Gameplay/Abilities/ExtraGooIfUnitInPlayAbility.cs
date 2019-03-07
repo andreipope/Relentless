@@ -35,6 +35,13 @@ namespace Loom.ZombieBattleground
             Action(new object[] { PlayerCallerOfAbility, -1 });
         }
 
+        public override void Deactivate()
+        {
+            base.Deactivate();
+
+            Action(new object[] { PlayerCallerOfAbility, -1 });
+        }
+
         protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
         {
             Action(new object[] { oldPlayer, -1 });
