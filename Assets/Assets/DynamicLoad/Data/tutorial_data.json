@@ -3094,6 +3094,10 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
+          "RequiredActivitiesToDoneDuringStep": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed",
+          ],
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
@@ -3102,11 +3106,16 @@
         },
         {
           "ActionToEndThisStep": "DeathAbilityCompleted",
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
           "ConnectedTurnIndex": 5,
           "AIShouldBePaused": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed",
+          ],
           "ConnectedTurnIndex": 5
         },
         {
