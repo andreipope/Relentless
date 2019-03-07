@@ -696,11 +696,12 @@ namespace Loom.ZombieBattleground
                         savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
+
                     if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
                     {
                         _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
-                        GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                         string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
                         QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
@@ -710,8 +711,6 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
-                        GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
                         GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                     }
                 }
