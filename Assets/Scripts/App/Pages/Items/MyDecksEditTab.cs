@@ -1143,7 +1143,6 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                 _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_DECK);
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
             }
             
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;

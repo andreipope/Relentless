@@ -126,7 +126,8 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             
             _deckInfoObjectList = new List<DeckInfoObject>();
-            _cacheDeckListToDisplay = new List<Deck>();           
+            _cacheDeckListToDisplay = new List<Deck>();
+            SelectDeckIndex = 0;       
 
             MyDecksEditTab = new MyDecksEditTab();
             MyDecksEditTab.Init();
@@ -421,7 +422,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case TAB.SELECT_DECK:
                     _inputFieldSearchDeckName.text = "";
-                    ApplyDeckByDefault();
+                    ApplyDeckByLastSelected();
                     break;
                 case TAB.RENAME:
                     _inputFieldRenameDeckName.text = GetSelectedDeck().Name;
@@ -722,6 +723,17 @@ namespace Loom.ZombieBattleground
             _cacheDeckListToDisplay = GetDeckList();
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
+        }
+        
+        private void ApplyDeckByLastSelected()
+        {
+            _cacheDeckListToDisplay = GetDeckList();
+            
+            _deckPageIndex = SelectDeckIndex / _deckInfoAmountPerPage;
+            int indexInPage = SelectDeckIndex % _deckInfoAmountPerPage;
+            
+            UpdateDeckInfoObjects();
+            ChangeSelectDeckIndex(indexInPage);
         }
 
         public void ApplyDeckFilter(Enumerators.SetType setType)
