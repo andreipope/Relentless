@@ -47,6 +47,7 @@ namespace Loom.ZombieBattleground
             {
                 CurrentBoardArrow.Dispose();
                 CurrentBoardArrow = null;
+                IsBoardArrowNowInTheBattle = false;
             }
         }
 

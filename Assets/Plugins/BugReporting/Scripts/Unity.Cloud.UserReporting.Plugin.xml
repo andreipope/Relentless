@@ -6,7 +6,7 @@
     <members>
         <member name="T:Unity.Cloud.UserReporting.Plugin.UnityUserReporting">
             <summary>
-            Provides a starting point for Unity Bug Reporting.
+            Provides a starting point for Unity User Reporting.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient">
@@ -16,7 +16,7 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(System.String,System.String,Unity.Cloud.UserReporting.Client.IUserReportingPlatform,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="endpoint">The endpoint.</param>
             <param name="projectIdentifier">The project identifier.</param>
@@ -25,7 +25,7 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(System.String,System.String,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="endpoint"></param>
             <param name="projectIdentifier"></param>
@@ -33,31 +33,31 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(System.String,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="projectIdentifier"></param>
             <param name="configuration"></param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(System.String)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="projectIdentifier"></param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="configuration"></param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(System.String,Unity.Cloud.UserReporting.Client.IUserReportingPlatform,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="projectIdentifier"></param>
             <param name="platform"></param>
@@ -65,14 +65,14 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(Unity.Cloud.UserReporting.Client.IUserReportingPlatform,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="platform"></param>
             <param name="configuration"></param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReporting.Configure(Unity.Cloud.UserReporting.Client.IUserReportingPlatform)">
             <summary>
-            Configures Unity Bug Reporting.
+            Configures Unity User Reporting.
             </summary>
             <param name="platform"></param>
         </member>
@@ -90,7 +90,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Plugin.UnityUserReportingPlatform">
             <summary>
-            Represents the Unity bug reporting platform.
+            Represents the Unity user reporting platform.
             </summary>
         </member>
         <member name="T:Unity.Cloud.UserReporting.Plugin.UnityUserReportingPlatform.LogMessage">
@@ -258,6 +258,9 @@
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportingPlatform.Post(System.String,System.String,System.Byte[],System.Action{System.Single,System.Single},System.Action{System.Boolean,System.Byte[]})">
             <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
         </member>
+        <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportingPlatform.RunTask(System.Func{System.Object},System.Action{System.Object})">
+            <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
+        </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportingPlatform.SendAnalyticsEvent(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
         </member>
@@ -284,7 +287,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Plugin.UnityUserReportingUpdater">
             <summary>
-            Helps with updating the Unity Bug Reporting client.
+            Helps with updating the Unity User Reporting client.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportingUpdater.#ctor">
@@ -310,22 +313,22 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Plugin.UnityUserReportParser">
             <summary>
-            Provides static methods for parsing bug reports.
+            Provides static methods for parsing user reports.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportParser.ParseUserReport(System.String)">
             <summary>
-            Parses a bug report.
+            Parses a user report.
             </summary>
             <param name="json">The JSON.</param>
-            <returns>The bug report.</returns>
+            <returns>The user report.</returns>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Plugin.UnityUserReportParser.ParseUserReportList(System.String)">
             <summary>
-            Parses a bug report list.
+            Parses a user report list.
             </summary>
             <param name="json">The JSON.</param>
-            <returns>The bug report list.</returns>
+            <returns>The user report list.</returns>
         </member>
     </members>
 </doc>

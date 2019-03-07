@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class MatchScenarioPlayer : IDisposable
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MatchScenarioPlayer));
+
         private readonly TestHelper _testHelper;
         private readonly IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> _turns;
 
@@ -53,7 +56,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task Play()
         {
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log("[ScenarioPlayer]: Play 1 - HandleOpponentClientTurn");
+            Log.Info("Play 1 - HandleOpponentClientTurn");
 #endif
 
             // Special handling for the first turn
@@ -64,7 +67,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log("[ScenarioPlayer]: Play 2 - PlayMoves");
+            Log.Info("Play 2 - PlayMoves");
 #endif
 
             await _testHelper.PlayMoves(LocalPlayerTurnTaskGenerator);
@@ -73,7 +76,7 @@ namespace Loom.ZombieBattleground.Test
             Completed = true;
 
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log("[ScenarioPlayer]: Play 3 - Finished");
+            Log.Info("Play 3 - Finished");
 #endif
 
             // Rethrow the exception here, to make sure it's thrown on the main thread,
@@ -103,7 +106,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log($"[ScenarioPlayer]: PlayNextOpponentClientTurn, current turn {_currentTurn}");
+            Log.Info($"PlayNextOpponentClientTurn, current turn {_currentTurn}");
 #endif
             bool success = CreateTurn(
                 _opponentQueueProxy,
@@ -121,7 +124,7 @@ namespace Loom.ZombieBattleground.Test
         private Func<Task> LocalPlayerTurnTaskGenerator()
         {
 #if DEBUG_SCENARIO_PLAYER
-            Debug.Log($"[ScenarioPlayer]: LocalPlayerTurnTaskGenerator, current turn {_currentTurn}");
+            Log.Info($"LocalPlayerTurnTaskGenerator, current turn {_currentTurn}");
 #endif
             if (!CreateTurn(_localQueueProxy))
                 return null;
@@ -228,7 +231,7 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Log.Error("", e);
             }
         }
     }

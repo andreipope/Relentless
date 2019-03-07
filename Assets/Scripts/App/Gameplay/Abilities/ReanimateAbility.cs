@@ -11,6 +11,8 @@ namespace Loom.ZombieBattleground
 
         private AbilitiesController _abilitiesController;
 
+        private BoardUnitView _reanimatedUnit;
+
         public ReanimateAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -41,8 +43,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            BoardUnitView unit = CreateBoardUnit(AbilityUnitOwner.Card, owner);
-            unit.Model.IsReanimated = true;
+            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner.Card, owner);
+            _reanimatedUnit.Model.IsReanimated = true;
 
             if (owner.CardsInGraveyard.Contains(AbilityUnitOwner.Card))
             {
@@ -50,19 +52,19 @@ namespace Loom.ZombieBattleground
             }
 
             owner.AddCardToBoard(AbilityUnitOwner.Card, ItemPosition.End);
-            owner.BoardCards.Insert(ItemPosition.End, unit);
+            owner.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
 
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
-                _abilitiesController.ActivateAbilitiesOnCard(unit.Model, AbilityUnitOwner.Card, owner);
+                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner.Card, owner);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
+                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
             }
 
-            InvokeActionTriggered(unit);
+            InvokeActionTriggered(_reanimatedUnit);
         }
 
         protected override void UnitHpChangedHandler()
@@ -87,6 +89,13 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction?.ForceActionDone();
 
             base.UnitDiedHandler();
+
+            if (_reanimatedUnit != null)
+            {
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+            }
+
+            _gameplayManager.CanDoDragActions = true;
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)

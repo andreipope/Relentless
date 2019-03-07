@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using log4net;
 using Loom.Client;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendDataControlMediator : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BackendDataControlMediator));
+
         private const string UserDataFileName = "UserLoginData.json";
 
         private IDataManager _dataManager;
@@ -83,21 +86,26 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task LoginAndLoadData()
         {
             LoadUserDataModel();
-            Debug.Log("User Id: " + UserDataModel.UserId);
-            
-            await _backendFacade.CreateContract(UserDataModel.PrivateKey);
+      
+            Log.Info("User Id: " + UserDataModel.UserId);
 
             try
             {
+                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
                 await _backendFacade.SignUp(UserDataModel.UserId);
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
             {
                 // Ignore
             }
-            
-            await _dataManager.StartLoadCache();
-            
+            catch (RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.LogException(Log, exception);
+                Debug.LogWarning(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+            }
+
+            await _dataManager.StartLoadCache();      
         }
     }
 }
