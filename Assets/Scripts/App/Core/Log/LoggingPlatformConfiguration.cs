@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 #endif
         public static void Setup()
         {
-            Logging.Setup();
+            Logging.Configure();
 
             if (Logging.NonEssentialLogsDisabled)
             {
