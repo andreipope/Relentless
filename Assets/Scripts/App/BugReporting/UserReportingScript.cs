@@ -4,17 +4,21 @@ using Loom.ZombieBattleground.BackendCommunication;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
+using log4net;
+using log4net.Appender;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
+using SharpCompress.Archives.Zip;
 using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using CompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel;
 
 /// <summary>
 /// Represents a behavior for working with the user reporting client.
@@ -25,6 +29,8 @@ using UnityEngine.UI;
 /// </remarks>
 public class UserReportingScript : MonoBehaviour
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(UserReportingScript));
+
     #region Constructors
 
     /// <summary>
@@ -218,7 +224,7 @@ public class UserReportingScript : MonoBehaviour
     public void ExitApplication()
     {
 #if UNITY_EDITOR
-        Debug.Log("Application.Quit();");
+        Log.Info("Application.Quit();");
 #endif
         Application.Quit();
     }
@@ -268,7 +274,7 @@ public class UserReportingScript : MonoBehaviour
         _isCrashing = isCrashing;
         _exceptionStacktrace = exceptionStacktrace;
         _exceptionCondition = exceptionCondition;
-        Debug.Log($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
+        Log.Info($"Starting submitting report, isSilent: {isSilent}, isCrashing: {isCrashing}");
         StartCoroutine(DelayedCreateBugReport());
     }
 
@@ -277,7 +283,7 @@ public class UserReportingScript : MonoBehaviour
         CreateUserReport(false, false, "", "");
     }
 
-        /// <summary>
+    /// <summary>
     /// Submits the user report.
     /// </summary>
     public void SubmitUserReport()
@@ -332,7 +338,7 @@ public class UserReportingScript : MonoBehaviour
             }
         }, (success, br2) =>
         {
-            Debug.Log("Successfully sent bug report: " + success);
+            Log.Info("Successfully sent bug report: " + success);
 
             if (!success)
             {
@@ -439,13 +445,7 @@ public class UserReportingScript : MonoBehaviour
             // Ensure Project Identifier
             if (string.IsNullOrEmpty(br.ProjectIdentifier))
             {
-                Debug.LogWarning("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
-            }
-
-            // Attachments
-            if (!String.IsNullOrEmpty(_exceptionStacktrace))
-            {
-                AddTextAttachment(br, "Exception", _exceptionStacktrace);
+                Log.Warn("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
             }
 
             // Fields
@@ -454,26 +454,77 @@ public class UserReportingScript : MonoBehaviour
                 br.Fields.Add(new UserReportNamedValue("Online Match Id", matchId.Value.ToString()));
             }
 
+            // Exception
+            if (!String.IsNullOrEmpty(_exceptionStacktrace))
+            {
+                string exception = _exceptionCondition + Environment.NewLine + _exceptionStacktrace;
+                AddTextAttachment(br, "Exception.txt", exception);
+                Log.Fatal(exception);
+            }
+
+            // Call metrics
             try
             {
                 BackendFacade backendFacade = GameClient.Get<BackendFacade>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
-                if (backendFacade.ContractCallProxy is TimeMetricsContractCallProxy callProxy)
+                if (backendFacade.ContractCallProxy is ThreadedContractCallProxyWrapper threadedCallProxy &&
+                    threadedCallProxy.WrappedProxy is TimeMetricsContractCallProxy timeMetricsCallProxy)
                 {
-                    string callMetricsJson = dataManager.SerializeToJson(callProxy.MethodToCallRoundabouts, true);
+                    string callMetricsJson = dataManager.SerializeToJson(timeMetricsCallProxy.MethodToCallRoundabouts, true);
+                    AddTextAttachment(br, TimeMetricsContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
+                }
+            }
+            catch (Exception e)
+            {
+                UnityUserReporting.CurrentClient.LogException(e);
+                Log.Warn("Error while getting call metrics:" + e);
+            }
+
+            // HTML log
+            try
+            {
+                if (Logging.GetRepository() is IFlushable flushable)
+                {
+                    flushable.Flush(5000);
+                }
+
+                string logFilePath = Logging.GetLogFilePath();
+                string logFileName = Path.GetFileName(logFilePath);
+                byte[] htmlLog;
+                using(FileStream fileStream = new FileStream(
+                    Logging.GetLogFilePath(),
+                    FileMode.Open,
+                    FileAccess.Read,
+                    FileShare.ReadWrite))
+                {
+                    using (BinaryReader binaryReader = new BinaryReader(fileStream))
+                    {
+                        htmlLog = binaryReader.ReadBytes(int.MaxValue);
+                    }
+                }
+
+                using (MemoryStream zipStream = new MemoryStream())
+                {
+                    using (ZipArchive zipArchive = ZipArchive.Create())
+                    {
+                        zipArchive.DeflateCompressionLevel = CompressionLevel.BestCompression;
+                        zipArchive.AddEntry(logFileName, new MemoryStream(htmlLog), true);
+                        zipArchive.SaveTo(zipStream);
+                    }
+
                     br.Attachments.Add(
                         new UserReportAttachment(
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            TimeMetricsContractCallProxy.CallMetricsFileName,
-                            "application/json",
-                            global::System.Text.Encoding.UTF8.GetBytes(callMetricsJson)
+                            logFileName + ".zip",
+                            logFileName + ".zip",
+                            "application/zip",
+                            zipStream.ToArray()
                         ));
                 }
             }
             catch (Exception e)
             {
                 UnityUserReporting.CurrentClient.LogException(e);
-                Debug.LogWarning("Error while getting call metrics:" + e);
+                Log.Warn("Error while getting HTML log:" + e);
             }
 
             br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
@@ -559,16 +610,16 @@ public class UserReportingScript : MonoBehaviour
 
     #endregion
 
-    private void AddTextAttachment(UserReport report, string name, string text)
+    private void AddTextAttachment(UserReport report, string name, string text,  string contentType = "text/plain")
     {
         // Convert to Windows encoding for easy viewing
         text = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
         report.Attachments.Add(
             new UserReportAttachment(
                 name,
-                name + ".txt",
-                "text/plain",
-                System.Text.Encoding.UTF8.GetBytes(text)
+                name,
+                contentType,
+                Encoding.UTF8.GetBytes(text)
             ));
     }
 }

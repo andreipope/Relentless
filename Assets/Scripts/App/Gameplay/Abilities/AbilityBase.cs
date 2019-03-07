@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         protected BattlegroundController BattlegroundController;
 
+        protected RanksController RanksController;
+
         protected CardsController CardsController;
 
         protected BoardController BoardController;
@@ -98,6 +100,16 @@ namespace Loom.ZombieBattleground
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
+        public AbilityBase()
+        {
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            BoardController = GameplayManager.GetController<BoardController>();
+            BattleController = GameplayManager.GetController<BattleController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            CardsController = GameplayManager.GetController<CardsController>();
+            RanksController = GameplayManager.GetController<RanksController>();
+        }
+
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -115,6 +127,7 @@ namespace Loom.ZombieBattleground
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            RanksController = GameplayManager.GetController<RanksController>();
 
             AbilityData = ability;
             CardKind = cardKind;
@@ -401,7 +414,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void TurnEndedHandler()
         {
-            if (TargettingArrow != null)
+            if (TargettingArrow != null && !GameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
             {
                 InputEndedHandler();
             }

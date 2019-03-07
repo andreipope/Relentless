@@ -4,6 +4,7 @@ using System.Numerics;
 using Loom.Client;
 using System.Security.Cryptography;
 using System.Text;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -16,6 +17,8 @@ namespace Loom.ZombieBattleground
 {
     public class LoginPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoginPopup));
+
         public static Action OnHidePopupEvent;
         public static Action OnLoginSuccess;
 
@@ -387,7 +390,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 if (e.Message == Constants.VaultEmptyErrorCode)
                 {
@@ -395,7 +398,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    Debug.Log(e.ToString());
+                    Log.Info(e.ToString());
                     string errorMsg = string.Empty;
                     if (e.Message.Contains("Forbidden"))
                     {
@@ -426,9 +429,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.Log(e.ToString());
+                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -445,9 +448,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.Log(e.ToString());
+                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -475,9 +478,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.Log(e.ToString());
+                Log.Info(e.ToString());
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
@@ -571,7 +574,7 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
@@ -580,7 +583,7 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -590,7 +593,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -600,9 +603,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.Log(e.ToString());
+                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
                 {
@@ -637,7 +640,7 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -646,7 +649,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -655,9 +658,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.LogWarning(e);
+                Log.Warn(e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -693,11 +696,12 @@ namespace Loom.ZombieBattleground
                         savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
+
                     if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
                     {
                         _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-                        _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
-                        GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                         string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
                         QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
@@ -755,7 +759,7 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
-            Debug.Log(state);
+            Log.Info(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
             _loginGroup.gameObject.SetActive(false);
@@ -773,7 +777,7 @@ namespace Loom.ZombieBattleground
                 actions[0] = () =>
                 {
 #if UNITY_EDITOR
-                    Debug.LogWarning("Version Mismatched");
+                    Log.Warn("Version Mismatched");
 #elif UNITY_ANDROID
                     Application.OpenURL(Constants.GameLinkForAndroid);
 #elif UNITY_IOS
@@ -783,7 +787,7 @@ namespace Loom.ZombieBattleground
 #elif UNITY_STANDALONE_WIN
                     Application.OpenURL(Constants.GameLinkForWindows);
 #else
-                    Debug.LogWarning("Version Mismatched");
+                    Log.Warn("Version Mismatched");
 #endif
                 };
                 actions[1] = () =>
@@ -885,7 +889,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
+                Log.Info(e.Message);
                 _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
             }
             finally

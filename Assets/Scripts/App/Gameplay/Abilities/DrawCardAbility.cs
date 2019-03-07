@@ -55,10 +55,12 @@ namespace Loom.ZombieBattleground
                     .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.Card.LibraryCard.Faction == SetType && x.Model != AbilityUnitOwner)
-                    .Count <= 0
-                )
+            else if (PlayerCallerOfAbility.BoardCards
+                    .FindAll(card => card.Model.Card.LibraryCard.Faction == SetType &&
+                        card.Model != AbilityUnitOwner &&
+                        card.Model.CurrentHp > 0 &&
+                        !card.Model.IsDead)
+                    .Count <= 0)
                 return;
 
             if (AbilityTargetTypes.Count > 0)

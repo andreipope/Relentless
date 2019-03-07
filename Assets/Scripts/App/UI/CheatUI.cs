@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class CheatUI : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CheatUI));
+
         private const string PersistentFileName = "CheatsSettings.json";
 
         private readonly List<Action> _updateBinds = new List<Action>();
@@ -97,7 +100,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                Log.Warn(e);
             }
         }
 

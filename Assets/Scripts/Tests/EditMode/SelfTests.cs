@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test.MultiplayerTests;
@@ -15,6 +16,8 @@ namespace Loom.ZombieBattleground.Test
     [Category("QuickSubset")]
     public class SelfTests
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(SelfTests));
+
         [UnityTest]
         public IEnumerator CheckForMissingCardTests()
         {

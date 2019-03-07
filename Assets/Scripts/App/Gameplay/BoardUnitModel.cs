@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Loom.ZombieBattleground
 {
     public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitModel));
+
         public bool AttackedThisTurn;
 
         public bool HasFeral;
@@ -262,6 +265,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.BLITZ:
                     if (NumTurnsOnBoard == 0)
                     {
+                        AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
                         HasBuffRush = true;
                     }
                     break;
@@ -552,7 +556,11 @@ namespace Loom.ZombieBattleground
         public void OnEndTurn()
         {
             IsPlayable = false;
-            HasBuffRush = false;
+            if(HasBuffRush)
+            {
+                RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Blitz);
+                HasBuffRush = false;
+            }
             CantAttackInThisTurnBlocker = false;
             TurnEnded?.Invoke();
         }
@@ -801,8 +809,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                Helpers.ExceptionReporter.LogException(ex);
-                Debug.LogWarning(ex.Message);
+                Helpers.ExceptionReporter.SilentReportException(ex);
+                Log.Warn(ex.Message);
             }
         }
 

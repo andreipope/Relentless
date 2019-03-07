@@ -193,9 +193,7 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                WorkingCard.LibraryCard.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{WorkingCard.LibraryCard.Picture.ToLowerInvariant()}");
 
             AmountText.transform.parent.gameObject.SetActive(false);
             AmountTextForArmy.transform.parent.gameObject.SetActive(false);
@@ -242,8 +240,7 @@ namespace Loom.ZombieBattleground
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
 
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(), card.Picture.ToLowerInvariant()));
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.Picture.ToLowerInvariant()}");
 
             DistibuteCardObject.SetActive(false);
         }
@@ -258,17 +255,16 @@ namespace Loom.ZombieBattleground
 
         public void ChangeCardCostOn(int value, bool changeRealCost = false)
         {
+            int calculatedCost = Mathf.Clamp(WorkingCard.InstanceCard.Cost + value, 0, 99);
+
             if (changeRealCost)
             {
-                WorkingCard.InstanceCard.Cost += value;
-                ManaCost = WorkingCard.InstanceCard.Cost;
-                CostText.text = ManaCost.ToString();
+                WorkingCard.InstanceCard.Cost = calculatedCost;
             }
-            else
-            {
-                ManaCost = WorkingCard.InstanceCard.Cost + value;
-                CostText.text = ManaCost.ToString();
-            }
+
+            ManaCost = calculatedCost;
+
+            CostText.text = ManaCost.ToString();
 
             UpdateColorOfCost();
         }
@@ -517,6 +513,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.LibraryCard.Abilities)
                 {
+                    if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
+                        continue;
+
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)
                     {

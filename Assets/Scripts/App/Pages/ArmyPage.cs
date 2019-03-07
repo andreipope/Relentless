@@ -203,8 +203,7 @@ namespace Loom.ZombieBattleground
 
         public void Hide()
         {
-            Object.Destroy(CardPlaceholders);
-            ResetBoardCards();
+            Dispose();
 
             if (_selfPage == null)
                 return;
