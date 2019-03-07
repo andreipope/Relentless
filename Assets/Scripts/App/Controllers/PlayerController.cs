@@ -320,18 +320,6 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                if (!hitHandCard)
-                {
-                    foreach (RaycastHit2D hit in hits)
-                    {
-                        if (hit.collider != null && hit.collider.name.Contains("BoardCreature"))
-                        {
-                            hitCards.Add(hit.collider.gameObject);
-                            hitBoardCard = true;
-                        }
-                    }
-                }
-
                 if (hitHandCard)
                 {
                     if (hitCards.Count > 0)
@@ -350,30 +338,6 @@ namespace Loom.ZombieBattleground
                             _startedOnClickDelay = true;
                             _isPreviewHandCard = true;
                             _topmostBoardCard = topmostBoardCard;
-                        }
-                    }
-                }
-                else if (hitBoardCard)
-                {
-                    if (hitCards.Count > 0)
-                    {
-                        StopHandTimer();
-
-                        hitCards = hitCards.OrderBy(x => x.GetComponent<SortingGroup>().sortingOrder).ToList();
-                        BoardUnitView selectedBoardUnitView =
-                            _battlegroundController.GetBoardUnitFromHisObject(hitCards[hitCards.Count - 1]);
-                        if (selectedBoardUnitView != null && (!_battlegroundController.IsPreviewActive ||
-                            selectedBoardUnitView.Model.Card.InstanceId != _battlegroundController.CurrentPreviewedCardId))
-                        {
-                            float delta = Application.isMobilePlatform ?
-                                Constants.PointerMinDragDelta * 2f :
-                                Constants.PointerMinDragDeltaMobile;
-
-                            _startedOnClickDelay = true;
-                            _isPreviewHandCard = false;
-                            _selectedBoardUnitView = selectedBoardUnitView;
-
-                            _pointerEventSolver.PushPointer(delta);
                         }
                     }
                 }
