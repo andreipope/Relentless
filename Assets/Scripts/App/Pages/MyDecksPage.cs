@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
 {
     public class MyDecksPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksPage));
+        
         private IUIManager _uiManager;
         
         private ILoadObjectsManager _loadObjectsManager;
@@ -475,19 +478,19 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.LogException(Log, exception);
                 Debug.LogWarning(" Time out == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Client.RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(exception);
+                Helpers.ExceptionReporter.LogException(Log, exception);
                 Debug.LogWarning(" RpcException == " + exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.LogException(Log, e);
                 Debug.Log("Result === " + e);
                 OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
                 return;

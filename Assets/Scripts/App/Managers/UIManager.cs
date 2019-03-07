@@ -45,7 +45,12 @@ namespace Loom.ZombieBattleground
             Pages.Add(new PlaySelectionPage());
             Pages.Add(new PvPSelectionPage());
             Pages.Add(new CustomGameModeListPage());
-            Pages.Add(new CustomGameModeCustomUiPage());
+            Pages.Add(new CustomGameModeCustomUiPage());            
+            Pages.Add(new MainMenuWithNavigationPage());
+            Pages.Add(new PackOpenerPageWithNavigationBar());
+            Pages.Add(new MyDecksPage());
+            Pages.Add(new MyCardsPage());
+            Pages.Add(new MyShopPage());
 
             foreach (IUIElement page in Pages)
             {
@@ -83,6 +88,16 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new RewardPopup());
             _uiPopups.Add(new WaitingForPlayerPopup());
             _uiPopups.Add(new TutorialSkipPopup());
+            _uiPopups.Add(new SideMenuPopup());
+            _uiPopups.Add(new AreaBarPopup());
+            _uiPopups.Add(new DeckSelectionPopup());
+            _uiPopups.Add(new GameModePopup());
+            _uiPopups.Add(new YouWonYouLostPopup());
+            _uiPopups.Add(new ElementFilterPopup());
+            _uiPopups.Add(new CardFilterPopup());
+            _uiPopups.Add(new CardInfoWithSearchPopup());
+            _uiPopups.Add(new MySettingPopup());
+            _uiPopups.Add(new LoadingBarPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
 {
     public class MyDecksEditTab
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksEditTab));
+        
         private ILoadObjectsManager _loadObjectsManager;
         
         private IDataManager _dataManager;
@@ -1152,7 +1155,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.LogException(Log, e);
 
                 success = false;
 

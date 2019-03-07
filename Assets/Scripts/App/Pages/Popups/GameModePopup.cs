@@ -80,7 +80,6 @@ namespace Loom.ZombieBattleground
             _buttonPvPMode.onClick.AddListener(ButtonPvPModeHandler);
             _buttonBack.onClick.AddListener(ButtonBackHandler);
 
-            _buttonPvPMode.interactable = _dataManager.ConfigData.EnablePvP;
             _buttonPvPMode.interactable = true;
 #if DISABLE_PVP
             _buttonPvPMode.interactable = false;
