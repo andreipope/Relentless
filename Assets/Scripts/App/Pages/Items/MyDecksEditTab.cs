@@ -901,6 +901,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetCollectionPageState()
         {
+            ExcludeFilterDataWithAgainstSetType();
             _availableSetType = _cardFilterPopup.FilterData.GetFilterSetTypeList();
             _currentCollectionSetTypeIndex = 0;
             _currentCollectionPage = 0;
@@ -935,6 +936,8 @@ namespace Loom.ZombieBattleground
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
                 List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
+                Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+                allAvailableSetTypeList.Remove(againstSetType);
                 foreach (Enumerators.SetType item in allAvailableSetTypeList)
                 {
                     CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
@@ -975,6 +978,12 @@ namespace Loom.ZombieBattleground
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
             return _cardFilterPopup.FilterData.TypeDictionary[card.CardType];
+        }
+        
+        private void ExcludeFilterDataWithAgainstSetType()
+        {
+            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;            
         }
 
         private void UpdateCacheFilteredCardList(List<Card> cardList)
