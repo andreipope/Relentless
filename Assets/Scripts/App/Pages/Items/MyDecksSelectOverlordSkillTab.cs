@@ -356,7 +356,6 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                overrideLock = false;
                 abilityInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability, overrideLock);
                 abilityInstance.OverlordAbilitySelected += OverlordAbilitySelectedHandler;
 
@@ -449,8 +448,7 @@ namespace Loom.ZombieBattleground
 
                 _selectButton.onClick.AddListener(SelectButtonOnClickHandler);
 
-                //IsUnlocked = Skill != null ? Skill.Unlocked : false;
-                IsUnlocked = (Skill != null);
+                IsUnlocked = Skill != null ? Skill.Unlocked : false;
 
                 _abilityIconImage.sprite = IsUnlocked ?
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :
