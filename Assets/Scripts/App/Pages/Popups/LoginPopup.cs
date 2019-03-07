@@ -710,7 +710,6 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        Debug.Log("DID THIS");
                         _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
                         GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
                         GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
