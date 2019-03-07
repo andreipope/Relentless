@@ -331,8 +331,6 @@ namespace Loom.ZombieBattleground
 
             private readonly GameObject _selfObject;
 
-            private readonly GameObject _lockedObject;
-
             private readonly Button _selectButton;
 
             private readonly GameObject _glowObj;
@@ -354,9 +352,8 @@ namespace Loom.ZombieBattleground
                 _selfObject =
                     Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>(
-                            "Prefabs/UI/Elements/OverlordAbilityPopupAbilityItem"), root, false);
+                            "Prefabs/UI/Elements/DeckSelection/OverlordAbilityItem"), root, false);
 
-                _lockedObject = _selfObject.transform.Find("Object_Locked").gameObject;
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();
@@ -372,12 +369,6 @@ namespace Loom.ZombieBattleground
                 _selectButton.interactable = IsUnlocked;
 
                 _glowObj.SetActive(false);
-
-                if (IsUnlocked)
-                {
-                    _lockedObject.SetActive(true);
-                    _selectButton.interactable = false;
-                }
             }
 
             public void Dispose()
