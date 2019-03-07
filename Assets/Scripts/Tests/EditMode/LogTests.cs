@@ -13,6 +13,7 @@ namespace Loom.ZombieBattleground.Test
     public class LogTests
     {
         [Test]
+        [Ignore("breaks test reports")]
         public void HtmlLayout()
         {
             ILoggerRepository repository = LogManager.CreateRepository(Guid.NewGuid().ToString());

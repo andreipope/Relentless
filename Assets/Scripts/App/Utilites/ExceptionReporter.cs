@@ -1,5 +1,6 @@
 using System;
 using log4net;
+using Unity.Cloud.UserReporting.Plugin;
 
 namespace Loom.ZombieBattleground.Helpers
 {
@@ -7,13 +8,15 @@ namespace Loom.ZombieBattleground.Helpers
     {
         public static void SilentReportException(Exception e)
         {
-            Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient.LogException(e);
+#if !UNITY_EDITOR
+            UnityUserReporting.CurrentClient.LogException(e);
+#endif
         }
 
         public static void LogException(ILog log, Exception e)
         {
             log.Error("", e);
-            Unity.Cloud.UserReporting.Plugin.UnityUserReporting.CurrentClient.LogException(e);
+            SilentReportException(e);
         }
     }
 }
