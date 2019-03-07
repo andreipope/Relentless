@@ -73,7 +73,10 @@ namespace Loom.ZombieBattleground
 
             if (visible)
             {
-                DebugConsole.IsVisible = false;
+                if (DebugConsole.Instance != null)
+                {
+                    DebugConsole.IsVisible = false;
+                }
             }
         }
 
