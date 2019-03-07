@@ -912,43 +912,62 @@ namespace Loom.ZombieBattleground
         private void UpdateAvailableCollectionCards()
         {
             string keyword = _inputFieldSearchName.text.Trim();
+            
             if (string.IsNullOrEmpty(keyword))
+                UpdateCollectionCardsByFilter();
+            else
+                UpdateCollectionCardsByKeyword();
+            
+            if(!CheckIfAnyCacheCollectionCardsExist())
+            {
+                _myDeckPage.OpenAlertDialog("Sorry, no matches card found.");
+                ResetSearchAndFilterResult();
+            }
+        }
+
+        private void UpdateCollectionCardsByKeyword()
+        {
+            string keyword = _inputFieldSearchName.text.Trim().ToLower();
+            List<Card> resultList = new List<Card>();
+            List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
+            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            allAvailableSetTypeList.Remove(againstSetType);
+            foreach (Enumerators.SetType item in allAvailableSetTypeList)
+            {
+                CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
+                List<Card> cards = set.Cards.ToList();
+                foreach (Card card in cards)
+                    if (card.Name.ToLower().Contains(keyword))
+                        resultList.Add(card);
+            }
+
+            UpdateCacheFilteredCardList(resultList);
+        }
+        
+        private void UpdateCollectionCardsByFilter()
+        {
+            List<Card> resultList = new List<Card>();
+            if (_availableSetType.Count > _currentCollectionSetTypeIndex)
             {
                 Enumerators.SetType setType = _availableSetType[_currentCollectionSetTypeIndex];
                 CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
                 List<Card> cards = set.Cards.ToList();
-                List<Card> resultList = new List<Card>();
-                
-                foreach(Card card in cards)
+                foreach (Card card in cards)
                 {
                     if
-                    ( 
+                    (
                         CheckIfSatisfyGooCostFilter(card) &&
                         CheckIfSatisfyRankFilter(card) &&
                         CheckIfSatisfyTypeFilter(card)
                     )
                         resultList.Add(card);
                 }
-                UpdateCacheFilteredCardList(resultList);
             }
             else
-            {   
-                keyword = keyword.ToLower();
-                List<Card> resultList = new List<Card>();
-                List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-                Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
-                allAvailableSetTypeList.Remove(againstSetType);
-                foreach (Enumerators.SetType item in allAvailableSetTypeList)
-                {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
-                    List<Card> cards = set.Cards.ToList();
-                    foreach (Card card in cards)
-                        if (card.Name.ToLower().Contains(keyword))
-                            resultList.Add(card);
-                }
-
-                UpdateCacheFilteredCardList(resultList);
+            {
+                _myDeckPage.OpenAlertDialog("Sorry, no matches elements found.");        
             }
+            UpdateCacheFilteredCardList(resultList);
         }
         
         private bool CheckIfSatisfyGooCostFilter(Card card)
@@ -980,10 +999,22 @@ namespace Loom.ZombieBattleground
             return _cardFilterPopup.FilterData.TypeDictionary[card.CardType];
         }
         
+        private bool CheckIfAnyCacheCollectionCardsExist()
+        {
+            return _cacheCollectionCardsList.Count > 0;
+        }
+
         private void ExcludeFilterDataWithAgainstSetType()
         {
             Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;            
+        }
+        
+        private void ResetSearchAndFilterResult()
+        {
+            _cardFilterPopup.FilterData.Reset();
+            _inputFieldSearchName.text = "";
+            ResetCollectionPageState();
         }
 
         private void UpdateCacheFilteredCardList(List<Card> cardList)
