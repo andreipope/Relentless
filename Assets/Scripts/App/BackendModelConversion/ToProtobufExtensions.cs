@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Data
             CardAbility cardAbility = new CardAbility {
                 Type = (CardAbilityType.Types.Enum) ability.AbilityType,
                 ActivityType = (CardAbilityActivityType.Types.Enum) ability.ActivityType,
-                Trigger = (CardAbilityTrigger.Types.Enum) ability.CallType,
+                Trigger = (CardAbilityTrigger.Types.Enum) ability.Trigger,
                 TargetTypes =
                 {
                     ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)

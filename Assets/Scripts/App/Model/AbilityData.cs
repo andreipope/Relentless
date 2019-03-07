@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.AbilityActivityType ActivityType { get; private set; }
 
         [JsonProperty("call_type")]
-        public Enumerators.AbilityTrigger CallType { get; private set; }
+        public Enumerators.AbilityTrigger Trigger { get; private set; }
 
         [JsonProperty("target_type")]
         public List<Enumerators.AbilityTarget> AbilityTarget { get; private set; }
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground.Data
         {
             AbilityType = abilityType;
             ActivityType = activityType;
-            CallType = callType;
+            Trigger = callType;
             AbilityTarget = abilityTargetTypes ?? new List<Enumerators.AbilityTarget>();
             AbilityStatType = abilityStatType;
             AbilitySetType = abilitySetType;
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground.Data
         {
             AbilityType = source.AbilityType;
             ActivityType = source.ActivityType;
-            CallType = source.CallType;
+            Trigger = source.Trigger;
             AbilityTarget = source.AbilityTarget.ToList();
             AbilityStatType = source.AbilityStatType;
             AbilitySetType = source.AbilitySetType;
@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground.Data
         }
 
         public override string ToString() {
-            return $"({nameof(AbilityType)}: {AbilityType}, {nameof(CallType)}: {CallType}, {nameof(Name)}: {Name})";
+            return $"({nameof(AbilityType)}: {AbilityType}, {nameof(Trigger)}: {Trigger}, {nameof(Name)}: {Name})";
         }
 
         public class VisualEffectInfo

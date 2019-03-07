@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsAbilityCallsAtStart(AbilityData ability)
         {
-            if (ability.CallType == Enumerators.AbilityTrigger.ENTRY)
+            if (ability.Trigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 return true;
             }
@@ -269,7 +269,7 @@ namespace Loom.ZombieBattleground
                 for (int i = 0; i < abilities.Count; i++)
                 {
                     if (attackedCard.Faction == abilities[i].AbilitySetType &&
-                        abilities[i].CallType == Enumerators.AbilityTrigger.PERMANENT)
+                        abilities[i].Trigger == Enumerators.AbilityTrigger.PERMANENT)
                     {
                         value += abilities[i].Value;
                     }
@@ -392,7 +392,7 @@ namespace Loom.ZombieBattleground
         public bool CanTakeControlUnit(WorkingCard workingCard, AbilityData ability)
         {
             if (ability.AbilityType == Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT &&
-                ability.CallType == Enumerators.AbilityTrigger.ENTRY &&
+                ability.Trigger == Enumerators.AbilityTrigger.ENTRY &&
                 ability.ActivityType == Enumerators.AbilityActivityType.ACTIVE &&
                 workingCard.Owner.BoardCards.Count >= workingCard.Owner.MaxCardsInPlay)
                 return false;
@@ -716,7 +716,7 @@ namespace Loom.ZombieBattleground
         public void CallAbilitiesInHand(BoardCard boardCard, WorkingCard card)
         {
             List<AbilityData> handAbilities =
-                card.LibraryCard.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityTrigger.IN_HAND));
+                card.LibraryCard.Abilities.FindAll(x => x.Trigger.Equals(Enumerators.AbilityTrigger.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
                 CreateActiveAbility(ability, card.LibraryCard.CardKind, boardCard, card.Owner, card.LibraryCard, card)
@@ -807,7 +807,7 @@ namespace Loom.ZombieBattleground
             foreach(AbilityData abilityData in card.LibraryCard.Abilities )
             {
                 ActiveAbility activeAbility;
-                if(abilityData.CallType != Enumerators.AbilityTrigger.ENTRY)
+                if(abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY)
                 {
                     activeAbility = CreateActiveAbility(abilityData, card.LibraryCard.CardKind, abilityCaller, owner, card.LibraryCard, card);
                     activeAbility.Ability.Activate();

@@ -859,7 +859,7 @@ namespace Loom.ZombieBattleground
                     {
                         foreach(AbilityData data in abilitiesWithTargets)
                         {
-                            if (data.CallType == Enumerators.AbilityTrigger.ENTRY &&
+                            if (data.Trigger == Enumerators.AbilityTrigger.ENTRY &&
                                 data.ActivityType == Enumerators.AbilityActivityType.ACTIVE)
                             {
                                 needTargetForAbility = true;

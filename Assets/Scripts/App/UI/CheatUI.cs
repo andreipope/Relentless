@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (Card card in cardsLibraryData.Cards)
                 {
-                    _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
+                    _cardNameToDescription[card.Name] = $"{card.Name} (faction: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 

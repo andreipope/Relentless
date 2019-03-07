@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground
             AbilityData = ability;
             CardKind = cardKind;
             AbilityActivityType = ability.ActivityType;
-            AbilityTrigger = ability.CallType;
+            AbilityTrigger = ability.Trigger;
             AbilityTargetTypes = ability.AbilityTarget;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;
