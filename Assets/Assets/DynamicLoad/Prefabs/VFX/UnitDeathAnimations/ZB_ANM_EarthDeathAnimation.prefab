@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4699275024639518}
   - component: {fileID: 198488046497560178}
   - component: {fileID: 199920885246575628}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: IceBreaks (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -38,7 +38,7 @@ GameObject:
   - component: {fileID: 4439246926531018}
   - component: {fileID: 198080418716509182}
   - component: {fileID: 199846580157233430}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: FlashStreaks (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -55,7 +55,7 @@ GameObject:
   - component: {fileID: 4446648076602238}
   - component: {fileID: 198496753431479702}
   - component: {fileID: 199914388551955460}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: VFX_All
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4036618874998400}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Plane Transform 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4993783910974628}
   - component: {fileID: 198967488561722400}
   - component: {fileID: 199366078904221814}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ExplosionSnow (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4853101917844338}
   - component: {fileID: 198180112243768658}
   - component: {fileID: 199100736399436456}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: IceSmokeSpread (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -121,7 +121,7 @@ GameObject:
   - component: {fileID: 4411634813012872}
   - component: {fileID: 198551989675360122}
   - component: {fileID: 199158786370337848}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ExplosionSnow (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -155,7 +155,7 @@ GameObject:
   - component: {fileID: 4258234871393750}
   - component: {fileID: 198097432299322290}
   - component: {fileID: 199266109813467538}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ExplosionSnow (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
