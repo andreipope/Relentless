@@ -828,7 +828,6 @@ namespace Loom.ZombieBattleground
 
         public void InvokeUnitDied()
         {
-            Debug.LogError(4444);
             UnitDied?.Invoke();
         }
 
