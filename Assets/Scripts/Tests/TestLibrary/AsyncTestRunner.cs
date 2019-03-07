@@ -240,7 +240,7 @@ namespace Loom.ZombieBattleground.Test
         {
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
-            Log.Info("=== CANCELING TEST WITH REASON: " + reason);
+            Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
