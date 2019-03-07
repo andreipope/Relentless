@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class GameplayManager : IService, IGameplayManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(GameplayManager));
+
         private IDataManager _dataManager;
 
         private IMatchManager _matchManager;
@@ -84,6 +87,8 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
+        public bool OpponentHasDoneMulligan {get; set;}
+
         public AnalyticsTimer MatchDuration { get; set; }
 
         public Action TutorialStartAction { get; private set; }
@@ -117,24 +122,20 @@ namespace Loom.ZombieBattleground
             {
                 InternalTools.DoActionDelayed(() =>
                      {
-                         switch (endGameType)
-                         {
-                             case Enumerators.EndGameType.WIN:
-                                 if (Constants.EnableNewUI)
-                                     _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { true });
-                                 else
-                                     _uiManager.DrawPopup<YouWonPopup>();
-                                 break;
-                             case Enumerators.EndGameType.LOSE:
-                                if (Constants.EnableNewUI)
-                                     _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { false });
-                                 else
+                         if (GameClient.Get<IAppStateManager>().AppState == Enumerators.AppState.GAMEPLAY) {
+                            switch (endGameType)
+                            {
+                                case Enumerators.EndGameType.WIN:
+                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    break;
+                                case Enumerators.EndGameType.LOSE:
                                     _uiManager.DrawPopup<YouLosePopup>();
-                                 break;
-                             case Enumerators.EndGameType.CANCEL:
-                                 break;
-                             default:
-                                 throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                                    break;
+                                case Enumerators.EndGameType.CANCEL:
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException(nameof(endGameType), endGameType, null);
+                            }
                          }
                      },
                      timer);
@@ -290,8 +291,7 @@ namespace Loom.ZombieBattleground
                 new UniqueAnimationsController(),
                 new BoardController(),
                 new OverlordsTalkingController(),
-                new HandPointerController(),
-                new DeckGeneratorController()
+                new HandPointerController()
             };
 
             foreach (IController controller in _controllers)
@@ -426,7 +426,7 @@ namespace Loom.ZombieBattleground
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
-                        Debug.Log(
+                        Log.Info(
                             $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
                             String.Join(
                                 "\n",

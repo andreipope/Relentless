@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, bool hasCounterAttack = true)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                 int additionalDamageAttacked =
                     _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
-                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
+                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
@@ -269,6 +269,11 @@ namespace Loom.ZombieBattleground
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
+            AttackPlayer(attackedPlayer, damage);
+        }
+
+        public void AttackPlayer(Player attackedPlayer, int damage)
+        {
             if (attackedPlayer != null)
             {
                 attackedPlayer.Defense -= damage;

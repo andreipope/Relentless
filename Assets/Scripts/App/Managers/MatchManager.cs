@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class MatchManager : IService, IMatchManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MatchManager));
+
         public event Action MatchFinished;
 
         private IUIManager _uiManager;
@@ -24,8 +27,6 @@ namespace Loom.ZombieBattleground
         private IPvPManager _pvpManager;
 
         private Enumerators.AppState _finishMatchAppState;
-
-        private int _onPvPManagerGameStartedActionHandlerCounter;
 
         public Enumerators.MatchType MatchType { get; set; }
 
@@ -70,31 +71,20 @@ namespace Loom.ZombieBattleground
                             FindOpponentTime.StartTimer();
                             GameClient.Get<IQueueManager>().Clear();
 
-                            if (_onPvPManagerGameStartedActionHandlerCounter < 0) {
-                                _onPvPManagerGameStartedActionHandlerCounter = 0;
-                                Debug.Log("OnPvPManagerGameStartedActionReceived was unsubscribed more than required.");
-                            }
-
-                            while (_onPvPManagerGameStartedActionHandlerCounter > 0) {
-                                _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
-                                _onPvPManagerGameStartedActionHandlerCounter--;
-                                Debug.Log("Unsubscribing on PVP, OnPvPManagerGameStartedActionReceived.");
-                            }
-
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Show();
-                            await _pvpManager.StartMatchmaking(_uiManager.GetPage<GameplayPage>().CurrentDeckId);
+                            await _pvpManager.StartMatchmaking((int)_gameplayManager.CurrentPlayerDeck.Id);
                             _pvpManager.MatchMakingFlowController.StateChanged += MatchMakingFlowControllerOnStateChanged;
 
+                            _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
                             _pvpManager.GameStartedActionReceived += OnPvPManagerGameStartedActionReceived;
-                            _onPvPManagerGameStartedActionHandlerCounter++;
                         }
                         catch (Exception e) {
 
-                            Helpers.ExceptionReporter.LogException(e);
+                            Helpers.ExceptionReporter.SilentReportException(e);
 
-                            Debug.LogWarning(e);
+                            Log.Warn(e);
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
                             matchMakingPopup.Hide();
@@ -125,8 +115,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-                Debug.LogWarning(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn(e);
                 _uiManager.GetPopup<MatchMakingPopup>().Hide();
                 _uiManager.DrawPopup<WarningPopup>($"Error while canceling finding a match:\n{e.Message}");
             }
@@ -175,8 +165,17 @@ namespace Loom.ZombieBattleground
 
         private void StartPvPMatch()
         {
+            _gameplayManager.OpponentHasDoneMulligan = false;
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _pvpManager.MulliganProcessUsedActionReceived += OpponentSentMulliganEventHandler;
             _uiManager.HidePopup<ConnectionPopup>();
             CreateLocalMatch();
+        }
+
+        private void OpponentSentMulliganEventHandler(PlayerActionMulligan mulligan)
+        {
+            _pvpManager.MulliganProcessUsedActionReceived -= OpponentSentMulliganEventHandler;
+            _gameplayManager.OpponentHasDoneMulligan = true;
         }
 
         private void OnPvPManagerGameStartedActionReceived()
@@ -196,7 +195,6 @@ namespace Loom.ZombieBattleground
             matchMakingPopup.CancelMatchmakingClicked -= MatchMakingPopupOnCancelMatchmakingClicked;
             matchMakingPopup.Hide();
             _pvpManager.GameStartedActionReceived -= OnPvPManagerGameStartedActionReceived;
-            _onPvPManagerGameStartedActionHandlerCounter--;
         }
 
         private void OnPvPManagerMatchingFailed()
@@ -234,7 +232,7 @@ namespace Loom.ZombieBattleground
 
         private void ForceStartGameplay(bool force = false)
         {
-            Debug.Log(_gameplayManager.IsTutorial);
+            Log.Info(_gameplayManager.IsTutorial);
             if (_gameplayManager.IsTutorial)
             {
                 _tutorialManager.SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);

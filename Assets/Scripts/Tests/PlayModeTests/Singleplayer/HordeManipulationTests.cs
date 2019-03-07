@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground.Test
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator RemoveAllHordesExceptFirst()
+        public IEnumerator CreateHordeThenDeleteIt()
         {
             return AsyncTest(async () =>
             {
@@ -75,7 +75,25 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
                 await TestHelper.ClickGenericButton("Button_SoloMode");
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-                await TestHelper.RemoveAllHordesExceptDefault();
+
+                await TestHelper.SelectAHordeByName("HordeToDelete", false);
+                if (TestHelper.SelectedHordeIndex != -1)
+                {
+                    await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
+                }
+
+                await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.PickOverlord("Razu", true);
+                await TestHelper.LetsThink();
+                await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.DECK_EDITING);
+                await TestHelper.SetDeckTitle("HordeToDelete");
+                await TestHelper.ClickGenericButton("Button_Back");
+                await TestHelper.RespondToYesNoOverlay(true);
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
+                await TestHelper.SelectAHordeByName("HordeToDelete", true, "Horde draft isn't displayed.");
+                await TestHelper.RemoveAHorde(TestHelper.SelectedHordeIndex);
             });
         }
     }

@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
         /// <summary>
         /// Time scale to use during tests.
         /// </summary>
-        public const int TestTimeScale = DebugTests ? 1 : 25;
+        public const int TestTimeScale = DebugTests ? 1 : 5;
 
         private static TestHelper _instance;
 
@@ -142,6 +142,14 @@ namespace Loom.ZombieBattleground.Test
         {
         }
 
+        public async Task Dispose()
+        {
+            if (_opponentDebugClient != null)
+            {
+                await _opponentDebugClient.Reset();
+            }
+        }
+
         /// <summary>
         /// Gets the name of the test.
         /// </summary>
@@ -193,15 +201,15 @@ namespace Loom.ZombieBattleground.Test
                 await AddVirtualInputModule();
 
                 await SetCanvases();
- 
+
                 #region Login
 
                 await new WaitUntil(() =>
                 {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     if (_appStateManager == null)
                         return false;
 
-                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
                     return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU);
                 });
 
@@ -922,15 +930,17 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             BackendDataControlMediator.UserDataModel = TestUserDataModel;
-
             await BackendDataControlMediator.LoginAndLoadData();
 
-            WaitStart(10);
-            await new WaitUntil(() =>
+            if (waitForMainMenu)
             {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return waitForMainMenu && CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp();
-            });
+                WaitStart(10);
+                await new WaitUntil(() =>
+                {
+                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                    return CheckCurrentAppState(Enumerators.AppState.MAIN_MENU) || WaitTimeIsUp();
+                });
+            }
 
             if (waitForMainMenu && !CheckCurrentAppState(Enumerators.AppState.MAIN_MENU))
             {
@@ -954,6 +964,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
             }
 
+            AsyncTestRunner.Instance.ThrowIfCancellationRequested();
             WaitStart(5);
             GameObject menuButtonGameObject;
             bool clickTimeout = false;
@@ -1002,7 +1013,7 @@ namespace Loom.ZombieBattleground.Test
                 Assert.Fail($"Couldn't find the button: {buttonName}");
             }
 
-            await LetsThink(0.5f);
+            await LetsThink();
 
             if (count >= 2)
             {
@@ -1073,25 +1084,16 @@ namespace Loom.ZombieBattleground.Test
         /// Sets tags to be used by the matchmaking system.
         /// </summary>
         /// <param name="tags">Tags</param>
-        public void SetPvPTags(IList<string> tags)
+        public void SetPvPTags(IReadOnlyList<string> tags)
         {
             if (IsTestFailed)
-            {
                 return;
-            }
 
-            if (tags == null || tags.Count <= 0)
-            {
-                _pvpManager.PvPTags = null;
+            if (tags == null)
+                throw new ArgumentNullException(nameof(tags));
 
-                return;
-            }
-
-            _pvpManager.PvPTags = new List<string>();
-            foreach (string tag in tags)
-            {
-                _pvpManager.PvPTags.Add(tag);
-            }
+            _pvpManager.PvPTags.Clear();
+            _pvpManager.PvPTags.AddRange(tags);
         }
 
         /// <summary>
@@ -1102,22 +1104,23 @@ namespace Loom.ZombieBattleground.Test
             return _pvpManager.PvPTags;
         }
 
-        public DebugCheatsConfiguration DebugCheats
-        {
-            get => _pvpManager.DebugCheats;
-        }
+        public DebugCheatsConfiguration DebugCheats => _pvpManager.DebugCheats;
 
         #endregion
 
         #region Adapted from AIController
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, BoardObject entryAbilityTarget = null)
+        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, BoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
         {
             bool needTargetForAbility = false;
-            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+
+            if (!skipEntryAbilities)
             {
-                needTargetForAbility =
-                    card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0 && !HasChoosableAbilities(card.LibraryCard))
+                {
+                    needTargetForAbility =
+                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                }
             }
 
             switch (card.LibraryCard.CardKind)
@@ -1127,6 +1130,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
                         Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
+                        Assert.True(boardCard.CanBePlayed(boardCard.WorkingCard.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                             boardCard,
@@ -1136,7 +1140,8 @@ namespace Loom.ZombieBattleground.Test
                                 PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
                                 _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
                             },
-                            entryAbilityTarget);
+                            entryAbilityTarget,
+                            skipEntryAbilities);
 
                         await new WaitForUpdate();
 
@@ -1168,34 +1173,32 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 case Enumerators.CardKind.SPELL:
-                    if (entryAbilityTarget != null && needTargetForAbility || !needTargetForAbility)
+                    _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
+                    _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+
+                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
 
-                        if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-                        {
-                            BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                            boardCard,
+                            boardCard.HandBoardCard,
+                            playCardOnBoard =>
+                            {
+                                //todo: handle abilities here
 
-                            _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                                boardCard,
-                                boardCard.HandBoardCard,
-                                playCardOnBoard =>
-                                {
-                                    //todo: handle abilities here
-
-                                    PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-                                    _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
-                                },
-                                entryAbilityTarget);
-                        }
-                        else
-                        {
-                            _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
-                        }
-
-                        _cardsController.DrawCardInfo(card);
+                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+                                _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                            },
+                            entryAbilityTarget,
+                            skipEntryAbilities);
                     }
+                    else
+                    {
+                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
+                    }
+
+                    _cardsController.DrawCardInfo(card);
 
                     break;
             }
@@ -1203,6 +1206,16 @@ namespace Loom.ZombieBattleground.Test
             _testBroker.GetPlayer(_player).CurrentGoo -= card.LibraryCard.Cost;
 
             await new WaitForUpdate();
+        }
+
+        private bool HasChoosableAbilities(IReadOnlyCard card)
+        {
+            AbilityData subAbilitiesData = card.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+
+            if (subAbilitiesData != null && !(subAbilitiesData is default(AbilityData)))
+                return true;
+
+            return false;
         }
 
         private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
@@ -1356,31 +1369,23 @@ namespace Loom.ZombieBattleground.Test
         /// <param name="target">Target.</param>
         public async Task DoBoardSkill(
             BoardSkill skill,
-            BoardObject target = null)
+            List<ParametrizedAbilityBoardObject> targets = null)
         {
             TaskCompletionSource<GameplayQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayQueueAction<object>>();
             skill.StartDoSkill();
 
-            if (target != null)
+            if (targets != null && targets.Count > 0)
             {
-                Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
-                skill.FightTargetingArrow.SetTarget(target);
-                await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
-
-                switch (target)
+                if (skill.Skill.CanSelectTarget)
                 {
-                    case Player player:
-                        skill.FightTargetingArrow.OnPlayerSelected(player);
-                        break;
-                    case BoardUnitModel boardUnitModel:
-                        skill.FightTargetingArrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+                    BoardObject target = targets[0].BoardObject;
+
+                    Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
+                    await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
                 }
             }
 
-            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill();
+            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
             Action<GameplayQueueAction<object>> onDone = null;
             onDone = gameplayQueueAction2 =>
             {
@@ -1393,6 +1398,24 @@ namespace Loom.ZombieBattleground.Test
         }
 
         #endregion
+
+        public async Task SelectTargetOnFightTargetArrow(BattleBoardArrow arrow, BoardObject target)
+        {
+            arrow.SetTarget(target);
+            await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
+
+            switch (target)
+            {
+                case Player player:
+                    arrow.OnPlayerSelected(player);
+                    break;
+                case BoardUnitModel boardUnitModel:
+                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
+            }
+        }
 
         public Player GetCurrentPlayer()
         {
@@ -1411,7 +1434,7 @@ namespace Loom.ZombieBattleground.Test
                     .BoardCards
                     .FirstOrDefault(card => card.Model.InstanceId == instanceId);
 
-            if (boardUnitView == null || boardUnitView is default(BoardUnitView))
+            if (boardUnitView == null)
                 throw new Exception($"Card {instanceId} not found on board");
 
             return boardUnitView;
@@ -1535,12 +1558,12 @@ namespace Loom.ZombieBattleground.Test
                     return;
 
                 await WaitUntilOurTurnStarts();
-
-                if (IsGameEnded())
-                    return;
-
-                await WaitUntilInputIsUnblocked();
             }
+
+            if (IsGameEnded())
+                return;
+
+            await WaitUntilInputIsUnblocked();
 
             await LetsThink();
         }
@@ -1555,7 +1578,7 @@ namespace Loom.ZombieBattleground.Test
             await new WaitUntil(() =>
             {
                 AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null || _uiManager.GetPopup<ConnectionPopup>().Self != null;
+                return IsGameEnded() || _uiManager.GetPopup<YourTurnPopup>().Self != null;
             });
 
             await HandleConnectivityIssues();
@@ -1567,12 +1590,6 @@ namespace Loom.ZombieBattleground.Test
             });
 
             await HandleConnectivityIssues();
-
-            await new WaitUntil(() =>
-            {
-                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return IsGameEnded() || _playerController.IsActive;
-            });
         }
 
         /// <summary>
@@ -1589,24 +1606,14 @@ namespace Loom.ZombieBattleground.Test
             });
 
             await HandleConnectivityIssues();
-        }
-
-        // todo: reconsider having this
-        /// <summary>
-        /// Waits until the card is added to board.
-        /// </summary>
-        /// <remarks>Was written specifically for tutorials, where some steps require it.</remarks>
-        /// <param name="boardName">Board name.</param>
-        public async Task WaitUntilCardIsAddedToBoard(string boardName)
-        {
-            Transform boardTransform = GameObject.Find(boardName).transform;
-            int boardChildrenCount = boardTransform.childCount;
 
             await new WaitUntil(() =>
             {
                 AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                return boardChildrenCount < boardTransform.childCount && boardChildrenCount < _battlegroundController.OpponentBoardCards.Count;
+                return IsGameEnded() || _playerController.IsActive;
             });
+
+            Assert.True(_playerController.IsActive, "_playerController.IsActive");
         }
 
         /// <summary>
@@ -1644,26 +1651,17 @@ namespace Loom.ZombieBattleground.Test
 
                 //Debug.Log("!a 0");
 
-                await TaskAsIEnumerator(currentTurnTask());
+                await WaitUntilInputIsUnblocked();
 
                 //Debug.Log("!a 1");
 
+                Assert.True(_playerController.IsActive, "_playerController.IsActive");
+                await TaskAsIEnumerator(currentTurnTask());
+
                 if (IsGameEnded())
                     break;
-
-                await WaitUntilOurTurnStarts();
 
                 //Debug.Log("!a 2");
-
-                if (IsGameEnded())
-                    break;
-
-                await WaitUntilInputIsUnblocked();
-
-                //Debug.Log("!a 3");
-
-                if (IsGameEnded())
-                    break;
             }
         }
 
@@ -1698,32 +1696,15 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private async Task HandleConnectivityIssues()
+        private Task HandleConnectivityIssues()
         {
             if (IsTestFailed)
             {
-                return;
+                return Task.CompletedTask;
             }
 
-            if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
-            {
-                WaitStart(10);
-
-                await ClickGenericButton("Button_Reconnect");
-
-                await new WaitUntil(() =>
-                {
-                    AsyncTestRunner.Instance.ThrowIfCancellationRequested();
-                    return _uiManager.GetPopup<ConnectionPopup>().Self != null || WaitTimeIsUp();
-                });
-
-                if (_uiManager.GetPopup<ConnectionPopup>().Self != null)
-                {
-                    Assert.Fail("Connectivity issue came up.");
-                }
-            }
-
-            await new WaitForUpdate();
+            Assert.True(_uiManager.GetPopup<ConnectionPopup>().Self == null, "Connectivity issue came up");
+            return Task.CompletedTask;
         }
 
         #region Horde Creation / Editing
@@ -2364,16 +2345,16 @@ namespace Loom.ZombieBattleground.Test
         /// <returns></returns>
         public async Task CreateAndConnectOpponentDebugClient(Func<Exception, Task> onExceptionCallback = null)
         {
+            if (_opponentDebugClientOwner != null)
+            {
+                Object.Destroy(_opponentDebugClientOwner.gameObject);
+                _opponentDebugClientOwner = null;
+            }
+
             if (_opponentDebugClient != null)
             {
                 await _opponentDebugClient.Reset();
                 _opponentDebugClient = null;
-            }
-
-            if (_opponentDebugClientOwner != null)
-            {
-                Object.Destroy(_opponentDebugClientOwner);
-                _opponentDebugClientOwner = null;
             }
 
             GameObject owner = new GameObject("_OpponentDebugClient");
@@ -2484,8 +2465,6 @@ namespace Loom.ZombieBattleground.Test
             float baseTime = _waitUnscaledTime ? Time.unscaledTime : Time.time;
             return baseTime > _waitStartTime + _waitAmount;
         }
-
-
 
         public static IEnumerator TaskAsIEnumerator(Func<Task> taskFunc, int timeout = Timeout.Infinite)
         {

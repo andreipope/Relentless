@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,16 +13,28 @@ namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPTestUtility));
+
         private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
             PvpTestContext pvpTestContext,
             IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
             Action validateEndStateAction,
-            bool enableReverseMatch = true)
+            bool enableReverseMatch = true,
+            bool enableBackendGameLogicMatch = false,
+            bool enableClientGameLogicMatch = true,
+            bool onlyReverseMatch = false
+            )
         {
+            void LogTestMode()
+            {
+                Log.Info($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
+            }
+
             async Task ExecuteTest()
             {
+                LogTestMode();
                 await GenericPvPTest(
                     turns,
                     pvpTestContext.Player1Deck,
@@ -37,23 +50,51 @@ namespace Loom.ZombieBattleground.Test
                         TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
                         TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                        TestHelper.DebugCheats.CustomRandomSeed = 1337;
+                        GameClient.Get<IPvPManager>().UseBackendGameLogic = pvpTestContext.UseBackendLogic;
                     },
                     cheats =>
                     {
                         cheats.UseCustomDeck = true;
                         cheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player1Deck : pvpTestContext.Player2Deck;
-                    },
+                        },
                     validateEndStateAction);
             }
 
-            pvpTestContext.IsReversed = false;
-            await ExecuteTest();
-
-            if (enableReverseMatch)
+            async Task ExecuteTestWithReverse()
             {
-                Debug.Log("Starting reversed Pvp test");
-                pvpTestContext.IsReversed = true;
-                await ExecuteTest();
+                if (!onlyReverseMatch)
+                {
+                    pvpTestContext.IsReversed = false;
+                    await ExecuteTest();
+                }
+
+                if (enableReverseMatch)
+                {
+                    pvpTestContext.IsReversed = true;
+                    await ExecuteTest();
+                }
+            }
+
+#if !ENABLE_BACKEND_INTEGRATION_TESTS
+            enableBackendGameLogicMatch = false;
+#endif
+            if (!enableClientGameLogicMatch && !enableBackendGameLogicMatch)
+                throw new Exception("At least one tests must be run");
+
+            if (!enableReverseMatch && onlyReverseMatch)
+                throw new Exception("!enableReverseMatch && onlyReverseMatch");
+
+            if (enableClientGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = false;
+                await ExecuteTestWithReverse();
+            }
+
+            if (enableBackendGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = true;
+                await ExecuteTestWithReverse();
             }
         }
 
@@ -77,7 +118,14 @@ namespace Loom.ZombieBattleground.Test
                 );
             setupAction?.Invoke();
 
-            await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
+            List<string> tags = new List<string>
+            {
+                "pvpTest",
+                TestHelper.GetTestName(),
+                Guid.NewGuid().ToString()
+            };
+
+            await StartOnlineMatch(tags, selectedHordeIndex: -1, createOpponent: false);
 
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
@@ -90,15 +138,22 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.WaitUntilPlayerOrderIsDecided();
             Assert.IsFalse(canceled, "canceled");
 
-            matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
-            await matchScenarioPlayer.Play();
-            validateEndStateAction?.Invoke();
+            GameClient.Get<IGameplayManager>().OpponentHasDoneMulligan = true;
 
+
+
+            using (matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns))
+            {
+                await matchScenarioPlayer.Play();
+            }
+
+            validateEndStateAction?.Invoke();
             await TestHelper.GoBackToMainScreen();
         }
 
-        public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
+        public static async Task StartOnlineMatch(IReadOnlyList<string> tags = null, int selectedHordeIndex = 0, bool createOpponent = true)
         {
+
             await TestHelper.MainMenuTransition("Button_Play");
 
             await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
@@ -114,12 +169,12 @@ namespace Loom.ZombieBattleground.Test
 
             if (tags == null)
             {
-                tags = new List<string>();
+                tags = new List<string>
+                {
+                    "onlineTest",
+                    TestHelper.GetTestName()
+                };
             }
-
-            tags.Insert(0, "pvpTest");
-            tags.Insert(1, TestHelper.GetTestName());
-
             TestHelper.SetPvPTags(tags);
             TestHelper.DebugCheats.Enabled = true;
             TestHelper.DebugCheats.CustomRandomSeed = 0;

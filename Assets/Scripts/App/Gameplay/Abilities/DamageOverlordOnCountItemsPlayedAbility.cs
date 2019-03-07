@@ -65,8 +65,6 @@ namespace Loom.ZombieBattleground
 
         private void DamageTarget(Player player)
         {
-            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
-
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
                 {
@@ -79,6 +77,8 @@ namespace Loom.ZombieBattleground
                     )
                 }
             );
+
+            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

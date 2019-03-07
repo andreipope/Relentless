@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -14,6 +15,8 @@ namespace Loom.ZombieBattleground
 {
     public class CustomGameModeCustomUiPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CustomGameModeCustomUiPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -118,8 +121,8 @@ namespace Loom.ZombieBattleground
                             }
                             catch (Exception e)
                             {
-                                Helpers.ExceptionReporter.LogException(e);
-                                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                                Helpers.ExceptionReporter.SilentReportException(e);
+                                Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
                             }
                         });
                         break;

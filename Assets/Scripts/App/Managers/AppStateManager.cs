@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public sealed class AppStateManager : IService, IAppStateManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(AppStateManager));
+
         private const float BackButtonResetDelay = 0.5f;
 
         private IUIManager _uiManager;
@@ -155,6 +158,7 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.DrawPopup<QuestionPopup>("Would you like to play another PvP game?");
                 QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+                popup.ConfirmationReceived -= DecideToPlayAgain;
                 popup.ConfirmationReceived += DecideToPlayAgain;
             }
         }
@@ -163,11 +167,14 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                popup.ConfirmationReceived -= DecideToPlayAgain;
-                _uiManager.HidePopup<MatchMakingPopup>();
-                GameClient.Get<IMatchManager>().FindMatch();
+                HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
+                if (_uiManager.CurrentPage == page) {
+                    page.BattleButtonOnClickHandler();
+                }
             }
+
+            QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
+            popup.ConfirmationReceived -= DecideToPlayAgain;
         }
 
         public void SetPausingApp(bool mustPause) {
@@ -190,6 +197,11 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            if (_backendFacade?.Contract?.Client != null)
+            {
+                _backendFacade.Contract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _backendFacade.Contract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
         }
 
         public void Init()
@@ -231,6 +243,7 @@ namespace Loom.ZombieBattleground
             {
                 ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
 
+
                 if (connectionPopup.Self == null)
                 {
                     Func<Task> connectFunc = async () =>
@@ -241,7 +254,7 @@ namespace Loom.ZombieBattleground
                         }
                         catch(Exception e)
                         {
-                            Helpers.ExceptionReporter.LogException(e);
+                            Helpers.ExceptionReporter.SilentReportException(e);
                         }
                         connectionPopup.Hide();
                     };
@@ -268,7 +281,7 @@ namespace Loom.ZombieBattleground
             }
             message += exception;
 
-            Debug.LogWarning(message);
+            Log.Warn(message);
 
             if (GameClient.Get<ITutorialManager>().IsTutorial || GameClient.Get<IGameplayManager>().IsTutorial)
             {

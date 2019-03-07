@@ -38,8 +38,6 @@ namespace Loom.ZombieBattleground
             increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedHp += increaseOn;
             AbilityUnitOwner.CurrentHp += increaseOn;
-
-            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
             AbilityUnitOwner.BuffedDamage += increaseOn;
             AbilityUnitOwner.CurrentDamage += increaseOn;
 

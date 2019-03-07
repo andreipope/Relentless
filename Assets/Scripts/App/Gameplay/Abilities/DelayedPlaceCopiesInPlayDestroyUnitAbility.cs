@@ -25,20 +25,32 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> targets = new List<BoardObject>();
 
-            BoardUnitModel boardUnit;
+            BoardUnitModel boardUnitModel;
+            BoardUnitView boardUnitView;
             for (int i = 0; i < Count; i++)
             {
                 if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                boardUnit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End).Model;
+                boardUnitView = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End);
+                boardUnitModel = boardUnitView.Model;
+
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                    Target = boardUnit,
+                    Target = boardUnitModel,
                 });
 
-                targets.Add(boardUnit);
+                if (AbilityUnitOwner.OwnerPlayer.IsLocalPlayer)
+                {
+                    BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, boardUnitView);
+                }
+                else
+                {
+                    BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
+                }
+
+                targets.Add(boardUnitModel);
             }
 
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam()

@@ -261,22 +261,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
 
-            private void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            private void SkillUsedHandler(BoardSkill skill, List<ParametrizedAbilityBoardObject> targets = null)
             {
-                Data.InstanceId targetInstanceId;
-                switch (target)
-                {
-                    case BoardUnitModel unit:
-                        targetInstanceId = unit.Card.InstanceId;
-                        break;
-                    case Player player:
-                        targetInstanceId = new Data.InstanceId(player.InstanceId.Id);
-                        break;
-                    default:
-                        throw new Exception($"Unhandled target type {target}");
-                }
-
-                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targetInstanceId));
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targets));
             }
 
             private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)

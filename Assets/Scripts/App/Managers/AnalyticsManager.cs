@@ -1,5 +1,10 @@
+#if UNITY_EDITOR && !FORCE_ENABLE_EDITOR_ANALYTICS
+#define DISABLE_ANALYTICS
+#endif
+
 using System;
 using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -10,6 +15,8 @@ using mixpanel;
 
 public class AnalyticsManager : IAnalyticsManager, IService
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(AnalyticsManager));
+
     private const string MatchesInPreviousSittingKey = "Analytics_MatchesPerSitting";
     private const string FirstTimeInstallKey = "Analytics_FirstTimeInstall";
 
@@ -21,7 +28,11 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     private int _finishedMatchCounter;
 
+    public const string EventGameStarted = "Game Started";
+
     public const string EventLogIn = "Log In";
+
+    public const string SkipTutorial = "Skip Tutorial";
 
     public const string EventStartedTutorialBasic = "Started Tutorial Basic Stage";
     public const string EventCompletedTutorialBasic = "Completed Tutorial Basic Stage";
@@ -80,15 +91,18 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void LogScreen(string title)
     {
-        Debug.Log("=== Log screen = " + title);
+#if !DISABLE_ANALYTICS
+        Log.Info("=== Log screen = " + title);
         _googleAnalytics.LogScreen(title);
         AnalyticsEvent.ScreenVisit(title);
 
-        //Mixpanel.Track(title);
+        //Mixpanel.Track(title); 
+#endif
     }
 
     public void LogEvent(string eventAction, string eventLabel, long value)
     {
+#if !DISABLE_ANALYTICS
         _googleAnalytics.LogEvent("Game Event", eventAction, eventLabel, value);
         AnalyticsEvent.Custom(
             eventAction,
@@ -101,6 +115,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
                     "value", value
                 }
             });
+#endif
     }
 
     public void NotifyStartedMatch()
@@ -134,19 +149,19 @@ public class AnalyticsManager : IAnalyticsManager, IService
         _backendFacade = GameClient.Get<BackendFacade>();
         _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
-        #if USE_PRODUCTION_BACKEND
+#if USE_PRODUCTION_BACKEND
             _googleAnalytics.IOSTrackingCode = "UA-124278621-1";
             _googleAnalytics.androidTrackingCode = "UA-124278621-1";
             _googleAnalytics.otherTrackingCode = "UA-124278621-1";
 
             Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Production"));
-        #else
+#else
             _googleAnalytics.IOSTrackingCode = "UA-130846432-1";
             _googleAnalytics.androidTrackingCode = "UA-130846432-1";
             _googleAnalytics.otherTrackingCode = "UA-130846432-1";
 
             Object.Instantiate(loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Plugin/Mixpanel_Staging"));
-        #endif
+#endif
 
         _fbManager = GameClient.Get<IFacebookManager>();
     }
@@ -161,6 +176,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName)
     {
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -170,10 +186,12 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FB
         _fbManager.LogEvent(eventName, null, new Dictionary<string, object>());
+#endif
     }
 
     public void SetEvent(string eventName, Dictionary<string, object> paramters)
     {
+#if !DISABLE_ANALYTICS
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);
@@ -188,25 +206,32 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
         // FB
         _fbManager.LogEvent(eventName, null, paramters);
+#endif
     }
 
     public void SetPoepleProperty(string identityId, string property, string value)
     {
+#if !DISABLE_ANALYTICS
         if (string.IsNullOrEmpty(identityId))
             return;
 
         Mixpanel.Identify(identityId);
         Mixpanel.people.Set(property, value);
+#endif
     }
 
     public void SetSuperProperty(string property, string value)
     {
+#if !DISABLE_ANALYTICS
         Mixpanel.Register(property, value);
+#endif
     }
 
     public void SetPoepleIncrement(string property, int value)
     {
+#if !DISABLE_ANALYTICS
         Mixpanel.people.Increment(property, value);
+#endif
     }
 
     private void FillBasicProps(Value props)
