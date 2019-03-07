@@ -23,26 +23,28 @@ namespace Loom.ZombieBattleground
         private const string DefaultLogFileName = "Log.html";
         private const string RepositoryName = "ZBLogRepository";
 
+        private static bool _isRepositoryCreated;
         private static bool _isConfigured;
-
-        static Logging()
-        {
-            LogManager.CreateRepository(RepositoryName);
-        }
 
         public static ILoggerRepository GetRepository()
         {
-            return LogManager.GetRepository(RepositoryName);
+            if (_isRepositoryCreated)
+                return LogManager.GetRepository(RepositoryName);
+
+            _isRepositoryCreated = true;
+            return LogManager.CreateRepository(RepositoryName);
         }
 
         public static ILog GetLog(string name)
         {
+            GetRepository();
             return LogManager.GetLogger(RepositoryName, name);
         }
 
         public static Logger GetLogger(string name)
         {
-            return (Logger) LogManager.GetLogger(RepositoryName, name).Logger;
+            GetRepository();
+            return (Logger) GetLog(name).Logger;
         }
 
         public static string GetLogFilePath()
@@ -64,7 +66,7 @@ namespace Loom.ZombieBattleground
                 if (GetLogFilePathFromEnvVar() != null)
                     return true;
 
-                return Application.isEditor;
+                return !Application.isEditor;
 #endif
             }
         }
@@ -75,7 +77,7 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
         [DidReloadScripts]
 #endif
-        public static void Setup()
+        public static void Configure()
         {
             if (_isConfigured)
                 return;
@@ -109,7 +111,7 @@ namespace Loom.ZombieBattleground
             // File
             if (FileLogEnabled)
             {
-                HtmlLayout htmlLayout = new CustomHtmlLayout("%utcdate{HH:mm:ss}%level%logger%message");
+                HtmlLayout htmlLayout = new CustomHtmlLayout("%counter%utcdate{HH:mm:ss}%level%logger%message");
                 htmlLayout.LogName = "Zombie Battleground " + BuildMetaInfo.Instance.ShortVersionName;
                 htmlLayout.ActivateOptions();
 
