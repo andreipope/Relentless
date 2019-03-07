@@ -223,12 +223,6 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private bool IsFlappyException(Exception e)
-        {
-            string exceptionString = e.ToString();
-            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
-        }
-
         private void FinishCurrentTest()
         {
             _currentRunningTestTask = null;
@@ -238,6 +232,9 @@ namespace Loom.ZombieBattleground.Test
 
         private void CancelTestWithReason(Exception reason)
         {
+            if (_cancellationReason != null)
+                return;
+
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
             Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
@@ -249,7 +246,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
+                    if (IsKnownError(condition))
                         break;
 
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
@@ -259,6 +256,17 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Log:
                     break;
             }
+        }
+
+        private static bool IsFlappyException(Exception e)
+        {
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
+        }
+
+        private static bool IsKnownError(string condition)
+        {
+            return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
     }
 }
