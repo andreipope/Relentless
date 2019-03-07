@@ -229,6 +229,16 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
         int parentId = 0;
         if(altGameObject.transform.parent!=null)
             parentId = altGameObject.transform.parent.GetInstanceID();
+
+        var mobileY = Convert.ToInt32(Mathf.Round(Screen.height - _position.y));
+        if (SystemInfo.deviceModel.Contains("SAMSUNG")||SystemInfo.deviceName.Contains("Samsung")|| SystemInfo.deviceModel.Contains("samsung") || SystemInfo.deviceModel.Contains("Samsung") || SystemInfo.deviceName.Contains("samsung")||SystemInfo.deviceName.Contains("SAMSUNG"))
+        {
+            var screenHeight = Screen.height * 4 / 3;
+            _position.x = _position.x * 4 / 3;
+            _position.y = _position.y * 4 / 3;
+            _position.z = _position.z * 4 / 3;
+            mobileY = Convert.ToInt32(Mathf.Round(screenHeight - _position.y));
+        }
     
 
         AltUnityObject altObject = new AltUnityObject(name: altGameObject.name,
@@ -236,7 +246,7 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
                                                       x: Convert.ToInt32(Mathf.Round(_position.x)),
                                                       y: Convert.ToInt32(Mathf.Round(_position.y)),
                                                       z: Convert.ToInt32(Mathf.Round(_position.z)),//if z is negative that means the cannot see the object(object is behind the camera)
-                                                      mobileY: Convert.ToInt32(Mathf.Round(Screen.height - _position.y)),
+                                                      mobileY: mobileY,
                                                       type: "",
                                                       enabled: altGameObject.activeSelf,
                                                       worldX: _position.x,

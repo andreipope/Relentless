@@ -217,10 +217,10 @@ class AltrunUnityDriver(object):
                 alt_el = AltElement(self, self.appium_driver, data)
             except:
                 alt_el = AltElement(self, None, data)
-            screenHeight=(int(alt_el.y)+int(alt_el.mobileY))*4/3
-            alt_el.y=int(alt_el.y)*4/3
-            alt_el.x=int(alt_el.x)*4/3
-            alt_el.mobileY=screenHeight-alt_el.y
+            # screenHeight=(int(alt_el.y)+int(alt_el.mobileY))*4/3
+            # alt_el.y=int(alt_el.y)*4/3
+            # alt_el.x=int(alt_el.x)*4/3
+            # alt_el.mobileY=screenHeight-alt_el.y
             print('Element ' + alt_el.name + ' found at x:' + str(alt_el.x) + ' y:' + str(alt_el.y) + ' mobileY:' + str(alt_el.mobileY))
             
             return alt_el
@@ -242,10 +242,10 @@ class AltrunUnityDriver(object):
                     alt_el = AltElement(self, self.appium_driver, json.dumps(elements[i]))
                 except:
                     alt_el = AltElement(self, None, json.dumps(elements[i]))
-                screenHeight=(int(alt_el.y)+int(alt_el.mobileY))*4/3
-                alt_el.y=int(alt_el.y)*4/3
-                alt_el.x=int(alt_el.x)*4/3
-                alt_el.mobileY=screenHeight-alt_el.y
+                # screenHeight=(int(alt_el.y)+int(alt_el.mobileY))*4/3
+                # alt_el.y=int(alt_el.y)*4/3
+                # alt_el.x=int(alt_el.x)*4/3
+                # alt_el.mobileY=screenHeight-alt_el.y
                 alt_elements.append(alt_el)
                 print('Element ' + alt_el.name + ' found at x:' + str(alt_el.x) + ' y:' + str(alt_el.y) + ' mobileY:' + str(alt_el.mobileY))
             return alt_elements
