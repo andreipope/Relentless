@@ -18,9 +18,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyDecksSelectOverlordSkillTab
+    public class OverlordSkillSelectionTab
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksSelectOverlordSkillTab));
+        private static readonly ILog Log = Logging.GetLog(nameof(OverlordSkillSelectionTab));
         
         private ILoadObjectsManager _loadObjectsManager;
         
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
         
-        private MyDecksPage _myDeckPage;
+        private HordeSelectionWithNavigationPage _myDeckPage;
         
         private GameObject _selfPage;
         
@@ -79,10 +79,10 @@ namespace Loom.ZombieBattleground
             _textSkillDescriptions = new TextMeshProUGUI[2];
             _overlordAbilityItems = new List<OverlordAbilityItem>();
             
-            _myDeckPage = GameClient.Get<IUIManager>().GetPage<MyDecksPage>();
-            _myDeckPage.EventChangeTab += (MyDecksPage.TAB tab) =>
+            _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
             {
-                if (tab == MyDecksPage.TAB.SELECT_OVERLORD_SKILL)
+                if (tab == HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL)
                 {
                     UpdateTabShow();                    
                     UpdateSkillIconAndDescriptionDisplay();
@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (success)
-                _myDeckPage.ChangeTab(MyDecksPage.TAB.EDITING);
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground
         
         private void UpdateOverlordPortrait()
         {
-            _imageSelectOverlordSkillPortrait.sprite = _myDeckPage.MyDecksSelectOverlordTab.GetOverlordPortraitSprite
+            _imageSelectOverlordSkillPortrait.sprite = _myDeckPage.SelectOverlordTab.GetOverlordPortraitSprite
             (
                 _myDeckPage.CurrentEditHero.HeroElement
             );

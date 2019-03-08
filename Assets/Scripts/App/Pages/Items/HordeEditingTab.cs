@@ -18,9 +18,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyDecksEditTab
+    public class HordeEditingTab
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksEditTab));
+        private static readonly ILog Log = Logging.GetLog(nameof(HordeEditingTab));
         
         private ILoadObjectsManager _loadObjectsManager;
         
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
     
-        private MyDecksPage _myDeckPage;
+        private HordeSelectionWithNavigationPage _myDeckPage;
 
         private CardFilterPopup _cardFilterPopup;
         
@@ -125,10 +125,10 @@ namespace Loom.ZombieBattleground
             
             InitBoardCardPrefabsAndLists();
 
-            _myDeckPage = _uiManager.GetPage<MyDecksPage>();
-            _myDeckPage.EventChangeTab += (MyDecksPage.TAB tab) =>
+            _myDeckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
             {
-                if (tab != MyDecksPage.TAB.EDITING)
+                if (tab != HordeSelectionWithNavigationPage.TAB.EDITING)
                     return;
 
                 FillCollectionData();                
@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonOverlordAbilitiesHandler()
         {
-            _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD_SKILL);
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL);
         }
         
         private void ButtonAutoHandler()
@@ -1185,7 +1185,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_DECK);
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
             }
             
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;

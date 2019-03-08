@@ -66,16 +66,16 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.HERO_SELECTION:
                     if (Constants.EnableNewUI)
                     {
-                        _uiManager.SetPage<MyDecksPage>();
-                        MyDecksPage myDecksPage = _uiManager.GetPage<MyDecksPage>();
-                        myDecksPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD);  
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
+                        HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD);  
                     }
                     else
                         _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
                     if (Constants.EnableNewUI)                    
-                        _uiManager.SetPage<MyDecksPage>();                    
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();                    
                     else
                         _uiManager.SetPage<HordeSelectionPage>();                        
                         
@@ -83,13 +83,13 @@ namespace Loom.ZombieBattleground
                     break;                    
                 case Enumerators.AppState.ARMY:
                     if (Constants.EnableNewUI)
-                        _uiManager.SetPage<MyCardsPage>();
+                        _uiManager.SetPage<ArmyWithNavigationPage>();
                     else
                         _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
                     if (Constants.EnableNewUI)                    
-                        _uiManager.SetPage<MyDecksPage>();
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                         //TODO Change tab to deck editing                     
                     else
                         _uiManager.SetPage<HordeEditingPage>();
@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
                         else
                         {
                             if (Constants.EnableNewUI)
-                                _uiManager.SetPage<MyShopPage>();
+                                _uiManager.SetPage<ShopWithNavigationPage>();
                             else
                                 _uiManager.SetPage<ShopPage>();
                         }

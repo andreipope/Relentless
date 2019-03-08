@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonAddCardHandler()
         {
-            _uiManager.GetPage<MyDecksPage>().MyDecksEditTab.AddCardToDeck
+            _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
                 _filteredCardList[_currentCardIndex]
             );
@@ -178,7 +178,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRemoveCardHandler()
         {
-            _uiManager.GetPage<MyDecksPage>().MyDecksEditTab.RemoveCardFromDeck
+            _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (
                 _filteredCardList[_currentCardIndex]
             ); 

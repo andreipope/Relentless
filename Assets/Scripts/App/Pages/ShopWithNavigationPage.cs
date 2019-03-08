@@ -21,7 +21,7 @@ using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyShopPage : IUIElement
+    public class ShopWithNavigationPage : IUIElement
     {
         private IUIManager _uiManager;
         

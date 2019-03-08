@@ -24,9 +24,9 @@ namespace Loom.ZombieBattleground
         
         private Button _buttonBattle, 
                        _buttonShop, 
-                       _buttonMyDecks, 
-                       _buttonMyPacks, 
-                       _buttonMyCards;
+                       _buttonDeck, 
+                       _buttonPack, 
+                       _buttonCard;
 
         private List<Sprite> _selectedSpriteList;
         
@@ -103,15 +103,15 @@ namespace Loom.ZombieBattleground
 
             _buttonBattle = Self.transform.Find("Group/Button_Battle").GetComponent<Button>();
             _buttonShop = Self.transform.Find("Group/Button_Shop").GetComponent<Button>();           
-            _buttonMyDecks = Self.transform.Find("Group/Button_MyDecks").GetComponent<Button>();
-            _buttonMyPacks = Self.transform.Find("Group/Button_MyPacks").GetComponent<Button>();
-            _buttonMyCards = Self.transform.Find("Group/Button_MyCards").GetComponent<Button>();
+            _buttonDeck = Self.transform.Find("Group/Button_MyDecks").GetComponent<Button>();
+            _buttonPack = Self.transform.Find("Group/Button_MyPacks").GetComponent<Button>();
+            _buttonCard = Self.transform.Find("Group/Button_MyCards").GetComponent<Button>();
             
             _buttonBattle.onClick.AddListener(ButtonBattleHandler);
             _buttonShop.onClick.AddListener(ButtonShopHandler);
-            _buttonMyDecks.onClick.AddListener(ButtonMyDecksHandler);
-            _buttonMyPacks.onClick.AddListener(ButtonMyPacksHander);
-            _buttonMyCards.onClick.AddListener(ButtonMyCardsHandler);
+            _buttonDeck.onClick.AddListener(ButtonDeckHandler);
+            _buttonPack.onClick.AddListener(ButtonPackHander);
+            _buttonCard.onClick.AddListener(ButtonCardHandler);
 
             UpdateButtonSprite();
         }
@@ -139,13 +139,13 @@ namespace Loom.ZombieBattleground
                     _buttonShop.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_DECKS:
-                    _buttonMyDecks.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonDeck.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_PACKS:
-                    _buttonMyPacks.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonPack.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
                 case MENU.MY_CARDS:
-                    _buttonMyCards.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
+                    _buttonCard.GetComponent<Image>().sprite = _selectedSpriteList[(int)_currentMenu];
                     break;
             }
         }
@@ -165,19 +165,19 @@ namespace Loom.ZombieBattleground
             _stateManager.ChangeAppState(Enumerators.AppState.SHOP);
         }
         
-        private void ButtonMyDecksHandler()
+        private void ButtonDeckHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.HordeSelection);
         }
         
-        private void ButtonMyPacksHander()
+        private void ButtonPackHander()
         { 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
         
-        private void ButtonMyCardsHandler()
+        private void ButtonCardHandler()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             _stateManager.ChangeAppState(Enumerators.AppState.ARMY);

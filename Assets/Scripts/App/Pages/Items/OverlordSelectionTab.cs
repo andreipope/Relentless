@@ -18,9 +18,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyDecksSelectOverlordTab
+    public class OverlordSelectionTab
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksSelectOverlordTab));
+        private static readonly ILog Log = Logging.GetLog(nameof(OverlordSelectionTab));
         
         private ILoadObjectsManager _loadObjectsManager;
 
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
         
-        private MyDecksPage _myDeckPage;
+        private HordeSelectionWithNavigationPage _myDeckPage;
 
         private GameObject _selfPage;
 
@@ -64,10 +64,10 @@ namespace Loom.ZombieBattleground
             
             _selectOverlordIconList = new List<Transform>();
             
-            _myDeckPage = GameClient.Get<IUIManager>().GetPage<MyDecksPage>();
-            _myDeckPage.EventChangeTab += (MyDecksPage.TAB tab) =>
+            _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
             {
-                if (tab != MyDecksPage.TAB.SELECT_OVERLORD)
+                if (tab != HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD)
                     return;
                     
                 _textSelectOverlordDeckName.text = "NEW DECK";
@@ -199,7 +199,7 @@ namespace Loom.ZombieBattleground
 
                 _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
                 _myDeckPage.AssignCurrentDeck(false);
-                _myDeckPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD_SKILL);
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL);
             }
             _buttonSelectOverlordContinue.interactable = true;
         }

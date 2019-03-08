@@ -18,9 +18,9 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyDecksPage : IUIElement
+    public class HordeSelectionWithNavigationPage : IUIElement
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksPage));
+        private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
         
         private IUIManager _uiManager;
         
@@ -36,11 +36,11 @@ namespace Loom.ZombieBattleground
         
         private IAnalyticsManager _analyticsManager;
 
-        public MyDecksEditTab MyDecksEditTab;
+        public HordeEditingTab HordeEditTab;
 
-        public MyDecksSelectOverlordTab MyDecksSelectOverlordTab;
+        public OverlordSelectionTab SelectOverlordTab;
 
-        public MyDecksSelectOverlordSkillTab MyDecksSelectOverlordSkillTab;
+        public OverlordSkillSelectionTab SelectOverlordSkillTab;
         
         private GameObject _selfPage;
 
@@ -132,19 +132,19 @@ namespace Loom.ZombieBattleground
             _cacheDeckListToDisplay = new List<Deck>();
             SelectDeckIndex = 0;       
 
-            MyDecksEditTab = new MyDecksEditTab();
-            MyDecksEditTab.Init();
-            MyDecksSelectOverlordTab = new MyDecksSelectOverlordTab();
-            MyDecksSelectOverlordTab.Init();
-            MyDecksSelectOverlordSkillTab = new MyDecksSelectOverlordSkillTab();
-            MyDecksSelectOverlordSkillTab.Init();
+            HordeEditTab = new HordeEditingTab();
+            HordeEditTab.Init();
+            SelectOverlordTab = new OverlordSelectionTab();
+            SelectOverlordTab.Init();
+            SelectOverlordSkillTab = new OverlordSkillSelectionTab();
+            SelectOverlordSkillTab.Init();
         }
 
         public void Update()
         {
-            MyDecksEditTab.Update();
-            MyDecksSelectOverlordTab.Update();
-            MyDecksSelectOverlordSkillTab.Update();
+            HordeEditTab.Update();
+            SelectOverlordTab.Update();
+            SelectOverlordSkillTab.Update();
         }
 
         public void Show()
@@ -189,9 +189,9 @@ namespace Loom.ZombieBattleground
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
 
-            MyDecksEditTab.Show(_selfPage);
-            MyDecksSelectOverlordTab.Show(_selfPage);
-            MyDecksSelectOverlordSkillTab.Show(_selfPage);
+            HordeEditTab.Show(_selfPage);
+            SelectOverlordTab.Show(_selfPage);
+            SelectOverlordSkillTab.Show(_selfPage);
             
             LoadButtons();
             LoadObjects();            
@@ -217,9 +217,9 @@ namespace Loom.ZombieBattleground
         
         public void Dispose()
         {
-            MyDecksEditTab.Dispose();
-            MyDecksSelectOverlordTab.Dispose();
-            MyDecksSelectOverlordSkillTab.Dispose();
+            HordeEditTab.Dispose();
+            SelectOverlordTab.Dispose();
+            SelectOverlordSkillTab.Dispose();
             _deckInfoObjectList.Clear();  
             _cacheDeckListToDisplay.Clear();
         }
@@ -306,7 +306,7 @@ namespace Loom.ZombieBattleground
         {
             Deck deck = GetSelectedDeck();
             string newName = _inputFieldRenameDeckName.text;
-            MyDecksEditTab.ProcessRenameDeck(deck, newName);
+            HordeEditTab.ProcessRenameDeck(deck, newName);
         }
 
         public void OnInputFieldRenameEndedEdit(string value)

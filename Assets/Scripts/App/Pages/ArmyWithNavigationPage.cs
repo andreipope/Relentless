@@ -17,7 +17,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class MyCardsPage : IUIElement
+    public class ArmyWithNavigationPage : IUIElement
     {
         private IUIManager _uiManager;
 
