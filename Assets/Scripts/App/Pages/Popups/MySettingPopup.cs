@@ -188,6 +188,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonCreditsHandler()
         {
+            Hide();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.CREDITS);
         }
         
