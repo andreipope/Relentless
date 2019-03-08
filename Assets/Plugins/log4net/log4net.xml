@@ -3660,88 +3660,88 @@
             </remarks>
         </member>
         <member name="T:log4net.Appender.RollingFileAppender">
-            <summary>
-            Appender that rolls log files based on size or date or both.
-            </summary>
-            <remarks>
-            <para>
-            RollingFileAppender can roll log files based on size or date or both
-            depending on the setting of the <see cref="P:log4net.Appender.RollingFileAppender.RollingStyle"/> property.
-            When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Size"/> the log file will be rolled
-            once its size exceeds the <see cref="P:log4net.Appender.RollingFileAppender.MaximumFileSize"/>.
-            When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Date"/> the log file will be rolled
-            once the date boundary specified in the <see cref="P:log4net.Appender.RollingFileAppender.DatePattern"/> property
-            is crossed.
-            When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Composite"/> the log file will be
-            rolled once the date boundary specified in the <see cref="P:log4net.Appender.RollingFileAppender.DatePattern"/> property
-            is crossed, but within a date boundary the file will also be rolled
-            once its size exceeds the <see cref="P:log4net.Appender.RollingFileAppender.MaximumFileSize"/>.
-            When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Once"/> the log file will be rolled when
-            the appender is configured. This effectively means that the log file can be
-            rolled once per program execution.
-            </para>
-            <para>
-            A of few additional optional features have been added:
-            <list type="bullet">
-            <item>Attach date pattern for current log file <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/></item>
-            <item>Backup number increments for newer files <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/></item>
-            <item>Infinite number of backups by file size <see cref="P:log4net.Appender.RollingFileAppender.MaxSizeRollBackups"/></item>
-            </list>
-            </para>
+             <summary>
+             Appender that rolls log files based on size or date or both.
+             </summary>
+             <remarks>
+             <para>
+             RollingFileAppender can roll log files based on size or date or both
+             depending on the setting of the <see cref="P:log4net.Appender.RollingFileAppender.RollingStyle"/> property.
+             When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Size"/> the log file will be rolled
+             once its size exceeds the <see cref="P:log4net.Appender.RollingFileAppender.MaximumFileSize"/>.
+             When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Date"/> the log file will be rolled
+             once the date boundary specified in the <see cref="P:log4net.Appender.RollingFileAppender.DatePattern"/> property
+             is crossed.
+             When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Composite"/> the log file will be
+             rolled once the date boundary specified in the <see cref="P:log4net.Appender.RollingFileAppender.DatePattern"/> property
+             is crossed, but within a date boundary the file will also be rolled
+             once its size exceeds the <see cref="P:log4net.Appender.RollingFileAppender.MaximumFileSize"/>.
+             When set to <see cref="F:log4net.Appender.RollingFileAppender.RollingMode.Once"/> the log file will be rolled when
+             the appender is configured. This effectively means that the log file can be
+             rolled once per program execution.
+             </para>
+             <para>
+             A of few additional optional features have been added:
+             <list type="bullet">
+             <item>Attach date pattern for current log file <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/></item>
+             <item>Backup number increments for newer files <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/></item>
+             <item>Infinite number of backups by file size <see cref="P:log4net.Appender.RollingFileAppender.MaxSizeRollBackups"/></item>
+             </list>
+             </para>
             
-            <note>
-            <para>
-            For large or infinite numbers of backup files a <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/> 
-            greater than zero is highly recommended, otherwise all the backup files need
-            to be renamed each time a new backup is created.
-            </para>
-            <para>
-            When Date/Time based rolling is used setting <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/> 
-            to <see langword="true"/> will reduce the number of file renamings to few or none.
-            </para>
-            </note>
+             <note>
+             <para>
+             For large or infinite numbers of backup files a <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/>
+             greater than zero is highly recommended, otherwise all the backup files need
+             to be renamed each time a new backup is created.
+             </para>
+             <para>
+             When Date/Time based rolling is used setting <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/>
+             to <see langword="true"/> will reduce the number of file renamings to few or none.
+             </para>
+             </note>
             
-            <note type="caution">
-            <para>
-            Changing <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/> or <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/> without clearing
-            the log file directory of backup files will cause unexpected and unwanted side effects.  
-            </para>
-            </note>
+             <note type="caution">
+             <para>
+             Changing <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/> or <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/> without clearing
+             the log file directory of backup files will cause unexpected and unwanted side effects.
+             </para>
+             </note>
             
-            <para>
-            If Date/Time based rolling is enabled this appender will attempt to roll existing files
-            in the directory without a Date/Time tag based on the last write date of the base log file.
-            The appender only rolls the log file when a message is logged. If Date/Time based rolling 
-            is enabled then the appender will not roll the log file at the Date/Time boundary but
-            at the point when the next message is logged after the boundary has been crossed.
-            </para>
+             <para>
+             If Date/Time based rolling is enabled this appender will attempt to roll existing files
+             in the directory without a Date/Time tag based on the last write date of the base log file.
+             The appender only rolls the log file when a message is logged. If Date/Time based rolling
+             is enabled then the appender will not roll the log file at the Date/Time boundary but
+             at the point when the next message is logged after the boundary has been crossed.
+             </para>
             
-            <para>
-            The <see cref="T:log4net.Appender.RollingFileAppender"/> extends the <see cref="T:log4net.Appender.FileAppender"/> and
-            has the same behavior when opening the log file.
-            The appender will first try to open the file for writing when <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/>
-            is called. This will typically be during configuration.
-            If the file cannot be opened for writing the appender will attempt
-            to open the file again each time a message is logged to the appender.
-            If the file cannot be opened for writing when a message is logged then
-            the message will be discarded by this appender.
-            </para>
-            <para>
-            When rolling a backup file necessitates deleting an older backup file the
-            file to be deleted is moved to a temporary name before being deleted.
-            </para>
+             <para>
+             The <see cref="T:log4net.Appender.RollingFileAppender"/> extends the <see cref="T:log4net.Appender.FileAppender"/> and
+             has the same behavior when opening the log file.
+             The appender will first try to open the file for writing when <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/>
+             is called. This will typically be during configuration.
+             If the file cannot be opened for writing the appender will attempt
+             to open the file again each time a message is logged to the appender.
+             If the file cannot be opened for writing when a message is logged then
+             the message will be discarded by this appender.
+             </para>
+             <para>
+             When rolling a backup file necessitates deleting an older backup file the
+             file to be deleted is moved to a temporary name before being deleted.
+             </para>
             
-            <note type="caution">
-            <para>
-            A maximum number of backup files when rolling on date/time boundaries is not supported.
-            </para>
-            </note>
-            </remarks>
-            <author>Nicko Cadell</author>
-            <author>Gert Driesen</author>
-            <author>Aspi Havewala</author>
-            <author>Douglas de la Torre</author>
-            <author>Edward Smit</author>
+             <note type="caution">
+             <para>
+             A maximum number of backup files when rolling on date/time boundaries is not supported.
+             </para>
+             </note>
+             </remarks>
+             <author>Nicko Cadell</author>
+             <author>Gert Driesen</author>
+             <author>Aspi Havewala</author>
+             <author>Douglas de la Torre</author>
+             <author>Edward Smit</author>
         </member>
         <member name="T:log4net.Appender.RollingFileAppender.RollingMode">
             <summary>
@@ -3848,7 +3848,7 @@
         <member name="P:log4net.Appender.RollingFileAppender.DateTimeStrategy">
             <summary>
             Gets or sets the strategy for determining the current date and time. The default
-            implementation is to use LocalDateTime which internally calls through to DateTime.Now. 
+            implementation is to use LocalDateTime which internally calls through to DateTime.Now.
             DateTime.UtcNow may be used on frameworks newer than .NET 1.0 by specifying
             <see cref="T:log4net.Appender.RollingFileAppender.UniversalDateTime"/>.
             </summary>
@@ -3860,7 +3860,7 @@
             Gets or sets the <see cref="T:log4net.Appender.RollingFileAppender.IDateTime"/> used to return the current date and time.
             </para>
             <para>
-            There are two built strategies for determining the current date and time, 
+            There are two built strategies for determining the current date and time,
             <see cref="T:log4net.Appender.RollingFileAppender.LocalDateTime"/>
             and <see cref="T:log4net.Appender.RollingFileAppender.UniversalDateTime"/>.
             </para>
@@ -3875,12 +3875,12 @@
             when rolling over on date.
             </summary>
             <value>
-            The date pattern to be used for generating file names when rolling 
+            The date pattern to be used for generating file names when rolling
             over on date.
             </value>
             <remarks>
             <para>
-            Takes a string in the same format as expected by 
+            Takes a string in the same format as expected by
             <see cref="T:log4net.DateFormatter.SimpleDateFormatter" />.
             </para>
             <para>
@@ -3900,16 +3900,16 @@
             </value>
             <remarks>
             <para>
-            If set to zero, then there will be no backup files and the log file 
-            will be truncated when it reaches <see cref="P:log4net.Appender.RollingFileAppender.MaxFileSize"/>.  
+            If set to zero, then there will be no backup files and the log file
+            will be truncated when it reaches <see cref="P:log4net.Appender.RollingFileAppender.MaxFileSize"/>.
             </para>
             <para>
-            If a negative number is supplied then no deletions will be made.  Note 
-            that this could result in very slow performance as a large number of 
+            If a negative number is supplied then no deletions will be made.  Note
+            that this could result in very slow performance as a large number of
             files are rolled over unless <see cref="P:log4net.Appender.RollingFileAppender.CountDirection"/> is used.
             </para>
             <para>
-            The maximum applies to <b>each</b> time based group of files and 
+            The maximum applies to <b>each</b> time based group of files and
             <b>not</b> the total.
             </para>
             </remarks>
@@ -3920,14 +3920,14 @@
             before being rolled over to backup files.
             </summary>
             <value>
-            The maximum size in bytes that the output file is allowed to reach before being 
+            The maximum size in bytes that the output file is allowed to reach before being
             rolled over to backup files.
             </value>
             <remarks>
             <para>
             This property is equivalent to <see cref="P:log4net.Appender.RollingFileAppender.MaximumFileSize"/> except
             that it is required for differentiating the setter taking a
-            <see cref="T:System.Int64"/> argument from the setter taking a <see cref="T:System.String"/> 
+            <see cref="T:System.Int64"/> argument from the setter taking a <see cref="T:System.String"/>
             argument.
             </para>
             <para>
@@ -3941,14 +3941,14 @@
             before being rolled over to backup files.
             </summary>
             <value>
-            The maximum size that the output file is allowed to reach before being 
+            The maximum size that the output file is allowed to reach before being
             rolled over to backup files.
             </value>
             <remarks>
             <para>
             This property allows you to specify the maximum size with the
-            suffixes "KB", "MB" or "GB" so that the size is interpreted being 
-            expressed respectively in kilobytes, megabytes or gigabytes. 
+            suffixes "KB", "MB" or "GB" so that the size is interpreted being
+            expressed respectively in kilobytes, megabytes or gigabytes.
             </para>
             <para>
             For example, the value "10KB" will be interpreted as 10240 bytes.
@@ -3965,7 +3965,7 @@
         </member>
         <member name="P:log4net.Appender.RollingFileAppender.CountDirection">
             <summary>
-            Gets or sets the rolling file count direction. 
+            Gets or sets the rolling file count direction.
             </summary>
             <value>
             The rolling file count direction.
@@ -3982,7 +3982,7 @@
             <para>
             <see cref="P:log4net.Appender.RollingFileAppender.CountDirection" /> &gt;= 0 does the opposite i.e.
             log.1 is the first backup made, log.5 is the 5th backup made, etc.
-            For infinite backups use <see cref="P:log4net.Appender.RollingFileAppender.CountDirection" /> &gt;= 0 to reduce 
+            For infinite backups use <see cref="P:log4net.Appender.RollingFileAppender.CountDirection" /> &gt;= 0 to reduce
             rollover costs.
             </para>
             <para>The default file count direction is -1.</para>
@@ -4037,7 +4037,7 @@
             file.log.yyyy-mm-dd.curSizeRollBackup).
             </para>
             <para>
-            This will make time based rollovers with a large number of backups 
+            This will make time based rollovers with a large number of backups
             much faster as the appender it won't have to rename all the backups!
             </para>
             </remarks>
@@ -4118,7 +4118,7 @@
             <returns>the output file name</returns>
             <remarks>
             The output file name is based on the base fileName specified.
-            If <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/> is set then the output 
+            If <see cref="P:log4net.Appender.RollingFileAppender.StaticLogFileName"/> is set then the output
             file name is the same as the base file passed in. Otherwise
             the output file depends on the date pattern, on the count
             direction or both.
@@ -4189,7 +4189,7 @@
         </member>
         <member name="M:log4net.Appender.RollingFileAppender.InitializeRollBackups(System.String,System.Collections.ArrayList)">
             <summary>
-            Takes a list of files and a base file name, and looks for 
+            Takes a list of files and a base file name, and looks for
             'incremented' versions of the base file.  Bumps the max
             count up to the highest count seen.
             </summary>
@@ -4206,7 +4206,7 @@
             Essentially the date pattern is examined to determine what the
             most suitable roll point is. The roll point chosen is the roll point
             with the smallest period that can be detected using the date pattern
-            supplied. i.e. if the date pattern only outputs the year, month, day 
+            supplied. i.e. if the date pattern only outputs the year, month, day
             and hour then the smallest roll point that can be detected would be
             and hourly roll point as minutes could not be detected.
             </remarks>
@@ -4218,13 +4218,13 @@
             <remarks>
             <para>
             This is part of the <see cref="T:log4net.Core.IOptionHandler"/> delayed object
-            activation scheme. The <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/> method must 
+            activation scheme. The <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/> method must
             be called on this object after the configuration properties have
             been set. Until <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/> is called this
-            object is in an undefined state and must not be used. 
+            object is in an undefined state and must not be used.
             </para>
             <para>
-            If any of the configuration properties are modified then 
+            If any of the configuration properties are modified then
             <see cref="M:log4net.Appender.RollingFileAppender.ActivateOptions"/> must be called again.
             </para>
             <para>
@@ -4235,12 +4235,12 @@
             </remarks>
         </member>
         <member name="M:log4net.Appender.RollingFileAppender.CombinePath(System.String,System.String)">
-            <summary>
+             <summary>
             
-            </summary>
-            <param name="path1"></param>
-            <param name="path2">.1, .2, .3, etc.</param>
-            <returns></returns>
+             </summary>
+             <param name="path1"></param>
+             <param name="path2">.1, .2, .3, etc.</param>
+             <returns></returns>
         </member>
         <member name="M:log4net.Appender.RollingFileAppender.RollOverTime(System.Boolean)">
             <summary>
@@ -4250,7 +4250,7 @@
             <remarks>
             <para>
             Rollover the file(s) to date/time tagged file(s).
-            Resets curSizeRollBackups. 
+            Resets curSizeRollBackups.
             If fileIsOpen is set then the new file is opened (through SafeOpenFile).
             </para>
             </remarks>
@@ -4335,7 +4335,7 @@
             If <c>countDirection</c> &lt; 0, then files
             {<c>File.1</c>, ..., <c>File.curSizeRollBackups -1</c>}
             are renamed to {<c>File.2</c>, ...,
-            <c>File.curSizeRollBackups</c>}. 
+            <c>File.curSizeRollBackups</c>}.
             </para>
             <para>
             If <c>maxSizeRollBackups</c> is equal to zero, then the
@@ -4378,7 +4378,7 @@
         </member>
         <member name="F:log4net.Appender.RollingFileAppender.m_datePattern">
             <summary>
-            The date pattern. By default, the pattern is set to <c>".yyyy-MM-dd"</c> 
+            The date pattern. By default, the pattern is set to <c>".yyyy-MM-dd"</c>
             meaning daily rollover.
             </summary>
         </member>
@@ -4421,7 +4421,7 @@
         </member>
         <member name="F:log4net.Appender.RollingFileAppender.m_countDirection">
             <summary>
-            The rolling file count direction. 
+            The rolling file count direction.
             </summary>
         </member>
         <member name="F:log4net.Appender.RollingFileAppender.m_rollingStyle">
@@ -4452,11 +4452,6 @@
         <member name="F:log4net.Appender.RollingFileAppender.m_baseFileName">
             <summary>
             FileName provided in configuration.  Used for rolling properly
-            </summary>
-        </member>
-        <member name="F:log4net.Appender.RollingFileAppender.m_mutexForRolling">
-            <summary>
-            A mutex that is used to lock rolling of files.
             </summary>
         </member>
         <member name="F:log4net.Appender.RollingFileAppender.s_date1970">
@@ -4695,11 +4690,11 @@
             <summary>
             Appender that allows clients to connect via Telnet to receive log messages
             </summary>
-            <remarks>
+            <remarks>	
             <para>
             The TelnetAppender accepts socket connections and streams logging messages
-            back to the client.
-            The output is provided in a telnet-friendly way so that a log can be monitored
+            back to the client.  
+            The output is provided in a telnet-friendly way so that a log can be monitored 
             over a TCP/IP socket.
             This allows simple remote monitoring of application logging.
             </para>
@@ -4734,7 +4729,7 @@
             Gets or sets the TCP port number on which this <see cref="T:log4net.Appender.TelnetAppender"/> will listen for connections.
             </summary>
             <value>
-            An integer value in the range <see cref="F:System.Net.IPEndPoint.MinPort" /> to <see cref="F:System.Net.IPEndPoint.MaxPort" />
+            An integer value in the range <see cref="F:System.Net.IPEndPoint.MinPort" /> to <see cref="F:System.Net.IPEndPoint.MaxPort" /> 
             indicating the TCP port number on which this <see cref="T:log4net.Appender.TelnetAppender"/> will listen for connections.
             </value>
             <remarks>
@@ -4742,7 +4737,7 @@
             The default value is 23 (the telnet port).
             </para>
             </remarks>
-            <exception cref="T:System.ArgumentOutOfRangeException">The value specified is less than <see cref="F:System.Net.IPEndPoint.MinPort" />
+            <exception cref="T:System.ArgumentOutOfRangeException">The value specified is less than <see cref="F:System.Net.IPEndPoint.MinPort" /> 
             or greater than <see cref="F:System.Net.IPEndPoint.MaxPort" />.</exception>
         </member>
         <member name="M:log4net.Appender.TelnetAppender.OnClose">
@@ -4773,13 +4768,13 @@
             <remarks>
             <para>
             This is part of the <see cref="T:log4net.Core.IOptionHandler"/> delayed object
-            activation scheme. The <see cref="M:log4net.Appender.TelnetAppender.ActivateOptions"/> method must
+            activation scheme. The <see cref="M:log4net.Appender.TelnetAppender.ActivateOptions"/> method must 
             be called on this object after the configuration properties have
             been set. Until <see cref="M:log4net.Appender.TelnetAppender.ActivateOptions"/> is called this
-            object is in an undefined state and must not be used.
+            object is in an undefined state and must not be used. 
             </para>
             <para>
-            If any of the configuration properties are modified then
+            If any of the configuration properties are modified then 
             <see cref="M:log4net.Appender.TelnetAppender.ActivateOptions"/> must be called again.
             </para>
             <para>
@@ -4896,7 +4891,7 @@
             <remarks>
             <para>
             This property will be <c>true</c> while this handler has
-            active connections, that is at least one connection that
+            active connections, that is at least one connection that 
             the handler will attempt to send a message to.
             </para>
             </remarks>
@@ -4908,7 +4903,7 @@
             <param name="asyncResult">The result of the asynchronous operation</param>
             <remarks>
             <para>
-            On connection adds to the list of connections
+            On connection adds to the list of connections 
             if there are two many open connections you will be disconnected
             </para>
             </remarks>
@@ -7028,17 +7023,17 @@
             <param name="repositoryAssembly">The assembly use to lookup the <see cref="T:log4net.Repository.ILoggerRepository"/>.</param>
             <remarks>
             <para>
-            The type of the <see cref="T:log4net.Repository.ILoggerRepository"/> created and the repository
-            to create can be overridden by specifying the <see cref="T:log4net.Config.RepositoryAttribute"/>
+            The type of the <see cref="T:log4net.Repository.ILoggerRepository"/> created and the repository 
+            to create can be overridden by specifying the <see cref="T:log4net.Config.RepositoryAttribute"/> 
             attribute on the <paramref name="repositoryAssembly"/>.
             </para>
             <para>
-            The default values are to use the <see cref="T:log4net.Repository.Hierarchy.Hierarchy"/>
+            The default values are to use the <see cref="T:log4net.Repository.Hierarchy.Hierarchy"/> 
             implementation of the <see cref="T:log4net.Repository.ILoggerRepository"/> interface and to use the
             <see cref="P:System.Reflection.AssemblyName.Name"/> as the name of the repository.
             </para>
             <para>
-            The <see cref="T:log4net.Repository.ILoggerRepository"/> created will be automatically configured using
+            The <see cref="T:log4net.Repository.ILoggerRepository"/> created will be automatically configured using 
             any <see cref="T:log4net.Config.ConfiguratorAttribute"/> attributes defined on
             the <paramref name="repositoryAssembly"/>.
             </para>
@@ -7055,7 +7050,7 @@
             <remarks>
             <para>
             Returns the named repository. If <paramref name="repositoryName"/> is <c>null</c>
-            a <see cref="T:System.ArgumentNullException"/> is thrown. If the repository
+            a <see cref="T:System.ArgumentNullException"/> is thrown. If the repository 
             does not exist a <see cref="T:log4net.Core.LogException"/> is thrown.
             </para>
             <para>
@@ -7067,7 +7062,7 @@
         </member>
         <member name="M:log4net.Core.DefaultRepositorySelector.CreateRepository(System.Reflection.Assembly,System.Type)">
             <summary>
-            Create a new repository for the assembly specified
+            Create a new repository for the assembly specified 
             </summary>
             <param name="repositoryAssembly">the assembly to use to create the repository to associate with the <see cref="T:log4net.Repository.ILoggerRepository"/>.</param>
             <param name="repositoryType">The type of repository to create, must implement <see cref="T:log4net.Repository.ILoggerRepository"/>.</param>
@@ -7081,23 +7076,23 @@
             <para>
             The type of the <see cref="T:log4net.Repository.ILoggerRepository"/> created and
             the repository to create can be overridden by specifying the
-            <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the
-            <paramref name="repositoryAssembly"/>.  The default values are to use the
-            <paramref name="repositoryType"/> implementation of the
+            <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the 
+            <paramref name="repositoryAssembly"/>.  The default values are to use the 
+            <paramref name="repositoryType"/> implementation of the 
             <see cref="T:log4net.Repository.ILoggerRepository"/> interface and to use the
             <see cref="P:System.Reflection.AssemblyName.Name"/> as the name of the repository.
             </para>
             <para>
             The <see cref="T:log4net.Repository.ILoggerRepository"/> created will be automatically
-            configured using any <see cref="T:log4net.Config.ConfiguratorAttribute"/>
+            configured using any <see cref="T:log4net.Config.ConfiguratorAttribute"/> 
             attributes defined on the <paramref name="repositoryAssembly"/>.
             </para>
             <para>
             If a repository for the <paramref name="repositoryAssembly"/> already exists
-            that repository will be returned. An error will not be raised and that
+            that repository will be returned. An error will not be raised and that 
             repository may be of a different type to that specified in <paramref name="repositoryType"/>.
             Also the <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the
-            assembly may be used to override the repository type specified in
+            assembly may be used to override the repository type specified in 
             <paramref name="repositoryType"/>.
             </para>
             </remarks>
@@ -7121,23 +7116,23 @@
             <para>
             The type of the <see cref="T:log4net.Repository.ILoggerRepository"/> created and
             the repository to create can be overridden by specifying the
-            <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the
-            <paramref name="repositoryAssembly"/>.  The default values are to use the
-            <paramref name="repositoryType"/> implementation of the
+            <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the 
+            <paramref name="repositoryAssembly"/>.  The default values are to use the 
+            <paramref name="repositoryType"/> implementation of the 
             <see cref="T:log4net.Repository.ILoggerRepository"/> interface and to use the
             <see cref="P:System.Reflection.AssemblyName.Name"/> as the name of the repository.
             </para>
             <para>
             The <see cref="T:log4net.Repository.ILoggerRepository"/> created will be automatically
-            configured using any <see cref="T:log4net.Config.ConfiguratorAttribute"/>
+            configured using any <see cref="T:log4net.Config.ConfiguratorAttribute"/> 
             attributes defined on the <paramref name="repositoryAssembly"/>.
             </para>
             <para>
             If a repository for the <paramref name="repositoryAssembly"/> already exists
-            that repository will be returned. An error will not be raised and that
+            that repository will be returned. An error will not be raised and that 
             repository may be of a different type to that specified in <paramref name="repositoryType"/>.
             Also the <see cref="T:log4net.Config.RepositoryAttribute"/> attribute on the
-            assembly may be used to override the repository type specified in
+            assembly may be used to override the repository type specified in 
             <paramref name="repositoryType"/>.
             </para>
             </remarks>
@@ -7170,7 +7165,7 @@
             <remarks>
             <para>
             Test if a named repository exists. Use <see cref="M:CreateRepository(string, Type)"/>
-            to create a new repository and <see cref="M:GetRepository(string)"/> to retrieve
+            to create a new repository and <see cref="M:GetRepository(string)"/> to retrieve 
             a repository.
             </para>
             </remarks>
@@ -7194,11 +7189,11 @@
             <param name="repositoryTarget">The repository that the repository is aliased to.</param>
             <remarks>
             <para>
-            The repository specified will be aliased to the repository when created.
+            The repository specified will be aliased to the repository when created. 
             The repository must not already exist.
             </para>
             <para>
-            When the repository is created it must utilize the same repository type as
+            When the repository is created it must utilize the same repository type as 
             the repository it is aliased to, otherwise the aliasing will fail.
             </para>
             </remarks>
@@ -8883,7 +8878,7 @@
             a call stack. The caller's information is then extracted from this stack.
             </para>
             <para>
-            The <c>System.Diagnostics.StackTrace</c> class is not supported on the
+            The <c>System.Diagnostics.StackTrace</c> class is not supported on the 
             .NET Compact Framework 1.0 therefore caller location information is not
             available on that framework.
             </para>
@@ -8891,15 +8886,15 @@
             The <c>System.Diagnostics.StackTrace</c> class has this to say about Release builds:
             </para>
             <para>
-            "StackTrace information will be most informative with Debug build configurations.
-            By default, Debug builds include debug symbols, while Release builds do not. The
-            debug symbols contain most of the file, method name, line number, and column
-            information used in constructing StackFrame and StackTrace objects. StackTrace
-            might not report as many method calls as expected, due to code transformations
+            "StackTrace information will be most informative with Debug build configurations. 
+            By default, Debug builds include debug symbols, while Release builds do not. The 
+            debug symbols contain most of the file, method name, line number, and column 
+            information used in constructing StackFrame and StackTrace objects. StackTrace 
+            might not report as many method calls as expected, due to code transformations 
             that occur during optimization."
             </para>
             <para>
-            This means that in a Release build the caller information may be incomplete or may
+            This means that in a Release build the caller information may be incomplete or may 
             not exist at all! Therefore caller location information cannot be relied upon in a Release build.
             </para>
             </remarks>
@@ -8936,16 +8931,16 @@
         </member>
         <member name="P:log4net.Core.LocationInfo.ClassName">
             <summary>
-            Gets the fully qualified class name of the caller making the logging
+            Gets the fully qualified class name of the caller making the logging 
             request.
             </summary>
             <value>
-            The fully qualified class name of the caller making the logging
+            The fully qualified class name of the caller making the logging 
             request.
             </value>
             <remarks>
             <para>
-            Gets the fully qualified class name of the caller making the logging
+            Gets the fully qualified class name of the caller making the logging 
             request.
             </para>
             </remarks>
@@ -23424,7 +23419,7 @@
             cref="T:System.Runtime.Remoting.Messaging.CallContext"/>.
             </para>
             <para>
-            The <see cref="T:System.Runtime.Remoting.Messaging.CallContext"/> requires a link time
+            The <see cref="T:System.Runtime.Remoting.Messaging.CallContext"/> requires a link time 
             <see cref="T:System.Security.Permissions.SecurityPermission"/> for the
             <see cref="F:System.Security.Permissions.SecurityPermissionFlag.Infrastructure"/>.
             If the calling code does not have this permission then this context will be disabled.
@@ -23491,7 +23486,7 @@
             <remarks>
             <para>
             The collection returned is only to be used on the calling thread. If the
-            caller needs to share the collection between different threads then the
+            caller needs to share the collection between different threads then the 
             caller must clone the collection before doings so.
             </para>
             </remarks>
