@@ -804,7 +804,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private bool CardCanBePlayable(WorkingCard card)
+        private bool CardCanBePlayable(BoardUnitModel boardUnitModel)
         {
             if (!Constants.DevModeEnabled)
             {
@@ -822,7 +822,7 @@ namespace Loom.ZombieBattleground
             return unit.UnitCanBeUsable();
         }
 
-        private bool CheckSpecialCardRules(WorkingCard card)
+        private bool CheckSpecialCardRules(BoardUnitModel boardUnitModel)
         {
             if (card.Prototype.Abilities != null)
             {
@@ -842,7 +842,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void PlayCardOnBoard(WorkingCard card, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
+        public void PlayCardOnBoard(BoardUnitModel boardUnitModel, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
             _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
             {
@@ -937,7 +937,7 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.CardPlay);
         }
 
-        private void PlayCardCompleteHandler(WorkingCard card, BoardObject target, Action completeCallback)
+        private void PlayCardCompleteHandler(BoardUnitModel boardUnitModel, BoardObject target, Action completeCallback)
         {
             completeCallback?.Invoke();
 
@@ -1065,7 +1065,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private BoardObject GetAbilityTarget(WorkingCard card)
+        private BoardObject GetAbilityTarget(BoardUnitModel boardUnitModel)
         {
             IReadOnlyCard libraryCard = card.Prototype;
 

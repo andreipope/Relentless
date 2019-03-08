@@ -320,7 +320,7 @@ namespace Loom.ZombieBattleground
             ability.InvokeActionTriggered(unit);
         }
 
-        private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
+        private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ?
                 _battlegroundController.PlayerBoardObject :

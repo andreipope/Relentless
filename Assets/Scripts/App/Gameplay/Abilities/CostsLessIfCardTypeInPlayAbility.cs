@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
                 return;
 
             int gooCost = 0;
@@ -53,13 +53,13 @@ namespace Loom.ZombieBattleground
                 gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType).Count * Value;
             }
 
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
-                MainWorkingCard.Prototype.Cost + gooCost, boardCardView);
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
+                BoardUnitModel.Prototype.Cost + gooCost, boardCardView);
         }
 
-        private void CardPlayedHandler(WorkingCard card, int position)
+        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
         {
-            if (!card.Equals(MainWorkingCard))
+            if (!card.Equals(BoardUnitModel))
                 return;
 
             PlayerCallerOfAbility.BoardChanged -= BoardChangedHandler;

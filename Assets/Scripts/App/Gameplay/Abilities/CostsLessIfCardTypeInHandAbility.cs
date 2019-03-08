@@ -40,22 +40,22 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
                 return;
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
-                .FindAll(x => x.Prototype.CardSetType == SetType && x != MainWorkingCard).Count * Value;
+                .FindAll(x => x.Prototype.CardSetType == SetType && x != BoardUnitModel).Count * Value;
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
-                MainWorkingCard,
-                MainWorkingCard.Prototype.Cost + gooCost,
+                BoardUnitModel,
+                BoardUnitModel.Prototype.Cost + gooCost,
                 boardCardView
             );
         }
         
-        private void CardPlayedHandler(WorkingCard card, int position)
+        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
         {
-            if (!card.Equals(MainWorkingCard))
+            if (!card.Equals(BoardUnitModel))
                 return;
 
             PlayerCallerOfAbility.HandChanged -= HandChangedHandler;

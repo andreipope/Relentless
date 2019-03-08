@@ -157,8 +157,9 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                     string exceptionString = loggingEvent.GetExceptionString();
                     if (!String.IsNullOrWhiteSpace(exceptionString))
                     {
-                        writer.WriteLine("");
+                        writer.Write(@"<div class=""log-message-exception text-monospace small"">");
                         htmlWriter.WriteLine(exceptionString);
+                        writer.Write(@"</div>");
                     }
                     else
                     {

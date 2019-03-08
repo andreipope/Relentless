@@ -1110,7 +1110,7 @@ namespace Loom.ZombieBattleground.Test
 
         #region Adapted from AIController
 
-        public async Task PlayCardFromHandToBoard(WorkingCard card, ItemPosition position, BoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
+        public async Task PlayCardFromHandToBoard(BoardUnitModel boardUnitModel, ItemPosition position, BoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
         {
             bool needTargetForAbility = false;
 
@@ -1218,7 +1218,7 @@ namespace Loom.ZombieBattleground.Test
             return false;
         }
 
-        private void PlayCardCompleteHandler(WorkingCard card, BoardObject target)
+        private void PlayCardCompleteHandler(BoardUnitModel boardUnitModel, BoardObject target)
         {
             WorkingCard workingCard = null;
 

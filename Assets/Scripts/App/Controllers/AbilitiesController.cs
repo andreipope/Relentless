@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
     public class AbilitiesController : IController
     {
         public delegate void AbilityUsedEventHandler(
-            WorkingCard card,
+            BoardUnitModel boardUnitModel,
             Enumerators.AbilityType abilityType,
             List<ParametrizedAbilityBoardObject> targets = null);
         public event AbilityUsedEventHandler AbilityUsed;
@@ -127,8 +127,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardKind kind,
             object boardObject,
             Player caller,
-            IReadOnlyCard cardOwner,
-            WorkingCard workingCard)
+            BoardUnitModel boardUnitModel)
         {
             lock (_lock)
             {
@@ -142,8 +141,7 @@ namespace Loom.ZombieBattleground
 
                 activeAbility.Ability.ActivityId = activeAbility.Id;
                 activeAbility.Ability.PlayerCallerOfAbility = caller;
-                activeAbility.Ability.CardOwnerOfAbility = cardOwner;
-                activeAbility.Ability.MainWorkingCard = workingCard;
+                activeAbility.Ability.BoardUnitModel = boardUnitModel;
 
                 switch(boardObject)
                 {
@@ -720,14 +718,14 @@ namespace Loom.ZombieBattleground
         }
 
         public void InvokeUseAbilityEvent(
-            WorkingCard card,
+            BoardUnitModel boardUnitModel,
             Enumerators.AbilityType abilityType,
             List<ParametrizedAbilityBoardObject> targets)
         {
-            if (!CanHandleAbiityUseEvent(card))
+            if (!CanHandleAbiityUseEvent(boardUnitModel))
                 return;
 
-            AbilityUsed?.Invoke(card, abilityType, targets);
+            AbilityUsed?.Invoke(boardUnitModel, abilityType, targets);
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
@@ -737,21 +735,21 @@ namespace Loom.ZombieBattleground
             activeAbility.Ability.Activate();
         }
 
-        private bool CanHandleAbiityUseEvent(WorkingCard card)
+        private bool CanHandleAbiityUseEvent(BoardUnitModel boardUnitModel)
         {
-            if (!_gameplayManager.IsLocalPlayerTurn() || card == null || !card.Owner.IsLocalPlayer)
+            if (!_gameplayManager.IsLocalPlayerTurn() || boardUnitModel == null || !boardUnitModel.Card.Owner.IsLocalPlayer)
                 return false;
 
             return true;
         }
 
-        public void CallAbilitiesInHand(BoardCardView boardCardView, WorkingCard card)
+        public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
-                card.Prototype.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+                boardUnitModel.Card.Prototype.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
-                CreateActiveAbility(ability, card.Prototype.CardKind, boardCardView, card.Owner, card.Prototype, card)
+                CreateActiveAbility(ability, boardUnitModel.Card.Prototype.CardKind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)
                     .Ability
                     .Activate();
             }

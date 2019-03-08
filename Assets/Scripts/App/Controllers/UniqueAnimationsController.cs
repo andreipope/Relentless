@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool HasUniqueAnimation(WorkingCard card)
+        public bool HasUniqueAnimation(BoardUnitModel boardUnitModel)
         {
             return card.Prototype.UniqueAnimationType != Enumerators.UniqueAnimationType.None;
         }

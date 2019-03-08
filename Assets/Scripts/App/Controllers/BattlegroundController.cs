@@ -527,9 +527,9 @@ namespace Loom.ZombieBattleground
                  },  Enumerators.QueueActionType.StopTurn);
         }
 
-        public void RemovePlayerCardFromBoardToGraveyard(WorkingCard card)
+        public void RemovePlayerCardFromBoardToGraveyard(BoardUnitModel boardUnitModel)
         {
-            BoardUnitView boardCardView = PlayerBoardCards.FirstOrDefault(x => x.Model.Card == card);
+            BoardUnitView boardCardView = PlayerBoardCards.FirstOrDefault(x => x.Model.Card == boardUnitModel.Card);
             if (boardCardView == null)
                 return;
 
@@ -934,11 +934,11 @@ namespace Loom.ZombieBattleground
             }
 
             unit.OwnerPlayer.BoardCards.Remove(view);
-            unit.OwnerPlayer.CardsOnBoard.Remove(unit.Card);
+            unit.OwnerPlayer.CardsOnBoard.Remove(unit);
 
             unit.Card.Owner = newPlayerOwner;
 
-            newPlayerOwner.CardsOnBoard.Insert(ItemPosition.End, unit.Card);
+            newPlayerOwner.CardsOnBoard.Insert(ItemPosition.End, unit);
             newPlayerOwner.BoardCards.Insert(ItemPosition.End, view);
 
             view.Transform.tag = newPlayerOwner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
@@ -1062,30 +1062,20 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
         {
-            BoardUnitView view = 
+            BoardUnitModel boardUnitModel =
                 _gameplayManager.OpponentPlayer.BoardCards
                     .Concat(_gameplayManager.CurrentPlayer.BoardCards)
-                    .FirstOrDefault(u => u != null && u.Model.Card.InstanceId == id);
-
-            return view?.Model;
-        }
-
-        public WorkingCard GetWorkingCardByInstanceId(InstanceId id)
-        {
-            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
-            if (boardUnitModel != null)
-                return boardUnitModel.Card;
-
-            WorkingCard workingCard =
-                _gameplayManager.OpponentPlayer.CardsOnBoard
+                    .Where(v => v != null)
+                    .Select(v => v.Model)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
-                    .FirstOrDefault(u => u != null && u.InstanceId == id);
+                    .FirstOrDefault(model => model != null && model.Card.InstanceId == id);
 
-            return workingCard;
+            return boardUnitModel;
         }
 
         public BoardObject GetBoardObjectByInstanceId(InstanceId id)
