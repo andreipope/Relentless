@@ -28,8 +28,12 @@ namespace Loom.ZombieBattleground
         public static ILoggerRepository GetRepository()
         {
             if (_isRepositoryCreated)
+            {
+                Debug.Log("=========== GETTING REPOSITORY");
                 return LogManager.GetRepository(RepositoryName);
+            }
 
+            Debug.Log("=========== CREATING REPOSITORY");
             _isRepositoryCreated = true;
             return LogManager.CreateRepository(RepositoryName);
         }
