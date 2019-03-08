@@ -152,7 +152,6 @@ namespace Loom.ZombieBattleground
         public void SetPage<T>(bool hideAll = false)
             where T : IUIElement
         {
-            Debug.LogError("SetPage:" + nameof(T));
             if (hideAll)
             {
                 HideAllPages();
