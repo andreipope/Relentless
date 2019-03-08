@@ -129,18 +129,18 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordLeftArrowHandler()
         {
-            ChangeOverlordIndex
-            (
-                Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
-            );
+            int newIndex = _selectOverlordIndex - 1;
+            if (newIndex < 0)
+                newIndex = _selectOverlordIconList.Count - 1;
+            ChangeOverlordIndex(newIndex);
         }
 
         private void ButtonSelectOverlordRightArrowHandler()
         {
-            ChangeOverlordIndex
-            (
-                Mathf.Clamp(_selectOverlordIndex + 1, 0, _selectOverlordIconList.Count - 1)
-            );
+            int newIndex = _selectOverlordIndex + 1;
+            if (newIndex >= _selectOverlordIconList.Count)
+                newIndex = 0;
+            ChangeOverlordIndex(newIndex);
         }
         
         private void ButtonSelectOverlordContinueHandler()
