@@ -11,6 +11,8 @@ using log4net;
 using log4net.Appender;
 using Loom.ZombieBattleground.Common;
 using SharpCompress.Archives.Zip;
+using SharpCompress.Common;
+using SharpCompress.Writers;
 using TMPro;
 using Unity.Cloud.UserReporting;
 using Unity.Cloud.UserReporting.Plugin;
@@ -75,7 +77,8 @@ public class UserReportingScript : MonoBehaviour
     /// <summary>
     /// Gets or sets the category dropdown.
     /// </summary>
-    [Tooltip("The category dropdown.")] public Dropdown CategoryDropdown;
+    [Tooltip("The category dropdown.")]
+    public Dropdown CategoryDropdown;
 
     /// <summary>
     /// Gets or sets the description input on the user report form.
@@ -329,37 +332,39 @@ public class UserReportingScript : MonoBehaviour
         this.RaiseUserReportSubmitting();
 
         // Send Report
-        UnityUserReporting.CurrentClient.SendUserReport(this.CurrentUserReport, (uploadProgress, downloadProgress) =>
-        {
-            if (this.ProgressText != null)
+        UnityUserReporting.CurrentClient.SendUserReport(this.CurrentUserReport,
+            (uploadProgress, downloadProgress) =>
             {
-                string progressText = uploadProgress.ToString("0%");
-                this.ProgressText.text = progressText;
-            }
-        }, (success, br2) =>
-        {
-            Log.Info("Successfully sent bug report: " + success);
-
-            if (!success)
+                if (this.ProgressText != null)
+                {
+                    string progressText = uploadProgress.ToString("0%");
+                    this.ProgressText.text = progressText;
+                }
+            },
+            (success, br2) =>
             {
-                this.isShowingError = true;
-                this.StartCoroutine(this.ClearError());
-            }
+                Log.Info("Successfully sent bug report: " + success);
 
-            this.CurrentUserReport = null;
-            this.isSubmitting = false;
+                if (!success)
+                {
+                    this.isShowingError = true;
+                    this.StartCoroutine(this.ClearError());
+                }
 
-            if (_isCrashing)
-            {
-                ExitApplication();
-            }
-        });
+                this.CurrentUserReport = null;
+                this.isSubmitting = false;
+
+                if (_isCrashing)
+                {
+                    ExitApplication();
+                }
+            });
     }
 
     private IEnumerator DelayedCreateBugReport()
     {
         yield return new WaitForEndOfFrame();
-        CreateUserReportInternal();
+        yield return CreateUserReportInternal();
     }
 
     private void Start()
@@ -388,15 +393,15 @@ public class UserReportingScript : MonoBehaviour
             throw new Exception("AFPSCounter instance not found in scene");
     }
 
-        /// <summary>
+    /// <summary>
     /// Creates a user report.
     /// </summary>
-    private void CreateUserReportInternal()
+    private IEnumerator CreateUserReportInternal()
     {
         // Check Creating Flag
         if (this.isCreatingUserReport)
         {
-            return;
+            yield break;
         }
 
         // Hide FPS counter
@@ -405,19 +410,29 @@ public class UserReportingScript : MonoBehaviour
             _afpsCounter.OperationMode = OperationMode.Background;
         }
 
+        // Set Creating Flag
+        this.isCreatingUserReport = true;
+
+        yield return new WaitForEndOfFrame();
+
+        // Take Main Screenshot
+        foreach (object obj in TakeScreenshotWaiting(1280))
+        {
+            yield return obj;
+        }
+
+        // Take Thumbnail Screenshot
+        foreach (object obj in TakeScreenshotWaiting(256))
+        {
+            yield return obj;
+        }
+
+        Log.Debug("Finished taking screenshots");
+
         BugReportFormCancelButton.gameObject.SetActive(!_isCrashing);
         BugReportFormExitButton.gameObject.SetActive(_isCrashing);
         BugReportFormCrashText.gameObject.SetActive(_isCrashing);
         CrashBackupObjectsRoot.SetActive(_isCrashing);
-
-        // Set Creating Flag
-        this.isCreatingUserReport = true;
-
-        // Take Main Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(1280, 1280, s => { });
-
-        // Take Thumbnail Screenshot
-        UnityUserReporting.CurrentClient.TakeScreenshot(256, 256, s => { });
 
         // Attempt to get match id
         long? matchId = null;
@@ -445,7 +460,8 @@ public class UserReportingScript : MonoBehaviour
             // Ensure Project Identifier
             if (string.IsNullOrEmpty(br.ProjectIdentifier))
             {
-                Log.Warn("The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
+                Log.Warn(
+                    "The user report's project identifier is not set. Please setup cloud services using the Services tab or manually specify a project identifier when calling UnityUserReporting.Configure().");
             }
 
             // Fields
@@ -476,56 +492,11 @@ public class UserReportingScript : MonoBehaviour
             }
             catch (Exception e)
             {
-                UnityUserReporting.CurrentClient.LogException(e);
                 Log.Warn("Error while getting call metrics:" + e);
             }
 
             // HTML log
-            try
-            {
-                if (Logging.GetRepository() is IFlushable flushable)
-                {
-                    flushable.Flush(5000);
-                }
-
-                string logFilePath = Logging.GetLogFilePath();
-                string logFileName = Path.GetFileName(logFilePath);
-                byte[] htmlLog;
-                using(FileStream fileStream = new FileStream(
-                    Logging.GetLogFilePath(),
-                    FileMode.Open,
-                    FileAccess.Read,
-                    FileShare.ReadWrite))
-                {
-                    using (BinaryReader binaryReader = new BinaryReader(fileStream))
-                    {
-                        htmlLog = binaryReader.ReadBytes(int.MaxValue);
-                    }
-                }
-
-                using (MemoryStream zipStream = new MemoryStream())
-                {
-                    using (ZipArchive zipArchive = ZipArchive.Create())
-                    {
-                        zipArchive.DeflateCompressionLevel = CompressionLevel.BestCompression;
-                        zipArchive.AddEntry(logFileName, new MemoryStream(htmlLog), true);
-                        zipArchive.SaveTo(zipStream);
-                    }
-
-                    br.Attachments.Add(
-                        new UserReportAttachment(
-                            logFileName + ".zip",
-                            logFileName + ".zip",
-                            "application/zip",
-                            zipStream.ToArray()
-                        ));
-                }
-            }
-            catch (Exception e)
-            {
-                UnityUserReporting.CurrentClient.LogException(e);
-                Log.Warn("Error while getting HTML log:" + e);
-            }
+            AttachHtmlLog(br);
 
             br.DeviceMetadata.Add(new UserReportNamedValue("Full Version", BuildMetaInfo.Instance.FullVersionName));
             br.DeviceMetadata.Add(new UserReportNamedValue("Min FPS", _afpsCounter.fpsCounter.LastMinimumValue.ToString()));
@@ -610,7 +581,73 @@ public class UserReportingScript : MonoBehaviour
 
     #endregion
 
-    private void AddTextAttachment(UserReport report, string name, string text,  string contentType = "text/plain")
+    private static IEnumerable TakeScreenshotWaiting(int maxDimension)
+    {
+        bool finished = false;
+        UnityUserReporting.CurrentClient.TakeScreenshot(maxDimension, maxDimension, s => finished = true);
+        yield return new WaitUntil(() => finished);
+    }
+
+    private static void AttachHtmlLog(UserReport report)
+    {
+        try
+        {
+            if (Logging.GetRepository() is IFlushable flushable)
+            {
+                flushable.Flush(5000);
+            }
+
+            string logFilePath = Logging.GetLogFilePath();
+            if (!File.Exists(logFilePath))
+            {
+                Log.Info($"HTML log file '{logFilePath}' doesn't exist");
+                return;
+            }
+
+            string logFileName = Path.GetFileName(logFilePath);
+            byte[] htmlLog;
+            using (FileStream fileStream = new FileStream(
+                Logging.GetLogFilePath(),
+                FileMode.Open,
+                FileAccess.Read,
+                FileShare.ReadWrite))
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    fileStream.CopyTo(memoryStream);
+                    htmlLog = memoryStream.ToArray();
+                }
+            }
+
+            using (MemoryStream zipStream = new MemoryStream())
+            {
+                using (ZipArchive zipArchive = ZipArchive.Create())
+                {
+                    zipArchive.DeflateCompressionLevel = CompressionLevel.BestCompression;
+                    zipArchive.AddEntry(logFileName, new MemoryStream(htmlLog), true);
+
+                    zipArchive.SaveTo(
+                        zipStream,
+                        new WriterOptions(CompressionType.Deflate)
+                    );
+                }
+
+                report.Attachments.Add(
+                    new UserReportAttachment(
+                        logFileName + ".zip",
+                        logFileName + ".zip",
+                        "application/zip",
+                        zipStream.ToArray()
+                    ));
+            }
+        }
+        catch (Exception e)
+        {
+            Log.Warn("Error while getting HTML log:" + e);
+        }
+    }
+
+    private static void AddTextAttachment(UserReport report, string name, string text,  string contentType = "text/plain")
     {
         // Convert to Windows encoding for easy viewing
         text = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
