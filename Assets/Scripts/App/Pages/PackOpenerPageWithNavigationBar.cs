@@ -802,7 +802,10 @@ namespace Loom.ZombieBattleground
             DestroyCreatedObject();
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.SetPage<MainMenuPage>();
+                if(Constants.EnableNewUI)
+                    _uiManager.SetPage<MainMenuWithNavigationPage>();
+                else
+                    _uiManager.SetPage<MainMenuPage>();
             }
             else
             {

@@ -770,7 +770,13 @@ namespace Loom.ZombieBattleground
             DestroyCreatedObject();
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.SetPage<MainMenuPage>();
+                if (Constants.EnableNewUI)
+                {
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HERO_SELECTION);
+                }
+                else
+                    _uiManager.SetPage<MainMenuPage>();
             }
             else
             {

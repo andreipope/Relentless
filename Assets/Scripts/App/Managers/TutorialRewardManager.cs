@@ -93,7 +93,10 @@ namespace Loom.ZombieBattleground
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            if(Constants.EnableNewUI)
+                _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            else    
+                _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
         private void WarningPopupConfirmationReceived()

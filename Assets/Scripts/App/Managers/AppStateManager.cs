@@ -64,7 +64,14 @@ namespace Loom.ZombieBattleground
                         _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                    _uiManager.SetPage<OverlordSelectionPage>();
+                    if (Constants.EnableNewUI)
+                    {
+                        _uiManager.SetPage<MyDecksPage>();
+                        MyDecksPage myDecksPage = _uiManager.GetPage<MyDecksPage>();
+                        myDecksPage.ChangeTab(MyDecksPage.TAB.SELECT_OVERLORD);  
+                    }
+                    else
+                        _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
                     if (Constants.EnableNewUI)                    
@@ -81,7 +88,11 @@ namespace Loom.ZombieBattleground
                         _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    _uiManager.SetPage<HordeEditingPage>();
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<MyDecksPage>();
+                        //TODO Change tab to deck editing                     
+                    else
+                        _uiManager.SetPage<HordeEditingPage>();
                     break;
                 case Enumerators.AppState.SHOP:                    
                     if (Constants.EnableShopPage)
@@ -130,7 +141,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<CreditsPage>();
                     break;
                 case Enumerators.AppState.PlaySelection:
-                    _uiManager.SetPage<PlaySelectionPage>();
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<MainMenuWithNavigationPage>();
+                        //TODO Change tab to Play Selection                     
+                    else
+                        _uiManager.SetPage<PlaySelectionPage>();
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
