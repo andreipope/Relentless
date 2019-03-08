@@ -47,21 +47,21 @@ class Gameplay_Page(CZBTests):
     
     def swipe_board_card_to_opponent_face(self,cardPosition):
         player_board_creature=self.get_player_board_creatures()
-        player_board_creature[cardPosition].mobile_dragToElement(self.opponent_face,2000)
+        player_board_creature[cardPosition].mobile_dragToElement(self.opponent_face,2)
         time.sleep(4)
 
     def swipe_primary_spell_to_opponent_face(self):
-        self.player_primary_spell.mobile_dragToElement(self.opponent_face,2000)
+        self.player_primary_spell.mobile_dragToElement(self.opponent_face,2)
         time.sleep(4)
     
     def swipe_primary_spell_to_opponent_creature(self,cardPosition):
         enemy_board_creature=self.get_opponent_board_creatures()
-        self.player_primary_spell.mobile_dragToElement(enemy_board_creature[cardPosition],2000)
+        self.player_primary_spell.mobile_dragToElement(enemy_board_creature[cardPosition],2)
         time.sleep(4)
 
     
     def swipe_board_card_to_opponent_creature(self,player_card_position,opponent_card_position):
         player_board_creature=self.get_player_board_creatures()
         enemy_board_creature=self.get_opponent_board_creatures()
-        player_board_creature[player_card_position].mobile_dragToElement(enemy_board_creature[opponent_card_position],2000)
+        player_board_creature[player_card_position].mobile_dragToElement(enemy_board_creature[opponent_card_position],2)
         time.sleep(6)
