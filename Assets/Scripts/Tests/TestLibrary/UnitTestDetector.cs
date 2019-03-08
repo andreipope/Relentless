@@ -6,11 +6,11 @@ namespace Loom.ZombieBattleground.Test
 #if UNITY_EDITOR
     [UnityEditor.InitializeOnLoad]
 #endif
-    public static class TestPreBuildSetter
+    public static class UnitTestDetector
     {
         private static bool _isRegistered;
 
-        static TestPreBuildSetter()
+        static UnitTestDetector()
         {
             Register();
         }
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground.Test
                 return;
 
             _isRegistered = true;
-            UnitTestDetector.CheckRequested += Update;
+            ZombieBattleground.UnitTestDetector.CheckRequested += Update;
 
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.playModeStateChanged += change =>
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground.Test
 
         private static void Update()
         {
-            UnitTestDetector.SetRunningUnitTest(TestContext.CurrentTestExecutionContext != null);
+            ZombieBattleground.UnitTestDetector.SetRunningUnitTest(TestContext.CurrentTestExecutionContext != null);
         }
     }
 }
