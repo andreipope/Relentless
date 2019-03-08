@@ -71,13 +71,12 @@ namespace Loom.ZombieBattleground
                 UIRoot.gameObject.SetActive(visible);
             }
 
+#if !USE_PRODUCTION_BACKEND
             if (visible)
             {
-                if (DebugConsole.Instance != null)
-                {
-                    DebugConsole.IsVisible = false;
-                }
+                DebugConsole.IsVisible = false;
             }
+#endif
         }
 
         #region UI Handlers
