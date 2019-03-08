@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using DG.Tweening;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground
 {
     public class MyDecksSelectOverlordSkillTab
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MyDecksSelectOverlordSkillTab));
+        
         private ILoadObjectsManager _loadObjectsManager;
         
         private IUIManager _uiManager;
@@ -146,7 +149,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 success = false;                
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.LogException(Log, e);
                 Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
@@ -250,7 +253,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(e);
+                    Helpers.ExceptionReporter.LogException(Log, e);
 
                     Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
 

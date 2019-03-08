@@ -1,13 +1,15 @@
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using Opencoding.CommandHandlerSystem;
-using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground
 {
     public static class PvPCommandsHandler
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPCommandsHandler));
+
         private static IPvPManager _pvpManager;
         private static IQueueManager _queueManager;
         private static BackendDataControlMediator _backendDataControlMediator;
@@ -38,7 +40,7 @@ namespace Loom.ZombieBattleground
         {
             if (!_pvpManager.DebugCheats.Enabled)
             {
-                Debug.LogError("Cheat must be enabled, use EnableCheats before match");
+                Log.Error("Cheat must be enabled, use EnableCheats before match");
                 return;
             }
 

@@ -209,12 +209,17 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.card).ToList());
             }
 
-            MulliganCards?.Invoke(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
+            InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<MulliganPopup>();
-        }        
+        }    
+
+        public void InvokeMulliganCardsEvent(List<WorkingCard> cards) 
+        {
+            MulliganCards?.Invoke(cards);
+        }    
     }
 
     public class MulliganCardItem

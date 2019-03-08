@@ -283,12 +283,15 @@ namespace Loom.ZombieBattleground
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)
+            {
+                InternalTools.DoActionDelayed(() => callbackComplete(target), Time.deltaTime);
                 return;
+            }
 
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
-            Vector3 castVfxPosition;
+            Vector3 castVfxPosition = Vector3.zero;
             switch (target)
             {
                 case Player player:
@@ -299,6 +302,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case BoardUnitModel unit:
                     castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    break;
+                case HandBoardCard cardInHand:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -480,7 +485,7 @@ namespace Loom.ZombieBattleground
 
             if (_withEffect)
             {
-                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UnitDeathAnimations/ZB_ANM_" +
                                                 InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
                                                 "DeathAnimation"));
 

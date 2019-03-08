@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -17,7 +18,11 @@ using Object = UnityEngine.Object;
 namespace Loom.ZombieBattleground
 {
     public class PackOpenerPage : IUIElement
-    {    
+    {
+        private static readonly ILog Log = Logging.GetLog(nameof(PackOpenerPage));
+
+        private const string PackButtonName = "ButtonPackType";
+
         private ITutorialManager _tutorialManager;
 
         private IDataManager _dataManager;
@@ -248,12 +253,13 @@ namespace Loom.ZombieBattleground
         
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
-            _selfPage = null;
+            _selfPage = null; 
         }
         
         public void Dispose()
         {
-            DestroyCreatedObject();            
+            DestroyCreatedObject();
+            _cardInfoPopupHandler.Dispose();
         }
         
         #endregion
@@ -452,7 +458,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
 
                 _retryPackBalanceRequestCount++;
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
@@ -489,7 +495,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
                 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
@@ -764,7 +770,13 @@ namespace Loom.ZombieBattleground
             DestroyCreatedObject();
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.SetPage<MainMenuPage>();
+                if (Constants.EnableNewUI)
+                {
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HERO_SELECTION);
+                }
+                else
+                    _uiManager.SetPage<MainMenuPage>();
             }
             else
             {
@@ -860,6 +872,11 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPackTypeHandler( int id )
         {
+            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(PackButtonName))
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             ChangeSelectedPackType(id);
         }
 

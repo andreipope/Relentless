@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using DG.Tweening;
 using KellermanSoftware.CompareNetObjects;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -22,6 +23,8 @@ namespace Loom.ZombieBattleground
 {
     public class BattlegroundController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(BattlegroundController));
+
         public bool IsPreviewActive;
 
         public bool CardsZoomed = false;
@@ -375,7 +378,7 @@ namespace Loom.ZombieBattleground
             {
                 List<BoardUnitView> creatures = new List<BoardUnitView>();
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     if (_playerController == null || !card.GameObject)
                     {
@@ -393,14 +396,19 @@ namespace Loom.ZombieBattleground
 
                 creatures.Clear();
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     card.SetHighlightingEnabled(true);
+                }
+
+                foreach (BoardUnitView card in _gameplayManager.OpponentPlayer.BoardCards)
+                {
+                    card.SetHighlightingEnabled(false);
                 }
             }
             else
             {
-                foreach (BoardUnitView card in OpponentBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.OpponentPlayer.BoardCards)
                 {
                     card.Model.OnStartTurn();
                 }
@@ -410,7 +418,7 @@ namespace Loom.ZombieBattleground
                     card.SetHighlightingEnabled(false);
                 }
 
-                foreach (BoardUnitView card in PlayerBoardCards)
+                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -489,24 +497,28 @@ namespace Loom.ZombieBattleground
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>
                  {
-                     ValidateGameState(pvpControlGameState);
-                     EndTurn();
-
-                     if (_gameplayManager.IsLocalPlayerTurn())
+                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
+                     InternalTools.DoActionDelayed(() =>
                      {
-                         _uiManager.DrawPopup<YourTurnPopup>();
+                         ValidateGameState(pvpControlGameState);
+                         EndTurn();
 
-                         _timerManager.AddTimer((x) =>
+                         if (_gameplayManager.IsLocalPlayerTurn())
+                         {
+                             _uiManager.DrawPopup<YourTurnPopup>();
+
+                             _timerManager.AddTimer((x) =>
+                             {
+                                 StartTurn();
+                                 completeCallback?.Invoke();
+                             }, null, Constants.DelayBetweenYourTurnPopup);
+                         }
+                         else
                          {
                              StartTurn();
                              completeCallback?.Invoke();
-                         }, null, Constants.DelayBetweenYourTurnPopup);
-                     }
-                     else
-                     {
-                         StartTurn();
-                         completeCallback?.Invoke();
-                     }
+                         }
+                     }, delay);
                  },  Enumerators.QueueActionType.StopTurn);
         }
 
@@ -846,7 +858,7 @@ namespace Loom.ZombieBattleground
         {
             if (boardUnitModel == null)
             {
-                Helpers.ExceptionReporter.LogException("Trying to get BoardUnitView from 'null' BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("Trying to get BoardUnitView from 'null' BoardUnitModel"));
                 return null;
             }
 
@@ -858,7 +870,7 @@ namespace Loom.ZombieBattleground
 
             if (unitView is default(BoardUnitView))
             {
-                Helpers.ExceptionReporter.LogException("BoardUnitView couldnt found for BoardUnitModel");
+                ExceptionReporter.LogException(Log, new Exception("BoardUnitView couldnt found for BoardUnitModel"));
                 return null;
             }
 
@@ -909,6 +921,11 @@ namespace Loom.ZombieBattleground
             {
                 OpponentBoardCards.Remove(view);
                 PlayerBoardCards.Insert(ItemPosition.End, view);
+            }
+
+            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            {
+                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
             }
 
             unit.OwnerPlayer.BoardCards.Remove(view);
@@ -999,7 +1016,9 @@ namespace Loom.ZombieBattleground
             WorkingCard card = GetWorkingCardByInstanceId(id);
             if (card != null)
             {
-                return CreateCustomHandBoardCard(card).HandBoardCard;
+                BoardCard boardCard = CreateCustomHandBoardCard(card);
+                Object.Destroy(boardCard.GameObject);
+                return boardCard.HandBoardCard;
             }
 
             return null;
@@ -1149,7 +1168,7 @@ namespace Loom.ZombieBattleground
                 GameStateDesyncException desyncException = new GameStateDesyncException(comparisonResult.DifferencesString);
                 UserReportingScript.Instance.SummaryInput.text = "PvP De-sync Detected";
 #if USE_PRODUCTION_BACKEND
-                    Debug.LogError(desyncException);
+                    Log.Error(desyncException);
 
                     if (!GameClient.Get<IGameplayManager>().IsDesyncDetected)
                     {
@@ -1162,7 +1181,7 @@ namespace Loom.ZombieBattleground
                         );
                     }
 #elif UNITY_EDITOR
-                Debug.LogException(desyncException);
+                Log.Error("", desyncException);
 #else
                 throw desyncException;
 #endif

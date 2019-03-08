@@ -7,6 +7,7 @@ using Opencoding.Console;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Loom.Google.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -126,8 +127,7 @@ namespace Loom.ZombieBattleground
                     variation++;
                 }
             }
-
-            File.WriteAllText(filePath, GameClient.Get<IDataManager>().SerializeToJson(currentGameState, true));
+            File.WriteAllText(filePath, JsonFormatter.Default.Format(currentGameState));
         }
 
         #endregion

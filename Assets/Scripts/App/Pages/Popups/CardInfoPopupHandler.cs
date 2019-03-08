@@ -64,10 +64,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            if (_previewCard?.GameObject != null)
-            {
-                Object.Destroy(_previewCard?.GameObject);
-            }
+            ClearPreviewCard();
         }
 
         public void SelectCard(BoardCard card)

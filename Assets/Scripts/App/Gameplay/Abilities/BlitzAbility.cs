@@ -3,6 +3,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -48,10 +49,10 @@ namespace Loom.ZombieBattleground
                         switch (targetType)
                         {
                             case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
                                 break;
                             case Enumerators.AbilityTargetType.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
                                 break;
                         }
                     }

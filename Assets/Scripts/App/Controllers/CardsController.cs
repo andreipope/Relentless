@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -17,6 +18,8 @@ namespace Loom.ZombieBattleground
 {
     public class CardsController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardsController));
+
         public event Action<AbilityData.ChoosableAbility> CardForAbilityChoosed;
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
@@ -38,6 +41,8 @@ namespace Loom.ZombieBattleground
         private IUIManager _uiManager;
 
         private IMatchManager _matchManager;
+
+        private IPvPManager _pvpManager;
 
         private BattlegroundController _battlegroundController;
 
@@ -89,6 +94,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
@@ -124,7 +130,8 @@ namespace Loom.ZombieBattleground
 
         public InstanceId GetNewCardInstanceId()
         {
-            return new InstanceId(_cardInstanceId++);
+            _cardInstanceId++;
+            return new InstanceId(_cardInstanceId);
         }
 
         public InstanceId GetCardInstanceId()
@@ -141,10 +148,10 @@ namespace Loom.ZombieBattleground
         {
             CardDistribution = true;
 
-            GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
-
             if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
+                GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
+
                 if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().MulliganScreenShouldAppear)
                 {
                     EndCardDistribution();
@@ -156,7 +163,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                EndCardDistribution();
+                _uiManager.GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
             }
         }
 
@@ -193,7 +200,16 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                SetNewCardInstanceId(Constants.MinDeckSize * 2);// 2 is players count
+                int highestInstanceId =
+                    _pvpManager.InitialGameState.PlayerStates
+                    .SelectMany(state =>
+                        state.MulliganCards
+                            .Concat(state.CardsInDeck)
+                            .Concat(state.CardsInHand)
+                            .Concat(state.CardsInPlay)
+                            .Concat(state.CardsInGraveyard))
+                    .Max(card => card.InstanceId.Id);
+                SetNewCardInstanceId(highestInstanceId);
             }
         }
 
@@ -230,7 +246,7 @@ namespace Loom.ZombieBattleground
             {
                 if (player.CardsInDeck.Count == 0)
                 {
-                    if (!_tutorialManager.IsTutorial)
+                    if (!_tutorialManager.IsTutorial || (_tutorialManager.CurrentTutorial != null && _tutorialManager.IsLastTutorial))
                     {
                         player.DamageByNoMoreCardsInDeck++;
                         player.Defense -= player.DamageByNoMoreCardsInDeck;
@@ -523,7 +539,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void PlayPlayerCard(Player player, BoardCard card, HandBoardCard handCard, Action<PlayCardOnBoard> OnPlayPlayerCard, BoardObject target = null)
+        public void PlayPlayerCard(Player player,
+                                   BoardCard card,
+                                   HandBoardCard handCard,
+                                   Action<PlayCardOnBoard> OnPlayPlayerCard,
+                                   BoardObject target = null,
+                                   bool skipEntryAbilities = false)
         {
             if (card.CanBePlayed(card.WorkingCard.Owner))
             {
@@ -570,10 +591,11 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
                             player.CardsInHand.Remove(card.WorkingCard);
-                            player.BoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
+                            player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.AddCardToBoard(card.WorkingCard, (ItemPosition) card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.PlayerBoardCards.Insert(card.FuturePositionOnBoard, boardUnitView);
+                            _battlegroundController.PlayerBoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard,
+                            _battlegroundController.PlayerBoardCards), boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             InternalTools.DoActionDelayed(
@@ -631,7 +653,7 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
-                                        }, CallAbilityAction, target, handCard);
+                                        }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                     _actionsQueueController.ForceContinueAction(CallAbilityAction);
                                 });
@@ -661,7 +683,7 @@ namespace Loom.ZombieBattleground
                                         }
 
                                         RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard);
+                                    }, CallAbilityAction, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(CallAbilityAction);
                             }, 0.75f);
@@ -677,7 +699,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SummonUnitFromHand(Player player, BoardCard card)
+        public void SummonUnitFromHand(Player player, BoardCard card, bool activateAbility)
         {
             IReadOnlyCard libraryCard = card.WorkingCard.LibraryCard;
 
@@ -701,6 +723,14 @@ namespace Loom.ZombieBattleground
             boardUnitView.SetObjectInfo(card.WorkingCard);
             boardUnitView.Model.TutorialObjectId = card.WorkingCard.TutorialObjectId;
 
+            OpponentHandCard opponentHandCard = null;
+
+            if(activateAbility)
+            {
+                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.WorkingCard, player);
+            }
+
+
             if (player.IsLocalPlayer)
             {
                 _battlegroundController.PlayerHandCards.Remove(card);
@@ -708,6 +738,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.WorkingCard.InstanceId == card.WorkingCard.InstanceId);
+                _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
                 _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
             }
 
@@ -732,22 +764,39 @@ namespace Loom.ZombieBattleground
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
 
-            Sequence animationSequence = DOTween.Sequence();
-            animationSequence.Append(card.Transform.DOScale(new Vector3(.27f, .27f, .27f), 1f));
-            animationSequence.OnComplete(() =>
+            if (!player.IsLocalPlayer)
+            {
+                card.GameObject.SetActive(false);
+            }
+
+            if (player.IsLocalPlayer)
             {
                 RemoveCard(new object[]
                 {
-                        card
+                    card
                 });
-
-                InternalTools.DoActionDelayed(() =>
+            }
+            else
+            {
+                if (opponentHandCard != null)
                 {
-                    boardUnitView.PlayArrivalAnimation();
+                    RemoveOpponentCard(new object[]
+                    {
+                    opponentHandCard
+                    });
+                }
+                else
+                {
+                    Object.Destroy(card.GameObject);
+                }
+            }
 
-                    _boardController.UpdateCurrentBoardOfPlayer(player, null);
-                }, 0.1f);
-            });
+            InternalTools.DoActionDelayed(() =>
+            {
+                boardUnitView.PlayArrivalAnimation();
+
+                _boardController.UpdateCurrentBoardOfPlayer(player, null);
+            }, 0.1f);
         }
 
         public void PlayOpponentCard(
@@ -775,8 +824,8 @@ namespace Loom.ZombieBattleground
             if(opponentHandCard == null || opponentHandCard is default(OpponentHandCard))
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
-                Helpers.ExceptionReporter.LogException(exception);
-                Debug.LogException(exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Error("", exception);
                 return;
             }
 
@@ -898,7 +947,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.InstanceCard.Cost += value;
+                card.InstanceCard.Cost = Mathf.Clamp(card.InstanceCard.Cost + value, 0, 99);
             }
 
             player.ThrowOnHandChanged();
@@ -915,6 +964,7 @@ namespace Loom.ZombieBattleground
                     boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
                 }
 
+                card.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
                 boardCard.SetCardCost(value);
 
                 bool isActive = boardCard.WorkingCard.InstanceCard.Cost < boardCard.WorkingCard.LibraryCard.Cost;
@@ -1166,6 +1216,38 @@ namespace Loom.ZombieBattleground
             return unit;
         }
 
+        public BoardUnitView SpawnUnitOnBoard(Player owner, WorkingCard card, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null)
+        {
+            if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
+                return null;
+
+            BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
+
+            owner.AddCardToBoard(card, ItemPosition.End);
+
+            if (isPVPNetwork)
+            {
+                owner.BoardCards.Insert(ItemPosition.End, unit);
+            }
+            else
+            {
+                if (position.GetIndex(owner.BoardCards) <= Constants.MaxBoardUnits)
+                {
+                    owner.BoardCards.Insert(position, unit);
+                }
+                else
+                {
+                    owner.BoardCards.Insert(ItemPosition.End, unit);
+                }
+            }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
+
+            _boardController.UpdateCurrentBoardOfPlayer(owner, onComplete);
+
+            return unit;
+        }
+
         private BoardUnitView CreateBoardUnitForSpawn(WorkingCard card, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ? _battlegroundController.PlayerBoardObject : _battlegroundController.OpponentBoardObject;
@@ -1304,13 +1386,11 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format(
-                "Images/Cards/Illustrations/{0}_{1}_{2}", setName.ToLowerInvariant(), rarity.ToLowerInvariant(),
-                card.LibraryCard.Picture.ToLowerInvariant()));
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.LibraryCard.Picture.ToLowerInvariant()}");
 
             _titleText.text = card.LibraryCard.Name;
             _descriptionText.text = choosableAbility.Description;
-            _gooCostText.text = card.InstanceCard.Damage.ToString();
+            _gooCostText.text = card.InstanceCard.Cost.ToString();
 
             if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
             {
@@ -1319,8 +1399,8 @@ namespace Loom.ZombieBattleground
                 _attackText = SelfObject.transform.Find("Text_Attack").GetComponent<TextMeshPro>();
                 _defenseText = SelfObject.transform.Find("Text_Defense").GetComponent<TextMeshPro>();
 
-                _attackText.text = card.InstanceCard.Damage.ToString();
-                _defenseText.text = card.InstanceCard.Health.ToString();
+                _attackText.text = card.LibraryCard.Damage.ToString();
+                _defenseText.text = card.LibraryCard.Health.ToString();
 
                 _unitType.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", card.InstanceCard.CardType + "_icon"));
             }

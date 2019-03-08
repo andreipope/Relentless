@@ -66,7 +66,6 @@ namespace Loom.ZombieBattleground
             string soundName = string.Empty;
             float delaySound = 0;
 
-
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Vector3.zero;

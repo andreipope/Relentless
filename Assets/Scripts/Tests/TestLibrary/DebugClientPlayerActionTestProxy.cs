@@ -26,7 +26,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(3000);
             await SendPlayerAction(_client.PlayerActionFactory.EndTurn());
+            await Task.Delay(2000);
         }
 
         public async Task LeaveMatch()
@@ -39,7 +41,7 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.Mulligan(cards));
         }
 
-        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
 
@@ -69,6 +71,9 @@ namespace Loom.ZombieBattleground.Test
                     new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
                     ));
             }
+
+            if (skipEntryAbilities) 
+                return;
 
             // Second, fire non-targetable entry abilities
             AbilityData[] entryAbilities =
@@ -101,9 +106,9 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }
 
-        public async Task OverlordSkillUsed(SkillId skillId, InstanceId? target)
+        public async Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, target ?? _testHelper.GetOpponentPlayer().InstanceId));
+            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, targets));
             await new WaitForSeconds(4f);
         }
 
@@ -134,6 +139,17 @@ namespace Loom.ZombieBattleground.Test
                     action
                 )
             );
+        }
+
+        public async Task LetsThink(float thinkTime, bool forceRealtime)
+        {
+            await _testHelper.LetsThink(thinkTime, forceRealtime);
+        }
+
+        public async Task AssertInQueue(Action action)
+        {
+           action();
+           await new WaitForSeconds(1f);
         }
     }
 }

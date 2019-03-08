@@ -33,21 +33,25 @@ namespace Loom.ZombieBattleground
 
             Pages = new List<IUIElement>();
             Pages.Add(new LoadingPage());
-            Pages.Add(new MainMenuPage());
-            Pages.Add(new MainMenuWithNavigationPage());
-            Pages.Add(new OverlordSelectionPage());
-            Pages.Add(new HordeSelectionPage());
-            Pages.Add(new ArmyPage());
-            Pages.Add(new HordeEditingPage());
-            Pages.Add(new ShopPage());
+            if (!Constants.EnableNewUI)
+            { 
+                Pages.Add(new MainMenuPage());
+                Pages.Add(new OverlordSelectionPage());
+                Pages.Add(new HordeSelectionPage());
+                Pages.Add(new ArmyPage());
+                Pages.Add(new HordeEditingPage());
+                Pages.Add(new ShopPage());
+            }
             Pages.Add(new GameplayPage());
             Pages.Add(new PackOpenerPage());
-            Pages.Add(new PackOpenerPageWithNavigationBar());
             Pages.Add(new CreditsPage());
-            Pages.Add(new PlaySelectionPage());
+            if (!Constants.EnableNewUI)
+                Pages.Add(new PlaySelectionPage());
             Pages.Add(new PvPSelectionPage());
             Pages.Add(new CustomGameModeListPage());
-            Pages.Add(new CustomGameModeCustomUiPage());
+            Pages.Add(new CustomGameModeCustomUiPage());            
+            Pages.Add(new MainMenuWithNavigationPage());
+            Pages.Add(new PackOpenerPageWithNavigationBar());
             Pages.Add(new MyDecksPage());
             Pages.Add(new MyCardsPage());
             Pages.Add(new MyShopPage());
@@ -76,7 +80,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new LoginPopup());
             _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());
-            _uiPopups.Add(new OverlordAbilitySelectionPopup());
+            if (!Constants.EnableNewUI)            
+                _uiPopups.Add(new OverlordAbilitySelectionPopup());
             _uiPopups.Add(new OverlordAbilityTooltipPopup());
             _uiPopups.Add(new PastActionsPopup());
             _uiPopups.Add(new SettingsPopup());
@@ -86,6 +91,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new LoadingFiatPopup());
             _uiPopups.Add(new TutorialProgressInfoPopup());
             _uiPopups.Add(new RewardPopup());
+            _uiPopups.Add(new WaitingForPlayerPopup());
+            _uiPopups.Add(new TutorialSkipPopup());
             _uiPopups.Add(new SideMenuPopup());
             _uiPopups.Add(new AreaBarPopup());
             _uiPopups.Add(new DeckSelectionPopup());
@@ -145,6 +152,7 @@ namespace Loom.ZombieBattleground
         public void SetPage<T>(bool hideAll = false)
             where T : IUIElement
         {
+            Debug.LogError("SetPage:" + nameof(T));
             if (hideAll)
             {
                 HideAllPages();
@@ -191,7 +199,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
-                if (popup is WarningPopup || popup is ConnectionPopup)
+                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup)
                     return;
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
