@@ -208,11 +208,20 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const bool EnableShopPage = false;
+        internal const bool EnableShopPage = true;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
+        internal const int LastTutorialId = 8;
+        
+        internal const bool EnableNewUI = true;
+
+        internal const string MarketPlaceLink = "https://loom.games/en/browse";
+        
+        internal const string HelpLink = "https://loom.games/en/how-to-play";
+        
+        internal const string SupportLink = "https://loom.games/en/";
     }
 }

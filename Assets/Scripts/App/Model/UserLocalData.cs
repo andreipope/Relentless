@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground.Data
 
         public bool Tutorial = true;
 
+        public bool TutorialRewardClaimed = false;
+
         public int LastSelectedDeckId;
 
         public bool AgreedTerms = false;

@@ -651,6 +651,7 @@ PlayerSettings:
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
     1: 
+    7: USE_LOCAL_BACKEND;NOT_USE_STAGING_BACKEND
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

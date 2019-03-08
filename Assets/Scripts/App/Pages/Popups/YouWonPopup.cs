@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
                 {
                     _message.gameObject.SetActive(false);
                 }
-                else if( _tutorialManager.CurrentTutorial.Id == 5)
+                else if( _tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId)
                 {
                     _message.text = "Congratulations!\nThe reward will be\nautomatically claimed..";
                 }
@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
-                    if (_tutorialManager.CurrentTutorial.Id == 5)
+                    if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
                     {
                         GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
                     } 
