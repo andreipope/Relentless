@@ -220,15 +220,24 @@ namespace Loom.ZombieBattleground
 
 
         // =================== REMOVE HARD
-        public Player Owner { get; set; }
 
-        public CardInstanceSpecificData InstanceCard { get; set; }
+        public Player Owner
+        {
+            get => Card.Owner;
+            set => Card.Owner = value;
+        }
 
-        public IReadOnlyCard Prototype { get; set; }
+        public CardInstanceSpecificData InstanceCard => Card.InstanceCard;
 
-        public string Name { get; set; }
+        public IReadOnlyCard Prototype
+        {
+            get => Card.Prototype   ;
+            set => Card.Prototype    = value;
+        }
 
-        public Enumerators.SetType CardSetType { get; set; }
+        public string Name => Card.Prototype.Name;
+
+        public Enumerators.SetType CardSetType => Card.Prototype.CardSetType;
 
         // ===================
 
