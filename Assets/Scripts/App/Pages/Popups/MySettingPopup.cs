@@ -112,10 +112,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Self != null)
-            {
+            if (Self == null)
+                return;
 
-            }
+            _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
         }
 
 
