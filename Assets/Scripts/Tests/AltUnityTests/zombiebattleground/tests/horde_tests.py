@@ -25,16 +25,12 @@ class CZBHordeTests(CZBTests):
         self.skip_tutorials()
 
     def test_create_new_deck(self):
-        main_menu_page=Main_Menu_Page(self.altdriver)
-        main_menu_page.press_play_button()
-        match_selection_page=Match_Selection_Page(self.altdriver)
-        match_selection_page.press_solo_button()
-        deck_selection_page=Deck_Selection_Page(self.altdriver)
-        deck_selection_page.create_new_deck()
-        overlord_selection_page=Overlord_Selection_Page(self.altdriver)
-        overlord_selection_page.press_continue()
-        overlord_ability_popup_page=Overlord_Ability_Popup_Page(self.altdriver)
-        overlord_ability_popup_page.press_continue()
+        Main_Menu_Page(self.altdriver).press_play_button()
+        Match_Selection_Page(self.altdriver).press_solo_button()
+        Deck_Selection_Page(self.altdriver).create_new_deck()
+        Overlord_Selection_Page(self.altdriver).press_continue()
+        Overlord_Ability_Popup_Page(self.altdriver).press_continue()
+        
         horde_editing_page=Horde_Editing_Page(self.altdriver,self.driver)
         horde_editing_page.add_cards_to_horde(15)
         horde_editing_page.press_save()

@@ -22,12 +22,8 @@ class CZBLoginTests(CZBTests):
         
 
     def test_login_with_fake_account(self):
-        main_menu_page=Main_Menu_Page(self.altdriver)
-        main_menu_page.go_to_login_form()
-        print(self.altdriver)
-        login_page=Login_Popup_Page(self.altdriver)
-        print(login_page.login_popup)
-        login_page.login('fakeAccount@testsonbitbar.com','password123')
+        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Login_Popup_Page(self.altdriver).login('fakeAccount@testsonbitbar.com','password123')
 
         expectedMessage='The process could not be completed with error:\n The Username and/or Password are not correct. \n\nPlease try again.'
         actualMessage=self.altdriver.wait_for_element('Canvas3/WarningPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
@@ -38,10 +34,8 @@ class CZBLoginTests(CZBTests):
 
 
     def test_login_with_good_account(self):
-        main_menu_page=Main_Menu_Page(self.altdriver)
-        main_menu_page.go_to_login_form()
-        login_page=Login_Popup_Page(self.altdriver)
-        login_page.login('secondTestAccount@testsonbitbar.com','password123')
+        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Login_Popup_Page(self.altdriver).login('secondTestAccount@testsonbitbar.com','password123')
         Wait_Page(self.altdriver)
 
         try:
@@ -53,13 +47,10 @@ class CZBLoginTests(CZBTests):
         
     
     def test_send_registration_request(self):
-        main_menu_page=Main_Menu_Page(self.altdriver)
-        main_menu_page.go_to_login_form()
-        login_page=Login_Popup_Page(self.altdriver)
-        login_page.go_to_registration_form()
-        registration_page=Regitration_Popup_Page(self.altdriver)
+        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Login_Popup_Page(self.altdriver).go_to_registration_form()
         fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testsonbitbar.com'
-        registration_page.register(fakeEmail,'password123','password123')
+        Regitration_Popup_Page(self.altdriver).register(fakeEmail,'password123','password123')
 
         self.altdriver.wait_for_element_to_not_be_present('LoginPopup(Clone)')
         try:
@@ -69,12 +60,9 @@ class CZBLoginTests(CZBTests):
             self.assertTrue(True)
     
     def test_send_forgot_password_request(self):
-        main_menu_page=Main_Menu_Page(self.altdriver)
-        main_menu_page.go_to_login_form()
-        login_page=Login_Popup_Page(self.altdriver)
-        login_page.go_to_forgot_password_form()
-        forgot_password_page=Forgot_Password_Page(self.altdriver)
-        forgot_password_page.forgot_password('goodTestAccount@testsonbitbar.com')
+        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Login_Popup_Page(self.altdriver).login_page.go_to_forgot_password_form()
+        Forgot_Password_Page(self.altdriver).forgot_password('goodTestAccount@testsonbitbar.com')
 
         succes_forgot_page=Succes_Forgot_Page(self.altdriver)
         
