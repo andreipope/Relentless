@@ -231,17 +231,17 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
             parentId = altGameObject.transform.parent.GetInstanceID();
 
         var mobileY = Convert.ToInt32(Mathf.Round(Screen.height - _position.y));
-        if (SystemInfo.deviceModel.ToLower().Contains("samsung") || SystemInfo.deviceName.ToLower().Contains("samsung"))
-        {
+        // if (SystemInfo.deviceModel.ToLower().Contains("samsung") || SystemInfo.deviceName.ToLower().Contains("samsung"))
+        // {
   
-            var screenHeight = Screen.height * 4 / 3;
-            _position.x = _position.x * 4 / 3;
-            _position.y = _position.y * 4 / 3;
-            _position.z = _position.z * 4 / 3;
-            mobileY = Convert.ToInt32(Mathf.Round(screenHeight - _position.y));
-        }
-        Debug.Log("Device model: " + SystemInfo.deviceModel);
-        Debug.Log("Device name: " + SystemInfo.deviceName);
+        //     var screenHeight = Screen.height * 4 / 3;
+        //     _position.x = _position.x * 4 / 3;
+        //     _position.y = _position.y * 4 / 3;
+        //     _position.z = _position.z * 4 / 3;
+        //     mobileY = Convert.ToInt32(Mathf.Round(screenHeight - _position.y));
+        // }
+        // Debug.Log("Device model: " + SystemInfo.deviceModel);
+        // Debug.Log("Device name: " + SystemInfo.deviceName);
 
 
         AltUnityObject altObject = new AltUnityObject(name: altGameObject.name,
@@ -257,7 +257,9 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
                                                       worldZ: _position.z,
                                                       idCamera: camera.GetInstanceID(),
                                                       transformId: altGameObject.transform.GetInstanceID(),
-                                                      parentId:parentId);
+                                                      parentId:parentId,
+                                                      screenHeight:Screen.height,
+                                                      screenWidth:Screen.width);
         return altObject;
     }
 

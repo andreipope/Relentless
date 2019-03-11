@@ -28,11 +28,12 @@ class CZBTests(unittest.TestCase):
         self.desired_caps = {}
         if (self.platform == "android"):
             self.setup_android()
+            self.get_android_device_screen_size()
         else:
             self.setup_ios()
         self.driver = webdriver.Remote(
             'http://localhost:4723/wd/hub', self.desired_caps)
-        self.altdriver = AltrunUnityDriver(self.driver, self.platform)
+        self.altdriver = AltrunUnityDriver(self.driver, self.platform,screen_height=self.device_screen_height,screen_width=self.device_screen_width)
         self.altdriver.wait_for_current_scene_to_be('APP_INIT')
         try:
             subprocess.Popen(['iproxy', '8100', '8100'])
@@ -61,6 +62,28 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['app'] = PATH('../application.ipa')
         self.desired_caps['orientation']='LANDSCAPE'
 
+    def get_android_device_screen_size(self):
+        # The output of the command looks like this:
+        # Physical size: 1440x2560
+        # Override size: 1080x1920
+        # Also it can only have just the first line if the device uses the physical size resolution
+
+        sub = subprocess.Popen(['adb','shell','wm','size'], shell=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT)
+        commant_output=sub.stdout.read()
+        if('error:' in commant_output):
+            print(commant_output)
+        else:
+            splited_text=commant_output.split("\r\n")
+            print(splited_text)
+            if(len(splited_text)==3):
+                screen_size=splited_text[1].split(" ")[2]
+            else:
+                screen_size=splited_text[0].split(" ")[2]
+            screen_size_splited=screen_size.split("x")
+            self.device_screen_width=int(screen_size_splited[1])
+            self.device_screen_height=int(screen_size_splited[0])
 
     def wait_for_element_with_tmp_text(self, name, text, camera_name='', timeout=20, interval=0.5, enabled=True):
         t = 0

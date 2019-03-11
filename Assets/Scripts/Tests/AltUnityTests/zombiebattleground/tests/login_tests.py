@@ -61,7 +61,7 @@ class CZBLoginTests(CZBTests):
     
     def test_send_forgot_password_request(self):
         Main_Menu_Page(self.altdriver).go_to_login_form()
-        Login_Popup_Page(self.altdriver).login_page.go_to_forgot_password_form()
+        Login_Popup_Page(self.altdriver).go_to_forgot_password_form()
         Forgot_Password_Page(self.altdriver).forgot_password('goodTestAccount@testsonbitbar.com')
 
         succes_forgot_page=Succes_Forgot_Page(self.altdriver)
