@@ -22,8 +22,7 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         private Button _buttonClose,
-                       _buttonLogin,
-                       _buttonLogoff,
+                       _buttonLeaveMatch,
                        _buttonHelp,
                        _buttonSupport,
                        _buttonCredits;
@@ -78,13 +77,9 @@ namespace Loom.ZombieBattleground
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
             _buttonClose.onClick.AddListener(PlayClickSound);
             
-            _buttonLogin = Self.transform.Find("Scaler/Button_Login").GetComponent<Button>();
-            _buttonLogin.onClick.AddListener(ButtonLoginHandler);
-            _buttonLogin.onClick.AddListener(PlayClickSound);
-            
-            _buttonLogoff = Self.transform.Find("Scaler/Button_Logoff").GetComponent<Button>();
-            _buttonLogoff.onClick.AddListener(ButtonLogoffHandler);
-            _buttonLogoff.onClick.AddListener(PlayClickSound);
+            _buttonLeaveMatch = Self.transform.Find("Scaler/Button_LeaveMatch").GetComponent<Button>();
+            _buttonLeaveMatch.onClick.AddListener(ButtonLeaveMatchHandler);
+            _buttonLeaveMatch.onClick.AddListener(PlayClickSound);
             
             _buttonHelp = Self.transform.Find("Scaler/Button_Help").GetComponent<Button>();
             _buttonHelp.onClick.AddListener(ButtonHelpHandler);
@@ -117,33 +112,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Self != null)
-            {
-                if (!Constants.AlwaysGuestLogin && 
-                    _backendDataControlMediator.UserDataModel != null && 
-                    (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
-                {
-                    if (!_buttonLogin.gameObject.activeSelf)
-                    {
-                        _buttonLogin.gameObject.SetActive(true);
-                        _buttonLogoff.gameObject.SetActive
-                        (
-                            !_buttonLogin.gameObject.activeSelf
-                        );
-                    }
-                }
-                else
-                {
-                    if (_buttonLogin.gameObject.activeSelf)
-                    {
-                        _buttonLogin.gameObject.SetActive(false);
-                        _buttonLogoff.gameObject.SetActive
-                        (
-                            !_buttonLogin.gameObject.activeSelf
-                        );
-                    }
-                }
-            }
+            if (Self == null)
+                return;
+
+            _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
         }
 
 
@@ -162,18 +134,25 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<MySettingPopup>();
         }
         
-        private void ButtonLoginHandler()
+        private void ButtonLeaveMatchHandler()
         {
-            Hide();
-            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-            popup.Show();
-        }
-        
-        private void ButtonLogoffHandler()
-        {
-            Hide();
-            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
-            popup.Logout();
+            Action[] actions = new Action[2];
+            actions[0] = () =>
+            {
+                if (_gameplayManager.IsGameEnded)
+                {
+                    HandleQuitToMainMenu();
+                    return;
+                }
+
+                _gameplayManager.CurrentPlayer?.ThrowLeaveMatch();
+
+                _gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
+
+                HandleQuitToMainMenu();
+            };
+
+            _uiManager.DrawPopup<ConfirmationPopup>(actions);
         }
         
         private void ButtonHelpHandler()
@@ -211,6 +190,27 @@ namespace Loom.ZombieBattleground
         private void PlayClickSound()
         {
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        private void HandleQuitToMainMenu()
+        {
+            if (_gameplayManager.GetController<CardsController>().CardDistribution)
+            {
+                _uiManager.HidePopup<MulliganPopup>();
+            }
+
+            Hide();
+
+            _uiManager.HidePopup<YourTurnPopup>();
+
+            if(_tutorialManager.IsTutorial)
+            {
+                _tutorialManager.UnfinishedTutorial = true;
+            }
+            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+
+            _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
+            _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
         }
     }
 }

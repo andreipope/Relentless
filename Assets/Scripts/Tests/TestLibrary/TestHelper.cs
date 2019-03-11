@@ -356,7 +356,7 @@ namespace Loom.ZombieBattleground.Test
 
                         await LetsThink();
 
-                        await ClickGenericButton("Button_QuitToMainMenu", isGoingBack: true);
+                        await ClickGenericButton("Button_LeaveMatch", isGoingBack: true);
 
                         await LetsThink();
 
