@@ -48,6 +48,7 @@ namespace Loom.ZombieBattleground
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private BackendFacade _backendFacade;
+        private IDataManager _dataManager;
     
         public void Init()
         {           
@@ -55,6 +56,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade = GameClient.Get<BackendFacade>();
+            _dataManager = GameClient.Get<IDataManager>();
             
             _abiTutorialReward = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/TutorialRewardABI");                       
         }
@@ -87,9 +89,14 @@ namespace Loom.ZombieBattleground
                 return;
             }            
                
+            _dataManager.CachedUserLocalData.TutorialRewardClaimed = true;
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
-            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            if(Constants.EnableNewUI)
+                _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+            else    
+                _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
         private void WarningPopupConfirmationReceived()

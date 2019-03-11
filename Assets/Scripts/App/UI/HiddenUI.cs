@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
                 UIRoot.gameObject.SetActive(visible);
             }
 
-            if (visible)
+            if (DebugConsole.Instance != null && visible)
             {
                 DebugConsole.IsVisible = false;
             }
@@ -86,6 +86,9 @@ namespace Loom.ZombieBattleground
 
         public void OpenDebugConsole()
         {
+            if (DebugConsole.Instance == null)
+                return;
+
             _afpsCounter.OperationMode = OperationMode.Disabled;
             DebugConsole.IsVisible = true;
         }

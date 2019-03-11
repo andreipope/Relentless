@@ -22,8 +22,6 @@ namespace Loom.ZombieBattleground
 
         public bool UpdateServices { get; set; } = true;
 
-        private static readonly object Sync = new object();
-
         private static GameClient _instance;
 
         /// <summary>
@@ -125,10 +123,7 @@ namespace Loom.ZombieBattleground
             {
                 if (_instance == null)
                 {
-                    lock (Sync)
-                    {
-                        _instance = new GameClient();
-                    }
+                    _instance = new GameClient();
                 }
 
                 return _instance;

@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
             switch (info)
             {
                 case BoardUnitModel boardUnitModel:
-                    BattlegroundController.DestroyBoardUnit(boardUnitModel);
+                    BattlegroundController.DestroyBoardUnit(boardUnitModel, handleShield:true);
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {

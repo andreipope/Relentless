@@ -1,16 +1,12 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
 using UnityEngine;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -18,7 +14,7 @@ namespace Loom.ZombieBattleground.Test
     {
         private static readonly ILog Log = Logging.GetLog(nameof(AsyncTestRunner));
 
-        private const int FlappyErrorMaxRetryCount = 4;
+        private const int FlappyErrorMaxRetryCount = 5;
 
         private static readonly string[] KnownErrors =
         {
@@ -29,7 +25,9 @@ namespace Loom.ZombieBattleground.Test
         private static readonly string[] FlappyTestErrorSubstrings =
         {
             "RpcClientException",
-            "Call took longer than"
+            "WebSocketException",
+            "Call took longer than",
+            "invalid player"
         };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
@@ -225,12 +223,6 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private bool IsFlappyException(Exception e)
-        {
-            string exceptionString = e.ToString();
-            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
-        }
-
         private void FinishCurrentTest()
         {
             _currentRunningTestTask = null;
@@ -240,8 +232,12 @@ namespace Loom.ZombieBattleground.Test
 
         private void CancelTestWithReason(Exception reason)
         {
+            if (_cancellationReason != null)
+                return;
+
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
+            Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
@@ -250,7 +246,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
+                    if (IsKnownError(condition))
                         break;
 
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
@@ -260,6 +256,17 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Log:
                     break;
             }
+        }
+
+        private static bool IsFlappyException(Exception e)
+        {
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
+        }
+
+        private static bool IsKnownError(string condition)
+        {
+            return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
     }
 }

@@ -1013,14 +1013,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      opponent =>
                      {
                          opponent.CardAttack(opponentSlabId, playerFlowZId);
-                         opponent.LetsThink(2);
                      },
+                     player => {}
                   };
                   
                   Action validateEndState = () =>
                  {
-                     Assert.AreEqual(5, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
-                     Assert.AreEqual(6, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
+                     Assert.AreEqual(6, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                     Assert.AreEqual(7, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                  };
 
                   await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
