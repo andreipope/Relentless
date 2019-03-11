@@ -67,6 +67,8 @@ namespace Loom.ZombieBattleground
 
         public CardFilterData FilterData;
         
+        private CardFilterData _cacheFilterData;
+        
         public enum TAB
         {
             NONE = -1,
@@ -97,6 +99,7 @@ namespace Loom.ZombieBattleground
                 AllAvailableRankList,
                 AllAvailableTypeList
             );
+            SaveCacheFilterData();
             _buttonGooCostList = new List<Button>();
         }
 
@@ -225,8 +228,9 @@ namespace Loom.ZombieBattleground
                 Self.transform.Find("Scaler/Tab_GooCost").gameObject
             };
 
-            FilterData.Reset();
-            LoadTabs();  
+            LoadCacaheFilterData();
+            LoadTabs();
+            UpdateAllButtonsStatus();
         }
         
         public void Show(object data)
@@ -273,8 +277,9 @@ namespace Loom.ZombieBattleground
                 return;
             }
             
+            SaveCacheFilterData();
             _uiManager.HidePopup<CardFilterPopup>();
-            ActionPopupHiding?.Invoke(FilterData);            
+            ActionPopupHiding?.Invoke(FilterData);
         }
         
         private void ButtonElementIconHandler(Enumerators.SetType setType)
@@ -421,6 +426,17 @@ namespace Loom.ZombieBattleground
             
             EventChangeTab?.Invoke(_tab);
         }
+        
+        private void SaveCacheFilterData()
+        {
+            _cacheFilterData = new CardFilterData(FilterData);
+        }
+        
+        private void LoadCacaheFilterData()
+        {
+            if(_cacheFilterData != null)
+                FilterData = new CardFilterData(_cacheFilterData);
+        }
 
         #region Filter
 
@@ -481,6 +497,18 @@ namespace Loom.ZombieBattleground
             return FilterData.TypeDictionary.Any(kvp => kvp.Value);           
         }
         
+        private void UpdateAllButtonsStatus()
+        {
+            foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                UpdateSetTypeButtonDisplay(setType);
+            foreach (Enumerators.CardRank rank in AllAvailableRankList)            
+                UpdateRankButtonDisplay(rank);
+            foreach (Enumerators.CardType type in AllAvailableTypeList)
+                UpdateTypeButtonDisplay(type);
+            for(int i=0; i<FilterData.GooCostList.Count;++i)
+                UpdateGooCostButtonDisplay(i);
+        }
+        
         #endregion
 
         public void PlayClickSound()
@@ -502,6 +530,26 @@ namespace Loom.ZombieBattleground
             public Dictionary<Enumerators.CardType, bool> TypeDictionary;
             public List<bool> GooCostList;
             
+            public CardFilterData(CardFilterData originalData)
+            {
+                SetTypeDictionary = originalData.SetTypeDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                RankDictionary = originalData.RankDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                TypeDictionary = originalData.TypeDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                GooCostList = originalData.GooCostList.ToList();
+            }
+
             public CardFilterData
             (
                 List<Enumerators.SetType> availableSetTypeList,
