@@ -240,10 +240,12 @@ class AltrunUnityDriver(object):
                 alt_el = AltElement(self, self.appium_driver, data)
             except:
                 alt_el = AltElement(self, None, data)
-            if alt_el.screen_height!=self.screen_height or alt_el.screen_width!=self.screen_width:
-                alt_el.y=int(alt_el.y)*self.screen_height/alt_el.screen_height
-                alt_el.x=int(alt_el.x)*slef.screen_width/alt_el.screen_width
-                alt_el.mobileY=self.screen_height-alt_el.y
+            
+            if int(alt_el.screen_height)!=0 and int(alt_el.screen_width)!=0:
+                if int(alt_el.screen_height)!=self.screen_height or int(alt_el.screen_width)!=self.screen_width:
+                    alt_el.y=int(float(alt_el.y)*float(self.screen_height)/float(alt_el.screen_height))
+                    alt_el.x=int(float(alt_el.x)*float(self.screen_width)/float(alt_el.screen_width))
+                    alt_el.mobileY=int(float(self.screen_height)-float(alt_el.y))
 
             print('Element ' + alt_el.name + ' found at x:' + str(alt_el.x) + ' y:' + str(alt_el.y) + ' mobileY:' + str(alt_el.mobileY))
             return alt_el
@@ -265,10 +267,13 @@ class AltrunUnityDriver(object):
                     alt_el = AltElement(self, self.appium_driver, json.dumps(elements[i]))
                 except:
                     alt_el = AltElement(self, None, json.dumps(elements[i]))
-                if alt_el.screen_height!=self.screen_height or alt_el.screen_width!=self.screen_width:
-                    alt_el.y=int(alt_el.y)*self.screen_height/alt_el.screen_height
-                    alt_el.x=int(alt_el.x)*slef.screen_width/alt_el.screen_width
-                    alt_el.mobileY=self.screen_height-alt_el.y
+                
+                if int(alt_el.screen_height)!=0 and int(alt_el.screen_width)!=0 and self.screen_height!=-1 and self.screen_width!=-1:
+                    if int(alt_el.screen_height)!=self.screen_height or int(alt_el.screen_width)!=self.screen_width:
+                        alt_el.y=int(float(alt_el.y)*float(self.screen_height)/float(alt_el.screen_height))
+                        alt_el.x=int(float(alt_el.x)*float(self.screen_width)/float(alt_el.screen_width))
+                        alt_el.mobileY=int(float(self.screen_height)-float(alt_el.y))
+                
                 alt_elements.append(alt_el)
                 print('Element ' + alt_el.name + ' found at x:' + str(alt_el.x) + ' y:' + str(alt_el.y) + ' mobileY:' + str(alt_el.mobileY))
             return alt_elements
@@ -439,7 +444,8 @@ class AltrunUnityDriver(object):
             try:
                 alt_element = self.find_element(name,camera_name,enabled)
                 break
-            except Exception:
+            except Exception as e:
+                print(e)
                 print('Waiting for element ' + name + '...')
                 time.sleep(interval)
                 t += interval
