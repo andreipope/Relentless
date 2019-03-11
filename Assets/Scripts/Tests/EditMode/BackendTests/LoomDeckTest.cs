@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.Test
     [Category("QuickSubset")]
     public class LoomDeckTest
     {
-        public readonly LoomTestContext LoomTestContext = new LoomTestContext();
+        private readonly LoomTestContext LoomTestContext = new LoomTestContext();
 
         [SetUp]
         public void Init()

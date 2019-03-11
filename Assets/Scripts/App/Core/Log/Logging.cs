@@ -4,6 +4,7 @@ using System.Text;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
+using log4net.Filter;
 using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
@@ -70,7 +71,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static bool NonEssentialLogsDisabled => Application.isEditor; // Disable non-essential logs in Editor
+        public static bool NonEssentialLogsDisabled => Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #if UNITY_EDITOR
@@ -83,6 +84,8 @@ namespace Loom.ZombieBattleground
 
             _isConfigured = true;
             Hierarchy hierarchy = (Hierarchy) GetRepository();
+
+            IFilter[] spammyLogsFilters = LoggingPlatformConfiguration.CreateSpammyLogsFilters();
 
             // Unity console
             PatternLayout unityConsolePattern = new PatternLayout();
@@ -97,6 +100,11 @@ namespace Loom.ZombieBattleground
             {
                 Layout = unityConsolePattern
             };
+
+            foreach (IFilter logsFilter in spammyLogsFilters)
+            {
+                unityConsoleAppender.AddFilter(logsFilter);
+            }
 
             hierarchy.Root.AddAppender(unityConsoleAppender);
 
@@ -116,6 +124,11 @@ namespace Loom.ZombieBattleground
                     MaxSizeRollBackups = Application.isBatchMode ? 0 : 3,
                     PreserveLogFileNameExtension = true
                 };
+
+                foreach (IFilter logsFilter in spammyLogsFilters)
+                {
+                    fileAppender.AddFilter(logsFilter);
+                }
 
                 fileAppender.ActivateOptions();
                 hierarchy.Root.AddAppender(fileAppender);
