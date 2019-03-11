@@ -875,7 +875,7 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public UniquePositionedList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public IReadOnlyList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
         {
             if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
             {
@@ -897,6 +897,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitPrepairingToDie()
         {
             PrepairingToDie?.Invoke(this);
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
         }
     }
 }

@@ -279,11 +279,11 @@ namespace Loom.ZombieBattleground
         {
             if (owner.IsLocalPlayer)
             {
-                _battlegroundController.PlayerBoardCards.Insert(position, unit);
+                _gameplayManager.CurrentPlayer.BoardCards.Insert(position, unit);
             }
             else
             {
-                _battlegroundController.OpponentBoardCards.Insert(position, unit);
+                _gameplayManager.OpponentPlayer.BoardCards.Insert(position, unit);
             }
         }
 
@@ -304,11 +304,11 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, unit);
+                _gameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, unit);
             }
             else
             {
-                _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
+                _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, unit);
             }
 
             _boardController.UpdateCurrentBoardOfPlayer(owner, null);
@@ -451,8 +451,8 @@ namespace Loom.ZombieBattleground
                                 _gameplayManager.OpponentPlayer.BoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
                                     _gameplayManager.OpponentPlayer.BoardCards),
                                     boardUnitViewElement);
-                                _battlegroundController.OpponentBoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
-                                    _battlegroundController.OpponentBoardCards),
+                                _gameplayManager.OpponentPlayer.BoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
+                                    _gameplayManager.OpponentPlayer.BoardCards),
                                     boardUnitViewElement);
 
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam

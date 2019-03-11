@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
             }
 
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
-                BoardUnitModel.Prototype.Cost + gooCost, boardCardView);
+                BoardUnitModel.Prototype.Cost + gooCost, BoardCardView);
         }
 
         private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)

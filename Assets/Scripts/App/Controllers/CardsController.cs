@@ -228,16 +228,12 @@ namespace Loom.ZombieBattleground
             }
 
             UniquePositionedList<BoardUnitModel> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            player.SetFirstHandForLocalMatch();
             player.CardsPreparingToHand.Clear();
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, finalCards);
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, randomCards);
 
             EndCardDistribution();
-        }
-
-        public void AddCardToDistributionState(Player player, BoardUnitModel boardUnitModel)
-        {
-            player.CardsPreparingToHand.Insert(ItemPosition.End, boardUnitModel);
         }
 
         public IView AddCardToHand(Player player, BoardUnitModel card = null, bool removeCardsFromDeck = true)
@@ -261,12 +257,6 @@ namespace Loom.ZombieBattleground
             if (CheckIsMoreThanMaxCards(card, player))
                 return null;
 
-            /*
-            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
-            {
-                player.ThrowDrawCardEvent(card);
-            }
-*/
             if (removeCardsFromDeck)
             {
                 player.RemoveCardFromDeck(card);
@@ -592,8 +582,6 @@ namespace Loom.ZombieBattleground
                             player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
-                            _battlegroundController.PlayerBoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard,
-                            _battlegroundController.PlayerBoardCards), boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             InternalTools.DoActionDelayed(
@@ -641,7 +629,7 @@ namespace Loom.ZombieBattleground
                                                 RankBuffAction.Action = null;
                                                 RankBuffAction.ForceActionDone();
 
-                                                _battlegroundController.PlayerBoardCards.Remove(boardUnitView);
+                                                _gameplayManager.CurrentPlayer.BoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
 
 
@@ -731,13 +719,13 @@ namespace Loom.ZombieBattleground
             if (player.IsLocalPlayer)
             {
                 _battlegroundController.PlayerHandCards.Remove(card);
-                _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, boardUnitView);
+                _gameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitView);
             }
             else
             {
                 opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.BoardUnitModel.InstanceId == card.BoardUnitModel.Card.InstanceId);
                 _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
-                _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
+                _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitView);
             }
 
 

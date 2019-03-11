@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
             IReadOnlyList<BoardUnitModel> units =
                 GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
-            UniquePositionedList<BoardUnitView> playerBoardCards =
+            IReadOnlyList<BoardUnitView> playerBoardCards =
                 GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
 
             foreach (BoardUnitModel unit in units)
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
             units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
-            UniquePositionedList<BoardUnitView> opponentBoardCards =
+            IReadOnlyList<BoardUnitView> opponentBoardCards =
                 GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
 
             foreach (BoardUnitModel unit in units)
@@ -96,11 +96,11 @@ namespace Loom.ZombieBattleground
 
             if (playerOwner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
+                GameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
+                GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
             }
 
             RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitView);

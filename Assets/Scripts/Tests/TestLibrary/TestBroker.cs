@@ -29,9 +29,9 @@ namespace Loom.ZombieBattleground.Test
             return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
         }
 
-        public UniquePositionedList<BoardUnitView> GetBoardCards(Enumerators.MatchPlayer matchPlayer)
+        public IReadOnlyList<BoardUnitView> GetBoardCards(Enumerators.MatchPlayer matchPlayer)
         {
-            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _battlegroundController.PlayerBoardCards : _battlegroundController.OpponentBoardCards;
+            return matchPlayer == Enumerators.MatchPlayer.CurrentPlayer ? _gameplayManager.CurrentPlayer.BoardCards : _gameplayManager.OpponentPlayer.BoardCards;
         }
 
         public GameObject GetPlayerBoardGameObject(Enumerators.MatchPlayer matchPlayer)

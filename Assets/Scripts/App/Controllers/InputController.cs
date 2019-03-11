@@ -251,12 +251,12 @@ namespace Loom.ZombieBattleground
         private (bool, bool) ProcessUnits(
                 ref bool hasTarget,
                 ref bool hasPoinerTarget,
-                UniquePositionedList<BoardUnitView> BoardCards,
+                IReadOnlyList<BoardUnitView> boardCards,
                 Collider2D collider,
                 bool permanent = false,
                 bool isHovering = false)
         {
-            foreach (BoardUnitView unit in BoardCards)
+            foreach (BoardUnitView unit in boardCards)
             {
                 if (unit.GameObject.GetInstanceID() == collider.gameObject.GetInstanceID())
                 {

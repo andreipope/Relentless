@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public BoardSpell BoardSpell;
 
-        public BoardCardView boardCardView;
+        public BoardCardView BoardCardView;
 
         public BoardUnitModel TargetUnit;
 
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _playerAvatar;
 
-        private readonly Player _opponenentAvatar;
+        private readonly Player _opponentAvatar;
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
             AbilityTargetTypes = ability.AbilityTargetTypes;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;
-            _opponenentAvatar = GameplayManager.OpponentPlayer;
+            _opponentAvatar = GameplayManager.OpponentPlayer;
 
             PermanentInputEndEvent += InputEndedHandler;
 
@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
             }
 
-            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponenentAvatar;
+            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
         }
 
         public virtual void Update()

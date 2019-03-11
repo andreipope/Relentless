@@ -1405,10 +1405,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "FroZen"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "HoZer"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Znowman"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Brook"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(unit => unit.Model.Card.Prototype.Name == "FroZen"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(unit => unit.Model.Card.Prototype.Name == "HoZer"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Znowman"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Brook"));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);

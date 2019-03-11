@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             TypeSprite.sprite =
                 LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", boardUnitModel.Card.InstanceCard.CardType + "_icon"));
 
-            // TODO: unsubscribe
+            // TODO: refactor-state: unsubscribe
             BoardUnitModel.UnitDamageChanged += InstanceCardOnStatChanged;
             BoardUnitModel.UnitHpChanged += InstanceCardOnStatChanged;
         }

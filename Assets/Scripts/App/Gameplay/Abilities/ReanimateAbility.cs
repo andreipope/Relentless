@@ -1,6 +1,8 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -56,12 +58,12 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                GameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
             }
 
             InvokeActionTriggered(_reanimatedUnit);

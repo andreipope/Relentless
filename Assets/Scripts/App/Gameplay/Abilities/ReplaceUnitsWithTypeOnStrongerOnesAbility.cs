@@ -197,11 +197,11 @@ namespace Loom.ZombieBattleground
         {
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(position, unit);
+                GameplayManager.CurrentPlayer.BoardCards.Insert(position, unit);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(position, unit);
+                GameplayManager.OpponentPlayer.BoardCards.Insert(position, unit);
             }
         }
 

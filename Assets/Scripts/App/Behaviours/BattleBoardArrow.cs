@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         public UniqueList<BoardObject> IgnoreBoardObjectsList;
 
-        public UniquePositionedList<BoardUnitView> BoardCards;
+        public IReadOnlyList<BoardUnitView> BoardCards;
 
         public BoardUnitView Owner;
 

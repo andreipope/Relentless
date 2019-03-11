@@ -289,26 +289,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand)
-        {
-            player.CardsInHand.Clear();
-            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
-
-            player.ThrowOnHandChanged();
-        }
-
-        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
-        {
-            player.CardsInDeck.Clear();
-            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
-
-            Log.Info("Updating player cards");
-            Log.Info(player.CardsInDeck.Count);
-            Log.Info(cardsInDeck.Count);
-
-            player.InvokeDeckChangedEvent();
-        }
-
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
@@ -421,6 +401,16 @@ namespace Loom.ZombieBattleground
             };
 
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
+        }
+
+        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
+        {
+            player.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
+        }
+
+        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
+        {
+            player.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
         }
 
         private async Task LoadInitialGameState()

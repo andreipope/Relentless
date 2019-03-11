@@ -422,7 +422,7 @@ static class BattleCommandsHandler
         player.RemoveCardFromGraveyard(unit.Model);
         player.AddCardToBoard(boardUnitModel, ItemPosition.End);
         player.BoardCards.Insert(ItemPosition.End, newUnit);
-        _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
+        _gameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, newUnit);
 
         _boardController.UpdateBoard(player.BoardCards, true, null);
     }

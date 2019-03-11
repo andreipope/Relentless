@@ -48,12 +48,10 @@ namespace Loom.ZombieBattleground
             else
             {
                 BoardCardView boardCardView;
-                Player playerOwner;
-                UniquePositionedList<BoardUnitModel> filteredCards = null;
 
                 foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
                 {
-                    playerOwner = null;
+                    Player playerOwner = null;
                     switch (targetType)
                     {
                         case Enumerators.AbilityTargetType.PLAYER:
@@ -66,7 +64,7 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
+                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;

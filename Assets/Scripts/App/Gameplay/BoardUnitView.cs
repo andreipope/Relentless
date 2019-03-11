@@ -1026,6 +1026,11 @@ namespace Loom.ZombieBattleground
             sequence.Play();
         }
 
+        public override string ToString()
+        {
+            return $"({nameof(Model)}: {Model})";
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

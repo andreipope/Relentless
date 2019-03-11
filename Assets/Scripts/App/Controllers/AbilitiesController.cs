@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
                 switch(boardObject)
                 {
                     case BoardCardView card:
-                        activeAbility.Ability.boardCardView = card;
+                        activeAbility.Ability.BoardCardView = card;
                         break;
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;

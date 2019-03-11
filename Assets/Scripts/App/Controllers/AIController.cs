@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.SetDeck(workingDeck, true);
+                _gameplayManager.OpponentPlayer.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x)));
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -958,7 +958,6 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
 
-                        _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
                         _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
