@@ -269,7 +269,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitView unit in boardUnits)
             {
                 unit.Model.OwnerPlayer.BoardCards.Remove(unit);
-                unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
+                unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model);
 
                 unit.DisposeGameObject();
             }
@@ -296,9 +296,10 @@ namespace Loom.ZombieBattleground
             Card prototype = reanimateAbilityOutcome.NewCardInstance.Prototype.FromProtobuf();
 
             WorkingCard card = new WorkingCard(prototype, prototype, owner, reanimateAbilityOutcome.NewCardInstance.InstanceId.FromProtobuf());
-            BoardUnitView unit = CreateBoardUnit(card, owner);
+            BoardUnitModel boardUnitModel = new BoardUnitModel(card);
+            BoardUnitView unit = CreateBoardUnit(boardUnitModel, owner);
 
-            owner.AddCardToBoard(card, ItemPosition.End);
+            owner.AddCardToBoard(boardUnitModel, ItemPosition.End);
             owner.BoardCards.Insert(ItemPosition.End, unit);
 
             if (owner.IsLocalPlayer)
@@ -331,7 +332,7 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnitView.Model.Card.Owner = owner;
-            boardUnitView.Model.Card.TutorialObjectId = card.TutorialObjectId;
+            boardUnitView.Model.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
             {

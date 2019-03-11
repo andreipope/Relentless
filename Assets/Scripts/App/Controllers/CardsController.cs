@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isHoveringCardOfBoard;
 
-        public List<WorkingCard> MulliganCards;
+        public List<BoardUnitModel> MulliganCards;
 
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(DirectlyEndCardDistribution);
 
             // for local player
-            foreach (WorkingCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
                 AddCardToHand(_gameplayManager.CurrentPlayer, card);
             }
@@ -213,10 +213,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CardsDistribution(IReadOnlyList<WorkingCard> mulliganCards)
+        public void CardsDistribution(IReadOnlyList<BoardUnitModel> mulliganCards)
         {
             Player player = _gameplayManager.CurrentPlayer;
-            List<WorkingCard> randomCards = new List<WorkingCard>();
+            List<BoardUnitModel> randomCards = new List<BoardUnitModel>();
 
             int count = 0;
             while (randomCards.Count < mulliganCards.Count) {
@@ -227,7 +227,7 @@ namespace Loom.ZombieBattleground
                 count++;
             }
 
-            UniquePositionedList<WorkingCard> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
+            UniquePositionedList<BoardUnitModel> finalCards = player.CardsPreparingToHand.Except(mulliganCards).ToUniquePositionedList();
             player.CardsPreparingToHand.Clear();
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, finalCards);
             player.CardsPreparingToHand.InsertRange(ItemPosition.End, randomCards);
@@ -240,7 +240,7 @@ namespace Loom.ZombieBattleground
             player.CardsPreparingToHand.Insert(ItemPosition.End, boardUnitModel);
         }
 
-        public IView AddCardToHand(Player player, WorkingCard card = null, bool removeCardsFromDeck = true)
+        public IView AddCardToHand(Player player, BoardUnitModel card = null, bool removeCardsFromDeck = true)
         {
             if (card == null)
             {
@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground
             return cardView;
         }
 
-        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, WorkingCard card = null)
+        public void AddCardToHandFromOtherPlayerDeck(Player player, Player otherPlayer, BoardUnitModel card = null)
         {
             if (card == null)
             {
@@ -317,7 +317,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView AddCardToHand(BoardUnitModel boardUnitModel, bool silent = false)
         {
-            BoardCardView boardCardView = CreateBoardCard(card);
+            BoardCardView boardCardView = CreateBoardCard(boardUnitModel);
 
             if (_battlegroundController.CurrentTurn == 0)
             {
@@ -590,9 +590,9 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.Card.Owner = card.BoardUnitModel.Card.Owner;
                             boardUnitView.Model.Card.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
 
-                            player.CardsInHand.Remove(card.BoardUnitModel.Card);
+                            player.CardsInHand.Remove(card.BoardUnitModel);
                             player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
-                            player.AddCardToBoard(card.BoardUnitModel.Card, (ItemPosition) card.FuturePositionOnBoard);
+                            player.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.PlayerBoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard,
                             _battlegroundController.PlayerBoardCards), boardUnitView);
@@ -629,7 +629,7 @@ namespace Loom.ZombieBattleground
 
                                             if (status)
                                             {
-                                                player.ThrowPlayCardEvent(card.BoardUnitModel.Card, card.FuturePositionOnBoard);
+                                                player.ThrowPlayCardEvent(card.BoardUnitModel, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.BoardUnitModel.Card.InstanceCard.Cost));
                                                 if (card is UnitBoardCard)
                                                 {
@@ -661,7 +661,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.SPELL:
                         {
-                            player.CardsInHand.Remove(card.BoardUnitModel.Card);
+                            player.CardsInHand.Remove(card.BoardUnitModel);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -679,7 +679,7 @@ namespace Loom.ZombieBattleground
                                     {
                                         if(status)
                                         {
-                                            player.ThrowPlayCardEvent(card.BoardUnitModel.Card, 0);
+                                            player.ThrowPlayCardEvent(card.BoardUnitModel, 0);
                                         }
 
                                         RankBuffAction.ForceActionDone();
@@ -802,8 +802,8 @@ namespace Loom.ZombieBattleground
             Player player,
             InstanceId cardId,
             BoardObject target,
-            Action<WorkingCard> cardFoundCallback,
-            Action<WorkingCard, BoardObject> completePlayCardCallback
+            Action<BoardUnitModel> cardFoundCallback,
+            Action<BoardUnitModel, BoardObject> completePlayCardCallback
             )
         {
             OpponentHandCard opponentHandCard;

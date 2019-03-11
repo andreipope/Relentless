@@ -1014,7 +1014,7 @@ namespace Loom.ZombieBattleground
             if (boardUnitModelById != null)
                 return boardUnitModelById;
 
-            WorkingCard card = GetWorkingCardByInstanceId(id);
+            BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
             if (card != null)
             {
                 BoardCardView boardCardView = CreateCustomHandBoardCard(card);
@@ -1121,10 +1121,10 @@ namespace Loom.ZombieBattleground
             ).ToList();
         }
 
-        public BoardCardView CreateCustomHandBoardCard(WorkingCard card)
+        public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)
         {
-            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), new BoardUnitModel(card));
-            boardCardView.GameObject.transform.position = card.Owner.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
+            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);
+            boardCardView.GameObject.transform.position = boardUnitModel.OwnerPlayer.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
             boardCardView.GameObject.transform.localScale = Vector3.one * .3f;
             boardCardView.SetHighlightingEnabled(false);

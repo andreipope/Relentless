@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground
 
             Model.FightSequenceHandler = this;
 
-            if (!_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
+            if (!_uniqueAnimationsController.HasUniqueAnimation(Model))
             {
                 switch (Model.InitialUnitType)
                 {
@@ -520,13 +520,13 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card) && (!playUniqueAnimation || !firstAppear))
+                if (_uniqueAnimationsController.HasUniqueAnimation(Model) && (!playUniqueAnimation || !firstAppear))
                 {
                     InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, delay);
                 }
             };
 
-            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
+            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model) && playUniqueAnimation)
             {
                 _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction, endArrivalCallback: ArrivalAnimationEventHandler);
             }

@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         public CardInstanceSpecificData InstanceCard { get; }
 
-        public InstanceId InstanceId { get; set; }
+        public InstanceId InstanceId { get; }
 
         public int TutorialObjectId;
 

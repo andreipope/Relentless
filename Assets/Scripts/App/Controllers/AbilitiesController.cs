@@ -407,7 +407,7 @@ namespace Loom.ZombieBattleground
         public void CallAbility(
             IReadOnlyCard prototype,
             BoardCardView card,
-            WorkingCard workingCard,
+            BoardUnitModel boardUnitModel,
             Enumerators.CardKind kind,
             BoardObject boardObject,
             Action<BoardCardView> action,
@@ -431,7 +431,7 @@ namespace Loom.ZombieBattleground
                        _activeAbility = null;
                        foreach (AbilityData item in prototype.Abilities)
                        {
-                           _activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, prototype, workingCard);
+                           _activeAbility = CreateActiveAbility(item, kind, boardObject, boardUnitModel.OwnerPlayer, boardUnitModel);
 
                            if (IsAbilityCanActivateTargetAtStart(item))
                            {
@@ -731,7 +731,7 @@ namespace Loom.ZombieBattleground
         public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, IReadOnlyCard card, Player owner)
         {
             ActiveAbility activeAbility =
-                CreateActiveAbility(GetAbilityDataByType(ability), cardKind, target, owner, card, null);
+                CreateActiveAbility(GetAbilityDataByType(ability), cardKind, target, owner, card);
             activeAbility.Ability.Activate();
         }
 

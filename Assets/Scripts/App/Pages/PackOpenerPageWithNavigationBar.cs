@@ -1049,21 +1049,21 @@ namespace Loom.ZombieBattleground
         {        
             GameObject go;
             BoardCardView boardCard;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCard = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:                
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
         
-            boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
             boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;

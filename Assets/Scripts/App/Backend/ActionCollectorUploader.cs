@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void DrawCardHandler(WorkingCard card)
+            private void DrawCardHandler(BoardUnitModel boardUnitModel)
             {
                 /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -220,9 +220,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void CardPlayedHandler(WorkingCard card, int position)
+            private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
             {
-                AddAction(_playerActionFactory.CardPlay(card.InstanceId, position));
+                AddAction(_playerActionFactory.CardPlay(boardUnitModel.InstanceId, position));
             }
 
             private void TurnEndedHandler()
@@ -243,7 +243,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, Data.InstanceId instanceId)
+            private void CardAttackedHandler(BoardUnitModel attacker, Data.InstanceId instanceId)
             {
                 AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }

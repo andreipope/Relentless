@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsPlayable { get; set; }
 
-        public WorkingCard Card { get; private set; }
+        public WorkingCard Card { get; set; }
 
         public bool IsStun => _stunTurns > 0;
 
@@ -865,8 +865,8 @@ namespace Loom.ZombieBattleground
         public void RemoveUnitFromBoard()
         {
             OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitViewByModel(this));
-            OwnerPlayer.RemoveCardFromBoard(Card);
-            OwnerPlayer.AddCardToGraveyard(Card);
+            OwnerPlayer.RemoveCardFromBoard(this);
+            OwnerPlayer.AddCardToGraveyard(this);
 
             UnitFromDeckRemoved?.Invoke();
         }
