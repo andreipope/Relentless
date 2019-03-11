@@ -61,8 +61,7 @@ namespace Loom.ZombieBattleground
         
         private CardHighlightingVFXItem _createdHighlightingVFXItem;
         
-        private Button _buttonBack, 
-                       _buttonPlus, 
+        private Button _buttonPlus, 
                        _buttonMinus, 
                        _buttonMax, 
                        _buttonOpenPack, 
@@ -219,7 +218,6 @@ namespace Loom.ZombieBattleground
             _vfxCommanderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_CommanderPackOpenerV2");
             _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");   
             
-            _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _buttonBuyPack = _selfPage.transform.Find("Pack_Panel/Button_BuyPacks").GetComponent<Button>();
             _buttonPlus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonPlus").GetComponent<Button>();
             _buttonMinus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMinus").GetComponent<Button>();
@@ -264,7 +262,6 @@ namespace Loom.ZombieBattleground
             
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
 
-            _buttonBack.gameObject.SetActive(false);
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
             _uiManager.DrawPopup<AreaBarPopup>();
         }
@@ -295,7 +292,6 @@ namespace Loom.ZombieBattleground
         
         private void InitObjects()
         { 
-            _buttonBack.onClick.AddListener(ButtonBackHandler);
             _buttonBuyPack.onClick.AddListener(ButtonBuyPacksHandler);
             _buttonPlus.onClick.AddListener(ButtonPlusHandler);
             _buttonMinus.onClick.AddListener(ButtonMinusHandler);
@@ -788,30 +784,6 @@ namespace Loom.ZombieBattleground
         #endregion
         
         #region Button Handler
-        
-        private void ButtonBackHandler()
-        {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
-                return;
-            }
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            DOTween.KillAll();            
-            DestroyCreatedObject();
-            if (_tutorialManager.IsTutorial)
-            {
-                if(Constants.EnableNewUI)
-                    _uiManager.SetPage<MainMenuWithNavigationPage>();
-                else
-                    _uiManager.SetPage<MainMenuPage>();
-            }
-            else
-            {
-                GameClient.Get<IAppStateManager>().BackAppState();
-            }
-        }
         
         private void ButtonBuyPacksHandler()
         {
