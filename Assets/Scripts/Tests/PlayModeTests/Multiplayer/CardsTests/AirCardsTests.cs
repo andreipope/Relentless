@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine.TestTools;
-using Loom.ZombieBattleground.Common;
 using System.Linq;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
