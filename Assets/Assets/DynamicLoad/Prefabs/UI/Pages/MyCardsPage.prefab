@@ -904,7 +904,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -939,8 +939,8 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 21300000, guid: 1cebcdc100b3d38459818e17e19e7fee, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1533,8 +1533,8 @@ MonoBehaviour:
     m_FadeDuration: 0.1
   m_SpriteState:
     m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 21300000, guid: 1cebcdc100b3d38459818e17e19e7fee, type: 3}
-    m_DisabledSprite: {fileID: 21300000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
+    m_PressedSprite: {fileID: 21300000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
+    m_DisabledSprite: {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   m_AnimationTriggers:
     m_NormalTrigger: Normal
     m_HighlightedTrigger: Highlighted
@@ -1875,7 +1875,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 215d5cf6cd3a9ac43928d43a2bfc22a4, type: 3}
+  m_Sprite: {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
