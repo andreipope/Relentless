@@ -693,7 +693,7 @@ namespace Loom.ZombieBattleground
 
         public void SettingsButtonOnClickHandler()
         {
-            _uiManager.DrawPopup<SettingsPopup>();
+            _uiManager.DrawPopup<MySettingPopup>();
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 

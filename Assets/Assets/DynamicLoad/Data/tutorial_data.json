@@ -3805,7 +3805,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2,
+          "AppearDelay": 0,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
@@ -3844,12 +3844,16 @@
           }
         },
         {
+          "ActionToEndThisStep": "EndCardFlipPlayerOrderPopup",
+          "BeginGameplayFlowManually": true,
+          "PlayerOrderScreenCloseManually": true,
+        },
+        {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
           "PlayerOrderScreenCloseManually": true,
-          "BeginGameplayFlowManually": true
         },
         {
           "ActionToEndThisStep": "PopupClosed"

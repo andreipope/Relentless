@@ -24,10 +24,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
-
             if (!AbilityUnitOwner.IsReanimated)
             {
+                InvokeUseAbilityEvent();
+
                 AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
             }
         }

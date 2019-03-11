@@ -1,5 +1,6 @@
 ﻿using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Common;
 using Opencoding.CommandHandlerSystem;
 
 namespace Loom.ZombieBattleground
@@ -31,13 +32,19 @@ namespace Loom.ZombieBattleground
             }
 
             GameClient.Get<ITutorialManager>().StopTutorial(true);
-            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = 5;
+            GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId = Constants.LastTutorialId;
         }
         
         [CommandHandler(Description = "Reduce the current def of the AI overlord to zero")]
         private static void WinBattle()
         {
             _gameplayManager.OpponentPlayer.Defense = 0;
+        }
+        
+        [CommandHandler(Description = "Reduce the current def of the Playwe overlord to zero")]
+        private static void LoseBattle()
+        {
+            _gameplayManager.CurrentPlayer.Defense = 0;
         }
     }
 }

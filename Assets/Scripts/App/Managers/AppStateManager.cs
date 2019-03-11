@@ -58,22 +58,43 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    _uiManager.SetPage<MainMenuPage>();
+                    if(Constants.EnableNewUI)
+                        _uiManager.SetPage<MainMenuWithNavigationPage>();                    
+                    else
+                        _uiManager.SetPage<MainMenuPage>();
                     break;
                 case Enumerators.AppState.HERO_SELECTION:
-                    _uiManager.SetPage<OverlordSelectionPage>();
+                    if (Constants.EnableNewUI)
+                    {
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
+                        HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD);  
+                    }
+                    else
+                        _uiManager.SetPage<OverlordSelectionPage>();
                     break;
                 case Enumerators.AppState.HordeSelection:
-                    _uiManager.SetPage<HordeSelectionPage>();
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();                    
+                    else
+                        _uiManager.SetPage<HordeSelectionPage>();                        
+                        
                     CheckIfPlayAgainOptionShouldBeAvailable();
-                    break;
+                    break;                    
                 case Enumerators.AppState.ARMY:
-                    _uiManager.SetPage<ArmyPage>();
+                    if (Constants.EnableNewUI)
+                        _uiManager.SetPage<ArmyWithNavigationPage>();
+                    else
+                        _uiManager.SetPage<ArmyPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    _uiManager.SetPage<HordeEditingPage>();
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
+                        //TODO Change tab to deck editing                     
+                    else
+                        _uiManager.SetPage<HordeEditingPage>();
                     break;
-                case Enumerators.AppState.SHOP:            
+                case Enumerators.AppState.SHOP:                    
                     if (Constants.EnableShopPage)
                     {
                         if (string.IsNullOrEmpty(
@@ -86,7 +107,10 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _uiManager.SetPage<ShopPage>();
+                            if (Constants.EnableNewUI)
+                                _uiManager.SetPage<ShopWithNavigationPage>();
+                            else
+                                _uiManager.SetPage<ShopPage>();
                         }
                         break;
                     }
@@ -94,11 +118,15 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                         return;
-                    }
+                    }                    
+                    break;
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
-                        _uiManager.SetPage<PackOpenerPage>();
+                        if (Constants.EnableNewUI)
+                            _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
+                        else
+                            _uiManager.SetPage<PackOpenerPage>();
                         break;
                     }
                     else
@@ -113,7 +141,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.SetPage<CreditsPage>();
                     break;
                 case Enumerators.AppState.PlaySelection:
-                    _uiManager.SetPage<PlaySelectionPage>();
+                    if (Constants.EnableNewUI)                    
+                        _uiManager.SetPage<MainMenuWithNavigationPage>();
+                        //TODO Change tab to Play Selection                     
+                    else
+                        _uiManager.SetPage<PlaySelectionPage>();
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
