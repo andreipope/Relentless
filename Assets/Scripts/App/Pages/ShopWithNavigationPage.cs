@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
 
         private FiatPlasmaManager _fiatPlasmaManager;
         
-        event Action _finishRequestPack;
+        private Action _finishRequestPack;
 
         public void InitPurchaseLogic()
         {
@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
             #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _finishRequestPack += OnFinishRequestPack;
+            _finishRequestPack = OnFinishRequestPack;
             #endif
         }
         

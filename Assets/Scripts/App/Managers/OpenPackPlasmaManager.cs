@@ -13,6 +13,7 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
 using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,7 +21,8 @@ namespace Loom.ZombieBattleground
     public class OpenPackPlasmaManager : IService 
     {    
         private static readonly ILog Log = Logging.GetLog(nameof(OpenPackPlasmaManager));
-
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(OpenPackPlasmaManager) + "Rpc");
+        
         public List<Card> CardsReceived { get; private set; }
         
         #region Contract
@@ -214,15 +216,17 @@ namespace Loom.ZombieBattleground
         
         private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+            
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     

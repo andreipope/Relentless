@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
             _packBalanceAmounts = new int[packTypes.Length];
         }
         
-        public async void  Update()
+        public void  Update()
         {
             if (_selfPage == null || !_selfPage.activeInHierarchy)
                 return;

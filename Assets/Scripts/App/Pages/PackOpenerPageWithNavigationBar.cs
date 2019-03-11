@@ -96,9 +96,7 @@ namespace Loom.ZombieBattleground
         private int[] _packBalanceAmounts;
 
         private int _selectedPackTypeIndex;
-        
-        private bool _dataLoading = false;
-        
+
         private enum STATE
         {
             NONE,
@@ -109,7 +107,9 @@ namespace Loom.ZombieBattleground
         
         private STATE _state;
         
+#pragma warning disable 414
         private bool _isTransitioningState;
+#pragma warning restore 414
         
         private bool _isWaitingForTapToReveal;
 
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
             _packBalanceAmounts = new int[packTypes.Length];
         }
         
-        public async void  Update()
+        public void  Update()
         {        
             if (_selfPage == null || !_selfPage.activeInHierarchy)
                 return;
@@ -502,10 +502,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void RetryRequestPackBalance(bool confirmRetry)
+        private async void RetryRequestPackBalance(bool confirmRetry)
         {
             if(confirmRetry)             
-                RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+                await RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
         }
         
         private async Task RetriveCardsFromPack(int packTypeId)
@@ -530,11 +530,11 @@ namespace Loom.ZombieBattleground
                     _retryOpenPackRequestCount = 0;
                     _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                    popup.ConfirmationReceived += RetryRequestOpenPack;
+                    popup.ConfirmationReceived += async (x) => await RetryRequestOpenPack(x);
                 }
                 else
                 {
-                    RetryRequestOpenPack(true);
+                    await RetryRequestOpenPack(true);
                 }
             }
         }
@@ -557,11 +557,11 @@ namespace Loom.ZombieBattleground
             ChangeState(STATE.CARD_EMERGED);          
         }
 
-        private void RetryRequestOpenPack(bool confirmRetry)
+        private async Task RetryRequestOpenPack(bool confirmRetry)
         {
             if (confirmRetry)
             {
-                RetriveCardsFromPack(_lastOpenPackIdRequest);
+                await RetriveCardsFromPack(_lastOpenPackIdRequest);
             }
             else
             {
@@ -576,7 +576,7 @@ namespace Loom.ZombieBattleground
                 if (!_isCollectedTutorialCards)
                 {
                     _isCollectedTutorialCards = true;
-                    SimulateRetriveTutorialCardsFromPack();
+                    await SimulateRetriveTutorialCardsFromPack();
                     _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 0;
                 }
                 else

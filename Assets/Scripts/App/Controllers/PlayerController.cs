@@ -310,7 +310,6 @@ namespace Loom.ZombieBattleground
                 RaycastHit2D[] hits = Physics2D.RaycastAll(mousePos, Vector2.zero);
                 List<GameObject> hitCards = new List<GameObject>();
                 bool hitHandCard = false;
-                bool hitBoardCard = false;
                 foreach (RaycastHit2D hit in hits)
                 {
                     if (hit.collider != null && hit.collider.gameObject != null &&

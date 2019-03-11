@@ -14,12 +14,14 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
 using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
     public class TutorialRewardManager : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(TutorialRewardManager));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(TutorialRewardManager) + "Rpc");
 
         #region Contract
         private TextAsset _abiTutorialReward;
@@ -169,16 +171,18 @@ namespace Loom.ZombieBattleground
         }
         
         private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {        
+        {
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     

@@ -1202,7 +1202,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
         
-        public async void ProcessRenameDeck(Deck deckToSave, string newName)
+        public void ProcessRenameDeck(Deck deckToSave, string newName)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             
