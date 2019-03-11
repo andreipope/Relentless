@@ -43,6 +43,11 @@ namespace Loom.ZombieBattleground
                 {
                     StringToMatch = "A pong to this ping has been sent.",
                     AcceptOnMatch = false
+                },
+                new StringMatchFilter
+                {
+                    StringToMatch = "The current output action has been changed",
+                    AcceptOnMatch = false
                 }
             };
         }

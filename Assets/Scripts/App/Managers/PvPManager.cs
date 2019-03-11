@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Warn(playerActionEvent); // todo delete
+                Log.Debug("[Player action] " + playerActionEvent);
 
                 if (playerActionEvent.Block != null)
                 {
@@ -427,8 +427,8 @@ namespace Loom.ZombieBattleground
         {
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
-            Log.Warn("Initial game state:\n" + InitialGameState);
-            Log.Warn("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
+            Log.Debug("Initial game state:\n" + InitialGameState);
+            Log.Debug("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
         }
 
         private void OnReceivePlayerLeftAction(PlayerActionEvent playerActionEvent)

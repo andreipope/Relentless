@@ -899,7 +899,7 @@ namespace Loom.ZombieBattleground
                 }
                 switch (boardUnitModel.Card.Prototype.CardKind)
                 {
-                    case Enumerators.CardKind.CREATURE when _battlegroundController.OpponentBoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
+                    case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.BoardCards.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.RemoveCardFromHand(boardUnitModel);
                         _gameplayManager.OpponentPlayer.AddCardToBoard(boardUnitModel, ItemPosition.End);
 
