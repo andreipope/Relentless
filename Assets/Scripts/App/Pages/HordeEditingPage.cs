@@ -507,7 +507,7 @@ namespace Loom.ZombieBattleground
 
             foreach (DeckCardData card in deck.Cards)
             {
-                Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
+                Card prototype = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
 
                 bool itemFound = false;
                 foreach (BoardCardView item in _createdHordeCards)
@@ -521,17 +521,17 @@ namespace Loom.ZombieBattleground
 
                 if (!itemFound)
                 {
-                    BoardCardView boardCardView = CreateCard(libraryCard, Vector3.zero, _hordeCardsContainer);
+                    BoardCardView boardCardView = CreateCard(prototype, Vector3.zero, _hordeCardsContainer);
                     boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
                     DeckBuilderCard deckBuilderCard = boardCardView.GameObject.AddComponent<DeckBuilderCard>();
                     deckBuilderCard.Page = this;
-                    deckBuilderCard.Card = libraryCard;
+                    deckBuilderCard.Card = prototype;
                     deckBuilderCard.IsHordeItem = true;
 
                     _createdHordeCards.Add(boardCardView);
 
-                    boardCardView.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(libraryCard), card.Amount);
+                    boardCardView.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount);
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
                     UpdateNumCardsText();

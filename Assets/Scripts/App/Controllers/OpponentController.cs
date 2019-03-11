@@ -255,8 +255,8 @@ namespace Loom.ZombieBattleground
                     owner = _gameplayManager.OpponentPlayer;
 
                 ItemPosition itemPosition = new ItemPosition(replaceUnitWithTypeStatOutcome.NewCardInstances[i].Position);
-                Card libraryCard = replaceUnitWithTypeStatOutcome.NewCardInstances[i].CardInstance.Prototype.FromProtobuf();
-                BoardUnitView unitView = _cardsController.SpawnUnitOnBoard(owner, libraryCard.Name, itemPosition);
+                Card prototype = replaceUnitWithTypeStatOutcome.NewCardInstances[i].CardInstance.Prototype.FromProtobuf();
+                BoardUnitView unitView = _cardsController.SpawnUnitOnBoard(owner, prototype.Name, itemPosition);
                 if (unitView != null)
                 {
                     AddUnitToBoardCards(owner, itemPosition, unitView);
@@ -293,9 +293,9 @@ namespace Loom.ZombieBattleground
             if (reanimateAbilityOutcome.NewCardInstance.Owner != _backendDataControlMediator.UserDataModel.UserId)
                 owner = _gameplayManager.OpponentPlayer;
 
-            Card libraryCard = reanimateAbilityOutcome.NewCardInstance.Prototype.FromProtobuf();
+            Card prototype = reanimateAbilityOutcome.NewCardInstance.Prototype.FromProtobuf();
 
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner, reanimateAbilityOutcome.NewCardInstance.InstanceId.FromProtobuf());
+            WorkingCard card = new WorkingCard(prototype, prototype, owner, reanimateAbilityOutcome.NewCardInstance.InstanceId.FromProtobuf());
             BoardUnitView unit = CreateBoardUnit(card, owner);
 
             owner.AddCardToBoard(card, ItemPosition.End);
@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
             // TODO : have to see... how to invoke this
             //InvokeActionTriggered(unit);
             AbilityData abilityData = AbilitiesController.GetAbilityDataByType(Enumerators.AbilityType.REANIMATE_UNIT);
-            AbilityBase ability = new ReanimateAbility(libraryCard.CardKind, abilityData);
+            AbilityBase ability = new ReanimateAbility(prototype.CardKind, abilityData);
             AbilityViewBase abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
             ability.InvokeActionTriggered(unit);
         }

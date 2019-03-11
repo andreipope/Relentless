@@ -1067,14 +1067,14 @@ namespace Loom.ZombieBattleground
 
         private BoardObject GetAbilityTarget(BoardUnitModel boardUnitModel)
         {
-            IReadOnlyCard libraryCard = card.Prototype;
+            IReadOnlyCard prototype = card.Prototype;
 
             BoardObject target = null;
 
             List<AbilityData> abilitiesWithTarget = new List<AbilityData>();
 
             bool needsToSelectTarget = false;
-            foreach (AbilityData ability in libraryCard.Abilities)
+            foreach (AbilityData ability in prototype.Abilities)
             {
                 foreach (Enumerators.AbilityTargetType item in ability.AbilityTargetTypes)
                 {
@@ -1092,7 +1092,7 @@ namespace Loom.ZombieBattleground
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
                             if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 ||
-                                libraryCard.CardKind == Enumerators.CardKind.SPELL ||
+                                prototype.CardKind == Enumerators.CardKind.SPELL ||
                                 ability.AbilityType == Enumerators.AbilityType.CARD_RETURN &&
                                 _gameplayManager.OpponentPlayer.BoardCards.Count > 0)
                             {

@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
             IReadOnlyCard card = _filteredCardList[_currentCardIndex];
                 
             RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
-            BoardCard boardCard = CreateBoardCard
+            BoardCardView boardCard = CreateBoardCard
             (
                 card, 
                 rectContainer,
@@ -307,10 +307,10 @@ namespace Loom.ZombieBattleground
             UpdateBoardCard();
         }
 
-        private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
+        private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
             GameObject go;
-            BoardCard boardCard;
+            BoardCardView boardCard;
             
             switch (card.CardKind)
             {
