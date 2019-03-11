@@ -310,7 +310,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.Types.Enum.Player, card.LibraryCard.Name);
+                //await _gameplayManager.GetController<OpponentController>().ActionDrawCard(player, otherPlayer, player, Enumerators.AffectObjectType.Types.Enum.Player, card.Prototype.Name);
                 MulliganCards?.Add(card);
             }
         }
@@ -475,8 +475,8 @@ namespace Loom.ZombieBattleground
 
         public void HoverPlayerCardOnBattleground(Player player, BoardCardView card, HandBoardCard handCard)
         {
-            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
-            if (libraryCard.CardKind == Enumerators.CardKind.CREATURE &&
+            IReadOnlyCard prototype = card.BoardUnitModel.Card.Prototype;
+            if (prototype.CardKind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.BoardCards.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
                 int newIndexOfCard = 0;
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
         {
             if (card.CanBePlayed(card.BoardUnitModel.Card.Owner))
             {
-                IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
+                IReadOnlyCard prototype = card.BoardUnitModel.Card.Prototype;
 
                 card.Transform.DORotate(Vector3.zero, .1f);
                 card.HandBoardCard.Enabled = false;
@@ -563,7 +563,7 @@ namespace Loom.ZombieBattleground
                 GameplayQueueAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
                 GameplayQueueAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
-                switch (libraryCard.CardKind)
+                switch (prototype.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         {
@@ -622,7 +622,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     card.HandBoardCard.GameObject.SetActive(false);
 
-                                    _abilitiesController.CallAbility(libraryCard, card, card.BoardUnitModel.Card,
+                                    _abilitiesController.CallAbility(prototype, card, card.BoardUnitModel.Card,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
                                             UpdateCardsStatusEvent?.Invoke(player);
@@ -674,7 +674,7 @@ namespace Loom.ZombieBattleground
 
                             InternalTools.DoActionDelayed(() =>
                             {
-                                _abilitiesController.CallAbility(libraryCard, card, card.BoardUnitModel.Card,
+                                _abilitiesController.CallAbility(prototype, card, card.BoardUnitModel.Card,
                                     Enumerators.CardKind.SPELL, boardSpell, CallSpellCardPlay, true, (status) =>
                                     {
                                         if(status)
@@ -701,7 +701,7 @@ namespace Loom.ZombieBattleground
 
         public void SummonUnitFromHand(Player player, BoardCardView card, bool activateAbility)
         {
-            IReadOnlyCard libraryCard = card.BoardUnitModel.Card.Prototype;
+            IReadOnlyCard prototype = card.BoardUnitModel.Card.Prototype;
 
             card.Transform.DORotate(Vector3.zero, .1f);
 
@@ -1184,9 +1184,9 @@ namespace Loom.ZombieBattleground
             if (owner.BoardCards.Count >= owner.MaxCardsInPlay)
                 return null;
 
-            Card libraryCard = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            Card prototype = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
 
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, owner);
+            WorkingCard card = new WorkingCard(prototype, prototype, owner);
             BoardUnitView unit = CreateBoardUnitForSpawn(card, owner);
 
             owner.AddCardToBoard(card, ItemPosition.End);

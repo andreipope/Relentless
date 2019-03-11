@@ -407,7 +407,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void CallAbility(
-            IReadOnlyCard libraryCard,
+            IReadOnlyCard prototype,
             BoardCardView card,
             WorkingCard workingCard,
             Enumerators.CardKind kind,
@@ -431,9 +431,9 @@ namespace Loom.ZombieBattleground
                    {
                        bool canUseAbility = false;
                        _activeAbility = null;
-                       foreach (AbilityData item in libraryCard.Abilities)
+                       foreach (AbilityData item in prototype.Abilities)
                        {
-                           _activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, libraryCard, workingCard);
+                           _activeAbility = CreateActiveAbility(item, kind, boardObject, workingCard.Owner, prototype, workingCard);
 
                            if (IsAbilityCanActivateTargetAtStart(item))
                            {
@@ -452,7 +452,7 @@ namespace Loom.ZombieBattleground
 
                        if (canUseAbility)
                        {
-                           AbilityData ability = libraryCard.Abilities.First(IsAbilityCanActivateTargetAtStart);
+                           AbilityData ability = prototype.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
                            if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
                                !HasSpecialUnitOnBoard(workingCard, ability) ||
@@ -568,7 +568,7 @@ namespace Loom.ZombieBattleground
                                        failedCallback: () =>
                                        {
                                            // HACK FIXME: why do we need to update library card instead of modifying a copy?
-                                           ((ICard) libraryCard).ForceUpdateAbilities(libraryCard.InitialAbilities);
+                                           ((ICard) prototype).ForceUpdateAbilities(prototype.InitialAbilities);
 
                                            card.BoardUnitModel.Card.Owner.CurrentGoo += card.BoardUnitModel.Card.InstanceCard.Cost;
 
@@ -667,13 +667,13 @@ namespace Loom.ZombieBattleground
                        }
                    };
 
-                   AbilityData choosableAbility = libraryCard.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
+                   AbilityData choosableAbility = prototype.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
                    if (choosableAbility != null && !(choosableAbility is default(AbilityData)))
                    {
                        if (HasPredefinedChoosableAbility)
                        {
-                           libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] =
+                           prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] =
                                        choosableAbility.ChoosableAbilities[PredefinedChoosableAbilityId].AbilityData;
                            abilityEndAction.Invoke();
 
@@ -688,7 +688,7 @@ namespace Loom.ZombieBattleground
 
                                callback = (x) =>
                                {
-                                    libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                    prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
                                     abilityEndAction.Invoke();
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
@@ -707,7 +707,7 @@ namespace Loom.ZombieBattleground
                            else
                            {
                                // TODO: improve functionality for the AI
-                               libraryCard.Abilities[libraryCard.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                               prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
                                abilityEndAction.Invoke();
                            }
                        }

@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
         private Image _rightPanelLight, 
                       _leftPanelLight;
         
-        private List<BoardCard> _createdBoardCards;
+        private List<BoardCardView> _createdBoardCards;
         
         private List<GameObject> _createdCardsVFX;
         
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.StateChanging += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
             _cardInfoPopupHandler.StateChanged += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
-            _createdBoardCards = new List<BoardCard>();
+            _createdBoardCards = new List<BoardCardView>();
             _cardsToDisplayQueqe = new List<Card>();
             _createdCardsVFX = new List<GameObject>();
             _cardsToReveal = new List<Transform>();
@@ -397,7 +397,7 @@ namespace Loom.ZombieBattleground
             for( int i=0; i<cards.Count; ++i)
             {
                 Card card = cards[i];
-                BoardCard boardCard = CreateCard(card, Vector3.up * 12f);
+                BoardCardView boardCard = CreateCard(card, Vector3.up * 12f);
                 boardCard.Transform.parent = _cardPositions[i];
                 boardCard.Transform.localPosition = Vector3.zero;
                 boardCard.Transform.localRotation = Quaternion.identity;
@@ -417,7 +417,7 @@ namespace Loom.ZombieBattleground
         {
             if (_createdBoardCards != null)
             {
-                foreach (BoardCard card in _createdBoardCards)
+                foreach (BoardCardView card in _createdBoardCards)
                 {
                     if (card != null)
                     {
@@ -683,10 +683,10 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private void CreateCardVFX(BoardCard boardCard)
+        private void CreateCardVFX(BoardCardView boardCard)
         {
             GameObject vfxPrefab;
-            switch(boardCard.LibraryCard.CardRank)
+            switch(boardCard.BoardUnitModel.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;
@@ -760,7 +760,7 @@ namespace Loom.ZombieBattleground
                 .OnComplete(
                 () =>
                 {
-                    foreach(BoardCard boardCard in _createdBoardCards)
+                    foreach(BoardCardView boardCard in _createdBoardCards)
                     {
                         if( boardCard.Transform == cardFace)
                         {
@@ -1045,10 +1045,10 @@ namespace Loom.ZombieBattleground
         
         #region Util
         
-        private BoardCard CreateCard(IReadOnlyCard card, Vector3 worldPos)
+        private BoardCardView CreateCard(IReadOnlyCard card, Vector3 worldPos)
         {        
             GameObject go;
-            BoardCard boardCard;
+            BoardCardView boardCard;
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
