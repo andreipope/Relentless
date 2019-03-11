@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
 
         public virtual void Init(IReadOnlyCard card, int amount = 0)
         {
-            BoardUnitModel.Card.Prototype = card;
+            BoardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
 
             NameText.text = BoardUnitModel.Card.Prototype.Name;
             BodyText.text = BoardUnitModel.Card.Prototype.Description;
