@@ -1,4 +1,5 @@
 from base import CZBTests
+import time
 class Horde_Editing_Page(CZBTests):
 
     def __init__(self,altdriver,driver):
@@ -114,6 +115,7 @@ class Horde_Editing_Page(CZBTests):
                 if self.can_card_be_added_to_horde(card):
                     return card
             self.press_army_right_arrow()
+            time.sleep(1)
     def add_cards_to_horde(self,number_of_cards):
         for i in range(number_of_cards):
             card=self.get_card_that_can_be_added_to_horde()

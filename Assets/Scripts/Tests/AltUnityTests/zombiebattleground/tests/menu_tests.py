@@ -4,6 +4,8 @@
 # import xmlrunner
 # from base import CZBTests
 # import time
+import subprocess
+
 
 # import sys
 # reload(sys)
@@ -59,5 +61,11 @@
 #     #     self.assertNotIn("games.loom.battleground", self.driver.page_source)
 
 
-# if __name__ == '__main__':
-#     unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
+if __name__ == '__main__':
+    
+        print(screen_height,screen_width)
+    
+    
+
+
+    # unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))

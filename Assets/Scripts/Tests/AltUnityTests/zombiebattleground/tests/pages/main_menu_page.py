@@ -31,3 +31,5 @@ class Main_Menu_Page(CZBTests):
         self.login_button.mobile_tap()
     def press_play_button(self):
         self.button_pressed(self.play_button)
+    def press_open_packs_button(self):
+        self.button_pressed(self.open_packs_button)
