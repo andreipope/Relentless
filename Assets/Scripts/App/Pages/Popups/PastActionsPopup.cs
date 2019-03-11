@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground
                     _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
                     break;
                 case BoardSpell spell:
-                    _leftBlockCardSpellElement.Init(spell.Card);
+                    _leftBlockCardSpellElement.Init(spell.BoardUnitModel.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
@@ -306,8 +306,8 @@ namespace Loom.ZombieBattleground
             public Enumerators.ActionType ActionType;
             public object Caller;
             public List<TargetEffectParam> TargetEffects;
-            public bool checkForCardOwner;
-            public WorkingCard workingCard;
+            public bool CheckForCardOwner;
+            public BoardUnitModel BoardUnitModel;
         }
 
         public class TargetEffectParam

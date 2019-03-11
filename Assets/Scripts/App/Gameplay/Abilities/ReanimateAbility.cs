@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
             if (owner.IsLocalPlayer)
             {
                 BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner.Card, owner);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {

@@ -218,6 +218,20 @@ namespace Loom.ZombieBattleground
 
         public bool WasDistracted { get; private set; }
 
+
+        // =================== REMOVE HARD
+        public Player Owner { get; set; }
+
+        public CardInstanceSpecificData InstanceCard { get; set; }
+
+        public IReadOnlyCard Prototype { get; set; }
+
+        public string Name { get; set; }
+
+        public Enumerators.SetType CardSetType { get; set; }
+
+        // ===================
+
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true)
         {
             UnitDying?.Invoke();
@@ -292,7 +306,7 @@ namespace Loom.ZombieBattleground
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
                             Card.Prototype.CardKind,
-                            Card.Prototype,
+                            this,
                             OwnerPlayer
                             );
                     }
@@ -304,7 +318,7 @@ namespace Loom.ZombieBattleground
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
                         Card.Prototype.CardKind,
-                        Card.Prototype,
+                        this,
                         OwnerPlayer
                         );
                     }

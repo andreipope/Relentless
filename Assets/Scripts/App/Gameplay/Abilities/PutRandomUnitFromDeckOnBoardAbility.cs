@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.RemoveCardFromDeck(boardCardView.BoardUnitModel.Card);
+            owner.RemoveCardFromDeck(boardCardView.BoardUnitModel);
 
             CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
 

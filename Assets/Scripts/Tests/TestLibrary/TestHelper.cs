@@ -1116,94 +1116,70 @@ namespace Loom.ZombieBattleground.Test
 
             if (!skipEntryAbilities)
             {
-                if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0 && !HasChoosableAbilities(card.Prototype))
+                if (boardUnitModel.Prototype.Abilities != null && boardUnitModel.Prototype.Abilities.Count > 0 && !HasChoosableAbilities(boardUnitModel.Prototype))
                 {
                     needTargetForAbility =
-                        card.Prototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        boardUnitModel.Prototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
                 }
             }
 
-            switch (card.Prototype.CardKind)
+            switch (boardUnitModel.Prototype.CardKind)
             {
-                case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
-                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-                    {
-                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel.Card == card);
-                        Assert.NotNull(boardCardView, $"Card {card} not found in local player hand");
-                        Assert.True(boardCardView.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner), "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
+                case Enumerators.CardKind.CREATURE
+                    when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
+                {
+                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
+                    BoardCardView boardCardView =
+                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel == boardUnitModel);
+                    Assert.NotNull(boardCardView, $"Card {boardUnitModel} not found in local player hand");
+                    Assert.True(boardCardView.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner),
+                        "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
-                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCardView,
-                            boardCardView.HandBoardCard,
-                            playCardOnBoard =>
-                            {
-                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-                                _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
-                            },
-                            entryAbilityTarget,
-                            skipEntryAbilities);
-
-                        await new WaitForUpdate();
-
-                        /*if (target == null && needTargetForAbility)
+                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        boardCardView,
+                        boardCardView.HandBoardCard,
+                        playCardOnBoard =>
                         {
-                            WaitStart(3);
-                            await new WaitUntil(() => _boardArrowController.CurrentBoardArrow != null || WaitTimeIsUp());
-                            _boardArrowController.ResetCurrentBoardArrow();
+                            PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+                            _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                        },
+                        entryAbilityTarget,
+                        skipEntryAbilities);
 
-                            await LetsThink();
+                    await new WaitForUpdate();
 
-                            WaitStart(3);
-                            await new WaitUntil(() => _abilitiesController.CurrentActiveAbility != null || WaitTimeIsUp());
-                            _abilitiesController.CurrentActiveAbility.Ability.SelectedTargetAction();
-                            _abilitiesController.CurrentActiveAbility.Ability.DeactivateSelectTarget();
-
-                            await LetsThink();
-                        }*/
-                    }
-                    else
-                    {
-                        _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                        _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
-
-                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
-                    }
-
-                    _cardsController.DrawCardInfo(card);
+                    _cardsController.DrawCardInfo(boardUnitModel);
 
                     break;
+                }
                 case Enumerators.CardKind.SPELL:
-                    _testBroker.GetPlayer(_player).RemoveCardFromHand(card);
-                    _testBroker.GetPlayer(_player).AddCardToBoard(card, position);
+                {
+                    _testBroker.GetPlayer(_player).RemoveCardFromHand(boardUnitModel);
+                    _testBroker.GetPlayer(_player).AddCardToBoard(boardUnitModel, position);
 
-                    if (_player == Enumerators.MatchPlayer.CurrentPlayer)
-                    {
-                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == card);
+                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
+                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel == boardUnitModel);
 
-                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCardView,
-                            boardCardView.HandBoardCard,
-                            playCardOnBoard =>
-                            {
-                                //todo: handle abilities here
+                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        boardCardView,
+                        boardCardView.HandBoardCard,
+                        playCardOnBoard =>
+                        {
+                            //todo: handle abilities here
 
-                                PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
-                                _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
-                            },
-                            entryAbilityTarget,
-                            skipEntryAbilities);
-                    }
-                    else
-                    {
-                        _cardsController.PlayOpponentCard(_testBroker.GetPlayer(_player), card.InstanceId, entryAbilityTarget, null, PlayCardCompleteHandler);
-                    }
+                            PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
+                            _gameplayManager.PlayerMoves.AddPlayerMove(playerMove);
+                        },
+                        entryAbilityTarget,
+                        skipEntryAbilities);
 
-                    _cardsController.DrawCardInfo(card);
+                    _cardsController.DrawCardInfo(boardUnitModel);
 
                     break;
+                }
             }
 
-            _testBroker.GetPlayer(_player).CurrentGoo -= card.Prototype.Cost;
+            _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
 
             await new WaitForUpdate();
         }
@@ -1212,151 +1188,10 @@ namespace Loom.ZombieBattleground.Test
         {
             AbilityData subAbilitiesData = card.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
 
-            if (subAbilitiesData != null && !(subAbilitiesData is default(AbilityData)))
+            if (subAbilitiesData != null)
                 return true;
 
             return false;
-        }
-
-        private void PlayCardCompleteHandler(BoardUnitModel boardUnitModel, BoardObject target)
-        {
-            WorkingCard workingCard = null;
-
-            if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
-            {
-                workingCard = _gameplayManager.OpponentPlayer.CardsOnBoard[_gameplayManager.OpponentPlayer.CardsOnBoard.Count - 1];
-            }
-
-            if (workingCard == null || card == null)
-                return;
-
-            switch (card.Prototype.CardKind)
-            {
-                case Enumerators.CardKind.CREATURE:
-                {
-                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(workingCard), GameObject.Find("OpponentBoard").transform);
-                    GameObject boardUnit = boardUnitViewElement.GameObject;
-                    boardUnit.tag = SRTags.OpponentOwned;
-                    boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
-                    boardUnitViewElement.Model.Card.Owner = card.Owner;
-                    boardUnitViewElement.Model.Card.TutorialObjectId = card.TutorialObjectId;
-                    _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
-                    _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
-
-                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                    {
-                        ActionType = Enumerators.ActionType.PlayCardFromHand,
-                        Caller = boardUnitViewElement.Model,
-                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    });
-
-                    boardUnitViewElement.PlayArrivalAnimation();
-
-                    _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
-                    _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
-                        () =>
-                        {
-                            bool createTargetArrow = false;
-
-                            if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
-                            {
-                                createTargetArrow =
-                                    _abilitiesController.IsAbilityCanActivateTargetAtStart(
-                                        card.Prototype.Abilities[0]);
-                            }
-
-                            if (target != null)
-                            {
-                                Action callback = () =>
-                                {
-                                    _abilitiesController.CallAbility(card.Prototype,
-                                        null,
-                                        workingCard,
-                                        Enumerators.CardKind.CREATURE,
-                                        boardUnitViewElement.Model,
-                                        null,
-                                        false,
-                                        null,
-                                        null,
-                                        target);
-                                };
-
-                                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform,
-                                    target,
-                                    action: callback);
-                            }
-                            else
-                            {
-                                _abilitiesController.CallAbility(card.Prototype,
-                                    null,
-                                    workingCard,
-                                    Enumerators.CardKind.CREATURE,
-                                    boardUnitViewElement.Model,
-                                    null,
-                                    false,
-                                    null,
-                                    null);
-                            }
-                        });
-                    break;
-                }
-                case Enumerators.CardKind.SPELL:
-                {
-                    GameObject spellCard = UnityEngine.Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    spellCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
-
-                    CurrentSpellCard = new SpellBoardCard(spellCard, new BoardUnitModel(workingCard));
-                    CurrentSpellCard.SetHighlightingEnabled(false);
-
-                    BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
-
-                    spellCard.gameObject.SetActive(false);
-
-                    bool createTargetArrow = false;
-
-                    if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
-                    {
-                        createTargetArrow =
-                            _abilitiesController.IsAbilityCanActivateTargetAtStart(card.Prototype.Abilities[0]);
-                    }
-
-                    if (target != null)
-                    {
-                        Action callback = () =>
-                        {
-                            _abilitiesController.CallAbility(card.Prototype,
-                                null,
-                                workingCard,
-                                Enumerators.CardKind.SPELL,
-                                boardSpell,
-                                null,
-                                false,
-                                null,
-                                null,
-                                target);
-                        };
-
-                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(
-                            _gameplayManager.OpponentPlayer.AvatarObject.transform,
-                            target,
-                            action: callback);
-                    }
-                    else
-                    {
-                        _abilitiesController.CallAbility(card.Prototype,
-                            null,
-                            workingCard,
-                            Enumerators.CardKind.SPELL,
-                            boardSpell,
-                            null,
-                            false,
-                            null,
-                            null);
-                    }
-
-                    break;
-                }
-            }
         }
 
         /// <summary>
