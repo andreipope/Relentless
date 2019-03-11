@@ -1,5 +1,3 @@
-using Loom.ZombieBattleground.Common;
-
 namespace Loom.ZombieBattleground.Data
 {
     public class ParametrizedAbilityInstanceId
@@ -11,6 +9,11 @@ namespace Loom.ZombieBattleground.Data
         {
             Id = id;
             Parameters = parameters ?? new ParametrizedAbilityParameters();
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(Id)}: {Id}, {nameof(Parameters)}: {Parameters})";
         }
     }
 }

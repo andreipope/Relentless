@@ -1,4 +1,5 @@
 using log4net.Core;
+using log4net.Filter;
 using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
@@ -17,7 +18,7 @@ namespace Loom.ZombieBattleground
 #endif
         public static void Setup()
         {
-            Logging.Setup();
+            Logging.Configure();
 
             if (Logging.NonEssentialLogsDisabled)
             {
@@ -27,6 +28,23 @@ namespace Loom.ZombieBattleground
                 Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
                 timeMetricsContractCallProxy.Level = Level.Warn;
             }
+        }
+
+        public static IFilter[] CreateSpammyLogsFilters()
+        {
+            return new IFilter[]
+            {
+                new StringMatchFilter
+                {
+                    StringToMatch = "A ping was received.",
+                    AcceptOnMatch = false
+                },
+                new StringMatchFilter
+                {
+                    StringToMatch = "A pong to this ping has been sent.",
+                    AcceptOnMatch = false
+                }
+            };
         }
     }
 }

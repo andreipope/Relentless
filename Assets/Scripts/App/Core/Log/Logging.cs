@@ -4,6 +4,7 @@ using System.Text;
 using log4net;
 using log4net.Appender;
 using log4net.Core;
+using log4net.Filter;
 using log4net.Layout;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
@@ -22,26 +23,28 @@ namespace Loom.ZombieBattleground
         private const string DefaultLogFileName = "Log.html";
         private const string RepositoryName = "ZBLogRepository";
 
+        private static bool _isRepositoryCreated;
         private static bool _isConfigured;
-
-        static Logging()
-        {
-            LogManager.CreateRepository(RepositoryName);
-        }
 
         public static ILoggerRepository GetRepository()
         {
-            return LogManager.GetRepository(RepositoryName);
+            if (_isRepositoryCreated)
+                return LogManager.GetRepository(RepositoryName);
+
+            _isRepositoryCreated = true;
+            return LogManager.CreateRepository(RepositoryName);
         }
 
         public static ILog GetLog(string name)
         {
+            GetRepository();
             return LogManager.GetLogger(RepositoryName, name);
         }
 
         public static Logger GetLogger(string name)
         {
-            return (Logger) LogManager.GetLogger(RepositoryName, name).Logger;
+            GetRepository();
+            return (Logger) GetLog(name).Logger;
         }
 
         public static string GetLogFilePath()
@@ -63,24 +66,26 @@ namespace Loom.ZombieBattleground
                 if (GetLogFilePathFromEnvVar() != null)
                     return true;
 
-                return Application.isEditor;
+                return !Application.isEditor;
 #endif
             }
         }
 
-        public static bool NonEssentialLogsDisabled => Application.isEditor; // Disable non-essential logs in Editor
+        public static bool NonEssentialLogsDisabled => Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #if UNITY_EDITOR
         [DidReloadScripts]
 #endif
-        public static void Setup()
+        public static void Configure()
         {
             if (_isConfigured)
                 return;
 
             _isConfigured = true;
             Hierarchy hierarchy = (Hierarchy) GetRepository();
+
+            IFilter[] spammyLogsFilters = LoggingPlatformConfiguration.CreateSpammyLogsFilters();
 
             // Unity console
             PatternLayout unityConsolePattern = new PatternLayout();
@@ -96,12 +101,17 @@ namespace Loom.ZombieBattleground
                 Layout = unityConsolePattern
             };
 
+            foreach (IFilter logsFilter in spammyLogsFilters)
+            {
+                unityConsoleAppender.AddFilter(logsFilter);
+            }
+
             hierarchy.Root.AddAppender(unityConsoleAppender);
 
             // File
             if (FileLogEnabled)
             {
-                HtmlLayout htmlLayout = new CustomHtmlLayout("%utcdate{HH:mm:ss}%level%logger%message");
+                HtmlLayout htmlLayout = new CustomHtmlLayout("%counter%utcdate{HH:mm:ss}%level%logger%message");
                 htmlLayout.LogName = "Zombie Battleground " + BuildMetaInfo.Instance.ShortVersionName;
                 htmlLayout.ActivateOptions();
 
@@ -114,6 +124,11 @@ namespace Loom.ZombieBattleground
                     MaxSizeRollBackups = Application.isBatchMode ? 0 : 3,
                     PreserveLogFileNameExtension = true
                 };
+
+                foreach (IFilter logsFilter in spammyLogsFilters)
+                {
+                    fileAppender.AddFilter(logsFilter);
+                }
 
                 fileAppender.ActivateOptions();
                 hierarchy.Root.AddAppender(fileAppender);

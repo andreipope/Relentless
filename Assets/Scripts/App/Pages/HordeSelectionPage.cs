@@ -162,6 +162,18 @@ namespace Loom.ZombieBattleground
             _gooValueText.text = GameClient.Get<IPlayerManager>().GetGoo().ToString();
 
 
+            if(_tutorialManager.IsTutorial)
+            {
+                if(_tutorialManager.IsLastTutorial && _dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+                {
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_dataManager.CachedUserLocalData.TutorialSavedDeck.Id;
+                }
+                else
+                {
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)_dataManager.CachedDecksData.Decks[_dataManager.CachedDecksData.Decks.Count - 1].Id;
+                }
+            }
+
             _defaultSelectedDeck = _dataManager.CachedUserLocalData.LastSelectedDeckId;
             if (_defaultSelectedDeck > _dataManager.CachedDecksData.Decks.Count)
             {
@@ -340,12 +352,12 @@ namespace Loom.ZombieBattleground
             if (_hordeDecks.Count > 0)
             {
                 HordeDeckObject foundDeck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
-                if (foundDeck == null)
+                if (foundDeck == null || foundDeck is default(HordeDeckObject))
                 {
                     _selectedDeck =  _hordeDecks[0].SelfDeck;
                 }
 
-                if (deck == null)
+                if (deck == null || deck is default(HordeDeckObject))
                 {
                     deck = _hordeDecks[0];
                     HordeDeckSelectedHandler(deck);

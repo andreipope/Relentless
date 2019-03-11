@@ -102,6 +102,8 @@ namespace Loom.ZombieBattleground
                 BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, unit);
             }
 
+            RanksController.AddUnitForIgnoreRankBuff(unit);
+
             BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }
     }

@@ -24,10 +24,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
-
             if (!AbilityUnitOwner.IsReanimated)
             {
+                InvokeUseAbilityEvent();
+
                 AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
             }
         }
@@ -94,6 +94,8 @@ namespace Loom.ZombieBattleground
             {
                 _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
             }
+
+            _gameplayManager.CanDoDragActions = true;
         }
 
         private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)

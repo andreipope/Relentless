@@ -23,6 +23,10 @@ namespace Loom.ZombieBattleground
 
         public string CustomCss { get; set; } = "";
 
+        public string CustomJavascriptAfterLoad { get; set; } = "";
+
+        public string CustomJavascriptBeforeLoad { get; set; } = "";
+
         public int ConverterCount => _converterCount;
 
         private readonly List<int> _filteredCellIndexes = new List<int>();
@@ -39,7 +43,9 @@ namespace Loom.ZombieBattleground
 
         public override void ActivateOptions()
         {
-            _patternParser = new ExposedPatternLayout(Pattern).CreatePatternParser(Pattern);
+            ExposedPatternLayout exposedPatternLayout = new ExposedPatternLayout(Pattern);
+            ProcessPatternLayout(exposedPatternLayout);
+            _patternParser = exposedPatternLayout.CreatePatternParser(Pattern);
             _patternConverterHead = _patternParser.Parse();
             _converterCount = 0;
             _converterNames.Clear();
@@ -53,6 +59,10 @@ namespace Loom.ZombieBattleground
 
                 _converterCount++;
             }
+        }
+
+        protected virtual void ProcessPatternLayout(PatternLayout patternLayout)
+        {
         }
 
         public override void Format(TextWriter writer, LoggingEvent loggingEvent)
@@ -89,7 +99,9 @@ namespace Loom.ZombieBattleground
                 }
 
                 writer.Write(">");
-                WriteCell(loggingEvent, patternConverter, htmlWriter);
+                writer.Write("<div>");
+                WriteCell(loggingEvent, patternConverter, writer, htmlWriter);
+                writer.Write("</div>");
                 writer.WriteLine("</td>");
             }
             writer.WriteLine("</tr>");
@@ -118,6 +130,8 @@ namespace Loom.ZombieBattleground
                     .Replace("{{MAX_TEXT_LENGTH_BEFORE_COLLAPSE}}", MaxTextLengthBeforeCollapse.ToString())
                     .Replace("{{COLLAPSED_TEXT_HEIGHT}}", CollapsedTextHeight.ToString())
                     .Replace("{{CUSTOM_CSS}}", CustomCss)
+                    .Replace("{{JS_BEFORE_LOAD}}", CustomJavascriptBeforeLoad)
+                    .Replace("{{JS_AFTER_LOAD}}", CustomJavascriptAfterLoad)
                 ;
 
             writer.Write(headerPart1);
@@ -147,7 +161,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        protected virtual void WriteCell(LoggingEvent loggingEvent, PatternConverter patternConverter, TextWriter htmlWriter)
+        protected virtual void WriteCell(LoggingEvent loggingEvent, PatternConverter patternConverter, TextWriter writer, TextWriter htmlWriter)
         {
             patternConverter.Format(htmlWriter, loggingEvent);
         }

@@ -509,7 +509,8 @@ namespace Loom.ZombieBattleground
                 Log.Warn($"Attempt to add card {card} to CardsOnBoard when it is already added");
                 return;
             }
-            CardsOnBoard.Insert(position, card);
+
+            CardsOnBoard.Insert(InternalTools.GetSafePositionToInsert(position, CardsOnBoard), card);
             BoardChanged?.Invoke(CardsOnBoard.Count);
         }
 
@@ -726,7 +727,9 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
-            // todo implement logic
+            if (!_gameplayManager.CurrentTurnPlayer.Equals(this))
+                turnsCount++;
+
             _freezedHighlightObject.SetActive(true);
             IsStunned = true;
             _turnsLeftToFreeFromStun = turnsCount;

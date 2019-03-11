@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground.Test
 
         private static string StringifyList(IEnumerable<string> items)
         {
-            return "[" + String.Concat(", ", items) + "]";
+            return "[" + String.Join(", ", items) + "]";
         }
     }
 }

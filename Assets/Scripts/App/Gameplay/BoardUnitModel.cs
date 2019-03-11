@@ -269,6 +269,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.BLITZ:
                     if (NumTurnsOnBoard == 0)
                     {
+                        AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
                         HasBuffRush = true;
                     }
                     break;
@@ -559,7 +560,11 @@ namespace Loom.ZombieBattleground
         public void OnEndTurn()
         {
             IsPlayable = false;
-            HasBuffRush = false;
+            if(HasBuffRush)
+            {
+                RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Blitz);
+                HasBuffRush = false;
+            }
             CantAttackInThisTurnBlocker = false;
             TurnEnded?.Invoke();
         }

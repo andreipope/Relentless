@@ -198,6 +198,8 @@ namespace Loom.ZombieBattleground
             {
                 if (_actionsToDo.IndexOf(previousAction) == 0)
                 {
+                    _actionsToDo.Remove(previousAction);
+
                     if (ActionInProgress == previousAction || ActionInProgress == null)
                     {
                         TryCallNewActionFromQueue();
@@ -207,8 +209,10 @@ namespace Loom.ZombieBattleground
                         ActionInProgress = null;
                     }
                 }
-
-                _actionsToDo.Remove(previousAction);
+                else
+                {
+                    _actionsToDo.Remove(previousAction);
+                }
             }
             else
             {
