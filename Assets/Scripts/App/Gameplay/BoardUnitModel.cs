@@ -265,32 +265,41 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if (NumTurnsOnBoard == 0)
+                    if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Blitz))
                     {
-                        AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
-                        HasBuffRush = true;
+                        if (NumTurnsOnBoard == 0)
+                        {
+                            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
+                            HasBuffRush = true;
+                        }
                     }
                     break;
                 case Enumerators.BuffType.GUARD:
                     HasBuffShield = true;
                     break;
                 case Enumerators.BuffType.REANIMATE:
-                    _abilitiesController.BuffUnitByAbility(
-                        Enumerators.AbilityType.REANIMATE_UNIT,
-                        this,
-                        Card.LibraryCard.CardKind,
-                        Card.LibraryCard,
-                        OwnerPlayer
-                        );
+                    if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Reanimate))
+                    {
+                        _abilitiesController.BuffUnitByAbility(
+                            Enumerators.AbilityType.REANIMATE_UNIT,
+                            this,
+                            Card.LibraryCard.CardKind,
+                            Card.LibraryCard,
+                            OwnerPlayer
+                            );
+                    }
                     break;
                 case Enumerators.BuffType.DESTROY:
-                    _abilitiesController.BuffUnitByAbility(
+                    if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescriptionType.Destroy))
+                    {
+                        _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
                         Card.LibraryCard.CardKind,
                         Card.LibraryCard,
                         OwnerPlayer
                         );
+                    }
                     break;
             }
 
