@@ -72,25 +72,25 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CardsInPlay =
                 {
                     player.CardsOnBoard
-                        .Concat(player.BoardCards.Select(card => card.Model.Card))
+                        .Concat(player.BoardCards.Select(card => card.Model))
                         .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInDeck =
                 {
-                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInDeck.Select(card => card.Card.ToProtobuf()).ToArray()
                 },
                 CardsInHand =
                 {
                     player.CardsInHand
                         .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInGraveyard =
                 {
-                    player.CardsInGraveyard.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInGraveyard.Select(card => card.Card.ToProtobuf()).ToArray()
                 }
             };
 

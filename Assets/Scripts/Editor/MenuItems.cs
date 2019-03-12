@@ -189,6 +189,9 @@ namespace Loom.ZombieBattleground.Editor
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
+                if (file.FullName == Logging.GetLogFilePath())
+                    continue;
+
                 file.Delete();
             }
 

@@ -85,20 +85,28 @@ namespace Loom.ZombieBattleground {
             };
         };
 
+        function setRowVisible(row, visible) {
+            if (row.visible == visible)
+                return
+
+            row.visible = visible
+            if (visible) {
+                $(row.row).show()
+            } else {
+                $(row.row).hide()
+            }
+        }
+
         function handleFilter() {
-            var appliedChange = false
             var value = filterInput.val().toLowerCase().trim();
             if (currentMark != null) {
-                appliedChange = true
                 logTable.hide()
                 currentMark.unmark()
             }
 
+            var forceVisible = false
             if (value.length < 2) {
-                if (appliedChange) {
-                    logTable.show()
-                }
-                return
+                forceVisible = true
             }
 
             logTable.hide()
@@ -107,25 +115,21 @@ namespace Loom.ZombieBattleground {
             logsRows.forEach(function(row) {
                 var visible = false
                 for (index = 0; index < row.cells.length; ++index) {
-                    if (row.cellsText[index].includes(value)) {
+                    if (forceVisible || row.cellsText[index].includes(value)) {
                         visible = true
                         filteredCells.push(row.cells[index])
                     }
                 }
 
-                if (row.visible == visible)
-                    return
-
-                row.visible = visible
-                if (visible) {
-                    $(row.row).show()
-                } else {
-                    $(row.row).hide()
-                }
+                setRowVisible(row, visible)
             })
 
-            currentMark = new Mark(filteredCells)
-            currentMark.mark(value)
+            if (!forceVisible) {
+                currentMark = new Mark(filteredCells)
+                currentMark.mark(value, {
+                    'separateWordSearch': false
+                })
+            }
 
             logTable.show()
         }

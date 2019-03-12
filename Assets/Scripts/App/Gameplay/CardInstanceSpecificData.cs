@@ -1,13 +1,15 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class CardInstanceSpecificData
+    public class CardInstanceSpecificData : IReadOnlyCardInstanceSpecificData
     {
-        public int Damage { get; set; }
+        public int Attack { get; set; }
 
-        public int Health { get; set; }
+        public int Defense { get; set; }
 
         public Enumerators.SetType CardSetType { get; set; }
 
@@ -25,10 +27,20 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public CardInstanceSpecificData(int damage, int health, Enumerators.SetType cardSetType, Enumerators.CardType cardType, int cost)
+        public CardInstanceSpecificData(CardInstanceSpecificData source)
+            : this(
+                source.Attack,
+                source.Defense,
+                source.CardSetType,
+                source.CardType,
+                source.Cost)
         {
-            Damage = damage;
-            Health = health;
+        }
+
+        public CardInstanceSpecificData(int attack, int defense, Enumerators.SetType cardSetType, Enumerators.CardType cardType, int cost)
+        {
+            Attack = attack;
+            Defense = defense;
             CardSetType = cardSetType;
             CardType = cardType;
             Cost = cost;

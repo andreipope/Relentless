@@ -21,10 +21,6 @@ namespace Loom.ZombieBattleground
 
         public int NumTurnsOnBoard;
 
-        public int InitialDamage;
-
-        public int InitialHp;
-
         public bool HasUsedBuffShield;
 
         public bool HasSwing;
@@ -112,9 +108,9 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject> PrepairingToDie;
 
-        public event Action UnitHpChanged;
+        public event PropertyChangedEvent<int> UnitHpChanged;
 
-        public event Action UnitDamageChanged;
+        public event PropertyChangedEvent<int> UnitDamageChanged;
 
         public event Action<Enumerators.CardType> CardTypeChanged;
 
@@ -138,37 +134,47 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
-        public int MaxCurrentDamage => InitialDamage + BuffedDamage;
+        public int MaxCurrentDamage => Card.Prototype.Damage + BuffedDamage;
 
         public int BuffedDamage { get; set; }
 
         public int CurrentDamage
         {
-            get => Card.InstanceCard.Damage;
+            get => Card.InstanceCard.Attack;
             set
             {
-                Card.InstanceCard.Damage = Mathf.Max(value, 0);
-                UnitDamageChanged?.Invoke();
+                int oldValue = Card.InstanceCard.Attack;
+                value = Mathf.Max(value, 0);
+                if (oldValue == value)
+                    return;
+
+                Card.InstanceCard.Attack = value;
+                UnitDamageChanged?.Invoke(oldValue, value);
             }
         }
 
-        public int MaxCurrentHp => InitialHp + BuffedHp;
+        public int MaxCurrentHp => Card.Prototype.Health + BuffedHp;
 
         public int BuffedHp { get; set; }
 
         public int CurrentHp
         {
-            get => Card.InstanceCard.Health;
+            get => Card.InstanceCard.Defense;
             set
             {
-                Card.InstanceCard.Health = Mathf.Clamp(value, 0, 99);
-                UnitHpChanged?.Invoke();
+                int oldValue = Card.InstanceCard.Defense;
+                value = Mathf.Clamp(value, 0, 99);
+                if (oldValue == value)
+                    return;
+
+                Card.InstanceCard.Defense = value;
+                UnitHpChanged?.Invoke(oldValue, value);
             }
         }
 
         public bool IsPlayable { get; set; }
 
-        public WorkingCard Card { get; private set; }
+        public WorkingCard Card { get; set; }
 
         public bool IsStun => _stunTurns > 0;
 
@@ -212,14 +218,37 @@ namespace Loom.ZombieBattleground
 
         public bool WasDistracted { get; private set; }
 
-        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true)
+
+        // =================== REMOVE HARD
+
+        public Player Owner
+        {
+            get => Card.Owner;
+            set => Card.Owner = value;
+        }
+
+        public CardInstanceSpecificData InstanceCard => Card.InstanceCard;
+
+        public IReadOnlyCard Prototype
+        {
+            get => Card.Prototype   ;
+            set => Card.Prototype    = value;
+        }
+
+        public string Name => Card.Prototype.Name;
+
+        public Enumerators.SetType CardSetType => Card.Prototype.CardSetType;
+
+        // ===================
+
+        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true)
         {
             UnitDying?.Invoke();
 
             IsDead = true;
             if (!forceUnitDieEvent)
             {
-                _battlegroundController.KillBoardCard(this, withDeathEffect);
+                _battlegroundController.KillBoardCard(this, withDeathEffect, updateBoard);
             }
             else
             {
@@ -286,7 +315,7 @@ namespace Loom.ZombieBattleground
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
                             Card.Prototype.CardKind,
-                            Card.Prototype,
+                            this,
                             OwnerPlayer
                             );
                     }
@@ -298,7 +327,7 @@ namespace Loom.ZombieBattleground
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
                         Card.Prototype.CardKind,
-                        Card.Prototype,
+                        this,
                         OwnerPlayer
                         );
                     }
@@ -480,14 +509,13 @@ namespace Loom.ZombieBattleground
             CurrentDamage = card.Prototype.Damage;
             CurrentHp = card.Prototype.Health;
 
-            card.InstanceCard.Damage = CurrentDamage;
-            card.InstanceCard.Health = CurrentHp;
+            card.InstanceCard.Attack = CurrentDamage;
+            card.InstanceCard.Defense = CurrentHp;
 
             BuffedDamage = 0;
             BuffedHp = 0;
 
-            InitialDamage = CurrentDamage;
-            InitialHp = CurrentHp;
+            InitialUnitType = Card.Prototype.CardType;
 
             InitialUnitType = Card.Prototype.CardType;
 
@@ -860,8 +888,8 @@ namespace Loom.ZombieBattleground
         public void RemoveUnitFromBoard()
         {
             OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitViewByModel(this));
-            OwnerPlayer.RemoveCardFromBoard(Card);
-            OwnerPlayer.AddCardToGraveyard(Card);
+            OwnerPlayer.RemoveCardFromBoard(this);
+            OwnerPlayer.AddCardToGraveyard(this);
 
             UnitFromDeckRemoved?.Invoke();
         }
