@@ -525,7 +525,6 @@ namespace Loom.ZombieBattleground
   
                                            workingCard.Owner.RemoveCardFromHand(workingCard, true);
                                            workingCard.Owner.AddCardToBoard(workingCard, (ItemPosition) card.FuturePositionOnBoard);
-                                           workingCard.Owner.AddCardToGraveyard(workingCard);
 
                                            if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
                                            {
@@ -538,6 +537,8 @@ namespace Loom.ZombieBattleground
                                            }
                                            else
                                            {
+                                               workingCard.Owner.AddCardToGraveyard(workingCard);
+
                                                handCard.GameObject.SetActive(true);
 
                                                InternalTools.DoActionDelayed(() =>
@@ -1158,7 +1159,6 @@ namespace Loom.ZombieBattleground
 
                 card.WorkingCard.Owner.RemoveCardFromHand(card.WorkingCard);
                 card.WorkingCard.Owner.AddCardToBoard(card.WorkingCard, (ItemPosition) card.FuturePositionOnBoard);
-                card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
 
                 if (card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE)
                 {
@@ -1171,6 +1171,8 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
+                    card.WorkingCard.Owner.AddCardToGraveyard(card.WorkingCard);
+
                     card.GameObject.SetActive(true);
 
                     InternalTools.DoActionDelayed(() =>
