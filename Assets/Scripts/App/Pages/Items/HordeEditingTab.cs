@@ -1151,7 +1151,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
-                Debug.Log(" ====== Edit Deck Successfully ==== ");
+                Log.Info(" ====== Edit Deck Successfully ==== ");
             }
             catch (Exception e)
             {

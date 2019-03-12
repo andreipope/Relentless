@@ -148,9 +148,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                success = false;                
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                success = false;
+                Log.Warn(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
             }
@@ -253,9 +253,9 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(Log, e);
+                    Helpers.ExceptionReporter.SilentReportException(e);
 
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                    Log.Warn("", e);
 
                     OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
                 }

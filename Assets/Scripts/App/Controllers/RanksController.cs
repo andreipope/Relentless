@@ -290,7 +290,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (unit == null || unit.Model == null)
                     {
-                        ExceptionReporter.LogException(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
+                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
                         continue;
                     }
 

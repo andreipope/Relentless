@@ -507,12 +507,7 @@ namespace Loom.ZombieBattleground
                 BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
 
                 if (attackerUnit == null || target == null)
-                {
-                    Exception exception = new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
-                    Log.Error("", exception);
-                    Helpers.ExceptionReporter.LogException(Log, exception);
-                    return;
-                }
+                    throw new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
 
                 Action callback = () =>
                 {

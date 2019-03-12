@@ -18,5 +18,11 @@ namespace Loom.ZombieBattleground.Helpers
             log.Error("", e);
             SilentReportException(e);
         }
+
+        public static void LogExceptionAsWarning(ILog log, Exception e)
+        {
+            log.Warn("", e);
+            SilentReportException(e);
+        }
     }
 }
