@@ -12,6 +12,7 @@ from pages.register_popup_page import Regitration_Popup_Page
 from pages.forgot_password_page import Forgot_Password_Page
 from pages.main_menu_page import Main_Menu_Page
 from pages.wait_page import Wait_Page
+from pages.area_bar_popup_page import Area_Bar_Popup_Page
 
 
 class CZBLoginTests(CZBTests):
@@ -22,7 +23,7 @@ class CZBLoginTests(CZBTests):
         
 
     def test_login_with_fake_account(self):
-        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Area_Bar_Popup_Page(self.altdriver).press_login_button()
         Login_Popup_Page(self.altdriver).login('fakeAccount@testsonbitbar.com','password123')
 
         expectedMessage='The process could not be completed with error:\n The Username and/or Password are not correct. \n\nPlease try again.'
@@ -34,7 +35,7 @@ class CZBLoginTests(CZBTests):
 
 
     def test_login_with_good_account(self):
-        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Area_Bar_Popup_Page(self.altdriver).press_login_button()
         Login_Popup_Page(self.altdriver).login('secondTestAccount@testsonbitbar.com','password123')
         Wait_Page(self.altdriver)
 
@@ -47,7 +48,7 @@ class CZBLoginTests(CZBTests):
         
     
     def test_send_registration_request(self):
-        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Area_Bar_Popup_Page(self.altdriver).press_login_button()
         Login_Popup_Page(self.altdriver).go_to_registration_form()
         fakeEmail='testAccount'+str(datetime.datetime.now().time())+'@testsonbitbar.com'
         Regitration_Popup_Page(self.altdriver).register(fakeEmail,'password123','password123')
@@ -60,7 +61,7 @@ class CZBLoginTests(CZBTests):
             self.assertTrue(True)
     
     def test_send_forgot_password_request(self):
-        Main_Menu_Page(self.altdriver).go_to_login_form()
+        Area_Bar_Popup_Page(self.altdriver).press_login_button()
         Login_Popup_Page(self.altdriver).go_to_forgot_password_form()
         Forgot_Password_Page(self.altdriver).forgot_password('goodTestAccount@testsonbitbar.com')
 

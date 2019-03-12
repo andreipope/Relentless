@@ -11,6 +11,7 @@ from pages.deck_selection_page import Deck_Selection_Page
 from pages.overlord_selection_page import Overlord_Selection_Page
 from pages.overlord_ability_popup_page import Overlord_Ability_Popup_Page
 from pages.horde_editing_page import Horde_Editing_Page
+from pages.side_menu_popup_page import Side_Menu_Popup_Page
 
 
 import sys
@@ -25,8 +26,7 @@ class CZBHordeTests(CZBTests):
         self.skip_tutorials()
 
     def test_create_new_deck(self):
-        Main_Menu_Page(self.altdriver).press_play_button()
-        Match_Selection_Page(self.altdriver).press_solo_button()
+        Side_Menu_Popup_Page(self.altdriver).press_my_decks_button()
         Deck_Selection_Page(self.altdriver).create_new_deck()
         Overlord_Selection_Page(self.altdriver).press_continue()
         Overlord_Ability_Popup_Page(self.altdriver).press_continue()

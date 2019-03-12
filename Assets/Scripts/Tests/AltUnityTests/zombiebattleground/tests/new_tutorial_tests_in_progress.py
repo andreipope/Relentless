@@ -70,7 +70,7 @@ class CZBTutorialTests(CZBTests):
        
         time.sleep(1)
         gameplay_page.opponent_face.mobile_tap()
-        self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
+        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
 
     
 
@@ -91,7 +91,7 @@ class CZBTutorialTests(CZBTests):
         gameplay_page.swipe_board_card_to_opponent_face(0)
         gameplay_page.swipe_primary_spell_to_opponent_face()
 
-        self.altdriver.wait_for_element('YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue').mobile_tap()
+        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
 
 
 
@@ -122,7 +122,7 @@ class CZBTutorialTests(CZBTests):
         gameplay_page.swipe_board_card_to_opponent_face(0)
         
 
-        self.altdriver.wait_for_element('YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue').mobile_tap()
+        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
         
 
 
@@ -156,7 +156,7 @@ class CZBTutorialTests(CZBTests):
         time.sleep(3)
 
         gameplay_page.swipe_board_card_to_opponent_face(0)
-        self.altdriver.wait_for_element('YouWonPopup/YouWonPanel/UI/Panel_Buttons/Button_Continue').mobile_tap()
+        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
 
     # def test_deck_construction_tutorial(self):
     #     self.jump_to_tutorial(1)

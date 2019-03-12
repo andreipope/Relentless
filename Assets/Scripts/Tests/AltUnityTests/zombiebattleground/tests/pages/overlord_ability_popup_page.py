@@ -8,9 +8,9 @@ class Overlord_Ability_Popup_Page(CZBTests):
         self.continue_button=self.get_continue_button()
     
     def get_overlord_ability_popup_page(self):
-        return self.altdriver.wait_for_element('OverlordAbilityPopup(Clone)')
+        return self.altdriver.wait_for_element('Tab_SelectOverlordSkill')
     def get_back_button(self):
-        return self.altdriver.wait_for_element(self.overlord_ability_popup_page.name+'/Canvas_BackLayer/Button_Cancel')
+        return self.altdriver.wait_for_element('Image_ButtonBackTray/Button_Back')
     def get_continue_button(self):
         return self.altdriver.wait_for_element(self.overlord_ability_popup_page.name+'/Canvas_BackLayer/Button_Continue')
     
