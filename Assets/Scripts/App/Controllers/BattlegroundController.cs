@@ -107,6 +107,8 @@ namespace Loom.ZombieBattleground
 
         public bool TurnWaitingForEnd { get; private set; }
 
+        public UniqueList<IBoardUnitView> BoardUnitViews = new UniqueList<IBoardUnitView>();
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -878,18 +880,9 @@ namespace Loom.ZombieBattleground
             return unitView;
         }
 
-        public BoardUnitView GetBoardUnitFromHisObject(GameObject unitObject)
-        {
-            BoardUnitView unit =
-                _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.GameObject == unitObject) ??
-                _gameplayManager.OpponentPlayer.BoardCards.First(x => x.GameObject == unitObject);
-
-            return unit;
-        }
-
         public BoardCardView GetBoardCardFromHisObject(GameObject cardObject)
         {
-            BoardCardView card = PlayerHandCards.FirstOrDefault(x => x.GameObject.Equals(cardObject));
+            BoardCardView card = PlayerHandCards.FirstOrDefault(x => x.GameObject == cardObject);
 
             return card;
         }

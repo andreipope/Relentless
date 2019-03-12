@@ -14,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler, IView
+    public class BoardUnitView : IFightSequenceHandler, IView, IBoardUnitView
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
 

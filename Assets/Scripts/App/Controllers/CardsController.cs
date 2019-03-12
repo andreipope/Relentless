@@ -723,7 +723,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.BoardUnitModel.InstanceId == card.BoardUnitModel.Card.InstanceId);
+                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent => cardOpponent.Model.InstanceId == card.BoardUnitModel.Card.InstanceId);
                 _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
                 _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitView);
             }
@@ -796,14 +796,14 @@ namespace Loom.ZombieBattleground
             if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
             {
                 opponentHandCard =
-                    _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.BoardUnitModel.InstanceId == cardId);
+                    _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == cardId);
             }
             else
             {
                 if (_battlegroundController.OpponentHandCards.Count <= 0)
                     return;
 
-                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.BoardUnitModel.InstanceId == cardId);
+                opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == cardId);
             }
 
             if(opponentHandCard is null)
@@ -814,7 +814,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            BoardUnitModel card = opponentHandCard.BoardUnitModel;
+            BoardUnitModel card = opponentHandCard.Model;
 
             _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
             player.CardsInHand.Remove(card);

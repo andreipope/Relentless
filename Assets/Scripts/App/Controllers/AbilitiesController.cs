@@ -574,9 +574,11 @@ namespace Loom.ZombieBattleground
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
+                                           boardUnitModel.Owner.AddCardToHand(card.BoardUnitModel);
+                                           boardUnitModel.Owner.AddCardToBoard(card.BoardUnitModel);
                                            boardUnitModel.Owner.CardsInHand.Insert(ItemPosition.End, card.BoardUnitModel);
-                                           _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            boardUnitModel.Owner.CardsOnBoard.Remove(card.BoardUnitModel);
+                                           _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            BoardUnitView boardCardUnitView = boardUnitModel.Owner.BoardCards.FirstOrDefault(boardCardView =>
                                                boardCardView.Model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
                                            if (boardCardUnitView != null)

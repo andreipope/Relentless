@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(1, TestHelper.GameplayManager.CurrentPlayer.BoardCards.Count);
                     Assert.AreEqual(1, TestHelper.GameplayManager.OpponentPlayer.BoardCards.Count);
                     Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.Prototype.MouldId)).ToList()[0]);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.BoardUnitModel.Card.Prototype.MouldId)).ToList()[0]);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.Model.Card.Prototype.MouldId)).ToList()[0]);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableBackendGameLogicMatch: true);
@@ -476,7 +476,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     string cardToFind = "Tainted Goo";
 
                     Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.BoardUnitModel.Card.Prototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.BoardUnitModel.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1015,7 +1015,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
                     {
-                        if (card.BoardUnitModel.Card.Prototype.Name == cardToFind)
+                        if (card.Model.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
                             break;
