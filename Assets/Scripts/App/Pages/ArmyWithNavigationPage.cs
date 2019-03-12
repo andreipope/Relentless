@@ -132,6 +132,7 @@ namespace Loom.ZombieBattleground
             Object.Destroy(CardPlaceholders);
             if(_cacheFilteredSetTypeCardsList != null)
                 _cacheFilteredSetTypeCardsList.Clear();
+            Object.Destroy(_createdBoardCardContainer);
         }
 
         #endregion
@@ -200,7 +201,7 @@ namespace Loom.ZombieBattleground
         
         public GameObject CardPlaceholders;
 
-        private Transform _locatorPlaceHolder;
+        private GameObject _createdBoardCardContainer;
         
         private List<BoardCard> _createdBoardCards;
 
@@ -209,10 +210,7 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
-            _locatorPlaceHolder = _selfPage.transform.Find("Panel_Content/Locator_CardPosition");
-            Vector3 cardPlaceholdersPos = _locatorPlaceHolder.position;
-            cardPlaceholdersPos.z = 0f;
-            CardPlaceholders.transform.position = cardPlaceholdersPos;
+            _createdBoardCardContainer = new GameObject("BoardCardContainer");
             
             CardPositions = new List<Transform>();
 
@@ -255,11 +253,9 @@ namespace Loom.ZombieBattleground
                 if (cardData == null)
                     continue;
                 Vector3 position = CardPositions[i % CardPositions.Count].position;
-                RectTransform rectContainer = _locatorPlaceHolder.GetComponent<RectTransform>();
                 BoardCard boardCard = CreateBoardCard
                 (
                     card,
-                    rectContainer,
                     cardData,
                     position                    
                 );
@@ -291,7 +287,7 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private BoardCard CreateBoardCard(Card card, RectTransform root, CollectionCardData cardData, Vector3 position)
+        private BoardCard CreateBoardCard(Card card, CollectionCardData cardData, Vector3 position)
         {
             GameObject go;
             BoardCard boardCard;
@@ -316,18 +312,8 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.localScale = Vector3.one * 0.3f;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            
-            boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
-            RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
 
-            if (root != null)
-            {
-                cardRectTransform.SetParent(root);
-            }
-
-            Vector3 anchoredPos = boardCard.Transform.localPosition;
-            anchoredPos.z = 0;
-            boardCard.Transform.localPosition = anchoredPos;
+            boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
             
             if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
             {
