@@ -4,6 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using log4net;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class MainMenuWithNavigationPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MainMenuWithNavigationPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -181,7 +184,7 @@ namespace Loom.ZombieBattleground
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_life");
                     break;
                 default:
-                    Debug.Log($"No OverlordPortrait found for setType {setType}");
+                    Log.Info($"No OverlordPortrait found for setType {setType}");
                     return;
             }            
         }

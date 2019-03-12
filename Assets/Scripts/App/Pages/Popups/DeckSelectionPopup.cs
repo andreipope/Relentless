@@ -5,6 +5,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using DG.Tweening;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 {
     public class DeckSelectionPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(DeckSelectionPopup));
+
         public GameObject Self { get; private set; }
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -190,7 +193,7 @@ namespace Loom.ZombieBattleground
                 
             if (_deckList.Count <= 0)
             {
-                Debug.Log("No deck in list");
+                Log.Info("No deck in list");
                 return;
             }
             

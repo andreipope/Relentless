@@ -2116,7 +2116,7 @@ namespace Loom.ZombieBattleground.Test
 
             /*if (string.IsNullOrEmpty(_recordedExpectedValue) || string.IsNullOrEmpty(_recordedActualValue))
             {
-                Debug.LogWarning("One of the overlord names was null, so didn't check.");
+                Log.Warn("One of the overlord names was null, so didn't check.");
 
                 return;
             }

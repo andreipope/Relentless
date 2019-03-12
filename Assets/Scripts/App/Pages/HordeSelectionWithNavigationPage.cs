@@ -492,24 +492,24 @@ namespace Loom.ZombieBattleground
                     currentDeck.Id
                 );
 
-                Debug.Log($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
             }
-            catch (TimeoutException exception)
+            catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
-            catch (Client.RpcClientException exception)
+            catch (Client.RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.Log("Result === " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
                 OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
                 return;
             }
@@ -800,7 +800,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SetType.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Debug.Log($"No Overlord thumbnail found for setType {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for setType {heroElement}");
                     return null;
             }        
         }

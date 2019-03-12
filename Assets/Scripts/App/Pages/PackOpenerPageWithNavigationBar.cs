@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 {
     public class PackOpenerPageWithNavigationBar : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PackOpenerPageWithNavigationBar));
+
         private ITutorialManager _tutorialManager;
 
         private IDataManager _dataManager;
@@ -485,7 +488,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
 
                 _retryPackBalanceRequestCount++;
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
@@ -522,7 +525,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
                 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)

@@ -180,7 +180,7 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck.Id = newDeckId;
                 _dataManager.CachedDecksData.Decks.Add(_myDeckPage.CurrentEditDeck);
                 _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
-                Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
 
                 if(_tutorialManager.IsTutorial)
                 {
@@ -190,7 +190,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
+                Log.Warn("", e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 success = false;
 
@@ -254,7 +255,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SetType.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life"); 
                 default:
-                    Debug.Log($"No Overlord portrait found for setType {heroElement}");
+                    Log.Info($"No Overlord portrait found for setType {heroElement}");
                     return null;
             }        
         }
