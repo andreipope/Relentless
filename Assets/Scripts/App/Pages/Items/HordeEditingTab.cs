@@ -381,10 +381,6 @@ namespace Loom.ZombieBattleground
                     cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
                 }
 
-                // hack !!!! CHECK IT!!!
-                if (cardData == null)
-                    continue;
-
                 BoardCardView boardCard = CreateBoardCard
                 (
                     card,
@@ -963,13 +959,16 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
-
                     cards = cards = set.Cards.ToList();
                 }
-                
+
                 foreach (Card card in cards)
+                {
                     if (card.Name.ToLower().Contains(keyword))
+                    {
                         resultList.Add(card);
+                    }
+                }
             }
 
             UpdateCacheFilteredCardList(resultList);

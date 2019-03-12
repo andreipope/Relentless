@@ -244,11 +244,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftArrowHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonLeftArrow.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeftArrow.name))
                 return;
-            }
+
             MoveDeckPageIndex(-1);
             UpdateDeckInfoObjects(); 
             ChangeSelectDeckIndex(0);           
@@ -256,11 +254,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRightArrowHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonRightArrow.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRightArrow.name))
                 return;
-            }
+
             MoveDeckPageIndex(1);
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(0);          
@@ -273,11 +269,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectDeckFilterHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSelectDeckFilter.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectDeckFilter.name))
                 return;
-            }
+
             _uiManager.DrawPopup<ElementFilterPopup>();
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
@@ -292,22 +286,18 @@ namespace Loom.ZombieBattleground
 
         private void ButtonEditHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonEdit.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonEdit.name))
                 return;
-            }
+
             AssignCurrentDeck(false);
             ChangeTab(TAB.EDITING);
         }        
         
         private void ButtonDeleteHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonDelete.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
                 return;
-            }
+
             if (GetDeckList().Count <= 1)
             {
                 OpenAlertDialog("Sorry, Not able to delete Last Deck.");
@@ -324,11 +314,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRenameHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonRename.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRename.name))
                 return;
-            }
+
             ChangeTab(TAB.RENAME);
         }
         

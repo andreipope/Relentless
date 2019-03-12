@@ -309,21 +309,17 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRightHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonRight.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRight.name))
                 return;
-            }
+
             SwitchSelectedDeckIndex(1);
         }
         
         private void ButtonLeftHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonLeft.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeft.name))
                 return;
-            }
+
             SwitchSelectedDeckIndex(-1);
         }
 

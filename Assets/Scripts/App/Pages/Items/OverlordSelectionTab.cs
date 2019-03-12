@@ -137,11 +137,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordLeftArrowHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSelectOverlordLeftArrow.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordLeftArrow.name))
                 return;
-            }
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
@@ -150,11 +148,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordRightArrowHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSelectOverlordRightArrow.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordRightArrow.name))
                 return;
-            }
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex + 1, 0, _selectOverlordIconList.Count - 1)

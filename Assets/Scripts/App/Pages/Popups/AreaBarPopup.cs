@@ -110,21 +110,17 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSettingHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonSettings.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSettings.name))
                 return;
-            }
+
             _uiManager.DrawPopup<MySettingPopup>(true);
         }
         
         private void ButtonLoginHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonLogin.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLogin.name))
                 return;
-            }
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             LoginPopup popup = _uiManager.GetPopup<LoginPopup>();

@@ -51,6 +51,8 @@ namespace Loom.ZombieBattleground
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
 
+        bool BlockAndReport(string buttonName);
+
         int GetIndexOfCurrentTutorial();
         List<Data.Card> GetCardForCardPack(int count);
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);

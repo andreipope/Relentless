@@ -1317,6 +1317,16 @@ namespace Loom.ZombieBattleground
             return cards;
         }
 
+        public bool BlockAndReport(string buttonName)
+        {
+            if (IsButtonBlockedInTutorial(buttonName))
+            {
+                ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return true;
+            }
+            return false;
+        }
+
         public void ApplyReward()
         {
             for (int i = 0; i < CurrentTutorial.TutorialContent.ToGameplayContent().RewardCardPackCount; i++)
