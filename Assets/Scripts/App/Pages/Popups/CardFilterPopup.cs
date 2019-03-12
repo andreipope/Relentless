@@ -434,8 +434,10 @@ namespace Loom.ZombieBattleground
         
         private void LoadCacaheFilterData()
         {
-            if(_cacheFilterData != null)
+            if (_cacheFilterData != null)
+            {
                 FilterData = new CardFilterData(_cacheFilterData);
+            }
         }
 
         #region Filter
@@ -500,13 +502,21 @@ namespace Loom.ZombieBattleground
         private void UpdateAllButtonsStatus()
         {
             foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+            {
                 UpdateSetTypeButtonDisplay(setType);
-            foreach (Enumerators.CardRank rank in AllAvailableRankList)            
+            }
+            foreach (Enumerators.CardRank rank in AllAvailableRankList)
+            {
                 UpdateRankButtonDisplay(rank);
+            }
             foreach (Enumerators.CardType type in AllAvailableTypeList)
+            {
                 UpdateTypeButtonDisplay(type);
-            for(int i=0; i<FilterData.GooCostList.Count;++i)
+            }
+            for (int i = 0; i < FilterData.GooCostList.Count; ++i)
+            {
                 UpdateGooCostButtonDisplay(i);
+            }
         }
         
         #endregion

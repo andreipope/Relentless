@@ -131,7 +131,9 @@ namespace Loom.ZombieBattleground
         {
             int newIndex = _selectOverlordIndex - 1;
             if (newIndex < 0)
+            {
                 newIndex = _selectOverlordIconList.Count - 1;
+            }
             ChangeOverlordIndex(newIndex);
         }
 
@@ -139,7 +141,9 @@ namespace Loom.ZombieBattleground
         {
             int newIndex = _selectOverlordIndex + 1;
             if (newIndex >= _selectOverlordIconList.Count)
+            {
                 newIndex = 0;
+            }
             ChangeOverlordIndex(newIndex);
         }
         
