@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
             
             for(int i=0; i<6;++i)
             {
-                Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Image_DeckIcon_" + i).GetComponent<Image>();
+                Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
                 (
                     _dataManager.CachedHeroesData.Heroes[i].HeroElement
@@ -112,6 +112,15 @@ namespace Loom.ZombieBattleground
                 (
                     overlordIcon.transform
                 );
+
+                int index = i;
+                Button overlordButton = overlordIcon.GetComponent<Button>();
+                overlordButton.onClick.AddListener
+                (() =>
+                {
+                    ChangeOverlordIndex(index);
+                    _myDeckPage.PlayClickSound();
+                });
             }
         }
         
