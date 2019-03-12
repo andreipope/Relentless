@@ -337,7 +337,7 @@ namespace Loom.ZombieBattleground
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
-            _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
+            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s)");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
@@ -388,15 +388,14 @@ namespace Loom.ZombieBattleground
                 Log.Info($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
                 Log.Info($"productReceipt.transactionID: {productReceipt.transactionID}");
 
-                return productReceipt.transactionID;
-                
-                AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
-                if (null != apple) {
+                if (productReceipt is AppleInAppPurchaseReceipt apple) {
                     Log.Info($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
                     Log.Info($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
                     Log.Info($"apple.cancellationDate: {apple.cancellationDate}");
                     Log.Info($"apple.quantity: {apple.quantity}");
                 }
+
+                return productReceipt.transactionID;
             }
             return "";
         }
