@@ -463,15 +463,11 @@ namespace Loom.ZombieBattleground
                         StopHandTimer();
                         _battlegroundController.DestroyCardPreview();
 
-                        if (_boardArrowController.CurrentBoardArrow != null &&
-                            _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
-                        {
-                        }
-                        else
+                        if (_boardArrowController.CurrentBoardArrow == null)
                         {
                             HandCardPreview(new object[]
                             {
-                            _topmostBoardCard
+                                _topmostBoardCard
                             });
                         }
                     }
