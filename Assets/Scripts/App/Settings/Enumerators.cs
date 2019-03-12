@@ -603,7 +603,8 @@ namespace Loom.ZombieBattleground.Common
             Distract,
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
-            Swing
+            Swing,
+            Devour
         }
         public enum ScreenMode
         {

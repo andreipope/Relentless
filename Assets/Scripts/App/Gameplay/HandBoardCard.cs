@@ -83,7 +83,7 @@ public class HandBoardCard : OwnableBoardObject
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView);
             }
             else
             {

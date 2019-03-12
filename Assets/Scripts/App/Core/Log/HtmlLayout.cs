@@ -74,9 +74,16 @@ namespace Loom.ZombieBattleground
                 WriteHeader(writer, htmlWriter);
             }
 
-            writer.Write("<tr class=\"");
-            htmlWriter.Write(GetLogItemRowClass(loggingEvent));
-            writer.WriteLine("\">");
+            writer.Write("<tr");
+
+            string rowClass = GetLogItemRowClass(loggingEvent);
+            if (!String.IsNullOrWhiteSpace(rowClass))
+            {
+                writer.Write(" class=\"");
+                htmlWriter.Write(rowClass);
+                writer.Write("\"");
+            }
+            writer.WriteLine(">");
 
             for (PatternConverter patternConverter = PatternConverterHead; patternConverter != null; patternConverter = patternConverter.Next)
             {
@@ -87,7 +94,7 @@ namespace Loom.ZombieBattleground
                 {
                     writer.Write(" class=\"");
                     htmlWriter.Write(cellClass);
-                    writer.Write("\" ");
+                    writer.Write("\"");
                 }
 
                 string cellStyle = GetLogItemCellStyle(patternConverter, loggingEvent);
