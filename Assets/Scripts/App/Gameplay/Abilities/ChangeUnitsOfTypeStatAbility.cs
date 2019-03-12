@@ -46,31 +46,30 @@ namespace Loom.ZombieBattleground
 
         private void Action()
         {
-            IReadOnlyList<BoardUnitView> unitsOnBoard =
-                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.Prototype.CardSetType.Equals(SetType));
+            IReadOnlyList<BoardUnitModel> unitsOnBoard =
+                PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
 
-            foreach (BoardUnitView unit in unitsOnBoard)
+            foreach (BoardUnitModel unit in unitsOnBoard)
             {
-                if (unit.Model == AbilityUnitOwner)
-                {
+                if (unit == AbilityUnitOwner)
                     continue;
-                }
 
                 switch (StatType)
                 {
                     case Enumerators.StatType.DAMAGE:
-                        unit.Model.BuffedDamage += Value;
-                        unit.Model.CurrentDamage += Value;
+                        unit.BuffedDamage += Value;
+                        unit.CurrentDamage += Value;
                         break;
                     case Enumerators.StatType.HEALTH:
-                        unit.Model.BuffedHp += Value;
-                        unit.Model.CurrentHp += Value;
+                        unit.BuffedHp += Value;
+                        unit.CurrentHp += Value;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                 }
 
-                CreateVfx(unit.Transform.position, true);
+                BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                CreateVfx(unitView.Transform.position, true);
             }
         }
     }

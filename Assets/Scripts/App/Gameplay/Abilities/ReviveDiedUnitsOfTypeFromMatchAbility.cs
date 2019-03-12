@@ -31,18 +31,18 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            IReadOnlyList<BoardUnitModel> units =
+            IReadOnlyList<BoardUnitModel> playerGraveyardCards =
                 GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
-            IReadOnlyList<BoardUnitView> playerBoardCards =
-                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType);
+            IReadOnlyList<BoardUnitModel> playerBoardCards =
+                GameplayManager.CurrentPlayer.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
 
-            foreach (BoardUnitModel unit in units)
+            foreach (BoardUnitModel unit in playerGraveyardCards)
             {
                 bool isInPlay = false;
-                foreach (BoardUnitView view in playerBoardCards) 
+                foreach (BoardUnitModel model in playerBoardCards)
                 {
-                    if (view.Model.InstanceId == unit.InstanceId) 
+                    if (model.InstanceId == unit.InstanceId)
                     {
                         isInPlay = true;
                         break;
@@ -53,17 +53,17 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
+            playerGraveyardCards = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
-            IReadOnlyList<BoardUnitView> opponentBoardCards =
-                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType);
+            IReadOnlyList<BoardUnitModel> opponentBoardCards =
+                GameplayManager.OpponentPlayer.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
 
-            foreach (BoardUnitModel unit in units)
+            foreach (BoardUnitModel unit in playerGraveyardCards)
             {
                 bool isInPlay = false;
-                foreach (BoardUnitView view in opponentBoardCards) 
+                foreach (BoardUnitModel model in opponentBoardCards)
                 {
-                    if (view.Model.InstanceId == unit.InstanceId) 
+                    if (model.InstanceId == unit.InstanceId)
                     {
                         isInPlay = true;
                         break;

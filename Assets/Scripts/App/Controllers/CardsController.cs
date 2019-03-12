@@ -548,8 +548,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                GameplayQueueAction<object> CallAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
-                GameplayQueueAction<object> RankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
+                GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
+                GameplayQueueAction<object> rankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
                 switch (card.BoardUnitModel.Card.Prototype.CardKind)
                 {
@@ -600,7 +600,7 @@ namespace Loom.ZombieBattleground
                                 _isHoveringCardOfBoard = false;
                             }
 
-                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model, RankBuffAction);
+                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model, rankBuffAction);
 
                             boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
@@ -626,8 +626,8 @@ namespace Loom.ZombieBattleground
                                             }
                                             else
                                             {
-                                                RankBuffAction.Action = null;
-                                                RankBuffAction.ForceActionDone();
+                                                rankBuffAction.Action = null;
+                                                rankBuffAction.ForceActionDone();
 
                                                 _gameplayManager.CurrentPlayer.BoardCards.Remove(boardUnitView);
                                                 player.BoardCards.Remove(boardUnitView);
@@ -639,9 +639,9 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
-                                        }, CallAbilityAction, target, handCard, skipEntryAbilities);
+                                        }, callAbilityAction, target, handCard, skipEntryAbilities);
 
-                                    _actionsQueueController.ForceContinueAction(CallAbilityAction);
+                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 });
                             break;
                         }
@@ -668,10 +668,10 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.BoardUnitModel, 0);
                                         }
 
-                                        RankBuffAction.ForceActionDone();
-                                    }, CallAbilityAction, target, handCard, skipEntryAbilities);
+                                        rankBuffAction.ForceActionDone();
+                                    }, callAbilityAction, target, handCard, skipEntryAbilities);
 
-                                _actionsQueueController.ForceContinueAction(CallAbilityAction);
+                                _actionsQueueController.ForceContinueAction(callAbilityAction);
                             }, 0.75f);
                             break;
                         }

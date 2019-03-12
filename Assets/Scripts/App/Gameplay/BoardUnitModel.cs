@@ -777,11 +777,11 @@ namespace Loom.ZombieBattleground
 
                                     if (HasSwing)
                                     {
-                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+                                        List<BoardUnitModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
 
-                                        foreach (BoardUnitView unit in adjacent)
+                                        foreach (BoardUnitModel unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit.Model,false);
+                                            _battleController.AttackUnitByUnit(this, unit,false);
                                         }
                                     }
 

@@ -35,15 +35,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+            foreach (BoardUnitModel unit in PlayerCallerOfAbility.CardsOnBoard)
             {
-                if (unit.Model.Card.Prototype.CardSetType.Equals(SetType) && unit.Model != AbilityUnitOwner)
+                if (unit.Card.Prototype.CardSetType.Equals(SetType) && unit != AbilityUnitOwner)
                 {
-                    unit.Model.BuffedDamage += Damage;
-                    unit.Model.CurrentDamage += Damage;
+                    unit.BuffedDamage += Damage;
+                    unit.CurrentDamage += Damage;
 
-                    unit.Model.BuffedHp += Health;
-                    unit.Model.CurrentHp += Health;
+                    unit.BuffedHp += Health;
+                    unit.CurrentHp += Health;
                 }
             }
         }

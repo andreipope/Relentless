@@ -487,16 +487,16 @@ namespace Loom.ZombieBattleground
             {
                 _uiManager.GetPage<GameplayPage>().SetEndTurnButtonStatus(false);
 
-                foreach (BoardUnitView card in _gameplayManager.CurrentPlayer.BoardCards)
+                foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsOnBoard)
                 {
-                    card.Model.OnEndTurn();
+                    card.OnEndTurn();
                 }
             }
             else
             {
-                foreach (BoardUnitView card in _gameplayManager.OpponentPlayer.BoardCards)
+                foreach (BoardUnitModel card in _gameplayManager.OpponentPlayer.CardsOnBoard)
                 {
-                    card.Model.OnEndTurn();
+                    card.OnEndTurn();
                 }
             }
 
@@ -1088,17 +1088,19 @@ namespace Loom.ZombieBattleground
             return foundObject;
         }
 
-        public List<BoardUnitView> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
+        public List<BoardUnitModel> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            IReadOnlyList<BoardUnitView> boardCards = targetUnit.OwnerPlayer.BoardCards;
+            IReadOnlyList<BoardUnitModel> boardCards = targetUnit.OwnerPlayer.CardsOnBoard;
 
-            int targetView = boardCards.IndexOf(GetBoardUnitViewByModel(targetUnit));
+            int targetIndex = boardCards.IndexOf(targetUnit);
 
-            return boardCards.Where(unit => unit.Model != targetUnit && 
-            ((boardCards.IndexOf(unit) == Mathf.Clamp(targetView - 1, 0, CardsOnBoard.Count - 1)) ||
-            (boardCards.IndexOf(unit) == Mathf.Clamp(targetView + 1, 0, CardsOnBoard.Count - 1)) &&
-            boardCards.IndexOf(unit) != targetView)
-            ).ToList();
+            return boardCards.Where(unit =>
+                    unit != targetUnit &&
+                    (boardCards.IndexOf(unit) == Mathf.Clamp(targetIndex - 1, 0, boardCards.Count - 1) ||
+                        boardCards.IndexOf(unit) == Mathf.Clamp(targetIndex + 1, 0, boardCards.Count - 1) &&
+                        boardCards.IndexOf(unit) != targetIndex)
+                )
+                .ToList();
         }
 
         public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)

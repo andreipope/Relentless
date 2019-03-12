@@ -407,7 +407,7 @@ static class BattleCommandsHandler
         }
         else
         {
-            _cardsController.ReturnCardToHand(obj.Unit);
+            _cardsController.ReturnCardToHand(obj.Unit.Model);
             _gameplayManager.CurrentPlayer.CurrentGoo += obj.GooCost;
         }
     }

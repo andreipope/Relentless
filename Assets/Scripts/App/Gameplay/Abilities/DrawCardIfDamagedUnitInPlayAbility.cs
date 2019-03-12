@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if(PlayerCallerOfAbility.BoardCards.FindAll(x => x.CurrentHp < x.MaxCurrentHp).Count > 0)
+            if(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.CurrentHp < x.MaxCurrentHp).Count > 0)
             {
                 CardsController.AddCardToHand(PlayerCallerOfAbility);
             }

@@ -28,14 +28,14 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitView unit in BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner))
+            foreach (BoardUnitModel unit in BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner))
             {
-                unit?.Model.AddBuffShield();
+                unit?.AddBuffShield();
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Guard,
-                    Target = unit.Model
+                    Target = unit
                 });
             }
 

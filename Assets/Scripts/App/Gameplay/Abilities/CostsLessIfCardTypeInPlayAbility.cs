@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -43,14 +44,14 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
             {
-                if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType).Count > 0)
+                if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType).Count > 0)
                 {
                     gooCost = -Mathf.Abs(Value);
                 }
             }
             else
             {
-                gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType).Count * Value;
+                gooCost = PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType).Count * Value;
             }
 
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,

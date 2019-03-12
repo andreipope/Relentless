@@ -579,11 +579,14 @@ namespace Loom.ZombieBattleground
                                            boardUnitModel.Owner.CardsInHand.Insert(ItemPosition.End, card.BoardUnitModel);
                                            boardUnitModel.Owner.CardsOnBoard.Remove(card.BoardUnitModel);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
-                                           BoardUnitView boardCardUnitView = boardUnitModel.Owner.BoardCards.FirstOrDefault(boardCardView =>
-                                               boardCardView.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
-                                           if (boardCardUnitView != null)
+                                           /*BoardUnitModel boardUnitModel =
+                                               boardUnitModel.Owner
+                                                   .CardsOnBoard
+                                                   .FirstOrDefault(model => model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);*/
+                                           BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                                           if (boardUnitView != null)
                                            {
-                                               boardUnitModel.Owner.BoardCards.Remove(boardCardUnitView);
+                                               boardUnitModel.Owner.BoardCards.Remove(boardUnitView);
                                            }
 
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
