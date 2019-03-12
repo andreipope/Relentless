@@ -401,14 +401,14 @@ namespace Loom.ZombieBattleground
                     _pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
                 {
                     IView cardView = _cardsController.AddCardToHand(this);
-                    (cardView as BoardCard)?.SetDefaultAnimation();
+                    (cardView as BoardCardView)?.SetDefaultAnimation();
                 }
 
                 // Second player draw two cards on their first turn
                 if (_battlegroundController.CurrentTurn == 2 && !_gameplayManager.IsTutorial)
                 {
                     IView cardView = _cardsController.AddCardToHand(this);
-                    (cardView as BoardCard)?.SetDefaultAnimation();
+                    (cardView as BoardCardView)?.SetDefaultAnimation();
                 }
             }
 

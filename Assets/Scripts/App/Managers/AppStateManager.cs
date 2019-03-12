@@ -105,20 +105,16 @@ namespace Loom.ZombieBattleground
                             loginPopup.Show();
                             return;
                         }
+
+                        if (Constants.EnableNewUI)
+                            _uiManager.SetPage<ShopWithNavigationPage>();
                         else
-                        {
-                            if (Constants.EnableNewUI)
-                                _uiManager.SetPage<ShopWithNavigationPage>();
-                            else
-                                _uiManager.SetPage<ShopPage>();
-                        }
-                        break;
+                            _uiManager.SetPage<ShopPage>();
                     }
                     else
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                        return;
-                    }                    
+                    }
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)

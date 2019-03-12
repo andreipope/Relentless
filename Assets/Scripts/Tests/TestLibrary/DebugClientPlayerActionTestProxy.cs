@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Test
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
 
                 AbilityData entryAbility =
-                    workingCard.LibraryCard.Abilities
+                    workingCard.Prototype.Abilities
                     .FirstOrDefault(x => _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
 
                 if (entryAbility == null)
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground.Test
 
             // Second, fire non-targetable entry abilities
             AbilityData[] entryAbilities =
-                workingCard.LibraryCard.Abilities
+                workingCard.Prototype.Abilities
                     .Where(x =>
                         _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
                         !_testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x))

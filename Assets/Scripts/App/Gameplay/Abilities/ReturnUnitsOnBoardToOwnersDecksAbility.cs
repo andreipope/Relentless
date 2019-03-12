@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             // implement animation
-            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.LibraryCard, unit.Card.LibraryCard, unit.OwnerPlayer));
+            unit.OwnerPlayer.AddCardToDeck(new WorkingCard(unit.Card.Prototype, unit.Card.Prototype, unit.OwnerPlayer));
             unit.MoveUnitFromBoardToDeck();
         }
     }

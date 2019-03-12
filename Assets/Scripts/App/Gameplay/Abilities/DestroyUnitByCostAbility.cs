@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
 
                 WorkingCard card = BoardSpell?.Card;
 
-                if(card != null && card.LibraryCard.MouldId == TorchCardId)
+                if(card != null && card.Prototype.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }

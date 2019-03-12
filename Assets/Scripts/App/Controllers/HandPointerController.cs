@@ -195,14 +195,14 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialObjectOwner.PlayerBattleframe:
                     if (tutorialObjectIdStepOwner != 0)
                     {
-                        BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                             _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner)
                                                                             .ToLowerInvariant());
                         if (unit == null && additionalObjectIdOwners != null)
                         {
                             foreach (int id in additionalObjectIdOwners)
                             {
-                                unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                                unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                                         _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                         .ToLowerInvariant());
                                 if (unit != null)
@@ -219,11 +219,11 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.TutorialObjectOwner.PlayerCardInHand:
-                    BoardCard boardCard = null;
+                    BoardCardView boardCard = null;
                     if (tutorialObjectIdStepOwner != 0)
                     {
                         boardCard = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards
-                            .FirstOrDefault(card => card.WorkingCard.TutorialObjectId == tutorialObjectIdStepOwner);
+                            .FirstOrDefault(card => card.BoardUnitModel.Card.TutorialObjectId == tutorialObjectIdStepOwner);
                     }
                     else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
                     {
@@ -245,14 +245,14 @@ namespace Loom.ZombieBattleground
             
             if(targetTutorialObjectId != 0)
             {
-                BoardUnitView unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                BoardUnitView unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId)
                                                                                 .ToLowerInvariant());
                 if (unit == null && additionalObjectIdTargets != null)
                 {
                     foreach (int id in additionalObjectIdTargets)
                     {
-                        unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
                         if (unit != null)

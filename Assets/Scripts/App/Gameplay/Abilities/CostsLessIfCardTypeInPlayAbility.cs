@@ -43,18 +43,18 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
             {
-                if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
+                if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType).Count > 0)
                 {
                     gooCost = -Mathf.Abs(Value);
                 }
             }
             else
             {
-                gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count * Value;
+                gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType).Count * Value;
             }
 
             CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
-                MainWorkingCard.LibraryCard.Cost + gooCost, BoardCard);
+                MainWorkingCard.Prototype.Cost + gooCost, boardCardView);
         }
 
         private void CardPlayedHandler(WorkingCard card, int position)
