@@ -635,9 +635,14 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnitView> units = _battlegroundController.GetTargetsByInstanceId(targets)
-                .Cast<BoardUnitModel>()
-                .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
+            List<BoardUnitView> units = new List<BoardUnitView>();
+            foreach (BoardObject target in _battlegroundController.GetTargetsByInstanceId(targets))
+            {
+                if (target != null && target is BoardUnitModel unit)
+                {
+                    units.Add(_battlegroundController.GetBoardUnitViewByModel(unit));
+                }
+            }
 
             BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
             if (boardUnitModel == null)
