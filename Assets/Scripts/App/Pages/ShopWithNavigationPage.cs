@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
 
         private FiatPlasmaManager _fiatPlasmaManager;
         
-        event Action _finishRequestPack;
+        private Action _finishRequestPack;
 
         public void InitPurchaseLogic()
         {
@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
             #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _finishRequestPack += OnFinishRequestPack;
+            _finishRequestPack = OnFinishRequestPack;
             #endif
         }
         
@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground
         private async void OnFinishRequestPack()
         {
             Debug.Log("SUCCESSFULLY REQUEST for packs");
-            _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
+            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s)");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
@@ -386,15 +386,14 @@ namespace Loom.ZombieBattleground
                 Debug.Log($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
                 Debug.Log($"productReceipt.transactionID: {productReceipt.transactionID}");
 
-                return productReceipt.transactionID;
-                
-                AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
-                if (null != apple) {
+                if (productReceipt is AppleInAppPurchaseReceipt apple) {
                     Debug.Log($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
                     Debug.Log($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
                     Debug.Log($"apple.cancellationDate: {apple.cancellationDate}");
                     Debug.Log($"apple.quantity: {apple.quantity}");
                 }
+
+                return productReceipt.transactionID;
             }
             return "";
         }

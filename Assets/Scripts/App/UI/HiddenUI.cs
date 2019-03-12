@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using CodeStage.AdvancedFPSCounter;
@@ -100,37 +100,37 @@ namespace Loom.ZombieBattleground
 
         public void DumpState()
         {
-            Protobuf.GameState currentGameState = null;
             try
             {
-                currentGameState = BackendCommunication.GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
-            }
-            catch(Exception exception)
-            {
-                return;
-            }
+                Protobuf.GameState currentGameState = BackendCommunication.GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(true);
 
-            uint variation = 0;
-            string fileName= String.Empty;
-            string filePath = String.Empty;
+                uint variation = 0;
+                string fileName = String.Empty;
+                string filePath = String.Empty;
 
-            bool fileCreated = false;
-            while (!fileCreated)
-            {
-                fileName = "DumpState_" + currentGameState.Id + "_" + variation + ".json";
-                filePath = GameClient.Get<IDataManager>().GetPersistentDataPath(fileName);
-
-                if (!File.Exists(filePath))
+                bool fileCreated = false;
+                while (!fileCreated)
                 {
-                    File.Create(filePath).Close();
-                    fileCreated = true;
+                    fileName = "DumpState_" + currentGameState.Id + "_" + variation + ".json";
+                    filePath = GameClient.Get<IDataManager>().GetPersistentDataPath(fileName);
+
+                    if (!File.Exists(filePath))
+                    {
+                        File.Create(filePath).Close();
+                        fileCreated = true;
+                    }
+                    else
+                    {
+                        variation++;
+                    }
                 }
-                else
-                {
-                    variation++;
-                }
+
+                File.WriteAllText(filePath, JsonFormatter.Default.Format(currentGameState));
             }
-            File.WriteAllText(filePath, JsonFormatter.Default.Format(currentGameState));
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
 
         #endregion

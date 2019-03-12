@@ -155,6 +155,8 @@ namespace Loom.ZombieBattleground
             _inputController.DragOnBoardObjectEvent += UnitSelectedEventHandler;
             _inputController.UnitDeselectedEvent += UnitDeselectedEventHandler;
 
+            SetObjectInfo();
+
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
@@ -192,19 +194,17 @@ namespace Loom.ZombieBattleground
             GameObject = overrideObject;
         }
 
-        public void SetObjectInfo(WorkingCard card)
+        private void SetObjectInfo()
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
-            Model.SetObjectInfo(card);
+            Enumerators.SetType setType = _cardsController.GetSetOfCard(Model.Card.Prototype);
+            string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
 
-            Enumerators.SetType setType = _cardsController.GetSetOfCard(card.LibraryCard);
-            string rank = Model.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
+            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
 
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.LibraryCard.Picture.ToLowerInvariant()}");
-
-            _pictureSprite.transform.localPosition = (Vector3)Model.Card.LibraryCard.CardViewInfo.Position;
-            _pictureSprite.transform.localScale = (Vector3)Model.Card.LibraryCard.CardViewInfo.Scale;
+            _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.CardViewInfo.Position;
+            _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.CardViewInfo.Scale;
 
             _attackText.text = Model.CurrentDamage.ToString();
             _healthText.text = Model.CurrentHp.ToString();
@@ -266,7 +266,7 @@ namespace Loom.ZombieBattleground
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
 
-            if(card.Owner.IsLocalPlayer)
+            if(Model.Card.Owner.IsLocalPlayer)
             {
                 PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
@@ -560,32 +560,32 @@ namespace Loom.ZombieBattleground
 
             if (!_ignoreArrivalEndEvents)
             {
-                if (Model.Card.LibraryCard.CardRank == Enumerators.CardRank.COMMANDER)
+                if (Model.Card.Prototype.CardRank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
 
-                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "1",
+                    Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "1",
                     Constants.ZombiesSoundVolume, false, true);
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "2",
+                    Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay + "2",
                     Constants.ZombiesSoundVolume / 2f, false, true);
                 }
                 else
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
 
-                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
+                    Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
                     false, true);
                 }
 
 
                 // FIXME: WTF we have logic based on card name?
-                if (Model.Card.LibraryCard.Name.Equals("Freezzee"))
+                if (Model.Card.Prototype.Name.Equals("Freezzee"))
                 {
                     IReadOnlyList<BoardUnitView> freezzees =
                         Model
                             .GetEnemyUnitsList(Model)
-                            .FindAll(x => x.Model.Card.LibraryCard.MouldId == Model.Card.LibraryCard.MouldId);
+                            .FindAll(x => x.Model.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
 
                     if (freezzees.Count > 0)
                     {
@@ -819,7 +819,7 @@ namespace Loom.ZombieBattleground
 
                 _soundManager.StopPlaying(Enumerators.SoundType.CARDS);
                 _soundManager.PlaySound(Enumerators.SoundType.CARDS,
-                    Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
+                    Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundAttack, Constants.ZombiesSoundVolume,
                     false, true);
             }
         }
@@ -1038,7 +1038,7 @@ namespace Loom.ZombieBattleground
             if (Model.Card == null)
                 return;
 
-            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.LibraryCard.Name);
+            DebugCardInfoDrawer.Draw(GameObject.transform.position, Model.Card.InstanceId.Id, Model.Card.Prototype.Name);
         }
 #endif
     }

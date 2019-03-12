@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Test
         private float _waitAmount;
         private bool _waitUnscaledTime;
 
-        public BoardCard CurrentSpellCard;
+        public BoardCardView CurrentSpellCard;
 
         private readonly Random _random = new Random();
 
@@ -1116,25 +1116,25 @@ namespace Loom.ZombieBattleground.Test
 
             if (!skipEntryAbilities)
             {
-                if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0 && !HasChoosableAbilities(card.LibraryCard))
+                if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0 && !HasChoosableAbilities(card.Prototype))
                 {
                     needTargetForAbility =
-                        card.LibraryCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        card.Prototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
                 }
             }
 
-            switch (card.LibraryCard.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.WorkingCard.Equals(card));
-                        Assert.NotNull(boardCard, $"Card {card} not found in local player hand");
-                        Assert.True(boardCard.CanBePlayed(boardCard.WorkingCard.Owner), "boardCard.CanBePlayed(boardCard.WorkingCard.Owner)");
+                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel.Card == card);
+                        Assert.NotNull(boardCardView, $"Card {card} not found in local player hand");
+                        Assert.True(boardCardView.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner), "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCard,
-                            boardCard.HandBoardCard,
+                            boardCardView,
+                            boardCardView.HandBoardCard,
                             playCardOnBoard =>
                             {
                                 PlayerMove playerMove = new PlayerMove(Enumerators.PlayerActionType.PlayCardOnBoard, playCardOnBoard);
@@ -1178,11 +1178,11 @@ namespace Loom.ZombieBattleground.Test
 
                     if (_player == Enumerators.MatchPlayer.CurrentPlayer)
                     {
-                        BoardCard boardCard = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard.Equals(card));
+                        BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == card);
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
-                            boardCard,
-                            boardCard.HandBoardCard,
+                            boardCardView,
+                            boardCardView.HandBoardCard,
                             playCardOnBoard =>
                             {
                                 //todo: handle abilities here
@@ -1203,7 +1203,7 @@ namespace Loom.ZombieBattleground.Test
                     break;
             }
 
-            _testBroker.GetPlayer(_player).CurrentGoo -= card.LibraryCard.Cost;
+            _testBroker.GetPlayer(_player).CurrentGoo -= card.Prototype.Cost;
 
             await new WaitForUpdate();
         }
@@ -1230,17 +1230,16 @@ namespace Loom.ZombieBattleground.Test
             if (workingCard == null || card == null)
                 return;
 
-            switch (card.LibraryCard.CardKind)
+            switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                 {
-                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(), GameObject.Find("OpponentBoard").transform);
+                    BoardUnitView boardUnitViewElement = new BoardUnitView(new BoardUnitModel(workingCard), GameObject.Find("OpponentBoard").transform);
                     GameObject boardUnit = boardUnitViewElement.GameObject;
                     boardUnit.tag = SRTags.OpponentOwned;
                     boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
-                    boardUnitViewElement.Model.OwnerPlayer = card.Owner;
-                    boardUnitViewElement.Model.TutorialObjectId = card.TutorialObjectId;
-                    boardUnitViewElement.SetObjectInfo(workingCard);
+                    boardUnitViewElement.Model.Card.Owner = card.Owner;
+                    boardUnitViewElement.Model.Card.TutorialObjectId = card.TutorialObjectId;
                     _battlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitViewElement);
                     _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitViewElement);
 
@@ -1259,18 +1258,18 @@ namespace Loom.ZombieBattleground.Test
                         {
                             bool createTargetArrow = false;
 
-                            if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                            if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
                             {
                                 createTargetArrow =
                                     _abilitiesController.IsAbilityCanActivateTargetAtStart(
-                                        card.LibraryCard.Abilities[0]);
+                                        card.Prototype.Abilities[0]);
                             }
 
                             if (target != null)
                             {
                                 Action callback = () =>
                                 {
-                                    _abilitiesController.CallAbility(card.LibraryCard,
+                                    _abilitiesController.CallAbility(card.Prototype,
                                         null,
                                         workingCard,
                                         Enumerators.CardKind.CREATURE,
@@ -1288,7 +1287,7 @@ namespace Loom.ZombieBattleground.Test
                             }
                             else
                             {
-                                _abilitiesController.CallAbility(card.LibraryCard,
+                                _abilitiesController.CallAbility(card.Prototype,
                                     null,
                                     workingCard,
                                     Enumerators.CardKind.CREATURE,
@@ -1308,7 +1307,7 @@ namespace Loom.ZombieBattleground.Test
 
                     CurrentSpellCard = new SpellBoardCard(spellCard);
 
-                    CurrentSpellCard.Init(workingCard);
+                    CurrentSpellCard.Init(workingCard.Prototype);
                     CurrentSpellCard.SetHighlightingEnabled(false);
 
                     BoardSpell boardSpell = new BoardSpell(spellCard, workingCard);
@@ -1317,17 +1316,17 @@ namespace Loom.ZombieBattleground.Test
 
                     bool createTargetArrow = false;
 
-                    if (card.LibraryCard.Abilities != null && card.LibraryCard.Abilities.Count > 0)
+                    if (card.Prototype.Abilities != null && card.Prototype.Abilities.Count > 0)
                     {
                         createTargetArrow =
-                            _abilitiesController.IsAbilityCanActivateTargetAtStart(card.LibraryCard.Abilities[0]);
+                            _abilitiesController.IsAbilityCanActivateTargetAtStart(card.Prototype.Abilities[0]);
                     }
 
                     if (target != null)
                     {
                         Action callback = () =>
                         {
-                            _abilitiesController.CallAbility(card.LibraryCard,
+                            _abilitiesController.CallAbility(card.Prototype,
                                 null,
                                 workingCard,
                                 Enumerators.CardKind.SPELL,
@@ -1346,7 +1345,7 @@ namespace Loom.ZombieBattleground.Test
                     }
                     else
                     {
-                        _abilitiesController.CallAbility(card.LibraryCard,
+                        _abilitiesController.CallAbility(card.Prototype,
                             null,
                             workingCard,
                             Enumerators.CardKind.SPELL,

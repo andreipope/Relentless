@@ -24,8 +24,6 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _text;
 
-        public event Action ConfirmationReceived;
-
         private ButtonShiftingContent _gotItButton;
 
         public GameObject Self { get; private set; }

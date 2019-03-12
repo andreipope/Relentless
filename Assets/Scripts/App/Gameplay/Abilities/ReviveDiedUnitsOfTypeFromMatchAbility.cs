@@ -34,13 +34,13 @@ namespace Loom.ZombieBattleground
 
             List<WorkingCard> cards = new List<WorkingCard>();
             cards.AddRange(GameplayManager.CurrentPlayer.BoardCards
-                    .FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType)
+                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
                     .Select(boardCard => boardCard.Model.Card));
             cards.AddRange(GameplayManager.CurrentPlayer.CardsInHand
-                    .FindAll(x => x.LibraryCard.CardSetType == SetType));
+                    .FindAll(x => x.Prototype.CardSetType == SetType));
 
             IReadOnlyList<WorkingCard> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(unit => unit.LibraryCard.CardSetType == SetType &&
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
                     !cards.Exists(card => card.InstanceId == unit.InstanceId));
 
             foreach (WorkingCard unit in units)
@@ -48,17 +48,18 @@ namespace Loom.ZombieBattleground
                 ReviveUnit(unit);
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
             cards.Clear();
             cards.AddRange(GameplayManager.OpponentPlayer.BoardCards
-                    .FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType)
+                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
                     .Select(boardCard => boardCard.Model.Card));
             cards.AddRange(GameplayManager.OpponentPlayer.CardsInHand
-                    .FindAll(x => x.LibraryCard.CardSetType == SetType));
+                    .FindAll(x => x.Prototype.CardSetType == SetType));
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(unit => unit.LibraryCard.CardSetType == SetType &&
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
                     !cards.Exists(card => card.InstanceId == unit.InstanceId));
+
 
             foreach (WorkingCard unit in units)
             {
@@ -75,9 +76,9 @@ namespace Loom.ZombieBattleground
             if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card libraryCard = new Card(workingCard.LibraryCard);
+            Card prototype = new Card(workingCard.Prototype);
 
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, playerOwner);
+            WorkingCard card = new WorkingCard(prototype, prototype, playerOwner);
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);
