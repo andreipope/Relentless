@@ -91,7 +91,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             try
             {
-                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
+                DefaultDAppChainClientCallExecutor chainClientCallExecutor =
+                    new DefaultDAppChainClientCallExecutor(new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration
+                    {
+                        CallTimeout = 10000,
+                        StaticCallTimeout = 10000
+                    }));
+                await _backendFacade.CreateContract(UserDataModel.PrivateKey, chainClientCallExecutor: chainClientCallExecutor);
                 await _backendFacade.SignUp(UserDataModel.UserId);
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
