@@ -80,10 +80,10 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
+                        _targets.AddRange(opponent.CardsOnBoard);
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                        _targets.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         _targets.Add(opponent);

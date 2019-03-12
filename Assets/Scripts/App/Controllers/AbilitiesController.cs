@@ -308,8 +308,8 @@ namespace Loom.ZombieBattleground
                     {
                         IReadOnlyList<BoardUnitView> units =
                             player.BoardCards.FindAll(x =>
-                                x.Model.InitialUnitType == ability.TargetCardType &&
-                                x.Model.UnitStatus == ability.TargetUnitStatusType);
+                                x.InitialUnitType == ability.TargetCardType &&
+                                x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
@@ -319,8 +319,8 @@ namespace Loom.ZombieBattleground
                     {
                         IReadOnlyList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x =>
-                                x.Model.InitialUnitType == ability.TargetCardType &&
-                                x.Model.UnitStatus == ability.TargetUnitStatusType);
+                                x.InitialUnitType == ability.TargetCardType &&
+                                x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
                             return true;
 
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
-                            player.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
+                            player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -363,7 +363,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
-                            opponent.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
+                            opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -380,8 +380,8 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialUnitFactionOnMainBoard(BoardUnitModel boardUnitModel, AbilityData ability)
         {
-            if (boardUnitModel.Owner.BoardCards.
-                FindAll(x => x.Model.Card.Prototype.CardSetType == ability.TargetSetType && x.Model != boardUnitModel).Count > 0)
+            if (boardUnitModel.Owner.CardsOnBoard.
+                FindAll(x => x.Card.Prototype.CardSetType == ability.TargetSetType && x != boardUnitModel).Count > 0)
                 return true;
 
             return false;
@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
                                            boardUnitModel.Owner.CardsOnBoard.Remove(card.BoardUnitModel);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
                                            BoardUnitView boardCardUnitView = boardUnitModel.Owner.BoardCards.FirstOrDefault(boardCardView =>
-                                               boardCardView.Model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
+                                               boardCardView.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);
                                            if (boardCardUnitView != null)
                                            {
                                                boardUnitModel.Owner.BoardCards.Remove(boardCardUnitView);

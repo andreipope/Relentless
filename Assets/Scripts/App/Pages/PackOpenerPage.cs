@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground
                     if (hitObject == null)
                         return;
                     
-                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                    for (int i = 0; i < _createdCardsOnBoard.Count; i++)
                     {
                         if (hitObject == _createdBoardCards[i].GameObject)
                         {
@@ -893,7 +893,7 @@ namespace Loom.ZombieBattleground
             _buttonCollect.gameObject.SetActive(false);
             _createdHighlightingVFXItem.ChangeState(false);
             
-            int amount = _createdBoardCards.Count;
+            int amount = _createdCardsOnBoard.Count;
             int lastIndex = amount - 1;
             float delayOffset = 0.1f;
             float moveDuration = 0.4f;

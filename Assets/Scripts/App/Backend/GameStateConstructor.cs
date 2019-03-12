@@ -72,8 +72,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CardsInPlay =
                 {
                     player.CardsOnBoard
-                        .Concat(player.BoardCards.Select(card => card.Model))
-                        .Distinct()
                         .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },

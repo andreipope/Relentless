@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+                _units = PlayerCallerOfAbility.CardsOnBoard.ToList();
             }
 
             foreach (BoardUnitModel unit in _units)

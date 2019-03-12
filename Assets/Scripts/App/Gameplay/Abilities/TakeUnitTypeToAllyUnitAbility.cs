@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies;
 
-                        allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                        allies = PlayerCallerOfAbility.CardsOnBoard
                         .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead)
                         .ToList();
 
@@ -87,9 +87,11 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner &&
-                                                               !unit.Model.IsDead &&
-                                                               unit.Model.CurrentHp > 0).Count() == 0)
+                    if (PlayerCallerOfAbility.CardsOnBoard.Where(
+                            unit => unit != AbilityUnitOwner &&
+                                !unit.IsDead &&
+                                unit.CurrentHp > 0)
+                        .Count() == 0)
                     {
                         TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
@@ -102,7 +104,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
                                    unit.Card.Prototype.CardSetType == SetType &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
@@ -122,7 +124,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.CardSetType == SetType &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();

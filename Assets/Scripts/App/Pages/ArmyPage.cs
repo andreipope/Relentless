@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
                             {
                                 if (hit.collider != null)
                                 {
-                                    for (int i = 0; i < _createdBoardCards.Count; i++)
+                                    for (int i = 0; i < _createdCardsOnBoard.Count; i++)
                                     {
                                         if (hit.collider.gameObject == _createdBoardCards[i].GameObject)
                                         {

@@ -172,8 +172,7 @@ namespace Loom.ZombieBattleground.Test
         {
             BoardUnitModel boardUnitModel =
                 player
-                .BoardCards
-                .Select(boardCardView => boardCardView.Model)
+                .CardsOnBoard
                 .Concat(player.CardsOnBoard)
                 .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 

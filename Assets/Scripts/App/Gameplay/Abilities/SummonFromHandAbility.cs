@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+            if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                 return;
 
             IReadOnlyList<BoardCardView> cards = BattlegroundController.PlayerHandCards.FindAll(
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < cards.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards.Count >= Constants.MaxBoardUnits)
+                if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                     break;
 
                 PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref TargetEffects, ref boardCards, true);

@@ -76,10 +76,10 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.Prototype.CardSetType == SetType));
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Card.Prototype.CardSetType == SetType));
                         break;
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.Prototype.CardSetType == SetType));
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Card.Prototype.CardSetType == SetType));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);

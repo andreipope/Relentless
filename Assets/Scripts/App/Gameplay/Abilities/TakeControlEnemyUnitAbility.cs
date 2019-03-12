@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in units)
             {
-                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
                 _movedUnits.Add(unit);

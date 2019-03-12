@@ -1113,8 +1113,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().BoardCards.Count);
                     Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().BoardCards.Count);
 
-                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 10).Count);
-                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 10).Count);
+                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Card.Prototype.MouldId == 10).Count);
+                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Card.Prototype.MouldId == 10).Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

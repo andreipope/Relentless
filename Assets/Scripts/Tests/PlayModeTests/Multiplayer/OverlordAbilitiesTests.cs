@@ -178,10 +178,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.Model.InstanceId == playerPuffer3Id));
-                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.Model.InstanceId == playerPufferId));
-                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.Model.InstanceId == opponentPuffer2Id));
-                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.Model.InstanceId == opponentPuffer3Id));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.InstanceId == playerPuffer3Id));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.InstanceId == playerPufferId));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.InstanceId == opponentPuffer2Id));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.InstanceId == opponentPuffer3Id));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -421,8 +421,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.Model.InstanceId == playerPuffer3Id));
-                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.Model.InstanceId == opponentPuffer2Id));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.BoardCards.Select(card => card.InstanceId == playerPuffer3Id));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.BoardCards.Select(card => card.InstanceId == opponentPuffer2Id));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
                     if (filteredCards.Count == 0)
                         continue;
 
-                    if (playerOwner.BoardCards.Count < Constants.MaxBoardUnits) 
+                    if (playerOwner.CardsOnBoard.Count < Constants.MaxBoardUnits)
                     {
                         boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
                         PutCardFromDeckToBoard(playerOwner, boardCardView, ref TargetEffects, ref boardCards, true);

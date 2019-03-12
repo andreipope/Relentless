@@ -122,11 +122,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
                         _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                            x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                         _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                            x.TutorialObjectId == ownerId);
                         break;
                     default: break;
                 }

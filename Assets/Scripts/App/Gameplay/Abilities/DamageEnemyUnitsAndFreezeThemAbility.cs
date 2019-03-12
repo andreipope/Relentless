@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        _targets.AddRange(opponent.BoardCards.Select((x) => x.Model).ToList());
+                        _targets.AddRange(opponent.CardsOnBoard);
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
                         _targets.Add(opponent);

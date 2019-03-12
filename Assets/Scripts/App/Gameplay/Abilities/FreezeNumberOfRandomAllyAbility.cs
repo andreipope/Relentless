@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                _allies.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                 _allies.Remove(AbilityUnitOwner);
                 _allies.Add(PlayerCallerOfAbility);
 

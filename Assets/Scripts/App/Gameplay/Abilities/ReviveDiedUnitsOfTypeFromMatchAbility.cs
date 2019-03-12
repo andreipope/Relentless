@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
                 GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
             IReadOnlyList<BoardUnitView> playerBoardCards =
-                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
+                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType);
 
             foreach (BoardUnitModel unit in units)
             {
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
             units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
             IReadOnlyList<BoardUnitView> opponentBoardCards =
-                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
+                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Card.Prototype.CardSetType == SetType);
 
             foreach (BoardUnitModel unit in units)
             {

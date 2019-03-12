@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            });
                            player.LetsThink(2);
                            player.AssertInQueue(() => {
-                                Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 251).Count > 0);
+                                Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Card.Prototype.MouldId == 251).Count > 0);
                            });
                        },
                        opponent =>
@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 10).Count > 0);
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Card.Prototype.MouldId == 10).Count > 0);
                 };
 
             await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -1160,7 +1160,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           playerUnitFromDeck = pvpTestContext.GetCurrentPlayer().BoardCards.FirstOrDefault(card => card.Model.InstanceId != playerDraggerId);
+                           playerUnitFromDeck = pvpTestContext.GetCurrentPlayer().BoardCards.FirstOrDefault(card => card.InstanceId != playerDraggerId);
                        },
                        player =>
                        {

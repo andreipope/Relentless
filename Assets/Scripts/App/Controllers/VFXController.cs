@@ -190,15 +190,14 @@ namespace Loom.ZombieBattleground
             if (prefab == null)
                 return;
 
-            Vector3 position = Vector3.zero;
-
+            Vector3 position;
             switch (target)
             {
                 case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case Player player:
                     position = player.AvatarObject.transform.position;

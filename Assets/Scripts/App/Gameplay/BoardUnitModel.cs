@@ -875,19 +875,19 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public IReadOnlyList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public IReadOnlyList<BoardUnitModel> GetEnemyUnitsList(BoardUnitModel unit)
         {
-            if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
+            if (_gameplayManager.CurrentPlayer.CardsOnBoard.Contains(unit))
             {
-                return _gameplayManager.OpponentPlayer.BoardCards;
+                return _gameplayManager.OpponentPlayer.CardsOnBoard;
             }
 
-            return _gameplayManager.CurrentPlayer.BoardCards;
+            return _gameplayManager.CurrentPlayer.CardsOnBoard;
         }
 
         public void RemoveUnitFromBoard()
         {
-            OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitViewByModel(this));
+            _battlegroundController.BoardUnitViews.Remove(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
             OwnerPlayer.RemoveCardFromBoard(this);
             OwnerPlayer.AddCardToGraveyard(this);
 

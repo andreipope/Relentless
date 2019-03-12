@@ -847,7 +847,7 @@ namespace Loom.ZombieBattleground
             int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
             int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
             List<BoardCardView> displayCardList = new List<BoardCardView>();
-            for( int i=0; i<_createdDeckBoardCards.Count; ++i)
+            for( int i=0; i<_createdDeckCardsOnBoard.Count; ++i)
             {
                 if(i >= startIndex && i < endIndex)
                 {
@@ -1043,7 +1043,7 @@ namespace Loom.ZombieBattleground
 
         private int GetDeckPageAmount()
         {
-            return Mathf.CeilToInt((float) _createdDeckBoardCards.Count / GetDeckCardAmountPerPage());
+            return Mathf.CeilToInt((float) _createdDeckCardsOnBoard.Count / GetDeckCardAmountPerPage());
         }
 
         private int GetCollectionPageAmount()

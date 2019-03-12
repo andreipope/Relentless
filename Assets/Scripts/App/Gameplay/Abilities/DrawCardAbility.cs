@@ -53,15 +53,15 @@ namespace Loom.ZombieBattleground
 
             if (UnitStatusType != Enumerators.UnitStatusType.NONE &&
                  PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
+                    .CardsOnBoard.FindAll(x => x.UnitStatus == UnitStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
             else if (SetType != Enumerators.SetType.NONE &&
-                (PlayerCallerOfAbility.BoardCards
-                    .FindAll(card => card.Model.Card.Prototype.CardSetType == SetType &&
-                        card.Model != AbilityUnitOwner &&
-                        card.Model.CurrentHp > 0 &&
-                        !card.Model.IsDead)
+                (PlayerCallerOfAbility.CardsOnBoard
+                    .FindAll(card => card.Card.Prototype.CardSetType == SetType &&
+                        card != AbilityUnitOwner &&
+                        card.CurrentHp > 0 &&
+                        !card.IsDead)
                     .Count <= 0)
                 )
                 return;

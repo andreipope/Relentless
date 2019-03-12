@@ -484,13 +484,12 @@ namespace Loom.ZombieBattleground
 
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
-            return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+            return BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(AbilityUnitOwner);
         }
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
-                .Select(x => x.Model).ToList()
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
                 .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
         }
 

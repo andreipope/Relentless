@@ -47,9 +47,9 @@ namespace Loom.ZombieBattleground
             Player opponent = GetOpponentOverlord();
 
             int targetIndex = -1;
-            for (int i = 0; i < opponent.BoardCards.Count; i++)
+            for (int i = 0; i < opponent.CardsOnBoard.Count; i++)
             {
-                if (opponent.BoardCards[i].Model == AbilityUnitOwner)
+                if (opponent.CardsOnBoard[i] == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -60,23 +60,23 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    TakeTypeToUnit(opponent.BoardCards[targetIndex - 1]);
+                    TakeTypeToUnit(opponent.CardsOnBoard[targetIndex - 1]);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = effectType,
-                        Target = opponent.BoardCards[targetIndex - 1]
+                        Target = opponent.CardsOnBoard[targetIndex - 1]
                     });
                 }
 
-                if (targetIndex + 1 < opponent.BoardCards.Count)
+                if (targetIndex + 1 < opponent.CardsOnBoard.Count)
                 {
-                    TakeTypeToUnit(opponent.BoardCards[targetIndex + 1]);
+                    TakeTypeToUnit(opponent.CardsOnBoard[targetIndex + 1]);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = effectType,
-                        Target = opponent.BoardCards[targetIndex + 1]
+                        Target = opponent.CardsOnBoard[targetIndex + 1]
                     });
                 }
             }
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitView unit)
+        private void TakeTypeToUnit(BoardUnitModel unit)
         {
             if (unit == null)
                 return;
@@ -107,10 +107,10 @@ namespace Loom.ZombieBattleground
             switch (CardType)
             {
                 case Enumerators.CardType.HEAVY:
-                    unit.Model.SetAsHeavyUnit();
+                    unit.SetAsHeavyUnit();
                     break;
                 case Enumerators.CardType.FERAL:
-                    unit.Model.SetAsFeralUnit();
+                    unit.SetAsFeralUnit();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardType), CardType, null);

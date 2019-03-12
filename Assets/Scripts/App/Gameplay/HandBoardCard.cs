@@ -161,7 +161,7 @@ public class HandBoardCard : OwnableBoardObject
         bool playable = !_canceledPlay &&
             CardView.CanBeBuyed(OwnerPlayer) &&
             (CardView.BoardUnitModel.Card.Prototype.CardKind != Enumerators.CardKind.CREATURE ||
-                OwnerPlayer.BoardCards.Count < OwnerPlayer.MaxCardsInPlay);
+                OwnerPlayer.CardsOnBoard.Count < OwnerPlayer.MaxCardsInPlay);
 
         if (playable)
         {
