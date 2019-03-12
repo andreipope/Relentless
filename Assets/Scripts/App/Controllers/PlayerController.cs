@@ -442,10 +442,10 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (!_gameplayManager.IsTutorial ||
+            if ((!_gameplayManager.IsTutorial ||
                      (_gameplayManager.IsTutorial &&
                      _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
-                     SpecificBattlegroundInfo.DisabledInitialization))
+                     SpecificBattlegroundInfo.DisabledInitialization)) && !_battlegroundController.CardsZoomed)
             {
                 _timerManager.StopTimer(SetStatusZoomingFalse);
                 _cardsZooming = true;
@@ -456,6 +456,27 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                if (_isPreviewHandCard)
+                {
+                    if (_topmostBoardCard != null && !_cardsZooming)
+                    {
+                        StopHandTimer();
+                        _battlegroundController.DestroyCardPreview();
+
+                        if (_boardArrowController.CurrentBoardArrow != null &&
+                            _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
+                        {
+                        }
+                        else
+                        {
+                            HandCardPreview(new object[]
+                            {
+                            _topmostBoardCard
+                            });
+                        }
+                    }
+                }
+
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
         }
@@ -491,50 +512,6 @@ namespace Loom.ZombieBattleground
             _selectedBoardUnitView = null;
 
             _battlegroundController.CurrentPreviewedCardId = InstanceId.Invalid;
-        }
-
-        private void CheckCardPreviewShow()
-        {
-            if (_isPreviewHandCard)
-            {
-                if (_topmostBoardCard != null && !_cardsZooming)
-                {
-                    StopHandTimer();
-                    _battlegroundController.DestroyCardPreview();
-
-                    if (_boardArrowController.CurrentBoardArrow != null &&
-                        _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
-                    {
-                    }
-                    else
-                    {
-                        HandCardPreview(new object[]
-                        {
-                            _topmostBoardCard
-                        });
-                    }
-                }
-            }
-            else
-            {
-                if (_selectedBoardUnitView != null && !_selectedBoardUnitView.Model.IsAttacking)
-                {
-                    StopHandTimer();
-                    _battlegroundController.DestroyCardPreview();
-
-                    if (_boardArrowController.CurrentBoardArrow != null &&
-                        _boardArrowController.CurrentBoardArrow is AbilityBoardArrow)
-                    {
-                    }
-                    else
-                    {
-                        HandCardPreview(new object[]
-                        {
-                            _selectedBoardUnitView
-                        });
-                    }
-                }
-            }
         }
 
         private void StopHandTimer()
