@@ -311,7 +311,7 @@ namespace Loom.ZombieBattleground
                             (x) =>
                             {
                                 DoActionByType(skill, targets, completeCallback);
-                                skill.SkillUsedAction(_targets);
+                                skill.SkillUsedAction(targets);
                             }, _isDirection);
 
                         if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
