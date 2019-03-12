@@ -30,11 +30,11 @@ namespace Loom.ZombieBattleground
             selfObject.SetActive(isActive);
         }
 
-        public void SetActiveCard(BoardCard card)
+        public void SetActiveCard(BoardCardView card)
         {
             _isFirstActive = true;
             ChangeState(true);
-            MouldId = card.LibraryCard.MouldId;
+            MouldId = card.BoardUnitModel.Card.Prototype.MouldId;
             selfObject.transform.position = card.Transform.position;
             selfObject.transform.localPosition -= Vector3.up * OFFSET;
         }

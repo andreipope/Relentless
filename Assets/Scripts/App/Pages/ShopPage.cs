@@ -104,8 +104,6 @@ namespace Loom.ZombieBattleground
         private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
         #endif       
 
-        event Action _finishRequestPack;
-
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();

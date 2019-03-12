@@ -32,10 +32,10 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             IReadOnlyList<WorkingCard> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
             UniquePositionedList<BoardUnitView> playerBoardCards =
-                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
             {
@@ -53,10 +53,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
 
             UniquePositionedList<BoardUnitView> opponentBoardCards =
-                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType);
+                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
 
             foreach (WorkingCard unit in units)
             {
@@ -84,9 +84,9 @@ namespace Loom.ZombieBattleground
             if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card libraryCard = new Card(workingCard.LibraryCard);
+            Card prototype = new Card(workingCard.Prototype);
 
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, playerOwner);
+            WorkingCard card = new WorkingCard(prototype, prototype, playerOwner);
             BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
 
             playerOwner.RemoveCardFromGraveyard(workingCard);

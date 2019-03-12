@@ -55,11 +55,13 @@ namespace Loom.ZombieBattleground
 
         public InstanceId InstanceId => Card.InstanceId;
 
+        public override Player OwnerPlayer => Card.Owner;
+
         public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
 
-        public int TutorialObjectId;
+        public int TutorialObjectId => Card.TutorialObjectId;
 
-        public BoardUnitModel()
+        public BoardUnitModel(WorkingCard card)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -87,9 +89,9 @@ namespace Loom.ZombieBattleground
 
             IsAllAbilitiesResolvedAtStart = true;
 
-            _gameplayManager.CanDoDragActions = false;
-
             LastAttackingSetType = Enumerators.SetType.NONE;
+
+            SetObjectInfo(card);
         }
 
         public event Action TurnStarted;
@@ -283,8 +285,8 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
-                            Card.LibraryCard.CardKind,
-                            Card.LibraryCard,
+                            Card.Prototype.CardKind,
+                            Card.Prototype,
                             OwnerPlayer
                             );
                     }
@@ -295,8 +297,8 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.LibraryCard.CardKind,
-                        Card.LibraryCard,
+                        Card.Prototype.CardKind,
+                        Card.Prototype,
                         OwnerPlayer
                         );
                     }
@@ -439,7 +441,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            InitialUnitType = Card.LibraryCard.CardType;
+            InitialUnitType = Card.Prototype.CardType;
 
             CardTypeChanged?.Invoke(InitialUnitType);
         }
@@ -471,12 +473,12 @@ namespace Loom.ZombieBattleground
             GameMechanicDescriptionsOnUnitChanged?.Invoke();
         }
 
-        public void SetObjectInfo(WorkingCard card)
+        private void SetObjectInfo(WorkingCard card)
         {
             Card = card;
 
-            CurrentDamage = card.LibraryCard.Damage;
-            CurrentHp = card.LibraryCard.Health;
+            CurrentDamage = card.Prototype.Damage;
+            CurrentHp = card.Prototype.Health;
 
             card.InstanceCard.Damage = CurrentDamage;
             card.InstanceCard.Health = CurrentHp;
@@ -487,7 +489,7 @@ namespace Loom.ZombieBattleground
             InitialDamage = CurrentDamage;
             InitialHp = CurrentHp;
 
-            InitialUnitType = Card.LibraryCard.CardType;
+            InitialUnitType = Card.Prototype.CardType;
 
             ClearUnitTypeEffects();
 
@@ -507,9 +509,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (Card.LibraryCard.Abilities != null)
+            if (Card.Prototype.Abilities != null)
             {
-                foreach (AbilityData ability in Card.LibraryCard.Abilities)
+                foreach (AbilityData ability in Card.Prototype.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescriptionType);
 
