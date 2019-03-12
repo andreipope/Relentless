@@ -68,14 +68,14 @@ class CZBTests(unittest.TestCase):
         # Override size: 1080x1920
         # Also it can only have just the first line if the device uses the physical size resolution
 
-        sub = subprocess.Popen(['adb','shell','wm','size'], shell=True,
+        sub = subprocess.Popen(['adb','shell','wm','size'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
         commant_output=sub.stdout.read()
         if('error:' in commant_output):
             print(commant_output)
         else:
-            splited_text=commant_output.split("\r\n")
+            splited_text=commant_output.split("\n")
             print(splited_text)
             if(len(splited_text)==3):
                 screen_size=splited_text[1].split(" ")[2]
