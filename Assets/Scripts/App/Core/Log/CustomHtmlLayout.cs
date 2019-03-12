@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground {
             font-weight: 600;
         }
 
-        .log-message-exception {
+        .log-message-stacktrace {
             display: none;
             margin-top: 0.5em;
         }
@@ -29,7 +29,7 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
     if (!result)
         return false;
 
-    var logException = row.cells[index].querySelector('.log-message-exception')
+    var logException = row.cells[index].querySelector('.log-message-stacktrace')
     if (logException != null) {
         result = (row.cellsText[index].length - logException.innerText.length) > maxTextLengthBeforeCollapse
     }
@@ -39,8 +39,8 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 
             //language=javascript
             CustomJavascriptAfterLoad = @"
-         var showExceptions = false
-        var logExceptions = $("".log-message-exception"")
+         var showStackTraces = false
+        var logStackTraces = $("".log-message-stacktrace"")
 
         var exceptionSwitchCheckbox = document.createElement('input')
         exceptionSwitchCheckbox.type = ""checkbox"";
@@ -49,28 +49,28 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 
         var exceptionSwitchCheckboxLabel = document.createElement('label')
         exceptionSwitchCheckboxLabel.htmlFor = exceptionSwitchCheckbox.id
-        exceptionSwitchCheckboxLabel.innerHTML = ""&nbsp;Show stacktraces"";
+        exceptionSwitchCheckboxLabel.innerHTML = ""&nbsp;Show stack traces"";
 
         filterInput[0].parentNode.insertBefore(exceptionSwitchCheckbox, filterInput[0].nextSibling)
         filterInput[0].parentNode.insertBefore(exceptionSwitchCheckboxLabel, exceptionSwitchCheckbox.nextSibling)
 
-        function setShowLogExceptions(show) {
+        function setShowLogStackTraces(show) {
             exceptionSwitchCheckbox.checked = show
             if (show) {
-                logExceptions.show()
+                logStackTraces.show()
             } else {
-                logExceptions.hide()
+                logStackTraces.hide()
             }
         }
 
         exceptionSwitchCheckbox.onchange = function() {
-            showExceptions = !showExceptions
+            showStackTraces = !showStackTraces
             logTable.hide()
-            setShowLogExceptions(showExceptions)
+            setShowLogStackTraces(showStackTraces)
             logTable.show()
         }
 
-        setShowLogExceptions(showExceptions)
+        setShowLogStackTraces(showStackTraces)
 ";
         }
 
@@ -110,7 +110,7 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
         {
             switch (GetPatternConverterName(patternConverter)) {
                 case "#":
-                    return "text-center";
+                    return "fit text-center";
                 default:
                     return base.GetLogItemHeaderCellClass(patternConverter);
             }
@@ -157,12 +157,13 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                     string exceptionString = loggingEvent.GetExceptionString();
                     if (!String.IsNullOrWhiteSpace(exceptionString))
                     {
-                        writer.WriteLine("");
-                        htmlWriter.WriteLine(exceptionString);
+                        writer.Write(@"<div class=""text-monospace small"">");
+                        htmlWriter.Write(exceptionString);
+                        writer.Write(@"</div>");
                     }
                     else
                     {
-                        writer.Write(@"<div class=""log-message-exception text-monospace small"">");
+                        writer.Write(@"<div class=""log-message-stacktrace text-monospace small"">");
                         htmlWriter.Write(GetStackTrace(loggingEvent.LocationInformation.StackFrames));
                         writer.Write(@"</div>");
                     }

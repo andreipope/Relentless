@@ -43,21 +43,21 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner.Card, owner);
+            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
             _reanimatedUnit.Model.IsReanimated = true;
 
-            if (owner.CardsInGraveyard.Contains(AbilityUnitOwner.Card))
+            if (owner.CardsInGraveyard.Contains(AbilityUnitOwner))
             {
-                owner.CardsInGraveyard.Remove(AbilityUnitOwner.Card);
+                owner.CardsInGraveyard.Remove(AbilityUnitOwner);
             }
 
-            owner.AddCardToBoard(AbilityUnitOwner.Card, ItemPosition.End);
+            owner.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
             owner.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
 
             if (owner.IsLocalPlayer)
             {
                 BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner.Card, owner);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {
@@ -67,9 +67,9 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(_reanimatedUnit);
         }
 
-        protected override void UnitHpChangedHandler()
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            base.UnitHpChangedHandler();
+            base.UnitHpChangedHandler(oldValue, newValue);
 
             if (AbilityUnitOwner.CurrentHp == 0 && !AbilityUnitOwner.IsReanimated)
             {
@@ -98,19 +98,16 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CanDoDragActions = true;
         }
 
-        private BoardUnitView CreateBoardUnit(WorkingCard card, Player owner)
+        private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
             GameObject playerBoard = owner.IsLocalPlayer ?
                 BattlegroundController.PlayerBoardObject :
                 BattlegroundController.OpponentBoardObject;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(), playerBoard.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(boardUnitModel, playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnitView.Model.OwnerPlayer = owner;
-            boardUnitView.SetObjectInfo(card);
-            boardUnitView.Model.TutorialObjectId = card.TutorialObjectId;
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {

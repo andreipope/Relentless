@@ -9,9 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
+using log4net.Core;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -285,6 +288,12 @@ namespace Loom.ZombieBattleground
 
         private void ShowLoadDataFailMessage(string msg)
         {
+            // Crash fast on CI
+            if (UnitTestDetector.IsRunningUnitTests)
+            {
+                throw new RpcClientException(msg,-1, null);
+            }
+
             _uiManager.HidePopup<LoginPopup>();
             _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
         }
@@ -441,7 +450,7 @@ namespace Loom.ZombieBattleground
             {
                 foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
 
-                if (foundCard == null || foundCard is default(Card))
+                if (foundCard == null)
                 {
                     CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
                     i--;

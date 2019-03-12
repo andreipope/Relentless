@@ -51,10 +51,14 @@ namespace Loom.ZombieBattleground
         bool IsButtonBlockedInTutorial(string name);
         bool CheckNextTutorial();
 
+        bool BlockAndReport(string buttonName);
+
         int GetIndexOfCurrentTutorial();
         List<Data.Card> GetCardForCardPack(int count);
         List<Data.Card> GetSpecificCardsBySet(Enumerators.Faction setType);
         Data.CollectionCardData GetCardData(string id);
+
+        bool CheckAvailableTooltipByOwnerId(int ownerId);
 
         event Action OnMenuStepUpdated;
     }

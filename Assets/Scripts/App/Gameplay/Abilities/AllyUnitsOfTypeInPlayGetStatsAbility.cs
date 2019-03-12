@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Model.Card.LibraryCard.Faction.Equals(SetType) && unit.Model != AbilityUnitOwner)
+                if (unit.Model.Card.Prototype.Faction.Equals(SetType) && unit.Model != AbilityUnitOwner)
                 {
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;

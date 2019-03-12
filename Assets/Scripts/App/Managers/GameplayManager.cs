@@ -126,10 +126,16 @@ namespace Loom.ZombieBattleground
                             switch (endGameType)
                             {
                                 case Enumerators.EndGameType.WIN:
-                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { true });
+                                    else
+                                        _uiManager.DrawPopup<YouWonPopup>();
                                     break;
                                 case Enumerators.EndGameType.LOSE:
-                                    _uiManager.DrawPopup<YouLosePopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { false });
+                                    else
+                                        _uiManager.DrawPopup<YouLosePopup>();
                                     break;
                                 case Enumerators.EndGameType.CANCEL:
                                     break;

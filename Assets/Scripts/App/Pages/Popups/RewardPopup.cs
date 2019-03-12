@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async void Show()
+        public void Show()
         {
             if (Self != null)
                 return;
@@ -128,12 +128,12 @@ namespace Loom.ZombieBattleground
             _rayBottom.DOColor(Color.white, 1f).SetEase(Ease.OutQuad);
         }
 
-        private async void OnClickPlayAgainButtonEventHandler()
+        private void OnClickPlayAgainButtonEventHandler()
         {
             _uiManager.HidePopup<RewardPopup>();
         }
 
-        private async void OnClickOpenPacksButtonEventHandler()
+        private void OnClickOpenPacksButtonEventHandler()
         {
             _uiManager.HidePopup<RewardPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Common.Enumerators.AppState.MAIN_MENU);

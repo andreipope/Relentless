@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground.Test
             barLog.Warn("achtung 1");
             barLog.Error("something awful!!1");
 
-            Debug.Log(stringWriter.ToString());
+            //Debug.Log(stringWriter.ToString());
 
 #if UNITY_EDITOR
             UnityEditor.EditorGUIUtility.systemCopyBuffer = stringWriter.ToString();

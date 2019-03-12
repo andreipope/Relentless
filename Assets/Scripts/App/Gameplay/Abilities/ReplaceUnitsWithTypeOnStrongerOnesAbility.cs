@@ -75,11 +75,11 @@ namespace Loom.ZombieBattleground
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.Faction == SetType));
+                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == SetType));
                         break;
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.LibraryCard.Faction == SetType));
+                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == SetType));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitView unit in _boardUnits)
                 {
                     unit.Model.OwnerPlayer.BoardCards.Remove(unit);
-                    unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model.Card);
+                    unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model);
 
                     unit.DisposeGameObject();
                 }
@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
                 foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
                 {
                     unitInfo.OldUnitView.Model.OwnerPlayer.BoardCards.Remove(unitInfo.OldUnitView);
-                    unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model.Card);
+                    unitInfo.OldUnitView.Model.OwnerPlayer.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
 
                     unitInfo.OldUnitView.DisposeGameObject();
                 }
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
 	                    OldUnitView = unit,
 	                    OwnerPlayer = unit.Model.OwnerPlayer,
 	                    Position = unit.Model.OwnerPlayer.BoardCards.IndexOf(unit),
-                        NewUnitCardTitle = unit.Model.Card.LibraryCard.Name
+                        NewUnitCardTitle = unit.Model.Card.Prototype.Name
 	                };
 
 	                _replaceUnitInfos.Add(replaceUnitInfo);

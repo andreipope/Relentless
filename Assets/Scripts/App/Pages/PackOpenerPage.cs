@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
         
         private Image _rightPanelLight, _leftPanelLight;
         
-        private List<BoardCard> _createdBoardCards;
+        private List<BoardCardView> _createdBoardCards;
         
         private List<GameObject> _createdCardsVFX;
         
@@ -81,8 +81,6 @@ namespace Loom.ZombieBattleground
 
         private int _selectedPackTypeIndex;
         
-        private bool _dataLoading = false;
-        
         private enum STATE
         {
             NONE,
@@ -92,9 +90,11 @@ namespace Loom.ZombieBattleground
         }
         
         private STATE _state;
-        
+
+#pragma warning disable 414
         private bool _isTransitioningState;
-        
+#pragma warning restore 414
+
         private bool _isWaitingForTapToReveal;
 
         private int _lastPackBalanceIdRequest;
@@ -107,7 +107,9 @@ namespace Loom.ZombieBattleground
         
         private const int MaxRequestRetryAttempt = 2;
 
-        private bool _isCollectedTutorialCards = false;
+#pragma warning disable 414
+        private bool _isCollectedTutorialCards;
+#pragma warning restore 414
         
         #region IUIElement
         
@@ -125,27 +127,17 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.StateChanging += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
             _cardInfoPopupHandler.StateChanged += () => ChangeStateCardInfoPopup(_cardInfoPopupHandler.IsStateChanging);
-            _createdBoardCards = new List<BoardCard>();
+            _createdBoardCards = new List<BoardCardView>();
             _cardsToDisplayQueqe = new List<Card>();
             _createdCardsVFX = new List<GameObject>();
             _cardsToReveal = new List<Transform>();
+            
+            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
+            _packBalanceAmounts = new int[packTypes.Length];
         }
         
-        public void Update()
+        public void  Update()
         {
-            if (!_dataLoading)
-            {
-                if (_backendDataControlMediator.UserDataModel != null)
-                    if (_backendDataControlMediator.UserDataModel.PrivateKey != null)
-                    {
-                        if (Constants.EnableShopPage)
-                        {
-                            RetrievePackBalanceAmount();
-                        }
-                        _dataLoading = true;
-                    }
-            }
-        
             if (_selfPage == null || !_selfPage.activeInHierarchy)
                 return;
             
@@ -247,15 +239,14 @@ namespace Loom.ZombieBattleground
             
             if(_tutorialManager.IsTutorial)
             {
-                if (!Constants.EnableShopPage) {
-                    Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-                    _packBalanceAmounts = new int[packTypes.Length];
-                }
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
-                _isCollectedTutorialCards = false;
             }
-            
+            else
+            {
+                RetrievePackBalanceAmount();
+            }
+
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
@@ -385,11 +376,11 @@ namespace Loom.ZombieBattleground
             for( int i=0; i<cards.Count; ++i)
             {
                 Card card = cards[i];
-                BoardCard boardCard = CreateCard(card, Vector3.up * 12f);
-                boardCard.Transform.parent = _cardPositions[i];
-                boardCard.Transform.localPosition = Vector3.zero;
-                boardCard.Transform.localRotation = Quaternion.identity;
-                _createdBoardCards.Add(boardCard);
+                BoardCardView boardCardView = CreateCard(card, Vector3.up * 12f);
+                boardCardView.Transform.parent = _cardPositions[i];
+                boardCardView.Transform.localPosition = Vector3.zero;
+                boardCardView.Transform.localRotation = Quaternion.identity;
+                _createdBoardCards.Add(boardCardView);
             }
         }
         
@@ -405,7 +396,7 @@ namespace Loom.ZombieBattleground
         {
             if (_createdBoardCards != null)
             {
-                foreach (BoardCard card in _createdBoardCards)
+                foreach (BoardCardView card in _createdBoardCards)
                 {
                     if (card != null)
                     {
@@ -454,9 +445,8 @@ namespace Loom.ZombieBattleground
         }
         
         public async Task RetrievePackBalanceAmount()
-        {            
+        {  
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-            _packBalanceAmounts = new int[packTypes.Length];
             for(int i=0; i<packTypes.Length;++i)
             {
                 await RetrievePackBalanceAmount(i);
@@ -482,19 +472,21 @@ namespace Loom.ZombieBattleground
                     _retryPackBalanceRequestCount = 0;
                     _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                    popup.ConfirmationReceived += RetryRequestPackBalance;
+                    popup.ConfirmationReceived += async x => await RetryRequestPackBalance(x);
                 }
                 else
                 {
-                    RetryRequestPackBalance(true);
+                    await RetryRequestPackBalance(true);
                 }
             }
         }
 
-        private void RetryRequestPackBalance(bool confirmRetry)
+        private async Task RetryRequestPackBalance(bool confirmRetry)
         {
-            if(confirmRetry)             
-                RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+            if (confirmRetry)
+            {
+                await RetrievePackBalanceAmount(_lastPackBalanceIdRequest);
+            }
         }
         
         private async Task RetriveCardsFromPack(int packTypeId)
@@ -519,11 +511,11 @@ namespace Loom.ZombieBattleground
                     _retryOpenPackRequestCount = 0;
                     _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
-                    popup.ConfirmationReceived += RetryRequestOpenPack;
+                    popup.ConfirmationReceived += async x => await RetryRequestOpenPack(x);
                 }
                 else
                 {
-                    RetryRequestOpenPack(true);
+                    await RetryRequestOpenPack(true);
                 }
             }
         }
@@ -532,19 +524,19 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.DrawPopup<LoadingFiatPopup>();
             _cardsToDisplayQueqe.Clear();
-
+            
             _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
-
+            
             _uiManager.HidePopup<LoadingFiatPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
         }
 
-        private void RetryRequestOpenPack(bool confirmRetry)
+        private async Task RetryRequestOpenPack(bool confirmRetry)
         {
             if (confirmRetry)
             {
-                RetriveCardsFromPack(_lastOpenPackIdRequest);
+                await RetriveCardsFromPack(_lastOpenPackIdRequest);
             }
             else
             {
@@ -565,19 +557,25 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-
                     ChangeState(STATE.CARD_EMERGED);
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);                   
                 }
             }
             else
             {
+                await RetrievePackBalanceAmount(_selectedPackTypeIndex);
+                SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
                 {
                     await RetriveCardsFromPack(_selectedPackTypeIndex);
                     
                     _packBalanceAmounts[_selectedPackTypeIndex]--;
                     _packToOpenAmount--;
+                }
+                else
+                {
+                    _cardsToDisplayQueqe.Clear();
+                    ChangeState(STATE.CARD_EMERGED);
                 }
             }    
         }
@@ -661,10 +659,10 @@ namespace Loom.ZombieBattleground
             });
         }
         
-        private void CreateCardVFX(BoardCard boardCard)
+        private void CreateCardVFX(BoardCardView boardCardView)
         {
             GameObject vfxPrefab;
-            switch(boardCard.LibraryCard.CardRank)
+            switch(boardCardView.BoardUnitModel.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;
@@ -683,7 +681,7 @@ namespace Loom.ZombieBattleground
             }
             
             GameObject vfxParent = new GameObject("VFX");
-            vfxParent.transform.parent = boardCard.GameObject.transform;
+            vfxParent.transform.parent = boardCardView.GameObject.transform;
             vfxParent.transform.localPosition = Vector3.zero;
             vfxParent.transform.localScale = Vector3.one;            
             
@@ -738,11 +736,11 @@ namespace Loom.ZombieBattleground
                 .OnComplete(
                 () =>
                 {
-                    foreach(BoardCard boardCard in _createdBoardCards)
+                    foreach(BoardCardView boardCardView in _createdBoardCards)
                     {
-                        if( boardCard.Transform == cardFace)
+                        if( boardCardView.Transform == cardFace)
                         {
-                            CreateCardVFX(boardCard);
+                            CreateCardVFX(boardCardView);
                             break;
                         }
                     }
@@ -780,7 +778,13 @@ namespace Loom.ZombieBattleground
             DestroyCreatedObject();
             if (_tutorialManager.IsTutorial)
             {
-                _uiManager.SetPage<MainMenuPage>();
+                if (Constants.EnableNewUI)
+                {
+                    GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HERO_SELECTION);
+                }
+                else
+                    _uiManager.SetPage<MainMenuPage>();
             }
             else
             {
@@ -860,12 +864,12 @@ namespace Loom.ZombieBattleground
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         
             if (_state == STATE.READY)
-            {
+            {    
                 SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
                 if (_packToOpenAmount <= 0)
                     return;
-
-                if (_tutorialManager.IsTutorial)
+                    
+                if(_tutorialManager.IsTutorial)
                 {
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackOpened);
                 }
@@ -1025,32 +1029,32 @@ namespace Loom.ZombieBattleground
         
         #region Util
         
-        private BoardCard CreateCard(IReadOnlyCard card, Vector3 worldPos)
+        private BoardCardView CreateCard(IReadOnlyCard card, Vector3 worldPos)
         {        
             GameObject go;
-            BoardCard boardCard;
+            BoardCardView boardCardView;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCardView = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCardView = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:                
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
-        
-            boardCard.Init(card);
-            boardCard.SetHighlightingEnabled(false);
-            boardCard.Transform.position = worldPos;
-            boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+
+            boardCardView.SetHighlightingEnabled(false);
+            boardCardView.Transform.position = worldPos;
+            boardCardView.Transform.localScale = Vector3.one * 0.32f * 0.72f;
+            boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
+            boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
-            return boardCard;        
+            return boardCardView;
         }
 
 #endregion

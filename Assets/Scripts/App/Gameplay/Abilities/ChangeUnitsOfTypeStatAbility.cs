@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private void Action()
         {
             UniquePositionedList<BoardUnitView> unitsOnBoard =
-                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.Faction.Equals(SetType));
+                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction.Equals(SetType));
 
             foreach (BoardUnitView unit in unitsOnBoard)
             {

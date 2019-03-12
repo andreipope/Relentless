@@ -49,10 +49,10 @@ namespace Loom.ZombieBattleground
                         switch (targetType)
                         {
                             case Enumerators.AbilityTarget.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.Faction == SetType));
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == SetType));
                                 break;
                             case Enumerators.AbilityTarget.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.Faction == SetType));
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == SetType));
                                 break;
                         }
                     }

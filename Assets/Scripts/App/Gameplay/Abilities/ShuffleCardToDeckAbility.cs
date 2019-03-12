@@ -31,9 +31,9 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitHpChangedHandler()
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            base.UnitHpChangedHandler();
+            base.UnitHpChangedHandler(oldValue, newValue);
 
             if (AbilityUnitOwner.CurrentHp <= 0) 
             {   
@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
             if (TargetTypes.Contains(Enumerators.AbilityTarget.PLAYER))
             {
                 // FIXME: doesn't this cause de-sync?
-                PlayerCallerOfAbility.AddCardToDeck(MainWorkingCard, true);
+                PlayerCallerOfAbility.AddCardToDeck(BoardUnitModel, true);
             }
             AbilityProcessingAction?.ForceActionDone();
         }
