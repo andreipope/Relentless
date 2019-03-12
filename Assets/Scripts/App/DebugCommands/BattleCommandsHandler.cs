@@ -113,10 +113,10 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(player, workingCard);
+            _cardsController.AddCardToHand(player, boardUnitModel);
         }
         else
         {
@@ -316,8 +316,8 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
-        _aiController.PlayCardOnBoard(workingCard, true);
+        BoardUnitModel boardUnitModel = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
+        _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -330,12 +330,12 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(opponentPlayer, workingCard);
-            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
-            _aiController.PlayCardOnBoard(workingCard, true);
+            _cardsController.AddCardToHand(opponentPlayer, boardUnitModel);
+            boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+            _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
         else
         {
@@ -416,10 +416,11 @@ static class BattleCommandsHandler
     {
         Card prototype = new Card(unit.Model.Card.Prototype);
         WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
-        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
+        BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard, ItemPosition.End);
+        player.RemoveCardFromGraveyard(unit.Model);
+        player.AddCardToBoard(boardUnitModel, ItemPosition.End);
         player.BoardCards.Insert(ItemPosition.End, newUnit);
         _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
 

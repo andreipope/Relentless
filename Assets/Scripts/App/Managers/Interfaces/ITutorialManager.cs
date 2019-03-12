@@ -56,6 +56,8 @@ namespace Loom.ZombieBattleground
         List<Data.Card> GetSpecificCardsBySet(Enumerators.SetType setType);
         Data.CollectionCardData GetCardData(string id);
 
+        bool CheckAvailableTooltipByOwnerId(int ownerId);
+
         event Action OnMenuStepUpdated;
     }
 }

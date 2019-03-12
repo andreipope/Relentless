@@ -299,22 +299,23 @@ namespace Loom.ZombieBattleground
 
                 GameObject go;
                 BoardCardView boardCardView;
+                BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
                 switch (card.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         go = Object.Instantiate(CardCreaturePrefab);
-                        boardCardView = new UnitBoardCard(go);
+                        boardCardView = new UnitBoardCard(go, boardUnitModel);
                         break;
                     case Enumerators.CardKind.SPELL:
                         go = Object.Instantiate(CardItemPrefab);
-                        boardCardView = new SpellBoardCard(go);
+                        boardCardView = new SpellBoardCard(go, boardUnitModel);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
                 }
 
-                int amount = cardData.Amount;
-                boardCardView.Init(card, amount);
+                boardCardView.SetAmount(cardData.Amount);
+                boardCardView.SetShowAmountEnabled(true);
                 boardCardView.SetHighlightingEnabled(false);
                 boardCardView.Transform.position = CardPositions[i % CardPositions.Count].position;
                 boardCardView.Transform.localScale = Vector3.one * 0.32f;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -651,18 +651,18 @@ namespace Loom.ZombieBattleground
             Sequence waitSeqence = DOTween.Sequence();
             waitSeqence.AppendInterval(.2f);
             waitSeqence.OnComplete(
-            ()=>
+            () =>
             {
                 _gooPoolAnimator.enabled = false;
-            });  
+            });
         }
         
         private void PlayCardsEmergeFromPoolAnimation()
         {
             _isTransitioningState = true;
             _gooPoolAnimator.enabled = true;
-            _gooPoolAnimator.Play("TubeAnim", 0, 0f);
-            
+            _gooPoolAnimator.Play("OpenCardPackAnim", 0, 0f);
+            _vignetteCollectCard.enabled = true;
             Sequence sequence = DOTween.Sequence();
             sequence.AppendInterval(3.05f);
             sequence.OnComplete(
@@ -676,9 +676,7 @@ namespace Loom.ZombieBattleground
                 {
                     _cardsToReveal.Add(cardPos.parent);
                 }
-                Vector3 pos = _cardsToReveal[0].position;
-                pos.y = _cardsToReveal[1].position.y;
-                _cardsToReveal[0].position = pos;
+
                 _isWaitingForTapToReveal = true;
             });
         }
@@ -1049,24 +1047,24 @@ namespace Loom.ZombieBattleground
         {        
             GameObject go;
             BoardCardView boardCard;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCard = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:                
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
         
-            boardCard.Init(card);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
-            boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;
+            boardCard.Transform.localScale = Vector3.one * 0.16f;
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             

@@ -34,9 +34,9 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardKind CardKind;
 
-        public IReadOnlyCard CardOwnerOfAbility;
+        public BoardUnitModel CardOwnerOfAbility => BoardUnitModel;
 
-        public WorkingCard MainWorkingCard;
+        public BoardUnitModel BoardUnitModel;
 
         public BoardUnitModel AbilityUnitOwner;
 
@@ -434,7 +434,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitHpChangedHandler()
+        protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
         }
 
@@ -511,9 +511,9 @@ namespace Loom.ZombieBattleground
 
         protected int GetAbilityIndex()
         {
-            int index = MainWorkingCard.Prototype.Abilities.IndexOf(AbilityData);
+            int index = BoardUnitModel.Card.Prototype.Abilities.IndexOf(AbilityData);
             if (index == -1)
-                throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
+                throw new Exception($"Ability {AbilityData} not found in card {BoardUnitModel}");
 
             return index;
         }
@@ -521,7 +521,7 @@ namespace Loom.ZombieBattleground
         protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
         {
             AbilitiesController.InvokeUseAbilityEvent(
-                MainWorkingCard,
+                BoardUnitModel,
                 AbilityData.AbilityType,
                 targets ?? new List<ParametrizedAbilityBoardObject>()
             );

@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCardView(GameObject selfObject)
+        public BoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -136,6 +136,52 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
 
+            BoardUnitModel = boardUnitModel;
+
+            NameText.text = BoardUnitModel.Card.Prototype.Name;
+            BodyText.text = BoardUnitModel.Card.Prototype.Description;
+            CostText.text = BoardUnitModel.Card.Prototype.Cost.ToString();
+
+            IsNewCard = true;
+
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), BoardUnitModel.Card.Prototype.CardRank);
+
+            string setName = BoardUnitModel.Card.Prototype.CardSetType.ToString();
+
+            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
+
+            if (!string.IsNullOrEmpty(BoardUnitModel.Card.Prototype.Frame))
+            {
+                frameName = "Images/Cards/Frames/" + BoardUnitModel.Card.Prototype.Frame;
+            }
+
+            BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
+            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{BoardUnitModel.Card.Prototype.Picture.ToLowerInvariant()}");
+
+            SetAmount(0);
+            SetShowAmountEnabled(false);
+            DistibuteCardObject.SetActive(false);
+
+            if (BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+            {
+                ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
+                ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
+
+                if (!InternalTools.IsTabletScreen())
+                {
+                    ParentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    ParentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
+
+                    ParentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
+                    ParentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
+                }
+            }
+
+            if (BoardUnitModel.Card.Owner != null)
+            {
+                BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
+            }
+
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
 #endif
@@ -155,80 +201,18 @@ namespace Loom.ZombieBattleground
 
         public HandBoardCard HandBoardCard { get; set; }
 
-        public int FuturePositionOnBoard = 0;
-
-        public virtual void Init(BoardUnitModel boardUnitModel)
+        public void SetAmount(int amount)
         {
-            BoardUnitModel = boardUnitModel;
-
-            NameText.text = BoardUnitModel.Card.Prototype.Name;
-            BodyText.text = BoardUnitModel.Card.Prototype.Description;
-            CostText.text = BoardUnitModel.Card.Prototype.Cost.ToString();
-
-            IsNewCard = true;
-
-            BoardUnitModel.Card.Owner.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
-
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), BoardUnitModel.Card.Prototype.CardRank);
-
-            string setName = BoardUnitModel.Card.Prototype.CardSetType.ToString();
-
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
-
-            if (!string.IsNullOrEmpty(BoardUnitModel.Card.Prototype.Frame))
-            {
-                frameName = "Images/Cards/Frames/" + BoardUnitModel.Card.Prototype.Frame;
-            }
-
-            BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{BoardUnitModel.Card.Prototype.Picture.ToLowerInvariant()}");
-
-            AmountText.transform.parent.gameObject.SetActive(false);
-            AmountTextForArmy.transform.parent.gameObject.SetActive(false);
-            DistibuteCardObject.SetActive(false);
-
-            if (BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
-            {
-                ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
-                ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
-
-                if (!InternalTools.IsTabletScreen())
-                {
-                    ParentOfLeftBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                    ParentOfLeftBlockOfCardInfo.transform.localPosition = new Vector3(10f, 6.8f, 0f);
-
-                    ParentOfRightBlockOfCardInfo.transform.localScale = new Vector3(.7f, .7f, .7f);
-                    ParentOfRightBlockOfCardInfo.transform.localPosition = new Vector3(17f, 6.8f, 0f);
-                }
-            }
-        }
-
-        public virtual void Init(IReadOnlyCard card, int amount = 0)
-        {
-            BoardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-
-            NameText.text = BoardUnitModel.Card.Prototype.Name;
-            BodyText.text = BoardUnitModel.Card.Prototype.Description;
             AmountText.text = amount.ToString();
-            CostText.text = BoardUnitModel.Card.Prototype.Cost.ToString();
-
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), card.CardRank);
-
-            string setName = BoardUnitModel.Card.Prototype.CardSetType.ToString();
-
-            string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
-
-            if (!string.IsNullOrEmpty(BoardUnitModel.Card.Prototype.Frame))
-            {
-                frameName = "Images/Cards/Frames/" + BoardUnitModel.Card.Prototype.Frame;
-            }
-
-            BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{card.Picture.ToLowerInvariant()}");
-
-            DistibuteCardObject.SetActive(false);
         }
+
+        public void SetShowAmountEnabled(bool show)
+        {
+            AmountText.transform.parent.gameObject.SetActive(show);
+            AmountTextForArmy.transform.parent.gameObject.SetActive(show);
+        }
+
+        public int FuturePositionOnBoard = 0;
 
         public void UpdateCardCost()
         {
