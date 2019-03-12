@@ -171,7 +171,7 @@ namespace Loom.ZombieBattleground
                }
                 else
                 {
-                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_empty");
                     _textSkillDescriptions[i].text = "No selected skill";
                 }
             }
@@ -357,6 +357,7 @@ namespace Loom.ZombieBattleground
                         _loadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/UI/Elements/DeckSelection/OverlordAbilityItem"), root, false);
 
+                _selfObject.SetActive(true);
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();
