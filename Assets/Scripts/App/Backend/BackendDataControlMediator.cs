@@ -94,8 +94,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 DefaultDAppChainClientCallExecutor chainClientCallExecutor =
                     new DefaultDAppChainClientCallExecutor(new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration
                     {
-                        CallTimeout = 10000,
-                        StaticCallTimeout = 10000
+                        CallTimeout = Constants.BackendCallTimeout,
+                        StaticCallTimeout = Constants.BackendCallTimeout
                     }));
                 await _backendFacade.CreateContract(UserDataModel.PrivateKey, chainClientCallExecutor: chainClientCallExecutor);
                 await _backendFacade.SignUp(UserDataModel.UserId);
