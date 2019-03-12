@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
@@ -131,6 +131,11 @@ namespace Loom.ZombieBattleground
 
         private void ButtonChangeModeHandler()
         {
+            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonChangeMode.name))
+            {
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+                return;
+            }
             _uiManager.DrawPopup<GameModePopup>();
         }
 
