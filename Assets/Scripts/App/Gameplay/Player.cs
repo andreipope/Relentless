@@ -139,6 +139,16 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:
+
+                    // TODO: REMOVE logs when issue will be fixed
+                    Log.Debug($"UserDataModel.UserId: {_backendDataControlMediator.UserDataModel.UserId}");
+                    Log.Debug($"isOpponent: {isOpponent}");
+
+                    foreach(var state in _pvpManager.InitialGameState.PlayerStates)
+                    {
+                        Log.Debug($"state.id: {state.Id}");
+                    }
+
                     InitialPvPPlayerState =
                         _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
@@ -146,6 +156,8 @@ namespace Loom.ZombieBattleground
                                     state.Id != _backendDataControlMediator.UserDataModel.UserId :
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
+
+                    Log.Debug($"InitialPvPPlayerState: {InitialPvPPlayerState}");
 
                     InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
                     MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;
@@ -225,6 +237,9 @@ namespace Loom.ZombieBattleground
             }
 
             SelfHero = _dataManager.CachedHeroesData.Heroes[heroId];
+
+            // TODO: REMOVE logs when issue will be fixed
+            Log.Debug($"SelfHero: {SelfHero}");
 
             InitialHp = _defense;
             BuffedHp = 0;
