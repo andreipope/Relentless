@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using System.IO;
 
 namespace Loom.ZombieBattleground
 {
@@ -369,11 +370,16 @@ namespace Loom.ZombieBattleground
                     break;
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                CollectionCardData cardData;
 
-                // hack !!!! CHECK IT!!!
-                if (cardData == null)
-                    continue;
+                if (_tutorialManager.IsTutorial)
+                {
+                    cardData = _tutorialManager.GetCardData(card.Name);
+                }
+                else
+                {
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                }
 
                 BoardCardView boardCard = CreateBoardCard
                 (
@@ -391,7 +397,7 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.SingleClickReceived += ()=>
+                multiPointerClickHandler.SingleClickReceived += () =>
                 {
                     BoardCardCollectionSingleClickHandler(boardCard);
                 };
@@ -908,7 +914,14 @@ namespace Loom.ZombieBattleground
         {
             ExcludeFilterDataWithAgainstSetType();
             _availableSetType = _cardFilterPopup.FilterData.GetFilterSetTypeList();
-            _currentCollectionSetTypeIndex = 0;
+            if (_tutorialManager.IsTutorial)
+            {
+                _currentCollectionSetTypeIndex = _availableSetType.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+            }
+            else
+            {
+                _currentCollectionSetTypeIndex = 0;
+            }
             _currentCollectionPage = 0;
             UpdateAvailableCollectionCards();
             LoadCollectionsCards();
@@ -923,7 +936,7 @@ namespace Loom.ZombieBattleground
             else
                 UpdateCollectionCardsByKeyword();
 
-            if(!CheckIfAnyCacheCollectionCardsExist())
+            if (!CheckIfAnyCacheCollectionCardsExist() && !_tutorialManager.IsTutorial)
             {
                 _myDeckPage.OpenAlertDialog("Sorry, no matches card found.");
                 ResetSearchAndFilterResult();
@@ -939,11 +952,25 @@ namespace Loom.ZombieBattleground
             allAvailableSetTypeList.Remove(againstSetType);
             foreach (Enumerators.SetType item in allAvailableSetTypeList)
             {
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
-                List<Card> cards = set.Cards.ToList();
+                List<Card> cards;
+
+                if (_tutorialManager.IsTutorial)
+                {
+                    cards = _tutorialManager.GetSpecificCardsBySet(item);
+                }
+                else
+                {
+                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
+                    cards = cards = set.Cards.ToList();
+                }
+
                 foreach (Card card in cards)
+                {
                     if (card.Name.ToLower().Contains(keyword))
+                    {
                         resultList.Add(card);
+                    }
+                }
             }
 
             UpdateCacheFilteredCardList(resultList);
@@ -955,8 +982,18 @@ namespace Loom.ZombieBattleground
             if (_availableSetType.Count > _currentCollectionSetTypeIndex)
             {
                 Enumerators.SetType setType = _availableSetType[_currentCollectionSetTypeIndex];
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
-                List<Card> cards = set.Cards.ToList();
+                
+                List<Card> cards;
+                if (_tutorialManager.IsTutorial)
+                {
+                    cards = _tutorialManager.GetSpecificCardsBySet(setType);
+                }
+                else
+                {
+                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+                    cards = set.Cards.ToList();
+                }
+
                 foreach (Card card in cards)
                 {
                     if
@@ -1027,7 +1064,7 @@ namespace Loom.ZombieBattleground
             _cacheCollectionCardsList = cardList.ToList();
             _currentCollectionPagesAmount = Mathf.CeilToInt
             (
-                _cacheCollectionCardsList.Count / (float) CollectionsCardPositions.Count
+                _cacheCollectionCardsList.Count / (float)CollectionsCardPositions.Count
             );
         }
 

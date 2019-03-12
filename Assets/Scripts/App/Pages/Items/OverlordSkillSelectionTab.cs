@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -217,11 +217,8 @@ namespace Loom.ZombieBattleground
 
         public async void ContinueButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_continueButton.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
-            }
             
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
 

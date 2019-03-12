@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -309,11 +309,17 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRightHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRight.name))
+                return;
+
             SwitchSelectedDeckIndex(1);
         }
         
         private void ButtonLeftHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeft.name))
+                return;
+
             SwitchSelectedDeckIndex(-1);
         }
 

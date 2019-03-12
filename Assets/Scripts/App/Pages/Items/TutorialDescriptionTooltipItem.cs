@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView _ownerUnit;
 
-        private BoardCard _ownerCardInHand;
+        private BoardCardView _ownerCardInHand;
 
         private bool _dynamicPosition;
 
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                         if (_ownerId != 0)
                         {
-                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.WorkingCard.TutorialObjectId == ownerId);
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.BoardUnitModel.Card.TutorialObjectId == ownerId);
                         }
                         else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
                         {

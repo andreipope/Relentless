@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +71,15 @@ namespace Loom.ZombieBattleground
                     return;
                     
                 _textSelectOverlordDeckName.text = "NEW DECK";
-                ChangeOverlordIndex(0);
+
+                int index = 0;
+
+                if (_tutorialManager.IsTutorial)
+                {
+                    index = _dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroElement == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                }
+
+                ChangeOverlordIndex(index);
             };
         }
         
@@ -129,6 +137,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordLeftArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordLeftArrow.name))
+                return;
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
@@ -137,6 +148,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordRightArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordRightArrow.name))
+                return;
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex + 1, 0, _selectOverlordIconList.Count - 1)

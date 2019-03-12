@@ -789,11 +789,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonBack.name))
                 return;
-            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
@@ -813,11 +811,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBuyPacksHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBuyPack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonBuyPack.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -828,11 +823,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPlusHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonPlus.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonPlus.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -843,11 +835,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMinusHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMinus.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonMinus.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -858,11 +847,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMaxHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMax.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonMax.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -873,11 +859,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonOpenPackHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonOpenPack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonOpenPack.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
