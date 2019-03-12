@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using KellermanSoftware.CompareNetObjects;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -12,7 +11,6 @@ using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-using Random = UnityEngine.Random;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
 
@@ -28,8 +26,6 @@ namespace Loom.ZombieBattleground
         public event Action MatchingStartedActionReceived;
 
         public event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
-
-        public event Action MatchingFailed;
 
         // game status actions
         public event Action GameStartedActionReceived;
@@ -138,7 +134,10 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            // This is only used by test framework to restart the game, so it seems fine here to ignore the warning
+#pragma warning disable 4014
             StopMatchmaking();
+#pragma warning restore 4014
         }
 
         public bool IsFirstPlayer()
@@ -290,18 +289,18 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand)
+        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand)
         {
             player.CardsInHand.Clear();
-            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => card.FromProtobuf(player)));
+            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
 
             player.ThrowOnHandChanged();
         }
 
-        private void UpdateCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
+        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
             player.CardsInDeck.Clear();
-            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => card.FromProtobuf(player)));
+            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
 
             Log.Info("Updating player cards");
             Log.Info(player.CardsInDeck.Count);
@@ -376,7 +375,7 @@ namespace Loom.ZombieBattleground
                                     playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
                                 }
 
-                                UpdateCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
+                                SetCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
 
                                 _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
                             } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
@@ -395,9 +394,9 @@ namespace Loom.ZombieBattleground
                                 PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
                                 state.Id != _backendDataControlMediator.UserDataModel.UserId);
 
-                                UpdateCardsInDeck(_gameplayManager.OpponentPlayer, playerState.CardsInDeck);
+                                SetCardsInDeck(_gameplayManager.OpponentPlayer, playerState.CardsInDeck);
 
-                                UpdateCardsInHand(_gameplayManager.OpponentPlayer, playerState.CardsInHand);
+                                SetCardsInHand(_gameplayManager.OpponentPlayer, playerState.CardsInHand);
                             }
                         }
 

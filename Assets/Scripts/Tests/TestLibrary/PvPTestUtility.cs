@@ -168,46 +168,41 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public static WorkingCard GetCardOnBoard(Player player, string name)
+        public static BoardUnitModel GetCardOnBoard(Player player, string name)
         {
-            WorkingCard workingCard =
+            BoardUnitModel boardUnitModel =
                 player
                 .BoardCards
-                .Select(boardCard => boardCard.Model.Card)
+                .Select(boardCardView => boardCardView.Model)
                 .Concat(player.CardsOnBoard)
-                .FirstOrDefault(card => CardNameEqual(name, card));
+                .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (workingCard == null)
+            if (boardUnitModel == null)
             {
                 throw new Exception($"No '{name}' cards found on board for player {player}");
             }
 
-            return workingCard;
+            return boardUnitModel;
         }
 
-        public static WorkingCard GetCardInHand(Player player, string name)
+        public static BoardUnitModel GetCardInHand(Player player, string name)
         {
-            WorkingCard workingCard =
+            BoardUnitModel boardUnitModel =
                 player
                     .CardsInHand
-                    .FirstOrDefault(card => CardNameEqual(name, card));
+                    .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (workingCard == null)
+            if (boardUnitModel == null)
             {
                 throw new Exception($"No '{name}' cards found in hand of player {player}");
             }
 
-            return workingCard;
+            return boardUnitModel;
         }
 
         public static bool CardNameEqual(string name1, string name2)
         {
             return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public static bool CardNameEqual(string name, WorkingCard card)
-        {
-            return CardNameEqual(name, card.LibraryCard.Name);
         }
 
         public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)

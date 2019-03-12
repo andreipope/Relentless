@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
+        public override Player OwnerPlayer { get; }
+
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;

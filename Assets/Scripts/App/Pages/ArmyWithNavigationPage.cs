@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
             CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersMyCards");
 
-            _createdBoardCards = new List<BoardCard>();
+            _createdBoardCards = new List<BoardCardView>();
             _cacheFilteredSetTypeCardsList = new List<Card>();
         }
 
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground
 
         private Transform _locatorPlaceHolder;
         
-        private List<BoardCard> _createdBoardCards;
+        private List<BoardCardView> _createdBoardCards;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
         
@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
                     continue;
                 Vector3 position = CardPositions[i % CardPositions.Count].position;
                 RectTransform rectContainer = _locatorPlaceHolder.GetComponent<RectTransform>();
-                BoardCard boardCard = CreateBoardCard
+                BoardCardView boardCard = CreateBoardCard
                 (
                     card,
                     rectContainer,
@@ -277,40 +277,42 @@ namespace Loom.ZombieBattleground
             }
         }
         
-        private void BoardCardSingleClickHandler(BoardCard boardCard)
+        private void BoardCardSingleClickHandler(BoardCardView boardCard)
         {
             if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
-            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.LibraryCard).ToList();           
+            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard,
+                boardCard.BoardUnitModel.Card.Prototype,
                 CardInfoWithSearchPopup.PopupType.NONE
             });
         }
         
-        private BoardCard CreateBoardCard(Card card, RectTransform root, CollectionCardData cardData, Vector3 position)
+        private BoardCardView CreateBoardCard(Card card, RectTransform root, CollectionCardData cardData, Vector3 position)
         {
             GameObject go;
-            BoardCard boardCard;
+            BoardCardView boardCard;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCard = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
 
             int amount = cardData.Amount;
-            boardCard.Init(card, amount);
+            boardCard.SetShowAmountEnabled(true);
+            boardCard.SetAmount(amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * 0.3f;
@@ -329,7 +331,7 @@ namespace Loom.ZombieBattleground
             anchoredPos.z = 0;
             boardCard.Transform.localPosition = anchoredPos;
             
-            if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
+            if (boardCard.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
             {
                 _highlightingVFXItem.ChangeState(true);
             }
@@ -339,7 +341,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetBoardCards()
         {
-            foreach (BoardCard item in _createdBoardCards)
+            foreach (BoardCardView item in _createdBoardCards)
             {
                 item.Dispose();
             }

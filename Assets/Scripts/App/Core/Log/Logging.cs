@@ -49,11 +49,11 @@ namespace Loom.ZombieBattleground
 
         public static string GetLogFilePath()
         {
-            string logFilePath = GetLogFilePathFromEnvVar();
-            if (logFilePath != null)
-                return logFilePath;
+            string path =
+                GetLogFilePathFromEnvVar() ??
+                Path.Combine(Application.persistentDataPath, DefaultLogFileName);
 
-            return Path.Combine(Application.persistentDataPath, DefaultLogFileName);
+            return Path.GetFullPath(path);
         }
 
         public static bool FileLogEnabled

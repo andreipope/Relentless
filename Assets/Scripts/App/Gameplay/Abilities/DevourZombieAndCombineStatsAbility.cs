@@ -12,8 +12,6 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnitModel> _units;
 
-        private bool _isTarget;
-
         public DevourZombiesAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -51,8 +49,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved && Value > 0)
             {
-                _isTarget = true;
-
                 _units.Add(TargetUnit);
                 DevourTargetZombie(TargetUnit);
                 InvokeActionTriggered(_units);
@@ -61,8 +57,6 @@ namespace Loom.ZombieBattleground
 
         private void DevourAllAllyZombies()
         {
-            _isTarget = false;
-
             if (PredefinedTargets != null)
             {
                 _units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
@@ -122,8 +116,8 @@ namespace Loom.ZombieBattleground
             if (unit == AbilityUnitOwner)
                 return;
 
-            int health = unit.InitialHp;
-            int damage = unit.InitialDamage;
+            int health = unit.Card.Prototype.Health;
+            int damage = unit.Card.Prototype.Damage;
 
             AbilityUnitOwner.BuffedHp += health;
             AbilityUnitOwner.CurrentHp += health;

@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.LibraryCard.CardSetType == SetType);
+            BoardUnitModel card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.Prototype.CardSetType == SetType);
 
             if (card != null)
             {

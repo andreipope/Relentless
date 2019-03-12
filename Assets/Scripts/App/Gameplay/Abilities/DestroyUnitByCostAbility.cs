@@ -112,9 +112,9 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                WorkingCard card = BoardSpell?.Card;
+                BoardUnitModel card = BoardSpell?.BoardUnitModel;
 
-                if(card != null && card.LibraryCard.MouldId == TorchCardId)
+                if(card != null && card.Prototype.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }
@@ -131,8 +131,8 @@ namespace Loom.ZombieBattleground
                             Target = unit
                         }
                     },
-                    checkForCardOwner = _checkForCardOwner,
-                    workingCard = card
+                    CheckForCardOwner = _checkForCardOwner,
+                    BoardUnitModel = card
                 });
             }
         }

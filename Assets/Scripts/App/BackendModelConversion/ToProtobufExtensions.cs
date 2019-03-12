@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             CardInstance cardInstance = new CardInstance
             {
                 InstanceId = workingCard.InstanceId.ToProtobuf(),
-                Prototype = workingCard.LibraryCard.ToProtobuf(),
+                Prototype = workingCard.Prototype.ToProtobuf(),
                 Instance = workingCard.InstanceCard.ToProtobuf()
             };
 
@@ -105,8 +105,8 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
             {
                 GooCost = data.Cost,
-                Attack = data.Damage,
-                Defense = data.Health,
+                Attack = data.Attack,
+                Defense = data.Defense,
                 Set = (CardSetType.Types.Enum) data.CardSetType,
                 Type = (CreatureType.Types.Enum) data.CardType,
             };

@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground
             IReadOnlyCard card = _filteredCardList[_currentCardIndex];
                 
             RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
-            BoardCard boardCard = CreateBoardCard
+            BoardCardView boardCard = CreateBoardCard
             (
                 card, 
                 rectContainer,
@@ -307,26 +307,26 @@ namespace Loom.ZombieBattleground
             UpdateBoardCard();
         }
 
-        private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
+        private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
             GameObject go;
-            BoardCard boardCard;
-            
+            BoardCardView boardCard;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCard = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
-            
-            boardCard.Init(card);
+
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;

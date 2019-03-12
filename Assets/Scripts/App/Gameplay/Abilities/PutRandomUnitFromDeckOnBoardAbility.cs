@@ -47,9 +47,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                BoardCard boardCard;
+                BoardCardView boardCardView;
                 Player playerOwner;
-                UniquePositionedList<WorkingCard> filteredCards = null;
+                UniquePositionedList<BoardUnitModel> filteredCards = null;
 
                 foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
                 {
@@ -66,15 +66,15 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
 
                     if (playerOwner.BoardCards.Count < Constants.MaxBoardUnits) 
                     {
-                        boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-                        PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards, true);
+                        boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref TargetEffects, ref boardCards, true);
                     }
                 }
             }
@@ -93,20 +93,20 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void PutCardFromDeckToBoard(Player owner, BoardCard boardCard,
+        private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCardView,
                                             ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.RemoveCardFromDeck(boardCard.WorkingCard);
+            owner.RemoveCardFromDeck(boardCardView.BoardUnitModel);
 
-            CardsController.SummonUnitFromHand(owner, boardCard, activateAbility);
+            CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
 
-            cards.Add(boardCard.HandBoardCard);
+            cards.Add(boardCardView.HandBoardCard);
 
             TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCard,
+                Target = boardCardView,
             });
         }
     }

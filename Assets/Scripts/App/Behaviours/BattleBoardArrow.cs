@@ -42,11 +42,11 @@ namespace Loom.ZombieBattleground
 
                 if (target == SelectedPlayer)
                 {
-                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, SelectedPlayer.InstanceId);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model, SelectedPlayer.InstanceId);
                 }
                 else
                 {
-                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model.Card, SelectedCard.Model.Card.InstanceId);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model, SelectedCard.Model.Card.InstanceId);
                 }
             }
             else
@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.LibraryCard.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.CardSetType))
                 return;
 
             if (BlockedUnitStatusTypes == null) 
