@@ -90,13 +90,13 @@ namespace Loom.ZombieBattleground
 
             _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
 
-            _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            _deckIconGroup = Self.transform.Find("Scaler/Panel_DeckContent/Group");
+            _textDeckName = Self.transform.Find("Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _deckIconGroup = Self.transform.Find("Panel_DeckContent/Group");
             
-            _glowBorderVFX = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").gameObject;
+            _glowBorderVFX = Self.transform.Find("Image_DeckIcon_Glow").gameObject;
 
-            _buttonRight = Self.transform.Find("Scaler/Button_Right").GetComponent<Button>();
-            _buttonLeft = Self.transform.Find("Scaler/Button_Left").GetComponent<Button>();
+            _buttonRight = Self.transform.Find("Button_Right").GetComponent<Button>();
+            _buttonLeft = Self.transform.Find("Button_Left").GetComponent<Button>();
             _buttonRight.onClick.AddListener(ButtonRightHandler);
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
