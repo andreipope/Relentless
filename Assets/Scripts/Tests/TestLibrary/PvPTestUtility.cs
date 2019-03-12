@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPTestUtility));
+
         private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
@@ -26,7 +29,7 @@ namespace Loom.ZombieBattleground.Test
         {
             void LogTestMode()
             {
-                Debug.Log($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
+                Log.Info($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
             }
 
             async Task ExecuteTest()
@@ -115,18 +118,11 @@ namespace Loom.ZombieBattleground.Test
                 );
             setupAction?.Invoke();
 
-            List<string> tags = new List<string>
-            {
-                "pvpTest",
-                TestHelper.GetTestName(),
-                Guid.NewGuid().ToString()
-            };
-
-            await StartOnlineMatch(tags, selectedHordeIndex: -1, createOpponent: false);
+            await StartOnlineMatch(null, createOpponent: false);
 
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
-            await GameClient.Get<IMatchManager>().FindMatch();
+            await TestHelper.MainMenuTransition("Button_Battle");
             GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
 
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
@@ -137,8 +133,6 @@ namespace Loom.ZombieBattleground.Test
 
             GameClient.Get<IGameplayManager>().OpponentHasDoneMulligan = true;
 
-
-
             using (matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns))
             {
                 await matchScenarioPlayer.Play();
@@ -148,28 +142,18 @@ namespace Loom.ZombieBattleground.Test
             await TestHelper.GoBackToMainScreen();
         }
 
-        public static async Task StartOnlineMatch(IReadOnlyList<string> tags = null, int selectedHordeIndex = 0, bool createOpponent = true)
+        public static async Task StartOnlineMatch(IReadOnlyList<string> tags = null, bool createOpponent = true)
         {
-
-            await TestHelper.MainMenuTransition("Button_Play");
-
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+            await TestHelper.MainMenuTransition("Panel_Battle_Mode");
             await TestHelper.MainMenuTransition("Button_PvPMode");
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PvPSelection);
-            await TestHelper.MainMenuTransition("Button_CasualType");
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-
-            if (selectedHordeIndex > 0)
-            {
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-            }
 
             if (tags == null)
             {
                 tags = new List<string>
                 {
                     "onlineTest",
-                    TestHelper.GetTestName()
+                    TestHelper.GetTestName(),
+                    Guid.NewGuid().ToString()
                 };
             }
             TestHelper.SetPvPTags(tags);
@@ -177,11 +161,6 @@ namespace Loom.ZombieBattleground.Test
             TestHelper.DebugCheats.CustomRandomSeed = 0;
 
             await TestHelper.LetsThink();
-
-            if (selectedHordeIndex > 0)
-            {
-                await TestHelper.MainMenuTransition("Button_Battle");
-            }
 
             if (createOpponent)
             {

@@ -1,22 +1,20 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Test;
+using log4net;
 using NUnit.Framework;
 using UnityEngine;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loom.ZombieBattleground.Test
 {
     public class AsyncTestRunner
     {
-        private const string LogTag = "[" + nameof(AsyncTestRunner) + "] ";
-        private const int FlappyErrorMaxRetryCount = 4;
+        private static readonly ILog Log = Logging.GetLog(nameof(AsyncTestRunner));
+
+        private const int FlappyErrorMaxRetryCount = 5;
 
         private static readonly string[] KnownErrors =
         {
@@ -27,7 +25,9 @@ namespace Loom.ZombieBattleground.Test
         private static readonly string[] FlappyTestErrorSubstrings =
         {
             "RpcClientException",
-            "Call took longer than"
+            "WebSocketException",
+            "Call took longer than",
+            "invalid player"
         };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Test
                 throw new ArgumentOutOfRangeException(nameof(timeout));
 
             Assert.AreEqual(int.MaxValue, TestContext.CurrentTestExecutionContext.TestCaseTimeout, "Integration test timeout must have [Timeout(int.MaxValue)] attribute");
-            Debug.Log("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
+            Log.Info("=== RUNNING TEST: " + TestContext.CurrentTestExecutionContext.CurrentTest.Name);
 
             IEnumerator enumerator =
                 RunAsyncTestInternal(async () =>
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground.Test
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log(LogTag + nameof(GameTearDown));
+            Log.Info(nameof(GameTearDown));
             await new WaitForSecondsRealtime(0.5f);
             GameClient.Get<IAppStateManager>()?.Dispose();
             await TestHelper.Instance.TearDown_Cleanup();
@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground.Test
             if (!Application.isPlaying)
                 return;
 
-            Debug.Log(LogTag + nameof(GameSetUp));
+            Log.Info(nameof(GameSetUp));
 
             Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Application.logMessageReceivedThreaded += IgnoreAssertsLogMessageReceivedHandler;
@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 try
                 {
-                    Debug.Log("Previous test still running, tearing down the world");
+                    Log.Info("Previous test still running, tearing down the world");
                     yield return TestHelper.TaskAsIEnumerator(GameTearDown);
 
                     while (!_currentRunningTestTask.IsCompleted)
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         isTimedOut = true;
                         string message = $"Test execution time exceeded {timeout} s";
-                        Debug.Log(message);
+                        Log.Info(message);
                         CancelTestWithReason(new TimeoutException(message));
                     }
                 }
@@ -192,18 +192,18 @@ namespace Loom.ZombieBattleground.Test
                 if (flappyException != null && retry <= FlappyErrorMaxRetryCount)
                 {
                     mustRetry = true;
-                    Debug.LogWarning($"Test had flappy error, retrying (retry {retry + 1} out of {FlappyErrorMaxRetryCount})");
+                    Log.Warn($"Test had flappy error, retrying (retry {retry + 1} out of {FlappyErrorMaxRetryCount})");
                 }
                 else
                 {
                     if (e is OperationCanceledException)
                     {
-                        Debug.LogException(_cancellationReason);
+                        Log.Error("", _cancellationReason);
                         ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
                     }
                     else
                     {
-                        Debug.LogException(e);
+                        Log.Error("", e);
                         ExceptionDispatchInfo.Capture(e).Throw();
                     }
                 }
@@ -223,12 +223,6 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private bool IsFlappyException(Exception e)
-        {
-            string exceptionString = e.ToString();
-            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
-        }
-
         private void FinishCurrentTest()
         {
             _currentRunningTestTask = null;
@@ -238,8 +232,12 @@ namespace Loom.ZombieBattleground.Test
 
         private void CancelTestWithReason(Exception reason)
         {
+            if (_cancellationReason != null)
+                return;
+
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
+            Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
@@ -248,7 +246,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
+                    if (IsKnownError(condition))
                         break;
 
                     CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
@@ -258,6 +256,17 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Log:
                     break;
             }
+        }
+
+        private static bool IsFlappyException(Exception e)
+        {
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
+        }
+
+        private static bool IsKnownError(string condition)
+        {
+            return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
     }
 }

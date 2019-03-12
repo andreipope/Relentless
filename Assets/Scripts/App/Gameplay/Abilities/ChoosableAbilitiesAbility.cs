@@ -14,8 +14,6 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-
-           // TODO IMPROVE IT FOR PVP - NEED TO DISCUSSS
         }
     }
 }

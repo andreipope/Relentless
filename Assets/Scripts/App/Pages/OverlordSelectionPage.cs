@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private IAppStateManager _appStateManager;
 
+        private ITutorialManager _tutorialManager;
+
         private GameObject _selfPage;
 
         private Button _backButton, _continueButton, _leftArrowButton, _rightArrowButton;
@@ -55,6 +57,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Update()
@@ -82,7 +85,14 @@ namespace Loom.ZombieBattleground
             _rightContentObject = _selfPage.transform.Find("Panel_OverlordContent/Panel_OverlordInfo").gameObject;
 
             FillOverlordObjects();
-            SetSelectedHeroIndexAndUpdateScrollPosition(0, false, force: true);
+
+            int index = 0;
+
+            if (_tutorialManager.IsTutorial)
+            {
+                index = _overlordObjects.FindIndex(hero => hero.SelfHero.HeroElement == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+            }
+            SetSelectedHeroIndexAndUpdateScrollPosition(index, false, force: true);
         }
 
         public void Hide()

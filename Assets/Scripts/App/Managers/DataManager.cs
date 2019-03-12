@@ -8,9 +8,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
+using log4net.Core;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -24,20 +28,10 @@ namespace Loom.ZombieBattleground
 {
     public class DataManager : IService, IDataManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(DataManager));
+
         private static readonly JsonSerializerSettings JsonSerializerSettings =
-            new JsonSerializerSettings
-            {
-                Culture = CultureInfo.InvariantCulture,
-                Converters = {
-                    new StringEnumConverter()
-                },
-                CheckAdditionalContent = true,
-                MissingMemberHandling = MissingMemberHandling.Error,
-                Error = (sender, args) =>
-                {
-                    Debug.LogException(args.ErrorContext.Error);
-                }
-            };
+            JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
 
         private ILocalizationManager _localizationManager;
 
@@ -107,7 +101,7 @@ namespace Loom.ZombieBattleground
 
         public async Task StartLoadCache()
         {
-            Debug.Log("=== Start loading server ==== ");
+            Log.Info("=== Start loading server ==== ");
 
             int count = Enum.GetNames(typeof(Enumerators.CacheDataType)).Length;
             for (int i = 0; i < count; i++)
@@ -196,8 +190,8 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            Debug.Log("Encryption: " + ConfigData.EncryptData);
-            Debug.Log("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
+            Log.Info("Encryption: " + ConfigData.EncryptData);
+            Log.Info("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
 
             _localizationManager = GameClient.Get<ILocalizationManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -294,6 +288,12 @@ namespace Loom.ZombieBattleground
 
         private void ShowLoadDataFailMessage(string msg)
         {
+            // Crash fast on CI
+            if (UnitTestDetector.IsRunningUnitTests)
+            {
+                throw new RpcClientException(msg,-1, null);
+            }
+
             _uiManager.HidePopup<LoginPopup>();
             _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
         }
@@ -308,7 +308,7 @@ namespace Loom.ZombieBattleground
                     List<Card> cardList;
                     if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
                     {
-                        Debug.LogWarning("===== Loading Card Library from persistent data ===== ");
+                        Log.Warn("===== Loading Card Library from persistent data ===== ");
                         cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
                     }
                     else
@@ -384,7 +384,7 @@ namespace Loom.ZombieBattleground
                     catch (Exception e)
                     {
                         ShowLoadDataFailMessage("Issue with Loading Decks Data");
-                        Debug.LogWarning(e);
+                        Log.Warn(e);
                         throw;
                     }
 
@@ -450,7 +450,7 @@ namespace Loom.ZombieBattleground
             {
                 foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
 
-                if (foundCard == null || foundCard is default(Card))
+                if (foundCard == null)
                 {
                     CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
                     i--;

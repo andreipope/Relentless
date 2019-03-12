@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class GameplayManager : IService, IGameplayManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(GameplayManager));
+
         private IDataManager _dataManager;
 
         private IMatchManager _matchManager;
@@ -123,10 +126,17 @@ namespace Loom.ZombieBattleground
                             switch (endGameType)
                             {
                                 case Enumerators.EndGameType.WIN:
-                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { true });
+                                    else
+                                        _uiManager.DrawPopup<YouWonPopup>();
+                                 break;
                                     break;
                                 case Enumerators.EndGameType.LOSE:
-                                    _uiManager.DrawPopup<YouLosePopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { false });
+                                    else
+                                        _uiManager.DrawPopup<YouLosePopup>();
                                     break;
                                 case Enumerators.EndGameType.CANCEL:
                                     break;
@@ -423,7 +433,7 @@ namespace Loom.ZombieBattleground
                                 .Select(instance => instance.FromProtobuf(OpponentPlayer))
                                 .ToList();
 
-                        Debug.Log(
+                        Log.Info(
                             $"Player ID {OpponentPlayer.InstanceId}, local: {OpponentPlayer.IsLocalPlayer}, added CardsInHand:\n" +
                             String.Join(
                                 "\n",

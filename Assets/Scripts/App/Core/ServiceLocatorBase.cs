@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
     public abstract class ServiceLocatorBase : IServiceLocator
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ServiceLocatorBase));
+
         protected IDictionary<Type, IService> Services;
 
         /// <summary>
@@ -67,7 +70,7 @@ namespace Loom.ZombieBattleground
                 );
             }
 
-            UnityEngine.Debug.Log(logMessageBuilder.ToString());
+            Log.Info(logMessageBuilder.ToString());
         }
 
         /// <summary>

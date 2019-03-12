@@ -29,7 +29,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReport">
             <summary>
-            Represents a bug report.
+            Represents a user report.
             </summary>
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReport.UserReportMetricSorter">
@@ -82,35 +82,44 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReport.Clone">
             <summary>
-            Clones the bug report.
+            Clones the user report.
             </summary>
-            <returns>The cloned bug report.</returns>
+            <returns>The cloned user report.</returns>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReport.Complete">
             <summary>
-            Completes the bug report. This is called by the client and only needs to be called when constructing a bug report manually.
+            Completes the user report. This is called by the client and only needs to be called when constructing a user report manually.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReport.Fix">
             <summary>
-            Fixes the bug report by replace null lists with empty lists.
+            Fixes the user report by replace null lists with empty lists.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReport.GetDimensionsString">
             <summary>
-            Gets the dimension string for the dimensions associated with this bug report.
+            Gets the dimension string for the dimensions associated with this user report.
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Unity.Cloud.UserReporting.UserReport.RemoveScreenshots(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Removes screenshots above a certain size from the user report.
+            </summary>
+            <param name="maximumWidth">The maximum width.</param>
+            <param name="maximumHeight">The maximum height.</param>
+            <param name="totalBytes">The total bytes allowed by screenshots.</param>
+            <param name="ignoreCount">The number of screenshots to ignoreCount.</param>
+        </member>
         <member name="M:Unity.Cloud.UserReporting.UserReport.ToPreview">
             <summary>
-            Casts the bug report to a bug report preview.
+            Casts the user report to a user report preview.
             </summary>
-            <returns>The bug report preview.</returns>
+            <returns>The user report preview.</returns>
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportAppearanceHint">
             <summary>
-            Represents a bug report appearance hint.
+            Represents a user report appearance hint.
             </summary>
         </member>
         <member name="F:Unity.Cloud.UserReporting.UserReportAppearanceHint.Normal">
@@ -135,7 +144,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportAttachment">
             <summary>
-            Represents a bug report attachment.
+            Represents a user report attachment.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReportAttachment.#ctor(System.String,System.String,System.String,System.Byte[])">
@@ -174,7 +183,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportEvent">
             <summary>
-            Represents a bug report event.
+            Represents a user report event.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportEvent.Exception">
@@ -214,7 +223,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportEventLevel">
             <summary>
-            Represents a bug report event level.
+            Represents a user report event level.
             </summary>
         </member>
         <member name="F:Unity.Cloud.UserReporting.UserReportEventLevel.Info">
@@ -239,17 +248,12 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportList">
             <summary>
-            Represents a bug report list.
+            Represents a user report list.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReportList.#ctor">
             <summary>
             Creates a new instance of the <see cref="T:Unity.Cloud.UserReporting.UserReportList"/> class.
-            </summary>
-        </member>
-        <member name="P:Unity.Cloud.UserReporting.UserReportList.UserReportPreviews">
-            <summary>
-            Gets or sets the bug report previews.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportList.ContinuationToken">
@@ -267,15 +271,21 @@
             Gets or sets a value indicating whether the list has more items.
             </summary>
         </member>
-        <member name="M:Unity.Cloud.UserReporting.UserReportList.Complete(System.Int32)">
+        <member name="P:Unity.Cloud.UserReporting.UserReportList.UserReportPreviews">
+            <summary>
+            Gets or sets the user report previews.
+            </summary>
+        </member>
+        <member name="M:Unity.Cloud.UserReporting.UserReportList.Complete(System.Int32,System.String)">
             <summary>
             Completes the list. This only need to be called by the creator of the list.
             </summary>
             <param name="originalLimit">The original limit.</param>
+            <param name="continuationToken">The continuation token.</param>
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportMeasure">
             <summary>
-            Represents a bug report measure.
+            Represents a user report measure.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportMeasure.EndFrameNumber">
@@ -300,7 +310,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportMetric">
             <summary>
-            Represents a bug report metrics.
+            Represents a user report metrics.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportMetric.Average">
@@ -341,7 +351,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportNamedValue">
             <summary>
-            Represents a bug report named value.
+            Represents a user report named value.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReportNamedValue.#ctor(System.String,System.String)">
@@ -363,7 +373,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportPreview">
             <summary>
-            Represents a bug report preview or the fly weight version of a bug report.
+            Represents a user report preview or the fly weight version of a user report.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.UserReportPreview.#ctor">
@@ -393,7 +403,7 @@
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.ExpiresOn">
             <summary>
-            Gets or sets the time at which the bug report expires. This property will be overwritten by the server if provided.
+            Gets or sets the time at which the user report expires. This property will be overwritten by the server if provided.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.GeoCountry">
@@ -413,12 +423,17 @@
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.IsHiddenWithoutDimension">
             <summary>
-            Gets or sets a value indicating whether the bug report is hidden in the UI if a dimension filter is not specified. This is recommended for automated or high volume reports.
+            Gets or sets a value indicating whether the user report is hidden in the UI if a dimension filter is not specified. This is recommended for automated or high volume reports.
+            </summary>
+        </member>
+        <member name="P:Unity.Cloud.UserReporting.UserReportPreview.IsSilent">
+            <summary>
+            Gets or sets a value indicating whether the user report is silent. Silent user reports do not send events to integrations. This is recommended for automated or high volume reports.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.IsTemporary">
             <summary>
-            Gets or sets a value indicating whether the bug report is temporary. Temporary bug reports are short lived and not queryable.
+            Gets or sets a value indicating whether the user report is temporary. Temporary user reports are short lived and not queryable.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.LicenseLevel">
@@ -433,7 +448,7 @@
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.ReceivedOn">
             <summary>
-            Gets or sets the time at which the bug report was received. This property will be overwritten by the server if provided.
+            Gets or sets the time at which the user report was received. This property will be overwritten by the server if provided.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportPreview.Summary">
@@ -448,7 +463,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.UserReportScreenshot">
             <summary>
-            Represents a bug report screenshot.
+            Represents a user report screenshot.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.UserReportScreenshot.DataBase64">
@@ -506,7 +521,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Client.UserReportingClient">
             <summary>
-            Represents a bug reporting client.
+            Represents a user reporting client.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.#ctor(System.String,System.String,Unity.Cloud.UserReporting.Client.IUserReportingPlatform,Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration)">
@@ -530,12 +545,12 @@
         </member>
         <member name="P:Unity.Cloud.UserReporting.Client.UserReportingClient.IsConnectedToLogger">
             <summary>
-            Gets or sets a value indicating whether the client is connected to the logger. If true, log messages will be included in bug reports.
+            Gets or sets a value indicating whether the client is connected to the logger. If true, log messages will be included in user reports.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.Client.UserReportingClient.IsSelfReporting">
             <summary>
-            Gets or sets a value indicating whether the client is self reporting. If true, event and metrics about the client will be included in bug reports.
+            Gets or sets a value indicating whether the client is self reporting. If true, event and metrics about the client will be included in user reports.
             </summary>
         </member>
         <member name="P:Unity.Cloud.UserReporting.Client.UserReportingClient.Platform">
@@ -550,7 +565,7 @@
         </member>
         <member name="P:Unity.Cloud.UserReporting.Client.UserReportingClient.SendEventsToAnalytics">
             <summary>
-            Gets or sets a value indicating whether bug reporting events should be sent to analytics.
+            Gets or sets a value indicating whether user reporting events should be sent to analytics.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.AddDeviceMetadata(System.String,System.String)">
@@ -567,11 +582,16 @@
             <param name="name">The name.</param>
             <param name="value">The value.</param>
         </member>
+        <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.ClearScreenshots">
+            <summary>
+            Clears the screenshots.
+            </summary>
+        </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.CreateUserReport(System.Action{Unity.Cloud.UserReporting.UserReport})">
             <summary>
-            Creates a bug report.
+            Creates a user report.
             </summary>
-            <param name="callback">The callback. Provides the bug report that was created.</param>
+            <param name="callback">The callback. Provides the user report that was created.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.GetEndpoint">
             <summary>
@@ -585,6 +605,14 @@
             </summary>
             <param name="level">The level.</param>
             <param name="message">The message.</param>
+        </member>
+        <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.LogEvent(Unity.Cloud.UserReporting.UserReportEventLevel,System.String,System.String)">
+            <summary>
+            Logs an event.
+            </summary>
+            <param name="level">The level.</param>
+            <param name="message">The message.</param>
+            <param name="stackTrace">The stack trace.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.LogEvent(Unity.Cloud.UserReporting.UserReportEventLevel,System.String,System.String,System.Exception)">
             <summary>
@@ -617,24 +645,24 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.SaveUserReportToDisk(Unity.Cloud.UserReporting.UserReport)">
             <summary>
-            Saves a bug report to disk.
+            Saves a user report to disk.
             </summary>
-            <param name="userReport">The bug report.</param>
+            <param name="userReport">The user report.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.SendUserReport(Unity.Cloud.UserReporting.UserReport,System.Action{System.Boolean,Unity.Cloud.UserReporting.UserReport})">
             <summary>
-            Sends a bug report to the server.
+            Sends a user report to the server.
             </summary>
-            <param name="userReport">The bug report.</param>
-            <param name="callback">The callback. Provides a value indicating whether sending the bug report was successful and provides the bug report after it is modified by the server.</param>
+            <param name="userReport">The user report.</param>
+            <param name="callback">The callback. Provides a value indicating whether sending the user report was successful and provides the user report after it is modified by the server.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.SendUserReport(Unity.Cloud.UserReporting.UserReport,System.Action{System.Single,System.Single},System.Action{System.Boolean,Unity.Cloud.UserReporting.UserReport})">
             <summary>
-            Sends a bug report to the server.
+            Sends a user report to the server.
             </summary>
-            <param name="userReport">The bug report.</param>
+            <param name="userReport">The user report.</param>
             <param name="progressCallback">The progress callback. Provides the upload and download progress.</param>
-            <param name="callback">The callback. Provides a value indicating whether sending the bug report was successful and provides the bug report after it is modified by the server.</param>
+            <param name="callback">The callback. Provides a value indicating whether sending the user report was successful and provides the user report after it is modified by the server.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.TakeScreenshot(System.Int32,System.Int32,System.Action{Unity.Cloud.UserReporting.UserReportScreenshot})">
             <summary>
@@ -655,12 +683,12 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.Update">
             <summary>
-            Updates the bug reporting client, which updates networking communication, screenshotting, and metrics gathering.
+            Updates the user reporting client, which updates networking communication, screenshotting, and metrics gathering.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.UpdateOnEndOfFrame">
             <summary>
-            Updates the bug reporting client at the end of the frame, which updates networking communication, screenshotting, and metrics gathering.
+            Updates the user reporting client at the end of the frame, which updates networking communication, screenshotting, and metrics gathering.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClient.WaitForPerforation(System.Int32,System.Action)">
@@ -672,7 +700,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration">
             <summary>
-            Represents configuration for the bug reporting client.
+            Represents configuration for the user reporting client.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration.#ctor">
@@ -686,7 +714,7 @@
             </summary>
             <param name="maximumEventCount">The maximum event count. This is a rolling window.</param>
             <param name="maximumMeasureCount">The maximum measure count. This is a rolling window.</param>
-            <param name="framesPerMeasure">The number of frames per measure. A bug report is only created on the boundary between measures. A large number of frames per measure will increase bug report creation time by this number of frames in the worst case.</param>
+            <param name="framesPerMeasure">The number of frames per measure. A user report is only created on the boundary between measures. A large number of frames per measure will increase user report creation time by this number of frames in the worst case.</param>
             <param name="maximumScreenshotCount">The maximum screenshot count. This is a rolling window.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration.#ctor(System.Int32,Unity.Cloud.UserReporting.Client.MetricsGatheringMode,System.Int32,System.Int32,System.Int32)">
@@ -696,7 +724,7 @@
             <param name="maximumEventCount">The maximum event count. This is a rolling window.</param>
             <param name="metricsGatheringMode">The metrics gathering mode.</param>
             <param name="maximumMeasureCount">The maximum measure count. This is a rolling window.</param>
-            <param name="framesPerMeasure">The number of frames per measure. A bug report is only created on the boundary between measures. A large number of frames per measure will increase bug report creation time by this number of frames in the worst case.</param>
+            <param name="framesPerMeasure">The number of frames per measure. A user report is only created on the boundary between measures. A large number of frames per measure will increase user report creation time by this number of frames in the worst case.</param>
             <param name="maximumScreenshotCount">The maximum screenshot count. This is a rolling window.</param>
         </member>
         <member name="P:Unity.Cloud.UserReporting.Client.UserReportingClientConfiguration.FramesPerMeasure">
@@ -726,7 +754,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform">
             <summary>
-            Represents a bug reporting platform.
+            Represents a user reporting platform.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.IUserReportingPlatform.DeserializeJson``1(System.String)">
@@ -745,9 +773,9 @@
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.IUserReportingPlatform.ModifyUserReport(Unity.Cloud.UserReporting.UserReport)">
             <summary>
-            Modifies a bug report.
+            Modifies a user report.
             </summary>
-            <param name="userReport">The bug report.</param>
+            <param name="userReport">The user report.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.IUserReportingPlatform.OnEndOfFrame(Unity.Cloud.UserReporting.Client.UserReportingClient)">
             <summary>
@@ -764,6 +792,13 @@
             <param name="content">The content.</param>
             <param name="progressCallback">The progress callback. Provides the upload and download progress.</param>
             <param name="callback">The callback. Provides a value indicating whether the post was successful and provides the resulting byte array.</param>
+        </member>
+        <member name="M:Unity.Cloud.UserReporting.Client.IUserReportingPlatform.RunTask(System.Func{System.Object},System.Action{System.Object})">
+            <summary>
+            Runs a task asynchronously.
+            </summary>
+            <param name="task">The task.</param>
+            <param name="callback">The callback.</param>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.IUserReportingPlatform.SendAnalyticsEvent(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
@@ -817,7 +852,7 @@
         </member>
         <member name="T:Unity.Cloud.UserReporting.Client.NullUserReportingPlatform">
             <summary>
-            Represents a null bug reporting platform.
+            Represents a null user reporting platform.
             </summary>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.NullUserReportingPlatform.DeserializeJson``1(System.String)">
@@ -833,6 +868,9 @@
             <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.NullUserReportingPlatform.Post(System.String,System.String,System.Byte[],System.Action{System.Single,System.Single},System.Action{System.Boolean,System.Byte[]})">
+            <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
+        </member>
+        <member name="M:Unity.Cloud.UserReporting.Client.NullUserReportingPlatform.RunTask(System.Func{System.Object},System.Action{System.Object})">
             <inheritdoc cref="T:Unity.Cloud.UserReporting.Client.IUserReportingPlatform"/>
         </member>
         <member name="M:Unity.Cloud.UserReporting.Client.NullUserReportingPlatform.SendAnalyticsEvent(System.String,System.Collections.Generic.Dictionary{System.String,System.Object})">

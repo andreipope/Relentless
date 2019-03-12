@@ -135,6 +135,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case "EndRotate":
                     _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndCardFlipPlayerOrderPopup);
                     break;
                 default:
                     break;
