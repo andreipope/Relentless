@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -31,47 +32,36 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            IReadOnlyList<BoardUnitModel> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
+            List<BoardUnitModel> cards = new List<BoardUnitModel>();
+            cards.AddRange(GameplayManager.CurrentPlayer.BoardCards
+                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
+                    .Select(boardCard => boardCard.Model));
+            cards.AddRange(GameplayManager.CurrentPlayer.CardsInHand
+                    .FindAll(x => x.Prototype.CardSetType == SetType));
 
-            UniquePositionedList<BoardUnitView> playerBoardCards =
-                GameplayManager.CurrentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
+            IReadOnlyList<BoardUnitModel> units =
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
+                    !cards.Exists(card => card.InstanceId == unit.InstanceId));
 
             foreach (BoardUnitModel unit in units)
             {
-                bool isInPlay = false;
-                foreach (BoardUnitView view in playerBoardCards) 
-                {
-                    if (view.Model.InstanceId == unit.InstanceId) 
-                    {
-                        isInPlay = true;
-                        break;
-                    }
-                }
-                if (!isInPlay) {
-                    ReviveUnit(unit);
-                }
+                ReviveUnit(unit);
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
+            cards.Clear();
+            cards.AddRange(GameplayManager.OpponentPlayer.BoardCards
+                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
+                    .Select(boardCard => boardCard.Model));
+            cards.AddRange(GameplayManager.OpponentPlayer.CardsInHand
+                    .FindAll(x => x.Prototype.CardSetType == SetType));
 
-            UniquePositionedList<BoardUnitView> opponentBoardCards =
-                GameplayManager.OpponentPlayer.BoardCards.FindAll(x => x.Model.Card.Prototype.CardSetType == SetType);
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
+                    !cards.Exists(card => card.InstanceId == unit.InstanceId));
+
 
             foreach (BoardUnitModel unit in units)
             {
-                bool isInPlay = false;
-                foreach (BoardUnitView view in opponentBoardCards) 
-                {
-                    if (view.Model.InstanceId == unit.InstanceId) 
-                    {
-                        isInPlay = true;
-                        break;
-                    }
-                }
-                if (!isInPlay) {
-                    ReviveUnit(unit);
-                }
+                ReviveUnit(unit);
             }
 
             GameplayManager.CanDoDragActions = true;
