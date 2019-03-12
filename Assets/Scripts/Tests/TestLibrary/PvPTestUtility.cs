@@ -173,7 +173,7 @@ namespace Loom.ZombieBattleground.Test
             WorkingCard workingCard =
                 player
                 .BoardCards
-                .Select(boardCard => boardCard.Model.Card)
+                .Select(boardCardView => boardCardView.Model.Card)
                 .Concat(player.CardsOnBoard)
                 .FirstOrDefault(card => CardNameEqual(name, card));
 
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground.Test
 
         public static bool CardNameEqual(string name, WorkingCard card)
         {
-            return CardNameEqual(name, card.LibraryCard.Name);
+            return CardNameEqual(name, card.Prototype.Name);
         }
 
         public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)

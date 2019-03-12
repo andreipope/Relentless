@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using KellermanSoftware.CompareNetObjects;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -12,7 +11,6 @@ using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
-using Random = UnityEngine.Random;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
 
@@ -28,8 +26,6 @@ namespace Loom.ZombieBattleground
         public event Action MatchingStartedActionReceived;
 
         public event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
-
-        public event Action MatchingFailed;
 
         // game status actions
         public event Action GameStartedActionReceived;
@@ -138,7 +134,10 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            // This is only used by test framework to restart the game, so it seems fine here to ignore the warning
+#pragma warning disable 4014
             StopMatchmaking();
+#pragma warning restore 4014
         }
 
         public bool IsFirstPlayer()

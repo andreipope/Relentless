@@ -145,8 +145,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float MatchmakingTimeOut = 120;
-
         internal const float TurnTime = 120;
 
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
@@ -183,11 +181,11 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = false;
+        public static readonly bool AlwaysGuestLogin = false;
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public const bool DevModeEnabled = false;
+        public static readonly bool DevModeEnabled = false;
 
         public const bool UsingCardTooltips = false;
 
@@ -208,7 +206,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const bool EnableShopPage = true;
+        internal static readonly bool EnableShopPage = true;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
@@ -216,7 +214,7 @@ namespace Loom.ZombieBattleground.Common
         
         internal const int LastTutorialId = 8;
         
-        internal const bool EnableNewUI = true;
+        internal static readonly bool EnableNewUI = true;
 
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
         

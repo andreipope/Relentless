@@ -158,19 +158,19 @@ namespace Loom.ZombieBattleground
                     unitCardElement.Health = unit.MaxCurrentHp;
                     break;
                 case SpellBoardCard spellBoardCard:
-                    _leftBlockCardSpellElement.Init(spellBoardCard.WorkingCard);
+                    _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
                     break;
                 case BoardSpell spell:
                     _leftBlockCardSpellElement.Init(spell.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
-                    _leftBlockCardUnitElement.Init(unitBoardCard.WorkingCard);
+                    _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
                     unitCardElement.Damage = unitBoardCard.Damage;
                     unitCardElement.Health = unitBoardCard.Health;
                     break;
                 case HandBoardCard card:
-                    _leftBlockCardUnitElement.Init(card.CardView.WorkingCard);
+                    _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
                     break;
                 case BoardUnitView unit:
                     _leftBlockCardUnitElement.Init(unit.Model.Card);
@@ -208,13 +208,13 @@ namespace Loom.ZombieBattleground
                     ActionElement actionElement;
                     switch (targetEffect.Target)
                     {
-                        case BoardCard card when card is SpellBoardCard:
+                        case BoardCardView card when card is SpellBoardCard:
                             actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
-                        case BoardCard card when card is UnitBoardCard:
+                        case BoardCardView card when card is UnitBoardCard:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitModel unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
                                 actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             }
 
-                            actionElement.Init(card.CardView.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitView unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
@@ -261,17 +261,17 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCard card when card is SpellBoardCard:
-                        _rightBlockCardSpellElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                    case BoardCardView card when card is SpellBoardCard:
+                        _rightBlockCardSpellElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCard card when card is UnitBoardCard:
-                        _rightBlockCardUnitElement.Init(card.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                    case BoardCardView card when card is UnitBoardCard:
+                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
                         unitCardElement.Damage = (card as UnitBoardCard).Damage;
                         unitCardElement.Health = (card as UnitBoardCard).Health;
                         break;
                     case HandBoardCard card:
-                        _rightBlockCardUnitElement.Init(card.CardView.WorkingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardUnitModel unit:
                         _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -283,7 +283,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case WorkingCard workingCard:
-                        if(workingCard.LibraryCard.CardKind == Enumerators.CardKind.SPELL)
+                        if(workingCard.Prototype.CardKind == Enumerators.CardKind.SPELL)
                         {
                             _rightBlockCardSpellElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
@@ -414,13 +414,13 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.LibraryCard;
+                IReadOnlyCard prototype = workingCard.Prototype;
 
-                _titleText.text = libraryCard.Name;
-                _bodyText.text = libraryCard.Description;
-                _gooText.text = libraryCard.Cost.ToString();
-                Damage = libraryCard.Damage;
-                Health = libraryCard.Health;
+                _titleText.text = prototype.Name;
+                _bodyText.text = prototype.Description;
+                _gooText.text = prototype.Cost.ToString();
+                Damage = prototype.Damage;
+                Health = prototype.Health;
 
                 _initialDamage = Damage;
                 _initialHp = Health;
@@ -436,20 +436,20 @@ namespace Loom.ZombieBattleground
                     DrawStats();
                 };
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = prototype.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(libraryCard.Frame))
+                if (!string.IsNullOrEmpty(prototype.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + prototype.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{prototype.Picture.ToLowerInvariant()}");
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -545,25 +545,25 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.LibraryCard;
+                IReadOnlyCard prototype = workingCard.Prototype;
 
-                _titleText.text = libraryCard.Name;
-                _bodyText.text = libraryCard.Description;
-                _gooText.text = libraryCard.Cost.ToString();
+                _titleText.text = prototype.Name;
+                _bodyText.text = prototype.Description;
+                _gooText.text = prototype.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = prototype.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(libraryCard.Frame))
+                if (!string.IsNullOrEmpty(prototype.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + prototype.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{prototype.Picture.ToLowerInvariant()}");
 
                 if (_withEffect)
                 {
@@ -764,28 +764,28 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.LibraryCard;
+                IReadOnlyCard prototype = workingCard.Prototype;
 
-                _titleText.text = libraryCard.Name;
-                _bodyText.text = libraryCard.Description;
-                _gooText.text = libraryCard.Cost.ToString();
-                _attackText.text = libraryCard.Damage.ToString();
-                _defenseText.text = libraryCard.Health.ToString();
+                _titleText.text = prototype.Name;
+                _bodyText.text = prototype.Description;
+                _gooText.text = prototype.Cost.ToString();
+                _attackText.text = prototype.Damage.ToString();
+                _defenseText.text = prototype.Health.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = prototype.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(libraryCard.Frame))
+                if (!string.IsNullOrEmpty(prototype.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + prototype.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", libraryCard.CardType + "_icon"));
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{prototype.Picture.ToLowerInvariant()}");
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.CardType + "_icon"));
 
                 if (_withEffect)
                 {
@@ -862,25 +862,25 @@ namespace Loom.ZombieBattleground
             public override void Init(WorkingCard workingCard, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                IReadOnlyCard libraryCard = workingCard.LibraryCard;
+                IReadOnlyCard prototype = workingCard.Prototype;
 
-                _titleText.text = libraryCard.Name;
-                _bodyText.text = libraryCard.Description;
-                _gooText.text = libraryCard.Cost.ToString();
+                _titleText.text = prototype.Name;
+                _bodyText.text = prototype.Description;
+                _gooText.text = prototype.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), libraryCard.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
 
-                string setName = libraryCard.CardSetType.ToString();
+                string setName = prototype.CardSetType.ToString();
 
                 string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
-                if (!string.IsNullOrEmpty(libraryCard.Frame))
+                if (!string.IsNullOrEmpty(prototype.Frame))
                 {
-                    frameName = "Images/Cards/Frames/" + libraryCard.Frame;
+                    frameName = "Images/Cards/Frames/" + prototype.Frame;
                 }
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{libraryCard.Picture.ToLowerInvariant()}");
+                _pictureImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{prototype.Picture.ToLowerInvariant()}");
 
                 if (_withEffect)
                 {

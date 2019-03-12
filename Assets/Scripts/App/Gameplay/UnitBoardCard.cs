@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class UnitBoardCard : BoardCard
+    public class UnitBoardCard : BoardCardView
     {
         protected TextMeshPro AttackText;
 
@@ -51,12 +51,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public override void Init(WorkingCard card)
+        public override void Init(BoardUnitModel boardUnitModel)
         {
-            base.Init(card);
+            base.Init(boardUnitModel);
 
-            Damage = card.InstanceCard.Damage;
-            Health = card.InstanceCard.Health;
+            Damage = boardUnitModel.Card.InstanceCard.Damage;
+            Health = boardUnitModel.Card.InstanceCard.Health;
 
             _initialDamage = Damage;
             _initialHp = Health;
@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
             DrawStats();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", card.InstanceCard.CardType + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", boardUnitModel.Card.InstanceCard.CardType + "_icon"));
 
             DamageChangedEvent += (oldValue, newValue) =>
             {

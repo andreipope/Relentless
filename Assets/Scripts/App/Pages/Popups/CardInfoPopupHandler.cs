@@ -10,9 +10,9 @@ namespace Loom.ZombieBattleground
     {
         private IUIManager _uiManager;
 
-        private BoardCard _previewCard;
+        private BoardCardView _previewCard;
 
-        private BoardCard _selectedCollectionCard;
+        private BoardCardView _selectedCollectionCard;
 
         private bool _blockedClosing;
 
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
         public event Action Opening;
 
-        public event Action<BoardCard> PreviewCardInstantiated;
+        public event Action<BoardCardView> PreviewCardInstantiated;
 
         public bool IsStateChanging { get; private set; }
 
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
             ClearPreviewCard();
         }
 
-        public void SelectCard(BoardCard card)
+        public void SelectCard(BoardCardView card)
         {
             _uiManager.GetPopup<CardInfoPopup>().Hide();
             ClearPreviewCard();
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
                 Object.DestroyImmediate(_previewCard.GameObject);
             }
 
-            _previewCard = new BoardCard(Object.Instantiate(card.GameObject));
+            _previewCard = new BoardCardView(Object.Instantiate(card.GameObject));
             _previewCard.GameObject.name = "CardPreview";
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
             _uiManager.GetPopup<CardInfoPopup>().BlockedClosing = true;
             _uiManager.GetPopup<CardInfoPopup>().CardTransform = _previewCard.Transform;
-            _uiManager.DrawPopup<CardInfoPopup>(card.LibraryCard);
+            _uiManager.DrawPopup<CardInfoPopup>(card.BoardUnitModel.Card);
 
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>

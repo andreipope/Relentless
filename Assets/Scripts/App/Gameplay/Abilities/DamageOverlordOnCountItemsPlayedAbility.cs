@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
                 if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
                 {
                     _targetPlayer = GetOpponentOverlord();
-                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL && x != MainWorkingCard).Count; 
+                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.CardKind == Enumerators.CardKind.SPELL && x != MainWorkingCard).Count; 
                 }
             }
 

@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
         public GameObject CollectionsCardPlaceholders,
                           DeckCardPlaceholders;
 
-        private List<BoardCard> _createdDeckBoardCards,
+        private List<BoardCardView> _createdDeckBoardCards,
                                 _createdCollectionsBoardCards;
                                
         private GameObject _selfPage;
@@ -228,8 +228,8 @@ namespace Loom.ZombieBattleground
             CollectionsCardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersMyDecksLower");
             DeckCardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholdersMyDecksUpper");            
             
-            _createdDeckBoardCards = new List<BoardCard>();
-            _createdCollectionsBoardCards = new List<BoardCard>();
+            _createdDeckBoardCards = new List<BoardCardView>();
+            _createdCollectionsBoardCards = new List<BoardCardView>();
             
             _collectionData = new CollectionData();
             _collectionData.Cards = new List<CollectionCardData>();
@@ -385,7 +385,7 @@ namespace Loom.ZombieBattleground
                 if (cardData == null)
                     continue;
 
-                BoardCard boardCard = CreateBoardCard
+                BoardCardView boardCard = CreateBoardCard
                 (
                     card,
                     rectContainer,
@@ -408,7 +408,7 @@ namespace Loom.ZombieBattleground
                 multiPointerClickHandler.DoubleClickReceived += () =>
                 {
                     PlayAddCardSound();
-                    AddCardToDeck(boardCard.LibraryCard);
+                    AddCardToDeck(boardCard.BoardUnitModel.Card.Prototype);
                 };
 
                 collectionCardData = _collectionData.GetCardData(card.Name);
@@ -423,14 +423,14 @@ namespace Loom.ZombieBattleground
         
         public void UpdateBoardCardAmount(bool init, string cardId, int amount)
         {
-            foreach (BoardCard card in _createdCollectionsBoardCards)
+            foreach (BoardCardView card in _createdCollectionsBoardCards)
             {
-                if (card.LibraryCard.Name == cardId)
+                if (card.BoardUnitModel.Card.Prototype.Name == cardId)
                 {
                     card.SetAmountOfCardsInEditingPage
                     (
                         init, 
-                        GetMaxCopiesValue(card.LibraryCard), 
+                        GetMaxCopiesValue(card.BoardUnitModel.Card.Prototype),
                         amount, 
                         true
                     );
@@ -446,12 +446,12 @@ namespace Loom.ZombieBattleground
             RectTransform rectContainer = _myDeckPage.LocatorDeckCards.GetComponent<RectTransform>();
             foreach (DeckCardData card in deck.Cards)
             {
-                Card libraryCard = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
+                Card prototype = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
 
                 bool itemFound = false;
-                foreach (BoardCard item in _createdDeckBoardCards)
+                foreach (BoardCardView item in _createdDeckBoardCards)
                 {
-                    if (item.LibraryCard.Name == card.CardName)
+                    if (item.BoardUnitModel.Card.Prototype.Name == card.CardName)
                     {
                         itemFound = true;
                         break;
@@ -460,9 +460,9 @@ namespace Loom.ZombieBattleground
 
                 if (!itemFound)
                 {
-                    BoardCard boardCard = CreateBoardCard
+                    BoardCardView boardCard = CreateBoardCard
                     (
-                        libraryCard, 
+                        prototype,
                         rectContainer,
                         Vector3.zero, 
                         0.279f
@@ -471,7 +471,7 @@ namespace Loom.ZombieBattleground
 
                     _createdDeckBoardCards.Add(boardCard);
                     
-                    boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(libraryCard), card.Amount);
+                    boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount);
                     
                     OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -487,7 +487,7 @@ namespace Loom.ZombieBattleground
                     multiPointerClickHandler.DoubleClickReceived += ()=> 
                     {
                         PlayRemoveCardSound();
-                        RemoveCardFromDeck(boardCard.LibraryCard);
+                        RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
                     };
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
@@ -538,10 +538,10 @@ namespace Loom.ZombieBattleground
             }
 
             bool itemFound = false;
-            BoardCard foundItem = null;
-            foreach (BoardCard item in _createdDeckBoardCards)
+            BoardCardView foundItem = null;
+            foreach (BoardCardView item in _createdDeckBoardCards)
             {
-                if (item.LibraryCard.MouldId == card.MouldId)
+                if (item.BoardUnitModel.Card.Prototype.MouldId == card.MouldId)
                 {
                     foundItem = item;
                     itemFound = true;
@@ -557,7 +557,7 @@ namespace Loom.ZombieBattleground
             if (!itemFound)
             {
                 RectTransform rectContainer = _myDeckPage.LocatorDeckCards.GetComponent<RectTransform>();
-                BoardCard boardCard = CreateBoardCard
+                BoardCardView boardCard = CreateBoardCard
                 (
                     card, 
                     rectContainer,
@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=> 
                 {
-                    RemoveCardFromDeck(boardCard.LibraryCard);
+                    RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
                 };
 
                 _createdDeckBoardCards.Add(boardCard);
@@ -589,7 +589,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
 
             foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.LibraryCard.Name).Amount);
+                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.BoardUnitModel.Card.Prototype.Name).Amount);
 
             UpdateDeckCardPage();
             UpdateEditDeckCardsAmount();
@@ -611,7 +611,7 @@ namespace Loom.ZombieBattleground
                 collectionCardData.Amount
             );
             
-            BoardCard boardCard = _createdDeckBoardCards.Find(item => item.LibraryCard.MouldId == card.MouldId);
+            BoardCardView boardCard = _createdDeckBoardCards.Find(item => item.BoardUnitModel.Card.Prototype.MouldId == card.MouldId);
             boardCard.CardsAmountDeckEditing--;
             _myDeckPage.CurrentEditDeck.RemoveCard(card.Name);
 
@@ -630,17 +630,17 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.LibraryCard), boardCard.CardsAmountDeckEditing);
+                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.BoardUnitModel.Card.Prototype), boardCard.CardsAmountDeckEditing);
             }
             
             UpdateDeckCardPage();
             UpdateEditDeckCardsAmount();
         }
         
-        private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
+        private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
             GameObject go;
-            BoardCard boardCard;
+            BoardCardView boardCard;
             int amount = _collectionData.GetCardData(card.Name).Amount;
             
             switch (card.CardKind)
@@ -681,33 +681,33 @@ namespace Loom.ZombieBattleground
 
         #region Boardcard Handler
         
-        private void BoardCardDeckSingleClickHandler(BoardCard boardCard)
+        private void BoardCardDeckSingleClickHandler(BoardCardView boardCard)
         {
             if (_isDragging ||
                 _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
-            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.LibraryCard).ToList();           
+            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
             
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard,
+                boardCard.BoardUnitModel.Card.Prototype,
                 CardInfoWithSearchPopup.PopupType.REMOVE_CARD
             });
         }
         
-        private void BoardCardCollectionSingleClickHandler(BoardCard boardCard)
+        private void BoardCardCollectionSingleClickHandler(BoardCardView boardCard)
         {
             if (_isDragging ||
                 _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
-            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.LibraryCard).ToList();    
+            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.LibraryCard,
+                boardCard.BoardUnitModel.Card.Prototype,
                 CardInfoWithSearchPopup.PopupType.ADD_CARD
             });
         }
@@ -750,11 +750,11 @@ namespace Loom.ZombieBattleground
                 {
                     if (hit.collider.gameObject == _myDeckPage.DragAreaDeck)
                     {
-                        BoardCard boardCard = _createdCollectionsBoardCards.Find(x =>
+                        BoardCardView boardCard = _createdCollectionsBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         PlayAddCardSound();
-                        AddCardToDeck(boardCard.LibraryCard);
+                        AddCardToDeck(boardCard.BoardUnitModel.Card.Prototype);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
                     }
@@ -781,11 +781,11 @@ namespace Loom.ZombieBattleground
                 {
                     if (hit.collider.gameObject == _myDeckPage.DragAreaCollections)
                     {
-                        BoardCard boardCard = _createdDeckBoardCards.Find(x =>
+                        BoardCardView boardCard = _createdDeckBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         PlayRemoveCardSound();
-                        RemoveCardFromDeck(boardCard.LibraryCard);
+                        RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
                     }
                 }
             }
@@ -854,7 +854,7 @@ namespace Loom.ZombieBattleground
         {
             int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
             int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
-            List<BoardCard> displayCardList = new List<BoardCard>();
+            List<BoardCardView> displayCardList = new List<BoardCardView>();
             for( int i=0; i<_createdDeckBoardCards.Count; ++i)
             {   
                 if(i >= startIndex && i < endIndex)
@@ -1069,7 +1069,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetCollectionsBoardCards()
         {
-            foreach (BoardCard item in _createdCollectionsBoardCards)
+            foreach (BoardCardView item in _createdCollectionsBoardCards)
             {
                 item.Dispose();
             }
@@ -1099,7 +1099,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetDeckBoardCards()
         {
-            foreach (BoardCard item in _createdDeckBoardCards)
+            foreach (BoardCardView item in _createdDeckBoardCards)
             {
                 item.Dispose();
             }
@@ -1240,7 +1240,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
         
-        public async void ProcessRenameDeck(Deck deckToSave, string newName)
+        public void ProcessRenameDeck(Deck deckToSave, string newName)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             

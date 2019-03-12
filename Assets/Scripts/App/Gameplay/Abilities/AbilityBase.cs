@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public BoardSpell BoardSpell;
 
-        public BoardCard BoardCard;
+        public BoardCardView boardCardView;
 
         public BoardUnitModel TargetUnit;
 
@@ -511,7 +511,7 @@ namespace Loom.ZombieBattleground
 
         protected int GetAbilityIndex()
         {
-            int index = MainWorkingCard.LibraryCard.Abilities.IndexOf(AbilityData);
+            int index = MainWorkingCard.Prototype.Abilities.IndexOf(AbilityData);
             if (index == -1)
                 throw new Exception($"Ability {AbilityData} not found in card {MainWorkingCard}");
 

@@ -101,10 +101,10 @@ namespace Loom.ZombieBattleground
 
         #if UNITY_IOS || UNITY_ANDROID
         private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
-        private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
-        #endif       
+        private FiatValidationDataAppleStore _fiatValidationDataAppleStore;
 
-        event Action _finishRequestPack;
+        private Action _finishRequestPack;
+        #endif       
 
         public void Init()
         {
@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
             #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _finishRequestPack += OnFinishRequestPack;
+            _finishRequestPack = OnFinishRequestPack;
             #endif
 
             _selectedColor = Color.white;
@@ -594,10 +594,10 @@ namespace Loom.ZombieBattleground
             _finishRequestPack();
         }
 
-        private void OnFinishRequestPack()
+        private async void OnFinishRequestPack()
         {
             Log.Info("SUCCESSFULLY REQUEST for packs");
-            _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
+            await _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             PackMoveAnimation();
         }
         #endif
@@ -648,15 +648,14 @@ namespace Loom.ZombieBattleground
                 Log.Info($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
                 Log.Info($"productReceipt.transactionID: {productReceipt.transactionID}");
 
-                return productReceipt.transactionID;
-                
-                AppleInAppPurchaseReceipt apple = productReceipt as AppleInAppPurchaseReceipt;
-                if (null != apple) {
+                if (productReceipt is AppleInAppPurchaseReceipt apple) {
                     Log.Info($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
                     Log.Info($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
                     Log.Info($"apple.cancellationDate: {apple.cancellationDate}");
                     Log.Info($"apple.quantity: {apple.quantity}");
                 }
+
+                return productReceipt.transactionID;
             }
             return "";
         }
