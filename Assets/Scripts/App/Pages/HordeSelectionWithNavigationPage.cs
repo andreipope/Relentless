@@ -256,7 +256,6 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRightArrowHandler()
         {
-            Debug.LogError(1111);
             if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonRightArrow.name))
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
