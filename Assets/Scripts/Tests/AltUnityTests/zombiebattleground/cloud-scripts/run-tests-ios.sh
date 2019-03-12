@@ -26,6 +26,9 @@ echo "Installing requirements from requirements.txt"
 chmod 0755 requirements.txt
 pip install --user  --requirement requirements.txt
 
+sudo pip uninstall --yes altunityrunner || true
+sudo pip install -e "altunitybindings"
+
 #########################################################
 #
 # Preparing to start Appium
