@@ -247,7 +247,9 @@ namespace Loom.ZombieBattleground
                 }
 
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeSelected, id);
-                return;
+
+                if (!_tutorialManager.CheckAvailableTooltipByOwnerId(id))
+                    return;
             }
 
             Vector3 cardPosition;
@@ -442,22 +444,17 @@ namespace Loom.ZombieBattleground
 
         private void PointerEventSolverClickedHandler()
         {
-            if (!_gameplayManager.IsTutorial ||
-                     (_gameplayManager.IsTutorial &&
-                     _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
-                     SpecificBattlegroundInfo.DisabledInitialization))
-            {
-                _timerManager.StopTimer(SetStatusZoomingFalse);
-                _cardsZooming = true;
-                _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
-
-                _battlegroundController.CardsZoomed = true;
-                _battlegroundController.UpdatePositionOfCardsInPlayerHand();
-            }
-            else
+            if (_tutorialManager.IsTutorial)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
+
+            _timerManager.StopTimer(SetStatusZoomingFalse);
+            _cardsZooming = true;
+            _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
+
+            _battlegroundController.CardsZoomed = true;
+            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
         private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
