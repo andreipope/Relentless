@@ -658,7 +658,19 @@ namespace Loom.ZombieBattleground
                     continue;
                 }
 
+                int index = i;
                 deckInfoObject._button.gameObject.SetActive(true);
+
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                multiPointerClickHandler.DoubleClickReceived += ()=>
+                {
+                    ChangeSelectDeckIndex(index);
+                    ButtonEditHandler();
+                    PlayClickSound();
+                };
+#endif
+                
                 Deck deck = deckListToDisplay[i];
                 
                 string deckName = deck.Name;
@@ -689,11 +701,11 @@ namespace Loom.ZombieBattleground
                     deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();
-                int index = i;
+                deckInfoObject._button.onClick.RemoveAllListeners();                
                 deckInfoObject._button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
+                    PlayClickSound();
                 });
             }
 
@@ -797,9 +809,9 @@ namespace Loom.ZombieBattleground
             public TextMeshProUGUI _textCardsAmount;
         }
 
-        #endregion
+#endregion
 
-        #region Util
+#region Util
 
         public void PlayClickSound()
         {
@@ -813,6 +825,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
-        #endregion
+#endregion
     }
 }
