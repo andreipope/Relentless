@@ -225,7 +225,7 @@ namespace Loom.ZombieBattleground
 
             Model.FightSequenceHandler = this;
 
-            if (!_uniqueAnimationsController.HasUniqueAnimation(Model.Card))
+            if (!_uniqueAnimationsController.HasUniqueAnimation(Model))
             {
                 switch (Model.InitialUnitType)
                 {
@@ -276,15 +276,15 @@ namespace Loom.ZombieBattleground
             }
 
         }
-        private void ModelOnUnitHpChanged()
+        private void ModelOnUnitHpChanged(int oldValue, int newValue)
         {
-            UpdateUnitInfoText(_healthText, Model.CurrentHp, Model.InitialHp, Model.MaxCurrentHp);
+            UpdateUnitInfoText(_healthText, Model.CurrentHp, Model.Card.Prototype.Health, Model.MaxCurrentHp);
             CheckOnDie();
         }
 
-        private void ModelOnUnitDamageChanged()
+        private void ModelOnUnitDamageChanged(int oldValue, int newValue)
         {
-            UpdateUnitInfoText(_attackText, Model.CurrentDamage, Model.InitialDamage, Model.MaxCurrentDamage);
+            UpdateUnitInfoText(_attackText, Model.CurrentDamage, Model.Card.Prototype.Damage, Model.MaxCurrentDamage);
             if(Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
             {
                 SetNormalGlowFromUnitType();
@@ -520,13 +520,13 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                if (_uniqueAnimationsController.HasUniqueAnimation(Model.Card) && (!playUniqueAnimation || !firstAppear))
+                if (_uniqueAnimationsController.HasUniqueAnimation(Model) && (!playUniqueAnimation || !firstAppear))
                 {
                     InternalTools.DoActionDelayed(ArrivalAnimationEventHandler, delay);
                 }
             };
 
-            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model.Card) && playUniqueAnimation)
+            if (firstAppear && _uniqueAnimationsController.HasUniqueAnimation(Model) && playUniqueAnimation)
             {
                 _uniqueAnimationsController.PlayUniqueArrivalAnimation(Model, Model.Card, startGeneralArrivalCallback: generalArrivalAnimationAction, endArrivalCallback: ArrivalAnimationEventHandler);
             }

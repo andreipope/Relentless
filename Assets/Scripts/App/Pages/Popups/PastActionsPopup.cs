@@ -161,13 +161,13 @@ namespace Loom.ZombieBattleground
                     _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
                     break;
                 case BoardSpell spell:
-                    _leftBlockCardSpellElement.Init(spell.Card);
+                    _leftBlockCardSpellElement.Init(spell.BoardUnitModel.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unitBoardCard.Damage;
-                    unitCardElement.Health = unitBoardCard.Health;
+                    unitCardElement.Damage = unitBoardCard.BoardUnitModel.CurrentDamage;
+                    unitCardElement.Health = unitBoardCard.BoardUnitModel.CurrentHp;
                     break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
@@ -264,11 +264,11 @@ namespace Loom.ZombieBattleground
                     case BoardCardView card when card is SpellBoardCard:
                         _rightBlockCardSpellElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCardView card when card is UnitBoardCard:
-                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                    case BoardCardView card when card is UnitBoardCard boardCard:
+                        _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = (card as UnitBoardCard).Damage;
-                        unitCardElement.Health = (card as UnitBoardCard).Health;
+                        unitCardElement.Damage = boardCard.BoardUnitModel.CurrentDamage;
+                        unitCardElement.Health = boardCard.BoardUnitModel.CurrentHp;
                         break;
                     case HandBoardCard card:
                         _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -306,8 +306,8 @@ namespace Loom.ZombieBattleground
             public Enumerators.ActionType ActionType;
             public object Caller;
             public List<TargetEffectParam> TargetEffects;
-            public bool checkForCardOwner;
-            public WorkingCard workingCard;
+            public bool CheckForCardOwner;
+            public BoardUnitModel BoardUnitModel;
         }
 
         public class TargetEffectParam

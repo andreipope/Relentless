@@ -57,13 +57,13 @@ namespace Loom.ZombieBattleground
         {
             if (report != null)
             {
-                if (report.checkForCardOwner && !ActionsReports.Exists(x => x.workingCard == report.workingCard))
+                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.BoardUnitModel == report.BoardUnitModel))
                 {
                     _bufferActionsReports.Add(report);
                 }
                 else
                 {
-                    AddNewPostGameActionReport(report, !report.checkForCardOwner);
+                    AddNewPostGameActionReport(report, !report.CheckForCardOwner);
                 }
             }
         }

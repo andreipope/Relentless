@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
                 Object.DestroyImmediate(_previewCard.GameObject);
             }
 
-            _previewCard = new BoardCardView(Object.Instantiate(card.GameObject));
+            _previewCard = new BoardCardView(Object.Instantiate(card.GameObject), card.BoardUnitModel);
             _previewCard.GameObject.name = "CardPreview";
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
             _uiManager.GetPopup<CardInfoPopup>().BlockedClosing = true;
             _uiManager.GetPopup<CardInfoPopup>().CardTransform = _previewCard.Transform;
-            _uiManager.DrawPopup<CardInfoPopup>(card.BoardUnitModel.Card);
+            _uiManager.DrawPopup<CardInfoPopup>(card.BoardUnitModel.Card.Prototype);
 
             GameClient.Get<ITimerManager>().AddTimer(
                 x =>

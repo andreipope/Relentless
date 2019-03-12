@@ -8,11 +8,11 @@ namespace Loom.ZombieBattleground
 
         public Player Owner;
 
-        public IReadOnlyCard Prototype;
+        public IReadOnlyCard Prototype { get; set; }
 
-        public CardInstanceSpecificData InstanceCard;
+        public CardInstanceSpecificData InstanceCard { get; }
 
-        public InstanceId InstanceId { get; set; }
+        public InstanceId InstanceId { get; }
 
         public int TutorialObjectId;
 

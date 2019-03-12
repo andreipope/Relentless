@@ -61,14 +61,14 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
+            BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
 
             if (!forceSkipForPlayerToo)
             {
                 skipEntryAbilities = false;
             }
-            
-            await _testHelper.PlayCardFromHandToBoard(workingCard, position, entryAbilityTargetBoardObject, skipEntryAbilities);
+
+            await _testHelper.PlayCardFromHandToBoard(boardUnitModel, position, entryAbilityTargetBoardObject, skipEntryAbilities);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
