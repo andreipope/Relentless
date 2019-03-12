@@ -1259,17 +1259,14 @@ namespace Loom.ZombieBattleground.Test
             return _testBroker.GetPlayer(_opponent);
         }
 
-        public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
         {
-            BoardUnitView boardUnitView =
-                _testBroker.GetPlayer(player)
-                    .BoardCards
-                    .FirstOrDefault(card => card.InstanceId == instanceId);
-
-            if (boardUnitView == null)
+            BoardUnitModel boardUnitModel = BattlegroundController.GetBoardUnitModelByInstanceId(instanceId);
+            if (boardUnitModel == null)
                 throw new Exception($"Card {instanceId} not found on board");
 
-            return boardUnitView;
+            Assert.AreEqual(_testBroker.GetPlayer(player), boardUnitModel.OwnerPlayer, "_testBroker.GetPlayer(player) != boardUnitModel.OwnerPlayer");
+            return boardUnitModel;
         }
 
         /// <summary>

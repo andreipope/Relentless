@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
+            CardsController.ReturnCardToHand(TargetUnit);
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>

@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             if (PredefinedTargets != null)
             {
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in targets)
                 {
-                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref targetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
                 }
             }
             else
@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
                     if (playerOwner.CardsOnBoard.Count < Constants.MaxBoardUnits)
                     {
                         boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref TargetEffects, ref boardCards, true);
+                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref targetEffects, ref boardCards, true);
                     }
                 }
             }
@@ -87,12 +87,12 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 
         private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCardView,
-                                            ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
+                                            ref List<PastActionsPopup.TargetEffectParam> targetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
             owner.RemoveCardFromDeck(boardCardView.BoardUnitModel);
@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
 
             cards.Add(boardCardView.HandBoardCard);
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
                 Target = boardCardView,

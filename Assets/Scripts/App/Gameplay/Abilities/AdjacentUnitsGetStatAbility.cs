@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
 
             List<BoardUnitView> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             foreach (BoardUnitView unit in adjacent)
             {
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
                     unit.Model.BuffedHp += Health;
                     unit.Model.CurrentHp += Health;
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                         Target = unit.Model,
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
                         Target = unit.Model,
@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
     }

@@ -78,11 +78,11 @@ namespace Loom.ZombieBattleground
 
             if (_units.Count > 0)
             {
-                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
                 foreach (BoardUnitModel unit in _units)
                 {
-                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    targetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = actionType,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardObject> targets = new List<BoardObject>();
 
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
                 boardUnitView = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End);
                 boardUnitModel = boardUnitView.Model;
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
                     Target = boardUnitModel,
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
                 targets.Add(boardUnitModel);
             }
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                 Target = AbilityUnitOwner,
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
 
             InvokeUseAbilityEvent(

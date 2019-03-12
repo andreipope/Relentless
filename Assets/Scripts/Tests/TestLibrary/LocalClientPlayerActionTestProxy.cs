@@ -98,13 +98,15 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitView boardUnitView = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitModel boardUnitModel = _testHelper.GetBoardUnitModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+
             void CheckAttacker()
             {
-                Assert.NotNull(boardUnitView.Model.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
-                Assert.True(boardUnitView.Model.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.NotNull(boardUnitModel.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(boardUnitModel.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
                 Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
-                Assert.True(boardUnitView.Model.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+                Assert.True(boardUnitModel.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
             }
 
             CheckAttacker();

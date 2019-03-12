@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             if (PredefinedTargets != null)
             {
@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in boardCardsTargets)
                 {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards, false);
+                    PutCardFromHandToBoard(target.OwnerPlayer, target.CardView, ref targetEffects, ref boardCards, false);
                 }
                 return;
             }
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                     break;
 
-                PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref TargetEffects, ref boardCards, true);
+                PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref targetEffects, ref boardCards, true);
             }
 
             InvokeUseAbilityEvent(
@@ -93,17 +93,17 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 
 
         private void PutCardFromHandToBoard(Player owner, BoardCardView boardCardView,
-            ref List<PastActionsPopup.TargetEffectParam> TargetEffects, ref List<HandBoardCard> cards, bool activateAbility)
+            ref List<PastActionsPopup.TargetEffectParam> targetEffects, ref List<HandBoardCard> cards, bool activateAbility)
         {
             CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
             cards.Add(boardCardView.HandBoardCard);
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayFromHand,
                 Target = boardCardView.HandBoardCard

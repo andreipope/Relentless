@@ -89,9 +89,10 @@ namespace Loom.ZombieBattleground
                                 CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                 break;
                             case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                                foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
+                                foreach (BoardUnitModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                                 {
-                                    CreateVfx(cardPlayer.Transform.position, true);
+                                    BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                    CreateVfx(cardPlayerView.Transform.position, true);
                                 }
                                 break;
                         }

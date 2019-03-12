@@ -126,6 +126,12 @@ namespace Loom.ZombieBattleground
             return view;
         }
 
+        // TODO: refactor-state: remove!
+        public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
+        {
+            return GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+        }
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -1042,9 +1048,6 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitModel boardUnitModel =
                 _gameplayManager.OpponentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
-                    .Where(v => v != null)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)

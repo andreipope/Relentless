@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
                 effectType = Enumerators.ActionEffectType.Heavy;
             }
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             switch (AbilityData.AbilitySubTrigger)
             {
@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
 
                             TakeTypeToUnit(allies[random]);
 
-                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                             {
                                 ActionEffectType = effectType,
                                 Target = allies[random]
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
                                 unit.CurrentHp > 0)
                         .Count() == 0)
                     {
-                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = effectType,
                             Target = AbilityUnitOwner
@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
                         {
                             TakeTypeToUnit(unit);
 
-                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                             {
                                 ActionEffectType = effectType,
                                 Target = unit
@@ -138,11 +138,11 @@ namespace Loom.ZombieBattleground
             }
 
 
-            if (TargetEffects.Count > 0)
+            if (targetEffects.Count > 0)
             {
                 Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
 
-                if (TargetEffects.Count == 1)
+                if (targetEffects.Count == 1)
                 {
                     actionType = Enumerators.ActionType.CardAffectingCard;
                 }
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = actionType,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

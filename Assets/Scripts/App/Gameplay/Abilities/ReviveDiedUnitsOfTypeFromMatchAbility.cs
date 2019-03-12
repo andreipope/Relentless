@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
         {
             Player playerOwner = boardUnitModel.Owner;
 
-            if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
+            if (playerOwner.CardsOnBoard.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
             Card prototype = new Card(boardUnitModel.Prototype);
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
                 GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
             }
 
-            RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitView);
+            RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitModel);
 
             BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }

@@ -225,13 +225,13 @@ namespace Loom.ZombieBattleground
                     switch (item)
                     {
                         case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            if (opponent.BoardCards.Count > 0)
+                            if (opponent.CardsOnBoard.Count > 0)
                             {
                                 available = true;
                             }
                             break;
                         case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            if (localPlayer.BoardCards.Count > 1 || kind == Enumerators.CardKind.SPELL)
+                            if (localPlayer.CardsOnBoard.Count > 1 || kind == Enumerators.CardKind.SPELL)
                             {
                                 available = true;
                             }
@@ -306,8 +306,8 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        IReadOnlyList<BoardUnitView> units =
-                            player.BoardCards.FindAll(x =>
+                        IReadOnlyList<BoardUnitModel> units =
+                            player.CardsOnBoard.FindAll(x =>
                                 x.InitialUnitType == ability.TargetCardType &&
                                 x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
@@ -317,8 +317,8 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        IReadOnlyList<BoardUnitView> units =
-                            opponent.BoardCards.FindAll(x =>
+                        IReadOnlyList<BoardUnitModel> units =
+                            opponent.CardsOnBoard.FindAll(x =>
                                 x.InitialUnitType == ability.TargetCardType &&
                                 x.UnitStatus == ability.TargetUnitStatusType);
                         if (units.Count > 0)
@@ -352,8 +352,8 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER_CARD:
                     {
-                        IReadOnlyList<BoardUnitView> units =
-                            player.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                        IReadOnlyList<BoardUnitModel> units =
+                            player.CardsOnBoard.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -362,8 +362,8 @@ namespace Loom.ZombieBattleground
                     }
                     case Enumerators.AbilityTargetType.OPPONENT_CARD:
                     {
-                        IReadOnlyList<BoardUnitView> units =
-                            opponent.BoardCards.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
+                        IReadOnlyList<BoardUnitModel> units =
+                            opponent.CardsOnBoard.FindAll(x => x.UnitStatus == ability.TargetUnitStatusType);
 
                         if (units.Count > 0)
                             return true;
@@ -392,7 +392,7 @@ namespace Loom.ZombieBattleground
             if (ability.AbilityType == Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT &&
                 ability.CallType == Enumerators.AbilityCallType.ENTRY &&
                 ability.ActivityType == Enumerators.AbilityActivityType.ACTIVE &&
-                boardUnitModel.Owner.BoardCards.Count >= boardUnitModel.Owner.MaxCardsInPlay)
+                boardUnitModel.Owner.CardsOnBoard.Count >= boardUnitModel.Owner.MaxCardsInPlay)
                 return false;
 
             return true;

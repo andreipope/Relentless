@@ -228,8 +228,8 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
-                        _gameplayManager.OpponentPlayer.BoardCards :
-                        _gameplayManager.CurrentPlayer.BoardCards;
+                        _gameplayManager.OpponentPlayer.CardsOnBoard :
+                        _gameplayManager.CurrentPlayer.CardsOnBoard;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
                     FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;

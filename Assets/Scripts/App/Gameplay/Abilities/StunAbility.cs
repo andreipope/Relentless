@@ -41,16 +41,16 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS))
             {
-                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitView unit in GetOpponentOverlord().BoardCards)
+                foreach (BoardUnitModel unit in GetOpponentOverlord().CardsOnBoard)
                 {
-                    StunUnit(unit.Model);
+                    StunUnit(unit);
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                        Target = unit.Model,
+                        Target = unit,
                     });
                 }
 
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

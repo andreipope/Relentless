@@ -107,7 +107,6 @@ namespace Loom.ZombieBattleground
         private bool _isDead;
 
         private int _turnsLeftToFreeFromStun;
-        //private readonly UniquePositionedList<BoardUnitView> _boardCards;
         private readonly UniquePositionedList<BoardSpell> _boardSpellsInUse;
         private readonly UniquePositionedList<BoardUnitModel> _cardsInDeck;
         private readonly UniquePositionedList<BoardUnitModel> _cardsInGraveyard;
@@ -140,7 +139,6 @@ namespace Loom.ZombieBattleground
             _cardsInGraveyard = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             _cardsInHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             _cardsOnBoard = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
-            _boardCards = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
             _boardSpellsInUse = new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
             _cardsPreparingToHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
 
@@ -354,8 +352,6 @@ namespace Loom.ZombieBattleground
         }
 
         public bool IsLocalPlayer { get; set; }
-
-        //public IReadOnlyList<BoardUnitView> BoardCards => _boardCards;
 
         public IReadOnlyList<BoardSpell> BoardSpellsInUse => _boardSpellsInUse;
 

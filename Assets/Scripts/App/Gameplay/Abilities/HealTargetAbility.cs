@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
 
         private void HealRandomCountOfAlliesCompleted()
         {
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = Value;
             foreach (BoardObject boardObject in _targets)
@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
                 if (value > Value)
                     value = Value;
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                     Target = boardObject,
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 

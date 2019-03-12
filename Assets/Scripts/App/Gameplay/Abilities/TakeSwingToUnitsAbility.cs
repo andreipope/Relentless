@@ -31,16 +31,16 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+                foreach (BoardUnitModel unit in PlayerCallerOfAbility.CardsOnBoard)
                 {
-                    unit.Model.AddBuffSwing();
+                    unit.AddBuffSwing();
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Swing,
-                        Target = unit.Model,
+                        Target = unit,
                     });
                 }
 
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

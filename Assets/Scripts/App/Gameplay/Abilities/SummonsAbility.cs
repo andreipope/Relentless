@@ -98,14 +98,7 @@ namespace Loom.ZombieBattleground
 
         private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
         {
-            if (owner.IsLocalPlayer)
-            {
-                GameplayManager.CurrentPlayer.BoardCards.Insert(position, unit);
-            }
-            else
-            {
-                GameplayManager.OpponentPlayer.BoardCards.Insert(position, unit);
-            }
+            owner.BoardCards.Insert(position, unit);
         }
     }
 }

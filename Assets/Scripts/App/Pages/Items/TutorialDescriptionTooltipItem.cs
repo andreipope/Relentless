@@ -118,18 +118,22 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
+                BoardUnitModel boardUnitModel;
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
+                        boardUnitModel = _gameplayManager.CurrentPlayer.CardsOnBoard.First((x) =>
                             x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
+                        boardUnitModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
                             x.TutorialObjectId == ownerId);
                         break;
-                    default: break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
+
+                _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
             }
             else if(boardObjectOwner != null)
             {

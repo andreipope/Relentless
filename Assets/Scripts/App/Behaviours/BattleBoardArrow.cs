@@ -8,9 +8,9 @@ namespace Loom.ZombieBattleground
     {
         public UniqueList<BoardObject> IgnoreBoardObjectsList;
 
-        public IReadOnlyList<BoardUnitView> BoardCards;
+        public IReadOnlyList<BoardUnitModel> BoardCards;
 
-        public BoardUnitView Owner;
+        public BoardUnitModel Owner;
 
         public bool IgnoreHeavy;
 
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(player))
                 return;
 
-            if (Owner != null && !Owner.Model.HasFeral && Owner.Model.HasBuffRush)
+            if (Owner != null && !Owner.HasFeral && Owner.HasBuffRush)
                 return;
 
             if (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) &&
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 
         protected bool OpponentHasHeavyUnits()
         {
-            return BoardCards?.FindAll(x => x.Model.IsHeavyUnit && x.Model.CurrentHp > 0).Count > 0;
+            return BoardCards?.FindAll(x => x.IsHeavyUnit && x.CurrentHp > 0).Count > 0;
         }
 
         private void Awake()

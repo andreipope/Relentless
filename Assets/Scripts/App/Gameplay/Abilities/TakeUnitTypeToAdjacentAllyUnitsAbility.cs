@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
                 effectType = Enumerators.ActionEffectType.Heavy;
             }
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             Player opponent = GetOpponentOverlord();
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
                 {
                     TakeTypeToUnit(opponent.CardsOnBoard[targetIndex - 1]);
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = effectType,
                         Target = opponent.CardsOnBoard[targetIndex - 1]
@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
                 {
                     TakeTypeToUnit(opponent.CardsOnBoard[targetIndex + 1]);
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = effectType,
                         Target = opponent.CardsOnBoard[targetIndex + 1]
@@ -81,11 +81,11 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (TargetEffects.Count > 0)
+            if (targetEffects.Count > 0)
             {
                 Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
 
-                if (TargetEffects.Count == 1)
+                if (targetEffects.Count == 1)
                 {
                     actionType = Enumerators.ActionType.CardAffectingCard;
                 }
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = actionType,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

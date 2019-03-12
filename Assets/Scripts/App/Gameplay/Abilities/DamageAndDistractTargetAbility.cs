@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
             BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
 
-            BattlegroundController.DistractUnit(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
+            BattlegroundController.DistractUnit(TargetUnit);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
