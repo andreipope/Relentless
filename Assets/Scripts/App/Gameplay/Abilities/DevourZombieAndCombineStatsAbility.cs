@@ -83,15 +83,30 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardUnitModel unit in _units)
             {
                 if (unit == AbilityUnitOwner)
                     continue;
 
-                BattlegroundController.DestroyBoardUnit(unit, false, true);
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Devour,
+                    Target = unit,
+                });
+
+                BattlegroundController.DestroyBoardUnit(unit, false, true, false);
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
@@ -115,6 +130,14 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;
+
+            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel(unit);
+            RanksController.AddUnitForIgnoreRankBuff(view);
+
+            unit.IsReanimated = true;
+            view.StopSleepingParticles();
+
+            unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
         }
     }
 }

@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground
             ClearBattleground();
         }
 
-        public void KillBoardCard(BoardUnitModel boardUnitModel, bool withDeathEffect = true)
+        public void KillBoardCard(BoardUnitModel boardUnitModel, bool withDeathEffect = true, bool updateBoard = true)
         {
             BoardUnitView boardUnitView = GetBoardUnitViewByModel(boardUnitModel);
 
@@ -267,7 +267,10 @@ namespace Loom.ZombieBattleground
                     endOfAnimationCallback();
                     endOfDestroyAnimationCallback();
 
-                    _boardController.UpdateWholeBoard(null);
+                    if (updateBoard)
+                    {
+                        _boardController.UpdateWholeBoard(null);
+                    }
 
                     completeCallback?.Invoke();
                 }
@@ -898,7 +901,11 @@ namespace Loom.ZombieBattleground
             return card;
         }
 
-        public void DestroyBoardUnit(BoardUnitModel unit, bool withDeathEffect = true, bool isForceDestroy = false, bool handleShield = false)
+        public void DestroyBoardUnit(BoardUnitModel unit,
+                                    bool withDeathEffect = true,
+                                    bool isForceDestroy = false,
+                                    bool handleShield = false,
+                                    bool updateBoard = true)
         {
             if (!isForceDestroy && unit.HasBuffShield && handleShield)
             {
@@ -908,7 +915,7 @@ namespace Loom.ZombieBattleground
             {
                 _gameplayManager.GetController<BattleController>().CheckOnKillEnemyZombie(unit);
 
-                unit?.Die(withDeathEffect: withDeathEffect);
+                unit?.Die(withDeathEffect: withDeathEffect, updateBoard: updateBoard);
             }
         }
 
