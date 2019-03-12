@@ -77,20 +77,20 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ElementFilterPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
-            _imageGlow = Self.transform.Find("Scaler/Image_glow").GetComponent<Image>();  
+            _imageGlow = Self.transform.Find("Image_glow").GetComponent<Image>();  
             
-            _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();                        
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
             _buttonClose.onClick.AddListener(PlayClickSound);
             
-            _buttonSave = Self.transform.Find("Scaler/Button_Save").GetComponent<Button>();                        
+            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
             _buttonSave.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.SetType setType in _availableSetTypeList)
             {
-                Button buttonElementIcon = Self.transform.Find("Scaler/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
                 (
                     ()=> ButtonElementIconHandler(setType)

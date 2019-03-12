@@ -135,42 +135,42 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardFilterPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false); 
             
-            _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();                        
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
             _buttonClose.onClick.AddListener(PlayClickSound);
             
-            _buttonSave = Self.transform.Find("Scaler/Button_Save").GetComponent<Button>();                        
+            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
             _buttonSave.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectNone = Self.transform.Find("Scaler/Button_SelectNone").GetComponent<Button>();                        
+            _buttonSelectNone = Self.transform.Find("Button_SelectNone").GetComponent<Button>();                        
             _buttonSelectNone.onClick.AddListener(ButtonSelectNoneHandler);
             _buttonSelectNone.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectAll = Self.transform.Find("Scaler/Button_SelectAll").GetComponent<Button>();                        
+            _buttonSelectAll = Self.transform.Find("Button_SelectAll").GetComponent<Button>();                        
             _buttonSelectAll.onClick.AddListener(ButtonSelectAllHandler);
             _buttonSelectAll.onClick.AddListener(PlayClickSound);
             
-            _buttonElement = Self.transform.Find("Scaler/Button_Element").GetComponent<Button>();                        
+            _buttonElement = Self.transform.Find("Button_Element").GetComponent<Button>();                        
             _buttonElement.onClick.AddListener(ButtonElementHandler);
             _buttonElement.onClick.AddListener(PlayClickSound);
             
-            _buttonRank = Self.transform.Find("Scaler/Button_Rank").GetComponent<Button>();                        
+            _buttonRank = Self.transform.Find("Button_Rank").GetComponent<Button>();                        
             _buttonRank.onClick.AddListener(ButtonRankHandler);
             _buttonRank.onClick.AddListener(PlayClickSound);
             
-            _buttonType = Self.transform.Find("Scaler/Button_Type").GetComponent<Button>();                        
+            _buttonType = Self.transform.Find("Button_Type").GetComponent<Button>();                        
             _buttonType.onClick.AddListener(ButtonTypeHandler);
             _buttonType.onClick.AddListener(PlayClickSound);
             
-            _buttonGooCost = Self.transform.Find("Scaler/Button_GooCost").GetComponent<Button>();                        
+            _buttonGooCost = Self.transform.Find("Button_GooCost").GetComponent<Button>();                        
             _buttonGooCost.onClick.AddListener(ButtonGooCostHandler);
             _buttonGooCost.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
             {
-                Button buttonElementIcon = Self.transform.Find("Scaler/Tab_Element/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Tab_Element/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
                 (
                     ()=> ButtonElementIconHandler(setType)
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
             _buttonRankDictionary.Clear();
             foreach (Enumerators.CardRank rank in AllAvailableRankList)
             {
-                Button button = Self.transform.Find("Scaler/Tab_Rank/Group_RankIcons/Button_rank_"+rank.ToString().ToLower()).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_Rank/Group_RankIcons/Button_rank_"+rank.ToString().ToLower()).GetComponent<Button>();
                 button.onClick.AddListener
                 (
                     ()=> ButtonRankIconHandler(rank)
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
             _buttonTypeDictionary.Clear();
             foreach (Enumerators.CardType type in AllAvailableTypeList)
             {
-                Button button = Self.transform.Find("Scaler/Tab_Type/Group_TypeIcons/Button_type_"+type.ToString().ToLower()).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_Type/Group_TypeIcons/Button_type_"+type.ToString().ToLower()).GetComponent<Button>();
                 button.onClick.AddListener
                 (
                     ()=> ButtonTypeIconHandler(type)
@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
             for(int i=0;i<11;++i)
             {
                 int gooIndex = i;
-                Button button = Self.transform.Find("Scaler/Tab_GooCost/Group_GooIcons/Button_element_goo_" + i).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_GooCost/Group_GooIcons/Button_element_goo_" + i).GetComponent<Button>();
                 button.onClick.AddListener(() =>
                     {
                         FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
@@ -222,10 +222,10 @@ namespace Loom.ZombieBattleground
 
             _tabObjects = new GameObject[]
             {
-                Self.transform.Find("Scaler/Tab_Element").gameObject,
-                Self.transform.Find("Scaler/Tab_Rank").gameObject,
-                Self.transform.Find("Scaler/Tab_Type").gameObject,
-                Self.transform.Find("Scaler/Tab_GooCost").gameObject
+                Self.transform.Find("Tab_Element").gameObject,
+                Self.transform.Find("Tab_Rank").gameObject,
+                Self.transform.Find("Tab_Type").gameObject,
+                Self.transform.Find("Tab_GooCost").gameObject
             };
 
             LoadCacaheFilterData();
