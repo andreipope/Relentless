@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
                 {
                     _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentDefense < x.Model.MaxCurrentDefense).Select(x => x.Model));
                 }
 
-                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER) && (BoardItem == null || BoardItem.BoardUnitModel.Prototype.MouldId != ZedKitId))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER) && (BoardItem == null || BoardItem.BoardUnitModel.Prototype.MouldId != ZedKitId))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }

@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground.Data
                 },
                 Stat = (StatType.Types.Enum) ability.AbilityStatType,
                 Set = (CardSetType.Types.Enum) ability.Faction,
-                Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
+                Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffect,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
                 TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatusType,
@@ -105,9 +105,9 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
             {
                 GooCost = data.Cost,
-                Attack = data.Attack,
+                Attack = data.Damage,
                 Defense = data.Defense,
-                Set = (CardSetType.Types.Enum) data.CardSetType,
+                Set = (CardSetType.Types.Enum) data.Faction,
                 Type = (CreatureType.Types.Enum) data.CardType,
             };
 

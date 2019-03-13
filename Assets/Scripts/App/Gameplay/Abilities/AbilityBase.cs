@@ -24,13 +24,13 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AffectObjectType AffectObjectType;
 
-        public Enumerators.AbilityEffectType AbilityEffectType;
+        public Enumerators.AbilityEffect AbilityEffectType;
 
         public Enumerators.CardType TargetCardType = Enumerators.CardType.UNDEFINED;
 
         public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
-        public List<Enumerators.AbilityTarget> AbilityTargetTypes;
+        public List<Enumerators.Target> AbilityTargetTypes;
 
         public Enumerators.CardKind CardKind;
 
@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground
             AbilityActivityType = ability.ActivityType;
             AbilityTrigger = ability.Trigger;
             AbilityTargetTypes = ability.AbilityTarget;
-            AbilityEffectType = ability.AbilityEffectType;
+            AbilityEffectType = ability.AbilityEffect;
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponenentAvatar = GameplayManager.OpponentPlayer;
 

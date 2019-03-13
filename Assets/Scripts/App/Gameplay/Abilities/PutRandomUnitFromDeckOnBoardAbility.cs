@@ -51,15 +51,15 @@ namespace Loom.ZombieBattleground
                 Player playerOwner;
                 UniquePositionedList<BoardUnitModel> filteredCards = null;
 
-                foreach (Enumerators.AbilityTarget targetType in AbilityData.AbilityTarget)
+                foreach (Enumerators.Target targetType in AbilityData.AbilityTarget)
                 {
                     playerOwner = null;
                     switch (targetType)
                     {
-                        case Enumerators.AbilityTarget.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             playerOwner = PlayerCallerOfAbility;
                             break;
-                        case Enumerators.AbilityTarget.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             playerOwner = GetOpponentOverlord();
                             break;
                         default:

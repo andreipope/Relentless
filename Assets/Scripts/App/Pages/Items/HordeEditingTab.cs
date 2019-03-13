@@ -960,7 +960,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
                     cards = cards = set.Cards.ToList();
                 }
 
@@ -990,7 +990,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
                     cards = set.Cards.ToList();
                 }
 

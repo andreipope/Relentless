@@ -138,15 +138,15 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDamage
         {
-            get => Card.InstanceCard.Attack;
+            get => Card.InstanceCard.Damage;
             set
             {
-                int oldValue = Card.InstanceCard.Attack;
+                int oldValue = Card.InstanceCard.Damage;
                 value = Mathf.Max(value, 0);
                 if (oldValue == value)
                     return;
 
-                Card.InstanceCard.Attack = value;
+                Card.InstanceCard.Damage = value;
                 UnitDamageChanged?.Invoke(oldValue, value);
             }
         }
@@ -507,7 +507,7 @@ namespace Loom.ZombieBattleground
             CurrentDamage = card.Prototype.Damage;
             CurrentDefense = card.Prototype.Defense;
 
-            card.InstanceCard.Attack = CurrentDamage;
+            card.InstanceCard.Damage = CurrentDamage;
             card.InstanceCard.Defense = CurrentDefense;
 
             BuffedDamage = 0;

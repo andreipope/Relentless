@@ -44,14 +44,14 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTarget targetType in AbilityTargetTypes)
+                    foreach (Enumerators.Target targetType in AbilityTargetTypes)
                     {
                         switch (targetType)
                         {
-                            case Enumerators.AbilityTarget.OPPONENT_CARD:
+                            case Enumerators.Target.OPPONENT_CARD:
                                 units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
-                            case Enumerators.AbilityTarget.PLAYER_CARD:
+                            case Enumerators.Target.PLAYER_CARD:
                                 units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
                         }

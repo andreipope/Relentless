@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.STUN_FREEZES:
+                case Enumerators.AbilityEffect.STUN_FREEZES:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTarget.OPPONENT_ALL_CARDS))
+            if (AbilityTargetTypes.Contains(Enumerators.Target.OPPONENT_ALL_CARDS))
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 

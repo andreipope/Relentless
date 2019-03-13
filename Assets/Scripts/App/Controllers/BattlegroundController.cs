@@ -666,7 +666,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView boardUnit:
                     boardCardView.DrawTooltipInfoOfUnit(boardUnit);
                     UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
-                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
+                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Damage = boardUnit.Model.MaxCurrentDamage;
                     boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentDefense;
                     break;
                 case BoardCardView tooltipCard:

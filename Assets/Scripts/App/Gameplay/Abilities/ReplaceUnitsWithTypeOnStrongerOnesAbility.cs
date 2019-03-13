@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public int Value;
         public Enumerators.Faction Faction;
-        public List<Enumerators.AbilityTarget> TargetTypes;
+        public List<Enumerators.Target> TargetTypes;
 
         public ReplaceUnitsWithTypeOnStrongerOnesAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -71,14 +71,14 @@ namespace Loom.ZombieBattleground
 
         private void GetInfosAboutUnitsOnBoard()
         {
-            foreach (Enumerators.AbilityTarget target in TargetTypes)
+            foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_CARD:
                         _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == Faction));
                         break;
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_CARD:
                         _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == Faction));
                         break;
                     default:

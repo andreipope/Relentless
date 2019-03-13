@@ -46,14 +46,14 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                foreach (Enumerators.AbilityTarget target in Ability.TargetTypes)
+                foreach (Enumerators.Target target in Ability.TargetTypes)
                 {
                     switch (target)
                     {
-                        case Enumerators.AbilityTarget.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             CreateVfx(Utilites.CastVfxPosition(Ability.GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
                             break;
-                        case Enumerators.AbilityTarget.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             CreateVfx(Utilites.CastVfxPosition(Ability.PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
                             break;
                         default:

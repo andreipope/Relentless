@@ -53,16 +53,16 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            foreach (Enumerators.AbilityTarget targetType in AbilityTargetTypes)
+            foreach (Enumerators.Target targetType in AbilityTargetTypes)
             {
                 switch (targetType)
                 {
-                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
                         _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards);
                         break;
-                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
                         _boardUnits.AddRange(GetOpponentOverlord().BoardCards);
                         break;
                 }

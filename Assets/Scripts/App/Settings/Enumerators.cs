@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Common
             KILL_UNIT
         }
 
-        public enum AbilityEffectType
+        public enum AbilityEffect
         {
             NONE,
             MASSIVE_WATER_WAVE,
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_FRESH_MEAT
         }
 
-        public enum AbilityTarget
+        public enum Target
         {
             NONE,
             PLAYER,

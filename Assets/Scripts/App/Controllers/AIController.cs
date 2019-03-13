@@ -1076,11 +1076,11 @@ namespace Loom.ZombieBattleground
             bool needsToSelectTarget = false;
             foreach (AbilityData ability in prototype.Abilities)
             {
-                foreach (Enumerators.AbilityTarget item in ability.AbilityTarget)
+                foreach (Enumerators.Target item in ability.AbilityTarget)
                 {
                     switch (item)
                     {
-                        case Enumerators.AbilityTarget.OPPONENT_CARD:
+                        case Enumerators.Target.OPPONENT_CARD:
                             if (_gameplayManager.CurrentPlayer.BoardCards.Count > 1 ||
                                 ability.AbilityType == Enumerators.AbilityType.CARD_RETURN &&
                                 _gameplayManager.CurrentPlayer.BoardCards.Count > 0)
@@ -1090,7 +1090,7 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.AbilityTarget.PLAYER_CARD:
+                        case Enumerators.Target.PLAYER_CARD:
                             if (_gameplayManager.OpponentPlayer.BoardCards.Count > 1 ||
                                 prototype.CardKind == Enumerators.CardKind.ITEM ||
                                 ability.AbilityType == Enumerators.AbilityType.CARD_RETURN &&
@@ -1101,9 +1101,9 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.AbilityTarget.PLAYER:
-                        case Enumerators.AbilityTarget.OPPONENT:
-                        case Enumerators.AbilityTarget.ALL:
+                        case Enumerators.Target.PLAYER:
+                        case Enumerators.Target.OPPONENT:
+                        case Enumerators.Target.ALL:
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
                             break;
@@ -1205,11 +1205,11 @@ namespace Loom.ZombieBattleground
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)
         {
-            if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT_CARD))
+            if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT))
+            else if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -1217,7 +1217,7 @@ namespace Loom.ZombieBattleground
 
         private void GetTargetByType(AbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
-            if (ability.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT_CARD))
+            if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
             {
                 IReadOnlyList<BoardUnitView> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -1227,7 +1227,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (checkPlayerAlso && target == null &&
-                    ability.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
+                    ability.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
                 {
                     target = _gameplayManager.CurrentPlayer;
 

@@ -610,7 +610,7 @@ namespace Loom.ZombieBattleground
         private List<Card> RetrieveDummyCards(int amount)
         {
             List<Card> cards = new List<Card>();            
-            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.Faction.FIRE);            
+            Faction set = SetTypeUtility.GetCardFaction(GameClient.Get<IDataManager>(), Enumerators.Faction.FIRE);            
             foreach( Card card in set.Cards)
             {
                 cards.Add(card);

@@ -177,14 +177,14 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.AbilityType.RAGE,
                     Enumerators.AbilityActivityType.ACTIVE,
                     Enumerators.AbilityTrigger.IN_HAND,
-                    new List<Enumerators.AbilityTarget>
+                    new List<Enumerators.Target>
                     {
-                        Enumerators.AbilityTarget.ITSELF,
-                        Enumerators.AbilityTarget.PLAYER
+                        Enumerators.Target.ITSELF,
+                        Enumerators.Target.PLAYER
                     },
                     Enumerators.StatType.DAMAGE,
                     Enumerators.Faction.TOXIC,
-                    Enumerators.AbilityEffectType.TARGET_ROCK,
+                    Enumerators.AbilityEffect.TARGET_ROCK,
                     Enumerators.AttackRestriction.ONLY_DIFFERENT,
                     Enumerators.CardType.WALKER,
                     Enumerators.UnitStatusType.FROZEN,

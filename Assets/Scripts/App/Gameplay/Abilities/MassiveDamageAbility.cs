@@ -75,20 +75,20 @@ namespace Loom.ZombieBattleground
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
-            foreach (Enumerators.AbilityTarget target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
                         _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
                         break;
-                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
                         _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                         break;
-                    case Enumerators.AbilityTarget.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         _targets.Add(opponent);
                         break;
-                    case Enumerators.AbilityTarget.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         _targets.Add(PlayerCallerOfAbility);
                         break;
                     default:

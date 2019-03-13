@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class AbilityBoardArrow : BoardArrow
     {
-        public List<Enumerators.AbilityTarget> PossibleTargets = new List<Enumerators.AbilityTarget>();
+        public List<Enumerators.Target> PossibleTargets = new List<Enumerators.Target>();
 
         public BoardUnitView SelfBoardCreature;
 
@@ -54,11 +54,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTarget.PLAYER_CARD) &&
+            if (PossibleTargets.Contains(Enumerators.Target.PLAYER_CARD) &&
                 unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTarget.OPPONENT_CARD) &&
+                PossibleTargets.Contains(Enumerators.Target.OPPONENT_CARD) &&
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTarget.ALL))
+                PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
@@ -113,11 +113,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTarget.PLAYER) &&
+            if (PossibleTargets.Contains(Enumerators.Target.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTarget.OPPONENT) &&
+                PossibleTargets.Contains(Enumerators.Target.OPPONENT) &&
                 player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTarget.ALL))
+                PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);

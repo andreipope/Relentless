@@ -43,14 +43,14 @@ namespace Loom.ZombieBattleground
             _units = new List<BoardUnitModel>();
             List<BoardUnitView> unitsViews = new List<BoardUnitView>();
 
-            foreach (Enumerators.AbilityTarget target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
                         unitsViews.AddRange(GetOpponentOverlord().BoardCards);
                         break;
-                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
                         unitsViews.AddRange(PlayerCallerOfAbility.BoardCards);
                         break;
                 }

@@ -560,7 +560,7 @@ namespace Loom.ZombieBattleground
                 Cards = new List<CollectionCardData>()
             };
 
-            foreach (Data.CardSet set in CachedCardsLibraryData.Sets)
+            foreach (Data.Faction set in CachedCardsLibraryData.Factions)
             {
                 foreach (Data.Card card in set.Cards)
                 {

@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTarget.ITSELF))
+            if (AbilityTargetTypes.Contains(Enumerators.Target.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {

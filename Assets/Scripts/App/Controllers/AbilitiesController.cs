@@ -220,25 +220,25 @@ namespace Loom.ZombieBattleground
 
             lock (_lock)
             {
-                foreach (Enumerators.AbilityTarget item in ability.AbilityTarget)
+                foreach (Enumerators.Target item in ability.AbilityTarget)
                 {
                     switch (item)
                     {
-                        case Enumerators.AbilityTarget.OPPONENT_CARD:
+                        case Enumerators.Target.OPPONENT_CARD:
                             if (opponent.BoardCards.Count > 0)
                             {
                                 available = true;
                             }
                             break;
-                        case Enumerators.AbilityTarget.PLAYER_CARD:
+                        case Enumerators.Target.PLAYER_CARD:
                             if (localPlayer.BoardCards.Count > 1 || kind == Enumerators.CardKind.ITEM)
                             {
                                 available = true;
                             }
                             break;
-                        case Enumerators.AbilityTarget.PLAYER:
-                        case Enumerators.AbilityTarget.OPPONENT:
-                        case Enumerators.AbilityTarget.ALL:
+                        case Enumerators.Target.PLAYER:
+                        case Enumerators.Target.OPPONENT:
+                        case Enumerators.Target.ALL:
                             available = true;
                             break;
                         default:
@@ -300,11 +300,11 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
             Player player = boardUnitModel.Owner;
 
-            foreach (Enumerators.AbilityTarget target in ability.AbilityTarget)
+            foreach (Enumerators.Target target in ability.AbilityTarget)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
                             player.BoardCards.FindAll(x =>
@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x =>
@@ -346,11 +346,11 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer;
             Player player = boardUnitModel.Owner;
 
-            foreach (Enumerators.AbilityTarget target in ability.AbilityTarget)
+            foreach (Enumerators.Target target in ability.AbilityTarget)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
                             player.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -360,7 +360,7 @@ namespace Loom.ZombieBattleground
 
                         break;
                     }
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_CARD:
                     {
                         IReadOnlyList<BoardUnitView> units =
                             opponent.BoardCards.FindAll(x => x.Model.UnitStatus == ability.TargetUnitStatusType);
@@ -1244,7 +1244,7 @@ namespace Loom.ZombieBattleground
                         null,
                         default(Enumerators.StatType),
                         default(Enumerators.Faction),
-                        default(Enumerators.AbilityEffectType),
+                        default(Enumerators.AbilityEffect),
                         default(Enumerators.AttackRestriction),
                         default(Enumerators.CardType),
                         default(Enumerators.UnitStatusType),
@@ -1276,7 +1276,7 @@ namespace Loom.ZombieBattleground
                         null,
                         default(Enumerators.StatType),
                         default(Enumerators.Faction),
-                        default(Enumerators.AbilityEffectType),
+                        default(Enumerators.AbilityEffect),
                         default(Enumerators.AttackRestriction),
                         default(Enumerators.CardType),
                         default(Enumerators.UnitStatusType),

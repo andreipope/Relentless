@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.AbilityTrigger Trigger { get; private set; }
 
         [JsonProperty("target_type")]
-        public List<Enumerators.AbilityTarget> AbilityTarget { get; private set; }
+        public List<Enumerators.Target> AbilityTarget { get; private set; }
 
         [JsonProperty("stat_type")]
         public Enumerators.StatType AbilityStatType { get; private set; }
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.Faction Faction { get; private set; }
 
         [JsonProperty("effect_type")]
-        public Enumerators.AbilityEffectType AbilityEffectType { get; private set; }
+        public Enumerators.AbilityEffect AbilityEffect { get; private set; }
 
         [JsonProperty("attack_restriction")]
         public Enumerators.AttackRestriction AttackRestriction { get; private set; }
@@ -87,10 +87,10 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.AbilityType abilityType,
             Enumerators.AbilityActivityType activityType,
             Enumerators.AbilityTrigger callType,
-            List<Enumerators.AbilityTarget> abilityTargetTypes,
+            List<Enumerators.Target> abilityTargetTypes,
             Enumerators.StatType abilityStatType,
             Enumerators.Faction abilitySetType,
-            Enumerators.AbilityEffectType abilityEffectType,
+            Enumerators.AbilityEffect abilityEffectType,
             Enumerators.AttackRestriction attackRestriction,
             Enumerators.CardType targetCardType,
             Enumerators.UnitStatusType targetUnitStatusType,
@@ -113,10 +113,10 @@ namespace Loom.ZombieBattleground.Data
             AbilityType = abilityType;
             ActivityType = activityType;
             Trigger = callType;
-            AbilityTarget = abilityTargetTypes ?? new List<Enumerators.AbilityTarget>();
+            AbilityTarget = abilityTargetTypes ?? new List<Enumerators.Target>();
             AbilityStatType = abilityStatType;
             Faction = abilitySetType;
-            AbilityEffectType = abilityEffectType;
+            AbilityEffect = abilityEffectType;
             AttackRestriction = attackRestriction;
             TargetCardType = targetCardType;
             TargetUnitStatusType = targetUnitStatusType;
@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground.Data
             AbilityTarget = source.AbilityTarget.ToList();
             AbilityStatType = source.AbilityStatType;
             Faction = source.Faction;
-            AbilityEffectType = source.AbilityEffectType;
+            AbilityEffect = source.AbilityEffect;
             AttackRestriction = source.AttackRestriction;
             TargetCardType = source.TargetCardType;
             TargetUnitStatusType = source.TargetUnitStatusType;

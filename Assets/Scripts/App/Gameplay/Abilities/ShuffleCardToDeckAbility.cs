@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class ShuffleCardToDeckAbility : AbilityBase
     {
-        public List<Enumerators.AbilityTarget> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
 
         public ShuffleCardToDeckAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(param);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTarget.PLAYER))
+            if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
                 // FIXME: doesn't this cause de-sync?
                 PlayerCallerOfAbility.AddCardToDeck(BoardUnitModel, true);

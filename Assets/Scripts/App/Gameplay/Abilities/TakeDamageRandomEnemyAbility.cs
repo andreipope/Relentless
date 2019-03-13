@@ -67,26 +67,26 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> possibleTargets = new List<BoardObject>();
 
-            foreach (Enumerators.AbilityTarget abilityTarget in AbilityData.AbilityTarget)
+            foreach (Enumerators.Target abilityTarget in AbilityData.AbilityTarget)
             {
                 switch (abilityTarget)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
                         possibleTargets.AddRange(GetOpponentOverlord().BoardCards
                             .FindAll(unit => unit.Model.CurrentDefense > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTarget.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
                         possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
                             .FindAll(unit => unit.Model.CurrentDefense > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTarget.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         possibleTargets.Add(PlayerCallerOfAbility);
                         break;
-                    case Enumerators.AbilityTarget.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         possibleTargets.Add(GetOpponentOverlord());
                         break;
                 }
