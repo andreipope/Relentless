@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType TargetUnitType;
 
-        public Enumerators.UnitStatusType TargetUnitStatusType;
+        public Enumerators.UnitStatus TargetUnitStatusType;
 
         public int UnitDefense = 0;
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
-                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
+                    if (TargetUnitStatusType == Enumerators.UnitStatus.NONE ||
                         unit.Model.UnitStatus == TargetUnitStatusType)
                     {
                         if ((UnitDefense > 0 && unit.Model.CurrentDefense <= UnitDefense) || UnitDefense == 0)

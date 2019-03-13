@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            switch (AbilityData.AbilitySubTrigger)
+            switch (AbilityData.SubTrigger)
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
                     {

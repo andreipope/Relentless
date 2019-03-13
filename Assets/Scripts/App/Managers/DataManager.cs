@@ -174,7 +174,7 @@ namespace Loom.ZombieBattleground
             return CachedBuffsTooltipData.CardTypes.Find(x => x.Type == cardType);
         }
 
-        public TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic)
+        public TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescription gameMechanic)
         {
             return CachedBuffsTooltipData.Mechanics.Find(x => x.Type == gameMechanic);
         }

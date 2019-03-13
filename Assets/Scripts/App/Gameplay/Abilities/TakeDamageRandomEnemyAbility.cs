@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
             
             int damageOverride = Mathf.Max(1, Damage);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
                 damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
             }

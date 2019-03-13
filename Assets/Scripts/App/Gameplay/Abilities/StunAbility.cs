@@ -7,14 +7,14 @@ namespace Loom.ZombieBattleground
 {
     public class StunAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
 
         public StunAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Value = ability.Value;
         }
 

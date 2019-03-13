@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Data
 
             public string Tooltip;
 
-            public Enumerators.GameMechanicDescriptionType Type;
+            public Enumerators.GameMechanicDescription Type;
         }
 
         public class RankInfo

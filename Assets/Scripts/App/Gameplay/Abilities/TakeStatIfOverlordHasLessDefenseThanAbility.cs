@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         public int Damage;
 
-        public Enumerators.StatType StatType;
+        public Enumerators.Stat StatType;
 
         public TakeStatIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
             Defense = ability.Defense;
             Damage = ability.Damage;
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
         }
 
         public override void Activate()
@@ -42,12 +42,12 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.Defense <= Value)
             {
-                if (StatType == Enumerators.StatType.DEFENSE)
+                if (StatType == Enumerators.Stat.DEFENSE)
                 {
                     AbilityUnitOwner.BuffedDefense += Defense;
                     AbilityUnitOwner.CurrentDefense += Defense;
                 }
-                else if (StatType == Enumerators.StatType.DAMAGE)
+                else if (StatType == Enumerators.Stat.DAMAGE)
                 {
                     AbilityUnitOwner.BuffedDamage += Damage;
                     AbilityUnitOwner.CurrentDamage += Damage;

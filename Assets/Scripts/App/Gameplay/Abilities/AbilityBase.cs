@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsPVPAbility;
 
-        public Enumerators.AbilityActivityType AbilityActivityType;
+        public Enumerators.AbilityActivity AbilityActivityType;
 
         public Enumerators.AbilityTrigger AbilityTrigger;
 
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType TargetCardType = Enumerators.CardType.UNDEFINED;
 
-        public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
+        public Enumerators.UnitStatus TargetUnitStatusType = Enumerators.UnitStatus.NONE;
 
         public List<Enumerators.Target> AbilityTargetTypes;
 
@@ -131,10 +131,10 @@ namespace Loom.ZombieBattleground
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityActivityType = ability.ActivityType;
+            AbilityActivityType = ability.Activity;
             AbilityTrigger = ability.Trigger;
             AbilityTargetTypes = ability.AbilityTarget;
-            AbilityEffectType = ability.AbilityEffect;
+            AbilityEffectType = ability.Effect;
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponenentAvatar = GameplayManager.OpponentPlayer;
 
@@ -522,7 +522,7 @@ namespace Loom.ZombieBattleground
         {
             AbilitiesController.InvokeUseAbilityEvent(
                 BoardUnitModel,
-                AbilityData.AbilityType,
+                AbilityData.Ability,
                 targets ?? new List<ParametrizedAbilityBoardObject>()
             );
         }

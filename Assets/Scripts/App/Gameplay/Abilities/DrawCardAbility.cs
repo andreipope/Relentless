@@ -8,13 +8,13 @@ namespace Loom.ZombieBattleground
     public class DrawCardAbility : AbilityBase
     {
         public Enumerators.Faction Faction { get; }
-        public Enumerators.UnitStatusType UnitStatusType { get; }
+        public Enumerators.UnitStatus UnitStatusType { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
-            UnitStatusType = ability.TargetUnitStatusType;
+            UnitStatusType = ability.TargetUnitStatus;
         }
 
         public override void Activate()

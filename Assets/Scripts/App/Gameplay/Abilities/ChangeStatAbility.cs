@@ -7,14 +7,14 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
 
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Value = ability.Value;
         }
 
@@ -55,11 +55,11 @@ namespace Loom.ZombieBattleground
             {
                 switch (StatType)
                 {
-                    case Enumerators.StatType.DEFENSE:
+                    case Enumerators.Stat.DEFENSE:
                         AbilityUnitOwner.BuffedDefense += Value;
                         AbilityUnitOwner.CurrentDefense += Value;
                         break;
-                    case Enumerators.StatType.DAMAGE:
+                    case Enumerators.Stat.DAMAGE:
                         AbilityUnitOwner.BuffedDamage += Value;
                         AbilityUnitOwner.CurrentDamage += Value;
                         break;

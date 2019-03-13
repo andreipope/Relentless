@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Restore);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;

@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Count = ability.Count;
-            SubTrigger = ability.AbilitySubTrigger;
+            SubTrigger = ability.SubTrigger;
 
             _targets = new List<BoardObject>();
         }
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
-                if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                if (AbilityActivityType == Enumerators.AbilityActivity.PASSIVE)
                 {
                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
                    {

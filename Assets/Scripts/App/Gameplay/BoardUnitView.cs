@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
 
         private bool _crossfadingSequenceEnded = true;
 
-        private List<Enumerators.GameMechanicDescriptionType> _filteredEffectsToShow;
+        private List<Enumerators.GameMechanicDescription> _filteredEffectsToShow;
 
         public Action ArrivalEndCallback;
 
@@ -437,10 +437,10 @@ namespace Loom.ZombieBattleground
         private void BoardUnitGameMechanicDescriptionsOnUnitChanged()
         {
             _filteredEffectsToShow = Model.GameMechanicDescriptionsOnUnit.FindAll(effect =>
-                                                                 effect == Enumerators.GameMechanicDescriptionType.Death ||
-                                                                 effect == Enumerators.GameMechanicDescriptionType.Freeze ||
-                                                                 effect == Enumerators.GameMechanicDescriptionType.Destroy ||
-                                                                 effect == Enumerators.GameMechanicDescriptionType.Reanimate);
+                                                                 effect == Enumerators.GameMechanicDescription.Death ||
+                                                                 effect == Enumerators.GameMechanicDescription.Freeze ||
+                                                                 effect == Enumerators.GameMechanicDescription.Destroy ||
+                                                                 effect == Enumerators.GameMechanicDescription.Reanimate);
 
             if (_filteredEffectsToShow.Count == 0)
             {

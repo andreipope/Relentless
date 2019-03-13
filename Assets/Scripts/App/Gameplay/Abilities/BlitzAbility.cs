@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 List<BoardUnitView> units = new List<BoardUnitView>();
 

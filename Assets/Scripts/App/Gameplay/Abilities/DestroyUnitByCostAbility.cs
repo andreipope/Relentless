@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 _isRandom = true;
                 _unit = GetRandomUnit();

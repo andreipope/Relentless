@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                 target = Utilites.CastVfxPosition(target);
             }
 
-            if (model.GameMechanicDescriptionsOnUnit.Exists(x => x == Enumerators.GameMechanicDescriptionType.Chainsaw))
+            if (model.GameMechanicDescriptionsOnUnit.Exists(x => x == Enumerators.GameMechanicDescription.Chainsaw))
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ChainSawAttack");
                 effect = Object.Instantiate(vfxPrefab);

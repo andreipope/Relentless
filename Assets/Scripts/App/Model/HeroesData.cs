@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground.Data
         public List<Enumerators.SkillTargetType> SkillTargetTypes { get; private set; }
 
         [JsonProperty("TargetUnitSpecialStatus")]
-        public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
+        public Enumerators.UnitStatus TargetUnitStatusType { get; private set; }
 
         [JsonProperty("ElementTargets")]
         public List<Enumerators.Faction> ElementTargetTypes { get; private set; }
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground.Data
             int count,
             Enumerators.OverlordSkill overlordSkill,
             List<Enumerators.SkillTargetType> skillTargetTypes,
-            Enumerators.UnitStatusType targetUnitStatusType,
+            Enumerators.UnitStatus targetUnitStatusType,
             List<Enumerators.Faction> elementTargetTypes,
             bool unlocked,
             bool canSelectTarget,

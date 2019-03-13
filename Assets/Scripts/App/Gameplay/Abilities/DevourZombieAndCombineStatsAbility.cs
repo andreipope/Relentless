@@ -131,7 +131,7 @@ namespace Loom.ZombieBattleground
             unit.IsReanimated = true;
             view.StopSleepingParticles();
 
-            unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+            unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
         }
     }
 }

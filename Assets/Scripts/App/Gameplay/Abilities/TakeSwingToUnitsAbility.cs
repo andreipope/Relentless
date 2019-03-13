@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
