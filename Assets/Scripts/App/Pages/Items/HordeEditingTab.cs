@@ -67,7 +67,8 @@ namespace Loom.ZombieBattleground
                        _buttonLowerRightArrow,
                        _buttonSaveDeck,
                        _buttonAbilities,
-                       _buttonAuto;
+                       _buttonAuto,
+                       _buttonRename;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
@@ -153,6 +154,10 @@ namespace Loom.ZombieBattleground
             _textEditDeckName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
             
+            _buttonRename = _textEditDeckName.GetComponent<Button>();
+            _buttonRename.onClick.AddListener(ButtonRenameHandler);
+            _buttonRename.onClick.AddListener(_myDeckPage.PlayClickSound);
+            
             _buttonFilter = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
             _buttonFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
@@ -236,6 +241,27 @@ namespace Loom.ZombieBattleground
 
         #region Button Handlers
         
+        private void ButtonRenameHandler()
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+        }
+        
+        private void ConfirmSaveDeckHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
+            
+            _myDeckPage.AssignCurrentDeck(false, true);
+            if (status)
+            {                
+                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.RENAME);
+            }
+            else
+            {                
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);        
+            }  
+        }
+
         private void ButtonEditDeckFilterHandler()
         {
             _uiManager.DrawPopup<CardFilterPopup>();
@@ -272,7 +298,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSaveEditDeckHandler()
         {
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck);            
+            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);            
         }
         
         private void ButtonOverlordAbilitiesHandler()
@@ -1111,7 +1137,7 @@ namespace Loom.ZombieBattleground
             return maxCopies;
         }
         
-        public async void ProcessEditDeck(Deck deckToSave)
+        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.TAB nextTab)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             _buttonSaveDeck.interactable = false;
@@ -1185,14 +1211,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                if (_myDeckPage.IsDisplayRenameDeck)
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
-                }   
-                else
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
-                }
+                _myDeckPage.ChangeTab(nextTab);
             }
             
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;
@@ -1221,7 +1240,14 @@ namespace Loom.ZombieBattleground
 
             deckToSave.Name = newName;
 
-            ProcessEditDeck(deckToSave);
+            if (_myDeckPage.IsDisplayRenameDeck)
+            {
+                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.EDITING);
+            }
+            else
+            {
+                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
+            }
         }
         
         private void PlayAddCardSound()
