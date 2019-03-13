@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerCallerOfAbility;
 
-        public BoardSpell BoardSpell;
+        public BoardItem BoardItem;
 
         public BoardCardView boardCardView;
 
@@ -235,9 +235,9 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.CardKind.ITEM:
-                    if (BoardSpell != null)
+                    if (BoardItem != null)
                     {
-                        BoardSpell.Used += UsedHandler;
+                        BoardItem.Used += UsedHandler;
                     }
                     break;
                 default:
@@ -459,7 +459,7 @@ namespace Loom.ZombieBattleground
         
         protected void UsedHandler()
         {
-            BoardSpell.Used -= UsedHandler;
+            BoardItem.Used -= UsedHandler;
         }
 
         protected void ClearParticles()
@@ -472,7 +472,7 @@ namespace Loom.ZombieBattleground
 
         public object GetCaller()
         {
-            return AbilityUnitOwner ?? (object) BoardSpell;
+            return AbilityUnitOwner ?? (object) BoardItem;
         }
 
         public Player GetOpponentOverlord()

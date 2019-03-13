@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Test
         private float _waitAmount;
         private bool _waitUnscaledTime;
 
-        public BoardCardView CurrentSpellCard;
+        public BoardCardView CurrentItemCard;
 
         private readonly Random _random = new Random();
 

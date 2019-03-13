@@ -124,9 +124,6 @@ namespace Loom.ZombieBattleground
                 JsonUtility.CreateStrictSerializerSettings((sender, args) => Log.Error("", args.ErrorContext.Error));
             settings.TypeNameHandling = TypeNameHandling.Auto;
 
-            Debug.Log(_loadObjectsManager
-                        .GetObjectByPath<TextAsset>(TutorialDataPath).text);
-
             _tutorials = JsonConvert.DeserializeObject<List<TutorialData>>(_loadObjectsManager
                         .GetObjectByPath<TextAsset>(TutorialDataPath).text, settings);
 

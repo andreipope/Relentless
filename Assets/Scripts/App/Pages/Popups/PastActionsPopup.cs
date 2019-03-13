@@ -23,8 +23,8 @@ namespace Loom.ZombieBattleground
 
         private ActionElement _leftBlockCardUnitElement,
                               _rightBlockCardUnitElement,
-                              _leftBlockCardSpellElement,
-                              _rightBlockCardSpellElement,
+                              _leftBlockCardItemElement,
+                              _rightBlockCardItemElement,
                               _leftBlockOverlordElement,
                               _rightBlockOverlordElement,
                               _leftBlockOverlordSkillElement,
@@ -101,12 +101,12 @@ namespace Loom.ZombieBattleground
                 return;
 
             _leftBlockCardUnitElement = new UnitCardElement(Self.transform.Find("Block_Who/Card_Unit").gameObject);
-            _leftBlockCardSpellElement = new SpellCardElement(Self.transform.Find("Block_Who/Card_Spell").gameObject);
+            _leftBlockCardItemElement = new ItemCardElement(Self.transform.Find("Block_Who/Card_Spell").gameObject);
             _leftBlockOverlordElement = new OverlordElement(Self.transform.Find("Block_Who/Item_Overlord").gameObject);
             _leftBlockOverlordSkillElement = new OverlordSkillElement(Self.transform.Find("Block_Who/Item_OverlordSkill").gameObject);
 
             _rightBlockCardUnitElement = new UnitCardElement(Self.transform.Find("Block_OnWho/Card_Unit").gameObject, true);
-            _rightBlockCardSpellElement = new SpellCardElement(Self.transform.Find("Block_OnWho/Card_Spell").gameObject, true);
+            _rightBlockCardItemElement = new ItemCardElement(Self.transform.Find("Block_OnWho/Card_Spell").gameObject, true);
             _rightBlockOverlordElement = new OverlordElement(Self.transform.Find("Block_OnWho/Item_Overlord").gameObject, true);
             _rightBlockOverlordSkillElement = new OverlordSkillElement(Self.transform.Find("Block_OnWho/Item_OverlordSkill").gameObject, true);
 
@@ -157,11 +157,11 @@ namespace Loom.ZombieBattleground
                     unitCardElement.Damage = unit.MaxCurrentDamage;
                     unitCardElement.Defense = unit.MaxCurrentDefense;
                     break;
-                case SpellBoardCard spellBoardCard:
-                    _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
+                case ItemBoardCard itemBoardCard:
+                    _leftBlockCardItemElement.Init(itemBoardCard.BoardUnitModel.Card);
                     break;
-                case BoardSpell item:
-                    _leftBlockCardSpellElement.Init(item.BoardUnitModel.Card);
+                case BoardItem item:
+                    _leftBlockCardItemElement.Init(item.BoardUnitModel.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
@@ -208,8 +208,8 @@ namespace Loom.ZombieBattleground
                     ActionElement actionElement;
                     switch (targetEffect.Target)
                     {
-                        case BoardCardView card when card is SpellBoardCard:
-                            actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
+                        case BoardCardView card when card is ItemBoardCard:
+                            actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardCardView card when card is UnitBoardCard:
@@ -221,9 +221,9 @@ namespace Loom.ZombieBattleground
                             actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case HandBoardCard card:
-                            if(card.CardView is SpellBoardCard)
+                            if(card.CardView is ItemBoardCard)
                             {
-                                actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
+                                actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             }
                             else
                             {
@@ -261,8 +261,8 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCardView card when card is SpellBoardCard:
-                        _rightBlockCardSpellElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                    case BoardCardView card when card is ItemBoardCard:
+                        _rightBlockCardItemElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCardView card when card is UnitBoardCard boardCard:
                         _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground
                     case WorkingCard workingCard:
                         if(workingCard.Prototype.CardKind == Enumerators.CardKind.ITEM)
                         {
-                            _rightBlockCardSpellElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            _rightBlockCardItemElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         }
                         else
                         {
@@ -506,7 +506,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public class SpellCardElement : ActionElement
+        public class ItemCardElement : ActionElement
         {
             private GameObject _selfObject;
 
@@ -521,7 +521,7 @@ namespace Loom.ZombieBattleground
 
             private bool _withEffect;
 
-            public SpellCardElement(GameObject selfObject, bool withEffect = false)
+            public ItemCardElement(GameObject selfObject, bool withEffect = false)
             {
                 _selfObject = selfObject;
                 _withEffect = withEffect;
@@ -823,7 +823,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public class SmallSpellCardElement : ActionElement
+        public class SmallItemCardElement : ActionElement
         {
             private GameObject _selfObject;
 
@@ -838,7 +838,7 @@ namespace Loom.ZombieBattleground
 
             private bool _withEffect;
 
-            public SmallSpellCardElement(Transform parent, bool withEffect = false)
+            public SmallItemCardElement(Transform parent, bool withEffect = false)
             {
                 _selfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/PastActionBar/Item_CardSpellSmall"), parent, false);
                 _withEffect = withEffect;

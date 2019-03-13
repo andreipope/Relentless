@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
             CardsInHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             CardsOnBoard = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             BoardCards = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
-            BoardSpellsInUse = new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
+            BoardItemsInUse = new UniquePositionedList<BoardItem>(new PositionedList<BoardItem>());
             CardsPreparingToHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
 
             switch (_matchManager.MatchType)
@@ -364,7 +364,7 @@ namespace Loom.ZombieBattleground
 
         public UniquePositionedList<BoardUnitView> BoardCards { get; }
 
-        public UniquePositionedList<BoardSpell> BoardSpellsInUse { get; }
+        public UniquePositionedList<BoardItem> BoardItemsInUse { get; }
 
         public UniquePositionedList<BoardUnitModel> CardsInDeck { get; }
 

@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
         {
             _targets = new List<BoardObject>();
 
-            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardSpell;
+            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardItem;
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :

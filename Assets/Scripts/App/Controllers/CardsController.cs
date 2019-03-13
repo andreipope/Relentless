@@ -666,14 +666,14 @@ namespace Loom.ZombieBattleground
                             card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                             card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                            BoardSpell boardSpell = new BoardSpell(card.GameObject, card.BoardUnitModel);
+                            BoardItem boardItem = new BoardItem(card.GameObject, card.BoardUnitModel);
 
                             card.RemoveCardParticle.Play();
 
                             InternalTools.DoActionDelayed(() =>
                             {
                                 _abilitiesController.CallAbility(card, card.BoardUnitModel,
-                                    Enumerators.CardKind.ITEM, boardSpell, CallSpellCardPlay, true, (status) =>
+                                    Enumerators.CardKind.ITEM, boardItem, CallItemCardPlay, true, (status) =>
                                     {
                                         if(status)
                                         {
@@ -897,7 +897,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
-                    boardCardView = new SpellBoardCard(go, boardUnitModel);
+                    boardCardView = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -1135,7 +1135,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(ItemCardViewPrefab);
-                    boardCardView = new SpellBoardCard(go, boardUnitModel);
+                    boardCardView = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -1156,7 +1156,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private void CallSpellCardPlay(BoardCardView card)
+        private void CallItemCardPlay(BoardCardView card)
         {
         }
 

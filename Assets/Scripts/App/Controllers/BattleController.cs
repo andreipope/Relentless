@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
                     case BoardUnitModel model:
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
-                    case BoardSpell item:
+                    case BoardItem item:
                         attackedUnitModel.LastAttackingSetType = item.BoardUnitModel.Prototype.Faction;
                         break;
                     default:

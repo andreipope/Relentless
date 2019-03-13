@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
 
-        private GameObject _spellCardPrefab,
+        private GameObject _itemCardPrefab,
                            _unitCardPrefab;
 
         private GameObject _panelDeckObject,
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
 
-            _spellCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Spell");
+            _itemCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Spell");
             _unitCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Unit");
         }
 
@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
             int index = 0;
             foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                prefab = card.Prototype.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _spellCardPrefab;
+                prefab = card.Prototype.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _itemCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
                 _mulliganCardItems.Add(item);
                 item.eventHandler.DragBegan += DragBeganEventHandler;
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
                     _cardElement = new UnitCardElement(selfObject);
                     break;
                 case Enumerators.CardKind.ITEM:
-                    _cardElement = new SpellCardElement(selfObject);
+                    _cardElement = new ItemCardElement(selfObject);
                     break;
                 default:
                     break;

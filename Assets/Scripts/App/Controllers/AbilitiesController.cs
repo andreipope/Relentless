@@ -151,8 +151,8 @@ namespace Loom.ZombieBattleground
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;
                         break;
-                    case BoardSpell item:
-                        activeAbility.Ability.BoardSpell = item;
+                    case BoardItem item:
+                        activeAbility.Ability.BoardItem = item;
                         break;
                     case BoardUnitView view:
                         activeAbility.Ability.AbilityUnitOwner = view.Model;

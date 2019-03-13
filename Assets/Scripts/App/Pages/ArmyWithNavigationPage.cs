@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);

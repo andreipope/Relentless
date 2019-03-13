@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
 
             foreach (var unit in _targetUnits)
             {
