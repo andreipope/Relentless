@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
         
-        private const int _deckInfoAmountPerPage = 3;
+        private const int _deckInfoAmountPerPage = 4;
 
         private const int _defaultDeckIndex = 0;
 
@@ -450,7 +450,14 @@ namespace Loom.ZombieBattleground
         private void ChangeSelectDeckIndex(int newIndexInPage)
         {
             UpdateSelectedDeckDisplay(newIndexInPage);
-            SelectDeckIndex = newIndexInPage + _deckPageIndex * _deckInfoAmountPerPage;
+            if(_deckPageIndex == 0)
+            {
+                SelectDeckIndex = newIndexInPage;
+            }
+            else
+            {
+                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage);
+            }            
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -553,17 +560,32 @@ namespace Loom.ZombieBattleground
             return deckListToDisplay;
         }
         
-        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList)
+        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList, bool displayNewDeckButton = false)
         {
             List<Deck> deckListFromSelectedPageToDisplay = new List<Deck>();
-            
-            int startIndex = _deckPageIndex * _deckInfoAmountPerPage;
-            int endIndex = (_deckPageIndex + 1) * _deckInfoAmountPerPage;
-            for( int i=0; i<deckList.Count; ++i)
-            {   
-                if(i >= startIndex && i < endIndex)
+
+            if (displayNewDeckButton)
+            {
+                int startIndex = 0;
+                int endIndex = _deckInfoAmountPerPage;
+                for (int i = 0; i < deckList.Count; ++i)
                 {
-                    deckListFromSelectedPageToDisplay.Add(deckList[i]);                    
+                    if (i >= startIndex && i < endIndex)
+                    {
+                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
+                    }
+                }
+            }
+            else
+            {
+                int startIndex = (_deckInfoAmountPerPage) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
+                int endIndex = startIndex + _deckInfoAmountPerPage;
+                for (int i = 0; i < deckList.Count; ++i)
+                {
+                    if (i >= startIndex && i < endIndex)
+                    {
+                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
+                    }
                 }
             }
 
@@ -622,10 +644,10 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             _deckInfoObjectList.Clear();
-            for(int i=0; i<3; ++i)
+            for(int i=0; i<4; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
+                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
                 deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
@@ -650,9 +672,15 @@ namespace Loom.ZombieBattleground
         
         public void UpdateDeckInfoObjects()
         {
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay);       
+            bool displayNewDeckButton = (_deckPageIndex == 0);
+            _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
+            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
             
-            for (int i=0; i<_deckInfoObjectList.Count; ++i)
+            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
+
+            int startObjectIndex = displayNewDeckButton?1:0;
+
+            for (int i=startObjectIndex; i<_deckInfoObjectList.Count; ++i)
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(i>=deckListToDisplay.Count)
