@@ -110,6 +110,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsEditingNewDeck;
         
+        public bool IsDisplayRenameDeck;
+        
         private int _deckPageIndex;
 
         private List<Deck> _cacheDeckListToDisplay;
@@ -276,8 +278,7 @@ namespace Loom.ZombieBattleground
         }
 
         private void ButtonEditHandler()
-        {
-            AssignCurrentDeck(false);
+        {            
             ChangeTab(TAB.EDITING);
         }        
         
@@ -347,8 +348,8 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
-        public void AssignCurrentDeck(bool isNewDeck)
-        {
+        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
+        {   
             IsEditingNewDeck = isNewDeck;
             if(IsEditingNewDeck)
             {
@@ -359,6 +360,7 @@ namespace Loom.ZombieBattleground
                 CurrentEditDeck = GetSelectedDeck().Clone();
                 CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
             }
+            IsDisplayRenameDeck = isDisplayRenameDeck;
         }
 
         private Deck CreateNewDeckData()
@@ -430,7 +432,8 @@ namespace Loom.ZombieBattleground
                 case TAB.RENAME:
                     _inputFieldRenameDeckName.text = GetSelectedDeck().Name;
                     break;
-                case TAB.EDITING:                                      
+                case TAB.EDITING:  
+                    AssignCurrentDeck(false);                                    
                     break;
                 case TAB.SELECT_OVERLORD:                    
                     break;

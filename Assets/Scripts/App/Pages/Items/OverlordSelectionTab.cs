@@ -223,12 +223,12 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
 
                 _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
-                _myDeckPage.AssignCurrentDeck(false);
+                _myDeckPage.AssignCurrentDeck(false, true);
                 _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL);
             }
             _buttonSelectOverlordContinue.interactable = true;
         }
-        
+
         private void ChangeOverlordIndex(int newIndex)
         {
             _selectOverlordIndex = newIndex;

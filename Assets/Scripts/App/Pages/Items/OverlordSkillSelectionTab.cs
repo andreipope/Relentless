@@ -134,17 +134,9 @@ namespace Loom.ZombieBattleground
         { 
             bool success = true;
 
-            Hero hero = _myDeckPage.CurrentEditHero;
-            Deck deck = _myDeckPage.CurrentEditDeck;
-            hero.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
-            hero.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
-
-            deck.PrimarySkill = hero.PrimarySkill;
-            deck.SecondarySkill = hero.SecondarySkill;
-
             try
             {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
             }
             catch (Exception e)
             {
@@ -156,7 +148,16 @@ namespace Loom.ZombieBattleground
             }
 
             if (success)
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
+            {
+                if (_myDeckPage.IsDisplayRenameDeck)
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);
+                }
+                else
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
+                }
+            }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
@@ -246,19 +247,6 @@ namespace Loom.ZombieBattleground
             {
                 _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
-
-                try
-                {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.LogException(Log, e);
-
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
-
-                    OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-                }
             }
 
             PopupHiding?.Invoke();
