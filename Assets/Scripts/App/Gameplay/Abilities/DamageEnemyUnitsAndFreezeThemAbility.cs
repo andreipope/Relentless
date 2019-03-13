@@ -44,14 +44,14 @@ namespace Loom.ZombieBattleground
 
             _targets.Clear();
 
-            foreach (Enumerators.AbilityTarget target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
                         _targets.AddRange(opponent.BoardCards.Select((x) => x.Model).ToList());
                         break;
-                    case Enumerators.AbilityTarget.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         _targets.Add(opponent);
                         break;
                     default:

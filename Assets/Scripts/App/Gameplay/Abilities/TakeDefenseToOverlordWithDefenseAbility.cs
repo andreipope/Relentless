@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         public int Defense2 { get; }
 
-        public List<Enumerators.AbilityTarget> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
 
         public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTarget.PLAYER))
+            if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
                 int defenseToBuff = Value;
 

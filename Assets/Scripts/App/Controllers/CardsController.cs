@@ -632,7 +632,7 @@ namespace Loom.ZombieBattleground
                                                 if (card is UnitBoardCard)
                                                 {
                                                     UnitBoardCard unitBoardCard = card as UnitBoardCard;
-                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Attack = boardUnitView.Model.MaxCurrentDamage;
+                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Damage = boardUnitView.Model.MaxCurrentDamage;
                                                     unitBoardCard.BoardUnitModel.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentDefense;
                                                 }
                                             }
@@ -996,8 +996,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction GetSetOfCard(IReadOnlyCard card)
         {
-            CardSet set =
-                _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
+            Faction set =
+                _dataManager.CachedCardsLibraryData.Factions.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
 
             return set.Name;
         }

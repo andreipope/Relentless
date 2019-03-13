@@ -8,13 +8,13 @@ namespace Loom.ZombieBattleground
     public class DrawCardAbility : AbilityBase
     {
         public Enumerators.Faction Faction { get; }
-        public Enumerators.UnitStatusType UnitStatusType { get; }
+        public Enumerators.UnitStatus UnitStatusType { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
-            UnitStatusType = ability.TargetUnitStatusType;
+            UnitStatusType = ability.TargetUnitStatus;
         }
 
         public override void Activate()
@@ -65,13 +65,13 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTargetTypes.Count > 0)
             {
-                Enumerators.AbilityTarget abilityTargetType = AbilityTargetTypes[0];
+                Enumerators.Target abilityTargetType = AbilityTargetTypes[0];
                 switch (abilityTargetType)
                 {
-                    case Enumerators.AbilityTarget.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
                         break;
-                    case Enumerators.AbilityTarget.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
                             PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
                                 GameplayManager.OpponentPlayer :

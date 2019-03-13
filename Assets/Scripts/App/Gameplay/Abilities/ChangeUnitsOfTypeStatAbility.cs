@@ -11,14 +11,14 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.Faction Faction;
 
-        public Enumerators.StatType StatType;
+        public Enumerators.Stat StatType;
 
         public int Value = 1;
 
         public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Faction = ability.Faction;
             Value = ability.Value;
         }
@@ -29,8 +29,8 @@ namespace Loom.ZombieBattleground
 
             switch (StatType)
             {
-                case Enumerators.StatType.DEFENSE:
-                case Enumerators.StatType.DAMAGE:
+                case Enumerators.Stat.DEFENSE:
+                case Enumerators.Stat.DAMAGE:
                 default:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
@@ -58,11 +58,11 @@ namespace Loom.ZombieBattleground
 
                 switch (StatType)
                 {
-                    case Enumerators.StatType.DAMAGE:
+                    case Enumerators.Stat.DAMAGE:
                         unit.Model.BuffedDamage += Value;
                         unit.Model.CurrentDamage += Value;
                         break;
-                    case Enumerators.StatType.DEFENSE:
+                    case Enumerators.Stat.DEFENSE:
                         unit.Model.BuffedDefense += Value;
                         unit.Model.CurrentDefense += Value;
                         break;

@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
+                case Enumerators.AbilityEffect.TARGET_ADJUSTMENTS_AIR:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:

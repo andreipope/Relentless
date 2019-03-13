@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class AdjacentUnitsGetStatAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public int Defense { get; }
 
@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
         public AdjacentUnitsGetStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Damage = ability.Damage;
             Defense = ability.Defense;
         }
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in adjacent)
             {
-                if (StatType == Enumerators.StatType.DEFENSE)
+                if (StatType == Enumerators.Stat.DEFENSE)
                 {
                     unit.Model.BuffedDefense += Defense;
                     unit.Model.CurrentDefense += Defense;
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
                         Target = unit.Model,
                     });
                 }
-                else if (StatType == Enumerators.StatType.DAMAGE)
+                else if (StatType == Enumerators.Stat.DAMAGE)
                 {
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;

@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             {
                 InvokeUseAbilityEvent();
 
-                AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+                AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Reanimate);
             }
         }
 
@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
 
             if (_reanimatedUnit != null)
             {
-                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
             }
 
             _gameplayManager.CanDoDragActions = true;

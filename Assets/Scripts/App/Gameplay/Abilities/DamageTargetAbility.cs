@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            TargetUnitStatusType = ability.TargetUnitStatusType;
+            TargetUnitStatusType = ability.TargetUnitStatus;
         }
 
         public override void Activate()
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTarget.ITSELF))
+            if (AbilityTargetTypes.Contains(Enumerators.Target.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {

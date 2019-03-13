@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
 
-            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Destroy);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Destroy);
 
             InvokeUseAbilityEvent();
         }

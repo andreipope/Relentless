@@ -7,14 +7,14 @@ namespace Loom.ZombieBattleground
 {
     public class StunAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
 
         public StunAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Value = ability.Value;
         }
 
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.STUN_FREEZES:
+                case Enumerators.AbilityEffect.STUN_FREEZES:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/FrozenVFX");
                     break;
                 default:
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTarget.OPPONENT_ALL_CARDS))
+            if (AbilityTargetTypes.Contains(Enumerators.Target.OPPONENT_ALL_CARDS))
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 

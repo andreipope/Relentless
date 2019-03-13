@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
             int gooCost = 0;
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
             {
                 if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction == Faction).Count > 0)
                 {

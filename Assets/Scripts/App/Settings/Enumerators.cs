@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public class Enumerators
     {
-        public enum AbilityActivityType
+        public enum AbilityActivity
         {
             UNDEFINED,
             PASSIVE,
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Common
             KILL_UNIT
         }
 
-        public enum AbilityEffectType
+        public enum AbilityEffect
         {
             NONE,
             MASSIVE_WATER_WAVE,
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_FRESH_MEAT
         }
 
-        public enum AbilityTarget
+        public enum Target
         {
             NONE,
             PLAYER,
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground.Common
             ONLY_DIFFERENT
         }
 
-        public enum GameMechanicDescriptionType
+        public enum GameMechanicDescription
         {
             [EnumMember(Value = "UNDEFINED")]
             Undefined,
@@ -542,7 +542,7 @@ namespace Loom.ZombieBattleground.Common
             ZOMBIE_DEATH_ANIMATIONS
         }
 
-        public enum StatType
+        public enum Stat
         {
             UNDEFINED,
             DEFENSE,
@@ -564,7 +564,7 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum UnitStatusType
+        public enum UnitStatus
         {
             NONE,
             FROZEN

@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
         private List<BoardObject> _targets;
 
         public int Count;
-        public List<Enumerators.AbilityTarget> TargetTypes;
+        public List<Enumerators.Target> TargetTypes;
 
         public RestoreDefRandomlySplitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Restore);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
@@ -62,20 +62,20 @@ namespace Loom.ZombieBattleground
             else
             {
                 _targets = new List<BoardObject>();
-                foreach (Enumerators.AbilityTarget targetType in TargetTypes)
+                foreach (Enumerators.Target targetType in TargetTypes)
                 {
                     switch (targetType)
                     {
-                        case Enumerators.AbilityTarget.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             _targets.Add(GetOpponentOverlord());
                             break;
-                        case Enumerators.AbilityTarget.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             _targets.Add(PlayerCallerOfAbility);
                             break;
-                        case Enumerators.AbilityTarget.PLAYER_CARD:
+                        case Enumerators.Target.PLAYER_CARD:
                             _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                             break;
-                        case Enumerators.AbilityTarget.OPPONENT_CARD:
+                        case Enumerators.Target.OPPONENT_CARD:
                             _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
                             break;
                         default:

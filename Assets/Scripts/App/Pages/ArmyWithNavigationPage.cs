@@ -229,8 +229,8 @@ namespace Loom.ZombieBattleground
         {
             //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
             //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount + "/" +
-                _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount;
+            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
         }
 
         public void LoadCards()
@@ -393,7 +393,7 @@ namespace Loom.ZombieBattleground
             if (string.IsNullOrEmpty(keyword))
             {
                 Enumerators.Faction faction = _availableSetType[_currentSetTypeIndex];
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
+                Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
                 List<Card> cards = set.Cards.ToList();
                 List<Card> resultList = new List<Card>();
                 foreach(Card card in cards)
@@ -415,7 +415,7 @@ namespace Loom.ZombieBattleground
                 List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
                 foreach (Enumerators.Faction item in allAvailableSetTypeList)
                 {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
                     List<Card> cards = set.Cards.ToList();
                     foreach (Card card in cards)
                         if (card.Name.ToLower().Contains(keyword))

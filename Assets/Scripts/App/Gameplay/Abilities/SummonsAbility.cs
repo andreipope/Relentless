@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         public string Name;
 
-        public List<Enumerators.AbilityTarget> TargetTypes;
+        public List<Enumerators.Target> TargetTypes;
 
         public SummonsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -40,13 +40,13 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (Enumerators.AbilityTarget target in TargetTypes)
+            foreach (Enumerators.Target target in TargetTypes)
             {
                 BoardUnitView unit = null;
 
                 switch (target)
                 {
-                    case Enumerators.AbilityTarget.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
                             unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, ItemPosition.End, IsPVPAbility);
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         break;
-                    case Enumerators.AbilityTarget.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
                             unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End, IsPVPAbility);

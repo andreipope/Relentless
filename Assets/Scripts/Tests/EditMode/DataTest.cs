@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground.Test
                             Enumerators.SkillTargetType.OPPONENT,
                             Enumerators.SkillTargetType.ALL_CARDS
                         },
-                        Enumerators.UnitStatusType.FROZEN,
+                        Enumerators.UnitStatus.FROZEN,
                         new List<Enumerators.Faction>
                         {
                             Enumerators.Faction.FIRE,
@@ -175,19 +175,19 @@ namespace Loom.ZombieBattleground.Test
             return
                 new AbilityData(
                     Enumerators.AbilityType.RAGE,
-                    Enumerators.AbilityActivityType.ACTIVE,
+                    Enumerators.AbilityActivity.ACTIVE,
                     Enumerators.AbilityTrigger.IN_HAND,
-                    new List<Enumerators.AbilityTarget>
+                    new List<Enumerators.Target>
                     {
-                        Enumerators.AbilityTarget.ITSELF,
-                        Enumerators.AbilityTarget.PLAYER
+                        Enumerators.Target.ITSELF,
+                        Enumerators.Target.PLAYER
                     },
-                    Enumerators.StatType.DAMAGE,
+                    Enumerators.Stat.DAMAGE,
                     Enumerators.Faction.TOXIC,
-                    Enumerators.AbilityEffectType.TARGET_ROCK,
+                    Enumerators.AbilityEffect.TARGET_ROCK,
                     Enumerators.AttackRestriction.ONLY_DIFFERENT,
                     Enumerators.CardType.WALKER,
-                    Enumerators.UnitStatusType.FROZEN,
+                    Enumerators.UnitStatus.FROZEN,
                     Enumerators.CardType.HEAVY,
                     1,
                     2,
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground.Test
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "path1"),
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Moving, "path2")
                     },
-                    Enumerators.GameMechanicDescriptionType.Death,
+                    Enumerators.GameMechanicDescription.Death,
                     Enumerators.Faction.LIFE,
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,

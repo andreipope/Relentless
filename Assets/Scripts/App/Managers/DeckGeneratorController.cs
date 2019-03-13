@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
             Enumerators.Faction faction = hero.HeroElement;
             
-            CardSet heroElementSet = SetTypeUtility.GetCardSet(_dataManager, faction);
+            Faction heroElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> cards = heroElementSet.Cards.ToList();
             
             List<Card> availableCardList = new List<Card>();

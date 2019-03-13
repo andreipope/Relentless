@@ -395,7 +395,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
+                Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
 
                 cards = set.Cards;
             }
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
             if (sender != null)
             {
                 GetSetAndIndexForCard(boardCardView.BoardUnitModel.Card.Prototype, out int setIndex, out int cardIndex);
-                _currentSet = SetTypeUtility.GetCardSetType(_dataManager, setIndex);
+                _currentSet = SetTypeUtility.GetCardFaction(_dataManager, setIndex);
                 _currentElementPage = cardIndex / CardsPerPage;
                 UpdateCardsPage();
 
@@ -1013,8 +1013,8 @@ namespace Loom.ZombieBattleground
 
         private void GetSetAndIndexForCard(IReadOnlyCard card, out int setIndex, out int cardIndex)
         {
-            CardSet set = _dataManager.CachedCardsLibraryData.Sets.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
-            setIndex = _dataManager.CachedCardsLibraryData.Sets.IndexOf(set);
+            Faction set = _dataManager.CachedCardsLibraryData.Factions.Find(x => x.Cards.Find(c => c.MouldId == card.MouldId) != null);
+            setIndex = _dataManager.CachedCardsLibraryData.Factions.IndexOf(set);
             if (_tutorialManager.IsTutorial)
             {
                 cardIndex = _tutorialManager.GetSpecificCardsBySet(set.Name).FindIndex(info => info.MouldId == card.MouldId);
@@ -1040,7 +1040,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                count = SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count;
+                count = SetTypeUtility.GetCardFaction(_dataManager, _currentSet).Cards.Count;
             }
 
             _numElementPages = Mathf.CeilToInt(count /

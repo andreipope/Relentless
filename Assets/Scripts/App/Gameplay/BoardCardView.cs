@@ -463,10 +463,10 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in unit.Model.Card.Prototype.Abilities)
                 {
-                    if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
+                    if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
                         continue;
 
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)
                     {
                         buffs.Add(
@@ -514,7 +514,7 @@ namespace Loom.ZombieBattleground
             buffs.Clear();
 
             // right block info ------------------------------------
-            foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
+            foreach (Enumerators.GameMechanicDescription mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
 
@@ -612,7 +612,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData abil in boardCardView.BoardUnitModel.Card.Prototype.Abilities)
                 {
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)
                     {
                         buffs.Add(
@@ -727,9 +727,9 @@ namespace Loom.ZombieBattleground
 
         private int GetValueOfAbilityByType(AbilityData ability)
         {
-            switch (ability.GameMechanicDescriptionType)
+            switch (ability.GameMechanicDescription)
             {
-                case Enumerators.GameMechanicDescriptionType.DelayedX:
+                case Enumerators.GameMechanicDescription.DelayedX:
                     return ability.Delay;
                 default:
                     return ability.Value;
@@ -771,7 +771,7 @@ namespace Loom.ZombieBattleground
 
             private readonly SpriteRenderer _buffIconPicture;
 
-            private readonly TextMeshPro _callTypeText;
+            private readonly TextMeshPro _triggerText;
 
             private readonly TextMeshPro _descriptionText;
 
@@ -788,13 +788,13 @@ namespace Loom.ZombieBattleground
 
                 Transform.localPosition = new Vector3(0, offsetY, 0f);
 
-                _callTypeText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
+                _triggerText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpperInvariant();
+                _triggerText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpperInvariant();
                 _descriptionText.text = ReplaceXByValue(buffTooltipInfo.Description, buffTooltipInfo.Value);
 
                 switch (buffTooltipInfo.TooltipObjectType)

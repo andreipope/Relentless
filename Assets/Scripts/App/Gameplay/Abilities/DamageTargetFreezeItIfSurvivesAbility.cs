@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleSubtriggers()
         {
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 List<BoardUnitModel> units;
                 if (PredefinedTargets != null)

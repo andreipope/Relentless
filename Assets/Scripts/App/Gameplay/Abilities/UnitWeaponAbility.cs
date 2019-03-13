@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEndedEvent;
 
-        private Enumerators.GameMechanicDescriptionType _gameMechanicType;
+        private Enumerators.GameMechanicDescription _gameMechanicType;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -41,15 +41,15 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentDefense += Defense;
             TargetUnit.BuffedDefense += Defense;
 
-            _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+            _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
 
             switch (BoardUnitModel.Card.Prototype.MouldId)
             {
                 case 41:
-                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.SuperSerum;
+                    _gameMechanicType = Enumerators.GameMechanicDescription.SuperSerum;
                     break;
                 case 18:
-                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+                    _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
                     break;
                 default:
                     break;

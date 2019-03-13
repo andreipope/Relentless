@@ -33,19 +33,19 @@ namespace Loom.ZombieBattleground.Data
 
         public static CardAbility ToProtobuf(this AbilityData ability) {
             CardAbility cardAbility = new CardAbility {
-                Type = (CardAbilityType.Types.Enum) ability.AbilityType,
-                ActivityType = (CardAbilityActivityType.Types.Enum) ability.ActivityType,
+                Type = (CardAbilityType.Types.Enum) ability.Ability,
+                ActivityType = (CardAbilityActivityType.Types.Enum) ability.Activity,
                 Trigger = (CardAbilityTrigger.Types.Enum) ability.Trigger,
                 TargetTypes =
                 {
                     ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)
                 },
-                Stat = (StatType.Types.Enum) ability.AbilityStatType,
+                Stat = (StatType.Types.Enum) ability.Stat,
                 Set = (CardSetType.Types.Enum) ability.Faction,
-                Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
+                Effect = (CardAbilityEffect.Types.Enum) ability.Effect,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
-                TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatusType,
+                TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatus,
                 TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
                 Value = ability.Value,
                 Attack = ability.Damage,
@@ -58,9 +58,9 @@ namespace Loom.ZombieBattleground.Data
                 {
                     ability.VisualEffectsToPlay.Select(v => v.ToProtobuf())
                 },
-                GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescriptionType,
-                TargetSet = (CardSetType.Types.Enum) ability.TargetSetType,
-                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.AbilitySubTrigger,
+                GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescription,
+                TargetSet = (CardSetType.Types.Enum) ability.TargetFaction,
+                SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.SubTrigger,
                 ChoosableAbilities =
                 {
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
@@ -105,9 +105,9 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
             {
                 GooCost = data.Cost,
-                Attack = data.Attack,
+                Attack = data.Damage,
                 Defense = data.Defense,
-                Set = (CardSetType.Types.Enum) data.CardSetType,
+                Set = (CardSetType.Types.Enum) data.Faction,
                 Type = (CreatureType.Types.Enum) data.CardType,
             };
 

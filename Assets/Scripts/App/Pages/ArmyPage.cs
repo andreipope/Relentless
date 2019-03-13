@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _gooValueText;
 
-        private GameObject _cardSetsIcons;
+        private GameObject _factionIcons;
 
         private int _currentElementPage, _numElementPages;
 
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
 
             _cardCounter = _selfPage.transform.Find("CardsCounter").GetChild(0).GetComponent<TextMeshProUGUI>();
 
-            _cardSetsIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
+            _factionIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
 
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
@@ -274,7 +274,7 @@ namespace Loom.ZombieBattleground
         {
             _toggleGroup.transform.GetChild(faction - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
+            Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
 
             List<Card> cards = set.Cards;
 
@@ -357,22 +357,22 @@ namespace Loom.ZombieBattleground
 
             //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
             //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount + "/" +
-                _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount;
+            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
         }
 
         private void HighlightCorrectIcon()
         {
-            for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
+            for (int i = 0; i < _factionIcons.transform.childCount; i++)
             {
-                GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
+                GameObject c = _factionIcons.transform.GetChild(i).GetChild(0).gameObject;
                 c.SetActive(i == _currentSet - Enumerators.Faction.FIRE);
             }
         }
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
+            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardFaction(_dataManager, _currentSet).Cards.Count /
                 (float) CardPositions.Count);
         }
 
