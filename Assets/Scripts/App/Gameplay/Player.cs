@@ -171,6 +171,16 @@ namespace Loom.ZombieBattleground
 #endif
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
+
+                    if (CurrentGoo == 1)
+                    {
+                        CurrentGoo = 0;
+                    }
+                    if (GooVials == 1)
+                    {
+                        GooVials = 0;
+                    }
+
                     TurnTime = (uint) InitialPvPPlayerState.TurnTime;
                     break;
                 default:
@@ -311,7 +321,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject PlayerObject { get; }
 
-        public GameObject AvatarObject => _avatarObject.transform.parent.gameObject;
+        public GameObject AvatarObject => _avatarObject?.transform.parent?.gameObject;
 
         public Transform Transform => PlayerObject.transform;
 
