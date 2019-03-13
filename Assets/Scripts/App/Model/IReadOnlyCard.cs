@@ -31,9 +31,6 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType CardType { get; }
 
-        // TODO: get rid of this
-        IList<AbilityData> InitialAbilities { get; }
-
         // FIXME: should be readonly 
         IList<AbilityData> Abilities { get; }
 

@@ -569,8 +569,7 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           // HACK FIXME: why do we need to update library card instead of modifying a copy?
-                                           ((ICard) instance).ForceUpdateAbilities(prototype.Abilities);
+                                           instance.Abilities = prototype.Abilities.Select(a => new AbilityData(a)).ToList();
 
                                            card.BoardUnitModel.Card.Owner.CurrentGoo += card.BoardUnitModel.Card.InstanceCard.Cost;
 

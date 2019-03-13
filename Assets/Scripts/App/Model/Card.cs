@@ -47,9 +47,6 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("type")]
         public Enumerators.CardType CardType { get; protected set; }
 
-        [JsonIgnore]
-        public List<AbilityData> InitialAbilities { get; private set; }
-
         [JsonProperty("abilities")]
         public List<AbilityData> Abilities { get; private set; }
 
@@ -62,13 +59,9 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty("hidden_set")]
         public Enumerators.SetType HiddenCardSetType { get; set; }
 
-        IList<AbilityData> IReadOnlyCard.InitialAbilities => InitialAbilities;
-
         IList<AbilityData> IReadOnlyCard.Abilities => Abilities;
 
         IList<AbilityData> ICard.Abilities { get; }
-
-        IList<AbilityData> ICard.InitialAbilities { get; }
 
         [JsonConstructor]
         public Card(
@@ -108,7 +101,6 @@ namespace Loom.ZombieBattleground.Data
             CardViewInfo = cardViewInfo;
             UniqueAnimationType = uniqueAnimationType;
             HiddenCardSetType = HiddenCardSetType;
-            CloneAbilitiesToInitialAbilities();
 
             if(CardSetType == Enumerators.SetType.OTHERS &&
                HiddenCardSetType != Enumerators.SetType.NONE)
@@ -139,26 +131,11 @@ namespace Loom.ZombieBattleground.Data
             CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
             UniqueAnimationType = sourceCard.UniqueAnimationType;
             HiddenCardSetType = sourceCard.HiddenCardSetType;
-            CloneAbilitiesToInitialAbilities();
         }
 
         public override string ToString()
         {
             return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(CardSetType)}: {CardSetType})";
-        }
-
-        public void ForceUpdateAbilities(IList<AbilityData> abilities)
-        {
-            if (abilities != null)
-            {
-                Abilities = abilities.ToList();
-                CloneAbilitiesToInitialAbilities();
-            }
-        }
-
-        private void CloneAbilitiesToInitialAbilities()
-        {
-            InitialAbilities = JsonConvert.DeserializeObject<List<AbilityData>>(JsonConvert.SerializeObject(Abilities));
         }
     }
 

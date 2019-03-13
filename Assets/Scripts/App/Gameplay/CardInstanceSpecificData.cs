@@ -3,6 +3,8 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -49,7 +51,7 @@ namespace Loom.ZombieBattleground
             CardSetType = cardSetType;
             CardType = cardType;
             Cost = cost;
-            Abilities = abilities.ToUniqueList();
+            Abilities = abilities.Select(a => new AbilityData(a)).ToList();
         }
     }
 }

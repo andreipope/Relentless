@@ -11,10 +11,6 @@ namespace Loom.ZombieBattleground.Data
 
         new Enumerators.SetType CardSetType { get; set; }
 
-        new IList<AbilityData> InitialAbilities { get; }
-
         new IList<AbilityData> Abilities { get; }
-
-        void ForceUpdateAbilities(IList<AbilityData> abilities);
     }
 }

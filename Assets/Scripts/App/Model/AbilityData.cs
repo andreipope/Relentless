@@ -137,33 +137,35 @@ namespace Loom.ZombieBattleground.Data
             Cost = cost;
         }
 
-        public AbilityData(AbilityData source)
+        public AbilityData(AbilityData source) : this (
+            source.AbilityType,
+            source.ActivityType,
+            source.CallType,
+            source.AbilityTargetTypes.ToList(),
+            source.AbilityStatType,
+            source.AbilitySetType,
+            source.AbilityEffectType,
+            source.AttackRestriction,
+            source.TargetCardType,
+            source.TargetUnitStatusType,
+            source.TargetUnitType,
+            source.Value,
+            source.Damage,
+            source.Health,
+            source.Name,
+            source.Turns,
+            source.Count,
+            source.Delay,
+            source.VisualEffectsToPlay.Select(v => new VisualEffectInfo(v)).ToList(),
+            source.GameMechanicDescriptionType,
+            source.TargetSetType,
+            source.AbilitySubTrigger,
+            source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList(),
+            source.Defense,
+            source.Cost
+        ) 
         {
-            AbilityType = source.AbilityType;
-            ActivityType = source.ActivityType;
-            CallType = source.CallType;
-            AbilityTargetTypes = source.AbilityTargetTypes.ToList();
-            AbilityStatType = source.AbilityStatType;
-            AbilitySetType = source.AbilitySetType;
-            AbilityEffectType = source.AbilityEffectType;
-            AttackRestriction = source.AttackRestriction;
-            TargetCardType = source.TargetCardType;
-            TargetUnitStatusType = source.TargetUnitStatusType;
-            TargetUnitType = source.TargetUnitType;
-            Value = source.Value;
-            Damage = source.Damage;
-            Health = source.Health;
-            Name = source.Name;
-            Turns = source.Turns;
-            Count = source.Count;
-            Delay = source.Delay;
-            VisualEffectsToPlay = source.VisualEffectsToPlay.Select(v => new VisualEffectInfo(v)).ToList();
-            GameMechanicDescriptionType = source.GameMechanicDescriptionType;
-            TargetSetType = source.TargetSetType;
-            AbilitySubTrigger = source.AbilitySubTrigger;
-            ChoosableAbilities = source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList();
-            Defense = source.Defense;
-            Cost = source.Cost;
+
         }
 
         public bool HasVisualEffectType(Enumerators.VisualEffectType type)
