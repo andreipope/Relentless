@@ -459,9 +459,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.Prototype.Abilities != null && !unit.Model.WasDistracted)
+            if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (AbilityData abil in unit.Model.Card.Prototype.Abilities)
+                foreach (AbilityData abil in unit.Model.Card.InstanceCard.Abilities)
                 {
                     if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
                         continue;
@@ -608,9 +608,9 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCardView.BoardUnitModel.Card.Prototype.Abilities != null)
+            if (boardCardView.BoardUnitModel.Card.InstanceCard.Abilities != null)
             {
-                foreach (AbilityData abil in boardCardView.BoardUnitModel.Card.Prototype.Abilities)
+                foreach (AbilityData abil in boardCardView.BoardUnitModel.Card.InstanceCard.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
                     if (gameMechanicInfo != null)

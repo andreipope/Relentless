@@ -203,7 +203,8 @@ namespace Loom.ZombieBattleground.Data
                 card.Defense,
                 (Enumerators.SetType) card.Set,
                 (Enumerators.CardType) card.Type,
-                card.GooCost
+                card.GooCost,
+                card.Abilities.Select(a => a.FromProtobuf()).ToList()
             );
         }
 

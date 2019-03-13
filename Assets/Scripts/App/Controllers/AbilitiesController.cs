@@ -419,6 +419,8 @@ namespace Loom.ZombieBattleground
         {
             IReadOnlyCard prototype = boardUnitModel.Card.Prototype;
 
+            IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
+
             GameplayQueueAction<object> abilityHelperAction = null;
 
             actionInQueue.Action = (parameter, completeCallback) =>
@@ -429,7 +431,7 @@ namespace Loom.ZombieBattleground
                    {
                        bool canUseAbility = false;
                        _activeAbility = null;
-                       foreach (AbilityData item in prototype.Abilities)
+                       foreach (AbilityData item in instance.Abilities)
                        {
                            _activeAbility = CreateActiveAbility(item, kind, boardObject, boardUnitModel.OwnerPlayer, boardUnitModel);
 
@@ -450,7 +452,7 @@ namespace Loom.ZombieBattleground
 
                        if (canUseAbility)
                        {
-                           AbilityData ability = prototype.Abilities.First(IsAbilityCanActivateTargetAtStart);
+                           AbilityData ability = instance.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
                            if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
                                !HasSpecialUnitOnBoard(boardUnitModel, ability) ||
@@ -568,7 +570,7 @@ namespace Loom.ZombieBattleground
                                        failedCallback: () =>
                                        {
                                            // HACK FIXME: why do we need to update library card instead of modifying a copy?
-                                           ((ICard) prototype).ForceUpdateAbilities(prototype.InitialAbilities);
+                                           ((ICard) instance).ForceUpdateAbilities(prototype.Abilities);
 
                                            card.BoardUnitModel.Card.Owner.CurrentGoo += card.BoardUnitModel.Card.InstanceCard.Cost;
 
@@ -667,13 +669,13 @@ namespace Loom.ZombieBattleground
                        }
                    };
 
-                   AbilityData choosableAbility = prototype.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
+                   AbilityData choosableAbility = instance.Abilities.FirstOrDefault(x => x.HasChoosableAbilities());
 
                    if (choosableAbility != null)
                    {
                        if (HasPredefinedChoosableAbility)
                        {
-                           prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] =
+                           instance.Abilities[instance.Abilities.IndexOf(choosableAbility)] =
                                        choosableAbility.ChoosableAbilities[PredefinedChoosableAbilityId].AbilityData;
                            abilityEndAction.Invoke();
 
@@ -688,7 +690,7 @@ namespace Loom.ZombieBattleground
 
                                callback = (x) =>
                                {
-                                    prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                    instance.Abilities[instance.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
                                     abilityEndAction.Invoke();
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
@@ -707,7 +709,7 @@ namespace Loom.ZombieBattleground
                            else
                            {
                                // TODO: improve functionality for the AI
-                               prototype.Abilities[prototype.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
+                               instance.Abilities[instance.Abilities.IndexOf(choosableAbility)] = choosableAbility.ChoosableAbilities[0].AbilityData;
                                abilityEndAction.Invoke();
                            }
                        }
@@ -748,7 +750,7 @@ namespace Loom.ZombieBattleground
         public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
-                boardUnitModel.Card.Prototype.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
+                boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityCallType.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
                 CreateActiveAbility(ability, boardUnitModel.Card.Prototype.CardKind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)
@@ -767,7 +769,7 @@ namespace Loom.ZombieBattleground
             //That will tell us directly which one of multiple abilities with the same name we should use for a card.
             AbilityData abilityData;
 
-            AbilityData subAbilitiesData = boardUnitModel.Prototype.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
+            AbilityData subAbilitiesData = boardUnitModel.InstanceCard.Abilities.FirstOrDefault(x => x.ChoosableAbilities.Count > 0);
 
             if (subAbilitiesData != null)
             {
@@ -777,12 +779,12 @@ namespace Loom.ZombieBattleground
             {
                 if (_PvPToggleFirstLastAbility)
                 {
-                    abilityData = boardUnitModel.Prototype.Abilities.First(x => x.AbilityType == ability);
+                    abilityData = boardUnitModel.InstanceCard.Abilities.First(x => x.AbilityType == ability);
                     _PvPToggleFirstLastAbility = false;
                 }
                 else
                 {
-                    abilityData = boardUnitModel.Prototype.Abilities.Last(x => x.AbilityType == ability);
+                    abilityData = boardUnitModel.InstanceCard.Abilities.Last(x => x.AbilityType == ability);
                     _PvPToggleFirstLastAbility = true;
                 }
             }
@@ -835,7 +837,7 @@ namespace Loom.ZombieBattleground
 
         public void ActivateAbilitiesOnCard(BoardObject abilityCaller, BoardUnitModel boardUnitModel, Player owner)
         {
-            foreach(AbilityData abilityData in boardUnitModel.Prototype.Abilities )
+            foreach(AbilityData abilityData in boardUnitModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;
                 if(abilityData.CallType != Enumerators.AbilityCallType.ENTRY)
