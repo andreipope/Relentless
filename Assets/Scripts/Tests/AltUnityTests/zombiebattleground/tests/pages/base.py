@@ -28,11 +28,12 @@ class CZBTests(unittest.TestCase):
         self.desired_caps = {}
         if (self.platform == "android"):
             self.setup_android()
-            self.get_android_device_screen_size()
+            # self.get_android_device_screen_size()
         else:
             self.setup_ios()
         self.driver = webdriver.Remote(
             'http://localhost:4723/wd/hub', self.desired_caps)
+        self.get_appium_device_screen_size()
         self.altdriver = AltrunUnityDriver(self.driver, self.platform,screen_height=self.device_screen_height,screen_width=self.device_screen_width)
         self.altdriver.wait_for_current_scene_to_be('APP_INIT')
         try:
@@ -61,6 +62,15 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['automationName'] = 'XCUITest'
         self.desired_caps['app'] = PATH('../application.ipa')
         self.desired_caps['orientation']='LANDSCAPE'
+    
+    def get_appium_device_screen_size(self):
+        size=self.driver.get_window_size()
+        print(size)
+        self.device_screen_height=size['height']
+        self.device_screen_width=size['width']
+        print(self.device_screen_height)
+        print(self.device_screen_width)
+
 
     def get_android_device_screen_size(self):
         # The output of the command looks like this:
