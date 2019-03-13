@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
         
         private bool _isDragging;
 
-        private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
+        public readonly Dictionary<Enumerators.SetType, Enumerators.SetType> SetTypeAgainstDictionary =
             new Dictionary<Enumerators.SetType, Enumerators.SetType>
             {
                 {
@@ -495,7 +495,7 @@ namespace Loom.ZombieBattleground
                 return;
             
 
-            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
+            if (SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -933,7 +933,7 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.SetType againstSetType = SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             allAvailableSetTypeList.Remove(againstSetType);
             foreach (Enumerators.SetType item in allAvailableSetTypeList)
             {
@@ -1009,7 +1009,7 @@ namespace Loom.ZombieBattleground
 
         private void ExcludeFilterDataWithAgainstSetType()
         {
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.SetType againstSetType = SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;            
         }
         

@@ -47,11 +47,16 @@ namespace Loom.ZombieBattleground
                        _buttonSelectOverlordContinue;
 
         private Image _imageSelectOverlordGlow,
-                      _imageSelectOverlordPortrait;
+                      _imageSelectOverlordPortrait,
+                      _imageCross;
                        
         private List<Transform> _selectOverlordIconList;
                        
         private int _selectOverlordIndex;
+
+        private const int NumberOfOverlord = 6;
+
+        private Dictionary<Enumerators.SetType, Image> _elementImageDictionary;
         
         public void Init()
         {
@@ -73,6 +78,8 @@ namespace Loom.ZombieBattleground
                 _textSelectOverlordDeckName.text = "NEW DECK";
                 ChangeOverlordIndex(0);
             };
+
+            _elementImageDictionary = new Dictionary<Enumerators.SetType, Image>();
         }
         
         public void Show(GameObject selfPage)
@@ -97,9 +104,11 @@ namespace Loom.ZombieBattleground
             _textSelectOverlordDescription = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Text_Desc").GetComponent<TextMeshProUGUI>();
             
             _imageSelectOverlordGlow = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_Glow").GetComponent<Image>();
-            _imageSelectOverlordPortrait = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();            
+            _imageSelectOverlordPortrait = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_OverlordPortrait").GetComponent<Image>();
+            _imageCross = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_cross").GetComponent<Image>();
             
-            for(int i=0; i<6;++i)
+            _elementImageDictionary.Clear();
+            for(int i=0; i<NumberOfOverlord;++i)
             {
                 Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
@@ -121,6 +130,13 @@ namespace Loom.ZombieBattleground
                     ChangeOverlordIndex(index);
                     _myDeckPage.PlayClickSound();
                 });
+
+                string elementName = _dataManager.CachedHeroesData.Heroes[i].HeroElement.ToString().ToLower();
+                Image elementImage = _selfPage.transform.Find
+                (
+                    "Tab_SelectOverlord/Panel_Content/Group_Elements/Image_Element_"+elementName
+                ).GetComponent<Image>();
+                _elementImageDictionary.Add(_dataManager.CachedHeroesData.Heroes[i].HeroElement, elementImage);
             }
         }
         
@@ -229,6 +245,12 @@ namespace Loom.ZombieBattleground
             );
             _textSelectOverlordName.text = hero.FullName;
             _textSelectOverlordDescription.text = hero.ShortDescription;
+
+            Enumerators.SetType againstSetType = _myDeckPage.HordeEditTab.SetTypeAgainstDictionary
+            [
+                hero.HeroElement
+            ];
+            _imageCross.transform.position = _elementImageDictionary[againstSetType].transform.position;
         }
         
         public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
