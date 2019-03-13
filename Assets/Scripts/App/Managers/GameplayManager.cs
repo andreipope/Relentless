@@ -164,28 +164,39 @@ namespace Loom.ZombieBattleground
 
         public void StartGameplay()
         {
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
+            if (IsTutorial)
+            {
+                StartPreparingToInitializeGame();
+            }
+            else
+            {
+                _uiManager.DrawPopup<PreparingForBattlePopup>();
 
-            MatchDuration.StartTimer();
+                MatchDuration.StartTimer();
 
-            _timerManager.AddTimer(
-                x =>
-                {
-                    _uiManager.HidePopup<PreparingForBattlePopup>();
+                _timerManager.AddTimer(
+                    x =>
+                    {
+                        _uiManager.HidePopup<PreparingForBattlePopup>();
+                        StartPreparingToInitializeGame();
+                    },
+                    null,
+                    2f);
+            }
+        }
 
-                    IsGameStarted = true;
-                    IsGameEnded = false;
-                    IsPreparingEnded = false;
-                    IsDesyncDetected = false;
+        private void StartPreparingToInitializeGame()
+        {
+            IsGameStarted = true;
+            IsGameEnded = false;
+            IsPreparingEnded = false;
+            IsDesyncDetected = false;
 
-                    CanDoDragActions = true;
+            CanDoDragActions = true;
 
-                    GameStarted?.Invoke();
+            GameStarted?.Invoke();
 
-                    StartInitializeGame();
-                },
-                null,
-                2f);
+            StartInitializeGame();
         }
 
         public void StopGameplay()
