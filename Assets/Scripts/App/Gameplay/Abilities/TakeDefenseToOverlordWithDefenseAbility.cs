@@ -8,9 +8,9 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public int Health { get; }
-
         public int Defense { get; }
+
+        public int Defense2 { get; }
 
         public List<Enumerators.AbilityTarget> TargetTypes { get; }
 
@@ -18,8 +18,8 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = AbilityData.Value;
-            Health = AbilityData.Health;
             Defense = AbilityData.Defense;
+            Defense2 = AbilityData.Defense2;
             TargetTypes = AbilityData.AbilityTarget;
         }
 
@@ -42,12 +42,12 @@ namespace Loom.ZombieBattleground
             {
                 int defenseToBuff = Value;
 
-                if(PlayerCallerOfAbility.Defense <= Defense)
+                if(PlayerCallerOfAbility.Defense <= Defense2)
                 {
-                    defenseToBuff = Health;
+                    defenseToBuff = Defense2;
                 }
 
-                PlayerCallerOfAbility.BuffedHp += defenseToBuff;
+                PlayerCallerOfAbility.BuffedDefense += defenseToBuff;
                 PlayerCallerOfAbility.Defense += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

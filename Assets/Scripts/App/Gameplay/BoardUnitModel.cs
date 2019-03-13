@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<BoardObject> PrepairingToDie;
 
-        public event PropertyChangedEvent<int> UnitHpChanged;
+        public event PropertyChangedEvent<int> UnitDefenseChanged;
 
         public event PropertyChangedEvent<int> UnitDamageChanged;
 
@@ -151,11 +151,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public int MaxCurrentHp => Card.Prototype.Defense + BuffedHp;
+        public int MaxCurrentDefense => Card.Prototype.Defense + BuffedDefense;
 
-        public int BuffedHp { get; set; }
+        public int BuffedDefense { get; set; }
 
-        public int CurrentHp
+        public int CurrentDefense
         {
             get => Card.InstanceCard.Defense;
             set
@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
                     return;
 
                 Card.InstanceCard.Defense = value;
-                UnitHpChanged?.Invoke(oldValue, value);
+                UnitDefenseChanged?.Invoke(oldValue, value);
             }
         }
 
@@ -283,8 +283,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.DAMAGE:
                     break;
                 case Enumerators.BuffType.DEFENCE:
-                    CurrentHp++;
-                    BuffedHp++;
+                    CurrentDefense++;
+                    BuffedDefense++;
                     break;
                 case Enumerators.BuffType.FREEZE:
                     TakeFreezeToAttacked = true;
@@ -505,13 +505,13 @@ namespace Loom.ZombieBattleground
             Card = card;
 
             CurrentDamage = card.Prototype.Damage;
-            CurrentHp = card.Prototype.Defense;
+            CurrentDefense = card.Prototype.Defense;
 
             card.InstanceCard.Attack = CurrentDamage;
-            card.InstanceCard.Defense = CurrentHp;
+            card.InstanceCard.Defense = CurrentDefense;
 
             BuffedDamage = 0;
-            BuffedHp = 0;
+            BuffedDefense = 0;
 
             InitialUnitType = Card.Prototype.CardType;
 
@@ -731,7 +731,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
-                            if(targetCardModel.CurrentHp <= 0 || targetCardModel.IsDead)
+                            if(targetCardModel.CurrentDefense <= 0 || targetCardModel.IsDead)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
@@ -783,7 +783,7 @@ namespace Loom.ZombieBattleground
                                         }
                                     }
 
-                                    if (TakeFreezeToAttacked && targetCardModel.CurrentHp > 0)
+                                    if (TakeFreezeToAttacked && targetCardModel.CurrentDefense > 0)
                                     {
                                         if (!targetCardModel.HasBuffShield)
                                         {
@@ -811,7 +811,7 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (IsDead || CurrentHp <= 0 ||
+            if (IsDead || CurrentDefense <= 0 ||
                 CurrentDamage <= 0 || IsStun ||
                 CantAttackInThisTurnBlocker  || !CanAttackByDefault)
             {

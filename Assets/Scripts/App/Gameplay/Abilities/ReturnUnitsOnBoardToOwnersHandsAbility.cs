@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
             _units =
                 _units
                     .Where(card => card.Model != AbilityUnitOwner &&
-                        card.Model.CurrentHp > 0 &&
+                        card.Model.CurrentDefense > 0 &&
                         !card.Model.IsDead)
                     .ToList();
 

@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
             int blocksCount = _targets.Count;
             BoardObject currentTarget = null;
 
-            int deltaHealth = 0;
+            int deltaDefense = 0;
 
             while (maxCount > 0)
             {
@@ -116,15 +116,15 @@ namespace Loom.ZombieBattleground
                 switch (currentTarget)
                 {
                     case BoardUnitModel unit:
-                        deltaHealth = unit.MaxCurrentHp - unit.CurrentHp;
+                        deltaDefense = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
-                        deltaHealth = player.MaxCurrentHp - player.Defense;
+                        deltaDefense = player.MaxCurrentDefense - player.Defense;
                         break;
                 }
 
                 defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
-                defenseValue = Mathf.Clamp(defenseValue, 0, deltaHealth);
+                defenseValue = Mathf.Clamp(defenseValue, 0, deltaDefense);
 
                 maxCount -= defenseValue;
 
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
                     RestoreDefenseOfTarget(currentTarget, defenseValue);
                 }
 
-                if (defenseValue == deltaHealth)
+                if (defenseValue == deltaDefense)
                 {
                     _targets.Remove(currentTarget);
                 }

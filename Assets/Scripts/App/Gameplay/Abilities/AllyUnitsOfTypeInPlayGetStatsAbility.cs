@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
             Faction = ability.Faction;
         }
@@ -42,8 +42,8 @@ namespace Loom.ZombieBattleground
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;
 
-                    unit.Model.BuffedHp += Health;
-                    unit.Model.CurrentHp += Health;
+                    unit.Model.BuffedDefense += Defense;
+                    unit.Model.CurrentDefense += Defense;
                 }
             }
         }

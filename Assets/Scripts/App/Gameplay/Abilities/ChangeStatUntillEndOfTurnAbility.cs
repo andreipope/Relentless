@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
 
             _boardUnits = new List<BoardUnitView>();
@@ -83,10 +83,10 @@ namespace Loom.ZombieBattleground
                     unit.Model.CurrentDamage += Damage;
                 }
 
-                if (Health != 0)
+                if (Defense != 0)
                 {
-                    unit.Model.HpDebuffUntillEndOfTurn += Health;
-                    unit.Model.CurrentHp += Health;
+                    unit.Model.HpDebuffUntillEndOfTurn += Defense;
+                    unit.Model.CurrentDefense += Defense;
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
 
                 if (unit.Model.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.Model.CurrentHp -= unit.Model.HpDebuffUntillEndOfTurn;
+                    unit.Model.CurrentDefense -= unit.Model.HpDebuffUntillEndOfTurn;
                     unit.Model.HpDebuffUntillEndOfTurn = 0;
                 }
             }

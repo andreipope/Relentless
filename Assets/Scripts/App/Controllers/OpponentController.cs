@@ -218,10 +218,10 @@ namespace Loom.ZombieBattleground
                         boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
                         boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
                     }
-                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Health)
+                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Defense)
                     {
-                        boardUnit.BuffedHp = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+                        boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
+                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;

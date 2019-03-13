@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             else if (PlayerCallerOfAbility.BoardCards
                     .FindAll(card => card.Model.Card.Prototype.Faction == Faction &&
                         card.Model != AbilityUnitOwner &&
-                        card.Model.CurrentHp > 0 &&
+                        card.Model.CurrentDefense > 0 &&
                         !card.Model.IsDead)
                     .Count <= 0)
                 return;

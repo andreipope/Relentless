@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler(oldValue, newValue);
 
-            if (AbilityUnitOwner.CurrentHp <= 0) 
+            if (AbilityUnitOwner.CurrentDefense <= 0) 
             {   
                 AbilityProcessingAction?.ForceActionDone();
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);

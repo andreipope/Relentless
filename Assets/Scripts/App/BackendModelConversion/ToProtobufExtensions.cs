@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Data
                 TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
                 Value = ability.Value,
                 Attack = ability.Damage,
-                Defense = ability.Health,
+                Defense = ability.Defense,
                 Name = ability.Name,
                 Turns = ability.Turns,
                 Count = ability.Count,
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground.Data
                 {
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
-                Defense2 = ability.Defense,
+                Defense2 = ability.Defense2,
                 Cost = ability.Cost
             };
 

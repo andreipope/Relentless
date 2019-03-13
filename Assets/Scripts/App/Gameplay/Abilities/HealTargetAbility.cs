@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
                 {
-                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
+                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentDefense < x.Model.MaxCurrentDefense).Select(x => x.Model));
                 }
 
                 if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER) && (BoardSpell == null || BoardSpell.BoardUnitModel.Prototype.MouldId != ZedKitId))
@@ -176,10 +176,10 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case BoardUnitModel unit:
-                        value = unit.MaxCurrentHp - unit.CurrentHp;
+                        value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
-                        value = player.MaxCurrentHp - player.Defense;
+                        value = player.MaxCurrentDefense - player.Defense;
                         break;
                 }
 

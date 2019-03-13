@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             switch (StatType)
             {
-                case Enumerators.StatType.HEALTH:
+                case Enumerators.StatType.DEFENSE:
                 case Enumerators.StatType.DAMAGE:
                 default:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
@@ -62,9 +62,9 @@ namespace Loom.ZombieBattleground
                         unit.Model.BuffedDamage += Value;
                         unit.Model.CurrentDamage += Value;
                         break;
-                    case Enumerators.StatType.HEALTH:
-                        unit.Model.BuffedHp += Value;
-                        unit.Model.CurrentHp += Value;
+                    case Enumerators.StatType.DEFENSE:
+                        unit.Model.BuffedDefense += Value;
+                        unit.Model.CurrentDefense += Value;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);

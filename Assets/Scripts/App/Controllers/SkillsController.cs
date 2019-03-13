@@ -1294,7 +1294,7 @@ namespace Loom.ZombieBattleground
 
         private void MendAction(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            owner.Defense = Mathf.Clamp(owner.Defense + skill.Value, 0, owner.MaxCurrentHp);
+            owner.Defense = Mathf.Clamp(owner.Defense + skill.Value, 0, owner.MaxCurrentDefense);
 
             // TODO: remove this empty gameobject logic
             Transform transform = new GameObject().transform;
@@ -1635,7 +1635,7 @@ namespace Loom.ZombieBattleground
             {
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
-                if (unit.CurrentHp > 0)
+                if (unit.CurrentDefense > 0)
                 {
                     unit.Stun(Enumerators.StunType.FREEZE, 1);
                 }
@@ -1687,8 +1687,8 @@ namespace Loom.ZombieBattleground
                     switch (target)
                     {
                         case BoardUnitModel unit:
-                            unit.BuffedHp += skill.Value;
-                            unit.CurrentHp += skill.Value;
+                            unit.BuffedDefense += skill.Value;
+                            unit.CurrentDefense += skill.Value;
                             actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                             break;
                         case Player player:
@@ -2084,8 +2084,8 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
-                unit.BuffedHp += skill.Value;
-                unit.CurrentHp += skill.Value;
+                unit.BuffedDefense += skill.Value;
+                unit.CurrentDefense += skill.Value;
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
                 position -= Vector3.up * 3.6f;
@@ -2196,8 +2196,8 @@ namespace Loom.ZombieBattleground
             Vector3 position;
             foreach (BoardUnitView unit in units)
             {
-                unit.Model.BuffedHp += skill.Value;
-                unit.Model.CurrentHp += skill.Value;
+                unit.Model.BuffedDefense += skill.Value;
+                unit.Model.CurrentDefense += skill.Value;
 
                 position = unit.Transform.position;
                 position -= Vector3.up * 3.65f;

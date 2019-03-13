@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
         public int Turn { get; set; }
 
-        public int InitialHp { get; private set; }
+        public int InitialDefense { get; private set; }
 
         public int CurrentGooModificator { get; set; }
 
@@ -241,8 +241,8 @@ namespace Loom.ZombieBattleground
             // TODO: REMOVE logs when issue will be fixed
             Log.Debug($"SelfHero: {SelfHero}");
 
-            InitialHp = _defense;
-            BuffedHp = 0;
+            InitialDefense = _defense;
+            BuffedDefense = 0;
 
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -378,9 +378,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsStunned { get; private set; }
 
-        public int BuffedHp { get; set; }
+        public int BuffedDefense { get; set; }
 
-        public int MaxCurrentHp => InitialHp + BuffedHp;
+        public int MaxCurrentDefense => InitialDefense + BuffedDefense;
 
         public void InvokeTurnEnded()
         {

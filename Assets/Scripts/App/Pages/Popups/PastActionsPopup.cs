@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
                     _leftBlockCardUnitElement.Init(unit.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
                     unitCardElement.Damage = unit.MaxCurrentDamage;
-                    unitCardElement.Health = unit.MaxCurrentHp;
+                    unitCardElement.Defense = unit.MaxCurrentDefense;
                     break;
                 case SpellBoardCard spellBoardCard:
                     _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
                     _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
                     unitCardElement.Damage = unitBoardCard.BoardUnitModel.CurrentDamage;
-                    unitCardElement.Health = unitBoardCard.BoardUnitModel.CurrentHp;
+                    unitCardElement.Defense = unitBoardCard.BoardUnitModel.CurrentDefense;
                     break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
                         unitCardElement.Damage = boardCard.BoardUnitModel.CurrentDamage;
-                        unitCardElement.Health = boardCard.BoardUnitModel.CurrentHp;
+                        unitCardElement.Defense = boardCard.BoardUnitModel.CurrentDefense;
                         break;
                     case HandBoardCard card:
                         _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
                         unitCardElement.Damage = unit.MaxCurrentDamage;
-                        unitCardElement.Health = unit.MaxCurrentHp;
+                        unitCardElement.Defense = unit.MaxCurrentDefense;
                         break;
                     case BoardSkill skill:
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -355,22 +355,22 @@ namespace Loom.ZombieBattleground
                           _pictureImage,
                           _effectImage;
 
-            private int _hp, _damage;
+            private int _defense, _damage;
 
             private int _initialHp, _initialDamage;
 
-            public event Action<int, int> HealthChangedEvent;
+            public event Action<int, int> DefenseChangedEvent;
 
             public event Action<int, int> DamageChangedEvent;
 
-            public int Health
+            public int Defense
             {
-                get => _hp;
+                get => _defense;
                 set
                 {
-                    int oldHp = _hp;
-                    _hp = Mathf.Clamp(value, 0, int.MaxValue);
-                    HealthChangedEvent?.Invoke(oldHp, _hp);
+                    int oldDefense = _defense;
+                    _defense = Mathf.Clamp(value, 0, int.MaxValue);
+                    DefenseChangedEvent?.Invoke(oldDefense, _defense);
                 }
             }
 
@@ -420,10 +420,10 @@ namespace Loom.ZombieBattleground
                 _bodyText.text = prototype.Description;
                 _gooText.text = prototype.Cost.ToString();
                 Damage = prototype.Damage;
-                Health = prototype.Defense;
+                Defense = prototype.Defense;
 
                 _initialDamage = Damage;
-                _initialHp = Health;
+                _initialHp = Defense;
 
                 DrawStats();
 
@@ -431,7 +431,7 @@ namespace Loom.ZombieBattleground
                 {
                     DrawStats();
                 };
-                HealthChangedEvent += (oldValue, newValue) =>
+                DefenseChangedEvent += (oldValue, newValue) =>
                 {
                     DrawStats();
                 };
@@ -483,10 +483,10 @@ namespace Loom.ZombieBattleground
             private void DrawStats()
             {
                 _attackText.text = Damage.ToString();
-                _defenseText.text = Health.ToString();
+                _defenseText.text = Defense.ToString();
 
                 FillColor(Damage, _initialDamage, _attackText);
-                FillColor(Health, _initialHp, _defenseText);
+                FillColor(Defense, _initialHp, _defenseText);
             }
 
             private void FillColor(int stat, int initialStat, TextMeshProUGUI text)

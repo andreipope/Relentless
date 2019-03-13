@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
-            TargettingArrow.UnitDefense = AbilityData.Defense;
+            TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
 
             switch (CardKind)
@@ -227,7 +227,7 @@ namespace Loom.ZombieBattleground
                     {
                         AbilityUnitOwner.UnitDied += UnitDiedHandler;
                         AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
-                        AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitDefenseChanged += UnitHpChangedHandler;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
             {
                 AbilityUnitOwner.UnitDied -= UnitDiedHandler;
                 AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
-                AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDefenseChanged -= UnitHpChangedHandler;
                 AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
@@ -491,7 +491,7 @@ namespace Loom.ZombieBattleground
         {
             return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
                 .Select(x => x.Model).ToList()
-                .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
         }
 
         public void InvokeActionTriggered(object info = null)

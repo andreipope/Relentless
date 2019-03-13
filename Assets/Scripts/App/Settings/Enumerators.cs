@@ -545,7 +545,7 @@ namespace Loom.ZombieBattleground.Common
         public enum StatType
         {
             UNDEFINED,
-            HEALTH,
+            DEFENSE,
             DAMAGE
         }
 

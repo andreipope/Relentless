@@ -37927,7 +37927,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public static partial class Types {
       public enum Enum {
         [pbr::OriginalName("UNDEFINED")] Undefined = 0,
-        [pbr::OriginalName("HEALTH")] Health = 1,
+        [pbr::OriginalName("DEFENSE")] Defense = 1,
         [pbr::OriginalName("DAMAGE")] Damage = 2,
       }
 

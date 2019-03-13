@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
             // TODO: unsubscribe
             BoardUnitModel.UnitDamageChanged += InstanceCardOnStatChanged;
-            BoardUnitModel.UnitHpChanged += InstanceCardOnStatChanged;
+            BoardUnitModel.UnitDefenseChanged += InstanceCardOnStatChanged;
         }
 
         private void InstanceCardOnStatChanged(int oldValue, int newValue)

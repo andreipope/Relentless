@@ -633,7 +633,7 @@ namespace Loom.ZombieBattleground
                                                 {
                                                     UnitBoardCard unitBoardCard = card as UnitBoardCard;
                                                     unitBoardCard.BoardUnitModel.Card.InstanceCard.Attack = boardUnitView.Model.MaxCurrentDamage;
-                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentHp;
+                                                    unitBoardCard.BoardUnitModel.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentDefense;
                                                 }
                                             }
                                             else

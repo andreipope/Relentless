@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Data
         public int Damage { get; private set; }
 
         [JsonProperty("health")]
-        public int Health { get; private set; }
+        public int Defense { get; private set; }
 
         [JsonProperty("name")]
         public string Name { get; private set; }
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground.Data
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
         [JsonProperty("defense")]
-        public int Defense { get; private set; }
+        public int Defense2 { get; private set; }
 
         [JsonProperty("cost")]
         public int Cost { get; private set; }
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardType targetUnitType,
             int value,
             int damage,
-            int health,
+            int defense,
             string name,
             int turns,
             int count,
@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.Faction targetSetType,
             Enumerators.AbilitySubTrigger abilitySubTrigger,
             List<ChoosableAbility> choosableAbilities,
-            int defense,
+            int defense2,
             int cost)
         {
             AbilityType = abilityType;
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground.Data
             TargetUnitType = targetUnitType;
             Value = value;
             Damage = damage;
-            Health = health;
+            Defense = defense;
             Name = name;
             Turns = turns;
             Count = count;
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground.Data
             TargetSetType = targetSetType;
             AbilitySubTrigger = abilitySubTrigger;
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
-            Defense = defense;
+            Defense2 = defense2;
             Cost = cost;
         }
 
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Data
             TargetUnitType = source.TargetUnitType;
             Value = source.Value;
             Damage = source.Damage;
-            Health = source.Health;
+            Defense = source.Defense;
             Name = source.Name;
             Turns = source.Turns;
             Count = source.Count;
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground.Data
             TargetSetType = source.TargetSetType;
             AbilitySubTrigger = source.AbilitySubTrigger;
             ChoosableAbilities = source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList();
-            Defense = source.Defense;
+            Defense2 = source.Defense2;
             Cost = source.Cost;
         }
 

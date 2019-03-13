@@ -667,7 +667,7 @@ namespace Loom.ZombieBattleground
                     boardCardView.DrawTooltipInfoOfUnit(boardUnit);
                     UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
                     boardCardUnit.BoardUnitModel.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
-                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentHp;
+                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentDefense;
                     break;
                 case BoardCardView tooltipCard:
                     boardCardView.DrawTooltipInfoOfCard(tooltipCard);
@@ -955,7 +955,7 @@ namespace Loom.ZombieBattleground
         public void DistractUnit(BoardUnitView boardUnit)
         {
             boardUnit.Model.BuffedDamage = 0;
-            boardUnit.Model.BuffedHp = 0;
+            boardUnit.Model.BuffedDefense = 0;
             boardUnit.Model.HasSwing = false;
             boardUnit.Model.TakeFreezeToAttacked = false;
             boardUnit.Model.HasBuffRush = false;
@@ -1256,8 +1256,8 @@ namespace Loom.ZombieBattleground
                 workingUnitView = _cardsController.SpawnUnitOnBoard(_gameplayManager.CurrentPlayer, cardInfo.Name, ItemPosition.End);
                 workingUnitView.Model.Card.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                workingUnitView.Model.CurrentHp += cardInfo.BuffedHealth;
-                workingUnitView.Model.BuffedHp += cardInfo.BuffedHealth;
+                workingUnitView.Model.CurrentDefense += cardInfo.BuffedDefense;
+                workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
                 workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
                 PlayerBoardCards.Insert(ItemPosition.End, workingUnitView);

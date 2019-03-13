@@ -9,13 +9,13 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -36,10 +36,10 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.Defense <= Health)
+            if (PlayerCallerOfAbility.Defense <= Defense)
             {
-                AbilityUnitOwner.BuffedHp += Value;
-                AbilityUnitOwner.CurrentHp += Value;
+                AbilityUnitOwner.BuffedDefense += Value;
+                AbilityUnitOwner.CurrentDefense += Value;
             }
         }
     }

@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler(oldValue, newValue);
 
-            if (AbilityUnitOwner.CurrentHp == 0 && !AbilityUnitOwner.IsReanimated)
+            if (AbilityUnitOwner.CurrentDefense == 0 && !AbilityUnitOwner.IsReanimated)
             {
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
             }

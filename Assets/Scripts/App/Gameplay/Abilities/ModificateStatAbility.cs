@@ -149,9 +149,9 @@ namespace Loom.ZombieBattleground
                                     boardUnit.BuffedDamage += revert ? -Value : Value;
                                     boardUnit.CurrentDamage += revert ? -Value : Value;
                                     break;
-                                case Enumerators.StatType.HEALTH:
-                                    boardUnit.BuffedHp += revert ? -Value : Value;
-                                    boardUnit.CurrentHp += revert ? -Value : Value;
+                                case Enumerators.StatType.DEFENSE:
+                                    boardUnit.BuffedDefense += revert ? -Value : Value;
+                                    boardUnit.CurrentDefense += revert ? -Value : Value;
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);

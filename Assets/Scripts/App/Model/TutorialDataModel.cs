@@ -215,7 +215,7 @@ namespace Loom.ZombieBattleground
             public string Name;
             public bool IsManuallyPlayable;
             public int TutorialObjectId;
-            public int BuffedHealth;
+            public int BuffedDefense;
             public int BuffedDamage;
 
             public UnitOnBoardInfo()

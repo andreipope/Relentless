@@ -55,9 +55,9 @@ namespace Loom.ZombieBattleground
             {
                 switch (StatType)
                 {
-                    case Enumerators.StatType.HEALTH:
-                        AbilityUnitOwner.BuffedHp += Value;
-                        AbilityUnitOwner.CurrentHp += Value;
+                    case Enumerators.StatType.DEFENSE:
+                        AbilityUnitOwner.BuffedDefense += Value;
+                        AbilityUnitOwner.CurrentDefense += Value;
                         break;
                     case Enumerators.StatType.DAMAGE:
                         AbilityUnitOwner.BuffedDamage += Value;

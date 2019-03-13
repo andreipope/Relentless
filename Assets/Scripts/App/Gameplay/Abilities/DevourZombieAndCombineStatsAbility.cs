@@ -116,11 +116,11 @@ namespace Loom.ZombieBattleground
             if (unit == AbilityUnitOwner)
                 return;
 
-            int health = unit.Card.Prototype.Defense;
+            int defense = unit.Card.Prototype.Defense;
             int damage = unit.Card.Prototype.Damage;
 
-            AbilityUnitOwner.BuffedHp += health;
-            AbilityUnitOwner.CurrentHp += health;
+            AbilityUnitOwner.BuffedDefense += defense;
+            AbilityUnitOwner.CurrentDefense += defense;
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;

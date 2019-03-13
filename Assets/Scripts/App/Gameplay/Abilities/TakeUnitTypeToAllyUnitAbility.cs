@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
                     if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner &&
                                                                !unit.Model.IsDead &&
-                                                               unit.Model.CurrentHp > 0).Count() == 0)
+                                                               unit.Model.CurrentDefense > 0).Count() == 0)
                     {
                         TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
