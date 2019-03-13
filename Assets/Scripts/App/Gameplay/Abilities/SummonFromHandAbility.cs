@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in boardCardsTargets)
                 {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.CardView, ref targetEffects, ref boardCards, false);
+                    PutCardFromHandToBoard(target.OwnerPlayer, target.BoardUnitModel, ref targetEffects, ref boardCards, false);
                 }
                 return;
             }

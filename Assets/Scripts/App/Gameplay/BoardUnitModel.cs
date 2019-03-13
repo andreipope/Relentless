@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private readonly AbilitiesController _abilitiesController;
 
+        private readonly PlayerController _playerController;
+
         private readonly IPvPManager _pvpManager;
 
         private int _stunTurns;
@@ -66,6 +68,7 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _playerController = _gameplayManager.GetController<PlayerController>();
             _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
@@ -661,6 +664,33 @@ namespace Loom.ZombieBattleground
             CreaturePlayableForceSet?.Invoke();
         }
 
+        public virtual bool CanBePlayed(Player owner)
+        {
+            if (!Constants.DevModeEnabled)
+            {
+                return _playerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public virtual bool CanBeBuyed(Player owner)
+        {
+            if (!Constants.DevModeEnabled)
+            {
+                if (_gameplayManager.AvoidGooCost)
+                    return true;
+
+                return owner.CurrentGoo >= Card.InstanceCard.Cost;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public void DoCombat(BoardObject target)
         {
             if (target == null)
@@ -888,8 +918,8 @@ namespace Loom.ZombieBattleground
         public void RemoveUnitFromBoard()
         {
             _battlegroundController.BoardUnitViews.Remove(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
-            OwnerPlayer.RemoveCardFromBoard(this);
-            OwnerPlayer.AddCardToGraveyard(this);
+            OwnerPlayer.LocalCardsController.RemoveCardFromBoard(this);
+            OwnerPlayer.LocalCardsController.AddCardToGraveyard(this);
 
             UnitFromDeckRemoved?.Invoke();
         }

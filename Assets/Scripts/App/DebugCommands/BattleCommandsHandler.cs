@@ -116,7 +116,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(player, boardUnitModel);
+            player.LocalCardsController.AddCardToHand3(boardUnitModel);
         }
         else
         {

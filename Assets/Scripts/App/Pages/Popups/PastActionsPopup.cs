@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground
                     unitCardElement.Health = unitBoardCard.BoardUnitModel.CurrentHp;
                     break;
                 case HandBoardCard card:
-                    _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
+                    _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card);
                     break;
                 case BoardUnitView unit:
                     _leftBlockCardUnitElement.Init(unit.Model.Card);
@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
                             actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case HandBoardCard card:
-                            if(card.CardView is SpellBoardCard)
+                            if(card.BoardUnitModel is SpellBoardCard)
                             {
                                 actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
                             }
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
                                 actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             }
 
-                            actionElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitView unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
@@ -271,7 +271,7 @@ namespace Loom.ZombieBattleground
                         unitCardElement.Health = boardCard.BoardUnitModel.CurrentHp;
                         break;
                     case HandBoardCard card:
-                        _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardUnitModel unit:
                         _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);

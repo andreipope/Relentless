@@ -120,8 +120,8 @@ namespace Loom.ZombieBattleground
                 .Where(v => v.Model == boardUnitModel)
                 .SingleOrDefault();
 
-            if (view == null)
-                throw new Exception($"No view found for model {boardUnitModel}");
+            //if (view == null)
+            //    throw new Exception($"No view found for model {boardUnitModel}");
 
             return view;
         }
@@ -131,6 +131,12 @@ namespace Loom.ZombieBattleground
         {
             return GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
         }
+
+        public IReadOnlyList<BoardUnitView> GetBoardUnitViews(IReadOnlyList<BoardUnitModel> models)
+        {
+            return models.Select(GetBoardUnitViewByModel<BoardUnitView>).ToList();
+        }
+
 
         public void Init()
         {
@@ -175,12 +181,12 @@ namespace Loom.ZombieBattleground
             {
                 CheckGameDynamic();
 
-                foreach (BoardUnitView item in _gameplayManager.CurrentPlayer.BoardCards)
+                foreach (BoardUnitView item in GetBoardUnitViews(_gameplayManager.CurrentPlayer.CardsOnBoard))
                 {
                     item.Update();
                 }
 
-                foreach (BoardUnitView item in _gameplayManager.OpponentPlayer.BoardCards)
+                foreach (BoardUnitView item in GetBoardUnitViews(_gameplayManager.OpponentPlayer.CardsOnBoard))
                 {
                     item.Update();
                 }
@@ -550,7 +556,7 @@ namespace Loom.ZombieBattleground
 
         public void RemovePlayerCardFromBoardToGraveyard(BoardUnitModel boardUnitModel)
         {
-            BoardUnitView boardCardView = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Card == boardUnitModel.Card);
+            BoardUnitView boardCardView = GetBoardUnitViewByModel(boardUnitModel);
             if (boardCardView == null)
                 return;
 

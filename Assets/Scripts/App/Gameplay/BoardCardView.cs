@@ -294,33 +294,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public virtual bool CanBePlayed(Player owner)
-        {
-            if (!Constants.DevModeEnabled)
-            {
-                return PlayerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
-        public virtual bool CanBeBuyed(Player owner)
-        {
-            if (!Constants.DevModeEnabled)
-            {
-                if (GameplayManager.AvoidGooCost)
-                    return true;
-
-                return owner.CurrentGoo >= BoardUnitModel.Card.InstanceCard.Cost;
-            }
-            else
-            {
-                return true;
-            }
-        }
-
         public void SetHighlightingEnabled(bool enabled)
         {
             if (GlowObject!= null && GlowObject)
@@ -698,7 +671,7 @@ namespace Loom.ZombieBattleground
             if (IsPreview)
                 return;
 
-            if (CanBePlayed(player) && CanBeBuyed(player))
+            if (BoardUnitModel.CanBePlayed(player) && BoardUnitModel.CanBeBuyed(player))
             {
                 SetHighlightingEnabled(true);
             }

@@ -540,7 +540,7 @@ namespace Loom.ZombieBattleground
 
                                                InternalTools.DoActionDelayed(() =>
                                                {
-                                                   _cardsController.RemoveCard(new object[] { card });
+                                                   _cardsController.RemoveCard(card);
                                                    boardUnitModel.Owner.RemoveCardFromBoard(boardUnitModel);
                                                }, 0.5f);
 
@@ -1177,7 +1177,7 @@ namespace Loom.ZombieBattleground
 
                     InternalTools.DoActionDelayed(() =>
                     {
-                        _cardsController.RemoveCard(new object[] { card });
+                        _cardsController.RemoveCard(card);
                     }, 0.5f);
 
                     InternalTools.DoActionDelayed(() =>
