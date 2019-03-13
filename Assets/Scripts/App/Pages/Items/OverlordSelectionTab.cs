@@ -237,25 +237,25 @@ namespace Loom.ZombieBattleground
             _textSelectOverlordDescription.text = hero.ShortDescription;
         }
         
-        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordPortrait";
             switch(heroElement)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air"); 
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire"); 
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth"); 
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic"); 
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water"); 
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life"); 
                 default:
-                    Log.Info($"No Overlord portrait found for setType {heroElement}");
+                    Log.Info($"No Overlord portrait found for faction {heroElement}");
                     return null;
             }        
         }

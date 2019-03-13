@@ -1119,7 +1119,7 @@ namespace Loom.ZombieBattleground.Test
                 if (boardUnitModel.Prototype.Abilities != null && boardUnitModel.Prototype.Abilities.Count > 0 && !HasChoosableAbilities(boardUnitModel.Prototype))
                 {
                     needTargetForAbility =
-                        boardUnitModel.Prototype.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        boardUnitModel.Prototype.Abilities.FindAll(x => x.AbilityTarget.Count > 0).Count > 0;
                 }
             }
 

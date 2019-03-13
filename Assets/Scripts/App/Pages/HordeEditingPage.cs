@@ -383,19 +383,19 @@ namespace Loom.ZombieBattleground
             UpdateCardsPage();
         }
 
-        public void LoadCards(int page, Enumerators.Faction setType)
+        public void LoadCards(int page, Enumerators.Faction faction)
         {
-            _toggleGroup.transform.GetChild(setType - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(faction - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
             List<Card> cards;
 
             if(_tutorialManager.IsTutorial)
             {
-                cards = _tutorialManager.GetSpecificCardsBySet(setType);
+                cards = _tutorialManager.GetSpecificCardsBySet(faction);
             }
             else
             {
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+                CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
 
                 cards = set.Cards;
             }
@@ -723,9 +723,9 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            Enumerators.Faction setType = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
+            Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setType == Enumerators.Faction.ITEM)
+            if (faction == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

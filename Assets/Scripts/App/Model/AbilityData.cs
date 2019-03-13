@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.StatType AbilityStatType { get; private set; }
 
         [JsonProperty("set_type")]
-        public Enumerators.Faction AbilitySetType { get; private set; }
+        public Enumerators.Faction Faction { get; private set; }
 
         [JsonProperty("effect_type")]
         public Enumerators.AbilityEffectType AbilityEffectType { get; private set; }
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground.Data
             Trigger = callType;
             AbilityTarget = abilityTargetTypes ?? new List<Enumerators.AbilityTarget>();
             AbilityStatType = abilityStatType;
-            AbilitySetType = abilitySetType;
+            Faction = abilitySetType;
             AbilityEffectType = abilityEffectType;
             AttackRestriction = attackRestriction;
             TargetCardType = targetCardType;
@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground.Data
             Trigger = source.Trigger;
             AbilityTarget = source.AbilityTarget.ToList();
             AbilityStatType = source.AbilityStatType;
-            AbilitySetType = source.AbilitySetType;
+            Faction = source.Faction;
             AbilityEffectType = source.AbilityEffectType;
             AttackRestriction = source.AttackRestriction;
             TargetCardType = source.TargetCardType;

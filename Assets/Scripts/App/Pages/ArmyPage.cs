@@ -270,11 +270,11 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        public void LoadCards(int page, Enumerators.Faction setType)
+        public void LoadCards(int page, Enumerators.Faction faction)
         {
-            _toggleGroup.transform.GetChild(setType - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(faction - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+            CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
 
             List<Card> cards = set.Cards;
 

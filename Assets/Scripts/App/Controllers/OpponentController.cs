@@ -466,13 +466,13 @@ namespace Loom.ZombieBattleground
 
                                 break;
                             case Enumerators.CardKind.ITEM:
-                                BoardSpell spell = new BoardSpell(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
-                                _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
-                                spell.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
+                                BoardSpell item = new BoardSpell(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
+                                _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, item);
+                                item.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                    Caller = spell,
+                                    Caller = item,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
                                 break;

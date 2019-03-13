@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public CardInstanceSpecificData(int attack, int defense, Enumerators.SetType cardSetType, Enumerators.CardType cardType, int cost)
+        public CardInstanceSpecificData(int attack, int defense, Enumerators.Faction cardSetType, Enumerators.CardType cardType, int cost)
         {
             Attack = attack;
             Defense = defense;

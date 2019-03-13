@@ -785,15 +785,15 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     },
                     player =>
                     {
-                        Assert.AreEqual(playerUnitSlab.Card.Prototype.Health - 2, playerUnitSlab.CurrentHp);
-                        Assert.AreEqual(playerUnitSlab2.Card.Prototype.Health - 2, playerUnitSlab2.CurrentHp);
-                        Assert.AreEqual(playerUnitSlab3.Card.Prototype.Health - 2, playerUnitSlab3.CurrentHp);
+                        Assert.AreEqual(playerUnitSlab.Card.Prototype.Defense - 2, playerUnitSlab.CurrentHp);
+                        Assert.AreEqual(playerUnitSlab2.Card.Prototype.Defense - 2, playerUnitSlab2.CurrentHp);
+                        Assert.AreEqual(playerUnitSlab3.Card.Prototype.Defense - 2, playerUnitSlab3.CurrentHp);
                     },
                     opponent =>
                     {
-                        Assert.AreEqual(opponentUnitSlab.Card.Prototype.Health - 2, opponentUnitSlab.CurrentHp);
-                        Assert.AreEqual(opponentUnitSlab2.Card.Prototype.Health - 2, opponentUnitSlab2.CurrentHp);
-                        Assert.AreEqual(opponentUnitSlab3.Card.Prototype.Health - 2, opponentUnitSlab3.CurrentHp);
+                        Assert.AreEqual(opponentUnitSlab.Card.Prototype.Defense - 2, opponentUnitSlab.CurrentHp);
+                        Assert.AreEqual(opponentUnitSlab2.Card.Prototype.Defense - 2, opponentUnitSlab2.CurrentHp);
+                        Assert.AreEqual(opponentUnitSlab3.Card.Prototype.Defense - 2, opponentUnitSlab3.CurrentHp);
                     },
                 };
 
@@ -1190,10 +1190,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSlabId);
 
                     Assert.IsTrue(playerUnit1.IsStun);
-                    Assert.AreEqual(playerUnit1.Card.Prototype.Health - difference, playerUnit1.CurrentHp);
+                    Assert.AreEqual(playerUnit1.Card.Prototype.Defense - difference, playerUnit1.CurrentHp);
 
                     Assert.IsTrue(opponentUnit1.IsStun);
-                    Assert.AreEqual(opponentUnit1.Card.Prototype.Health - difference, opponentUnit1.CurrentHp);
+                    Assert.AreEqual(opponentUnit1.Card.Prototype.Defense - difference, opponentUnit1.CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -1300,15 +1300,15 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(playerSlab.Card.Prototype.Health - difference, playerSlab.CurrentHp);
-                    Assert.AreEqual(playerSlab2.Card.Prototype.Health - difference, playerSlab2.CurrentHp);
-                    Assert.AreEqual(playerSlab3.Card.Prototype.Health - difference, playerSlab3.CurrentHp);
-                    Assert.AreEqual(playerSlab4.Card.Prototype.Health - difference, playerSlab4.CurrentHp);
+                    Assert.AreEqual(playerSlab.Card.Prototype.Defense - difference, playerSlab.CurrentHp);
+                    Assert.AreEqual(playerSlab2.Card.Prototype.Defense - difference, playerSlab2.CurrentHp);
+                    Assert.AreEqual(playerSlab3.Card.Prototype.Defense - difference, playerSlab3.CurrentHp);
+                    Assert.AreEqual(playerSlab4.Card.Prototype.Defense - difference, playerSlab4.CurrentHp);
                     
-                    Assert.AreEqual(opponentSlab.Card.Prototype.Health - difference, opponentSlab.CurrentHp);
-                    Assert.AreEqual(opponentSlab2.Card.Prototype.Health - difference, opponentSlab2.CurrentHp);
-                    Assert.AreEqual(opponentSlab3.Card.Prototype.Health - difference, opponentSlab3.CurrentHp);
-                    Assert.AreEqual(opponentSlab4.Card.Prototype.Health - difference, opponentSlab4.CurrentHp);
+                    Assert.AreEqual(opponentSlab.Card.Prototype.Defense - difference, opponentSlab.CurrentHp);
+                    Assert.AreEqual(opponentSlab2.Card.Prototype.Defense - difference, opponentSlab2.CurrentHp);
+                    Assert.AreEqual(opponentSlab3.Card.Prototype.Defense - difference, opponentSlab3.CurrentHp);
+                    Assert.AreEqual(opponentSlab4.Card.Prototype.Defense - difference, opponentSlab4.CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

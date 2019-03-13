@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     {
         private bool _canBeReverted = false;
 
-        public Enumerators.Faction SetType;
+        public Enumerators.Faction Faction;
 
         public Enumerators.StatType StatType;
 
@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
         public ModificateStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             StatType = ability.AbilityStatType;
             Value = ability.Value;
             Count = ability.Count;
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
                 if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
                     IReadOnlyList<BoardUnitView> units = PlayerCallerOfAbility.BoardCards.FindAll(
-                                    x => x.Model.Card.Prototype.Faction == SetType && x.Model != AbilityUnitOwner);
+                                    x => x.Model.Card.Prototype.Faction == Faction && x.Model != AbilityUnitOwner);
                     units = InternalTools.GetRandomElementsFromList(units, Count);
 
                     foreach (BoardUnitView unit in units)
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction == SetType && x.Model != AbilityUnitOwner).Count > 0)
+                    if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction == Faction && x.Model != AbilityUnitOwner).Count > 0)
                     {
                         ModificateStats(AbilityUnitOwner, !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
                     }
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitModel boardUnit:
                     {
-                        if (boardUnit.Card.Prototype.Faction == SetType)
+                        if (boardUnit.Card.Prototype.Faction == Faction)
                         {
                             switch (StatType)
                             {

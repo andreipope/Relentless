@@ -987,9 +987,9 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.Prototype.Abilities
                         .Select(a => new AbilityData(a))
                         .ToList(),
-                    new CardViewInfo(boardUnitModel.Prototype.PictureTransform),
-                    boardUnitModel.Prototype.UniqueAnimationType,
-                    boardUnitModel.Prototype.HiddenCardSetType
+                    new PictureTransform(boardUnitModel.Prototype.PictureTransform),
+                    boardUnitModel.Prototype.UniqueAnimation,
+                    boardUnitModel.Prototype.Hidden
                 );
             }
         }

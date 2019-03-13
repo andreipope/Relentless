@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public int Count { get; }
 
-        public Enumerators.Faction SetType;
+        public Enumerators.Faction Faction;
 
         private List<BoardObject> _targets;
 
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             Damage = ability.Damage;
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
 
             _targets = new List<BoardObject>();
         }
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
-                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == SetType).Count;
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
             }
 
             damageWas = damageOverride;

@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
         public Enumerators.CardType UnitType;
-        public Enumerators.Faction SetType;
+        public Enumerators.Faction Faction;
 
         public int Cost { get; }
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Cost = ability.Cost;
         }
 
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.Prototype.Faction == SetType &&
+                                   unit.Card.Prototype.Faction == Faction &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                               .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == SetType &&
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 

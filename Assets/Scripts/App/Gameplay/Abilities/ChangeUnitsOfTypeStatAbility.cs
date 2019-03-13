@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeUnitsOfTypeStatAbility : AbilityBase
     {
-        public Enumerators.Faction SetType;
+        public Enumerators.Faction Faction;
 
         public Enumerators.StatType StatType;
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             StatType = ability.AbilityStatType;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Value = ability.Value;
         }
 
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private void Action()
         {
             UniquePositionedList<BoardUnitView> unitsOnBoard =
-                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction.Equals(SetType));
+                PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.Prototype.Faction.Equals(Faction));
 
             foreach (BoardUnitView unit in unitsOnBoard)
             {

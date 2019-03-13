@@ -10,14 +10,14 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        public Enumerators.Faction SetType { get; }
+        public Enumerators.Faction Faction { get; }
 
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Health = ability.Health;
             Damage = ability.Damage;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
             {
-                if (unit.Model.Card.Prototype.Faction.Equals(SetType) && unit.Model != AbilityUnitOwner)
+                if (unit.Model.Card.Prototype.Faction.Equals(Faction) && unit.Model != AbilityUnitOwner)
                 {
                     unit.Model.BuffedDamage += Damage;
                     unit.Model.CurrentDamage += Damage;

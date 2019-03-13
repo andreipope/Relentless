@@ -7,13 +7,13 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardAbility : AbilityBase
     {
-        public Enumerators.Faction SetType { get; }
+        public Enumerators.Faction Faction { get; }
         public Enumerators.UnitStatusType UnitStatusType { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             UnitStatusType = ability.TargetUnitStatusType;
         }
 
@@ -55,9 +55,8 @@ namespace Loom.ZombieBattleground
                     .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (SetType != Enumerators.SetType.NONE &&
-                (PlayerCallerOfAbility.BoardCards
-                    .FindAll(card => card.Model.Card.Prototype.Faction == SetType &&
+            else if (PlayerCallerOfAbility.BoardCards
+                    .FindAll(card => card.Model.Card.Prototype.Faction == Faction &&
                         card.Model != AbilityUnitOwner &&
                         card.Model.CurrentHp > 0 &&
                         !card.Model.IsDead)

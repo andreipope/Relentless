@@ -106,8 +106,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Health - 1).Count > 0);
-                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Health - 1).Count > 0);
+                    Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Defense - 1).Count > 0);
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Defense - 1).Count > 0);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -210,8 +210,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp - 3, pvpTestContext.GetOpponentPlayer().Defense);
                     BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId);
                     BoardUnitModel opponentUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId);
-                    Assert.AreEqual(playerUnit.Card.Prototype.Health - 1, playerUnit.CurrentHp);
-                    Assert.AreEqual(opponentUnit.Card.Prototype.Health - 1, opponentUnit.CurrentHp);
+                    Assert.AreEqual(playerUnit.Card.Prototype.Defense - 1, playerUnit.CurrentHp);
+                    Assert.AreEqual(opponentUnit.Card.Prototype.Defense - 1, opponentUnit.CurrentHp);
                     Assert.AreEqual(playerUnit.Card.Prototype.Damage - 1, playerUnit.CurrentDamage);
                     Assert.AreEqual(opponentUnit.Card.Prototype.Damage - 1, opponentUnit.CurrentDamage);
                 };
@@ -341,10 +341,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     BoardUnitModel opponentWoodUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentWoodId);
                     BoardUnitModel opponentSlabUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSlabId);
 
-                    Assert.AreEqual(playerWoodUnit.Card.Prototype.Health - 2, playerWoodUnit.CurrentHp);
-                    Assert.AreEqual(playerSlabUnit.Card.Prototype.Health - 1, playerSlabUnit.CurrentHp);
-                    Assert.AreEqual(opponentWoodUnit.Card.Prototype.Health - 2, opponentWoodUnit.CurrentHp);
-                    Assert.AreEqual(opponentSlabUnit.Card.Prototype.Health - 1, opponentSlabUnit.CurrentHp);
+                    Assert.AreEqual(playerWoodUnit.Card.Prototype.Defense - 2, playerWoodUnit.CurrentHp);
+                    Assert.AreEqual(playerSlabUnit.Card.Prototype.Defense - 1, playerSlabUnit.CurrentHp);
+                    Assert.AreEqual(opponentWoodUnit.Card.Prototype.Defense - 2, opponentWoodUnit.CurrentHp);
+                    Assert.AreEqual(opponentSlabUnit.Card.Prototype.Defense - 1, opponentSlabUnit.CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1371,9 +1371,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Health - 5).Count > 0 ||
+                    Assert.IsTrue(TestHelper.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Defense - 5).Count > 0 ||
                         TestHelper.GetCurrentPlayer().InitialHp - 5 == TestHelper.GetCurrentPlayer().Defense);
-                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Health - 5).Count > 0 ||
+                    Assert.IsTrue(TestHelper.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.CurrentHp == card.Model.Card.Prototype.Defense - 5).Count > 0 ||
                         TestHelper.GetOpponentPlayer().InitialHp - 5 == TestHelper.GetCurrentPlayer().Defense);
                 };
 

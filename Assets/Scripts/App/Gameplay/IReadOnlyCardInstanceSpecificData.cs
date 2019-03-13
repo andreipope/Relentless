@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground {
 
         int Defense { get; }
 
-        Enumerators.SetType CardSetType { get; }
+        Enumerators.Faction CardSetType { get; }
 
         Enumerators.CardType CardType { get; }
 

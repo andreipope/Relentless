@@ -1272,7 +1272,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public List<Card> GetSpecificCardsBySet(Enumerators.Faction setType)
+        public List<Card> GetSpecificCardsBySet(Enumerators.Faction faction)
         {
             List<Card> cards = null;
             if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
@@ -1280,7 +1280,7 @@ namespace Loom.ZombieBattleground
                 cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
                     .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
                     .ToList()
-                    .FindAll(card => card.Faction == setType)
+                    .FindAll(card => card.Faction == faction)
                     .OrderBy(sort => sort.Cost)
                     .ToList();
             }

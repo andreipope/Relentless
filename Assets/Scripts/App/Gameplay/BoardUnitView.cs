@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
-            Enumerators.Faction setType = _cardsController.GetSetOfCard(Model.Card.Prototype);
+            Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
             string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
@@ -278,7 +278,7 @@ namespace Loom.ZombieBattleground
         }
         private void ModelOnUnitHpChanged(int oldValue, int newValue)
         {
-            UpdateUnitInfoText(_healthText, Model.CurrentHp, Model.Card.Prototype.Health, Model.MaxCurrentHp);
+            UpdateUnitInfoText(_healthText, Model.CurrentHp, Model.Card.Prototype.Defense, Model.MaxCurrentHp);
             CheckOnDie();
         }
 

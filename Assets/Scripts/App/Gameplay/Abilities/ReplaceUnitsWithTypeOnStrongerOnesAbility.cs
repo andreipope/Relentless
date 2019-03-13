@@ -13,14 +13,14 @@ namespace Loom.ZombieBattleground
         private List<ReplaceUnitInfo> _replaceUnitInfos;
 
         public int Value;
-        public Enumerators.Faction SetType;
+        public Enumerators.Faction Faction;
         public List<Enumerators.AbilityTarget> TargetTypes;
 
         public ReplaceUnitsWithTypeOnStrongerOnesAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             TargetTypes = ability.AbilityTarget;
 
             _boardUnits = new List<BoardUnitView>();
@@ -75,11 +75,11 @@ namespace Loom.ZombieBattleground
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == SetType));
+                    case Enumerators.AbilityTarget.OPPONENT_CARD:
+                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == Faction));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == SetType));
+                    case Enumerators.AbilityTarget.PLAYER_CARD:
+                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(unit => unit.Model.Card.Prototype.Faction == Faction));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -180,13 +180,13 @@ namespace Loom.ZombieBattleground
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
             List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards
-                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.Faction == SetType)
+                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.Faction == Faction)
                 .ToList();
 
             if (possibleUnits.Count == 0)
             {
                 possibleUnits = DataManager.CachedCardsLibraryData.Cards
-                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.Faction == SetType)
+                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.Faction == Faction)
                     .ToList();
             }
 

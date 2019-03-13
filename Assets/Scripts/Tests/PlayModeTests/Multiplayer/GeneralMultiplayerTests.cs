@@ -755,8 +755,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     BoardUnitModel playerUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
                     BoardUnitModel opponentUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
-                    Assert.AreEqual(playerUnit.Card.Prototype.Health, playerUnit.CurrentHp);
-                    Assert.AreEqual(opponentUnit.Card.Prototype.Health, opponentUnit.CurrentHp);
+                    Assert.AreEqual(playerUnit.Card.Prototype.Defense, playerUnit.CurrentHp);
+                    Assert.AreEqual(opponentUnit.Card.Prototype.Defense, opponentUnit.CurrentHp);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

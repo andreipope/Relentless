@@ -151,8 +151,8 @@ namespace Loom.ZombieBattleground
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;
                         break;
-                    case BoardSpell spell:
-                        activeAbility.Ability.BoardSpell = spell;
+                    case BoardSpell item:
+                        activeAbility.Ability.BoardSpell = item;
                         break;
                     case BoardUnitView view:
                         activeAbility.Ability.AbilityUnitOwner = view.Model;
@@ -266,7 +266,7 @@ namespace Loom.ZombieBattleground
 
                 for (int i = 0; i < abilities.Count; i++)
                 {
-                    if (attackedCard.Faction == abilities[i].AbilitySetType &&
+                    if (attackedCard.Faction == abilities[i].Faction &&
                         abilities[i].Trigger == Enumerators.AbilityTrigger.PERMANENT)
                     {
                         value += abilities[i].Value;
@@ -566,8 +566,11 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
+                                           //FIXME: Redoing choosable ability logic!!!
+
+
                                            // HACK FIXME: why do we need to update library card instead of modifying a copy?
-                                           ((ICard) prototype).ForceUpdateAbilities(prototype.InitialAbilities);
+                                           /*((ICard) prototype).ForceUpdateAbilities(prototype.InitialAbilities);
 
                                            card.BoardUnitModel.Card.Owner.CurrentGoo += card.BoardUnitModel.Card.InstanceCard.Cost;
 
@@ -600,7 +603,7 @@ namespace Loom.ZombieBattleground
                                            abilityHelperAction = null;
 
                                            completeCallback?.Invoke();
-
+                                           */
                                        });
                                }
                                else
@@ -747,7 +750,7 @@ namespace Loom.ZombieBattleground
         public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
-                boardUnitModel.Card.Prototype.Abilities.FindAll(x => x.CallType.Equals(Enumerators.AbilityTrigger.IN_HAND));
+                boardUnitModel.Card.Prototype.Abilities.FindAll(x => x.Trigger.Equals(Enumerators.AbilityTrigger.IN_HAND));
             foreach (AbilityData ability in handAbilities)
             {
                 CreateActiveAbility(ability, boardUnitModel.Card.Prototype.CardKind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)

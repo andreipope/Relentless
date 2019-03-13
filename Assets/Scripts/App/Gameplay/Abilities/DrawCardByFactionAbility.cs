@@ -8,12 +8,12 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardByFactionAbility : AbilityBase
     {
-        public Enumerators.Faction SetType { get; }
+        public Enumerators.Faction Faction { get; }
 
         public DrawCardByFactionAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            BoardUnitModel card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.Prototype.Faction == SetType);
+            BoardUnitModel card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.Prototype.Faction == Faction);
 
             if (card != null)
             {

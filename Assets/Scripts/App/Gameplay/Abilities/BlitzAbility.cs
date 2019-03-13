@@ -10,13 +10,13 @@ namespace Loom.ZombieBattleground
     public class BlitzAbility : AbilityBase
     {
         private int Count { get; }
-        private Enumerators.Faction SetType { get; }
+        private Enumerators.Faction Faction { get; }
 
         public BlitzAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -49,10 +49,10 @@ namespace Loom.ZombieBattleground
                         switch (targetType)
                         {
                             case Enumerators.AbilityTarget.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == SetType));
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
                             case Enumerators.AbilityTarget.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == SetType));
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
                         }
                     }

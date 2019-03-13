@@ -7,9 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public static class SetTypeUtility
     {
-        public static CardSet GetCardSet(IDataManager dataManager, Enumerators.Faction setType)
+        public static CardSet GetCardSet(IDataManager dataManager, Enumerators.Faction faction)
         {
-            return dataManager.CachedCardsLibraryData.Sets.First(s => s.Name == setType);
+            return dataManager.CachedCardsLibraryData.Sets.First(s => s.Name == faction);
         }
 
         public static Enumerators.Faction GetCardSetType(IDataManager dataManager, int setIndex)

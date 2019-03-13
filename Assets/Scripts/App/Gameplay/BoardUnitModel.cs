@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public int MaxCurrentHp => Card.Prototype.Health + BuffedHp;
+        public int MaxCurrentHp => Card.Prototype.Defense + BuffedHp;
 
         public int BuffedHp { get; set; }
 
@@ -235,7 +235,7 @@ namespace Loom.ZombieBattleground
 
         public string Name => Card.Prototype.Name;
 
-        public Enumerators.SetType CardSetType => Card.Prototype.CardSetType;
+        public Enumerators.Faction Faction => Card.Prototype.Faction;
 
         // ===================
 

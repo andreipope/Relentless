@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground.Data
                     ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)
                 },
                 Stat = (StatType.Types.Enum) ability.AbilityStatType,
-                Set = (CardSetType.Types.Enum) ability.AbilitySetType,
+                Set = (CardSetType.Types.Enum) ability.Faction,
                 Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,

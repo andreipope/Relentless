@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
             DefenseText.text = BoardUnitModel.Card.InstanceCard.Defense.ToString();
 
             FillColor(BoardUnitModel.Card.InstanceCard.Attack, BoardUnitModel.Card.Prototype.Damage, AttackText);
-            FillColor(BoardUnitModel.Card.InstanceCard.Defense, BoardUnitModel.Card.Prototype.Health, DefenseText);
+            FillColor(BoardUnitModel.Card.InstanceCard.Defense, BoardUnitModel.Card.Prototype.Defense, DefenseText);
         }
 
         private void FillColor(int stat, int initialStat, TextMeshPro text)

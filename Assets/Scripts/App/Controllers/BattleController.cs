@@ -253,8 +253,8 @@ namespace Loom.ZombieBattleground
                     case BoardUnitModel model:
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
-                    case BoardSpell spell:
-                        attackedUnitModel.LastAttackingSetType = spell.BoardUnitModel.Prototype.Faction;
+                    case BoardSpell item:
+                        attackedUnitModel.LastAttackingSetType = item.BoardUnitModel.Prototype.Faction;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);

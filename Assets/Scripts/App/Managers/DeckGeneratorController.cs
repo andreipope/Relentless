@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -37,9 +37,9 @@ namespace Loom.ZombieBattleground
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
             Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
-            Enumerators.SetType setType = hero.HeroElement;
+            Enumerators.Faction faction = hero.HeroElement;
             
-            CardSet heroElementSet = SetTypeUtility.GetCardSet(_dataManager, setType);
+            CardSet heroElementSet = SetTypeUtility.GetCardSet(_dataManager, faction);
             List<Card> cards = heroElementSet.Cards.ToList();
             
             List<Card> availableCardList = new List<Card>();
