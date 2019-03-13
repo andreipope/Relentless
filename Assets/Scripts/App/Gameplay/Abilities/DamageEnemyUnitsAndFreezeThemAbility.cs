@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -44,14 +44,14 @@ namespace Loom.ZombieBattleground
 
             _targets.Clear();
 
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.AbilityTarget target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                    case Enumerators.AbilityTarget.OPPONENT_ALL_CARDS:
                         _targets.AddRange(opponent.BoardCards.Select((x) => x.Model).ToList());
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.AbilityTarget.OPPONENT:
                         _targets.Add(opponent);
                         break;
                     default:

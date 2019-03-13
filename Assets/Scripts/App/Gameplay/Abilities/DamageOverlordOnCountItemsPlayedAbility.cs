@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -43,10 +43,10 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.OPPONENT))
                 {
                     _targetPlayer = GetOpponentOverlord();
-                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.CardKind == Enumerators.CardKind.SPELL && x != BoardUnitModel).Count; 
+                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.CardKind == Enumerators.CardKind.ITEM && x != BoardUnitModel).Count; 
                 }
             }
 

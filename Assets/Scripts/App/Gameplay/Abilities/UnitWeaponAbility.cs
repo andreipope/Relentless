@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public int Damage;
 
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Damage = ability.Damage;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -38,8 +38,8 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentDamage += Value;
             TargetUnit.BuffedDamage += Value;
 
-            TargetUnit.CurrentHp += Health;
-            TargetUnit.BuffedHp += Health;
+            TargetUnit.CurrentDefense += Defense;
+            TargetUnit.BuffedDefense += Defense;
 
             _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
 

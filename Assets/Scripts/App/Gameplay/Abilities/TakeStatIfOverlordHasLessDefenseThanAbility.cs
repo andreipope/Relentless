@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public int Damage;
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
             StatType = ability.AbilityStatType;
         }
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -42,10 +42,10 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.Defense <= Value)
             {
-                if (StatType == Enumerators.StatType.HEALTH)
+                if (StatType == Enumerators.StatType.DEFENSE)
                 {
-                    AbilityUnitOwner.BuffedHp += Health;
-                    AbilityUnitOwner.CurrentHp += Health;
+                    AbilityUnitOwner.BuffedDefense += Defense;
+                    AbilityUnitOwner.CurrentDefense += Defense;
                 }
                 else if (StatType == Enumerators.StatType.DAMAGE)
                 {

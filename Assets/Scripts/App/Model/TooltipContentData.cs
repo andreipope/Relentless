@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Data
 
             public class RankDescription
             {
-                public Enumerators.SetType Element;
+                public Enumerators.Faction Element;
 
                 public string Tooltip;
             }

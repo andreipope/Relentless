@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 
         public int Defense { get; set; }
 
-        public Enumerators.SetType CardSetType { get; set; }
+        public Enumerators.Faction CardSetType { get; set; }
 
         public Enumerators.CardType CardType { get; protected set; }
 
@@ -20,8 +20,8 @@ namespace Loom.ZombieBattleground
         public CardInstanceSpecificData(IReadOnlyCard card)
             : this(
                 card.Damage,
-                card.Health,
-                card.CardSetType,
+                card.Defense,
+                card.Faction,
                 card.CardType,
                 card.Cost)
         {
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public CardInstanceSpecificData(int attack, int defense, Enumerators.SetType cardSetType, Enumerators.CardType cardType, int cost)
+        public CardInstanceSpecificData(int attack, int defense, Enumerators.Faction cardSetType, Enumerators.CardType cardType, int cost)
         {
             Attack = attack;
             Defense = defense;

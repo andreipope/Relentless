@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), BoardUnitModel.Card.Prototype.CardRank);
 
-            string setName = BoardUnitModel.Card.Prototype.CardSetType.ToString();
+            string setName = BoardUnitModel.Card.Prototype.Faction.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -430,7 +430,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == unit.Model.Card.Prototype.CardSetType);
+                        y => y.Element == unit.Model.Card.Prototype.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -560,7 +560,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCardView.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.SPELL)
+            if (boardCardView.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.ITEM)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -579,7 +579,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == boardCardView.BoardUnitModel.Card.Prototype.CardSetType);
+                        y => y.Element == boardCardView.BoardUnitModel.Card.Prototype.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo

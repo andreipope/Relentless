@@ -72,10 +72,10 @@ namespace Loom.ZombieBattleground
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
+            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.Faction))
                 return;
 
             if (BlockedUnitStatusTypes == null) 
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 
         protected bool OpponentHasHeavyUnits()
         {
-            return BoardCards?.FindAll(x => x.Model.IsHeavyUnit && x.Model.CurrentHp > 0).Count > 0;
+            return BoardCards?.FindAll(x => x.Model.IsHeavyUnit && x.Model.CurrentDefense > 0).Count > 0;
         }
 
         private void Awake()

@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
         private readonly TextMeshPro _attackText;
 
-        private readonly TextMeshPro _healthText;
+        private readonly TextMeshPro _defenseText;
 
         private readonly ParticleSystem _sleepingParticles;
 
@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
             _distractObject = GameObject.transform.Find("Other/ZB_ANM_Distract").gameObject;
 
             _attackText = GameObject.transform.Find("Other/AttackAndDefence/AttackText").GetComponent<TextMeshPro>();
-            _healthText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
+            _defenseText = GameObject.transform.Find("Other/AttackAndDefence/DefenceText").GetComponent<TextMeshPro>();
 
             _sleepingParticles = GameObject.transform.Find("Other/SleepingParticles").GetComponent<ParticleSystem>();
 
@@ -198,19 +198,19 @@ namespace Loom.ZombieBattleground
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
-            Enumerators.SetType setType = _cardsController.GetSetOfCard(Model.Card.Prototype);
+            Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
             string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
 
-            _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.CardViewInfo.Position;
-            _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.CardViewInfo.Scale;
+            _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.PictureTransform.Position;
+            _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.PictureTransform.Scale;
 
             _attackText.text = Model.CurrentDamage.ToString();
-            _healthText.text = Model.CurrentHp.ToString();
+            _defenseText.text = Model.CurrentDefense.ToString();
 
             Model.UnitDamageChanged += ModelOnUnitDamageChanged;
-            Model.UnitHpChanged += ModelOnUnitHpChanged;
+            Model.UnitDefenseChanged += ModelOnUnitHpChanged;
             Model.UnitDying += BoardUnitOnUnitDying;
             Model.UnitDied += BoardUnitOnUnitDied;
             Model.TurnStarted += BoardUnitOnTurnStarted;
@@ -278,7 +278,7 @@ namespace Loom.ZombieBattleground
         }
         private void ModelOnUnitHpChanged(int oldValue, int newValue)
         {
-            UpdateUnitInfoText(_healthText, Model.CurrentHp, Model.Card.Prototype.Health, Model.MaxCurrentHp);
+            UpdateUnitInfoText(_defenseText, Model.CurrentDefense, Model.Card.Prototype.Defense, Model.MaxCurrentDefense);
             CheckOnDie();
         }
 
@@ -464,7 +464,7 @@ namespace Loom.ZombieBattleground
         private void BoardUnitOnUnitDying()
         {
             Model.UnitDamageChanged -= ModelOnUnitDamageChanged;
-            Model.UnitHpChanged -= ModelOnUnitHpChanged;
+            Model.UnitDefenseChanged -= ModelOnUnitHpChanged;
             Model.UnitDying -= BoardUnitOnUnitDying;
             Model.TurnStarted -= BoardUnitOnTurnStarted;
             Model.TurnEnded -= BoardUnitOnTurnEnded;
@@ -723,7 +723,7 @@ namespace Loom.ZombieBattleground
 
         private void CheckOnDie()
         {
-            if (Model.CurrentHp <= 0 && !Model.IsDead)
+            if (Model.CurrentDefense <= 0 && !Model.IsDead)
             {
                 if (Model.IsAllAbilitiesResolvedAtStart && _arrivalDone)
                 {
@@ -921,13 +921,13 @@ namespace Loom.ZombieBattleground
                 {
                     attackCompleteCallback();
 
-                    if (Model.CurrentHp > 0)
+                    if (Model.CurrentDefense > 0)
                     {
                         _actionsQueueController.ForceContinueAction(Model.ActionForDying);
                         Model.ActionForDying = null;
                     }
 
-                    if (targetCard.CurrentHp > 0)
+                    if (targetCard.CurrentDefense > 0)
                     {
                         _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
                         targetCard.ActionForDying = null;

@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS))
+            if (AbilityTargetTypes.Contains(Enumerators.AbilityTarget.OPPONENT_ALL_CARDS))
             {
                 List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             if (info is BoardUnitModel unit)

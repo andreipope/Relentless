@@ -8,19 +8,19 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public int Health { get; }
-
         public int Defense { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public int Defense2 { get; }
+
+        public List<Enumerators.AbilityTarget> TargetTypes { get; }
 
         public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = AbilityData.Value;
-            Health = AbilityData.Health;
             Defense = AbilityData.Defense;
-            TargetTypes = AbilityData.AbilityTargetTypes;
+            Defense2 = AbilityData.Defense2;
+            TargetTypes = AbilityData.AbilityTarget;
         }
 
         public override void Activate()
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -38,16 +38,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
+            if (TargetTypes.Contains(Enumerators.AbilityTarget.PLAYER))
             {
                 int defenseToBuff = Value;
 
-                if(PlayerCallerOfAbility.Defense <= Defense)
+                if(PlayerCallerOfAbility.Defense <= Defense2)
                 {
-                    defenseToBuff = Health;
+                    defenseToBuff = Defense2;
                 }
 
-                PlayerCallerOfAbility.BuffedHp += defenseToBuff;
+                PlayerCallerOfAbility.BuffedDefense += defenseToBuff;
                 PlayerCallerOfAbility.Defense += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

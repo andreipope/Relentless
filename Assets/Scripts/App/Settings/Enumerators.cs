@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Common
             ACTIVE
         }
 
-        public enum AbilityCallType
+        public enum AbilityTrigger
         {
             UNDEFINED,
             TURN,
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_FRESH_MEAT
         }
 
-        public enum AbilityTargetType
+        public enum AbilityTarget
         {
             NONE,
             PLAYER,
@@ -344,7 +344,7 @@ namespace Loom.ZombieBattleground.Common
         {
             UNDEFINED,
             CREATURE,
-            SPELL
+            ITEM
         }
 
         public enum CardPackType
@@ -459,17 +459,15 @@ namespace Loom.ZombieBattleground.Common
             BLIZZARD
         }
 
-        public enum SetType
+        public enum Faction
         {
-            NONE,
-            FIRE,
+            FIRE = 1,
             WATER,
             EARTH,
             AIR,
             LIFE,
             TOXIC,
             ITEM,
-            OTHERS,
         }
 
         public enum SkillTargetType
@@ -547,7 +545,7 @@ namespace Loom.ZombieBattleground.Common
         public enum StatType
         {
             UNDEFINED,
-            HEALTH,
+            DEFENSE,
             DAMAGE
         }
 
@@ -675,7 +673,7 @@ namespace Loom.ZombieBattleground.Common
             YourOverlord
         }
 
-        public enum UniqueAnimationType
+        public enum UniqueAnimation
         {
             None,
             ShammannArrival,

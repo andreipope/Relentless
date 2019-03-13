@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<YouWonYouLostPopup>();
         }
         
-        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+heroElement.ToString().ToLower();
             return _loadObjectsManager.GetObjectByPath<Sprite>(path);       

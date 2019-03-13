@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             HandleSubtriggers();
@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
                     target = unit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
 
-                    if (unit.CurrentHp > 0)
+                    if (unit.CurrentDefense > 0)
                     {
                         unit.Stun(Enumerators.StunType.FREEZE, 1);
                         isFreezed = true;

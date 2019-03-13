@@ -2,9 +2,9 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class SpellBoardCard : BoardCardView
+    public class ItemBoardCard : BoardCardView
     {
-        public SpellBoardCard(GameObject selfObject, BoardUnitModel boardUnitModel)
+        public ItemBoardCard(GameObject selfObject, BoardUnitModel boardUnitModel)
             : base(selfObject, boardUnitModel)
         {
         }

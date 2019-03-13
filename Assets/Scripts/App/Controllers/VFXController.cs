@@ -407,9 +407,7 @@ namespace Loom.ZombieBattleground
         {
             bool withEffect = true;
 
-            if (unitView.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+            if (unitView.Model.LastAttackingSetType == Enumerators.Faction.ITEM)
             {
                 withEffect = false;
             }

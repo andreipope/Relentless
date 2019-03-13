@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             Action();
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -55,9 +55,9 @@ namespace Loom.ZombieBattleground
             {
                 switch (StatType)
                 {
-                    case Enumerators.StatType.HEALTH:
-                        AbilityUnitOwner.BuffedHp += Value;
-                        AbilityUnitOwner.CurrentHp += Value;
+                    case Enumerators.StatType.DEFENSE:
+                        AbilityUnitOwner.BuffedDefense += Value;
+                        AbilityUnitOwner.CurrentDefense += Value;
                         break;
                     case Enumerators.StatType.DAMAGE:
                         AbilityUnitOwner.BuffedDamage += Value;

@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                 if (PredefinedTargets != null)
                 {
                     TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList()
-                        .FindAll(card => card.CurrentHp > 0 && !card.IsDead));
+                        .FindAll(card => card.CurrentDefense > 0 && !card.IsDead));
                 }
                 else
                 {

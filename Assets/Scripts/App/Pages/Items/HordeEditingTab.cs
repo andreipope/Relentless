@@ -83,30 +83,30 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
-        private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
-            new Dictionary<Enumerators.SetType, Enumerators.SetType>
+        private readonly Dictionary<Enumerators.Faction, Enumerators.Faction> _setTypeAgainstDictionary =
+            new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.WATER
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.LIFE
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.EARTH
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.AIR
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
                 }
             };
 
-        private List<Enumerators.SetType> _availableSetType;
+        private List<Enumerators.Faction> _availableSetType;
 
         private List<Card> _cacheCollectionCardsList;
 
@@ -501,7 +501,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 
-            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
+            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -646,9 +646,9 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(CardCreaturePrefab);
                     boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
@@ -947,10 +947,10 @@ namespace Loom.ZombieBattleground
         {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
-            List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            List<Enumerators.Faction> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
+            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             allAvailableSetTypeList.Remove(againstSetType);
-            foreach (Enumerators.SetType item in allAvailableSetTypeList)
+            foreach (Enumerators.Faction item in allAvailableSetTypeList)
             {
                 List<Card> cards;
 
@@ -981,16 +981,16 @@ namespace Loom.ZombieBattleground
             List<Card> resultList = new List<Card>();
             if (_availableSetType.Count > _currentCollectionSetTypeIndex)
             {
-                Enumerators.SetType setType = _availableSetType[_currentCollectionSetTypeIndex];
+                Enumerators.Faction faction = _availableSetType[_currentCollectionSetTypeIndex];
                 
                 List<Card> cards;
                 if (_tutorialManager.IsTutorial)
                 {
-                    cards = _tutorialManager.GetSpecificCardsBySet(setType);
+                    cards = _tutorialManager.GetSpecificCardsBySet(faction);
                 }
                 else
                 {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, faction);
                     cards = set.Cards.ToList();
                 }
 
@@ -1048,7 +1048,7 @@ namespace Loom.ZombieBattleground
 
         private void ExcludeFilterDataWithAgainstSetType()
         {
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;
         }
 
@@ -1121,9 +1121,9 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            Enumerators.SetType setType = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
+            Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setType == Enumerators.SetType.ITEM)
+            if (faction == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -1258,7 +1258,8 @@ namespace Loom.ZombieBattleground
 
         private void PlayAddCardSound()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,                 Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,
+                Constants.SfxSoundVolume, false, false, true);
         }
 
         private void PlayRemoveCardSound()

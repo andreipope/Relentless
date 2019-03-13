@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
@@ -116,11 +116,11 @@ namespace Loom.ZombieBattleground
             if (unit == AbilityUnitOwner)
                 return;
 
-            int health = unit.Card.Prototype.Health;
+            int defense = unit.Card.Prototype.Defense;
             int damage = unit.Card.Prototype.Damage;
 
-            AbilityUnitOwner.BuffedHp += health;
-            AbilityUnitOwner.CurrentHp += health;
+            AbilityUnitOwner.BuffedDefense += defense;
+            AbilityUnitOwner.CurrentDefense += defense;
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;

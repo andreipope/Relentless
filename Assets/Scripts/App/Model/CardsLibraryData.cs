@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground.Data
             Cards = Cards.OrderBy(card => card.Cost).ToList();
             Sets =
                 Cards
-                    .GroupBy(card => card.CardSetType)
+                    .GroupBy(card => card.Faction)
                     .Select(group => new CardSet(group.Key, group.ToList()))
                     .OrderBy(set => set.Name)
                     .ToList();
@@ -53,10 +53,7 @@ namespace Loom.ZombieBattleground.Data
             {
                 foreach (Card card in set.Cards)
                 {
-                    if (card.CardSetType != Enumerators.SetType.OTHERS)
-                    {
-                        CardsInActiveSetsCount++;
-                    }
+                    CardsInActiveSetsCount++;
                 }
             }
         }
@@ -70,10 +67,10 @@ namespace Loom.ZombieBattleground.Data
 
     public class CardSet
     {
-        public Enumerators.SetType Name { get; }
+        public Enumerators.Faction Name { get; }
         public List<Card> Cards { get; }
 
-        public CardSet(Enumerators.SetType name, List<Card> cards)
+        public CardSet(Enumerators.Faction name, List<Card> cards)
         {
             Name = name;
             Cards = cards;

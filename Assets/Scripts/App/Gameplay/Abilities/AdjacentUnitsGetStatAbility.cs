@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.StatType StatType { get; }
 
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             StatType = ability.AbilityStatType;
             Damage = ability.Damage;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -51,10 +51,10 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitView unit in adjacent)
             {
-                if (StatType == Enumerators.StatType.HEALTH)
+                if (StatType == Enumerators.StatType.DEFENSE)
                 {
-                    unit.Model.BuffedHp += Health;
-                    unit.Model.CurrentHp += Health;
+                    unit.Model.BuffedDefense += Defense;
+                    unit.Model.CurrentDefense += Defense;
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {

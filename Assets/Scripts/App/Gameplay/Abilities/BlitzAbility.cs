@@ -10,20 +10,20 @@ namespace Loom.ZombieBattleground
     public class BlitzAbility : AbilityBase
     {
         private int Count { get; }
-        private Enumerators.SetType SetType { get; }
+        private Enumerators.Faction Faction { get; }
 
         public BlitzAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -44,15 +44,15 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                    foreach (Enumerators.AbilityTarget targetType in AbilityTargetTypes)
                     {
                         switch (targetType)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.CardSetType == SetType));
+                            case Enumerators.AbilityTarget.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.CardSetType == SetType));
+                            case Enumerators.AbilityTarget.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
                                 break;
                         }
                     }

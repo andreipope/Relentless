@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilityActivityType AbilityActivityType;
 
-        public Enumerators.AbilityCallType AbilityCallType;
+        public Enumerators.AbilityTrigger AbilityTrigger;
 
         public Enumerators.AffectObjectType AffectObjectType;
 
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
 
-        public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
+        public List<Enumerators.AbilityTarget> AbilityTargetTypes;
 
         public Enumerators.CardKind CardKind;
 
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerCallerOfAbility;
 
-        public BoardSpell BoardSpell;
+        public BoardItem BoardItem;
 
         public BoardCardView boardCardView;
 
@@ -132,8 +132,8 @@ namespace Loom.ZombieBattleground
             AbilityData = ability;
             CardKind = cardKind;
             AbilityActivityType = ability.ActivityType;
-            AbilityCallType = ability.CallType;
-            AbilityTargetTypes = ability.AbilityTargetTypes;
+            AbilityTrigger = ability.Trigger;
+            AbilityTargetTypes = ability.AbilityTarget;
             AbilityEffectType = ability.AbilityEffectType;
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponenentAvatar = GameplayManager.OpponentPlayer;
@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.PossibleTargets = AbilityTargetTypes;
             TargettingArrow.TargetUnitType = TargetCardType;
             TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
-            TargettingArrow.UnitDefense = AbilityData.Defense;
+            TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
 
             switch (CardKind)
@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground
                     TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
                     TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position);
                     break;
                 default:
@@ -227,17 +227,17 @@ namespace Loom.ZombieBattleground
                     {
                         AbilityUnitOwner.UnitDied += UnitDiedHandler;
                         AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
-                        AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitDefenseChanged += UnitHpChangedHandler;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
                         AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
                     break;
-                case Enumerators.CardKind.SPELL:
-                    if (BoardSpell != null)
+                case Enumerators.CardKind.ITEM:
+                    if (BoardItem != null)
                     {
-                        BoardSpell.Used += UsedHandler;
+                        BoardItem.Used += UsedHandler;
                     }
                     break;
                 default:
@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
             {
                 AbilityUnitOwner.UnitDied -= UnitDiedHandler;
                 AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
-                AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDefenseChanged -= UnitHpChangedHandler;
                 AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
@@ -459,7 +459,7 @@ namespace Loom.ZombieBattleground
         
         protected void UsedHandler()
         {
-            BoardSpell.Used -= UsedHandler;
+            BoardItem.Used -= UsedHandler;
         }
 
         protected void ClearParticles()
@@ -472,7 +472,7 @@ namespace Loom.ZombieBattleground
 
         public object GetCaller()
         {
-            return AbilityUnitOwner ?? (object) BoardSpell;
+            return AbilityUnitOwner ?? (object) BoardItem;
         }
 
         public Player GetOpponentOverlord()
@@ -491,7 +491,7 @@ namespace Loom.ZombieBattleground
         {
             return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
                 .Select(x => x.Model).ToList()
-                .FindAll(card => card.CurrentHp > 0 && !card.IsDead);
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
         }
 
         public void InvokeActionTriggered(object info = null)

@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
             }
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
                 {
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER_CARD))
                 {
-                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
+                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentDefense < x.Model.MaxCurrentDefense).Select(x => x.Model));
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.BoardUnitModel.Prototype.MouldId != ZedKitId))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.AbilityTarget.PLAYER) && (BoardItem == null || BoardItem.BoardUnitModel.Prototype.MouldId != ZedKitId))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }
@@ -176,10 +176,10 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case BoardUnitModel unit:
-                        value = unit.MaxCurrentHp - unit.CurrentHp;
+                        value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
-                        value = player.MaxCurrentHp - player.Defense;
+                        value = player.MaxCurrentDefense - player.Defense;
                         break;
                 }
 

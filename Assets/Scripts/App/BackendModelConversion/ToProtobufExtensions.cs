@@ -35,13 +35,13 @@ namespace Loom.ZombieBattleground.Data
             CardAbility cardAbility = new CardAbility {
                 Type = (CardAbilityType.Types.Enum) ability.AbilityType,
                 ActivityType = (CardAbilityActivityType.Types.Enum) ability.ActivityType,
-                Trigger = (CardAbilityTrigger.Types.Enum) ability.CallType,
+                Trigger = (CardAbilityTrigger.Types.Enum) ability.Trigger,
                 TargetTypes =
                 {
-                    ability.AbilityTargetTypes.Select(t => (CardAbilityTarget.Types.Enum) t)
+                    ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)
                 },
                 Stat = (StatType.Types.Enum) ability.AbilityStatType,
-                Set = (CardSetType.Types.Enum) ability.AbilitySetType,
+                Set = (CardSetType.Types.Enum) ability.Faction,
                 Effect = (CardAbilityEffect.Types.Enum) ability.AbilityEffectType,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Data
                 TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
                 Value = ability.Value,
                 Attack = ability.Damage,
-                Defense = ability.Health,
+                Defense = ability.Defense,
                 Name = ability.Name,
                 Turns = ability.Turns,
                 Count = ability.Count,
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground.Data
                 {
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
-                Defense2 = ability.Defense,
+                Defense2 = ability.Defense2,
                 Cost = ability.Cost
             };
 
@@ -125,18 +125,18 @@ namespace Loom.ZombieBattleground.Data
                 FlavorText = card.FlavorText,
                 Picture = card.Picture,
                 Attack = card.Damage,
-                Defense = card.Health,
-                Set = (CardSetType.Types.Enum) card.CardSetType,
+                Defense = card.Defense,
+                Set = (CardSetType.Types.Enum) card.Faction,
                 Frame = card.Frame,
                 Kind = (CardKind.Types.Enum) card.CardKind,
                 Rank = (CreatureRank.Types.Enum) card.CardRank,
                 Type = (CreatureType.Types.Enum) card.CardType,
-                CardViewInfo = card.CardViewInfo.ToProtobuf(),
+                CardViewInfo = card.PictureTransform.ToProtobuf(),
                 Abilities =
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
-                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimationType
+                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimation
             };
 
             return protoCard;
@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.CardViewInfo ToProtobuf(this CardViewInfo cardViewInfo)
+        public static Protobuf.CardViewInfo ToProtobuf(this PictureTransform cardViewInfo)
         {
             if (cardViewInfo == null)
                 return null;

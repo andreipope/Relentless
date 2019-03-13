@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                        _ranksUpgradeCompleteAction = completeCallback;
 
                        List<BoardUnitView> filter = units.Where(unit =>
-                                    unit.Model.Card.Prototype.CardSetType == boardUnitModel.Prototype.CardSetType &&
+                                    unit.Model.Card.Prototype.Faction == boardUnitModel.Prototype.Faction &&
                                     (int)unit.Model.Card.Prototype.CardRank < (int)boardUnitModel.Prototype.CardRank &&
                                     !unit.WasDestroyed && !unit.Model.IsDead &&
                                     !_unitsForIgnoreRankBuff.Contains(unit))
@@ -81,28 +81,28 @@ namespace Loom.ZombieBattleground
 
         public void DoRankUpgrades(List<BoardUnitView> units, BoardUnitModel boardUnitModel, bool randomly = true)
         {
-            switch (boardUnitModel.Prototype.CardSetType)
+            switch (boardUnitModel.Prototype.Faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     AirRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     EarthRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     WaterRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     FireRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     ToxicRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     LifeRankBuff(units, boardUnitModel.Prototype.CardRank, boardUnitModel, randomly);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(boardUnitModel.Prototype.CardSetType), boardUnitModel.Prototype.CardSetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(boardUnitModel.Prototype.Faction), boardUnitModel.Prototype.Faction, null);
             }
         }
 
