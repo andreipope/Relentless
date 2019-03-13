@@ -86,9 +86,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
         
-        private const int _deckInfoAmountPerPage = 3;
-
-        private const int _defaultDeckIndex = 0;
+        private const int _deckInfoAmountPerPage = 4;
 
         public enum TAB
         {
@@ -109,6 +107,8 @@ namespace Loom.ZombieBattleground
         public Hero CurrentEditHero;
 
         public bool IsEditingNewDeck;
+        
+        public bool IsDisplayRenameDeck;
         
         private int _deckPageIndex;
 
@@ -188,6 +188,8 @@ namespace Loom.ZombieBattleground
             
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
+            
+            UpdatePageScaleToMatchResolution();
 
             HordeEditTab.Show(_selfPage);
             SelectOverlordTab.Show(_selfPage);
@@ -196,8 +198,6 @@ namespace Loom.ZombieBattleground
             LoadButtons();
             LoadObjects();            
             LoadTabs();
-
-            UpdatePageScaleToMatchResolution();          
         }
         
         public void Hide()
@@ -249,7 +249,7 @@ namespace Loom.ZombieBattleground
 
             MoveDeckPageIndex(-1);
             UpdateDeckInfoObjects(); 
-            ChangeSelectDeckIndex(0);           
+            ChangeSelectDeckIndex(GetDefaultDeckIndex());          
         }
         
         private void ButtonRightArrowHandler()
@@ -259,7 +259,7 @@ namespace Loom.ZombieBattleground
 
             MoveDeckPageIndex(1);
             UpdateDeckInfoObjects();
-            ChangeSelectDeckIndex(0);          
+            ChangeSelectDeckIndex(GetDefaultDeckIndex());       
         }
         
         private void ButtonBackHandler()
@@ -285,19 +285,14 @@ namespace Loom.ZombieBattleground
         }
 
         private void ButtonEditHandler()
-        {
+        {            
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonEdit.name))
                 return;
-
-            AssignCurrentDeck(false);
             ChangeTab(TAB.EDITING);
         }        
         
         private void ButtonDeleteHandler()
         {
-            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
-                return;
-
             if (GetDeckList().Count <= 1)
             {
                 OpenAlertDialog("Sorry, Not able to delete Last Deck.");
@@ -353,6 +348,18 @@ namespace Loom.ZombieBattleground
         #endregion
 
         #region Data and State
+        
+        private int GetDefaultDeckIndex()
+        {
+            if(_deckPageIndex == 0)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
+            }
+        }
 
         public List<Deck> GetDeckList()
         {
@@ -365,8 +372,8 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
-        public void AssignCurrentDeck(bool isNewDeck)
-        {
+        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
+        {   
             IsEditingNewDeck = isNewDeck;
             if(IsEditingNewDeck)
             {
@@ -377,6 +384,7 @@ namespace Loom.ZombieBattleground
                 CurrentEditDeck = GetSelectedDeck().Clone();
                 CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
             }
+            IsDisplayRenameDeck = isDisplayRenameDeck;
         }
 
         private Deck CreateNewDeckData()
@@ -448,7 +456,8 @@ namespace Loom.ZombieBattleground
                 case TAB.RENAME:
                     _inputFieldRenameDeckName.text = GetSelectedDeck().Name;
                     break;
-                case TAB.EDITING:                                      
+                case TAB.EDITING:  
+                    AssignCurrentDeck(false);                                    
                     break;
                 case TAB.SELECT_OVERLORD:                    
                     break;
@@ -465,7 +474,14 @@ namespace Loom.ZombieBattleground
         private void ChangeSelectDeckIndex(int newIndexInPage)
         {
             UpdateSelectedDeckDisplay(newIndexInPage);
-            SelectDeckIndex = newIndexInPage + _deckPageIndex * _deckInfoAmountPerPage;
+            if(_deckPageIndex == 0)
+            {
+                SelectDeckIndex = newIndexInPage;
+            }
+            else
+            {
+                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage);
+            }            
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -568,17 +584,32 @@ namespace Loom.ZombieBattleground
             return deckListToDisplay;
         }
         
-        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList)
+        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList, bool displayNewDeckButton = false)
         {
             List<Deck> deckListFromSelectedPageToDisplay = new List<Deck>();
-            
-            int startIndex = _deckPageIndex * _deckInfoAmountPerPage;
-            int endIndex = (_deckPageIndex + 1) * _deckInfoAmountPerPage;
-            for( int i=0; i<deckList.Count; ++i)
-            {   
-                if(i >= startIndex && i < endIndex)
+
+            if (displayNewDeckButton)
+            {
+                int startIndex = 0;
+                int endIndex = _deckInfoAmountPerPage;
+                for (int i = 0; i < deckList.Count; ++i)
                 {
-                    deckListFromSelectedPageToDisplay.Add(deckList[i]);                    
+                    if (i >= startIndex && i < endIndex)
+                    {
+                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
+                    }
+                }
+            }
+            else
+            {
+                int startIndex = (_deckInfoAmountPerPage) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
+                int endIndex = startIndex + _deckInfoAmountPerPage;
+                for (int i = 0; i < deckList.Count; ++i)
+                {
+                    if (i >= startIndex && i < endIndex)
+                    {
+                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
+                    }
                 }
             }
 
@@ -637,10 +668,10 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             _deckInfoObjectList.Clear();
-            for(int i=0; i<3; ++i)
+            for(int i=0; i<4; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
+                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
                 deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
@@ -665,9 +696,15 @@ namespace Loom.ZombieBattleground
         
         public void UpdateDeckInfoObjects()
         {
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay);       
+            bool displayNewDeckButton = (_deckPageIndex == 0);
+            _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
+            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
             
-            for (int i=0; i<_deckInfoObjectList.Count; ++i)
+            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
+
+            int startObjectIndex = displayNewDeckButton?1:0;
+
+            for (int i=startObjectIndex; i<_deckInfoObjectList.Count; ++i)
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(i>=deckListToDisplay.Count)
@@ -676,7 +713,19 @@ namespace Loom.ZombieBattleground
                     continue;
                 }
 
+                int index = i;
                 deckInfoObject._button.gameObject.SetActive(true);
+
+#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                multiPointerClickHandler.DoubleClickReceived += ()=>
+                {
+                    ChangeSelectDeckIndex(index);
+                    ButtonEditHandler();
+                    PlayClickSound();
+                };
+#endif
+                
                 Deck deck = deckListToDisplay[i];
                 
                 string deckName = deck.Name;
@@ -707,16 +756,16 @@ namespace Loom.ZombieBattleground
                     deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();
-                int index = i;
+                deckInfoObject._button.onClick.RemoveAllListeners();                
                 deckInfoObject._button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
+                    PlayClickSound();
                 });
             }
 
             UpdatePageDotObjects(_cacheDeckListToDisplay);
-            ChangeSelectDeckIndex(_defaultDeckIndex);
+            ChangeSelectDeckIndex(GetDefaultDeckIndex());
         }
         
         private void UpdatePageDotObjects(List<Deck> deckList)
@@ -815,9 +864,9 @@ namespace Loom.ZombieBattleground
             public TextMeshProUGUI _textCardsAmount;
         }
 
-        #endregion
+#endregion
 
-        #region Util
+#region Util
 
         public void PlayClickSound()
         {
@@ -831,6 +880,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
-        #endregion
+#endregion
     }
 }

@@ -68,7 +68,8 @@ namespace Loom.ZombieBattleground
                        _buttonLowerRightArrow,
                        _buttonSaveDeck,
                        _buttonAbilities,
-                       _buttonAuto;
+                       _buttonAuto,
+                       _buttonRename;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
@@ -83,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
-        private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
+        public readonly Dictionary<Enumerators.SetType, Enumerators.SetType> SetTypeAgainstDictionary =
             new Dictionary<Enumerators.SetType, Enumerators.SetType>
             {
                 {
@@ -153,6 +154,10 @@ namespace Loom.ZombieBattleground
 
             _textEditDeckName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+            
+            _buttonRename = _textEditDeckName.GetComponent<Button>();
+            _buttonRename.onClick.AddListener(ButtonRenameHandler);
+            _buttonRename.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonFilter = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
@@ -236,6 +241,27 @@ namespace Loom.ZombieBattleground
         }
 
         #region Button Handlers
+        
+        private void ButtonRenameHandler()
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+        }
+        
+        private void ConfirmSaveDeckHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
+            
+            _myDeckPage.AssignCurrentDeck(false, true);
+            if (status)
+            {                
+                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.RENAME);
+            }
+            else
+            {                
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);        
+            }  
+        }
 
         private void ButtonEditDeckFilterHandler()
         {
@@ -273,7 +299,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSaveEditDeckHandler()
         {
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
         }
 
         private void ButtonOverlordAbilitiesHandler()
@@ -501,7 +527,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 
-            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
+            if (SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -948,7 +974,7 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.SetType againstSetType = SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             allAvailableSetTypeList.Remove(againstSetType);
             foreach (Enumerators.SetType item in allAvailableSetTypeList)
             {
@@ -1048,7 +1074,7 @@ namespace Loom.ZombieBattleground
 
         private void ExcludeFilterDataWithAgainstSetType()
         {
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.SetType againstSetType = SetTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;
         }
 
@@ -1150,7 +1176,7 @@ namespace Loom.ZombieBattleground
             return maxCopies;
         }
 
-        public async void ProcessEditDeck(Deck deckToSave)
+        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.TAB nextTab)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             _buttonSaveDeck.interactable = false;
@@ -1224,7 +1250,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
+                _myDeckPage.ChangeTab(nextTab);
             }
 
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;
@@ -1253,7 +1279,14 @@ namespace Loom.ZombieBattleground
 
             deckToSave.Name = newName;
 
-            ProcessEditDeck(deckToSave);
+            if (_myDeckPage.IsDisplayRenameDeck)
+            {
+                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.EDITING);
+            }
+            else
+            {
+                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
+            }
         }
 
         private void PlayAddCardSound()
