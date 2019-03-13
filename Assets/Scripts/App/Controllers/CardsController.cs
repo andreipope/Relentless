@@ -513,7 +513,7 @@ namespace Loom.ZombieBattleground
                         _fakeBoardCard = null;
                     }
 
-                    _fakeBoardCard = new BoardUnitView(card.BoardUnitModel, _playerBoard.transform);
+                    _fakeBoardCard = new BoardUnitView(new BoardUnitModel(card.BoardUnitModel.Card), _playerBoard.transform);
                     toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
 
                     _boardController.UpdateBoard(toArrangeList, true, null);
