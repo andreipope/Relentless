@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 {
     public class CardInfoWithSearchPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CardInfoWithSearchPopup));
+        
         private ILoadObjectsManager _loadObjectsManager;
 
         private IUIManager _uiManager;
@@ -232,20 +235,20 @@ namespace Loom.ZombieBattleground
 
             if (_cardList == null)
             {
-                Debug.Log($"Current _cardList in {nameof(CardInfoWithSearchPopup)} is null");
+                Log.Info($"Current _cardList in {nameof(CardInfoWithSearchPopup)} is null");
                 return;
             }
 
             if (_currentCardIndex < 0 || _currentCardIndex >= _filteredCardList.Count)
             {                
-                Debug.Log($"No matching card index for {nameof(CardInfoWithSearchPopup)}");
+                Log.Info($"No matching card index for {nameof(CardInfoWithSearchPopup)}");
                 return;
             }
 
             IReadOnlyCard card = _filteredCardList[_currentCardIndex];
                 
             RectTransform rectContainer = _groupCreatureCard.GetComponent<RectTransform>();
-            BoardCard boardCard = CreateBoardCard
+            BoardCardView boardCard = CreateBoardCard
             (
                 card, 
                 rectContainer,
@@ -287,7 +290,7 @@ namespace Loom.ZombieBattleground
         private void MoveCardIndex(int direction)
         {
             if(_filteredCardList == null)
-                Debug.Log($"Current _filteredCardList in {nameof(CardInfoWithSearchPopup)} is null");
+                Log.Info($"Current _filteredCardList in {nameof(CardInfoWithSearchPopup)} is null");
 
             if (_filteredCardList.Count <= 1)
             {
@@ -307,26 +310,26 @@ namespace Loom.ZombieBattleground
             UpdateBoardCard();
         }
 
-        private BoardCard CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
+        private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
             GameObject go;
-            BoardCard boardCard;
-            
+            BoardCardView boardCard;
+            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+
             switch (card.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go);
+                    boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.SPELL:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go);
+                    boardCard = new SpellBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
-            
-            boardCard.Init(card);
+
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;

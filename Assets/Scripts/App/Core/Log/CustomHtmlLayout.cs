@@ -110,7 +110,7 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
         {
             switch (GetPatternConverterName(patternConverter)) {
                 case "#":
-                    return "text-center";
+                    return "fit text-center";
                 default:
                     return base.GetLogItemHeaderCellClass(patternConverter);
             }

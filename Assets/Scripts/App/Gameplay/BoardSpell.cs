@@ -10,16 +10,14 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform;
 
-        public BoardArrow TargetingArrow;
-
-        public WorkingCard Card;
+        public BoardUnitModel BoardUnitModel;
 
         private readonly OnBehaviourHandler _eventHandler;
 
-        public BoardSpell(GameObject obj, WorkingCard card)
+        public BoardSpell(GameObject obj, BoardUnitModel boardUnitModel)
         {
             GameObject = obj;
-            Card = card;
+            BoardUnitModel = boardUnitModel;
 
             if (GameObject != null)
             {
@@ -35,12 +33,6 @@ namespace Loom.ZombieBattleground
 
         private void DestroyingHandler(GameObject obj)
         {
-            if (TargetingArrow != null)
-            {
-                Object.Destroy(TargetingArrow.gameObject);
-                TargetingArrow = null;
-            }
-
             Used?.Invoke();
         }
     }

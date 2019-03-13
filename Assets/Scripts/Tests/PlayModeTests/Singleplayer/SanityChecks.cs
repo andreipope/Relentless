@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Ignore("not verified")]
     public class SanityChecks : BaseIntegrationTest
     {
         [UnityTest]

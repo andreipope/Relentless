@@ -13,12 +13,12 @@ namespace Loom.ZombieBattleground
 
         public GameObject GameObject { get; }
 
-        public WorkingCard WorkingCard { get; }
+        public BoardUnitModel BoardUnitModel { get; }
 
-        public OpponentHandCard(GameObject selfObject, WorkingCard card)
+        public OpponentHandCard(GameObject selfObject, BoardUnitModel boardUnitModel)
         {
             GameObject = selfObject;
-            WorkingCard = card;
+            BoardUnitModel = boardUnitModel;
 
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
@@ -39,10 +39,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (WorkingCard == null)
+            if (BoardUnitModel == null)
                 return;
 
-            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
+            DebugCardInfoDrawer.Draw(Transform.position, BoardUnitModel.Card.InstanceId.Id, BoardUnitModel.Card.Prototype.Name);
         }
 #endif
     }

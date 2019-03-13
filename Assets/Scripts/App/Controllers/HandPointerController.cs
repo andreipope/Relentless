@@ -104,6 +104,7 @@ namespace Loom.ZombieBattleground
         private const int SortingOrderAbovePages = -1;
         private const int SortingOrderAbovePopups = 125;
 
+        private static Vector3 PositionForCardInHandOwner = new Vector3(0, 7, 0);
 
         public Enumerators.TutorialObjectOwner Owner;
 
@@ -129,11 +130,9 @@ namespace Loom.ZombieBattleground
 
         private bool _stayInEndPoint;
 
-        private BoardUnitView _ownerUnit;
+        private GameObject _ownerObject;
 
-        private BoardUnitView _targetUnit;
-
-        private GameObject _uiElementOwner;
+        private GameObject _targetObject;
 
         private float _maxValue = 3;
         private float _startValue = 0;
@@ -190,51 +189,83 @@ namespace Loom.ZombieBattleground
             _selfObject.transform.eulerAngles = new Vector3(0, 0, rotation);
 
 
-            if(tutorialObjectIdStepOwner != 0)
+            switch (Owner)
             {
-                _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner)
-                                                                                .ToLowerInvariant());
-                if(_ownerUnit == null && additionalObjectIdOwners != null)
-                {
-                    foreach (int id in additionalObjectIdOwners)
+                case Enumerators.TutorialObjectOwner.Battleframe:
+                case Enumerators.TutorialObjectOwner.PlayerBattleframe:
+                    if (tutorialObjectIdStepOwner != 0)
                     {
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
-                                                                                _tutorialManager.GetCardNameByTutorialObjectId(id)
-                                                                                .ToLowerInvariant());
-                        if (_ownerUnit != null)
-                            break;
-                    }
-                }
+                        BoardUnitView unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
+                                                                            _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner)
+                                                                            .ToLowerInvariant());
+                        if (unit == null && additionalObjectIdOwners != null)
+                        {
+                            foreach (int id in additionalObjectIdOwners)
+                            {
+                                unit = _gameplayManager.CurrentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
+                                                                                        _tutorialManager.GetCardNameByTutorialObjectId(id)
+                                                                                        .ToLowerInvariant());
+                                if (unit != null)
+                                    break;
+                            }
+                        }
+                        _ownerObject = unit.GameObject;
 
-                if (_ownerUnit == null)
-                {
-                    _handPointerController.Reset(this);
-                    return;
-                }
+                        if (_ownerObject == null)
+                        {
+                            _handPointerController.Reset(this);
+                            return;
+                        }
+                    }
+                    break;
+                case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                    BoardCardView boardCard = null;
+                    if (tutorialObjectIdStepOwner != 0)
+                    {
+                        boardCard = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards
+                            .FirstOrDefault(card => card.BoardUnitModel.Card.TutorialObjectId == tutorialObjectIdStepOwner);
+                    }
+                    else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                    {
+                        boardCard = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                    }
+                    
+                    if (boardCard != null)
+                    {
+                        _ownerObject = boardCard.GameObject;
+                        if (_startPosition == Vector3.zero)
+                        {
+                            _startPosition = PositionForCardInHandOwner;
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
+            
             if(targetTutorialObjectId != 0)
             {
-                _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                BoardUnitView unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId)
                                                                                 .ToLowerInvariant());
-                if (_targetUnit == null && additionalObjectIdTargets != null)
+                if (unit == null && additionalObjectIdTargets != null)
                 {
                     foreach (int id in additionalObjectIdTargets)
                     {
-                        _targetUnit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.LibraryCard.Name.ToLowerInvariant() ==
+                        unit = _gameplayManager.OpponentPlayer.BoardCards.FirstOrDefault(x => x.Model.Card.Prototype.Name.ToLowerInvariant() ==
                                                                                 _tutorialManager.GetCardNameByTutorialObjectId(id)
                                                                                 .ToLowerInvariant());
-                        if (_targetUnit != null)
+                        if (unit != null)
                             break;
                     }
                 }
 
-                if (_targetUnit == null)
+                if (unit == null)
                 {
                     _handPointerController.Reset(this);
                     return;
                 }
+                _targetObject = unit.GameObject;
             }
 
             _selfObject.SetActive(false);
@@ -286,14 +317,14 @@ namespace Loom.ZombieBattleground
 
             if (Owner == Enumerators.TutorialObjectOwner.UI)
             {
-                _uiElementOwner = GameObject.Find(_tutorialUIElementOwnerName);
+                _ownerObject = GameObject.Find(_tutorialUIElementOwnerName);
             }
 
             _selfObject.SetActive(true);
 
             _stayInEndPoint = false;
 
-            _selfObject.transform.position = GetPositionByOwner(_ownerUnit, _startPosition);
+            _selfObject.transform.position = GetPositionByOwner(_ownerObject, _startPosition);
             _handRenderer.transform.localPosition = Vector3.zero;
 
             switch (_type)
@@ -320,8 +351,8 @@ namespace Loom.ZombieBattleground
             ChangeHandState(0);
             _isMove = true;
 
-            _startPoint = GetPositionByOwner(_ownerUnit, _startPosition);
-            _endPoint = GetPositionByOwner(_targetUnit, _endPosition);
+            _startPoint = GetPositionByOwner(_ownerObject, _startPosition);
+            _endPoint = GetPositionByOwner(_targetObject, _endPosition);
             _sideTurn = _startPoint.x > _endPosition.x ? 1 : -1;
             _sineOffset = 0;
 
@@ -368,7 +399,7 @@ namespace Loom.ZombieBattleground
             if (_wasDisposed)
                 return;
 
-            _endPoint = GetPositionByOwner(_targetUnit, _endPosition);
+            _endPoint = GetPositionByOwner(_targetObject, _endPosition);
 
             if (_stayInEndPoint && _type == Enumerators.TutorialHandPointerType.Animated)
             {
@@ -376,7 +407,7 @@ namespace Loom.ZombieBattleground
             }
             else if(_type == Enumerators.TutorialHandPointerType.Single)
             {
-                _selfObject.transform.position = GetPositionByOwner(_ownerUnit, _startPosition);
+                _selfObject.transform.position = GetPositionByOwner(_ownerObject, _startPosition);
             }
 
             if(_isMove)
@@ -415,15 +446,18 @@ namespace Loom.ZombieBattleground
             _selfObject?.SetActive(false);
         }
 
-        private Vector3 GetPositionByOwner(BoardUnitView unit, Vector3 position)
+        private Vector3 GetPositionByOwner(GameObject owner, Vector3 position)
         {
-            if (unit != null)
+            if (owner != null)
             {
-                return unit.Transform.TransformPoint(_startPosition);
-            }
-            else if(Owner == Enumerators.TutorialObjectOwner.UI && _uiElementOwner != null)
-            {
-                return _uiElementOwner.transform.position + position;
+                if (Owner == Enumerators.TutorialObjectOwner.UI)
+                {
+                    return _ownerObject.transform.position + position;
+                }
+                else
+                {
+                    return owner.transform.TransformPoint(_startPosition);
+                }
             }
             return position;
         }

@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.TooltipAlign Align => _align;
 
+        public int OwnerId => _ownerId;
+
         public float Width;
 
         public Enumerators.TutorialObjectOwner OwnerType;
@@ -47,6 +49,8 @@ namespace Loom.ZombieBattleground
         private Vector3 _currentPosition;
 
         private BoardUnitView _ownerUnit;
+
+        private BoardCardView _ownerCardInHand;
 
         private bool _dynamicPosition;
 
@@ -127,6 +131,16 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                         _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
                             x.Model.TutorialObjectId == ownerId);
+                        break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerId != 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.BoardUnitModel.Card.TutorialObjectId == ownerId);
+                        }
+                        else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        }
                         break;
                     default: break;
                 }
@@ -297,6 +311,15 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
+                        break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerCardInHand == null || !_ownerCardInHand.GameObject || _ownerCardInHand.GameObject == null)
+                        {
+                            UpdatePossibilityForClose();
+                            Hide();
+                        }
+
+                        _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }
             }

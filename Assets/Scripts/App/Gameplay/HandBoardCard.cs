@@ -10,7 +10,7 @@ public class HandBoardCard : OwnableBoardObject
 
     public bool Enabled = true;
 
-    public BoardCard CardView { get; protected set; }
+    public BoardCardView CardView { get; protected set; }
 
     protected bool StartedDrag;
 
@@ -38,11 +38,11 @@ public class HandBoardCard : OwnableBoardObject
 
     private bool _canceledPlay;
 
-    public HandBoardCard(GameObject selfObject, BoardCard boardCard)
+    public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
         GameObject = selfObject;
 
-        CardView = boardCard;
+        CardView = boardCardView;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -60,6 +60,8 @@ public class HandBoardCard : OwnableBoardObject
     public Transform Transform => GameObject.transform;
 
     public GameObject GameObject { get; }
+
+    public override Player OwnerPlayer => CardView.BoardUnitModel.OwnerPlayer;
 
     public void UpdatingHandler(GameObject obj)
     {
@@ -81,7 +83,7 @@ public class HandBoardCard : OwnableBoardObject
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView);
             }
             else
             {
@@ -106,7 +108,7 @@ public class HandBoardCard : OwnableBoardObject
                 if (CardView.CanBeBuyed(OwnerPlayer))
                 {
                     if (!_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence.Exists(info =>
-                        info.TutorialObjectId == CardView.WorkingCard.TutorialObjectId))
+                        info.TutorialObjectId == CardView.BoardUnitModel.Card.TutorialObjectId))
                     {
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
                         return;
@@ -158,7 +160,7 @@ public class HandBoardCard : OwnableBoardObject
 
         bool playable = !_canceledPlay &&
             CardView.CanBeBuyed(OwnerPlayer) &&
-            (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
+            (CardView.BoardUnitModel.Card.Prototype.CardKind != Enumerators.CardKind.CREATURE ||
                 OwnerPlayer.BoardCards.Count < OwnerPlayer.MaxCardsInPlay);
 
         if (playable)

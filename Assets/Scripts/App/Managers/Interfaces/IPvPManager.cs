@@ -13,7 +13,6 @@ namespace Loom.ZombieBattleground
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
         event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
-        event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;

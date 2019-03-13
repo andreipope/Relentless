@@ -12,7 +12,6 @@
 /[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/StreamingAssets/AssetBundles/*
-!/Assets/StreamingAssets/AssetBundles/.dummy
 
 !/TestSubsetCategories.txt
 
@@ -66,3 +65,6 @@ Assets/InitTestScene*.unity.meta
 
 TypeCache.asset
 TypeCache.asset.meta
+
+# Keep
+!.gitkeep

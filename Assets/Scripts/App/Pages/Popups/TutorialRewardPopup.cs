@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async void Show()
+        public void Show()
         {
             if (Self != null)
                 return;

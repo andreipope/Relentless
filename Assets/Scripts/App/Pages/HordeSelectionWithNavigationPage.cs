@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
         
-        private const int _deckInfoAmountPerPage = 4;
+        private const int _deckInfoAmountPerPage = 3;
 
         private const int _defaultDeckIndex = 0;
 
@@ -109,8 +109,6 @@ namespace Loom.ZombieBattleground
         public Hero CurrentEditHero;
 
         public bool IsEditingNewDeck;
-        
-        public bool IsDisplayRenameDeck;
         
         private int _deckPageIndex;
 
@@ -246,6 +244,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeftArrow.name))
+                return;
+
             MoveDeckPageIndex(-1);
             UpdateDeckInfoObjects(); 
             ChangeSelectDeckIndex(0);           
@@ -253,6 +254,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRightArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRightArrow.name))
+                return;
+
             MoveDeckPageIndex(1);
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(0);          
@@ -265,6 +269,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectDeckFilterHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectDeckFilter.name))
+                return;
+
             _uiManager.DrawPopup<ElementFilterPopup>();
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
@@ -278,12 +285,19 @@ namespace Loom.ZombieBattleground
         }
 
         private void ButtonEditHandler()
-        {            
+        {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonEdit.name))
+                return;
+
+            AssignCurrentDeck(false);
             ChangeTab(TAB.EDITING);
         }        
         
         private void ButtonDeleteHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
+                return;
+
             if (GetDeckList().Count <= 1)
             {
                 OpenAlertDialog("Sorry, Not able to delete Last Deck.");
@@ -300,6 +314,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRenameHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRename.name))
+                return;
+
             ChangeTab(TAB.RENAME);
         }
         
@@ -348,8 +365,8 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
-        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
-        {   
+        public void AssignCurrentDeck(bool isNewDeck)
+        {
             IsEditingNewDeck = isNewDeck;
             if(IsEditingNewDeck)
             {
@@ -360,7 +377,6 @@ namespace Loom.ZombieBattleground
                 CurrentEditDeck = GetSelectedDeck().Clone();
                 CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
             }
-            IsDisplayRenameDeck = isDisplayRenameDeck;
         }
 
         private Deck CreateNewDeckData()
@@ -432,8 +448,7 @@ namespace Loom.ZombieBattleground
                 case TAB.RENAME:
                     _inputFieldRenameDeckName.text = GetSelectedDeck().Name;
                     break;
-                case TAB.EDITING:  
-                    AssignCurrentDeck(false);                                    
+                case TAB.EDITING:                                      
                     break;
                 case TAB.SELECT_OVERLORD:                    
                     break;
@@ -450,14 +465,7 @@ namespace Loom.ZombieBattleground
         private void ChangeSelectDeckIndex(int newIndexInPage)
         {
             UpdateSelectedDeckDisplay(newIndexInPage);
-            if(_deckPageIndex == 0)
-            {
-                SelectDeckIndex = newIndexInPage;
-            }
-            else
-            {
-                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage);
-            }            
+            SelectDeckIndex = newIndexInPage + _deckPageIndex * _deckInfoAmountPerPage;
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -484,24 +492,24 @@ namespace Loom.ZombieBattleground
                     currentDeck.Id
                 );
 
-                Debug.Log($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
             }
-            catch (TimeoutException exception)
+            catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
-            catch (Client.RpcClientException exception)
+            catch (Client.RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.Log("Result === " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
                 OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
                 return;
             }
@@ -560,32 +568,17 @@ namespace Loom.ZombieBattleground
             return deckListToDisplay;
         }
         
-        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList, bool displayNewDeckButton = false)
+        private List<Deck> GetDeckListFromSelectedPageToDisplay(List<Deck> deckList)
         {
             List<Deck> deckListFromSelectedPageToDisplay = new List<Deck>();
-
-            if (displayNewDeckButton)
-            {
-                int startIndex = 0;
-                int endIndex = _deckInfoAmountPerPage;
-                for (int i = 0; i < deckList.Count; ++i)
+            
+            int startIndex = _deckPageIndex * _deckInfoAmountPerPage;
+            int endIndex = (_deckPageIndex + 1) * _deckInfoAmountPerPage;
+            for( int i=0; i<deckList.Count; ++i)
+            {   
+                if(i >= startIndex && i < endIndex)
                 {
-                    if (i >= startIndex && i < endIndex)
-                    {
-                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
-                    }
-                }
-            }
-            else
-            {
-                int startIndex = (_deckInfoAmountPerPage) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
-                int endIndex = startIndex + _deckInfoAmountPerPage;
-                for (int i = 0; i < deckList.Count; ++i)
-                {
-                    if (i >= startIndex && i < endIndex)
-                    {
-                        deckListFromSelectedPageToDisplay.Add(deckList[i]);
-                    }
+                    deckListFromSelectedPageToDisplay.Add(deckList[i]);                    
                 }
             }
 
@@ -644,10 +637,10 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             _deckInfoObjectList.Clear();
-            for(int i=0; i<4; ++i)
+            for(int i=0; i<3; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
+                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i + 1}";
                 deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
@@ -672,15 +665,9 @@ namespace Loom.ZombieBattleground
         
         public void UpdateDeckInfoObjects()
         {
-            bool displayNewDeckButton = (_deckPageIndex == 0);
-            _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
-            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
+            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay);       
             
-            List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
-
-            int startObjectIndex = displayNewDeckButton?1:0;
-
-            for (int i=startObjectIndex; i<_deckInfoObjectList.Count; ++i)
+            for (int i=0; i<_deckInfoObjectList.Count; ++i)
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(i>=deckListToDisplay.Count)
@@ -689,19 +676,7 @@ namespace Loom.ZombieBattleground
                     continue;
                 }
 
-                int index = i;
                 deckInfoObject._button.gameObject.SetActive(true);
-
-#if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
-                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
-                multiPointerClickHandler.DoubleClickReceived += ()=>
-                {
-                    ChangeSelectDeckIndex(index);
-                    ButtonEditHandler();
-                    PlayClickSound();
-                };
-#endif
-                
                 Deck deck = deckListToDisplay[i];
                 
                 string deckName = deck.Name;
@@ -732,11 +707,11 @@ namespace Loom.ZombieBattleground
                     deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();                
+                deckInfoObject._button.onClick.RemoveAllListeners();
+                int index = i;
                 deckInfoObject._button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
-                    PlayClickSound();
                 });
             }
 
@@ -825,7 +800,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.SetType.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Debug.Log($"No Overlord thumbnail found for setType {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for setType {heroElement}");
                     return null;
             }        
         }
@@ -840,9 +815,9 @@ namespace Loom.ZombieBattleground
             public TextMeshProUGUI _textCardsAmount;
         }
 
-#endregion
+        #endregion
 
-#region Util
+        #region Util
 
         public void PlayClickSound()
         {
@@ -856,6 +831,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
-#endregion
+        #endregion
     }
 }

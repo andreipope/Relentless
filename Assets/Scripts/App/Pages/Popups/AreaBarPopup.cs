@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -110,11 +110,17 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSettingHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSettings.name))
+                return;
+
             _uiManager.DrawPopup<MySettingPopup>(true);
         }
         
         private void ButtonLoginHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLogin.name))
+                return;
+
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             LoginPopup popup = _uiManager.GetPopup<LoginPopup>();

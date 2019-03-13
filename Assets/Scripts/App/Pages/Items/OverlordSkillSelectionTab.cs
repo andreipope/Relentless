@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,30 +134,29 @@ namespace Loom.ZombieBattleground
         { 
             bool success = true;
 
+            Hero hero = _myDeckPage.CurrentEditHero;
+            Deck deck = _myDeckPage.CurrentEditDeck;
+            hero.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
+            hero.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
+
+            deck.PrimarySkill = hero.PrimarySkill;
+            deck.SecondarySkill = hero.SecondarySkill;
+
             try
             {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
             }
             catch (Exception e)
             {
-                success = false;                
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                success = false;
+                Log.Warn(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
             }
 
             if (success)
-            {
-                if (_myDeckPage.IsDisplayRenameDeck)
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);
-                }
-                else
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
-                }
-            }
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
@@ -172,7 +171,7 @@ namespace Loom.ZombieBattleground
                }
                 else
                 {
-                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_empty");
+                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                     _textSkillDescriptions[i].text = "No selected skill";
                 }
             }
@@ -218,11 +217,8 @@ namespace Loom.ZombieBattleground
 
         public async void ContinueButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_continueButton.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
-            }
             
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
 
@@ -247,6 +243,19 @@ namespace Loom.ZombieBattleground
             {
                 _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
+
+                try
+                {
+                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
+                }
+                catch (Exception e)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(e);
+
+                    Log.Warn("", e);
+
+                    OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
+                }
             }
 
             PopupHiding?.Invoke();
@@ -345,7 +354,6 @@ namespace Loom.ZombieBattleground
                         _loadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/UI/Elements/DeckSelection/OverlordAbilityItem"), root, false);
 
-                _selfObject.SetActive(true);
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();

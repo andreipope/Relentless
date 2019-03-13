@@ -139,18 +139,26 @@ namespace Loom.ZombieBattleground
         private void ButtonPlayAgainHandler()
         {
             //TODO Play Again
-            if(_isWin)
+            if (_isWin)
+            {
                 ContinueOnWin();
+            }
             else
+            {
                 ContinueOnLost();
+            }
         }
         
         private void ButtonContinueHandler()
         {
-            if(_isWin)
+            if (_isWin)
+            {
                 ContinueOnWin();
+            }
             else
+            {
                 ContinueOnLost();
+            }
         }
 
         #endregion
@@ -163,14 +171,14 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
                     if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
                     {
-                        GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
+                        await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
                     } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();

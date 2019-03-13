@@ -113,10 +113,10 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(player, workingCard);
+            _cardsController.AddCardToHand(player, boardUnitModel);
         }
         else
         {
@@ -130,7 +130,7 @@ static class BattleCommandsHandler
         string[] deckNames = new string[player.CardsInDeck.Count];
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            deckNames[i] = player.CardsInDeck[i].LibraryCard.Name;
+            deckNames[i] = player.CardsInDeck[i].Prototype.Name;
         }
         return deckNames;
     }
@@ -143,12 +143,12 @@ static class BattleCommandsHandler
         string cardsInHand = "Cards In Hand = ";
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            cardsInDeck += player.CardsInDeck[i].LibraryCard.Name + ",";
+            cardsInDeck += player.CardsInDeck[i].Prototype.Name + ",";
         }
 
         for (var i = 0; i < player.CardsInHand.Count; i++)
         {
-            cardsInHand += player.CardsInHand[i].LibraryCard.Name + ",";
+            cardsInHand += player.CardsInHand[i].Prototype.Name + ",";
         }
 
         cardsInDeck = cardsInDeck.TrimEnd(',');
@@ -316,8 +316,8 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
-        _aiController.PlayCardOnBoard(workingCard, true);
+        BoardUnitModel boardUnitModel = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
+        _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -330,12 +330,12 @@ static class BattleCommandsHandler
             return;
         }
 
-        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(opponentPlayer, workingCard);
-            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-            _aiController.PlayCardOnBoard(workingCard, true);
+            _cardsController.AddCardToHand(opponentPlayer, boardUnitModel);
+            boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+            _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
         else
         {
@@ -414,12 +414,13 @@ static class BattleCommandsHandler
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        Card libraryCard = new Card(unit.Model.Card.LibraryCard);
-        WorkingCard workingCard = new WorkingCard(libraryCard, libraryCard, player);
-        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
+        Card prototype = new Card(unit.Model.Card.Prototype);
+        WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
+        BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard, ItemPosition.End);
+        player.RemoveCardFromGraveyard(unit.Model);
+        player.AddCardToBoard(boardUnitModel, ItemPosition.End);
         player.BoardCards.Insert(ItemPosition.End, newUnit);
         _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
 
@@ -637,7 +638,7 @@ static class BattleCommandsHandler
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCard card = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard == workingCard);
+        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

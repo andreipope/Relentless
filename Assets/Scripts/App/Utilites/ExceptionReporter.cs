@@ -4,7 +4,7 @@ using Unity.Cloud.UserReporting.Plugin;
 
 namespace Loom.ZombieBattleground.Helpers
 {
-    public sealed class ExceptionReporter
+    public static class ExceptionReporter
     {
         public static void SilentReportException(Exception e)
         {
@@ -16,6 +16,12 @@ namespace Loom.ZombieBattleground.Helpers
         public static void LogException(ILog log, Exception e)
         {
             log.Error("", e);
+            SilentReportException(e);
+        }
+
+        public static void LogExceptionAsWarning(ILog log, Exception e)
+        {
+            log.Warn("", e);
             SilentReportException(e);
         }
     }
