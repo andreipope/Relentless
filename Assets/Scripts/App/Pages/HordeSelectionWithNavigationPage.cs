@@ -279,9 +279,17 @@ namespace Loom.ZombieBattleground
         
         private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
         {
-            ApplyDeckFilter(selectedSetType);
-            ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
-            popup.ActionPopupHiding -= FilterPopupHidingHandler;
+            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedSetType)))
+            {   
+                ApplyDeckFilter(selectedSetType);
+                ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
+                popup.ActionPopupHiding -= FilterPopupHidingHandler;
+            }
+            else
+            {
+                _uiManager.DrawPopup<WarningPopup>("No available deck exist for selected element!");
+                _uiManager.DrawPopup<ElementFilterPopup>();
+            }
         }
 
         private void ButtonEditHandler()
@@ -819,6 +827,11 @@ namespace Loom.ZombieBattleground
             _cacheDeckListToDisplay = GetDeckListBySearchKeywordToDisplay();
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
+        }
+        
+        private bool CheckAvailableDeckExist(List<Deck> decks)
+        {
+            return decks.Count > 0;
         }
 
         private void UpdateSelectedDeckDisplay(int selectedDeckIndex)

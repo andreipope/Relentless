@@ -37,7 +37,10 @@ namespace Loom.ZombieBattleground
             Enumerators.SetType.WATER
         };
 
-        private Enumerators.SetType _selectedSetType;
+        private Enumerators.SetType _selectedSetType,
+                                    _cacheSelectedSetType;
+
+        private const Enumerators.SetType DefaultSelectedSetType = Enumerators.SetType.AIR;
 
         #region IUIPopup
 
@@ -46,6 +49,9 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
+
+            _selectedSetType = DefaultSelectedSetType;
+            _cacheSelectedSetType = DefaultSelectedSetType;
         }
 
         public void Dispose()
@@ -100,7 +106,7 @@ namespace Loom.ZombieBattleground
                 _buttonElementsDictionary.Add(setType, buttonElementIcon);
             }
 
-            UpdateSelectedSetType(Enumerators.SetType.NONE);      
+            LoadCache();   
         }
         
         public void Show(object data)
@@ -118,12 +124,13 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
-            _uiManager.HidePopup<ElementFilterPopup>();
+            Hide();
         }
         
         private void ButtonSaveHandler()
         {
-            _uiManager.HidePopup<ElementFilterPopup>();
+            Hide();
+            SaveCache();
             ActionPopupHiding?.Invoke(_selectedSetType);
         }
         
@@ -146,6 +153,16 @@ namespace Loom.ZombieBattleground
                 _imageGlow.gameObject.SetActive(true);
                 _imageGlow.transform.position = _buttonElementsDictionary[setType].transform.position;
             }
+        }
+        
+        private void SaveCache()
+        {
+            _cacheSelectedSetType = _selectedSetType;
+        }
+        
+        private void LoadCache()
+        {
+            UpdateSelectedSetType(_cacheSelectedSetType);   
         }
 
         public void PlayClickSound()
