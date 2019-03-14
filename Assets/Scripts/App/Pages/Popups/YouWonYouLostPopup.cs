@@ -100,6 +100,15 @@ namespace Loom.ZombieBattleground
             _groupYouWin.SetActive(_isWin);
             _groupYouLost.SetActive(!_isWin);
 
+            if (_isWin)
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.WON_POPUP, Constants.SfxSoundVolume, false, false, true);
+            }
+            else
+            {
+                _soundManager.PlaySound(Enumerators.SoundType.LOST_POPUP, Constants.SfxSoundVolume, false, false, true);
+            }  
+
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
             
             Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
@@ -166,6 +175,7 @@ namespace Loom.ZombieBattleground
         private void ContinueOnWin()
         {
             _uiManager.HidePopup<YouWonYouLostPopup>();
+            _soundManager.StopPlaying(Enumerators.SoundType.WON_POPUP);
 
             if (_tutorialManager.IsTutorial)
             {
@@ -199,6 +209,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
             _uiManager.HidePopup<YouWonYouLostPopup>();
+            _soundManager.StopPlaying(Enumerators.SoundType.LOST_POPUP);
         }
         
         public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
