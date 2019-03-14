@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
             if (Name != "Corrupted Goo" && Name != "Tainted Goo" ||
                 (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
-                CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement)
+                CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfHero.HeroElement)
             {
                 BoardUnitModel card = CardsController.CreateNewCardByNameAndAddToHand(PlayerCallerOfAbility, Name);
 

@@ -272,21 +272,21 @@ namespace Loom.ZombieBattleground
             }            
         }
 
-        public Sprite GetDeckIconSprite(Enumerators.SetType setType)
+        public Sprite GetDeckIconSprite(Enumerators.Faction faction)
         {
-            switch(setType)
+            switch(faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_air");
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_earth");
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_fire");
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_water");
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_toxic");
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_life");                 
                 default:
                     return null;

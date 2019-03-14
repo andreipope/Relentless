@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground.Test
         private float _waitAmount;
         private bool _waitUnscaledTime;
 
-        public BoardCardView CurrentSpellCard;
+        public BoardCardView CurrentItemCard;
 
         private readonly Random _random = new Random();
 
@@ -1119,7 +1119,7 @@ namespace Loom.ZombieBattleground.Test
                 if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0 && !HasChoosableAbilities(boardUnitModel.Prototype))
                 {
                     needTargetForAbility =
-                        boardUnitModel.InstanceCard.Abilities.FindAll(x => x.AbilityTargetTypes.Count > 0).Count > 0;
+                        boardUnitModel.InstanceCard.Abilities.FindAll(x => x.AbilityTarget.Count > 0).Count > 0;
                 }
             }
 
@@ -1152,7 +1152,7 @@ namespace Loom.ZombieBattleground.Test
 
                     break;
                 }
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                 {
                     _testBroker.GetPlayer(_player).RemoveCardFromHand(boardUnitModel);
                     _testBroker.GetPlayer(_player).AddCardToBoard(boardUnitModel, position);

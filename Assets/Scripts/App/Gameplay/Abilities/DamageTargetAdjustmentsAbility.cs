@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
             switch (AbilityEffectType)
             {
-                case Enumerators.AbilityEffectType.TARGET_ADJUSTMENTS_AIR:
+                case Enumerators.AbilityEffect.TARGET_ADJUSTMENTS_AIR:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");
                     break;
                 default:
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if(AbilityCallType == Enumerators.AbilityCallType.ATTACK)
+            if(AbilityTrigger == Enumerators.AbilityTrigger.ATTACK)
             {
                 InvokeUseAbilityEvent();
             }
@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             Action(info);
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
 
             foreach (var unit in _targetUnits)
             {

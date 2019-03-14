@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
         public int Turn { get; set; }
 
-        public int InitialHp { get; private set; }
+        public int InitialDefense { get; private set; }
 
         public int CurrentGooModificator { get; set; }
 
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
             CardsInHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             CardsOnBoard = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             BoardCards = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
-            BoardSpellsInUse = new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
+            BoardItemsInUse = new UniquePositionedList<BoardItem>(new PositionedList<BoardItem>());
             CardsPreparingToHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
 
             switch (_matchManager.MatchType)
@@ -171,6 +171,16 @@ namespace Loom.ZombieBattleground
 #endif
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
+
+                    if (CurrentGoo == 1)
+                    {
+                        CurrentGoo = 0;
+                    }
+                    if (GooVials == 1)
+                    {
+                        GooVials = 0;
+                    }
+
                     TurnTime = (uint) InitialPvPPlayerState.TurnTime;
                     break;
                 default:
@@ -241,8 +251,8 @@ namespace Loom.ZombieBattleground
             // TODO: REMOVE logs when issue will be fixed
             Log.Debug($"SelfHero: {SelfHero}");
 
-            InitialHp = _defense;
-            BuffedHp = 0;
+            InitialDefense = _defense;
+            BuffedDefense = 0;
 
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -311,7 +321,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject PlayerObject { get; }
 
-        public GameObject AvatarObject => _avatarObject.transform.parent.gameObject;
+        public GameObject AvatarObject => _avatarObject?.transform.parent?.gameObject;
 
         public Transform Transform => PlayerObject.transform;
 
@@ -364,7 +374,7 @@ namespace Loom.ZombieBattleground
 
         public UniquePositionedList<BoardUnitView> BoardCards { get; }
 
-        public UniquePositionedList<BoardSpell> BoardSpellsInUse { get; }
+        public UniquePositionedList<BoardItem> BoardItemsInUse { get; }
 
         public UniquePositionedList<BoardUnitModel> CardsInDeck { get; }
 
@@ -378,9 +388,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsStunned { get; private set; }
 
-        public int BuffedHp { get; set; }
+        public int BuffedDefense { get; set; }
 
-        public int MaxCurrentHp => InitialHp + BuffedHp;
+        public int MaxCurrentDefense => InitialDefense + BuffedDefense;
 
         public void InvokeTurnEnded()
         {
@@ -680,12 +690,12 @@ namespace Loom.ZombieBattleground
 
             switch (SelfHero.HeroElement)
             {
-                case Enumerators.SetType.FIRE:
-                case Enumerators.SetType.WATER:
-                case Enumerators.SetType.EARTH:
-                case Enumerators.SetType.AIR:
-                case Enumerators.SetType.LIFE:
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.FIRE:
+                case Enumerators.Faction.WATER:
+                case Enumerators.Faction.EARTH:
+                case Enumerators.Faction.AIR:
+                case Enumerators.Faction.LIFE:
+                case Enumerators.Faction.TOXIC:
                     var soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfHero.HeroElement);
                     _soundManager.PlaySound(soundType, Constants.HeroDeathSoundVolume);
                     break;

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using log4net;
@@ -322,9 +322,9 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(_cardCreaturePrefab);
                     boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);

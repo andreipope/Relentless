@@ -19,9 +19,9 @@ namespace Loom.ZombieBattleground.Data
             return null;
         }
 
-        public void ChangeAmount(string idCard, int amoundChangeFactor)
+        public void ChangeAmount(string idCard, int amountChangeFactor)
         {
-            GetCardData(idCard).Amount += amoundChangeFactor;
+            GetCardData(idCard).Amount += amountChangeFactor;
         }
     }
 

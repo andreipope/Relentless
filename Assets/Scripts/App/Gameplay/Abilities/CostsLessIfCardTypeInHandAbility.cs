@@ -7,14 +7,14 @@ namespace Loom.ZombieBattleground
 {
     public class CostsLessIfCardTypeInHandAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public int Value;
 
         public CostsLessIfCardTypeInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Value = ability.Value;
         }
 
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
             PlayerCallerOfAbility.HandChanged += HandChangedHandler;
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             int gooCost = PlayerCallerOfAbility.CardsInHand
-                .FindAll(x => x.Prototype.CardSetType == SetType && x != BoardUnitModel).Count * Value;
+                .FindAll(x => x.Prototype.Faction == Faction && x != BoardUnitModel).Count * Value;
             CardsController.SetGooCostOfCardInHand(
                 PlayerCallerOfAbility,
                 BoardUnitModel,

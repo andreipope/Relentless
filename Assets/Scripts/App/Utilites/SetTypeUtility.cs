@@ -7,14 +7,14 @@ namespace Loom.ZombieBattleground
 {
     public static class SetTypeUtility
     {
-        public static CardSet GetCardSet(IDataManager dataManager, Enumerators.SetType setType)
+        public static Faction GetCardFaction(IDataManager dataManager, Enumerators.Faction faction)
         {
-            return dataManager.CachedCardsLibraryData.Sets.First(s => s.Name == setType);
+            return dataManager.CachedCardsLibraryData.Factions.First(s => s.Name == faction);
         }
 
-        public static Enumerators.SetType GetCardSetType(IDataManager dataManager, int setIndex)
+        public static Enumerators.Faction GetCardFaction(IDataManager dataManager, int setIndex)
         {
-            return dataManager.CachedCardsLibraryData.Sets[setIndex].Name;
+            return dataManager.CachedCardsLibraryData.Factions[setIndex].Name;
         }
     }
 }

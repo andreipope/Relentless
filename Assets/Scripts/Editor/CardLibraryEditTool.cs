@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
                 GUILayout.Label("---This ability located in Choosable Abilities---", EditorStyles.label);
             }
 
-            GUILayout.Label(abilityInfo.AbilityType.ToString(), EditorStyles.miniBoldLabel);
+            GUILayout.Label(abilityInfo.Ability.ToString(), EditorStyles.miniBoldLabel);
 
             GUILayout.Label("VisualEffectsToPlay", EditorStyles.label);
 

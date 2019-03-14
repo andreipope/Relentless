@@ -218,10 +218,10 @@ namespace Loom.ZombieBattleground
                         boardUnit.BuffedDamage = changeStatOutcome.NewAttack;
                         boardUnit.CurrentDamage = changeStatOutcome.NewAttack;
                     }
-                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Health)
+                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Defense)
                     {
-                        boardUnit.BuffedHp = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentHp = changeStatOutcome.NewDefense;
+                        boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
+                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;
@@ -465,14 +465,14 @@ namespace Loom.ZombieBattleground
                                 _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
 
                                 break;
-                            case Enumerators.CardKind.SPELL:
-                                BoardSpell spell = new BoardSpell(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
-                                _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
-                                spell.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
+                            case Enumerators.CardKind.ITEM:
+                                BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
+                                _gameplayManager.OpponentPlayer.BoardItemsInUse.Insert(ItemPosition.End, item);
+                                item.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                    Caller = spell,
+                                    Caller = item,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
                                 break;
@@ -570,8 +570,8 @@ namespace Loom.ZombieBattleground
                 BoardUnitModel boardUnitModel;
                 switch (boardObjectCaller)
                 {
-                    case BoardSpell boardSpell:
-                        boardUnitModel = boardSpell.BoardUnitModel;
+                    case BoardItem boardItem:
+                        boardUnitModel = boardItem.BoardUnitModel;
                         break;
                     case BoardUnitModel tempBoardUnitModel:
                         boardUnitModel = tempBoardUnitModel;

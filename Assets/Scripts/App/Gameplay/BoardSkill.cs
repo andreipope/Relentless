@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
         public HeroSkill Skill;
 
-        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
+        public List<Enumerators.UnitStatus> BlockedUnitStatusTypes;
 
         private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -76,11 +76,11 @@ namespace Loom.ZombieBattleground
             _cooldown = skillInfo.Cooldown;
             _singleUse = skillInfo.SingleUse;
 
-            BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+            BlockedUnitStatusTypes = new List<Enumerators.UnitStatus>();
 
             if(Skill.OverlordSkill == Enumerators.OverlordSkill.FREEZE)
             {
-                BlockedUnitStatusTypes.Add(Enumerators.UnitStatusType.FROZEN);
+                BlockedUnitStatusTypes.Add(Enumerators.UnitStatus.FROZEN);
             }
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
@@ -561,7 +561,7 @@ namespace Loom.ZombieBattleground
 
             private readonly SpriteRenderer _buffIconPicture;
 
-            private readonly TextMeshPro _callTypeText;
+            private readonly TextMeshPro _triggerText;
 
             private readonly TextMeshPro _descriptionText;
 
@@ -576,13 +576,13 @@ namespace Loom.ZombieBattleground
 
                 Transform.localPosition = position;
 
-                _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
+                _triggerText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = skill.Title.ToUpperInvariant();
+                _triggerText.text = skill.Title.ToUpperInvariant();
                 _descriptionText.text = "    " + skill.Description;
 
                 _buffIconPicture.sprite =

@@ -55,15 +55,15 @@ namespace Loom.ZombieBattleground.Data
         {
             return new AbilityData(
                 (Enumerators.AbilityType) ability.Type,
-                (Enumerators.AbilityActivityType) ability.ActivityType,
-                (Enumerators.AbilityCallType) ability.Trigger,
-                ability.TargetTypes.Select(t => (Enumerators.AbilityTargetType) t).ToList(),
-                (Enumerators.StatType) ability.Stat,
-                (Enumerators.SetType) ability.Set,
-                (Enumerators.AbilityEffectType) ability.Effect,
+                (Enumerators.AbilityActivity) ability.ActivityType,
+                (Enumerators.AbilityTrigger) ability.Trigger,
+                ability.TargetTypes.Select(t => (Enumerators.Target) t).ToList(),
+                (Enumerators.Stat) ability.Stat,
+                (Enumerators.Faction) ability.Set,
+                (Enumerators.AbilityEffect) ability.Effect,
                 (Enumerators.AttackRestriction) ability.AttackRestriction,
                 (Enumerators.CardType) ability.TargetCardType,
-                (Enumerators.UnitStatusType) ability.TargetUnitSpecialStatus,
+                (Enumerators.UnitStatus) ability.TargetUnitSpecialStatus,
                 (Enumerators.CardType) ability.TargetUnitType,
                 ability.Value,
                 ability.Attack,
@@ -73,8 +73,8 @@ namespace Loom.ZombieBattleground.Data
                 ability.Count,
                 ability.Delay,
                 ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList(),
-                (Enumerators.GameMechanicDescriptionType) ability.GameMechanicDescriptionType,
-                (Enumerators.SetType) ability.TargetSet,
+                (Enumerators.GameMechanicDescription) ability.GameMechanicDescriptionType,
+                (Enumerators.Faction) ability.TargetSet,
                 (Enumerators.AbilitySubTrigger) ability.SubTrigger,
                 ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
                 ability.Defense2,
@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground.Data
                 hero.LongDescription,
                 hero.Experience,
                 (int) hero.Level,
-                (Enumerators.SetType) hero.Element,
+                (Enumerators.Faction) hero.Element,
                 hero.Skills.Select(skill => skill.FromProtobuf()).ToList(),
                 (Enumerators.OverlordSkill)hero.PrimarySkill,
                 (Enumerators.OverlordSkill)hero.SecondarySkill
@@ -113,8 +113,8 @@ namespace Loom.ZombieBattleground.Data
                 skill.Count,
                 (Enumerators.OverlordSkill) skill.Skill_,
                 skill.SkillTargets.Select(t => (Enumerators.SkillTargetType) t).ToList(),
-                (Enumerators.UnitStatusType) skill.TargetUnitSpecialStatus,
-                skill.ElementTargets.Select(t => (Enumerators.SetType) t).ToList(),
+                (Enumerators.UnitStatus) skill.TargetUnitSpecialStatus,
+                skill.ElementTargets.Select(t => (Enumerators.Faction) t).ToList(),
                 skill.Unlocked,
                 skill.CanSelectTarget,
                 skill.SingleUse
@@ -165,12 +165,12 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static CardViewInfo FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
+        public static PictureTransform FromProtobuf(this Protobuf.CardViewInfo cardViewInfo)
         {
             if (cardViewInfo == null)
                 return null;
 
-            return new CardViewInfo(cardViewInfo.Position.FromProtobuf(), cardViewInfo.Scale.FromProtobuf());
+            return new PictureTransform(cardViewInfo.Position.FromProtobuf(), cardViewInfo.Scale.FromProtobuf());
         }
 
         public static Card FromProtobuf(this Protobuf.Card card)
@@ -184,15 +184,15 @@ namespace Loom.ZombieBattleground.Data
                 card.Picture,
                 card.Attack,
                 card.Defense,
-                (Enumerators.SetType) card.Set,
+                (Enumerators.Faction) card.Set,
                 card.Frame,
                 (Enumerators.CardKind) card.Kind,
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList(),
                 card.CardViewInfo.FromProtobuf(),
-                (Enumerators.UniqueAnimationType) card.UniqueAnimationType,
-                (Enumerators.SetType)card.HiddenSet
+                (Enumerators.UniqueAnimation) card.UniqueAnimationType,
+                card.Hidden
             );
         }
 
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground.Data
            return new CardInstanceSpecificData(
                 card.Attack,
                 card.Defense,
-                (Enumerators.SetType) card.Set,
+                (Enumerators.Faction) card.Set,
                 (Enumerators.CardType) card.Type,
                 card.GooCost,
                 card.Abilities.Select(a => a.FromProtobuf()).ToList()

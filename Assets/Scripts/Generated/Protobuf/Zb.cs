@@ -1827,7 +1827,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       cardViewInfo_ = other.cardViewInfo_ != null ? other.cardViewInfo_.Clone() : null;
       abilities_ = other.abilities_.Clone();
       uniqueAnimationType_ = other.uniqueAnimationType_;
-      hiddenSet_ = other.hiddenSet_;
+      hidden_ = other.hidden_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2012,13 +2012,13 @@ namespace Loom.ZombieBattleground.Protobuf {
     }
 
     /// <summary>Field number for the "hidden_set" field.</summary>
-    public const int HiddenSetFieldNumber = 19;
-    private global::Loom.ZombieBattleground.Protobuf.CardSetType.Types.Enum hiddenSet_ = 0;
+    public const int HiddenFieldNumber = 19;
+    private bool hidden_ = false;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Loom.ZombieBattleground.Protobuf.CardSetType.Types.Enum HiddenSet {
-      get { return hiddenSet_; }
+    public bool Hidden {
+      get { return hidden_; }
       set {
-        hiddenSet_ = value;
+        hidden_ = value;
       }
     }
 
@@ -2051,7 +2051,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (!object.Equals(CardViewInfo, other.CardViewInfo)) return false;
       if(!abilities_.Equals(other.abilities_)) return false;
       if (UniqueAnimationType != other.UniqueAnimationType) return false;
-      if (HiddenSet != other.HiddenSet) return false;
+      if (Hidden != other.Hidden) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2074,7 +2074,7 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (cardViewInfo_ != null) hash ^= CardViewInfo.GetHashCode();
       hash ^= abilities_.GetHashCode();
       if (UniqueAnimationType != 0) hash ^= UniqueAnimationType.GetHashCode();
-      if (HiddenSet != 0) hash ^= HiddenSet.GetHashCode();
+      if (Hidden != false) hash ^= Hidden.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2149,9 +2149,9 @@ namespace Loom.ZombieBattleground.Protobuf {
         output.WriteRawTag(144, 1);
         output.WriteEnum((int) UniqueAnimationType);
       }
-      if (HiddenSet != 0) {
+      if (Hidden != false) {
         output.WriteRawTag(152, 1);
-        output.WriteEnum((int) HiddenSet);
+        output.WriteBool(Hidden);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -2207,8 +2207,8 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (UniqueAnimationType != 0) {
         size += 2 + pb::CodedOutputStream.ComputeEnumSize((int) UniqueAnimationType);
       }
-      if (HiddenSet != 0) {
-        size += 2 + pb::CodedOutputStream.ComputeEnumSize((int) HiddenSet);
+      if (Hidden != false) {
+        size += 2 + pb::CodedOutputStream.ComputeBoolSize(Hidden);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -2270,8 +2270,8 @@ namespace Loom.ZombieBattleground.Protobuf {
       if (other.UniqueAnimationType != 0) {
         UniqueAnimationType = other.UniqueAnimationType;
       }
-      if (other.HiddenSet != 0) {
-        HiddenSet = other.HiddenSet;
+      if (other.Hidden != false) {
+        Hidden = other.Hidden;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2352,7 +2352,7 @@ namespace Loom.ZombieBattleground.Protobuf {
             break;
           }
           case 152: {
-            hiddenSet_ = (global::Loom.ZombieBattleground.Protobuf.CardSetType.Types.Enum) input.ReadEnum();
+            hidden_ = input.ReadBool();
             break;
           }
         }
@@ -38166,7 +38166,7 @@ namespace Loom.ZombieBattleground.Protobuf {
     public static partial class Types {
       public enum Enum {
         [pbr::OriginalName("UNDEFINED")] Undefined = 0,
-        [pbr::OriginalName("HEALTH")] Health = 1,
+        [pbr::OriginalName("DEFENSE")] Defense = 1,
         [pbr::OriginalName("DAMAGE")] Damage = 2,
       }
 
