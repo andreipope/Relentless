@@ -38163,9 +38163,9 @@ namespace Loom.ZombieBattleground.Protobuf {
     /// <summary>Container for nested types declared in the StatType message type.</summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static partial class Types {
-      public enum Enum {
+      public enum Enum { 
         [pbr::OriginalName("UNDEFINED")] Undefined = 0,
-        [pbr::OriginalName("HEALTH")] Health = 1,
+        [pbr::OriginalName("DEFENSE")] Defense = 1,
         [pbr::OriginalName("DAMAGE")] Damage = 2,
       }
 
