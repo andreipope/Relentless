@@ -404,7 +404,7 @@ namespace Loom.ZombieBattleground
 
             public bool IsSelected { get; private set; }
 
-            public bool IsUnlocked { get; private set; }
+            public bool IsUnlocked { get; }
 
             public OverlordAbilityItem(Transform root, HeroSkill skill, bool overrideLock = false)
             {

@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsHeavyUnit => HasBuffHeavy || HasHeavy;
 
-        public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescription>();
+        public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; } = new List<Enumerators.GameMechanicDescription>();
 
         public GameplayQueueAction<object> ActionForDying;
 

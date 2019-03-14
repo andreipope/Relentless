@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public int Turn { get; set; }
 
-        public int InitialDefense { get; private set; }
+        public int InitialDefense { get; }
 
         public int CurrentGooModificator { get; set; }
 
@@ -34,15 +34,15 @@ namespace Loom.ZombieBattleground
 
         public int ExtraGoo { get; set; }
 
-        public uint InitialCardsInHandCount { get; private set; }
+        public uint InitialCardsInHandCount { get; }
 
-        public uint MaxCardsInPlay { get; private set; }
+        public uint MaxCardsInPlay { get; }
 
-        public uint MaxCardsInHand { get; private set; }
+        public uint MaxCardsInHand { get; }
 
-        public uint MaxGooVials { get; private set; }
+        public uint MaxGooVials { get; }
 
-        public uint TurnTime { get; private set; }
+        public uint TurnTime { get; }
 
         public PlayerState InitialPvPPlayerState { get; }
 

@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject costHighlightObject { get; protected set; }
 
-        public BoardUnitModel Model { get; private set; }
+        public BoardUnitModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
 
