@@ -247,7 +247,12 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeftArrow.name))
                 return;
 
+            int previousIndex = _deckPageIndex;
             MoveDeckPageIndex(-1);
+            
+            if (previousIndex == _deckPageIndex)
+                return;
+                
             UpdateDeckInfoObjects(); 
             ChangeSelectDeckIndex(GetDefaultDeckIndex());          
         }
@@ -257,7 +262,11 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRightArrow.name))
                 return;
 
+            int previousIndex = _deckPageIndex;
             MoveDeckPageIndex(1);
+            if (previousIndex == _deckPageIndex)
+                return;
+                
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(GetDefaultDeckIndex());       
         }
@@ -484,11 +493,11 @@ namespace Loom.ZombieBattleground
             UpdateSelectedDeckDisplay(newIndexInPage);
             if(_deckPageIndex == 0)
             {
-                SelectDeckIndex = newIndexInPage;
+                SelectDeckIndex = newIndexInPage-1;
             }
             else
             {
-                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage);
+                SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
             }            
         }
 
@@ -548,7 +557,14 @@ namespace Loom.ZombieBattleground
         
         private int GetDeckPageAmount(List<Deck> deckList)
         {
-            return Mathf.CeilToInt((float) deckList.Count / _deckInfoAmountPerPage);
+            if(deckList.Count <= _deckInfoAmountPerPage-1)
+            {
+                return 1;
+            }
+            else
+            {
+                return (deckList.Count - _deckInfoAmountPerPage) / _deckInfoAmountPerPage + 2;
+            }            
         }
         
         private List<Deck> GetDeckListByElementToDisplay(Enumerators.Faction faction)
@@ -807,8 +823,18 @@ namespace Loom.ZombieBattleground
         {
             _cacheDeckListToDisplay = GetDeckList();
             
-            _deckPageIndex = SelectDeckIndex / _deckInfoAmountPerPage;
-            int indexInPage = SelectDeckIndex % _deckInfoAmountPerPage;
+            int indexInPage = 0;
+            if(SelectDeckIndex < _deckInfoAmountPerPage-1)
+            {
+                _deckPageIndex = 0;
+                indexInPage = SelectDeckIndex + 1;
+            }
+            else
+            {
+                int deckIndexAfterSubtractFistPage = SelectDeckIndex - (_deckInfoAmountPerPage - 1);
+                _deckPageIndex = (deckIndexAfterSubtractFistPage / _deckInfoAmountPerPage) + 1;
+                indexInPage = deckIndexAfterSubtractFistPage % _deckInfoAmountPerPage;
+            }
             
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(indexInPage);
