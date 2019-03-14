@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                if (Ability.BoardSpell != null && Ability.BoardSpell.BoardUnitModel.Prototype.MouldId == LawnmowerCardId)
+                if (Ability.BoardItem != null && Ability.BoardItem.BoardUnitModel.Prototype.MouldId == LawnmowerCardId)
                 {
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
                     VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
@@ -81,14 +81,14 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType target in Ability.AbilityTargetTypes)
+                    foreach (Enumerators.Target target in Ability.AbilityTargetTypes)
                     {
                         switch (target)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                            case Enumerators.Target.OPPONENT_ALL_CARDS:
                                 CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                            case Enumerators.Target.PLAYER_ALL_CARDS:
                                 foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
                                 {
                                     CreateVfx(cardPlayer.Transform.position, true);

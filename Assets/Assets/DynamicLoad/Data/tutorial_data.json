@@ -3218,7 +3218,7 @@
               "Name": "GooZilla",
               "TutorialObjectId": 20,
               "IsManuallyPlayable": true,
-              "BuffedHealth": 4,
+              "BuffedDefense": 4,
               "BuffedDamage": 4
             }
           ],

@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbility == null)
                     throw new Exception($"No entry ability found for target {entryAbilityTarget}");
 
-                Enumerators.AbilityType abilityType = entryAbility.AbilityType;
+                Enumerators.AbilityType abilityType = entryAbility.Ability;
                 await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
                     card,
                     abilityType,
@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
                     card,
-                    entryAbility.AbilityType,
+                    entryAbility.Ability,
                     new ParametrizedAbilityInstanceId[]{ }
                 ));
             }

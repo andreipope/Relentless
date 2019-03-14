@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
         !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 

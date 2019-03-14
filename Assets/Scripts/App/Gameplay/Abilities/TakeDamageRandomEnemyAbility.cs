@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public int Count { get; }
 
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         private List<BoardObject> _targets;
 
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             Damage = ability.Damage;
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
 
             _targets = new List<BoardObject>();
         }
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 Action();
             }
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
           !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
             Action();
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH) {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
                 base.UnitDiedHandler();
                 return;
             }
@@ -67,26 +67,26 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> possibleTargets = new List<BoardObject>();
 
-            foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+            foreach (Enumerators.Target abilityTarget in AbilityData.AbilityTarget)
             {
                 switch (abilityTarget)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
                         possibleTargets.AddRange(GetOpponentOverlord().BoardCards
-                            .FindAll(unit => unit.Model.CurrentHp > 0)
+                            .FindAll(unit => unit.Model.CurrentDefense > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
                         possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
-                            .FindAll(unit => unit.Model.CurrentHp > 0)
+                            .FindAll(unit => unit.Model.CurrentDefense > 0)
                             .Select(unit => unit.Model));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         possibleTargets.Add(PlayerCallerOfAbility);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         possibleTargets.Add(GetOpponentOverlord());
                         break;
                 }
@@ -135,15 +135,15 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted(object target, out int damageWas)
         {
-            if (AbilityCallType == Enumerators.AbilityCallType.DEATH) {
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH) {
                 base.UnitDiedHandler();
             }
             
             int damageOverride = Mathf.Max(1, Damage);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
-                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.CardSetType == SetType).Count;
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
             }
 
             damageWas = damageOverride;

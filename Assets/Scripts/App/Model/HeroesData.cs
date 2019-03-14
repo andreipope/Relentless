@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.Data
         public int Level { get; set; }
 
         [JsonProperty("Element")]
-        public Enumerators.SetType HeroElement { get; private set; }
+        public Enumerators.Faction HeroElement { get; private set; }
 
         public List<HeroSkill> Skills { get; private set; }
 
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Data
             string longDescription,
             long experience,
             int level,
-            Enumerators.SetType heroElement,
+            Enumerators.Faction heroElement,
             List<HeroSkill> skills,
 
             Enumerators.OverlordSkill primaryAbility,
@@ -109,10 +109,10 @@ namespace Loom.ZombieBattleground.Data
         public List<Enumerators.SkillTargetType> SkillTargetTypes { get; private set; }
 
         [JsonProperty("TargetUnitSpecialStatus")]
-        public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
+        public Enumerators.UnitStatus TargetUnitStatusType { get; private set; }
 
         [JsonProperty("ElementTargets")]
-        public List<Enumerators.SetType> ElementTargetTypes { get; private set; }
+        public List<Enumerators.Faction> ElementTargetTypes { get; private set; }
 
         public bool Unlocked { get; set; }
 
@@ -132,8 +132,8 @@ namespace Loom.ZombieBattleground.Data
             int count,
             Enumerators.OverlordSkill overlordSkill,
             List<Enumerators.SkillTargetType> skillTargetTypes,
-            Enumerators.UnitStatusType targetUnitStatusType,
-            List<Enumerators.SetType> elementTargetTypes,
+            Enumerators.UnitStatus targetUnitStatusType,
+            List<Enumerators.Faction> elementTargetTypes,
             bool unlocked,
             bool canSelectTarget,
             bool singleUse)
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground.Data
             OverlordSkill = overlordSkill;
             SkillTargetTypes = skillTargetTypes ?? new List<Enumerators.SkillTargetType>();
             TargetUnitStatusType = targetUnitStatusType;
-            ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
+            ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.Faction>();
             CanSelectTarget = canSelectTarget;
             Unlocked = unlocked;
             SingleUse = singleUse;

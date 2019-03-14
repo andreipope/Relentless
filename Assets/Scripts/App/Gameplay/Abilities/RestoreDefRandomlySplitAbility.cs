@@ -14,13 +14,13 @@ namespace Loom.ZombieBattleground
         private List<BoardObject> _targets;
 
         public int Count;
-        public List<Enumerators.AbilityTargetType> TargetTypes;
+        public List<Enumerators.Target> TargetTypes;
 
         public RestoreDefRandomlySplitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            TargetTypes = ability.AbilityTargetTypes;
+            TargetTypes = ability.AbilityTarget;
 
             _targets = new List<BoardObject>();
         }
@@ -29,9 +29,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Restore);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Restore);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -62,20 +62,20 @@ namespace Loom.ZombieBattleground
             else
             {
                 _targets = new List<BoardObject>();
-                foreach (Enumerators.AbilityTargetType targetType in TargetTypes)
+                foreach (Enumerators.Target targetType in TargetTypes)
                 {
                     switch (targetType)
                     {
-                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             _targets.Add(GetOpponentOverlord());
                             break;
-                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             _targets.Add(PlayerCallerOfAbility);
                             break;
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
+                        case Enumerators.Target.PLAYER_CARD:
                             _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
                             break;
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                        case Enumerators.Target.OPPONENT_CARD:
                             _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
                             break;
                         default:
@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
             int blocksCount = _targets.Count;
             BoardObject currentTarget = null;
 
-            int deltaHealth = 0;
+            int deltaDefense = 0;
 
             while (maxCount > 0)
             {
@@ -116,15 +116,15 @@ namespace Loom.ZombieBattleground
                 switch (currentTarget)
                 {
                     case BoardUnitModel unit:
-                        deltaHealth = unit.MaxCurrentHp - unit.CurrentHp;
+                        deltaDefense = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
-                        deltaHealth = player.MaxCurrentHp - player.Defense;
+                        deltaDefense = player.MaxCurrentDefense - player.Defense;
                         break;
                 }
 
                 defenseValue = _targets.Count == 1 ?  maxCount : UnityEngine.Random.Range(1, maxCount);
-                defenseValue = Mathf.Clamp(defenseValue, 0, deltaHealth);
+                defenseValue = Mathf.Clamp(defenseValue, 0, deltaDefense);
 
                 maxCount -= defenseValue;
 
@@ -133,7 +133,7 @@ namespace Loom.ZombieBattleground
                     RestoreDefenseOfTarget(currentTarget, defenseValue);
                 }
 
-                if (defenseValue == deltaHealth)
+                if (defenseValue == deltaDefense)
                 {
                     _targets.Remove(currentTarget);
                 }
