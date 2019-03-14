@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
             CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(creature).Transform.position);
 
-            BoardUnitModel leftAdjustment = null, rightAdjastment = null;
+            BoardUnitModel leftAdjustment = null, rightAdjustment = null;
 
             int targetIndex = -1;
             for (int i = 0; i < creature.OwnerPlayer.CardsOnBoard.Count; i++)
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
 
                 if (targetIndex + 1 < creature.OwnerPlayer.CardsOnBoard.Count)
                 {
-                    rightAdjastment = creature.OwnerPlayer.CardsOnBoard[targetIndex + 1];
+                    rightAdjustment = creature.OwnerPlayer.CardsOnBoard[targetIndex + 1];
                 }
             }
 
@@ -62,15 +62,15 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (rightAdjastment != null)
+            if (rightAdjustment != null)
             {
-                if (rightAdjastment.IsStun)
+                if (rightAdjustment.IsStun)
                 {
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjastment);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, rightAdjustment);
                 }
                 else
                 {
-                    rightAdjastment.Stun(Enumerators.StunType.FREEZE, 1);
+                    rightAdjustment.Stun(Enumerators.StunType.FREEZE, 1);
                 }
             }
 

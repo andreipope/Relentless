@@ -345,6 +345,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
+        // TODO: refactor-state: these list are here temporarily and will be removed
         public UniquePositionedList<BoardSpell> BoardSpellsInUse => LocalCardsController.BoardSpellsInUse;
 
         public IReadOnlyList<BoardUnitModel> CardsInDeck => LocalCardsController.CardsInDeck;

@@ -279,14 +279,6 @@ namespace Loom.ZombieBattleground
         private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
         {
             _battlegroundController.RegisterBoardUnitView(owner, unit, position);
-            /*if (owner.IsLocalPlayer)
-            {
-                _gameplayManager.CurrentPlayer.BoardCards.Insert(position, unit);
-            }
-            else
-            {
-                _gameplayManager.OpponentPlayer.BoardCards.Insert(position, unit);
-            }*/
         }
 
         private void ReAnimateAbility(PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome)

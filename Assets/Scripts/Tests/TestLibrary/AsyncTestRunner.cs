@@ -309,7 +309,9 @@ namespace Loom.ZombieBattleground.Test
                 return false;
 
             PropertyInfo consoleFlagsProperty =
-                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries").GetProperty("consoleFlags", BindingFlags.Public | BindingFlags.Static);
+                typeof(UnityEditor.Editor).Assembly
+                    .GetType("UnityEditor.LogEntries")
+                    .GetProperty("consoleFlags", BindingFlags.Public | BindingFlags.Static);
             int consoleFlagValue = (int) consoleFlagsProperty.GetValue(null, null);
             const int errorPauseFlag = 4;
             return (consoleFlagValue & errorPauseFlag) != 0;

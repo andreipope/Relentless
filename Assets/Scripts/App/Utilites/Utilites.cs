@@ -39,30 +39,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static T CastStringTuEnum<T>(string data, bool isManual = false)
-        {
-            if (isManual)
-            {
-                return (T)Enum.Parse(typeof(T), data);
-            }
-            else
-            {
-                return (T)Enum.Parse(typeof(T), data.ToUpperInvariant());
-            }
-        }
-
-        public static List<T> CastList<T>(string data, char separator = '|')
-        {
-            List<T> list = new List<T>();
-            string[] targets = data.Split(separator);
-            foreach (string target in targets)
-            {
-                list.Add(CastStringTuEnum<T>(target));
-            }
-
-            return list;
-        }
-
         public static Vector3 CastVfxPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
