@@ -11,7 +11,15 @@ namespace Loom.ZombieBattleground.Editor.Tools
 {
     public class GameStateGUI
     {
-        public static void DrawGameState(GameState gameState, string currentPlayerUserId, string stateName, Func<PlayerState, PlayerState> modifyPlayerStateFunc, ref bool isExpanded)
+        public delegate void AfterPlayerDrawnHandler(bool isCurrentPlayer, PlayerState playerState);
+
+        public static void DrawGameState(
+            GameState gameState,
+            string currentPlayerUserId,
+            string stateName,
+            Func<PlayerState, PlayerState> modifyPlayerStateFunc,
+            AfterPlayerDrawnHandler afterPlayerDrawnHandlerCallback,
+            ref bool isExpanded)
         {
             isExpanded = EditorGUILayout.Foldout(isExpanded, stateName);
             if (!isExpanded)
@@ -81,6 +89,8 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 GUILayout.Label("<b>Cards In Graveyard</b>", Styles.RichLabel);
 
                 GUILayout.Label(FormatCardInstances(playerState.CardsInGraveyard), Styles.RichLabel);
+
+                afterPlayerDrawnHandlerCallback?.Invoke(playerState.Id == currentPlayerUserId, playerState);
             }
 
             GUILayout.Label("RandomSeed: " + gameState.RandomSeed);

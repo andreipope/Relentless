@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground
                     _leftBlockCardSpellElement.Init(spellBoardCard.Model.Card);
                     break;
                 case BoardSpell spell:
-                    _leftBlockCardSpellElement.Init(spell.BoardUnitModel.Card);
+                    _leftBlockCardSpellElement.Init(spell.Model.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
                     _leftBlockCardUnitElement.Init(unitBoardCard.Model.Card);

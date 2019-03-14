@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             {
                 DrawSeparator();
                 bool isExpanded = _initialGameState.IsExpanded;
-                GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, ref isExpanded);
+                GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, null, ref isExpanded);
                 _initialGameState.IsExpanded = isExpanded;
             }
 
@@ -236,6 +236,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 DebugClient.UserDataModel?.UserId,
                                 playerState.Id == DebugClient.UserDataModel?.UserId,
                                 DebugClient.UseBackendGameLogic),
+                        null,
                         ref isExpanded);
                     _currentGameState.IsExpanded = isExpanded;
                 }

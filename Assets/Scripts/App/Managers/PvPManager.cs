@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
                 await LoadInitialGameState();
             }
 
-            Log.Warn("Match Starting");
+            Log.Info("Match Starting");
 
             GameStartedActionReceived?.Invoke();
 

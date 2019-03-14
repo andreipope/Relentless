@@ -471,7 +471,7 @@ namespace Loom.ZombieBattleground
                             case Enumerators.CardKind.SPELL:
                                 BoardSpell spell = new BoardSpell(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
                                 _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
-                                spell.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
+                                spell.Model.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -579,7 +579,7 @@ namespace Loom.ZombieBattleground
                 switch (boardObjectCaller)
                 {
                     case BoardSpell boardSpell:
-                        boardUnitModel = boardSpell.BoardUnitModel;
+                        boardUnitModel = boardSpell.Model;
                         break;
                     case BoardUnitModel tempBoardUnitModel:
                         boardUnitModel = tempBoardUnitModel;

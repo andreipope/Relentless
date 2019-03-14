@@ -1098,7 +1098,7 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case BoardSpell boardSpell:
-                        return boardSpell.BoardUnitModel.InstanceId == id;
+                        return boardSpell.Model.InstanceId == id;
                     case IInstanceIdOwner instanceIdOwner:
                         return instanceIdOwner.InstanceId == id;
                     default:
