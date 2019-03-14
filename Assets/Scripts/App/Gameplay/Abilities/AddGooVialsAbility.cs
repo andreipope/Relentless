@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             InvokeActionTriggered();
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
             {
                 InvokeActionTriggered();
             }

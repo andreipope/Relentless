@@ -161,30 +161,30 @@ namespace Loom.ZombieBattleground
             }  
         }
 
-        public void SetOverlordPortrait(Enumerators.SetType setType)
+        public void SetOverlordPortrait(Enumerators.Faction faction)
         {
-            switch(setType)
+            switch(faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_air");                  
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_fire");
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_earth");
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_toxic");
                     break;
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_water");
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_life");
                     break;
                 default:
-                    Log.Info($"No OverlordPortrait found for setType {setType}");
+                    Log.Info($"No OverlordPortrait found for faction {faction}");
                     return;
             }            
         }

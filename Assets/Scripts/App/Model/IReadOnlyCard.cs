@@ -19,9 +19,9 @@ namespace Loom.ZombieBattleground.Data
 
         int Damage { get; }
 
-        int Health { get; }
+        int Defense { get; }
 
-        Enumerators.SetType CardSetType { get; }
+        Enumerators.Faction Faction { get; }
 
         string Frame { get; }
 
@@ -31,16 +31,13 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType CardType { get; }
 
-        // TODO: get rid of this
-        IList<AbilityData> InitialAbilities { get; }
-
         // FIXME: should be readonly 
         IList<AbilityData> Abilities { get; }
 
-        CardViewInfo CardViewInfo { get; }
+        PictureTransform PictureTransform { get; }
 
-        Enumerators.UniqueAnimationType UniqueAnimationType { get; }
+        Enumerators.UniqueAnimation UniqueAnimation { get; }
 
-        Enumerators.SetType HiddenCardSetType { get; }
+        bool Hidden { get; }
     }
 }

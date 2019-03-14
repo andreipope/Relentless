@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
             // TODO: unsubscribe
             BoardUnitModel.UnitDamageChanged += InstanceCardOnStatChanged;
-            BoardUnitModel.UnitHpChanged += InstanceCardOnStatChanged;
+            BoardUnitModel.UnitDefenseChanged += InstanceCardOnStatChanged;
         }
 
         private void InstanceCardOnStatChanged(int oldValue, int newValue)
@@ -37,11 +37,11 @@ namespace Loom.ZombieBattleground
 
         private void DrawStats()
         {
-            AttackText.text = BoardUnitModel.Card.InstanceCard.Attack.ToString();
+            AttackText.text = BoardUnitModel.Card.InstanceCard.Damage.ToString();
             DefenseText.text = BoardUnitModel.Card.InstanceCard.Defense.ToString();
 
-            FillColor(BoardUnitModel.Card.InstanceCard.Attack, BoardUnitModel.Card.Prototype.Damage, AttackText);
-            FillColor(BoardUnitModel.Card.InstanceCard.Defense, BoardUnitModel.Card.Prototype.Health, DefenseText);
+            FillColor(BoardUnitModel.Card.InstanceCard.Damage, BoardUnitModel.Card.Prototype.Damage, AttackText);
+            FillColor(BoardUnitModel.Card.InstanceCard.Defense, BoardUnitModel.Card.Prototype.Defense, DefenseText);
         }
 
         private void FillColor(int stat, int initialStat, TextMeshPro text)

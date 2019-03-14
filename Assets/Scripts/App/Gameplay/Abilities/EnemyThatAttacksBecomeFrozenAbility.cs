@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDamagedHandler(from);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
             ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);

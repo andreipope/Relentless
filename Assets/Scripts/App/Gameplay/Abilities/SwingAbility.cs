@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             if (info is BoardUnitModel)

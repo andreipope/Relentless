@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
+        private void FilterPopupHidingHandler(Enumerators.Faction selectedSetType)
         {
             ApplyDeckFilter(selectedSetType);
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
@@ -527,7 +527,7 @@ namespace Loom.ZombieBattleground
             return Mathf.CeilToInt((float) deckList.Count / _deckInfoAmountPerPage);
         }
         
-        private List<Deck> GetDeckListByElementToDisplay(Enumerators.SetType setType)
+        private List<Deck> GetDeckListByElementToDisplay(Enumerators.Faction faction)
         {
             List<Deck> deckList = GetDeckList();
 
@@ -535,8 +535,7 @@ namespace Loom.ZombieBattleground
             for(int i=0; i<deckList.Count; ++i)
             {
                 Hero hero = _dataManager.CachedHeroesData.Heroes[deckList[i].HeroId];
-                if( setType == Enumerators.SetType.NONE || 
-                    setType == hero.HeroElement )
+                if( faction == hero.HeroElement )
                         deckListToDisplay.Add(deckList[i]);                
             }
 
@@ -757,10 +756,10 @@ namespace Loom.ZombieBattleground
             ChangeSelectDeckIndex(indexInPage);
         }
 
-        public void ApplyDeckFilter(Enumerators.SetType setType)
+        public void ApplyDeckFilter(Enumerators.Faction faction)
         {
             _inputFieldSearchDeckName.text = "";
-            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(setType);
+            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(faction);
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
         }
@@ -782,25 +781,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
+        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordDeckThumbnail";
             switch(heroElement)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_air"); 
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_fire"); 
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_earth"); 
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_toxic"); 
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_water"); 
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Log.Info($"No Overlord thumbnail found for setType {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for faction {heroElement}");
                     return null;
             }        
         }
