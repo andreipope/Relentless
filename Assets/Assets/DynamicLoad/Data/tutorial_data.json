@@ -737,7 +737,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
-            "X": -6.2,
+            "X": -2.2,
             "Y": -2.5,
             "Z": 0
           },
@@ -749,7 +749,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": -6.2,
+            "X": -2.2,
             "Y": 2.6,
             "Z": 0
           },
@@ -761,7 +761,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": -6.2,
+            "X": -2.2,
             "Y": -2.5,
             "Z": 0
           },
@@ -840,7 +840,9 @@
             "Button_Battle",
             "Button_Shop",
             "Button_MyDecks",
-            "Button_MyCards"
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
           ],
           "ConnectedActivities": [
             2
@@ -867,9 +869,15 @@
           ],
           "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_MyPacks",
+            "ButtonPackType",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login"
           ],
           "ConnectedActivities": [
             3
@@ -893,35 +901,45 @@
           "ActionToEndThisStep": "CardPackCollected",
           "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login"
           ]
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
           "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "ButtonMinus",
-            "ButtonPlus",
-            "ButtonMax",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login"
           ],
           "HandPointers": [
             {
               "StartPosition": {
                 "X": -0.5,
-                "Y": 1.2,
+                "Y": 1.4,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_MyDecks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5,
-              "Rotation": 180
+              "AppearDelay": 0.5
             }
           ]
         },
@@ -929,7 +947,21 @@
           "ActionToEndThisStep": "HordeTabChanged",
           "OpenScreen": "MyDecksPage",
           "BlockedButtons": [
-            "Button_MyCards"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
+            "Button_Edit",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_LeftArrow",
+            "Button_RightArrow"
           ],
           "HandPointers": [
             {
@@ -948,15 +980,23 @@
         {
           "ActionToEndThisStep": "HordeTabChanged",
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_RightArrow",
-            "Button_LeftArrow"
+            "Button_LeftArrow",
+            "Button_Auto"
           ],
           "HandPointers": [
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -969,15 +1009,23 @@
         {
           "ActionToEndThisStep": "HordeTabChanged",
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_RightArrow",
-            "Button_LeftArrow"
+            "Button_LeftArrow",
+            "Button_Auto"
           ],
           "HandPointers": [
             {
               "StartPosition": {
                 "X": 0,
-                "Y": 1,
+                "Y": 1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -993,24 +1041,34 @@
             0
           ],
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow"
           ],
           "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
+                "X": -3.8,
                 "Y": -1.5,
                 "Z": 0
               },
               "EndPosition": {
-                "X": -7.8,
+                "X": -3.8,
                 "Y": 3.8,
                 "Z": 0
               },
@@ -1028,19 +1086,29 @@
             0
           ],
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
+                "X": -3.8,
                 "Y": 4,
                 "Z": 0
               },
@@ -1058,19 +1126,29 @@
             1
           ],
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
+                "X": -3.8,
                 "Y": -1.5,
                 "Z": 0
               },
@@ -1089,10 +1167,17 @@
             2
           ],
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck"
           ],
           "ConnectedActivities": [
             1
@@ -1103,9 +1188,16 @@
         {
           "ActionToEndThisStep": "HordeSaved",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
-            "Button_Back"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
@@ -1123,15 +1215,13 @@
         {
           "ActionToEndThisStep": "BattleStarted",
           "BlockedButtons": [
-            "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back"
           ],
           "ConnectedActivities": [
             0
