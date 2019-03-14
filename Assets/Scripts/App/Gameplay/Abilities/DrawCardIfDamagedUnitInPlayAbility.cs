@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.CurrentHp < x.MaxCurrentHp).Count > 0)
+            if(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.CurrentDefense < x.MaxCurrentDefense).Count > 0)
             {
                 PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
             }

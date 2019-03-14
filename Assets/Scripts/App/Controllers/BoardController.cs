@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
             UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.LocalCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
-        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated)
+        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -137,18 +137,21 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < updateSequence.Tweens.Count; i++)
             {
-                BoardUnitView card = units[i];
-
-                card.PositionOfBoard = newPositions[i];
-
-                tween = card.Transform.DOMove(newPositions[i], Duration).SetEase(Ease.OutSine);
-                tween.OnComplete(() =>
+                if (i != skipIndex)
                 {
-                    updateSequence.TweenEnded(tween);
-                });
+                    BoardUnitView card = units[i];
 
-                updateSequence.Tweens[i].Tween = tween;
-                updateSequence.StartTween(updateSequence.Tweens[i]);
+                    card.PositionOfBoard = newPositions[i];
+
+                    tween = card.Transform.DOMove(newPositions[i], Duration).SetEase(Ease.OutSine);
+                    tween.OnComplete(() =>
+                    {
+                        updateSequence.TweenEnded(tween);
+                    });
+
+                    updateSequence.Tweens[i].Tween = tween;
+                    updateSequence.StartTween(updateSequence.Tweens[i]);
+                }
             }
 
             if (boardUpdated != null)

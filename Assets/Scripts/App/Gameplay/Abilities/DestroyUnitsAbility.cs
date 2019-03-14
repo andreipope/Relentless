@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -42,14 +42,14 @@ namespace Loom.ZombieBattleground
 
             _units = new List<BoardUnitModel>();
 
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
                         _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
                         _units.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                         break;
                 }

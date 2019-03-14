@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
 {
     public class ShopWithNavigationPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ShopWithNavigationPage));
+
         private IUIManager _uiManager;
         
         private ILoadObjectsManager _loadObjectsManager;
@@ -153,7 +156,7 @@ namespace Loom.ZombieBattleground
 
         #region Purchasing Logic
 
-#if UNITY_IOS || UNITY_ANDROID
+        #if UNITY_IOS || UNITY_ANDROID
         private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
         private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
         #endif       
@@ -196,7 +199,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
+                Log.Info($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
                 _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationGoogle)} failed\n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
@@ -233,7 +236,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
+                Log.Info($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
                 _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationApple)} failed\n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationApple;
@@ -264,7 +267,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
+                Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
                 _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatTransaction)} failed\n{e.Message}\nPlease try again");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
@@ -281,7 +284,7 @@ namespace Loom.ZombieBattleground
             {
                 log += i.TxID + ", ";
             }
-            Debug.Log(log);                        
+            Log.Debug(log);
             _uiManager.HidePopup<LoadingFiatPopup>();
             RequestPack(recordList);            
         }
@@ -296,7 +299,7 @@ namespace Loom.ZombieBattleground
         
         private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
         {            
-            Debug.Log("<color=green>START REQUEST for packs</color>"); 
+            Log.Debug("<color=green>START REQUEST for packs</color>");
             List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
             for (int i = 0; i < sortedRecordList.Count; ++i)
             {
@@ -312,11 +315,11 @@ namespace Loom.ZombieBattleground
                 string eventResponse = "";
 
                 eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
-                Debug.Log($"<color=green>Contract [requestPacks] success call.</color>");
-                Debug.Log($"<color=green>EVENT RESPONSE: {eventResponse}</color>");
+                Log.Debug($"<color=green>Contract [requestPacks] success call.</color>");
+                Log.Debug($"<color=green>EVENT RESPONSE: {eventResponse}</color>");
                 if (!string.IsNullOrEmpty(eventResponse))
                 {
-                    Debug.Log("<color=green>FINISH REQUEST for packs</color>");
+                    Log.Debug("<color=green>FINISH REQUEST for packs</color>");
                     await _fiatBackendManager.CallFiatClaim
                     (
                         record.UserId,
@@ -333,7 +336,7 @@ namespace Loom.ZombieBattleground
 
         private async void OnFinishRequestPack()
         {
-            Debug.Log("SUCCESSFULLY REQUEST for packs");
+            Log.Debug("SUCCESSFULLY REQUEST for packs");
             await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s)");
             await Task.Delay(TimeSpan.FromSeconds(1f));
@@ -346,12 +349,11 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<LoadingFiatPopup>();
             Product product = args.purchasedProduct;
 
-            Debug.Log("OnProcessPurchase");
-            Debug.Log($"productId {product.definition.id}");
-            Debug.Log($"receipt {args.purchasedProduct.receipt}");
-            Debug.Log($"transactionID {product.transactionID}");
-            Debug.Log($"storeSpecificId {product.definition.storeSpecificId}");
-
+            Log.Debug("OnProcessPurchase");
+            Log.Debug($"productId {product.definition.id}");
+            Log.Debug($"receipt {args.purchasedProduct.receipt}");
+            Log.Debug($"transactionID {product.transactionID}");
+            Log.Debug($"storeSpecificId {product.definition.storeSpecificId}");
 
             #if UNITY_ANDROID
             _fiatValidationDataGoogleStore = new FiatValidationDataGoogleStore();      
@@ -377,20 +379,20 @@ namespace Loom.ZombieBattleground
                     AppleTangle.Data(), Application.identifier);
         
             var result = validator.Validate(e.purchasedProduct.receipt);
-            Debug.Log("Receipt is valid. Contents:");
+            Log.Info("Receipt is valid. Contents:");
             int count = 0;
             foreach (IPurchaseReceipt productReceipt in result) {
-                Debug.Log($"productReceipt {count}");
+                Log.Info($"productReceipt {count}");
                 ++count;
-                Debug.Log($"productReceipt.productID: {productReceipt.productID}");
-                Debug.Log($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
-                Debug.Log($"productReceipt.transactionID: {productReceipt.transactionID}");
+                Log.Info($"productReceipt.productID: {productReceipt.productID}");
+                Log.Info($"productReceipt.purchaseDate: {productReceipt.purchaseDate}");
+                Log.Info($"productReceipt.transactionID: {productReceipt.transactionID}");
 
                 if (productReceipt is AppleInAppPurchaseReceipt apple) {
-                    Debug.Log($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
-                    Debug.Log($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
-                    Debug.Log($"apple.cancellationDate: {apple.cancellationDate}");
-                    Debug.Log($"apple.quantity: {apple.quantity}");
+                    Log.Info($"apple.originalTransactionIdentifier: {apple.originalTransactionIdentifier}");
+                    Log.Info($"apple.subscriptionExpirationDate {apple.subscriptionExpirationDate}");
+                    Log.Info($"apple.cancellationDate: {apple.cancellationDate}");
+                    Log.Info($"apple.quantity: {apple.quantity}");
                 }
 
                 return productReceipt.transactionID;
@@ -405,19 +407,19 @@ namespace Loom.ZombieBattleground
             {
                 IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
                 
-                Debug.Log("IAPReceipt");
+                Log.Debug("IAPReceipt");
                 string log = "";
                 log += "receipt.TransactionID: " + receipt.TransactionID;
                 log += "\n";
                 log += "receipt.Store: " + receipt.Store;
                 log += "\n";
                 log += "Payload: " + receipt.Payload;
-                Debug.Log(log);  
+                Log.Debug(log);
                 payload = receipt.Payload;
 
                 string logText = "";
                 string payloadToCut = payload;
-                Debug.Log("PAYLOAD START");
+                Log.Debug("PAYLOAD START");
                 int count = 0;
                 while( !string.IsNullOrEmpty(payloadToCut))
                 {
@@ -433,13 +435,13 @@ namespace Loom.ZombieBattleground
                         payloadToCut = "";
                     }
                     ++count;
-                    Debug.Log( $"{count}: {logText}");
+                    Log.Debug( $"{count}: {logText}");
                 }
-                Debug.Log("PAYLOAD END");
+                Log.Debug("PAYLOAD END");
             }
             catch
             {
-                Debug.Log("Cannot deserialize args.purchasedProduct.receipt");                
+                Log.Info("Cannot deserialize args.purchasedProduct.receipt");
             }
             return payload;
         }
@@ -453,19 +455,19 @@ namespace Loom.ZombieBattleground
             {
                 IAPReceipt2 receipt = JsonConvert.DeserializeObject<IAPReceipt2>(receiptString);                
                 
-                Debug.Log("IAPReceipt");
+                Log.Debug("IAPReceipt");
                 string log = "";
                 log += "receipt.TransactionID: " + receipt.TransactionID;
                 log += "\n";
                 log += "receipt.Store: " + receipt.Store;
                 log += "\n";
                 log += "Payload: " + receipt.Payload;
-                Debug.Log(log);  
+                Log.Debug(log);
                 payload = receipt.Payload;
             }
             catch
             {
-                Debug.Log("Cannot deserialize args.purchasedProduct.receipt");                
+                Log.Info("Cannot deserialize args.purchasedProduct.receipt");
             }
             
             if( !string.IsNullOrEmpty(payload) )
@@ -474,12 +476,12 @@ namespace Loom.ZombieBattleground
                 try
                 {
                     ReceiptPayloadStr rPayload = JsonConvert.DeserializeObject<ReceiptPayloadStr>(payload);
-                    Debug.Log("json: " + rPayload.json);
+                    Log.Debug("json: " + rPayload.json);
                     json = rPayload.json;
                 }
                 catch
                 {
-                    Debug.Log("Cannot deserialize payload str");
+                    Log.Info("Cannot deserialize payload str");
                 }
                 
                 if (!string.IsNullOrEmpty(json))
@@ -488,11 +490,11 @@ namespace Loom.ZombieBattleground
                     {
                         ReceiptJSON rJson = JsonConvert.DeserializeObject<ReceiptJSON>(json);
                         purchaseToken = rJson.purchaseToken;
-                        Debug.Log("purchaseToken: " + purchaseToken);
+                        Log.Debug("purchaseToken: " + purchaseToken);
                     }
                     catch
                     {
-                        Debug.Log("Cannot deserialize rJson");
+                        Log.Info("Cannot deserialize rJson");
                     }
                 }
             }

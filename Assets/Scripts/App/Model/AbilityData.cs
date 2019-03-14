@@ -8,25 +8,25 @@ namespace Loom.ZombieBattleground.Data
     public class AbilityData
     {
         [JsonProperty("type")]
-        public Enumerators.AbilityType AbilityType { get; private set; }
+        public Enumerators.AbilityType Ability { get; private set; }
 
         [JsonProperty("activity_type")]
-        public Enumerators.AbilityActivityType ActivityType { get; private set; }
+        public Enumerators.AbilityActivity Activity { get; private set; }
 
         [JsonProperty("call_type")]
-        public Enumerators.AbilityCallType CallType { get; private set; }
+        public Enumerators.AbilityTrigger Trigger { get; private set; }
 
         [JsonProperty("target_type")]
-        public List<Enumerators.AbilityTargetType> AbilityTargetTypes { get; private set; }
+        public List<Enumerators.Target> AbilityTarget { get; private set; }
 
         [JsonProperty("stat_type")]
-        public Enumerators.StatType AbilityStatType { get; private set; }
+        public Enumerators.Stat Stat { get; private set; }
 
         [JsonProperty("set_type")]
-        public Enumerators.SetType AbilitySetType { get; private set; }
+        public Enumerators.Faction Faction { get; private set; }
 
         [JsonProperty("effect_type")]
-        public Enumerators.AbilityEffectType AbilityEffectType { get; private set; }
+        public Enumerators.AbilityEffect Effect { get; private set; }
 
         [JsonProperty("attack_restriction")]
         public Enumerators.AttackRestriction AttackRestriction { get; private set; }
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.CardType TargetCardType { get; private set; }
 
         [JsonProperty("unit_status")]
-        public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
+        public Enumerators.UnitStatus TargetUnitStatus { get; private set; }
 
         [JsonProperty("unit_type")]
         public Enumerators.CardType TargetUnitType { get; private set; }
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Data
         public int Damage { get; private set; }
 
         [JsonProperty("health")]
-        public int Health { get; private set; }
+        public int Defense { get; private set; }
 
         [JsonProperty("name")]
         public string Name { get; private set; }
@@ -65,106 +65,106 @@ namespace Loom.ZombieBattleground.Data
         public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
 
         [JsonProperty("mechanic_description_type")]
-        public Enumerators.GameMechanicDescriptionType GameMechanicDescriptionType { get; private set; }
+        public Enumerators.GameMechanicDescription GameMechanicDescription { get; private set; }
 
         [JsonProperty("target_set")]
-        public Enumerators.SetType TargetSetType { get; private set; }
+        public Enumerators.Faction TargetFaction { get; private set; }
 
         [JsonProperty("sub_trigger")]
-        public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
+        public Enumerators.AbilitySubTrigger SubTrigger { get; private set; }
 
         [JsonProperty("choosable_abilities")]
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
         [JsonProperty("defense")]
-        public int Defense { get; private set; }
+        public int Defense2 { get; private set; }
 
         [JsonProperty("cost")]
         public int Cost { get; private set; }
 
         [JsonConstructor]
         public AbilityData(
-            Enumerators.AbilityType abilityType,
-            Enumerators.AbilityActivityType activityType,
-            Enumerators.AbilityCallType callType,
-            List<Enumerators.AbilityTargetType> abilityTargetTypes,
-            Enumerators.StatType abilityStatType,
-            Enumerators.SetType abilitySetType,
-            Enumerators.AbilityEffectType abilityEffectType,
+            Enumerators.AbilityType ability,
+            Enumerators.AbilityActivity activity,
+            Enumerators.AbilityTrigger trigger,
+            List<Enumerators.Target> abilityTarget,
+            Enumerators.Stat stat,
+            Enumerators.Faction faction,
+            Enumerators.AbilityEffect effect,
             Enumerators.AttackRestriction attackRestriction,
             Enumerators.CardType targetCardType,
-            Enumerators.UnitStatusType targetUnitStatusType,
+            Enumerators.UnitStatus targetUnitStatus,
             Enumerators.CardType targetUnitType,
             int value,
             int damage,
-            int health,
+            int defense,
             string name,
             int turns,
             int count,
             int delay,
             List<VisualEffectInfo> visualEffectsToPlay,
-            Enumerators.GameMechanicDescriptionType gameMechanicDescriptionType,
-            Enumerators.SetType targetSetType,
+            Enumerators.GameMechanicDescription gameMechanicDescription,
+            Enumerators.Faction targetFaction,
             Enumerators.AbilitySubTrigger abilitySubTrigger,
             List<ChoosableAbility> choosableAbilities,
-            int defense,
+            int defense2,
             int cost)
         {
-            AbilityType = abilityType;
-            ActivityType = activityType;
-            CallType = callType;
-            AbilityTargetTypes = abilityTargetTypes ?? new List<Enumerators.AbilityTargetType>();
-            AbilityStatType = abilityStatType;
-            AbilitySetType = abilitySetType;
-            AbilityEffectType = abilityEffectType;
+            Ability = ability;
+            Activity = activity;
+            Trigger = trigger;
+            AbilityTarget = abilityTarget ?? new List<Enumerators.Target>();
+            Stat = stat;
+            Faction = faction;
+            Effect = effect;
             AttackRestriction = attackRestriction;
             TargetCardType = targetCardType;
-            TargetUnitStatusType = targetUnitStatusType;
+            TargetUnitStatus = targetUnitStatus;
             TargetUnitType = targetUnitType;
             Value = value;
             Damage = damage;
-            Health = health;
+            Defense = defense;
             Name = name;
             Turns = turns;
             Count = count;
             Delay = delay;
             VisualEffectsToPlay = visualEffectsToPlay ?? new List<VisualEffectInfo>();
-            GameMechanicDescriptionType = gameMechanicDescriptionType;
-            TargetSetType = targetSetType;
-            AbilitySubTrigger = abilitySubTrigger;
+            GameMechanicDescription = gameMechanicDescription;
+            TargetFaction = targetFaction;
+            SubTrigger = abilitySubTrigger;
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
-            Defense = defense;
+            Defense2 = defense2;
             Cost = cost;
         }
 
-        public AbilityData(AbilityData source) :
-            this(
-                source.AbilityType,
-                source.ActivityType,
-                source.CallType,
-                source.AbilityTargetTypes.ToList(),
-                source.AbilityStatType,
-                source.AbilitySetType,
-                source.AbilityEffectType,
-                source.AttackRestriction,
-                source.TargetCardType,
-                source.TargetUnitStatusType,
-                source.TargetUnitType,
-                source.Value,
-                source.Damage,
-                source.Health,
-                source.Name,
-                source.Turns,
-                source.Count,
-                source.Delay,
-                source.VisualEffectsToPlay.Select(v => new VisualEffectInfo(v)).ToList(),
-                source.GameMechanicDescriptionType,
-                source.TargetSetType,
-                source.AbilitySubTrigger,
-                source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList(),
-                source.Defense,
-                source.Cost
-            ) {
+        public AbilityData(AbilityData source) : this (
+            source.Ability,
+            source.Activity,
+            source.Trigger,
+            source.AbilityTarget.ToList(),
+            source.Stat,
+            source.Faction,
+            source.Effect,
+            source.AttackRestriction,
+            source.TargetCardType,
+            source.TargetUnitStatus,
+            source.TargetUnitType,
+            source.Value,
+            source.Damage,
+            source.Defense,
+            source.Name,
+            source.Turns,
+            source.Count,
+            source.Delay,
+            source.VisualEffectsToPlay.Select(v => new VisualEffectInfo(v)).ToList(),
+            source.GameMechanicDescription,
+            source.TargetFaction,
+            source.SubTrigger,
+            source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList(),
+            source.Defense2,
+            source.Cost
+        ) 
+        {
         }
 
         public bool HasVisualEffectType(Enumerators.VisualEffectType type)
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground.Data
         }
 
         public override string ToString() {
-            return $"({nameof(AbilityType)}: {AbilityType}, {nameof(CallType)}: {CallType}, {nameof(Name)}: {Name})";
+            return $"({nameof(Ability)}: {Ability}, {nameof(Trigger)}: {Trigger}, {nameof(Name)}: {Name})";
         }
 
         public class VisualEffectInfo

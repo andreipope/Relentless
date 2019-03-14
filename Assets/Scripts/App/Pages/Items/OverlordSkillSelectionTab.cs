@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,9 +148,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                success = false;                
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                success = false;
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
             }
@@ -217,11 +216,8 @@ namespace Loom.ZombieBattleground
 
         public async void ContinueButtonOnClickHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_continueButton.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
-            }
             
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
 
@@ -253,9 +249,7 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Helpers.ExceptionReporter.LogException(Log, e);
-
-                    Debug.LogWarning($"got exception: {e.Message} ->> {e.StackTrace}");
+                    Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                     OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
                 }

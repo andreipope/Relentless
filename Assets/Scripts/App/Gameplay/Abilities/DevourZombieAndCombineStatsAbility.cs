@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
@@ -77,15 +77,30 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardUnitModel unit in _units)
             {
                 if (unit == AbilityUnitOwner)
                     continue;
 
-                BattlegroundController.DestroyBoardUnit(unit, false, true);
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Devour,
+                    Target = unit,
+                });
+
+                BattlegroundController.DestroyBoardUnit(unit, false, true, false);
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
 
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
@@ -101,14 +116,22 @@ namespace Loom.ZombieBattleground
             if (unit == AbilityUnitOwner)
                 return;
 
-            int health = unit.Card.Prototype.Health;
+            int defense = unit.Card.Prototype.Defense;
             int damage = unit.Card.Prototype.Damage;
 
-            AbilityUnitOwner.BuffedHp += health;
-            AbilityUnitOwner.CurrentHp += health;
+            AbilityUnitOwner.BuffedDefense += defense;
+            AbilityUnitOwner.CurrentDefense += defense;
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;
+
+            RanksController.AddUnitForIgnoreRankBuff(unit);
+
+            unit.IsReanimated = true;
+            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+            view.StopSleepingParticles();
+
+            unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
         }
     }
 }

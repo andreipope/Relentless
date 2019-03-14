@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.TooltipAlign Align => _align;
 
+        public int OwnerId => _ownerId;
+
         public float Width;
 
         public Enumerators.TutorialObjectOwner OwnerType;
@@ -47,6 +49,8 @@ namespace Loom.ZombieBattleground
         private Vector3 _currentPosition;
 
         private BoardUnitView _ownerUnit;
+
+        private BoardCardView _ownerCardInHand;
 
         private bool _dynamicPosition;
 
@@ -118,7 +122,7 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
-                BoardUnitModel boardUnitModel;
+                BoardUnitModel boardUnitModel = null;
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
@@ -129,11 +133,24 @@ namespace Loom.ZombieBattleground
                         boardUnitModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
                             x.TutorialObjectId == ownerId);
                         break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerId != 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.Model.Card.TutorialObjectId == ownerId);
+                        }
+                        else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        }
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                if (boardUnitModel != null)
+                {
+                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                }
             }
             else if(boardObjectOwner != null)
             {
@@ -301,6 +318,15 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
+                        break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerCardInHand == null || !_ownerCardInHand.GameObject || _ownerCardInHand.GameObject == null)
+                        {
+                            UpdatePossibilityForClose();
+                            Hide();
+                        }
+
+                        _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }
             }

@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             List<AbilityBase> unitAbilities = _abilitiesController.GetAbilitiesConnectedToUnit(Ability.TargetUnit);
 
-            int count = unitAbilities.FindAll((x) => x.AbilityData.AbilityType == Ability.AbilityData.AbilityType).Count;
+            int count = unitAbilities.FindAll((x) => x.AbilityData.Ability == Ability.AbilityData.Ability).Count;
 
             if(count > 1)
             {

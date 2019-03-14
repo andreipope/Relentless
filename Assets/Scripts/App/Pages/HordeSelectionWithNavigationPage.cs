@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -244,6 +244,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeftArrow.name))
+                return;
+
             MoveDeckPageIndex(-1);
             UpdateDeckInfoObjects(); 
             ChangeSelectDeckIndex(0);           
@@ -251,6 +254,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRightArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRightArrow.name))
+                return;
+
             MoveDeckPageIndex(1);
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(0);          
@@ -263,12 +269,15 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectDeckFilterHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectDeckFilter.name))
+                return;
+
             _uiManager.DrawPopup<ElementFilterPopup>();
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.SetType selectedSetType)
+        private void FilterPopupHidingHandler(Enumerators.Faction selectedSetType)
         {
             ApplyDeckFilter(selectedSetType);
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
@@ -277,12 +286,18 @@ namespace Loom.ZombieBattleground
 
         private void ButtonEditHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonEdit.name))
+                return;
+
             AssignCurrentDeck(false);
             ChangeTab(TAB.EDITING);
         }        
         
         private void ButtonDeleteHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
+                return;
+
             if (GetDeckList().Count <= 1)
             {
                 OpenAlertDialog("Sorry, Not able to delete Last Deck.");
@@ -299,6 +314,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRenameHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRename.name))
+                return;
+
             ChangeTab(TAB.RENAME);
         }
         
@@ -398,6 +416,11 @@ namespace Loom.ZombieBattleground
 
         public void ChangeTab(TAB newTab)
         {
+            if(_tab != TAB.NONE && _tab != newTab)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+            }
+
             _tab = newTab;            
             
             for(int i=0; i<_tabObjects.Length;++i)
@@ -439,7 +462,7 @@ namespace Loom.ZombieBattleground
                     break;
                 default:
                     break;
-            }            
+            }
             
             EventChangeTab?.Invoke(_tab);
         }
@@ -474,24 +497,24 @@ namespace Loom.ZombieBattleground
                     currentDeck.Id
                 );
 
-                Debug.Log($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
             }
-            catch (TimeoutException exception)
+            catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
-            catch (Client.RpcClientException exception)
+            catch (Client.RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
-                Debug.Log("Result === " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
                 OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
                 return;
             }
@@ -509,7 +532,7 @@ namespace Loom.ZombieBattleground
             return Mathf.CeilToInt((float) deckList.Count / _deckInfoAmountPerPage);
         }
         
-        private List<Deck> GetDeckListByElementToDisplay(Enumerators.SetType setType)
+        private List<Deck> GetDeckListByElementToDisplay(Enumerators.Faction faction)
         {
             List<Deck> deckList = GetDeckList();
 
@@ -517,8 +540,7 @@ namespace Loom.ZombieBattleground
             for(int i=0; i<deckList.Count; ++i)
             {
                 Hero hero = _dataManager.CachedHeroesData.Heroes[deckList[i].HeroId];
-                if( setType == Enumerators.SetType.NONE || 
-                    setType == hero.HeroElement )
+                if( faction == hero.HeroElement )
                         deckListToDisplay.Add(deckList[i]);                
             }
 
@@ -739,10 +761,10 @@ namespace Loom.ZombieBattleground
             ChangeSelectDeckIndex(indexInPage);
         }
 
-        public void ApplyDeckFilter(Enumerators.SetType setType)
+        public void ApplyDeckFilter(Enumerators.Faction faction)
         {
             _inputFieldSearchDeckName.text = "";
-            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(setType);
+            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(faction);
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
         }
@@ -764,25 +786,25 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private Sprite GetOverlordThumbnailSprite(Enumerators.SetType heroElement)
+        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordDeckThumbnail";
             switch(heroElement)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_air"); 
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_fire"); 
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_earth"); 
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_toxic"); 
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_water"); 
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Debug.Log($"No Overlord thumbnail found for setType {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for faction {heroElement}");
                     return null;
             }        
         }

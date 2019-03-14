@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             return
                 AddItem("IId", cardInstance.InstanceId.Id) + ", " +
                 AddItem("Name", cardInstance.Prototype.Name) + ", " +
-                AddItem("Atk", cardInstance.Instance.Attack) + ", " +
+                AddItem("Dmg", cardInstance.Instance.Damage) + ", " +
                 AddItem("Def", cardInstance.Instance.Defense) + ", " +
                 AddItem("Cost", cardInstance.Instance.GooCost);
         }

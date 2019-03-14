@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
             Units =
                 Units
                     .Where(card => card != AbilityUnitOwner &&
-                        card.CurrentHp > 0 &&
+                        card.CurrentDefense > 0 &&
                         !card.IsDead)
                     .ToList();
 

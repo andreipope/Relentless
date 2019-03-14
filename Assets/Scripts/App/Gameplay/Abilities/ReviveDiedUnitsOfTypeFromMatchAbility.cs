@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -7,12 +8,12 @@ namespace Loom.ZombieBattleground
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -21,7 +22,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -31,48 +32,23 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            IReadOnlyList<BoardUnitModel> playerGraveyardCards =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
-
-            IReadOnlyList<BoardUnitModel> playerBoardCards =
-                GameplayManager.CurrentPlayer.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
-
-            foreach (BoardUnitModel unit in playerGraveyardCards)
+            void Process(Player player)
             {
-                bool isInPlay = false;
-                foreach (BoardUnitModel model in playerBoardCards)
+                List<BoardUnitModel> boardUnitModels = new List<BoardUnitModel>();
+                boardUnitModels.AddRange(player.CardsOnBoard.Where(x => x.Card.Prototype.Faction == Faction));
+                boardUnitModels.AddRange(player.CardsInHand.Where(x => x.Card.Prototype.Faction == Faction));
+                IReadOnlyList<BoardUnitModel> graveyardCards =
+                    player.CardsInGraveyard.FindAll(unit =>
+                        unit.Prototype.Faction == Faction && !boardUnitModels.Exists(card => card.InstanceId == unit.InstanceId));
+
+                foreach (BoardUnitModel unit in graveyardCards)
                 {
-                    if (model.InstanceId == unit.InstanceId)
-                    {
-                        isInPlay = true;
-                        break;
-                    }
-                }
-                if (!isInPlay) {
                     ReviveUnit(unit);
                 }
             }
 
-            playerGraveyardCards = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.Prototype.CardSetType == SetType);
-
-            IReadOnlyList<BoardUnitModel> opponentBoardCards =
-                GameplayManager.OpponentPlayer.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
-
-            foreach (BoardUnitModel unit in playerGraveyardCards)
-            {
-                bool isInPlay = false;
-                foreach (BoardUnitModel model in opponentBoardCards)
-                {
-                    if (model.InstanceId == unit.InstanceId)
-                    {
-                        isInPlay = true;
-                        break;
-                    }
-                }
-                if (!isInPlay) {
-                    ReviveUnit(unit);
-                }
-            }
+            Process(GameplayManager.CurrentPlayer);
+            Process(GameplayManager.OpponentPlayer);
 
             GameplayManager.CanDoDragActions = true;
         }

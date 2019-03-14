@@ -9,17 +9,17 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeUnitsOfTypeStatAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
-        public Enumerators.StatType StatType;
+        public Enumerators.Stat StatType;
 
         public int Value = 1;
 
         public ChangeUnitsOfTypeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
-            SetType = ability.AbilitySetType;
+            StatType = ability.Stat;
+            Faction = ability.Faction;
             Value = ability.Value;
         }
 
@@ -29,8 +29,8 @@ namespace Loom.ZombieBattleground
 
             switch (StatType)
             {
-                case Enumerators.StatType.HEALTH:
-                case Enumerators.StatType.DAMAGE:
+                case Enumerators.Stat.DEFENSE:
+                case Enumerators.Stat.DAMAGE:
                 default:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
                     break;
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.PERMANENT)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.PERMANENT)
                 return;
 
             Action();
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
         private void Action()
         {
             IReadOnlyList<BoardUnitModel> unitsOnBoard =
-                PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.CardSetType == SetType);
+                PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction);
 
             foreach (BoardUnitModel unit in unitsOnBoard)
             {
@@ -56,13 +56,13 @@ namespace Loom.ZombieBattleground
 
                 switch (StatType)
                 {
-                    case Enumerators.StatType.DAMAGE:
+                    case Enumerators.Stat.DAMAGE:
                         unit.BuffedDamage += Value;
                         unit.CurrentDamage += Value;
                         break;
-                    case Enumerators.StatType.HEALTH:
-                        unit.BuffedHp += Value;
-                        unit.CurrentHp += Value;
+                    case Enumerators.Stat.DEFENSE:
+                        unit.BuffedDefense += Value;
+                        unit.CurrentDefense += Value;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);

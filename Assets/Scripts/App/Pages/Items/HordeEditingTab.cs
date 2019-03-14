@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
+using System.IO;
 
 namespace Loom.ZombieBattleground
 {
@@ -82,30 +83,30 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
-        private readonly Dictionary<Enumerators.SetType, Enumerators.SetType> _setTypeAgainstDictionary =
-            new Dictionary<Enumerators.SetType, Enumerators.SetType>
+        private readonly Dictionary<Enumerators.Faction, Enumerators.Faction> _setTypeAgainstDictionary =
+            new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.WATER
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.LIFE
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.EARTH
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.AIR
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
                 }
             };
 
-        private List<Enumerators.SetType> _availableSetType;
+        private List<Enumerators.Faction> _availableSetType;
 
         private List<Card> _cacheCollectionCardsList;
 
@@ -369,11 +370,16 @@ namespace Loom.ZombieBattleground
                     break;
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                CollectionCardData cardData;
 
-                // hack !!!! CHECK IT!!!
-                if (cardData == null)
-                    continue;
+                if (_tutorialManager.IsTutorial)
+                {
+                    cardData = _tutorialManager.GetCardData(card.Name);
+                }
+                else
+                {
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.Name);
+                }
 
                 BoardCardView boardCard = CreateBoardCard
                 (
@@ -391,7 +397,7 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
                 MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.SingleClickReceived += ()=>
+                multiPointerClickHandler.SingleClickReceived += () =>
                 {
                     BoardCardCollectionSingleClickHandler(boardCard);
                 };
@@ -495,7 +501,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 
-            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.CardSetType)
+            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -640,9 +646,9 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(CardCreaturePrefab);
                     boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
@@ -908,7 +914,14 @@ namespace Loom.ZombieBattleground
         {
             ExcludeFilterDataWithAgainstSetType();
             _availableSetType = _cardFilterPopup.FilterData.GetFilterSetTypeList();
-            _currentCollectionSetTypeIndex = 0;
+            if (_tutorialManager.IsTutorial)
+            {
+                _currentCollectionSetTypeIndex = _availableSetType.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+            }
+            else
+            {
+                _currentCollectionSetTypeIndex = 0;
+            }
             _currentCollectionPage = 0;
             UpdateAvailableCollectionCards();
             LoadCollectionsCards();
@@ -923,7 +936,7 @@ namespace Loom.ZombieBattleground
             else
                 UpdateCollectionCardsByKeyword();
 
-            if(!CheckIfAnyCacheCollectionCardsExist())
+            if (!CheckIfAnyCacheCollectionCardsExist() && !_tutorialManager.IsTutorial)
             {
                 _myDeckPage.OpenAlertDialog("Sorry, no matches card found.");
                 ResetSearchAndFilterResult();
@@ -934,16 +947,30 @@ namespace Loom.ZombieBattleground
         {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
-            List<Enumerators.SetType> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            List<Enumerators.Faction> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
+            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             allAvailableSetTypeList.Remove(againstSetType);
-            foreach (Enumerators.SetType item in allAvailableSetTypeList)
+            foreach (Enumerators.Faction item in allAvailableSetTypeList)
             {
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
-                List<Card> cards = set.Cards.ToList();
+                List<Card> cards;
+
+                if (_tutorialManager.IsTutorial)
+                {
+                    cards = _tutorialManager.GetSpecificCardsBySet(item);
+                }
+                else
+                {
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
+                    cards = cards = set.Cards.ToList();
+                }
+
                 foreach (Card card in cards)
+                {
                     if (card.Name.ToLower().Contains(keyword))
+                    {
                         resultList.Add(card);
+                    }
+                }
             }
 
             UpdateCacheFilteredCardList(resultList);
@@ -954,9 +981,19 @@ namespace Loom.ZombieBattleground
             List<Card> resultList = new List<Card>();
             if (_availableSetType.Count > _currentCollectionSetTypeIndex)
             {
-                Enumerators.SetType setType = _availableSetType[_currentCollectionSetTypeIndex];
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
-                List<Card> cards = set.Cards.ToList();
+                Enumerators.Faction faction = _availableSetType[_currentCollectionSetTypeIndex];
+                
+                List<Card> cards;
+                if (_tutorialManager.IsTutorial)
+                {
+                    cards = _tutorialManager.GetSpecificCardsBySet(faction);
+                }
+                else
+                {
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
+                    cards = set.Cards.ToList();
+                }
+
                 foreach (Card card in cards)
                 {
                     if
@@ -1011,7 +1048,7 @@ namespace Loom.ZombieBattleground
 
         private void ExcludeFilterDataWithAgainstSetType()
         {
-            Enumerators.SetType againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
             _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;
         }
 
@@ -1027,7 +1064,7 @@ namespace Loom.ZombieBattleground
             _cacheCollectionCardsList = cardList.ToList();
             _currentCollectionPagesAmount = Mathf.CeilToInt
             (
-                _cacheCollectionCardsList.Count / (float) CollectionsCardPositions.Count
+                _cacheCollectionCardsList.Count / (float)CollectionsCardPositions.Count
             );
         }
 
@@ -1084,9 +1121,9 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            Enumerators.SetType setType = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
+            Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
 
-            if (setType == Enumerators.SetType.ITEM)
+            if (faction == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -1153,11 +1190,11 @@ namespace Loom.ZombieBattleground
                 }
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
-                Debug.Log(" ====== Edit Deck Successfully ==== ");
+                Log.Info(" ====== Edit Deck Successfully ==== ");
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 success = false;
 
@@ -1221,7 +1258,8 @@ namespace Loom.ZombieBattleground
 
         private void PlayAddCardSound()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,                 Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,
+                Constants.SfxSoundVolume, false, false, true);
         }
 
         private void PlayRemoveCardSound()

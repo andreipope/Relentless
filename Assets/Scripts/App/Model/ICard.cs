@@ -9,12 +9,8 @@ namespace Loom.ZombieBattleground.Data
 
         new int Cost { get; set; }
 
-        new Enumerators.SetType CardSetType { get; set; }
-
-        new IList<AbilityData> InitialAbilities { get; }
+        new Enumerators.Faction Faction { get; set; }
 
         new IList<AbilityData> Abilities { get; }
-
-        void ForceUpdateAbilities(IList<AbilityData> abilities);
     }
 }

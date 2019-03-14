@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -34,8 +34,8 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.CardsOnBoard.Count == 1 &&
                 PlayerCallerOfAbility.CardsOnBoard[0] == AbilityUnitOwner)
             {
-                AbilityUnitOwner.BuffedHp += Value;
-                AbilityUnitOwner.CurrentHp += Value;
+                AbilityUnitOwner.BuffedDefense += Value;
+                AbilityUnitOwner.CurrentDefense += Value;
 
                 AbilityUnitOwner.BuffedDamage += Value;
                 AbilityUnitOwner.CurrentDamage += Value;

@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatUntillEndOfTurnAbility : AbilityBase
     {
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
         }
 
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
@@ -51,16 +51,16 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+            foreach (Enumerators.Target targetType in AbilityTargetTypes)
             {
                 switch (targetType)
                 {
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
                         _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
                         _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                 }
@@ -81,10 +81,10 @@ namespace Loom.ZombieBattleground
                     unit.CurrentDamage += Damage;
                 }
 
-                if (Health != 0)
+                if (Defense != 0)
                 {
-                    unit.HpDebuffUntillEndOfTurn += Health;
-                    unit.CurrentHp += Health;
+                    unit.HpDebuffUntillEndOfTurn += Defense;
+                    unit.CurrentDefense += Defense;
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground
 
                 if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentHp -= unit.HpDebuffUntillEndOfTurn;
+                    unit.CurrentDefense -= unit.HpDebuffUntillEndOfTurn;
                     unit.HpDebuffUntillEndOfTurn = 0;
                 }
             }

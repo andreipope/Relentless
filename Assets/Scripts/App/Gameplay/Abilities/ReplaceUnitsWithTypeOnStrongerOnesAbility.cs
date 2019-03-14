@@ -13,15 +13,15 @@ namespace Loom.ZombieBattleground
         private List<ReplaceUnitInfo> _replaceUnitInfos;
 
         public int Value;
-        public Enumerators.SetType SetType;
-        public List<Enumerators.AbilityTargetType> TargetTypes;
+        public Enumerators.Faction Faction;
+        public List<Enumerators.Target> TargetTypes;
 
         public ReplaceUnitsWithTypeOnStrongerOnesAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            SetType = ability.AbilitySetType;
-            TargetTypes = ability.AbilityTargetTypes;
+            Faction = ability.Faction;
+            TargetTypes = ability.AbilityTarget;
 
             _boardUnits = new List<BoardUnitModel>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -71,15 +71,15 @@ namespace Loom.ZombieBattleground
 
         private void GetInfosAboutUnitsOnBoard()
         {
-            foreach (Enumerators.AbilityTargetType target in TargetTypes)
+            foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(unit => unit.Card.Prototype.CardSetType == SetType));
+                    case Enumerators.Target.OPPONENT_CARD:
+                        _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(unit => unit.Card.Prototype.Faction == Faction));
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(unit => unit.Card.Prototype.CardSetType == SetType));
+                    case Enumerators.Target.PLAYER_CARD:
+                        _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(unit => unit.Card.Prototype.Faction == Faction));
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -175,13 +175,13 @@ namespace Loom.ZombieBattleground
         private void GetPossibleNewUnitByMinCost(ReplaceUnitInfo replaceUnitInfo)
         {
             List<Card> possibleUnits = DataManager.CachedCardsLibraryData.Cards
-                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.CardSetType == SetType)
+                .Where(x => x.Cost >= replaceUnitInfo.NewUnitPossibleCost && x.Faction == Faction)
                 .ToList();
 
             if (possibleUnits.Count == 0)
             {
                 possibleUnits = DataManager.CachedCardsLibraryData.Cards
-                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.CardSetType == SetType)
+                    .Where(x => x.Cost >= replaceUnitInfo.OldUnitCost && x.Faction == Faction)
                     .ToList();
             }
 

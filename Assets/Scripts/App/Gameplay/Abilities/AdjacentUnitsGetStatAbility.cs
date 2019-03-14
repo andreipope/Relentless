@@ -6,18 +6,18 @@ namespace Loom.ZombieBattleground
 {
     public class AdjacentUnitsGetStatAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
         public AdjacentUnitsGetStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Damage = ability.Damage;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -51,10 +51,10 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in adjacent)
             {
-                if (StatType == Enumerators.StatType.HEALTH)
+                if (StatType == Enumerators.Stat.DEFENSE)
                 {
-                    unit.BuffedHp += Health;
-                    unit.CurrentHp += Health;
+                    unit.BuffedDefense += Defense;
+                    unit.CurrentDefense += Defense;
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
                         Target = unit,
                     });
                 }
-                else if (StatType == Enumerators.StatType.DAMAGE)
+                else if (StatType == Enumerators.Stat.DAMAGE)
                 {
                     unit.BuffedDamage += Damage;
                     unit.CurrentDamage += Damage;

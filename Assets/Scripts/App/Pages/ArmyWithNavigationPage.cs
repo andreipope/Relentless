@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
         #region Cache Data
 
-        private List<Enumerators.SetType> _availableSetType;
+        private List<Enumerators.Faction> _availableSetType;
         
         private int _currentPage, 
                     _currentPagesAmount,
@@ -229,8 +229,8 @@ namespace Loom.ZombieBattleground
         {
             //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
             //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount + "/" +
-                _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount;
+            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
         }
 
         public void LoadCards()
@@ -302,9 +302,9 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(CardCreaturePrefab);
                     boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
@@ -392,8 +392,8 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim();
             if (string.IsNullOrEmpty(keyword))
             {
-                Enumerators.SetType setType = _availableSetType[_currentSetTypeIndex];
-                CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+                Enumerators.Faction faction = _availableSetType[_currentSetTypeIndex];
+                Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
                 List<Card> cards = set.Cards.ToList();
                 List<Card> resultList = new List<Card>();
                 foreach(Card card in cards)
@@ -412,10 +412,10 @@ namespace Loom.ZombieBattleground
             {   
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
-                List<Enumerators.SetType> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
-                foreach (Enumerators.SetType item in allAvailableSetTypeList)
+                List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
+                foreach (Enumerators.Faction item in allAvailableSetTypeList)
                 {
-                    CardSet set = SetTypeUtility.GetCardSet(_dataManager, item);
+                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
                     List<Card> cards = set.Cards.ToList();
                     foreach (Card card in cards)
                         if (card.Name.ToLower().Contains(keyword))

@@ -439,10 +439,10 @@ static class BattleCommandsHandler
         {
             obj.AttackingUnitModel.NumTurnsOnBoard--;
             obj.AttackingUnitModel.OnStartTurn();
-            obj.AttackingUnitModel.CurrentHp += obj.DamageOnAttackingUnit;
+            obj.AttackingUnitModel.CurrentDefense += obj.DamageOnAttackingUnit;
         }
 
-         obj.AttackedUnitModel.CurrentHp += obj.DamageOnAttackedUnit;
+         obj.AttackedUnitModel.CurrentDefense += obj.DamageOnAttackedUnit;
     }
 
 
@@ -520,8 +520,8 @@ static class BattleCommandsHandler
         }
         else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
-            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
         }
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -615,8 +615,8 @@ static class BattleCommandsHandler
     {
         if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
-            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
             playOverlordSkill.Skill.SetCoolDown(0);
         }
     }
@@ -682,7 +682,7 @@ static class BattleCommandsHandler
     private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
     {
         BoardUnitModel creature = unitModel;
-        creature.CurrentHp += boardSkill.Skill.Value;
+        creature.CurrentDefense += boardSkill.Skill.Value;
     }
 
     private static void RevertHealPlayerBySkill(Player player, BoardSkill boardSkill)
@@ -698,7 +698,7 @@ static class BattleCommandsHandler
         if (unitModel == null)
             return;
 
-        unitModel.CurrentHp -= boardSkill.Skill.Value;
+        unitModel.CurrentDefense -= boardSkill.Skill.Value;
     }
 
     [CommandHandler(Description = "Unlocks current overlord abilities")]

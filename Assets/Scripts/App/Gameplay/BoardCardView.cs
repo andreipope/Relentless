@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
 
             string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.CardRank);
 
-            string setName = Model.Card.Prototype.CardSetType.ToString();
+            string setName = Model.Card.Prototype.Faction.ToString();
 
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
@@ -403,7 +403,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == unit.Model.Card.Prototype.CardSetType);
+                        y => y.Element == unit.Model.Card.Prototype.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -432,14 +432,14 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (unit.Model.Card.Prototype.Abilities != null && !unit.Model.WasDistracted)
+            if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (AbilityData abil in unit.Model.Card.Prototype.Abilities)
+                foreach (AbilityData abil in unit.Model.Card.InstanceCard.Abilities)
                 {
-                    if (abil.GameMechanicDescriptionType == Enumerators.GameMechanicDescriptionType.Reanimate && unit.Model.IsReanimated)
+                    if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
                         continue;
 
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)
                     {
                         buffs.Add(
@@ -487,7 +487,7 @@ namespace Loom.ZombieBattleground
             buffs.Clear();
 
             // right block info ------------------------------------
-            foreach (Enumerators.GameMechanicDescriptionType mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
+            foreach (Enumerators.GameMechanicDescription mechanicType in unit.Model.GameMechanicDescriptionsOnUnit)
             {
                 TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(mechanicType);
 
@@ -533,7 +533,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCardView.Model.Card.Prototype.CardKind == Enumerators.CardKind.SPELL)
+            if (boardCardView.Model.Card.Prototype.CardKind == Enumerators.CardKind.ITEM)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -552,7 +552,7 @@ namespace Loom.ZombieBattleground
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
-                        y => y.Element == boardCardView.Model.Card.Prototype.CardSetType);
+                        y => y.Element == boardCardView.Model.Card.Prototype.Faction);
 
                     buffs.Add(
                         new BuffTooltipInfo
@@ -581,11 +581,11 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCardView.Model.Card.Prototype.Abilities != null)
+            if (boardCardView.Model.Card.InstanceCard.Abilities != null)
             {
-                foreach (AbilityData abil in boardCardView.Model.Card.Prototype.Abilities)
+                foreach (AbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities)
                 {
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescriptionType);
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)
                     {
                         buffs.Add(
@@ -700,9 +700,9 @@ namespace Loom.ZombieBattleground
 
         private int GetValueOfAbilityByType(AbilityData ability)
         {
-            switch (ability.GameMechanicDescriptionType)
+            switch (ability.GameMechanicDescription)
             {
-                case Enumerators.GameMechanicDescriptionType.DelayedX:
+                case Enumerators.GameMechanicDescription.DelayedX:
                     return ability.Delay;
                 default:
                     return ability.Value;
@@ -744,7 +744,7 @@ namespace Loom.ZombieBattleground
 
             private readonly SpriteRenderer _buffIconPicture;
 
-            private readonly TextMeshPro _callTypeText;
+            private readonly TextMeshPro _triggerText;
 
             private readonly TextMeshPro _descriptionText;
 
@@ -761,13 +761,13 @@ namespace Loom.ZombieBattleground
 
                 Transform.localPosition = new Vector3(0, offsetY, 0f);
 
-                _callTypeText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
+                _triggerText = _selfObject.transform.Find("Text_CallType").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_BuffIcon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpperInvariant();
+                _triggerText.text = "    " + ReplaceXByValue(buffTooltipInfo.Title, buffTooltipInfo.Value).ToUpperInvariant();
                 _descriptionText.text = ReplaceXByValue(buffTooltipInfo.Description, buffTooltipInfo.Value);
 
                 switch (buffTooltipInfo.TooltipObjectType)

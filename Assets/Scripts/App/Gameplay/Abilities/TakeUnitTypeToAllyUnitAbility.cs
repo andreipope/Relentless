@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
         public Enumerators.CardType UnitType;
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public int Cost { get; }
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Cost = ability.Cost;
         }
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            switch (AbilityData.AbilitySubTrigger)
+            switch (AbilityData.SubTrigger)
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
                     {
@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
                     if (PlayerCallerOfAbility.CardsOnBoard.Where(
                             unit => unit != AbilityUnitOwner &&
                                 !unit.IsDead &&
-                                unit.CurrentHp > 0)
+                                unit.CurrentDefense > 0)
                         .Count() == 0)
                     {
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.Prototype.CardSetType == SetType &&
+                                   unit.Card.Prototype.Faction == Faction &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
-                               .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.CardSetType == SetType &&
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 

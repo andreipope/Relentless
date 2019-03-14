@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 {
     public class PackOpenerPageWithNavigationBar : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(PackOpenerPageWithNavigationBar));
+
         private ITutorialManager _tutorialManager;
 
         private IDataManager _dataManager;
@@ -485,7 +488,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed: {e.Message}");
 
                 _retryPackBalanceRequestCount++;
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
@@ -522,7 +525,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
-                Debug.Log($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
+                Log.Info($"{nameof(RetriveCardsFromPack)} with packTypeId {packTypeId} failed: {e.Message}");
                 
                 _retryOpenPackRequestCount++;
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
@@ -607,7 +610,7 @@ namespace Loom.ZombieBattleground
         private List<Card> RetrieveDummyCards(int amount)
         {
             List<Card> cards = new List<Card>();            
-            CardSet set = SetTypeUtility.GetCardSet(GameClient.Get<IDataManager>(), Enumerators.SetType.FIRE);            
+            Faction set = SetTypeUtility.GetCardFaction(GameClient.Get<IDataManager>(), Enumerators.Faction.FIRE);            
             foreach( Card card in set.Cards)
             {
                 cards.Add(card);
@@ -651,18 +654,18 @@ namespace Loom.ZombieBattleground
             Sequence waitSeqence = DOTween.Sequence();
             waitSeqence.AppendInterval(.2f);
             waitSeqence.OnComplete(
-            ()=>
+            () =>
             {
                 _gooPoolAnimator.enabled = false;
-            });  
+            });
         }
         
         private void PlayCardsEmergeFromPoolAnimation()
         {
             _isTransitioningState = true;
             _gooPoolAnimator.enabled = true;
-            _gooPoolAnimator.Play("TubeAnim", 0, 0f);
-            
+            _gooPoolAnimator.Play("OpenCardPackAnim", 0, 0f);
+            _vignetteCollectCard.enabled = true;
             Sequence sequence = DOTween.Sequence();
             sequence.AppendInterval(3.05f);
             sequence.OnComplete(
@@ -676,9 +679,7 @@ namespace Loom.ZombieBattleground
                 {
                     _cardsToReveal.Add(cardPos.parent);
                 }
-                Vector3 pos = _cardsToReveal[0].position;
-                pos.y = _cardsToReveal[1].position.y;
-                _cardsToReveal[0].position = pos;
+
                 _isWaitingForTapToReveal = true;
             });
         }
@@ -791,11 +792,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonBack.name))
                 return;
-            }
+
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             DOTween.KillAll();            
@@ -815,11 +814,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBuyPacksHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonBuyPack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonBuyPack.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -830,11 +826,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPlusHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonPlus.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonPlus.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -845,11 +838,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMinusHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMinus.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonMinus.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -860,11 +850,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMaxHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonMax.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonMax.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -875,11 +862,8 @@ namespace Loom.ZombieBattleground
         
         private void ButtonOpenPackHandler()
         {
-            if (_tutorialManager.IsTutorial && _tutorialManager.IsButtonBlockedInTutorial(_buttonOpenPack.name))
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (_tutorialManager.BlockAndReport(_buttonOpenPack.name))
                 return;
-            }
 
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
@@ -1056,9 +1040,9 @@ namespace Loom.ZombieBattleground
                     go = Object.Instantiate(_cardCreaturePrefab);
                     boardCard = new UnitBoardCard(go, boardUnitModel);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new SpellBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:                
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
@@ -1066,7 +1050,7 @@ namespace Loom.ZombieBattleground
         
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
-            boardCard.Transform.localScale = Vector3.one * 0.32f * 0.72f;
+            boardCard.Transform.localScale = Vector3.one * 0.16f;
             boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             

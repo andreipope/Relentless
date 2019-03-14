@@ -18,14 +18,14 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            TargetUnitStatusType = ability.TargetUnitStatusType;
+            TargetUnitStatusType = ability.TargetUnitStatus;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             DealDamageToUnitOwner();
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
                 !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+            if (AbilityTargetTypes.Contains(Enumerators.Target.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {

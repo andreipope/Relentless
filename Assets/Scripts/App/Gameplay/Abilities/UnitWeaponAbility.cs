@@ -10,20 +10,20 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public int Damage;
 
         public event Action TurnEndedEvent;
 
-        private Enumerators.GameMechanicDescriptionType _gameMechanicType;
+        private Enumerators.GameMechanicDescription _gameMechanicType;
 
         public UnitWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Damage = ability.Damage;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -38,18 +38,18 @@ namespace Loom.ZombieBattleground
             TargetUnit.CurrentDamage += Value;
             TargetUnit.BuffedDamage += Value;
 
-            TargetUnit.CurrentHp += Health;
-            TargetUnit.BuffedHp += Health;
+            TargetUnit.CurrentDefense += Defense;
+            TargetUnit.BuffedDefense += Defense;
 
-            _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+            _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
 
             switch (BoardUnitModel.Card.Prototype.MouldId)
             {
                 case 41:
-                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.SuperSerum;
+                    _gameMechanicType = Enumerators.GameMechanicDescription.SuperSerum;
                     break;
                 case 18:
-                    _gameMechanicType = Enumerators.GameMechanicDescriptionType.Chainsaw;
+                    _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
                     break;
                 default:
                     break;

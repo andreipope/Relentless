@@ -55,8 +55,8 @@ namespace Loom.ZombieBattleground
                        _ranksUpgradeCompleteAction = completeCallback;
 
                        List<BoardUnitModel> filter = units.Where(unit =>
-                                    unit.Card.Prototype.CardSetType == boardUnitModel.Prototype.CardSetType &&
-                                    (int)unit.Card.Prototype.CardRank < (int)boardUnitModel.Prototype.CardRank &&
+                                    unit.Card.Prototype.Faction == boardUnitModel.Prototype.Faction &&
+                                    (int) unit.Card.Prototype.CardRank < (int) boardUnitModel.Prototype.CardRank &&
                                     !_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).WasDestroyed &&
                                     !unit.IsDead &&
                                     !_unitsForIgnoreRankBuff.Contains(unit))
@@ -85,28 +85,28 @@ namespace Loom.ZombieBattleground
 
         public void DoRankUpgrades(List<BoardUnitModel> targetUnits, BoardUnitModel originUnit, bool randomly = true)
         {
-            switch (originUnit.Prototype.CardSetType)
+            switch (originUnit.Prototype.Faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     AirRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     EarthRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     WaterRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     FireRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     ToxicRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     LifeRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(originUnit.Prototype.CardSetType), originUnit.Prototype.CardSetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(originUnit.Prototype.Faction), originUnit.Prototype.Faction, null);
             }
         }
 
@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (unit == null)
                     {
-                        ExceptionReporter.LogException(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
+                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
                         continue;
                     }
 

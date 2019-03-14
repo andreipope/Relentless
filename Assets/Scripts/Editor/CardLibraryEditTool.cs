@@ -126,14 +126,12 @@ namespace Loom.ZombieBattleground.Helpers.Tools
 
         private void DrawAbilityConfigurtion(Data.AbilityData abilityInfo, bool itsAbilityFromChoosable = false)
         {
-            int indexOfVfxType = 0;
-
             if (itsAbilityFromChoosable)
             {
                 GUILayout.Label("---This ability located in Choosable Abilities---", EditorStyles.label);
             }
 
-            GUILayout.Label(abilityInfo.AbilityType.ToString(), EditorStyles.miniBoldLabel);
+            GUILayout.Label(abilityInfo.Ability.ToString(), EditorStyles.miniBoldLabel);
 
             GUILayout.Label("VisualEffectsToPlay", EditorStyles.label);
 

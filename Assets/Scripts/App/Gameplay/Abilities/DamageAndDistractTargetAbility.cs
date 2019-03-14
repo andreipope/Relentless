@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardSpell;
+            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
 
             BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
 

@@ -6,12 +6,12 @@ namespace Loom.ZombieBattleground
 {
     public class ShuffleCardToDeckAbility : AbilityBase
     {
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
 
         public ShuffleCardToDeckAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTargetTypes;
+            TargetTypes = ability.AbilityTarget;
         }
 
         public override void Activate()
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitHpChangedHandler(oldValue, newValue);
 
-            if (AbilityUnitOwner.CurrentHp <= 0) 
+            if (AbilityUnitOwner.CurrentDefense <= 0) 
             {   
                 AbilityProcessingAction?.ForceActionDone();
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(param);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
+            if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
                 // FIXME: doesn't this cause de-sync?
                 PlayerCallerOfAbility.LocalCardsController.AddCardToDeck(BoardUnitModel, true);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class LocalClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LocalClientPlayerActionTestProxy));
+
         private readonly TestHelper _testHelper;
         private readonly IPvPManager _pvpManager;
         private readonly IQueueManager _queueManager;
@@ -159,7 +162,7 @@ namespace Loom.ZombieBattleground.Test
             // TODO: Handle non-entry targetable abilities (do they even exist)?
             if (abilityBoardArrow != null)
             {
-                Debug.Log("! oh wow, abilityBoardArrow", abilityBoardArrow);
+                Log.Info("! oh wow, abilityBoardArrow " + abilityBoardArrow);
             }
             if (abilityBoardArrow && _cardAbilityRequestsQueue.Count == 0)
             {

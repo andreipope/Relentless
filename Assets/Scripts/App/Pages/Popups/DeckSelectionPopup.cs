@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using TMPro;
 using DG.Tweening;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
@@ -13,6 +14,8 @@ namespace Loom.ZombieBattleground
 {
     public class DeckSelectionPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(DeckSelectionPopup));
+
         public GameObject Self { get; private set; }
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -190,7 +193,7 @@ namespace Loom.ZombieBattleground
                 
             if (_deckList.Count <= 0)
             {
-                Debug.Log("No deck in list");
+                Log.Info("No deck in list");
                 return;
             }
             
@@ -269,21 +272,21 @@ namespace Loom.ZombieBattleground
             }            
         }
 
-        public Sprite GetDeckIconSprite(Enumerators.SetType setType)
+        public Sprite GetDeckIconSprite(Enumerators.Faction faction)
         {
-            switch(setType)
+            switch(faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_air");
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_earth");
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_fire");
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_water");
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_toxic");
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/DeckIcons/icon_life");                 
                 default:
                     return null;
@@ -309,11 +312,17 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRightHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRight.name))
+                return;
+
             SwitchSelectedDeckIndex(1);
         }
         
         private void ButtonLeftHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeft.name))
+                return;
+
             SwitchSelectedDeckIndex(-1);
         }
 

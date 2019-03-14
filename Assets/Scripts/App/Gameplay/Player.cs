@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         public int Turn { get; set; }
 
-        public int InitialHp { get; private set; }
+        public int InitialDefense { get; private set; }
 
         public int CurrentGooModificator { get; set; }
 
@@ -137,6 +137,16 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:
+
+                    // TODO: REMOVE logs when issue will be fixed
+                    Log.Debug($"UserDataModel.UserId: {_backendDataControlMediator.UserDataModel.UserId}");
+                    Log.Debug($"isOpponent: {isOpponent}");
+
+                    foreach(var state in _pvpManager.InitialGameState.PlayerStates)
+                    {
+                        Log.Debug($"state.id: {state.Id}");
+                    }
+
                     InitialPvPPlayerState =
                         _pvpManager.InitialGameState.PlayerStates
                         .First(state =>
@@ -144,6 +154,8 @@ namespace Loom.ZombieBattleground
                                     state.Id != _backendDataControlMediator.UserDataModel.UserId :
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
+
+                    Log.Debug($"InitialPvPPlayerState: {InitialPvPPlayerState}");
 
                     InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
                     MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;
@@ -157,6 +169,16 @@ namespace Loom.ZombieBattleground
 #endif
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
+
+                    if (CurrentGoo == 1)
+                    {
+                        CurrentGoo = 0;
+                    }
+                    if (GooVials == 1)
+                    {
+                        GooVials = 0;
+                    }
+
                     TurnTime = (uint) InitialPvPPlayerState.TurnTime;
                     break;
                 default:
@@ -224,8 +246,11 @@ namespace Loom.ZombieBattleground
 
             SelfHero = _dataManager.CachedHeroesData.Heroes[heroId];
 
-            InitialHp = _defense;
-            BuffedHp = 0;
+            // TODO: REMOVE logs when issue will be fixed
+            Log.Debug($"SelfHero: {SelfHero}");
+
+            InitialDefense = _defense;
+            BuffedDefense = 0;
 
             _overlordDeathObject = playerObject.transform.Find("OverlordArea/OverlordDeath").gameObject;
             _overlordRegularObject = playerObject.transform.Find("OverlordArea/RegularModel").gameObject;
@@ -294,7 +319,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject PlayerObject { get; }
 
-        public GameObject AvatarObject => _avatarObject.transform.parent.gameObject;
+        public GameObject AvatarObject => _avatarObject?.transform.parent?.gameObject;
 
         public Transform Transform => PlayerObject.transform;
 
@@ -346,7 +371,7 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         // TODO: refactor-state: these list are here temporarily and will be removed
-        public UniquePositionedList<BoardSpell> BoardSpellsInUse => LocalCardsController.BoardSpellsInUse;
+        public UniquePositionedList<BoardItem> BoardItemsInUse => LocalCardsController.BoardItemsInUse;
 
         public IReadOnlyList<BoardUnitModel> CardsInDeck => LocalCardsController.CardsInDeck;
 
@@ -360,9 +385,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsStunned { get; private set; }
 
-        public int BuffedHp { get; set; }
+        public int BuffedDefense { get; set; }
 
-        public int MaxCurrentHp => InitialHp + BuffedHp;
+        public int MaxCurrentDefense => InitialDefense + BuffedDefense;
 
         public void InvokeTurnEnded()
         {
@@ -447,12 +472,12 @@ namespace Loom.ZombieBattleground
 
             switch (SelfHero.HeroElement)
             {
-                case Enumerators.SetType.FIRE:
-                case Enumerators.SetType.WATER:
-                case Enumerators.SetType.EARTH:
-                case Enumerators.SetType.AIR:
-                case Enumerators.SetType.LIFE:
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.FIRE:
+                case Enumerators.Faction.WATER:
+                case Enumerators.Faction.EARTH:
+                case Enumerators.Faction.AIR:
+                case Enumerators.Faction.LIFE:
+                case Enumerators.Faction.TOXIC:
                     Enumerators.SoundType soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfHero.HeroElement);
                     _soundManager.PlaySound(soundType, Constants.HeroDeathSoundVolume);
                     break;

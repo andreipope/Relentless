@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,7 +71,15 @@ namespace Loom.ZombieBattleground
                     return;
                     
                 _textSelectOverlordDeckName.text = "NEW DECK";
-                ChangeOverlordIndex(0);
+
+                int index = 0;
+
+                if (_tutorialManager.IsTutorial)
+                {
+                    index = _dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroElement == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                }
+
+                ChangeOverlordIndex(index);
             };
         }
         
@@ -129,6 +137,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordLeftArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordLeftArrow.name))
+                return;
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex - 1, 0, _selectOverlordIconList.Count - 1)
@@ -137,6 +148,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSelectOverlordRightArrowHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSelectOverlordRightArrow.name))
+                return;
+
             ChangeOverlordIndex
             (
                 Mathf.Clamp(_selectOverlordIndex + 1, 0, _selectOverlordIconList.Count - 1)
@@ -166,7 +180,7 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck.Id = newDeckId;
                 _dataManager.CachedDecksData.Decks.Add(_myDeckPage.CurrentEditDeck);
                 _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
-                Debug.Log(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
 
                 if(_tutorialManager.IsTutorial)
                 {
@@ -176,7 +190,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 success = false;
 
@@ -222,25 +236,25 @@ namespace Loom.ZombieBattleground
             _textSelectOverlordDescription.text = hero.ShortDescription;
         }
         
-        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/MyDecks/OverlordPortrait";
             switch(heroElement)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air"); 
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_fire"); 
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_earth"); 
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_toxic"); 
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_water"); 
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life"); 
                 default:
-                    Debug.Log($"No Overlord portrait found for setType {heroElement}");
+                    Log.Info($"No Overlord portrait found for faction {heroElement}");
                     return null;
             }        
         }
