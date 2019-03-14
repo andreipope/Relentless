@@ -141,8 +141,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 success = false;
-                Log.Warn(e);
-                Helpers.ExceptionReporter.SilentReportException(e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
             }
