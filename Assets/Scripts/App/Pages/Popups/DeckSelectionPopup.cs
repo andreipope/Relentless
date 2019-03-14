@@ -58,7 +58,9 @@ namespace Loom.ZombieBattleground
             LoginPopup.OnLoginSuccess += () =>
             {
                 if (Self != null)
+                {
                     ReloadDeckDataAndDisplay();
+                }
             };
         }
 
@@ -186,6 +188,14 @@ namespace Loom.ZombieBattleground
             return hero;
         }
         
+        private void SetSelectedDeckIndex(int newIndex)
+        {
+            Deck selectedDeck = _deckList[newIndex];
+
+            UpdateSelectedDeckData(selectedDeck);
+            UpdateSelectedDeckDisplay(selectedDeck);
+        }
+
         private void SwitchSelectedDeckIndex(int direction)
         {  
             if (direction == 0)
@@ -206,10 +216,7 @@ namespace Loom.ZombieBattleground
                 nextIndex = _deckList.Count - 1;
             }
 
-            Deck selectedDeck = _deckList[nextIndex];
-
-            UpdateSelectedDeckData(selectedDeck);
-            UpdateSelectedDeckDisplay(selectedDeck);
+            SetSelectedDeckIndex(nextIndex);
         }
 
         #endregion
@@ -236,6 +243,14 @@ namespace Loom.ZombieBattleground
                 );
                 
                 _createdDeckIconList.Add(deckIcon);
+
+                int index = i;
+                Button button = deckIcon.GetComponent<Button>();
+                button.onClick.AddListener
+                (()=>
+                {
+                    SetSelectedDeckIndex(index);
+                });
             }
         }
         
