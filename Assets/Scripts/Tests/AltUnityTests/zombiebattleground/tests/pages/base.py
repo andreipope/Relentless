@@ -136,7 +136,8 @@ class CZBTests(unittest.TestCase):
         self.altdriver.wait_for_element('HiddenUI')
         self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
         self.altdriver.find_element('InputField').set_component_property('UnityEngine.UI.InputField','text',tutorialNumber,'UnityEngine.UI')
-        self.altdriver.find_element('JumpToTutorial').mobile_tap()
+        time.sleep(1)
+        self.altdriver.find_element('JumpToTutorial').tap()
         self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
     def jump_to_tutorial_from_another_tutorial(self,tutorialNumber):
         self.altdriver.wait_for_element('HiddenUI')
