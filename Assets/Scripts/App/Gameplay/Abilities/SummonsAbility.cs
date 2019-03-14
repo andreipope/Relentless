@@ -42,8 +42,6 @@ namespace Loom.ZombieBattleground
 
             foreach (Enumerators.AbilityTargetType target in TargetTypes)
             {
-                BoardUnitView unit = null;
-
                 switch (target)
                 {
                     case Enumerators.AbilityTargetType.OPPONENT:

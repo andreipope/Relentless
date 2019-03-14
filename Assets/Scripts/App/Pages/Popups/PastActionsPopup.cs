@@ -221,7 +221,7 @@ namespace Loom.ZombieBattleground
                             actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case HandBoardCard card:
-                            if(card.BoardUnitModel is SpellBoardCard)
+                            if(card.BoardCardView is SpellBoardCard)
                             {
                                 actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
                             }

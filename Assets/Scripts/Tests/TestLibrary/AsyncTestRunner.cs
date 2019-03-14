@@ -76,13 +76,19 @@ namespace Loom.ZombieBattleground.Test
                         }
                         catch
                         {
-                            _shouldPauseOnErrorInsteadOfFailing = ShouldPauseOnErrorInsteadOfFailing();
+                            _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
                         }
                         finally
                         {
                             if (!_shouldPauseOnErrorInsteadOfFailing)
                             {
                                 await GameTearDown();
+                            }
+                            else
+                            {
+#if UNITY_EDITOR
+                                UnityEditor.EditorApplication.isPaused = true;
+#endif
                             }
                         }
                     },
@@ -241,14 +247,6 @@ namespace Loom.ZombieBattleground.Test
             if (_cancellationReason != null)
                 return;
 
-            if (ShouldPauseOnErrorInsteadOfFailing())
-            {
-#if UNITY_EDITOR
-                UnityEditor.EditorApplication.isPaused = true;
-#endif
-                return;
-            }
-
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
             Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
@@ -286,8 +284,8 @@ namespace Loom.ZombieBattleground.Test
         private static bool ShouldPauseOnErrorInsteadOfFailing()
         {
 #if UNITY_EDITOR
-            //if (Application.isBatchMode)
-            //    return false;
+            if (Application.isBatchMode)
+                return false;
 
             PropertyInfo consoleFlagsProperty =
                 typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries").GetProperty("consoleFlags", BindingFlags.Public | BindingFlags.Static);

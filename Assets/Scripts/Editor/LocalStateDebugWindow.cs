@@ -93,34 +93,43 @@ namespace Editor
 
                     BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
 
-                    void NewFunction(IReadOnlyList<IBoardUnitView> views)
+                    void DrawViewList(IReadOnlyList<IBoardUnitView> views)
                     {
+                        if (views.Count == 0)
+                        {
+                            GUILayout.Label("<i>None</i>",GameStateGUI.Styles.RichLabel);
+                            return;
+                        }
+
                         foreach (IBoardUnitView view in views)
                         {
                             EditorGUILayout.BeginHorizontal();
                             {
-                                EditorGUILayout.ObjectField(view.Transform.gameObject, typeof(GameObject), true, GUILayout.Width(100));
-                                GUILayout.Label(view.Model.GetType().Name + ": " + GameStateGUI.FormatCardInstance(view.Model.Card.ToProtobuf()),
-                                    GameStateGUI.Styles.RichLabel);
+                                GUILayout.Label(
+                                    view.GetType().Name + ": " + GameStateGUI.FormatCardInstance(view.Model.Card.ToProtobuf()),
+                                    GameStateGUI.Styles.RichLabel,
+                                    GUILayout.ExpandWidth(false)
+                                    );
+                                EditorGUILayout.ObjectField(view.Transform.gameObject, typeof(GameObject), true, GUILayout.Width(200));
                             }
                             EditorGUILayout.EndHorizontal();
                         }
                     }
 
                     GUILayout.Label("<b>BattlegroundController: All Registered Views</b>", GameStateGUI.Styles.RichLabel);
-                    NewFunction(battlegroundController.BoardUnitViews);
+                    DrawViewList(battlegroundController.BoardUnitViews);
 
                     GUILayout.Label("<b>BattlegroundController.PlayerHandCards</b>", GameStateGUI.Styles.RichLabel);
-                    NewFunction(battlegroundController.PlayerHandCards);
+                    DrawViewList(battlegroundController.PlayerHandCards);
 
                     GUILayout.Label("<b>BattlegroundController.OpponentHandCards</b>", GameStateGUI.Styles.RichLabel);
-                    NewFunction(battlegroundController.OpponentHandCards);
+                    DrawViewList(battlegroundController.OpponentHandCards);
 
                     GUILayout.Label("<b>BattlegroundController.PlayerGraveyardCards</b>", GameStateGUI.Styles.RichLabel);
-                    NewFunction(battlegroundController.PlayerGraveyardCards);
+                    DrawViewList(battlegroundController.PlayerGraveyardCards);
 
                     GUILayout.Label("<b>BattlegroundController.OpponentGraveyardCards</b>", GameStateGUI.Styles.RichLabel);
-                    NewFunction(battlegroundController.OpponentGraveyardCards);
+                    DrawViewList(battlegroundController.OpponentGraveyardCards);
                 }
                 EditorGUILayout.EndVertical();
             }
