@@ -831,7 +831,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
             "Panel_Battle_Mode",
             "Button_Login",
@@ -848,12 +848,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -12,
-                "Y": -2,
+                "X": -0.5,
+                "Y": 1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_MyPacks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 0.5
             }
           ]
@@ -863,7 +865,7 @@
           "TutorialDescriptionTooltipsToDeactivate": [
             6
           ],
-          "OpenScreen": "PackOpenerPage",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
             "BackButton",
             "Button_BuyPacks",
@@ -889,7 +891,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
-          "OpenScreen": "PackOpenerPage",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
             "BackButton",
             "Button_BuyPacks",
@@ -898,7 +900,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PackOpenerPage",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
             "ButtonMinus",
             "ButtonPlus",
@@ -910,14 +912,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 1,
-                "Y": -1.2,
+                "X": -0.5,
+                "Y": 1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages",
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 0.5,
               "Rotation": 180
             }
@@ -925,19 +927,20 @@
         },
         {
           "ActionToEndThisStep": "HordeTabChanged",
+          "OpenScreen": "MyDecksPage",
           "BlockedButtons": [
-            "Button_Back",
-            "Button_RightArrow",
-            "Button_LeftArrow"
+            "Button_MyCards"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 1.94,
-                "Y": -4.5,
+                "X": 0,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_BuildNewDeck",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages"
             }
           ]
@@ -952,11 +955,34 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 1.94,
-                "Y": -4.5,
+                "X": 0,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Continue",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "BlockedButtons": [
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Continue",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages"
             }
           ]
@@ -966,7 +992,6 @@
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
             "Button_Army",
@@ -1002,7 +1027,6 @@
           "TutorialDescriptionTooltipsToDeactivate": [
             0
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
             "Button_Army",
@@ -1033,7 +1057,6 @@
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
             "Button_Army",
@@ -1065,7 +1088,6 @@
           "TutorialDescriptionTooltipsToDeactivate": [
             2
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
             "Button_Army",
@@ -1080,7 +1102,6 @@
         },
         {
           "ActionToEndThisStep": "HordeSaved",
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
             "Button_Army",
@@ -1101,7 +1122,6 @@
         },
         {
           "ActionToEndThisStep": "BattleStarted",
-          "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
             "Button_Army",
