@@ -105,11 +105,25 @@ namespace Loom.ZombieBattleground
         
         private void BuyButtonHandler( int id )
         {
+            #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
             _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
-            _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );           
+            _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );
+            #else
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
+            #endif
         }
         
-        #endregion  
+        private void ConfirmRedirectMarketplaceLink(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectMarketplaceLink;
+            if(status)
+            {
+                Application.OpenURL(Constants.MarketPlaceLink);
+            }
+        }
+        
+#endregion
         
         private void UpdatePageScaleToMatchResolution()
         {
@@ -154,12 +168,12 @@ namespace Loom.ZombieBattleground
             _shopData = JsonConvert.DeserializeObject<ShopData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/shop_data").text);            
         }
 
-        #region Purchasing Logic
+#region Purchasing Logic
 
-        #if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID
         private FiatValidationDataGoogleStore _fiatValidationDataGoogleStore;
         private FiatValidationDataAppleStore _fiatValidationDataAppleStore; 
-        #endif       
+#endif
         
         private IInAppPurchaseManager _inAppPurchaseManager;
 
@@ -175,13 +189,13 @@ namespace Loom.ZombieBattleground
             _fiatPlasmaManager = GameClient.Get<FiatPlasmaManager>();
             
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
-            #if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
             _finishRequestPack = OnFinishRequestPack;
-            #endif
+#endif
         }
         
-        #if UNITY_IOS || UNITY_ANDROID
+#if UNITY_IOS || UNITY_ANDROID
         private async void RequestFiatValidationGoogle()
         {            
             _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationGoogle)}");
@@ -355,7 +369,7 @@ namespace Loom.ZombieBattleground
             Log.Debug($"transactionID {product.transactionID}");
             Log.Debug($"storeSpecificId {product.definition.storeSpecificId}");
 
-            #if UNITY_ANDROID
+#if UNITY_ANDROID
             _fiatValidationDataGoogleStore = new FiatValidationDataGoogleStore();      
             _fiatValidationDataGoogleStore.productId = product.definition.id;
             _fiatValidationDataGoogleStore.purchaseToken = ParsePurchaseTokenFromPlayStoreReceipt(args.purchasedProduct.receipt);
@@ -363,14 +377,14 @@ namespace Loom.ZombieBattleground
             _fiatValidationDataGoogleStore.storeName = "GooglePlay";
 
             RequestFiatValidationGoogle();  
-            #elif UNITY_IOS
+#elif UNITY_IOS
             _fiatValidationDataAppleStore = new FiatValidationDataAppleStore();
             _fiatValidationDataAppleStore.productId = product.definition.id;
             _fiatValidationDataAppleStore.transactionId = ParseTransactionIdentifierFromAppStoreReceipt(args);
             _fiatValidationDataAppleStore.receiptData = ParsePayloadFromAppStoreReceipt(args.purchasedProduct.receipt);
             _fiatValidationDataAppleStore.storeName = "AppleStore";
             RequestFiatValidationApple();
-            #endif                   
+#endif
         }
         
         private string ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)
@@ -543,11 +557,11 @@ namespace Loom.ZombieBattleground
             public string productId;
             public string purchaseToken;
         }
-        #endif
+#endif
         
-        #endregion
+#endregion
         
-        #region Util
+#region Util
 
         public void PlayClickSound()
         {
@@ -561,6 +575,6 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<WarningPopup>(msg);
         }
 
-        #endregion
+#endregion
     }
 }
