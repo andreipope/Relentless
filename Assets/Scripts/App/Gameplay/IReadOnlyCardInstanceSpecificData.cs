@@ -1,4 +1,6 @@
 using Loom.ZombieBattleground.Common;
+using System.Collections.Generic;
+using Loom.ZombieBattleground.Data;
 
 namespace Loom.ZombieBattleground {
     public interface IReadOnlyCardInstanceSpecificData {
@@ -11,5 +13,7 @@ namespace Loom.ZombieBattleground {
         Enumerators.CardType CardType { get; }
 
         int Cost { get; }
+
+        IList<AbilityData> Abilities { get; set; }
     }
 }
