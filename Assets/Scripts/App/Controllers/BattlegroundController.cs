@@ -1004,7 +1004,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-            public BoardObject GetTargetByInstanceId(InstanceId id) {
+        public BoardObject GetTargetByInstanceId(InstanceId id) {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
