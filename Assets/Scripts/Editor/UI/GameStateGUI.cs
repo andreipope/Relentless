@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 return
                     $"<b>IId</b>: {cardInstance.InstanceId.Id}, " +
                     $"<b>Name</b>: {cardInstance.Prototype.Name}, " +
-                    $"<b>Atk</b>: {cardInstance.Instance.Attack}, " +
+                    $"<b>Atk</b>: {cardInstance.Instance.Damage}, " +
                     $"<b>Def</b>: {cardInstance.Instance.Defense}, " +
                     $"<b>Cost</b>: {cardInstance.Instance.GooCost}";
             }
@@ -138,7 +138,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             return
                 $"IId: {cardInstance.InstanceId.Id}, " +
                 $"Name: {cardInstance.Prototype.Name}, " +
-                $"Atk: {cardInstance.Instance.Attack}, " +
+                $"Atk: {cardInstance.Instance.Damage}, " +
                 $"Def: {cardInstance.Instance.Defense}, " +
                 $"Cost: {cardInstance.Instance.GooCost}";
         }

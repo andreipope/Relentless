@@ -416,6 +416,11 @@ namespace Loom.ZombieBattleground
 
         public void ChangeTab(TAB newTab)
         {
+            if(_tab != TAB.NONE && _tab != newTab)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+            }
+
             _tab = newTab;            
             
             for(int i=0; i<_tabObjects.Length;++i)
@@ -457,7 +462,7 @@ namespace Loom.ZombieBattleground
                     break;
                 default:
                     break;
-            }            
+            }
             
             EventChangeTab?.Invoke(_tab);
         }
