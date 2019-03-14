@@ -102,8 +102,10 @@ namespace Loom.ZombieBattleground
             _gameplayManager.IsGameplayInputBlocked = true;
 
             FillInfo();
-            if(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+            if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+            {
                 _appStateManager.SetPausingApp(true);
+            }
         }
 
         public void Show(object data)
