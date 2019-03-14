@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             public Player OpponentPlayer => _gameplayManager.GetOpponentByPlayer(Player);
 
-            public UniquePositionedList<BoardSpell> BoardSpellsInUse => _boardSpellsInUse;
+            public UniquePositionedList<BoardItem> BoardItemsInUse => _boardItemsInUse;
 
             public IReadOnlyList<BoardUnitModel> CardsInDeck => _cardsInDeck;
 
@@ -72,8 +72,8 @@ namespace Loom.ZombieBattleground
 
             private readonly CardsController _cardsController;
 
-            private readonly UniquePositionedList<BoardSpell> _boardSpellsInUse =
-                new UniquePositionedList<BoardSpell>(new PositionedList<BoardSpell>());
+            private readonly UniquePositionedList<BoardItem> _boardItemsInUse =
+                new UniquePositionedList<BoardItem>(new PositionedList<BoardItem>());
             private readonly UniquePositionedList<BoardUnitModel> _cardsInDeck =
                 new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
             private readonly UniquePositionedList<BoardUnitModel> _cardsInGraveyard =
@@ -739,9 +739,9 @@ namespace Loom.ZombieBattleground
                         go = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                         boardCardView = new UnitBoardCard(go, boardUnitModel);
                         break;
-                    case Enumerators.CardKind.SPELL:
+                    case Enumerators.CardKind.ITEM:
                         go = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                        boardCardView = new SpellBoardCard(go, boardUnitModel);
+                        boardCardView = new ItemBoardCard(go, boardUnitModel);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

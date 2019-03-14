@@ -136,7 +136,7 @@ namespace Editor
 
                         Player player = isCurrentPlayer ? gameplayManager.CurrentPlayer : gameplayManager.OpponentPlayer;
 
-                        DrawViewList("BoardSpellsInUse", player.BoardSpellsInUse);
+                        DrawViewList("BoardItemsInUse", player.BoardItemsInUse);
                         EditorGUILayout.Space();
 
                         DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
