@@ -322,12 +322,12 @@ namespace Loom.ZombieBattleground
 
         private void UnitSelectedEventHandler(BoardUnitView unit)
         {
-            SetTooltipsStateIfHas(unit.BoardUnitModel.TutorialObjectId, true);
+            SetTooltipsStateIfHas(unit.Model.TutorialObjectId, true);
         }
 
         private void UnitDeselectedEventHandler(BoardUnitView unit)
         {
-            SetTooltipsStateIfHas(unit.BoardUnitModel.TutorialObjectId, false);
+            SetTooltipsStateIfHas(unit.Model.TutorialObjectId, false);
         }
 
         private void TurnStartedHandler()

@@ -199,9 +199,6 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; private set; }
 
-        // TODO: refactor-state: remove this
-        public BoardUnitModel BoardUnitModel => Model;
-
         public HandBoardCard HandBoardCard { get; set; }
 
         public void SetAmount(int amount)

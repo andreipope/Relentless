@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
                     endArrivalCallback?.Invoke();
 
-                    BoardController.UpdateCurrentBoardOfPlayer(unitView.BoardUnitModel.OwnerPlayer, null);
+                    BoardController.UpdateCurrentBoardOfPlayer(unitView.Model.OwnerPlayer, null);
 
                     IsPlaying = false;
                 }, delayBeforeDestroyVFX);

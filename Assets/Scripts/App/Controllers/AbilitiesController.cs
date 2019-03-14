@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
                         activeAbility.Ability.BoardSpell = spell;
                         break;
                     case BoardUnitView view:
-                        activeAbility.Ability.AbilityUnitOwner = view.BoardUnitModel;
+                        activeAbility.Ability.AbilityUnitOwner = view.Model;
                         break;
                     case Player player:
                         break;
@@ -519,13 +519,13 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
-                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.BoardUnitModel.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            boardUnitModel.Owner.LocalCardsController.RemoveCardFromHand(boardUnitModel, true);
                                            boardUnitModel.Owner.LocalCardsController.AddCardToBoard(boardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
                                            boardUnitModel.Owner.LocalCardsController.AddCardToGraveyard(boardUnitModel);
 
-                                           if (card.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+                                           if (card.Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                                            {
                                                InternalTools.DoActionDelayed(() =>
                                                {
@@ -568,14 +568,14 @@ namespace Loom.ZombieBattleground
                                            // HACK FIXME: why do we need to update library card instead of modifying a copy?
                                            ((ICard) prototype).ForceUpdateAbilities(prototype.InitialAbilities);
 
-                                           card.BoardUnitModel.Card.Owner.CurrentGoo += card.BoardUnitModel.Card.InstanceCard.Cost;
+                                           card.Model.Card.Owner.CurrentGoo += card.Model.Card.InstanceCard.Cost;
 
                                            handCard.GameObject.SetActive(true);
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
-                                           boardUnitModel.Owner.LocalCardsController.AddCardToHand3(card.BoardUnitModel);
-                                           boardUnitModel.Owner.LocalCardsController.RemoveCardFromBoard(card.BoardUnitModel, false);
+                                           boardUnitModel.Owner.LocalCardsController.AddCardToHand3(card.Model);
+                                           boardUnitModel.Owner.LocalCardsController.RemoveCardFromBoard(card.Model, false);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
 
                                            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
@@ -1151,13 +1151,13 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
 
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.BoardUnitModel.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
-                card.BoardUnitModel.Card.Owner.LocalCardsController.RemoveCardFromHand(card.BoardUnitModel);
-                card.BoardUnitModel.Card.Owner.LocalCardsController.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
-                card.BoardUnitModel.Card.Owner.LocalCardsController.AddCardToGraveyard(card.BoardUnitModel);
+                card.Model.Card.Owner.LocalCardsController.RemoveCardFromHand(card.Model);
+                card.Model.Card.Owner.LocalCardsController.AddCardToBoard(card.Model, (ItemPosition) card.FuturePositionOnBoard);
+                card.Model.Card.Owner.LocalCardsController.AddCardToGraveyard(card.Model);
 
-                if (card.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+                if (card.Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                 {
                     InternalTools.DoActionDelayed(() =>
                     {
@@ -1212,7 +1212,7 @@ namespace Loom.ZombieBattleground
 
         private void ProceedWithCardToGraveyard(BoardCardView card)
         {
-            card.BoardUnitModel.Card.Owner.GraveyardCardsCount++;
+            card.Model.Card.Owner.GraveyardCardsCount++;
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -1220,7 +1220,7 @@ namespace Loom.ZombieBattleground
                 Caller = card,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
                 CheckForCardOwner = false,
-                BoardUnitModel = card.BoardUnitModel
+                BoardUnitModel = card.Model
             });
         }
 

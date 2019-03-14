@@ -407,19 +407,19 @@ static class BattleCommandsHandler
         }
         else
         {
-            _cardsController.ReturnCardToHand(obj.Unit.BoardUnitModel);
+            _cardsController.ReturnCardToHand(obj.Unit.Model);
             _gameplayManager.CurrentPlayer.CurrentGoo += obj.GooCost;
         }
     }
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        Card prototype = new Card(unit.BoardUnitModel.Card.Prototype);
+        Card prototype = new Card(unit.Model.Card.Prototype);
         WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
         BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.LocalCardsController.RemoveCardFromGraveyard(unit.BoardUnitModel);
+        player.LocalCardsController.RemoveCardFromGraveyard(unit.Model);
         player.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
         _battlegroundController.RegisterBoardUnitView(player, newUnit);
 
@@ -636,7 +636,7 @@ static class BattleCommandsHandler
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == workingCard);
+        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 boardUnitView = PlayerCallerOfAbility.LocalCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
-                boardUnitModel = boardUnitView.BoardUnitModel;
+                boardUnitModel = boardUnitView.Model;
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

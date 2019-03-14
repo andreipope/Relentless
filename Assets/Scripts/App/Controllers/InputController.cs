@@ -373,7 +373,7 @@ namespace Loom.ZombieBattleground
 
             if (_selectedUnitsList.Count > 0)
             {
-                boardObject = _selectedUnitsList[0].BoardUnitModel;
+                boardObject = _selectedUnitsList[0].Model;
             }
 
             if (boardObject != null)
@@ -395,7 +395,7 @@ namespace Loom.ZombieBattleground
 
             if (_selectedUnitsList.Count > 0)
             {
-                boardObject = _selectedUnitsList[0].BoardUnitModel;
+                boardObject = _selectedUnitsList[0].Model;
             }
 
             if (boardObject != null)

@@ -299,7 +299,7 @@ namespace Loom.ZombieBattleground
                         {
                             targets = new List<ParametrizedAbilityBoardObject>()
                             {
-                                new ParametrizedAbilityBoardObject(targetUnitView.BoardUnitModel)
+                                new ParametrizedAbilityBoardObject(targetUnitView.Model)
                             };
                         }
                         skill.UseSkill();
@@ -793,7 +793,7 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == boardUnitModel.Card);
+                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == boardUnitModel.Card);
                 GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
                 particle.transform.position = boardCardView.Transform.position;
                 particle.transform.SetParent(boardCardView.Transform, true);
@@ -1377,14 +1377,14 @@ namespace Loom.ZombieBattleground
                                 unit.ChangeModelVisibility(true);
                                 unit.StopSleepingParticles();
 
-                                if (!unit.BoardUnitModel.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                                if (!unit.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                                 {
-                                    unit.BoardUnitModel.IsPlayable = true;
+                                    unit.Model.IsPlayable = true;
                                 }
 
-                                if (unit.BoardUnitModel.OwnerPlayer.IsLocalPlayer)
+                                if (unit.Model.OwnerPlayer.IsLocalPlayer)
                                 {
-                                    _abilitiesController.ActivateAbilitiesOnCard(unit.BoardUnitModel, unit.BoardUnitModel, unit.BoardUnitModel.OwnerPlayer);
+                                    _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.OwnerPlayer);
                                 }
                             },
                             3f);
@@ -1553,14 +1553,14 @@ namespace Loom.ZombieBattleground
                 {
                     unit.ChangeModelVisibility(true);
 
-                    if (!unit.BoardUnitModel.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+                    if (!unit.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
                     {
-                        unit.BoardUnitModel.IsPlayable = true;
+                        unit.Model.IsPlayable = true;
                     }
 
-                    if (unit.BoardUnitModel.OwnerPlayer.IsLocalPlayer)
+                    if (unit.Model.OwnerPlayer.IsLocalPlayer)
                     {
-                        _abilitiesController.ActivateAbilitiesOnCard(unit.BoardUnitModel, unit.BoardUnitModel, unit.BoardUnitModel.OwnerPlayer);
+                        _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.OwnerPlayer);
                     }
                 }, 3f);
             }

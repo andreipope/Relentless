@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
             _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
-            _reanimatedUnit.BoardUnitModel.IsReanimated = true;
+            _reanimatedUnit.Model.IsReanimated = true;
 
             owner.LocalCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
             owner.LocalCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
             if (owner.IsLocalPlayer)
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.BoardUnitModel, AbilityUnitOwner, owner);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {
@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
 
             if (_reanimatedUnit != null)
             {
-                _reanimatedUnit.BoardUnitModel.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescriptionType.Reanimate);
             }
 
             _gameplayManager.CanDoDragActions = true;
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
-                boardUnitView.BoardUnitModel.IsPlayable = true;
+                boardUnitView.Model.IsPlayable = true;
             }
 
             boardUnitView.PlayArrivalAnimation();

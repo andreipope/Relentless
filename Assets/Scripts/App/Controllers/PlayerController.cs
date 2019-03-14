@@ -241,7 +241,7 @@ namespace Loom.ZombieBattleground
                 switch (param[0])
                 {
                     case BoardUnitView unit:
-                        id = unit.BoardUnitModel.TutorialObjectId;
+                        id = unit.Model.TutorialObjectId;
                         break;
                     default:
                         break;
@@ -279,7 +279,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
                 {
-                    card.SetHighlightingEnabled(card.BoardUnitModel.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace Loom.ZombieBattleground
                 _timeHovering += Time.deltaTime;
                 if (_timeHovering >= Constants.MaxTimeForHovering)
                 {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.BoardUnitModel.Card.TutorialObjectId);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.Model.Card.TutorialObjectId);
 
                     _isHovering = true;
                 }
@@ -511,7 +511,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (_selectedBoardUnitView != null && !_selectedBoardUnitView.BoardUnitModel.IsAttacking)
+                if (_selectedBoardUnitView != null && !_selectedBoardUnitView.Model.IsAttacking)
                 {
                     StopHandTimer();
                     _battlegroundController.DestroyCardPreview();

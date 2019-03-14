@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
             {
                 targets.Add(new ParametrizedAbilityBoardObject(
-                    unitinfo.OldUnitView.BoardUnitModel,
+                    unitinfo.OldUnitView.Model,
                     new ParametrizedAbilityParameters
                     {
                         CardName = unitinfo.NewUnitCardTitle
@@ -124,8 +124,8 @@ namespace Loom.ZombieBattleground
             {
                 foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
                 {
-                    BattlegroundController.UnregisterBoardUnitView(unitInfo.OldUnitView.BoardUnitModel.OwnerPlayer, unitInfo.OldUnitView);
-                    unitInfo.OldUnitView.BoardUnitModel.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.BoardUnitModel);
+                    BattlegroundController.UnregisterBoardUnitView(unitInfo.OldUnitView.Model.OwnerPlayer, unitInfo.OldUnitView);
+                    unitInfo.OldUnitView.Model.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
 
                     unitInfo.OldUnitView.DisposeGameObject();
                 }

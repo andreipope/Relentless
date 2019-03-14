@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             if (SelectedCard != null)
             {
-                target = SelectedCard.BoardUnitModel;
+                target = SelectedCard.Model;
             }
             else if (SelectedPlayer != null)
             {
@@ -38,15 +38,15 @@ namespace Loom.ZombieBattleground
 
             if (target != null)
             {
-                creature.BoardUnitModel.DoCombat(target);
+                creature.Model.DoCombat(target);
 
                 if (target == SelectedPlayer)
                 {
-                    creature.BoardUnitModel.OwnerPlayer.ThrowCardAttacked(creature.BoardUnitModel, SelectedPlayer.InstanceId);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model, SelectedPlayer.InstanceId);
                 }
                 else
                 {
-                    creature.BoardUnitModel.OwnerPlayer.ThrowCardAttacked(creature.BoardUnitModel, SelectedCard.BoardUnitModel.Card.InstanceId);
+                    creature.Model.OwnerPlayer.ThrowCardAttacked(creature.Model, SelectedCard.Model.Card.InstanceId);
                 }
             }
             else
@@ -69,13 +69,13 @@ namespace Loom.ZombieBattleground
                 !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
                 return;
 
-            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.BoardUnitModel))
+            if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.BoardUnitModel.CurrentHp <= 0 || unit.BoardUnitModel.IsDead)
+            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
                 return;
 
-            if (ElementType.Count > 0 && !ElementType.Contains(unit.BoardUnitModel.Card.Prototype.CardSetType))
+            if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.CardSetType))
                 return;
 
             if (BlockedUnitStatusTypes == null) 
@@ -90,11 +90,11 @@ namespace Loom.ZombieBattleground
                 unit.Transform.CompareTag(SRTags.OpponentOwned))
             {
                 bool opponentHasProvoke = OpponentHasHeavyUnits();
-                if (!opponentHasProvoke || opponentHasProvoke && unit.BoardUnitModel.IsHeavyUnit || IgnoreHeavy)
+                if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
                     if ((TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.BoardUnitModel.UnitStatus == TargetUnitStatusType) &&
-                        !BlockedUnitStatusTypes.Contains(unit.BoardUnitModel.UnitStatus))
+                        unit.Model.UnitStatus == TargetUnitStatusType) &&
+                        !BlockedUnitStatusTypes.Contains(unit.Model.UnitStatus))
                     {
                         SelectedCard?.SetSelectedUnit(false);
 

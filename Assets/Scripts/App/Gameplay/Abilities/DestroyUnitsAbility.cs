@@ -60,11 +60,11 @@ namespace Loom.ZombieBattleground
 
         public void DestroyUnit(BoardUnitView unit)
         {
-            if(!unit.BoardUnitModel.HasBuffShield)
+            if(!unit.Model.HasBuffShield)
             {
                 unit.ChangeModelVisibility(false);
             }
-            BattlegroundController.DestroyBoardUnit(unit.BoardUnitModel, false);
+            BattlegroundController.DestroyBoardUnit(unit.Model, false);
         }
 
         protected override void VFXAnimationEndedHandler()

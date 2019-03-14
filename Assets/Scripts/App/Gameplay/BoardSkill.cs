@@ -479,7 +479,7 @@ namespace Loom.ZombieBattleground
                             }
                             else if (FightTargetingArrow.SelectedCard != null)
                             {
-                                if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.TargetTutorialObjectId == FightTargetingArrow.SelectedCard.BoardUnitModel.TutorialObjectId &&
+                                if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.TargetTutorialObjectId == FightTargetingArrow.SelectedCard.Model.TutorialObjectId &&
                                     (info.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD || info.TargetType == Enumerators.SkillTargetType.PLAYER_CARD)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);

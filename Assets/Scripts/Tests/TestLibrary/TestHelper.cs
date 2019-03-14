@@ -1130,9 +1130,9 @@ namespace Loom.ZombieBattleground.Test
                 {
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView =
-                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel == boardUnitModel);
+                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == boardUnitModel);
                     Assert.NotNull(boardCardView, $"Card {boardUnitModel} not found in local player hand");
-                    Assert.True(boardCardView.BoardUnitModel.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner),
+                    Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
                     _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
@@ -1158,7 +1158,7 @@ namespace Loom.ZombieBattleground.Test
                     _testBroker.GetPlayer(_player).LocalCardsController.AddCardToBoard(boardUnitModel, position);
 
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel == boardUnitModel);
+                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
                     _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
