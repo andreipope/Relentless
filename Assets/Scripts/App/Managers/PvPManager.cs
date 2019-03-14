@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Player action] " + playerActionEvent);
+                Log.Debug("[Player Action] " + playerActionEvent);
 
                 if (playerActionEvent.Block != null)
                 {
