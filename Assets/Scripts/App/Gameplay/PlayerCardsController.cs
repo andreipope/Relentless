@@ -638,7 +638,7 @@ namespace Loom.ZombieBattleground
 
             public void SummonUnitFromHand(BoardCardView card, bool activateAbility)
             {
-                IReadOnlyCard prototype = card.BoardUnitModel.Card.Prototype;
+                IReadOnlyCard prototype = card.Model.Card.Prototype;
 
                 card.Transform.DORotate(Vector3.zero, .1f);
 
@@ -652,18 +652,18 @@ namespace Loom.ZombieBattleground
 
                 GameObject board = Player.IsLocalPlayer ? _cardsController.PlayerBoard : _cardsController.OpponentBoard;
 
-                BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.BoardUnitModel.Card), board.transform);
+                BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.Model.Card), board.transform);
                 boardUnitView.Transform.tag = Player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
                 boardUnitView.Transform.parent = board.transform;
                 boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * Player.CardsOnBoard.Count, 0);
-                boardUnitView.Model.Card.Owner = card.BoardUnitModel.Card.Owner;
-                boardUnitView.Model.Card.TutorialObjectId = card.BoardUnitModel.Card.TutorialObjectId;
+                boardUnitView.Model.Card.Owner = card.Model.Card.Owner;
+                boardUnitView.Model.Card.TutorialObjectId = card.Model.Card.TutorialObjectId;
 
                 OpponentHandCard opponentHandCard = null;
 
                 if (activateAbility)
                 {
-                    _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.BoardUnitModel, Player);
+                    _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.Model, Player);
                 }
 
                 if (Player.IsLocalPlayer)
@@ -674,17 +674,17 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(cardOpponent =>
-                        cardOpponent.Model.InstanceId == card.BoardUnitModel.Card.InstanceId);
+                        cardOpponent.Model.InstanceId == card.Model.Card.InstanceId);
                     _battlegroundController.OpponentHandCards.Remove(opponentHandCard);
                     _battlegroundController.RegisterBoardUnitView(_gameplayManager.OpponentPlayer, boardUnitView);
                 }
 
-                AddCardToBoard(card.BoardUnitModel, ItemPosition.End);
-                RemoveCardFromHand(card.BoardUnitModel);
+                AddCardToBoard(card.Model, ItemPosition.End);
+                RemoveCardFromHand(card.Model);
 
                 InternalTools.DoActionDelayed(() =>
                     {
-                        card.BoardUnitModel.Card.Owner.GraveyardCardsCount++;
+                        card.Model.Card.Owner.GraveyardCardsCount++;
                     },
                     1f);
 

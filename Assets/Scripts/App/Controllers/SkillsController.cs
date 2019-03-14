@@ -793,7 +793,7 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == boardUnitModel.Card);
+                BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == boardUnitModel.Card);
                 GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
                 particle.transform.position = boardCardView.Transform.position;
                 particle.transform.SetParent(boardCardView.Transform, true);

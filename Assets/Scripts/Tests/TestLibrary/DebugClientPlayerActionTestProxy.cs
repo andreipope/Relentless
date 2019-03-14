@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using NUnit.Framework;
 using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
@@ -49,6 +50,7 @@ namespace Loom.ZombieBattleground.Test
 
             // Entry abilities handling
             BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+            Assert.NotNull(boardUnitModel, $"boardUnitModel != null for instance id {card}");
 
             // First, fire targetable entry abilities
             if (entryAbilityTarget != null)

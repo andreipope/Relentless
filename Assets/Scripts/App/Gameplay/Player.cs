@@ -132,6 +132,8 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
+            LocalCardsController = new PlayerLocalCardsController(this);
+
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.PVP:

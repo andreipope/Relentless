@@ -620,7 +620,7 @@ namespace Loom.ZombieBattleground
                     Object.Destroy(boardCardView.GameObject.GetComponent<BoxCollider2D>());
                 }
             }
-            else if (_aiController.CurrentSpellCard != null && boardUnitModel == _aiController.CurrentSpellCard.BoardUnitModel)
+            else if (_aiController.CurrentSpellCard != null && boardUnitModel == _aiController.CurrentSpellCard.Model)
             {
                 _aiController.CurrentSpellCard.SetHighlightingEnabled(false);
                 _aiController.CurrentSpellCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
@@ -645,7 +645,7 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCardView card:
-                    CurrentPreviewedCardId = card.BoardUnitModel.Card.InstanceId;
+                    CurrentPreviewedCardId = card.Model.Card.InstanceId;
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
@@ -668,7 +668,7 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case BoardCardView card1:
-                    card = card1.BoardUnitModel.Card;
+                    card = card1.Model.Card;
                     break;
                 case BoardUnitView unit:
                     card = unit.Model.Card;
@@ -695,7 +695,7 @@ namespace Loom.ZombieBattleground
 
             if (highlight)
             {
-                highlight = boardCardView.BoardUnitModel.CanBePlayed(card.Owner) && boardCardView.BoardUnitModel.CanBeBuyed(card.Owner);
+                highlight = boardCardView.Model.CanBePlayed(card.Owner) && boardCardView.Model.CanBeBuyed(card.Owner);
             }
 
             boardCardView.SetHighlightingEnabled(highlight);
@@ -708,8 +708,8 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView boardUnit:
                     boardCardView.DrawTooltipInfoOfUnit(boardUnit);
                     UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
-                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
-                    boardCardUnit.BoardUnitModel.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentHp;
+                    boardCardUnit.Model.Card.InstanceCard.Attack = boardUnit.Model.MaxCurrentDamage;
+                    boardCardUnit.Model.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentHp;
                     break;
                 case BoardCardView tooltipCard:
                     boardCardView.DrawTooltipInfoOfCard(tooltipCard);

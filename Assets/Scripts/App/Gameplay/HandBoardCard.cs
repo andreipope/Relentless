@@ -45,7 +45,7 @@ public class HandBoardCard : OwnableBoardObject
         GameObject = selfObject;
 
         BoardCardView = boardCardView;
-        BoardUnitModel = boardCardView.BoardUnitModel;
+        BoardUnitModel = boardCardView.Model;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();

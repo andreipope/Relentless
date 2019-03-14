@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Editor.Tools;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
@@ -88,6 +90,37 @@ namespace Editor
                         GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(false) :
                         GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, ref isExpanded);
+
+                    BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
+
+                    void NewFunction(IReadOnlyList<IBoardUnitView> views)
+                    {
+                        foreach (IBoardUnitView view in views)
+                        {
+                            EditorGUILayout.BeginHorizontal();
+                            {
+                                EditorGUILayout.ObjectField(view.Transform.gameObject, typeof(GameObject), true, GUILayout.Width(100));
+                                GUILayout.Label(view.Model.GetType().Name + ": " + GameStateGUI.FormatCardInstance(view.Model.Card.ToProtobuf()),
+                                    GameStateGUI.Styles.RichLabel);
+                            }
+                            EditorGUILayout.EndHorizontal();
+                        }
+                    }
+
+                    GUILayout.Label("<b>BattlegroundController: All Registered Views</b>", GameStateGUI.Styles.RichLabel);
+                    NewFunction(battlegroundController.BoardUnitViews);
+
+                    GUILayout.Label("<b>BattlegroundController.PlayerHandCards</b>", GameStateGUI.Styles.RichLabel);
+                    NewFunction(battlegroundController.PlayerHandCards);
+
+                    GUILayout.Label("<b>BattlegroundController.OpponentHandCards</b>", GameStateGUI.Styles.RichLabel);
+                    NewFunction(battlegroundController.OpponentHandCards);
+
+                    GUILayout.Label("<b>BattlegroundController.PlayerGraveyardCards</b>", GameStateGUI.Styles.RichLabel);
+                    NewFunction(battlegroundController.PlayerGraveyardCards);
+
+                    GUILayout.Label("<b>BattlegroundController.OpponentGraveyardCards</b>", GameStateGUI.Styles.RichLabel);
+                    NewFunction(battlegroundController.OpponentGraveyardCards);
                 }
                 EditorGUILayout.EndVertical();
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
@@ -21,17 +22,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 if (cardInstances.Count == 0)
                     return "<i>None</i>";
 
-                return String.Join("\n", cardInstances.Select(FormatCardInstance));
-            }
-
-            string FormatCardInstance(CardInstance cardInstance)
-            {
-                return
-                    $"<b>IId</b>: {cardInstance.InstanceId.Id}, " +
-                    $"<b>Name</b>: {cardInstance.Prototype.Name}, " +
-                    $"<b>Atk</b>: {cardInstance.Instance.Attack}, " +
-                    $"<b>Def</b>: {cardInstance.Instance.Defense}, " +
-                    $"<b>Cost</b>: {cardInstance.Instance.GooCost}";
+                return String.Join("\n", cardInstances.Select(card => FormatCardInstance(card)));
             }
 
             void DrawPlayer(PlayerState playerState, bool hasCurrentTurn)
@@ -133,16 +124,21 @@ namespace Loom.ZombieBattleground.Editor.Tools
             return truePlayerState;
         }
 
-        public static string SimpleFormatCardInstance(CardInstance cardInstance)
+        public static string FormatCardInstance(CardInstance cardInstance, bool richText = true)
         {
+            string AddItem(string name, object value)
+            {
+                return richText ? $"<b>{name}:</b> {value}" : $"{name}: {value}";
+            }
+
             return
-                $"IId: {cardInstance.InstanceId.Id}, " +
-                $"Name: {cardInstance.Prototype.Name}, " +
-                $"Atk: {cardInstance.Instance.Attack}, " +
-                $"Def: {cardInstance.Instance.Defense}, " +
-                $"Cost: {cardInstance.Instance.GooCost}";
+                AddItem("IId", cardInstance.InstanceId.Id) + ", " +
+                AddItem("Name", cardInstance.Prototype.Name) + ", " +
+                AddItem("Atk", cardInstance.Instance.Attack) + ", " +
+                AddItem("Def", cardInstance.Instance.Defense) + ", " +
+                AddItem("Cost", cardInstance.Instance.GooCost);
         }
-        
+
         public static class Styles
         {
             public static readonly GUIStyle RichLabel;

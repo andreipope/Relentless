@@ -279,7 +279,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
                 {
-                    card.SetHighlightingEnabled(card.BoardUnitModel.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace Loom.ZombieBattleground
                 _timeHovering += Time.deltaTime;
                 if (_timeHovering >= Constants.MaxTimeForHovering)
                 {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.BoardUnitModel.Card.TutorialObjectId);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.Model.Card.TutorialObjectId);
 
                     _isHovering = true;
                 }

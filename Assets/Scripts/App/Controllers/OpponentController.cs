@@ -358,7 +358,7 @@ namespace Loom.ZombieBattleground
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
         {
-            GotActionPlayCard(cardPlay.Card.FromProtobuf(), cardPlay.Position);
+            GotActionPlayCard(cardPlay.Card.FromProtobuf(), (ItemPosition) cardPlay.Position);
         }
 
         private void OnLeaveMatchHandler()
@@ -426,7 +426,7 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.StopTurn);
         }
 
-        private void GotActionPlayCard(InstanceId cardId, int position)
+        private void GotActionPlayCard(InstanceId cardId, ItemPosition position)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -451,6 +451,7 @@ namespace Loom.ZombieBattleground
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                                 boardUnit.SetActive(false);
 
+                                _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToBoard(boardUnitModel, position);
                                 _battlegroundController.RegisterBoardUnitView(
                                     _gameplayManager.OpponentPlayer,
                                     boardUnitViewElement,

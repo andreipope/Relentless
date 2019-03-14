@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,6 +35,7 @@ namespace Loom.ZombieBattleground.Test
 
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
+        private bool _shouldPauseOnErrorInsteadOfFailing;
 
         private Exception _cancellationReason;
 
@@ -72,9 +74,16 @@ namespace Loom.ZombieBattleground.Test
                             await GameSetUp();
                             await taskFunc();
                         }
+                        catch
+                        {
+                            _shouldPauseOnErrorInsteadOfFailing = ShouldPauseOnErrorInsteadOfFailing();
+                        }
                         finally
                         {
-                            await GameTearDown();
+                            if (!_shouldPauseOnErrorInsteadOfFailing)
+                            {
+                                await GameTearDown();
+                            }
                         }
                     },
                     timeout,
@@ -196,15 +205,11 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    if (e is OperationCanceledException)
+                    Exception rethrownException = e is OperationCanceledException ? _cancellationReason : e;
+                    Log.Error("", rethrownException);
+                    if (!_shouldPauseOnErrorInsteadOfFailing)
                     {
-                        Log.Error("", _cancellationReason);
-                        ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
-                    }
-                    else
-                    {
-                        Log.Error("", e);
-                        ExceptionDispatchInfo.Capture(e).Throw();
+                        ExceptionDispatchInfo.Capture(rethrownException).Throw();
                     }
                 }
             }
@@ -228,12 +233,21 @@ namespace Loom.ZombieBattleground.Test
             _currentRunningTestTask = null;
             _currentTestCancellationTokenSource = null;
             _cancellationReason = null;
+            _shouldPauseOnErrorInsteadOfFailing = false;
         }
 
         private void CancelTestWithReason(Exception reason)
         {
             if (_cancellationReason != null)
                 return;
+
+            if (ShouldPauseOnErrorInsteadOfFailing())
+            {
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPaused = true;
+#endif
+                return;
+            }
 
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
@@ -267,6 +281,22 @@ namespace Loom.ZombieBattleground.Test
         private static bool IsKnownError(string condition)
         {
             return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
+        }
+
+        private static bool ShouldPauseOnErrorInsteadOfFailing()
+        {
+#if UNITY_EDITOR
+            //if (Application.isBatchMode)
+            //    return false;
+
+            PropertyInfo consoleFlagsProperty =
+                typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.LogEntries").GetProperty("consoleFlags", BindingFlags.Public | BindingFlags.Static);
+            int consoleFlagValue = (int) consoleFlagsProperty.GetValue(null, null);
+            const int errorPauseFlag = 4;
+            return (consoleFlagValue & errorPauseFlag) != 0;
+#else
+            return false;
+#endif
         }
     }
 }

@@ -7,7 +7,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class OpponentHandCard : IView, IBoardUnitView
+    public class OpponentHandCard : IBoardUnitView
     {
         public Transform Transform => GameObject.transform;
 
