@@ -41,14 +41,14 @@ namespace Loom.ZombieBattleground.Data
                     ability.AbilityTarget.Select(t => (CardAbilityTarget.Types.Enum) t)
                 },
                 Stat = (StatType.Types.Enum) ability.Stat,
-                Set = (CardSetType.Types.Enum) ability.Faction,
+                Faction = (Protobuf.Faction.Types.Enum) ability.Faction,
                 Effect = (CardAbilityEffect.Types.Enum) ability.Effect,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (CreatureType.Types.Enum) ability.TargetCardType,
                 TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitStatus,
                 TargetUnitType = (CreatureType.Types.Enum) ability.TargetUnitType,
                 Value = ability.Value,
-                Attack = ability.Damage,
+                Damage = ability.Damage,
                 Defense = ability.Defense,
                 Name = ability.Name,
                 Turns = ability.Turns,
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground.Data
                     ability.VisualEffectsToPlay.Select(v => v.ToProtobuf())
                 },
                 GameMechanicDescriptionType = (GameMechanicDescriptionType.Types.Enum) ability.GameMechanicDescription,
-                TargetSet = (CardSetType.Types.Enum) ability.TargetFaction,
+                TargetFaction = (Protobuf.Faction.Types.Enum) ability.TargetFaction,
                 SubTrigger = (CardAbilitySubTrigger.Types.Enum) ability.SubTrigger,
                 ChoosableAbilities =
                 {
@@ -105,9 +105,9 @@ namespace Loom.ZombieBattleground.Data
             Protobuf.CardInstanceSpecificData protoData = new Protobuf.CardInstanceSpecificData
             {
                 GooCost = data.Cost,
-                Attack = data.Damage,
+                Damage = data.Damage,
                 Defense = data.Defense,
-                Set = (CardSetType.Types.Enum) data.Faction,
+                Faction = (Protobuf.Faction.Types.Enum) data.Faction,
                 Type = (CreatureType.Types.Enum) data.CardType,
             };
 
@@ -124,19 +124,19 @@ namespace Loom.ZombieBattleground.Data
                 Description = card.Description,
                 FlavorText = card.FlavorText,
                 Picture = card.Picture,
-                Attack = card.Damage,
+                Damage = card.Damage,
                 Defense = card.Defense,
-                Set = (CardSetType.Types.Enum) card.Faction,
+                Faction = (Protobuf.Faction.Types.Enum) card.Faction,
                 Frame = card.Frame,
                 Kind = (CardKind.Types.Enum) card.CardKind,
                 Rank = (CreatureRank.Types.Enum) card.CardRank,
                 Type = (CreatureType.Types.Enum) card.CardType,
-                CardViewInfo = card.PictureTransform.ToProtobuf(),
+                PictureTransform = card.PictureTransform.ToProtobuf(),
                 Abilities =
                 {
                     card.Abilities.Select(a => a.ToProtobuf())
                 },
-                UniqueAnimationType = (UniqueAnimationType.Types.Enum) card.UniqueAnimation
+                UniqueAnimation = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation
             };
 
             return protoCard;
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.CardViewInfo ToProtobuf(this PictureTransform cardViewInfo)
+        public static Protobuf.PictureTransform ToProtobuf(this PictureTransform cardViewInfo)
         {
             if (cardViewInfo == null)
                 return null;
 
-            return new Protobuf.CardViewInfo
+            return new Protobuf.PictureTransform
             {
                 Position = cardViewInfo.Position.ToProtobuf(),
                 Scale = cardViewInfo.Scale.ToProtobuf()
@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.Parameter
             {
-                Attack = parameters.Attack,
+                Damage = parameters.Attack,
                 Defense = parameters.Defense,
                 CardName = parameters.CardName
             };

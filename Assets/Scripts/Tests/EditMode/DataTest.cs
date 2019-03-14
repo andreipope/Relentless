@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground.Test
                 LongDescription = "long desc",
                 Experience = 100500,
                 Level = 373,
-                Element = CardSetType.Types.Enum.Life,
+                Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
                     new Skill
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground.Test
                         Cooldown = 1,
                         InitialCooldown = 2,
                         Value = 3,
-                        Attack = 4,
+                        Damage = 4,
                         Count = 5,
                         Skill_ = OverlordSkillKind.Types.Enum.Freeze,
                         SkillTargets =
@@ -106,10 +106,10 @@ namespace Loom.ZombieBattleground.Test
                             OverlordAbilityTarget.Types.Enum.AllCards
                         },
                         TargetUnitSpecialStatus = UnitSpecialStatus.Types.Enum.Frozen,
-                        ElementTargets =
+                        FactionTargets =
                         {
-                            CardSetType.Types.Enum.Fire,
-                            CardSetType.Types.Enum.Life
+                            Protobuf.Faction.Types.Enum.Fire,
+                            Protobuf.Faction.Types.Enum.Life
                         },
                         Unlocked = true,
                         CanSelectTarget = true
