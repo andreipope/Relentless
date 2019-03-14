@@ -55,6 +55,7 @@ namespace Loom.ZombieBattleground
             Pages.Add(new HordeSelectionWithNavigationPage());
             Pages.Add(new ArmyWithNavigationPage());
             Pages.Add(new ShopWithNavigationPage());
+            Pages.Add(new LoadingWithAnimationPage());
 
             foreach (IUIElement page in Pages)
             {
