@@ -42,14 +42,14 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
+            if (unit.BoardUnitModel.CurrentHp <= 0 || unit.BoardUnitModel.IsDead)
                 return;
 
             if (TutorialManager.IsTutorial)
             {
-                if ((!unit.Model.OwnerPlayer.IsLocalPlayer &&
+                if ((!unit.BoardUnitModel.OwnerPlayer.IsLocalPlayer &&
                     !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD)) ||
-                    (unit.Model.OwnerPlayer.IsLocalPlayer &&
+                    (unit.BoardUnitModel.OwnerPlayer.IsLocalPlayer &&
                     !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER_CARD)))
                     return;
             }
@@ -60,14 +60,14 @@ namespace Loom.ZombieBattleground
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
             {
-                if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
+                if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.BoardUnitModel.InitialUnitType == TargetUnitType)
                 {
                     if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.Model.UnitStatus == TargetUnitStatusType)
+                        unit.BoardUnitModel.UnitStatus == TargetUnitStatusType)
                     {
-                        if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
+                        if ((UnitDefense > 0 && unit.BoardUnitModel.CurrentHp <= UnitDefense) || UnitDefense == 0)
                         {
-                            if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
+                            if (unit.BoardUnitModel.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
                             {
                                 if (SelfBoardCreature != unit)
                                 {

@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                BoardUnitModel card = BoardSpell?.Model;
+                BoardUnitModel card = BoardSpell?.BoardUnitModel;
 
                 if(card != null && card.Prototype.MouldId == TorchCardId)
                 {

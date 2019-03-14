@@ -686,7 +686,7 @@ namespace Loom.ZombieBattleground
         private void CreateCardVFX(BoardCardView boardCard)
         {
             GameObject vfxPrefab;
-            switch(boardCard.Model.Card.Prototype.CardRank)
+            switch(boardCard.BoardUnitModel.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;

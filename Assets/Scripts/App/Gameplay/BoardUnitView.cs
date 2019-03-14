@@ -164,6 +164,9 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; }
 
+        // TODO: refactor-state: remove this
+        public BoardUnitModel BoardUnitModel => Model;
+
         public Transform Transform => GameObject?.transform;
 
         public GameObject GameObject { get; private set; }

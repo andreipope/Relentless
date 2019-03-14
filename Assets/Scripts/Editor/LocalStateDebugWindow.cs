@@ -105,7 +105,7 @@ namespace Editor
                                 IBoardUnitView view = item as IBoardUnitView;
                                 if (view != null)
                                 {
-                                    model = view.Model;
+                                    model = view.BoardUnitModel;
                                 }
                                 else
                                 {

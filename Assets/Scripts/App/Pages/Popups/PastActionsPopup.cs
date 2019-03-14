@@ -158,22 +158,22 @@ namespace Loom.ZombieBattleground
                     unitCardElement.Health = unit.MaxCurrentHp;
                     break;
                 case SpellBoardCard spellBoardCard:
-                    _leftBlockCardSpellElement.Init(spellBoardCard.Model.Card);
+                    _leftBlockCardSpellElement.Init(spellBoardCard.BoardUnitModel.Card);
                     break;
                 case BoardSpell spell:
-                    _leftBlockCardSpellElement.Init(spell.Model.Card);
+                    _leftBlockCardSpellElement.Init(spell.BoardUnitModel.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
-                    _leftBlockCardUnitElement.Init(unitBoardCard.Model.Card);
+                    _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unitBoardCard.Model.CurrentDamage;
-                    unitCardElement.Health = unitBoardCard.Model.CurrentHp;
+                    unitCardElement.Damage = unitBoardCard.BoardUnitModel.CurrentDamage;
+                    unitCardElement.Health = unitBoardCard.BoardUnitModel.CurrentHp;
                     break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card);
                     break;
                 case BoardUnitView unit:
-                    _leftBlockCardUnitElement.Init(unit.Model.Card);
+                    _leftBlockCardUnitElement.Init(unit.BoardUnitModel.Card);
                     break;
                 case null:
                     break;
@@ -210,11 +210,11 @@ namespace Loom.ZombieBattleground
                     {
                         case BoardCardView card when card is SpellBoardCard:
                             actionElement = new SmallSpellCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardCardView card when card is UnitBoardCard:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitModel unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
@@ -234,7 +234,7 @@ namespace Loom.ZombieBattleground
                             break;
                         case BoardUnitView unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(unit.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -262,13 +262,13 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCardView card when card is SpellBoardCard:
-                        _rightBlockCardSpellElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardSpellElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCardView card when card is UnitBoardCard boardCard:
-                        _rightBlockCardUnitElement.Init(boardCard.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = boardCard.Model.CurrentDamage;
-                        unitCardElement.Health = boardCard.Model.CurrentHp;
+                        unitCardElement.Damage = boardCard.BoardUnitModel.CurrentDamage;
+                        unitCardElement.Health = boardCard.BoardUnitModel.CurrentHp;
                         break;
                     case HandBoardCard card:
                         _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case BoardUnitView unit:
-                        _rightBlockCardUnitElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(unit.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);

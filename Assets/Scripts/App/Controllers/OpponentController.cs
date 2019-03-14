@@ -269,8 +269,8 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in boardUnits)
             {
-                _battlegroundController.UnregisterBoardUnitView(unit.Model.OwnerPlayer, unit);
-                unit.Model.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unit.Model);
+                _battlegroundController.UnregisterBoardUnitView(unit.BoardUnitModel.OwnerPlayer, unit);
+                unit.BoardUnitModel.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unit.BoardUnitModel);
 
                 unit.DisposeGameObject();
             }
@@ -326,12 +326,12 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
-            boardUnitView.Model.Card.Owner = owner;
-            boardUnitView.Model.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
+            boardUnitView.BoardUnitModel.Card.Owner = owner;
+            boardUnitView.BoardUnitModel.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
             {
-                boardUnitView.Model.IsPlayable = true;
+                boardUnitView.BoardUnitModel.IsPlayable = true;
             }
 
             boardUnitView.PlayArrivalAnimation();
@@ -436,8 +436,8 @@ namespace Loom.ZombieBattleground
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement = new BoardUnitView(boardUnitModel, _battlegroundController.OpponentBoardObject.transform);
                                 GameObject boardUnit = boardUnitViewElement.GameObject;
-                                boardUnitViewElement.Model.Card.Owner = boardUnitModel.Owner;
-                                boardUnitViewElement.Model.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
+                                boardUnitViewElement.BoardUnitModel.Card.Owner = boardUnitModel.Owner;
+                                boardUnitViewElement.BoardUnitModel.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
 
                                 boardUnit.tag = SRTags.OpponentOwned;
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
@@ -453,17 +453,17 @@ namespace Loom.ZombieBattleground
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                    Caller = boardUnitViewElement.Model,
+                                    Caller = boardUnitViewElement.BoardUnitModel,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
 
-                                _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model);
+                                _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.BoardUnitModel);
 
                                 break;
                             case Enumerators.CardKind.SPELL:
                                 BoardSpell spell = new BoardSpell(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
                                 _gameplayManager.OpponentPlayer.BoardSpellsInUse.Insert(ItemPosition.End, spell);
-                                spell.Model.Owner = _gameplayManager.OpponentPlayer;
+                                spell.BoardUnitModel.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -571,7 +571,7 @@ namespace Loom.ZombieBattleground
                 switch (boardObjectCaller)
                 {
                     case BoardSpell boardSpell:
-                        boardUnitModel = boardSpell.Model;
+                        boardUnitModel = boardSpell.BoardUnitModel;
                         break;
                     case BoardUnitModel tempBoardUnitModel:
                         boardUnitModel = tempBoardUnitModel;

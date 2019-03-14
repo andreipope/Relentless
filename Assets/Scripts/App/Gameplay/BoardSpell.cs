@@ -10,14 +10,14 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform { get; }
 
-        public BoardUnitModel Model { get; }
+        public BoardUnitModel BoardUnitModel { get; }
 
         private readonly OnBehaviourHandler _eventHandler;
 
         public BoardSpell(GameObject obj, BoardUnitModel boardUnitModel)
         {
             GameObject = obj;
-            Model = boardUnitModel;
+            BoardUnitModel = boardUnitModel;
 
             if (GameObject != null)
             {

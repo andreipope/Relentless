@@ -406,9 +406,9 @@ namespace Loom.ZombieBattleground
         {
             bool withEffect = true;
 
-            if (unitView.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+            if (unitView.BoardUnitModel.LastAttackingSetType == Enumerators.SetType.ITEM ||
+                unitView.BoardUnitModel.LastAttackingSetType == Enumerators.SetType.OTHERS ||
+                unitView.BoardUnitModel.LastAttackingSetType == Enumerators.SetType.NONE)
             {
                 withEffect = false;
             }
@@ -485,7 +485,7 @@ namespace Loom.ZombieBattleground
             if (_withEffect)
             {
                 SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UnitDeathAnimations/ZB_ANM_" +
-                                                InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
+                                                InternalTools.FormatStringToPascaleCase(BoardUnitView.BoardUnitModel.LastAttackingSetType.ToString()) +
                                                 "DeathAnimation"));
 
                 SelfObject.transform.position = BoardUnitView.Transform.position;
@@ -531,9 +531,9 @@ namespace Loom.ZombieBattleground
 
         private void PlayDeathSound()
         {
-            string cardDeathSoundName = BoardUnitView.Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
+            string cardDeathSoundName = BoardUnitView.BoardUnitModel.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
 
-            if (!BoardUnitView.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+            if (!BoardUnitView.BoardUnitModel.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
             {
                 _deathSoundDuration = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
 
@@ -553,7 +553,7 @@ namespace Loom.ZombieBattleground
         {
             _effectSoundIdentificator = _soundManager.PlaySound(Enumerators.SoundType.ZOMBIE_DEATH_ANIMATIONS,
                 "ZB_AUD_" +
-                InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
+                InternalTools.FormatStringToPascaleCase(BoardUnitView.BoardUnitModel.LastAttackingSetType.ToString()) +
                 "ZombieDeath_F1_EXP",
                 Constants.ZombiesSoundVolume, isLoop: false);
         }

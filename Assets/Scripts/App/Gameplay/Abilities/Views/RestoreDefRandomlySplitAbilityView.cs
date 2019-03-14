@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                         unitModel = boardObject as BoardUnitView;
                        
                         string objectName = "WalkerMask";
-                        switch (unitModel.Model.InitialUnitType)
+                        switch (unitModel.BoardUnitModel.InitialUnitType)
                         {
                             case Enumerators.CardType.FERAL:
                                 objectName = "FeralMask";

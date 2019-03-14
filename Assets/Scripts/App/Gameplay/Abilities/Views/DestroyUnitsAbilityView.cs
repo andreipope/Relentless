@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _unitsViews.Count; i++)
             {
                 unitView = _unitsViews[i];
-                if (unitView.Model.OwnerPlayer.IsLocalPlayer)
+                if (unitView.BoardUnitModel.OwnerPlayer.IsLocalPlayer)
                 {
                     if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
                     {

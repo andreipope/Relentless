@@ -323,7 +323,7 @@ namespace Loom.ZombieBattleground
 
                 _createdBoardCards.Add(boardCardView);
 
-                if (boardCardView.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
+                if (boardCardView.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }

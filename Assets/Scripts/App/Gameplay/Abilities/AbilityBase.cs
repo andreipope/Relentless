@@ -350,7 +350,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void CardSelectedHandler(BoardUnitView obj)
         {
-            TargetUnit = obj.Model;
+            TargetUnit = obj.BoardUnitModel;
 
             TargetPlayer = null;
         }

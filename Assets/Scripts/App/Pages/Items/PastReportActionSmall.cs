@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
                     break;
                 case BoardSpell spell:
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{spell.Model.Prototype.Picture.ToLowerInvariant()}");
+                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{spell.BoardUnitModel.Prototype.Picture.ToLowerInvariant()}");
                     break;
                 case null:
                     break;
