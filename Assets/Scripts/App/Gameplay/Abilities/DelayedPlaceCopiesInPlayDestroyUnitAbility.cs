@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                boardUnitView = PlayerCallerOfAbility.LocalCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
+                boardUnitView = PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
                 boardUnitModel = boardUnitView.Model;
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()

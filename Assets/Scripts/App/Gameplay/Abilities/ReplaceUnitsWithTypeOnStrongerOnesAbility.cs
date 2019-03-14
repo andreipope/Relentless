@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
             foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
             {
                 itemPosition = new ItemPosition(unitInfo.Position);
-                unit = unitInfo.OwnerPlayer.LocalCardsController.SpawnUnitOnBoard(unitInfo.NewUnitCardTitle, itemPosition);
+                unit = unitInfo.OwnerPlayer.PlayerCardsController.SpawnUnitOnBoard(unitInfo.NewUnitCardTitle, itemPosition);
             }
         }
 
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
                 {
                     BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
                     BattlegroundController.UnregisterBoardUnitView(unit.OwnerPlayer, unitView);
-                    unit.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unit);
+                    unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit);
 
                     unitView.DisposeGameObject();
                 }
@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
                 foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
                 {
                     BattlegroundController.UnregisterBoardUnitView(unitInfo.OldUnitView.Model.OwnerPlayer, unitInfo.OldUnitView);
-                    unitInfo.OldUnitView.Model.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
+                    unitInfo.OldUnitView.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
 
                     unitInfo.OldUnitView.DisposeGameObject();
                 }

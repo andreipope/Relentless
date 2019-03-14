@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
         public bool MulliganWasStarted { get; set; }
 
-        public PlayerLocalCardsController LocalCardsController { get; }
+        public PlayerCardsController PlayerCardsController { get; }
 
         private readonly GameObject _freezedHighlightObject;
 
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
-            LocalCardsController = new PlayerLocalCardsController(this);
+            PlayerCardsController = new PlayerCardsController(this);
 
             switch (_matchManager.MatchType)
             {
@@ -299,14 +299,6 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> PlayerGooVialsChanged;
 
-        public event Action<int> DeckChanged;
-
-        public event Action<int> HandChanged;
-
-        public event Action<int> GraveyardChanged;
-
-        public event Action<int> BoardChanged;
-
         public event Action<BoardUnitModel> DrawCard;
 
         public event Action<BoardUnitModel, int> CardPlayed;
@@ -314,8 +306,6 @@ namespace Loom.ZombieBattleground
         public event Action<BoardUnitModel, Data.InstanceId> CardAttacked;
 
         public event Action LeaveMatch;
-
-        public event Action<List<BoardUnitModel>> Mulligan;
 
         public GameObject PlayerObject { get; }
 
@@ -371,17 +361,17 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         // TODO: refactor-state: these list are here temporarily and will be removed
-        public UniquePositionedList<BoardItem> BoardItemsInUse => LocalCardsController.BoardItemsInUse;
+        public UniquePositionedList<BoardItem> BoardItemsInUse => PlayerCardsController.BoardItemsInUse;
 
-        public IReadOnlyList<BoardUnitModel> CardsInDeck => LocalCardsController.CardsInDeck;
+        public IReadOnlyList<BoardUnitModel> CardsInDeck => PlayerCardsController.CardsInDeck;
 
-        public IReadOnlyList<BoardUnitModel> CardsInGraveyard => LocalCardsController.CardsInGraveyard;
+        public IReadOnlyList<BoardUnitModel> CardsInGraveyard => PlayerCardsController.CardsInGraveyard;
 
-        public IReadOnlyList<BoardUnitModel> CardsInHand => LocalCardsController.CardsInHand;
+        public IReadOnlyList<BoardUnitModel> CardsInHand => PlayerCardsController.CardsInHand;
 
-        public IReadOnlyList<BoardUnitModel> CardsOnBoard => LocalCardsController.CardsOnBoard;
+        public IReadOnlyList<BoardUnitModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
 
-        public IReadOnlyList<BoardUnitModel> CardsPreparingToHand => LocalCardsController.CardsPreparingToHand;
+        public IReadOnlyList<BoardUnitModel> CardsPreparingToHand => PlayerCardsController.CardsPreparingToHand;
 
         public bool IsStunned { get; private set; }
 
@@ -422,14 +412,14 @@ namespace Loom.ZombieBattleground
                 if (!_pvpManager.UseBackendGameLogic ||
                     _pvpManager.UseBackendGameLogic && _battlegroundController.CurrentTurn != 1)
                 {
-                    IView cardView = LocalCardsController.AddCardFromDeckToHand();
+                    IView cardView = PlayerCardsController.AddCardFromDeckToHand();
                     (cardView as BoardCardView)?.SetDefaultAnimation();
                 }
 
                 // Second player draw two cards on their first turn
                 if (_battlegroundController.CurrentTurn == 2 && !_gameplayManager.IsTutorial)
                 {
-                    IView cardView = LocalCardsController.AddCardFromDeckToHand();
+                    IView cardView = PlayerCardsController.AddCardFromDeckToHand();
                     (cardView as BoardCardView)?.SetDefaultAnimation();
                 }
             }
@@ -582,11 +572,6 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
             }, Enumerators.QueueActionType.LeaveMatch);
-        }
-
-        private void ThrowMulliganCardsEvent(List<BoardUnitModel> cards)
-        {
-            Mulligan?.Invoke(cards);
         }
 
         private BoardUnitModel GetCardThatNotInDistribution()

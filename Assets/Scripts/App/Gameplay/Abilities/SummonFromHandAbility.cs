@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
         private void PutCardFromHandToBoard(Player owner, BoardCardView boardCardView,
             ref List<PastActionsPopup.TargetEffectParam> targetEffects, ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.LocalCardsController.SummonUnitFromHand(boardCardView, activateAbility);
+            owner.PlayerCardsController.SummonUnitFromHand(boardCardView, activateAbility);
             cards.Add(boardCardView.HandBoardCard);
             targetEffects.Add(new PastActionsPopup.TargetEffectParam
             {

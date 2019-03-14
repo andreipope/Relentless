@@ -116,7 +116,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            player.LocalCardsController.AddCardFromDeckToHand(boardUnitModel);
+            player.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
         }
         else
         {
@@ -270,7 +270,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        player.LocalCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        player.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -316,7 +316,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = opponentPlayer.LocalCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
         _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
@@ -333,7 +333,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            opponentPlayer.LocalCardsController.AddCardFromDeckToHand(boardUnitModel);
+            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
             boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
             _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
@@ -419,8 +419,8 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.LocalCardsController.RemoveCardFromGraveyard(unit.Model);
-        player.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+        player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
+        player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
         _battlegroundController.RegisterBoardUnitView(player, newUnit);
 
         _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);

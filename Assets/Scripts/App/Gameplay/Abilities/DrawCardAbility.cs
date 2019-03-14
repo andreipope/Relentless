@@ -69,10 +69,10 @@ namespace Loom.ZombieBattleground
                 switch (abilityTargetType)
                 {
                     case Enumerators.Target.PLAYER:
-                        PlayerCallerOfAbility.LocalCardsController.AddCardFromDeckToHand();
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
                         break;
                     case Enumerators.Target.OPPONENT:
-                        PlayerCallerOfAbility.LocalCardsController.AddCardToHandFromOtherPlayerDeck();
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardToHandFromOtherPlayerDeck();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                PlayerCallerOfAbility.LocalCardsController.AddCardFromDeckToHand();
+                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
             }
         }
     }

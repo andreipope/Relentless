@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             Action();
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             if (!boardUnitModel.Equals(BoardUnitModel))
                 return;
 
-            PlayerCallerOfAbility.BoardChanged -= BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 

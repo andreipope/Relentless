@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
                 (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
                 CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfHero.HeroElement)
             {
-                BoardUnitModel card = PlayerCallerOfAbility.LocalCardsController.CreateNewCardByNameAndAddToHand(Name);
+                BoardUnitModel card = PlayerCallerOfAbility.PlayerCardsController.CreateNewCardByNameAndAddToHand(Name);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

@@ -707,7 +707,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawAction(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            owner.LocalCardsController.AddCardFromDeckToHand();
+            owner.PlayerCardsController.AddCardFromDeckToHand();
             owner.PlayDrawCardVFX();
 
             _soundManager.PlaySound(
@@ -1359,7 +1359,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel boardUnitModel in boardUnitModels)
             {
-                unit = owner.LocalCardsController.SpawnUnitOnBoard(
+                unit = owner.PlayerCardsController.SpawnUnitOnBoard(
                     boardUnitModel,
                     ItemPosition.End,
                     onComplete: () =>
@@ -1392,7 +1392,7 @@ namespace Loom.ZombieBattleground
                         });
                     });
                 unit.ChangeModelVisibility(false);
-                owner.LocalCardsController.RemoveCardFromGraveyard(boardUnitModel);
+                owner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1514,7 +1514,7 @@ namespace Loom.ZombieBattleground
                 if (owner.CardsOnBoard.Count >= owner.MaxCardsInPlay)
                     break;
 
-                units.Add(owner.LocalCardsController.SpawnUnitOnBoard(
+                units.Add(owner.PlayerCardsController.SpawnUnitOnBoard(
                     card,
                     ItemPosition.End,
                     onComplete: () =>
@@ -1522,7 +1522,7 @@ namespace Loom.ZombieBattleground
                         ReanimateUnit(units);
                     }));
                 units[units.Count - 1].ChangeModelVisibility(false);
-                owner.LocalCardsController.RemoveCardFromGraveyard(card);
+                owner.PlayerCardsController.RemoveCardFromGraveyard(card);
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

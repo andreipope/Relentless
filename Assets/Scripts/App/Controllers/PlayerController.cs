@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 IEnumerable<BoardUnitModel> boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card));
-                player.LocalCardsController.SetCardsInDeck(boardUnitModels);
+                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
                         tutorialStatus = !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization;
                     }
 
-                    player.LocalCardsController.SetFirstHandForLocalMatch(tutorialStatus);
+                    player.PlayerCardsController.SetFirstHandForLocalMatch(tutorialStatus);
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    player.LocalCardsController.SetFirstHandForPvPMatch(workingCards);
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(workingCards);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.LocalCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x)));
+                _gameplayManager.OpponentPlayer.PlayerCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x)));
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -900,8 +900,8 @@ namespace Loom.ZombieBattleground
                 switch (boardUnitModel.Card.Prototype.CardKind)
                 {
                     case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.CardsOnBoard.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
-                        _gameplayManager.OpponentPlayer.LocalCardsController.RemoveCardFromHand(boardUnitModel);
-                        _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+                        _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
+                        _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
 
                         _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, boardUnitModel.InstanceId, target, null, (x, y) =>
                         {
@@ -914,8 +914,8 @@ namespace Loom.ZombieBattleground
                         {
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
-                                _gameplayManager.OpponentPlayer.LocalCardsController.RemoveCardFromHand(boardUnitModel);
-                                _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
 
                                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, boardUnitModel.InstanceId, target, null, (x, y) =>
                                 {

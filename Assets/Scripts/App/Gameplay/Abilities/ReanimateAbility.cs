@@ -45,8 +45,8 @@ namespace Loom.ZombieBattleground
             _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
             _reanimatedUnit.Model.IsReanimated = true;
 
-            owner.LocalCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
-            owner.LocalCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
+            owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
+            owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
             if (owner.IsLocalPlayer)
             {

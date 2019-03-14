@@ -47,14 +47,14 @@ namespace Loom.ZombieBattleground
                     case Enumerators.Target.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            GetOpponentOverlord().LocalCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
+                            GetOpponentOverlord().PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
                         }
 
                         break;
                     case Enumerators.Target.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            PlayerCallerOfAbility.LocalCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
+                            PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
                         }
 
                         break;

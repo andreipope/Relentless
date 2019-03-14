@@ -66,8 +66,8 @@ namespace Loom.ZombieBattleground
             BoardUnitModel revivedBoardUnitModel = new BoardUnitModel(card);
             BoardUnitView revivedBoardUnitView = BattlegroundController.CreateBoardUnit(playerOwner, revivedBoardUnitModel);
 
-            playerOwner.LocalCardsController.RemoveCardFromGraveyard(revivedBoardUnitModel);
-            playerOwner.LocalCardsController.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
+            playerOwner.PlayerCardsController.RemoveCardFromGraveyard(revivedBoardUnitModel);
+            playerOwner.PlayerCardsController.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
 
             if (playerOwner.IsLocalPlayer)
             {

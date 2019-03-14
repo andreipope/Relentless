@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             InternalTools.DoActionDelayed(() =>
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel != BoardUnitModel)
                 return;
 
-            PlayerCallerOfAbility.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 

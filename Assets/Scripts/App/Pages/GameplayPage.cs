@@ -446,11 +446,11 @@ namespace Loom.ZombieBattleground
             Player player = _gameplayManager.CurrentPlayer;
             Player opponent = _gameplayManager.OpponentPlayer;
 
-            player.DeckChanged += OnPlayerDeckChangedHandler;
+            player.PlayerCardsController.DeckChanged += OnPlayerDeckChangedHandler;
             player.PlayerDefenseChanged += OnPlayerDefenseChanged;
             player.PlayerCurrentGooChanged += OnPlayerCurrentGooChanged;
             player.PlayerGooVialsChanged += OnPlayerGooVialsChanged;
-            opponent.DeckChanged += OnOpponentDeckChangedHandler;
+            opponent.PlayerCardsController.DeckChanged += OnOpponentDeckChangedHandler;
             opponent.PlayerDefenseChanged += OnOpponentDefenseChanged;
             opponent.PlayerCurrentGooChanged += OnOpponentCurrentGooChanged;
             opponent.PlayerGooVialsChanged += OnOpponentGooVialsChanged;

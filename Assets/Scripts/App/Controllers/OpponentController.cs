@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 IEnumerable<BoardUnitModel> boardUnitModels = deck.Select(card => new BoardUnitModel(card));
-                player.LocalCardsController.SetCardsInDeck(boardUnitModels);
+                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
 
                 ItemPosition itemPosition = new ItemPosition(replaceUnitWithTypeStatOutcome.NewCardInstances[i].Position);
                 Card prototype = replaceUnitWithTypeStatOutcome.NewCardInstances[i].CardInstance.Prototype.FromProtobuf();
-                BoardUnitView unitView = owner.LocalCardsController.SpawnUnitOnBoard(prototype.Name, itemPosition);
+                BoardUnitView unitView = owner.PlayerCardsController.SpawnUnitOnBoard(prototype.Name, itemPosition);
                 if (unitView != null)
                 {
                     AddUnitToBoardCards(owner, itemPosition, unitView);
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitView unit in boardUnits)
             {
                 _battlegroundController.UnregisterBoardUnitView(unit.Model.OwnerPlayer, unit);
-                unit.Model.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unit.Model);
+                unit.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit.Model);
 
                 unit.DisposeGameObject();
             }
@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             BoardUnitView unit = CreateBoardUnit(boardUnitModel, owner);
 
-            owner.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+            owner.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
 
             _battlegroundController.RegisterBoardUnitView(owner, unit);
 
@@ -443,7 +443,7 @@ namespace Loom.ZombieBattleground
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                                 boardUnit.SetActive(false);
 
-                                _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToBoard(boardUnitModel, position);
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, position);
                                 _battlegroundController.RegisterBoardUnitView(
                                     _gameplayManager.OpponentPlayer,
                                     boardUnitViewElement,
