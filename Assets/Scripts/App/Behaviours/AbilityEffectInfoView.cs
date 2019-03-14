@@ -36,6 +36,5 @@ namespace Loom.ZombieBattleground
     public class AbilityInfoPositionBlock
     {
         public Enumerators.AbilityEffectInfoPositionType type;
-
     }
 }

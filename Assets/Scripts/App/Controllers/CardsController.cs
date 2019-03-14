@@ -593,7 +593,7 @@ namespace Loom.ZombieBattleground
                             player.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.PlayerBoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard,
-                            _battlegroundController.PlayerBoardCards), boardUnitView);
+                                                    _battlegroundController.PlayerBoardCards), boardUnitView);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             InternalTools.DoActionDelayed(

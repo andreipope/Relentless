@@ -480,8 +480,8 @@ namespace Loom.ZombieBattleground
             if (!GameMechanicDescriptionsOnUnit.Contains(gameMechanic))
             {
                 GameMechanicDescriptionsOnUnit.Add(gameMechanic);
-                GameMechanicDescriptionsOnUnitChanged?.Invoke();
             }
+            GameMechanicDescriptionsOnUnitChanged?.Invoke();
         }
 
         public void RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription gameMechanic)
