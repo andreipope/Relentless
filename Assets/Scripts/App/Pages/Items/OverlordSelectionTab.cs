@@ -190,8 +190,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Warn("", e);
-                Helpers.ExceptionReporter.SilentReportException(e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 success = false;
 

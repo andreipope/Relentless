@@ -849,7 +849,7 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 Helpers.ExceptionReporter.SilentReportException(ex);
-                Log.Warn(ex.Message);
+                Log.Warn(ex.ToString());
             }
         }
 

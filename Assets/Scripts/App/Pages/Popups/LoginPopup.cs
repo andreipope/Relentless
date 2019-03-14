@@ -451,9 +451,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
-                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -470,9 +469,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Info(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -500,9 +497,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Info(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
