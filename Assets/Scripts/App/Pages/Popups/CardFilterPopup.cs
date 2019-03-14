@@ -120,6 +120,8 @@ namespace Loom.ZombieBattleground
             _buttonRankDictionary.Clear();
             _buttonTypeDictionary.Clear();
             _buttonGooCostList.Clear();
+
+            ResetEventSubscriptions();
         }
 
         public void SetMainPriority()
@@ -248,7 +250,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
-            _uiManager.HidePopup<CardFilterPopup>();
+            Hide();
         }
         
         private void ButtonSaveHandler()
@@ -278,8 +280,8 @@ namespace Loom.ZombieBattleground
             }
             
             SaveCacheFilterData();
-            _uiManager.HidePopup<CardFilterPopup>();
             ActionPopupHiding?.Invoke(FilterData);
+            Hide();
         }
         
         private void ButtonElementIconHandler(Enumerators.SetType setType)
@@ -305,7 +307,9 @@ namespace Loom.ZombieBattleground
             {
                 case TAB.ELEMENT:
                     foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                    {
                         SetSelectedSetType(setType, false);
+                    }
                     break;
                 case TAB.RANK:
                     foreach (Enumerators.CardRank rank in AllAvailableRankList)
@@ -339,7 +343,9 @@ namespace Loom.ZombieBattleground
             {
                 case TAB.ELEMENT:
                     foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                    {
                         SetSelectedSetType(setType, true);
+                    }
                     break;
                 case TAB.RANK:
                     foreach (Enumerators.CardRank rank in AllAvailableRankList)
@@ -434,8 +440,10 @@ namespace Loom.ZombieBattleground
         
         private void LoadCacaheFilterData()
         {
-            if(_cacheFilterData != null)
+            if (_cacheFilterData != null)
+            {
                 FilterData = new CardFilterData(_cacheFilterData);
+            }
         }
 
         #region Filter
@@ -509,6 +517,11 @@ namespace Loom.ZombieBattleground
                 UpdateGooCostButtonDisplay(i);
         }
         
+        private void ResetEventSubscriptions()
+        {
+            ActionPopupHiding = null;
+        }
+
         #endregion
 
         public void PlayClickSound()
