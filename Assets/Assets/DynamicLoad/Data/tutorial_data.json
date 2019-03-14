@@ -961,7 +961,8 @@
             "Button_Delete",
             "Button_Rename",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_ButtonBackTray"
           ],
           "HandPointers": [
             {
@@ -990,7 +991,8 @@
             "Button_Back",
             "Button_RightArrow",
             "Button_LeftArrow",
-            "Button_Auto"
+            "Button_Auto",
+            "Image_ButtonBackTray"
           ],
           "HandPointers": [
             {
@@ -1019,7 +1021,8 @@
             "Button_Back",
             "Button_RightArrow",
             "Button_LeftArrow",
-            "Button_Auto"
+            "Button_Auto",
+            "Image_ButtonBackTray"
           ],
           "HandPointers": [
             {
