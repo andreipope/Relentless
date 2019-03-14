@@ -418,7 +418,7 @@ namespace Loom.ZombieBattleground
         {
             if(_tab != TAB.NONE && _tab != newTab)
             {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
             }
 
             _tab = newTab;            
