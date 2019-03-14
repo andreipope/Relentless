@@ -1220,7 +1220,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 success = false;
 

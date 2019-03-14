@@ -535,9 +535,9 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if (Card.Prototype.Abilities != null)
+            if (Card.InstanceCard.Abilities != null)
             {
-                foreach (AbilityData ability in Card.Prototype.Abilities)
+                foreach (AbilityData ability in Card.InstanceCard.Abilities)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescription);
 
@@ -849,7 +849,7 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 Helpers.ExceptionReporter.SilentReportException(ex);
-                Log.Warn(ex.Message);
+                Log.Warn(ex.ToString());
             }
         }
 

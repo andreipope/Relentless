@@ -821,8 +821,7 @@ namespace Loom.ZombieBattleground
             if(opponentHandCard is null)
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
-                Helpers.ExceptionReporter.SilentReportException(exception);
-                Log.Error("", exception);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
                 return;
             }
 

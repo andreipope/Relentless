@@ -631,7 +631,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         player.CardPlay(playerCardId, ItemPosition.Start);
                         player.LetsThink(2);
                         player.AssertInQueue(() => {
-                            Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().GooVials);
+                            Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().GooVials);
                         });
                     },
                     opponent =>
@@ -641,7 +641,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_GOO_VIAL, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
-                            Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().GooVials);
+                            Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().GooVials);
                         });
                     },
                 };
@@ -680,7 +680,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         player.CardPlay(playerCardId, ItemPosition.Start);
                         player.LetsThink(2);
                         player.AssertInQueue(() => {
-                            Assert.AreEqual(4, pvpTestContext.GetCurrentPlayer().GooVials);
+                            Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().GooVials);
                         });
                     },
                     opponent =>
@@ -690,7 +690,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_GOO_VIAL, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
-                            Assert.AreEqual(4, pvpTestContext.GetOpponentPlayer().GooVials);
+                            Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().GooVials);
                         });
                     },
                 };
