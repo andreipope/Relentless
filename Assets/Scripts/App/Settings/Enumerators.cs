@@ -840,7 +840,9 @@ namespace Loom.ZombieBattleground.Common
 
             CardWithAbilityPlayed,
 
-            EndCardFlipPlayerOrderPopup
+            EndCardFlipPlayerOrderPopup,
+
+            HordeTabChanged
         }
 
         public enum TutorialActivityActionHandler
