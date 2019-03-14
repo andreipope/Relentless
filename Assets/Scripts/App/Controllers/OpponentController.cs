@@ -105,7 +105,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                player.SetDeck(deck, isMainTurnSecond);
+                IEnumerable<BoardUnitModel> boardUnitModels = deck.Select(card => new BoardUnitModel(card));
+                player.LocalCardsController.SetCardsInDeck(boardUnitModels);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
             }
@@ -256,7 +257,7 @@ namespace Loom.ZombieBattleground
 
                 ItemPosition itemPosition = new ItemPosition(replaceUnitWithTypeStatOutcome.NewCardInstances[i].Position);
                 Card prototype = replaceUnitWithTypeStatOutcome.NewCardInstances[i].CardInstance.Prototype.FromProtobuf();
-                BoardUnitView unitView = _cardsController.SpawnUnitOnBoard(owner, prototype.Name, itemPosition);
+                BoardUnitView unitView = owner.LocalCardsController.SpawnUnitOnBoard(prototype.Name, itemPosition);
                 if (unitView != null)
                 {
                     AddUnitToBoardCards(owner, itemPosition, unitView);
@@ -268,8 +269,8 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in boardUnits)
             {
-                unit.Model.OwnerPlayer.BoardCards.Remove(unit);
-                unit.Model.OwnerPlayer.RemoveCardFromBoard(unit.Model);
+                _battlegroundController.UnregisterBoardUnitView(unit.Model.OwnerPlayer, unit);
+                unit.Model.OwnerPlayer.LocalCardsController.RemoveCardFromBoard(unit.Model);
 
                 unit.DisposeGameObject();
             }
@@ -277,14 +278,15 @@ namespace Loom.ZombieBattleground
 
         private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
         {
-            if (owner.IsLocalPlayer)
+            _battlegroundController.RegisterBoardUnitView(owner, unit, position);
+            /*if (owner.IsLocalPlayer)
             {
                 _gameplayManager.CurrentPlayer.BoardCards.Insert(position, unit);
             }
             else
             {
                 _gameplayManager.OpponentPlayer.BoardCards.Insert(position, unit);
-            }
+            }*/
         }
 
         private void ReAnimateAbility(PlayerActionOutcome.Types.CardAbilityReanimateOutcome reanimateAbilityOutcome)
@@ -299,16 +301,17 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             BoardUnitView unit = CreateBoardUnit(boardUnitModel, owner);
 
-            owner.AddCardToBoard(boardUnitModel, ItemPosition.End);
-            owner.BoardCards.Insert(ItemPosition.End, unit);
+            owner.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+
+            _battlegroundController.RegisterBoardUnitView(owner, unit);
 
             if (owner.IsLocalPlayer)
             {
-                _gameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, unit);
+                _battlegroundController.RegisterBoardUnitView(_gameplayManager.CurrentPlayer, unit);
             }
             else
             {
-                _gameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, unit);
+                _battlegroundController.RegisterBoardUnitView(_gameplayManager.OpponentPlayer, unit);
             }
 
             _boardController.UpdateCurrentBoardOfPlayer(owner, null);
@@ -448,12 +451,11 @@ namespace Loom.ZombieBattleground
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                                 boardUnit.SetActive(false);
 
-                                _gameplayManager.OpponentPlayer.BoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
-                                    _gameplayManager.OpponentPlayer.BoardCards),
-                                    boardUnitViewElement);
-                                _gameplayManager.OpponentPlayer.BoardCards.Insert(InternalTools.GetSafePositionToInsert(position,
-                                    _gameplayManager.OpponentPlayer.BoardCards),
-                                    boardUnitViewElement);
+                                _battlegroundController.RegisterBoardUnitView(
+                                    _gameplayManager.OpponentPlayer,
+                                    boardUnitViewElement,
+                                    InternalTools.GetSafePositionToInsert(position, _gameplayManager.OpponentPlayer.CardsOnBoard)
+                                    );
 
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
@@ -635,9 +637,9 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnitView> units = _battlegroundController.GetTargetsByInstanceId(targets)
+            List<BoardUnitModel> units = _battlegroundController.GetTargetsByInstanceId(targets)
                 .Cast<BoardUnitModel>()
-                .Select(x => _battlegroundController.GetBoardUnitViewByModel(x)).ToList();
+                .ToList();
 
             BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
             if (boardUnitModel == null)

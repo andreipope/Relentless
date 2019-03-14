@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in boardCardsTargets)
                 {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.BoardUnitModel, ref targetEffects, ref boardCards, false);
+                    PutCardFromHandToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, false);
                 }
                 return;
             }
@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
         private void PutCardFromHandToBoard(Player owner, BoardCardView boardCardView,
             ref List<PastActionsPopup.TargetEffectParam> targetEffects, ref List<HandBoardCard> cards, bool activateAbility)
         {
-            CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
+            owner.LocalCardsController.SummonUnitFromHand(boardCardView, activateAbility);
             cards.Add(boardCardView.HandBoardCard);
             targetEffects.Add(new PastActionsPopup.TargetEffectParam
             {

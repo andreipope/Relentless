@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in targets)
                 {
-                    PutCardFromDeckToBoard(target.OwnerPlayer, target.BoardUnitModel, ref targetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
                 }
             }
             else
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
         {
             owner.LocalCardsController.RemoveCardFromDeck(boardCardView.BoardUnitModel);
 
-            CardsController.SummonUnitFromHand( boardCardView, activateAbility);
+            owner.LocalCardsController.SummonUnitFromHand(boardCardView, activateAbility);
 
             cards.Add(boardCardView.HandBoardCard);
 

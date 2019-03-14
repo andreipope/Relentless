@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             if(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.CurrentHp < x.MaxCurrentHp).Count > 0)
             {
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
             }
         }
     }

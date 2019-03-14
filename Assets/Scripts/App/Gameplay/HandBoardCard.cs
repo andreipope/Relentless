@@ -12,6 +12,8 @@ public class HandBoardCard : OwnableBoardObject
 
     public BoardUnitModel BoardUnitModel { get; protected set; }
 
+    public BoardCardView BoardCardView { get; protected set; }
+
     protected bool StartedDrag;
 
     protected Vector3 InitialPos;
@@ -38,13 +40,11 @@ public class HandBoardCard : OwnableBoardObject
 
     private bool _canceledPlay;
 
-    private BoardCardView _boardCardView;
-
     public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
         GameObject = selfObject;
 
-        _boardCardView = boardCardView;
+        BoardCardView = boardCardView;
         BoardUnitModel = boardCardView.BoardUnitModel;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -86,7 +86,7 @@ public class HandBoardCard : OwnableBoardObject
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, _boardCardView);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, BoardCardView);
             }
             else
             {
@@ -135,7 +135,7 @@ public class HandBoardCard : OwnableBoardObject
     public void CheckStatusOfHighlight()
     {
         bool enableHighlight = BoardUnitModel.CanBePlayed(OwnerPlayer) && BoardUnitModel.CanBeBuyed(OwnerPlayer);
-        _boardCardView.SetHighlightingEnabled(enableHighlight);
+        BoardCardView.SetHighlightingEnabled(enableHighlight);
     }
 
     public void MouseUp(GameObject obj)
@@ -165,7 +165,7 @@ public class HandBoardCard : OwnableBoardObject
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(OwnerPlayer, _boardCardView, this, PlayCardOnBoard =>
+                _cardsController.PlayPlayerCard(OwnerPlayer, BoardCardView, this, PlayCardOnBoard =>
                 {
                     if (OwnerPlayer == _gameplayManager.CurrentPlayer)
                     {
@@ -174,7 +174,7 @@ public class HandBoardCard : OwnableBoardObject
                     }
                 });
 
-                _boardCardView.SetHighlightingEnabled(false);
+                BoardCardView.SetHighlightingEnabled(false);
             }
             else
             {

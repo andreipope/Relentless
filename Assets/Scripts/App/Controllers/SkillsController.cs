@@ -711,8 +711,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawAction(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            _cardsController.AddCardToHand(owner);
-
+            owner.LocalCardsController.AddCardToHand3();
             owner.PlayDrawCardVFX();
 
             _soundManager.PlaySound(
@@ -1364,8 +1363,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel boardUnitModel in boardUnitModels)
             {
-                unit = _cardsController.SpawnUnitOnBoard(
-                    owner,
+                unit = owner.LocalCardsController.SpawnUnitOnBoard(
                     boardUnitModel,
                     ItemPosition.End,
                     onComplete: () =>
@@ -1398,7 +1396,7 @@ namespace Loom.ZombieBattleground
                         });
                     });
                 unit.ChangeModelVisibility(false);
-                owner.RemoveCardFromGraveyard(boardUnitModel);
+                owner.LocalCardsController.RemoveCardFromGraveyard(boardUnitModel);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -1520,8 +1518,7 @@ namespace Loom.ZombieBattleground
                 if (owner.CardsOnBoard.Count >= owner.MaxCardsInPlay)
                     break;
 
-                units.Add(_cardsController.SpawnUnitOnBoard(
-                    owner,
+                units.Add(owner.LocalCardsController.SpawnUnitOnBoard(
                     card,
                     ItemPosition.End,
                     onComplete: () =>
@@ -1529,7 +1526,7 @@ namespace Loom.ZombieBattleground
                         ReanimateUnit(units);
                     }));
                 units[units.Count - 1].ChangeModelVisibility(false);
-                owner.RemoveCardFromGraveyard(card);
+                owner.LocalCardsController.RemoveCardFromGraveyard(card);
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

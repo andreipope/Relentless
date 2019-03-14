@@ -162,7 +162,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                player.SetDeck(workingDeck, isMainTurnSecond);
+                IEnumerable<BoardUnitModel> boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card));
+                player.LocalCardsController.SetCardsInDeck(boardUnitModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -184,7 +185,7 @@ namespace Loom.ZombieBattleground
                         tutorialStatus = !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization;
                     }
 
-                    player.SetFirstHandForLocalMatch(tutorialStatus);
+                    player.LocalCardsController.SetFirstHandForLocalMatch(tutorialStatus);
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
@@ -197,7 +198,7 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    player.SetFirstHandForPvPMatch(workingCards);
+                    player.LocalCardsController.SetFirstHandForPvPMatch(workingCards);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -274,18 +275,11 @@ namespace Loom.ZombieBattleground
 
         public void UpdateHandCardsHighlight()
         {
-            if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
+            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
                 foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
                 {
-                    if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
-                    {
-                        card.SetHighlightingEnabled(true);
-                    }
-                    else
-                    {
-                        card.SetHighlightingEnabled(false);
-                    }
+                    card.SetHighlightingEnabled(card.BoardUnitModel.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }

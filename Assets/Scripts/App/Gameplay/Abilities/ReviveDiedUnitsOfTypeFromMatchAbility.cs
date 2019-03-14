@@ -91,16 +91,15 @@ namespace Loom.ZombieBattleground
             BoardUnitView revivedBoardUnitView = BattlegroundController.CreateBoardUnit(playerOwner, revivedBoardUnitModel);
 
             playerOwner.LocalCardsController.RemoveCardFromGraveyard(revivedBoardUnitModel);
-            playerOwner.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
-            playerOwner.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
+            playerOwner.LocalCardsController.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
 
             if (playerOwner.IsLocalPlayer)
             {
-                GameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, revivedBoardUnitView);
             }
             else
             {
-                GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, revivedBoardUnitView);
             }
 
             RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitModel);

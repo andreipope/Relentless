@@ -343,7 +343,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsLocalPlayer { get; set; }
 
-        public IReadOnlyList<BoardSpell> BoardSpellsInUse => LocalCardsController.BoardSpellsInUse;
+        public UniquePositionedList<BoardSpell> BoardSpellsInUse => LocalCardsController.BoardSpellsInUse;
 
         public IReadOnlyList<BoardUnitModel> CardsInDeck => LocalCardsController.CardsInDeck;
 

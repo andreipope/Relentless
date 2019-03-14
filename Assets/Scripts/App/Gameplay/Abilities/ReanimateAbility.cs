@@ -48,22 +48,17 @@ namespace Loom.ZombieBattleground
             _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
             _reanimatedUnit.Model.IsReanimated = true;
 
-            if (owner.CardsInGraveyard.Contains(AbilityUnitOwner))
-            {
-                owner.CardsInGraveyard.Remove(AbilityUnitOwner);
-            }
-
-            owner.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
-            owner.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+            owner.LocalCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
+            owner.LocalCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
             if (owner.IsLocalPlayer)
             {
-                GameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {
-                GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
             }
 
             InvokeActionTriggered(_reanimatedUnit);

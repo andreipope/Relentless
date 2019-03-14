@@ -73,14 +73,9 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityTargetType.PLAYER:
                         PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
                         break;
                     case Enumerators.AbilityTargetType.OPPONENT:
-                        PlayerCallerOfAbility.LocalCardsController.AddCardToHandFromOpponentDeck();
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
-                            PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
-                                GameplayManager.OpponentPlayer :
-                                GameplayManager.CurrentPlayer);
+                        PlayerCallerOfAbility.LocalCardsController.AddCardToHandFromOtherPlayerDeck();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
@@ -89,7 +84,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
             }
         }
     }

@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                boardUnitView = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End);
+                boardUnitView = PlayerCallerOfAbility.LocalCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
                 boardUnitModel = boardUnitView.Model;
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -43,11 +43,11 @@ namespace Loom.ZombieBattleground
 
                 if (AbilityUnitOwner.OwnerPlayer.IsLocalPlayer)
                 {
-                    GameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitView);
+                    BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, boardUnitView);
                 }
                 else
                 {
-                    GameplayManager.OpponentPlayer.BoardCards.Insert(ItemPosition.End, boardUnitView);
+                    BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, boardUnitView);
                 }
 
                 targets.Add(boardUnitModel);

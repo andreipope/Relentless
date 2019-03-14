@@ -270,7 +270,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
+        player.LocalCardsController.CreateNewCardByNameAndAddToHand(cardName);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -316,7 +316,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
+        BoardUnitModel boardUnitModel = opponentPlayer.LocalCardsController.CreateNewCardByNameAndAddToHand(cardName);
         _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
@@ -333,7 +333,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(opponentPlayer, boardUnitModel);
+            opponentPlayer.LocalCardsController.AddCardToHand3(boardUnitModel);
             boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
             _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
@@ -419,14 +419,12 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.RemoveCardFromGraveyard(unit.Model);
-        player.AddCardToBoard(boardUnitModel, ItemPosition.End);
-        player.BoardCards.Insert(ItemPosition.End, newUnit);
-        _gameplayManager.CurrentPlayer.BoardCards.Insert(ItemPosition.End, newUnit);
+        player.LocalCardsController.RemoveCardFromGraveyard(unit.Model);
+        player.LocalCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+        _battlegroundController.RegisterBoardUnitView(player, newUnit);
 
-        _boardController.UpdateBoard(player.BoardCards, true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
     }
-
 
     private static void RevertAttackOnUnit(IMove move)
     {

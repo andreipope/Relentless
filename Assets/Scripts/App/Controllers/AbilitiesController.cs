@@ -521,9 +521,9 @@ namespace Loom.ZombieBattleground
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.BoardUnitModel.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
-                                           boardUnitModel.Owner.RemoveCardFromHand(boardUnitModel, true);
-                                           boardUnitModel.Owner.AddCardToBoard(boardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
-                                           boardUnitModel.Owner.AddCardToGraveyard(boardUnitModel);
+                                           boardUnitModel.Owner.LocalCardsController.RemoveCardFromHand(boardUnitModel, true);
+                                           boardUnitModel.Owner.LocalCardsController.AddCardToBoard(boardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
+                                           boardUnitModel.Owner.LocalCardsController.AddCardToGraveyard(boardUnitModel);
 
                                            if (card.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                                            {
@@ -541,7 +541,7 @@ namespace Loom.ZombieBattleground
                                                InternalTools.DoActionDelayed(() =>
                                                {
                                                    _cardsController.RemoveCard(card);
-                                                   boardUnitModel.Owner.RemoveCardFromBoard(boardUnitModel);
+                                                   boardUnitModel.Owner.LocalCardsController.RemoveCardFromBoard(boardUnitModel);
                                                }, 0.5f);
 
                                                InternalTools.DoActionDelayed(() =>
@@ -574,19 +574,14 @@ namespace Loom.ZombieBattleground
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
-                                           boardUnitModel.Owner.AddCardToHand(card.BoardUnitModel);
-                                           boardUnitModel.Owner.AddCardToBoard(card.BoardUnitModel);
-                                           boardUnitModel.Owner.CardsInHand.Insert(ItemPosition.End, card.BoardUnitModel);
-                                           boardUnitModel.Owner.CardsOnBoard.Remove(card.BoardUnitModel);
+                                           boardUnitModel.Owner.LocalCardsController.AddCardToHand3(card.BoardUnitModel);
+                                           boardUnitModel.Owner.LocalCardsController.RemoveCardFromBoard(card.BoardUnitModel, false);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
-                                           /*BoardUnitModel boardUnitModel =
-                                               boardUnitModel.Owner
-                                                   .CardsOnBoard
-                                                   .FirstOrDefault(model => model.Card.InstanceId == card.BoardUnitModel.Card.InstanceId);*/
+
                                            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                            if (boardUnitView != null)
                                            {
-                                               boardUnitModel.Owner.BoardCards.Remove(boardUnitView);
+                                               _battlegroundController.UnregisterBoardUnitView(boardUnitModel.Owner, boardUnitView);
                                            }
 
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -1158,9 +1153,9 @@ namespace Loom.ZombieBattleground
 
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.BoardUnitModel.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
-                card.BoardUnitModel.Card.Owner.RemoveCardFromHand(card.BoardUnitModel);
-                card.BoardUnitModel.Card.Owner.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
-                card.BoardUnitModel.Card.Owner.AddCardToGraveyard(card.BoardUnitModel);
+                card.BoardUnitModel.Card.Owner.LocalCardsController.RemoveCardFromHand(card.BoardUnitModel);
+                card.BoardUnitModel.Card.Owner.LocalCardsController.AddCardToBoard(card.BoardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
+                card.BoardUnitModel.Card.Owner.LocalCardsController.AddCardToGraveyard(card.BoardUnitModel);
 
                 if (card.BoardUnitModel.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                 {

@@ -47,14 +47,14 @@ namespace Loom.ZombieBattleground
             {
                 for (int i = 0; i < Count; i++)
                 {
-                    CardsController.AddCardToHand(PlayerCallerOfAbility);
+                    PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
                 }
             }
             else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
             {
                 for (int i = 0; i < Count - 1; i++)
                 {
-                    CardsController.AddCardToHand(PlayerCallerOfAbility);
+                    PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
                 }
             }
 
