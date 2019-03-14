@@ -62,8 +62,6 @@ namespace Loom.ZombieBattleground
 
         private GameObject _opponentBoard;
 
-        private BoardUnitView _fakeBoardCard;
-
         private int _cardInstanceId;
 
         private int _indexOfCard;
@@ -71,8 +69,6 @@ namespace Loom.ZombieBattleground
         public event Action<Player> UpdateCardsStatusEvent;
 
         public bool CardDistribution { get; set; }
-
-        private Vector3 _newCardPositionOfBoard;
 
         private bool _isHoveringCardOfBoard;
 
@@ -507,19 +503,8 @@ namespace Loom.ZombieBattleground
                         toArrangeList.Add(playerCards[i]);
                     }
 
-                    if (_fakeBoardCard != null)
-                    {
-                        _fakeBoardCard.DisposeGameObject();
-                        _fakeBoardCard = null;
-                    }
-
-                    _fakeBoardCard = new BoardUnitView(new BoardUnitModel(card.BoardUnitModel.Card), _playerBoard.transform);
-                    toArrangeList.Insert(_indexOfCard, _fakeBoardCard);
-
-                    _boardController.UpdateBoard(toArrangeList, true, null);
-
-                    _newCardPositionOfBoard = _fakeBoardCard.PositionOfBoard;
-                    _isHoveringCardOfBoard = true;
+                    toArrangeList.Insert(_indexOfCard, null);
+                    _boardController.UpdateBoard(toArrangeList, true, null, skipIndex: _indexOfCard);
                 }
             }
         }        
@@ -531,11 +516,6 @@ namespace Loom.ZombieBattleground
                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
 
                 _indexOfCard = -1;
-                if (_fakeBoardCard != null)
-                {
-                    _fakeBoardCard.DisposeGameObject();
-                    _fakeBoardCard = null;
-                }
             }
         }
 
@@ -605,12 +585,6 @@ namespace Loom.ZombieBattleground
                             card.RemoveCardParticle.Play();
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
-
-                            if(_isHoveringCardOfBoard)
-                            {
-                                boardUnitView.PositionOfBoard = _newCardPositionOfBoard;
-                                _isHoveringCardOfBoard = false;
-                            }
 
                             _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.BoardCards, boardUnitView.Model, RankBuffAction);
 
