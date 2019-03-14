@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardUnitModel unit = (BoardUnitModel)info;
 
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 

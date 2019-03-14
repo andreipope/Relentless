@@ -808,7 +808,7 @@ namespace Loom.ZombieBattleground
 
                 if (abilityCaller is BoardUnitModel unitModel)
                 {
-                    from = _battlegroundController.GetBoardUnitViewByModel(unitModel).Transform;
+                    from = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel).Transform;
                 }
 
                 Action callback = () =>

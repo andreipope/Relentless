@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground
             {
                 InstanceId id = replaceUnitWithTypeStatOutcome.OldInstanceIds[i].FromProtobuf();
                 BoardUnitModel unitModel = _battlegroundController.GetBoardUnitModelByInstanceId(id);
-                BoardUnitView unit = _battlegroundController.GetBoardUnitViewByModel(unitModel);
+                BoardUnitView unit = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
                 oldCardList.Add(unit);
             }
             ClearOldUnitsOnBoard(oldCardList);
@@ -523,7 +523,7 @@ namespace Loom.ZombieBattleground
                     attackerUnit.DoCombat(target);
                 };
 
-                BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel(attackerUnit);
+                BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackerUnit);
 
                 if (attackerUnitView != null)
                 {

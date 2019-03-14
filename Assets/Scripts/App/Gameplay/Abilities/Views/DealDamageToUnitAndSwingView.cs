@@ -26,10 +26,10 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
-                targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position;
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                 VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
             }
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position;
                 CreateVfx(targetPosition + offset, true, delayBeforeDestroy);
             }
 

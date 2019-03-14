@@ -468,7 +468,7 @@ namespace Loom.ZombieBattleground
                         {
                             HandCardPreview(new object[]
                             {
-                                _battlegroundController.GetBoardUnitViewByModel(unit)
+                                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)
                             });
                         }
                     }

@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _ownerUnit = ownerUnitModel == null ? null : _battlegroundController.GetBoardUnitViewByModel(ownerUnitModel);
+                _ownerUnit = ownerUnitModel == null ? null : _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(ownerUnitModel);
                 if (_ownerUnit == null)
                 {
                     _handPointerController.Reset(this);
@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _targetUnit = targetUnitModel == null ? null : _battlegroundController.GetBoardUnitViewByModel(targetUnitModel);
+                _targetUnit = targetUnitModel == null ? null : _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetUnitModel);
                 if (_targetUnit == null)
                 {
                     _handPointerController.Reset(this);

@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                         switch (boardObject)
                         {
                             case BoardUnitModel unit:
-                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel(unit));
+                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit));
                                 break;
                             default:
                                 break;

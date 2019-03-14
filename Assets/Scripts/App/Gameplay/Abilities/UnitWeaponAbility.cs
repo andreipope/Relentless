@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
             {
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position, true, 5f);
 
                 TargetUnit.RemoveGameMechanicDescriptionFromUnit(_gameMechanicType);
             }

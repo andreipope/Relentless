@@ -1242,7 +1242,7 @@ namespace Loom.ZombieBattleground.Test
                     arrow.OnPlayerSelected(player);
                     break;
                 case BoardUnitModel boardUnitModel:
-                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);

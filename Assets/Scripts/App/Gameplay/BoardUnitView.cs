@@ -892,7 +892,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
 
             if(targetCardView == null || targetCardView.GameObject == null)
             {

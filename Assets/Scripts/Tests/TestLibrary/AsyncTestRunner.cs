@@ -23,6 +23,11 @@ namespace Loom.ZombieBattleground.Test
             "Invalid SortingGroup index set in Renderer"
         };
 
+        private static readonly string[] WarningsToTreatLikeError =
+        {
+            "An error inside a tween callback was silently taken care of"
+        };
+
         private static readonly string[] FlappyTestErrorSubstrings =
         {
             "RpcClientException",
@@ -87,6 +92,7 @@ namespace Loom.ZombieBattleground.Test
                             else
                             {
 #if UNITY_EDITOR
+                                Log.Warn("Error Pause is enabled, Test execution paused due to an error");
                                 UnityEditor.EditorApplication.isPaused = true;
 #endif
                             }
@@ -258,13 +264,23 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
+                case LogType.Warning:
                     if (IsKnownError(condition))
                         break;
 
-                    CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
+                    bool shouldCancel = true;
+                    if (type == LogType.Warning)
+                    {
+                        shouldCancel = IsWarningToTreatLikeError(condition);
+                    }
+
+                    if (shouldCancel)
+                    {
+                        CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
+                    }
+
                     break;
                 case LogType.Assert:
-                case LogType.Warning:
                 case LogType.Log:
                     break;
             }
@@ -279,6 +295,11 @@ namespace Loom.ZombieBattleground.Test
         private static bool IsKnownError(string condition)
         {
             return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
+        }
+
+        private static bool IsWarningToTreatLikeError(string condition)
+        {
+            return WarningsToTreatLikeError.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
         }
 
         private static bool ShouldPauseOnErrorInsteadOfFailing()

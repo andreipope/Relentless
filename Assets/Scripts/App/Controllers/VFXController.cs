@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case HandBoardCard cardInHand:
                     break;
@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
                     target = unit.Transform;
                     break;
                 case BoardUnitModel unit:
-                    target = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+                    target = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
                     break;
                 case Player _:
                     target = ((Player)onObject).AvatarObject.transform;

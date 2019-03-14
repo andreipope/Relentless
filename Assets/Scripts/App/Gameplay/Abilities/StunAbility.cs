@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
         {
             unit.Stun(Enumerators.StunType.FREEZE, 1);
 
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position);
+            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
         }
     }
 }

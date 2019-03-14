@@ -126,12 +126,6 @@ namespace Loom.ZombieBattleground
             return view;
         }
 
-        // TODO: refactor-state: remove!
-        public BoardUnitView GetBoardUnitViewByModel(BoardUnitModel boardUnitModel)
-        {
-            return GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
-        }
-
         public IReadOnlyList<BoardUnitView> GetBoardUnitViewsFromModels(IReadOnlyList<BoardUnitModel> models)
         {
             return models.Select(GetBoardUnitViewByModel<BoardUnitView>).ToList();
@@ -574,7 +568,7 @@ namespace Loom.ZombieBattleground
 
         public void RemovePlayerCardFromBoardToGraveyard(BoardUnitModel boardUnitModel)
         {
-            BoardUnitView boardCardView = GetBoardUnitViewByModel(boardUnitModel);
+            BoardUnitView boardCardView = GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
             if (boardCardView == null)
                 return;
 
@@ -922,7 +916,7 @@ namespace Loom.ZombieBattleground
 
         public void TakeControlUnit(Player newPlayerOwner, BoardUnitModel unit)
         {
-            BoardUnitView view = GetBoardUnitViewByModel(unit);
+            BoardUnitView view = GetBoardUnitViewByModel<BoardUnitView>(unit);
 
             if (unit.OwnerPlayer.IsLocalPlayer)
             {
