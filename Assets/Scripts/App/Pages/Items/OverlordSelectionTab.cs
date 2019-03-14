@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
         
         private const int NumberOfOverlord = 6;
 
-        private Dictionary<Enumerators.SetType, Image> _elementImageDictionary;
+        private Dictionary<Enumerators.Faction, Image> _elementImageDictionary;
         
         public void Init()
         {
@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
                 ChangeOverlordIndex(index);
             };
             
-            _elementImageDictionary = new Dictionary<Enumerators.SetType, Image>();
+            _elementImageDictionary = new Dictionary<Enumerators.Faction, Image>();
         }
         
         public void Show(GameObject selfPage)
@@ -265,11 +265,11 @@ namespace Loom.ZombieBattleground
             _textSelectOverlordName.text = hero.FullName;
             _textSelectOverlordDescription.text = hero.ShortDescription;
             
-            Enumerators.SetType againstSetType = _myDeckPage.HordeEditTab.SetTypeAgainstDictionary
+            Enumerators.Faction againstFaction = _myDeckPage.HordeEditTab.FactionAgainstDictionary
             [
                 hero.HeroElement
             ];
-            _imageCross.transform.position = _elementImageDictionary[againstSetType].transform.position;        
+            _imageCross.transform.position = _elementImageDictionary[againstFaction].transform.position;        
         }
         
         public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)

@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
                        _buttonType,
                        _buttonGooCost;
 
-        private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
+        private Dictionary<Enumerators.Faction, Button> _buttonElementsDictionary;
 
         private Dictionary<Enumerators.CardRank, Button> _buttonRankDictionary;
         
@@ -38,15 +38,15 @@ namespace Loom.ZombieBattleground
         
         private List<Button> _buttonGooCostList;
         
-        public readonly List<Enumerators.SetType> AllAvailableSetTypeList = new List<Enumerators.SetType>()
+        public readonly List<Enumerators.Faction> AllAvailableFactionList = new List<Enumerators.Faction>()
         {
-            Enumerators.SetType.FIRE,
-            Enumerators.SetType.WATER,
-            Enumerators.SetType.EARTH,
-            Enumerators.SetType.AIR,
-            Enumerators.SetType.LIFE,
-            Enumerators.SetType.TOXIC,
-            Enumerators.SetType.ITEM
+            Enumerators.Faction.FIRE,
+            Enumerators.Faction.WATER,
+            Enumerators.Faction.EARTH,
+            Enumerators.Faction.AIR,
+            Enumerators.Faction.LIFE,
+            Enumerators.Faction.TOXIC,
+            Enumerators.Faction.ITEM
         };
 
         public readonly List<Enumerators.CardRank> AllAvailableRankList = new List<Enumerators.CardRank>()
@@ -90,12 +90,12 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
+            _buttonElementsDictionary = new Dictionary<Enumerators.Faction, Button>();
             _buttonRankDictionary = new Dictionary<Enumerators.CardRank, Button>();
             _buttonTypeDictionary = new Dictionary<Enumerators.CardType, Button>();
             FilterData = new CardFilterData
             (
-                AllAvailableSetTypeList,
+                AllAvailableFactionList,
                 AllAvailableRankList,
                 AllAvailableTypeList
             );
@@ -170,16 +170,16 @@ namespace Loom.ZombieBattleground
             _buttonGooCost.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
-            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
+            foreach(Enumerators.Faction faction in AllAvailableFactionList)
             {
-                Button buttonElementIcon = Self.transform.Find("Tab_Element/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Tab_Element/Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
                 (
-                    ()=> ButtonElementIconHandler(setType)
+                    ()=> ButtonElementIconHandler(faction)
                 );
                 buttonElementIcon.onClick.AddListener(PlayClickSound);
 
-                _buttonElementsDictionary.Add(setType, buttonElementIcon);
+                _buttonElementsDictionary.Add(faction, buttonElementIcon);
             }
 
             _buttonRankDictionary.Clear();
@@ -284,9 +284,9 @@ namespace Loom.ZombieBattleground
             Hide();
         }
         
-        private void ButtonElementIconHandler(Enumerators.SetType setType)
+        private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
-            ToggleSelectedSetType(setType);            
+            ToggleSelectedFaction(faction);            
         }
 
         private void ButtonRankIconHandler(Enumerators.CardRank rank)
@@ -306,9 +306,9 @@ namespace Loom.ZombieBattleground
             switch (_tab)
             {
                 case TAB.ELEMENT:
-                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                    foreach (Enumerators.Faction faction in AllAvailableFactionList)
                     {
-                        SetSelectedSetType(setType, false);
+                        SetSelectedFaction(faction, false);
                     }
                     break;
                 case TAB.RANK:
@@ -342,9 +342,9 @@ namespace Loom.ZombieBattleground
             switch (_tab)
             {
                 case TAB.ELEMENT:
-                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+                    foreach (Enumerators.Faction faction in AllAvailableFactionList)
                     {
-                        SetSelectedSetType(setType, true);
+                        SetSelectedFaction(faction, true);
                     }
                     break;
                 case TAB.RANK:
@@ -448,22 +448,22 @@ namespace Loom.ZombieBattleground
 
         #region Filter
 
-        private void SetSelectedSetType(Enumerators.SetType setType, bool status)
+        private void SetSelectedFaction(Enumerators.Faction faction, bool status)
         {
-            FilterData.SetTypeDictionary[setType] = status;
-            UpdateSetTypeButtonDisplay(setType);
+            FilterData.FactionDictionary[faction] = status;
+            UpdateFactionButtonDisplay(faction);
         }
         
-        private void ToggleSelectedSetType(Enumerators.SetType setType)
+        private void ToggleSelectedFaction(Enumerators.Faction faction)
         {
-            FilterData.SetTypeDictionary[setType] = !FilterData.SetTypeDictionary[setType];
-            UpdateSetTypeButtonDisplay(setType);
+            FilterData.FactionDictionary[faction] = !FilterData.FactionDictionary[faction];
+            UpdateFactionButtonDisplay(faction);
         }
         
-        private void UpdateSetTypeButtonDisplay(Enumerators.SetType setType)
+        private void UpdateFactionButtonDisplay(Enumerators.Faction faction)
         {
-            _buttonElementsDictionary[setType].GetComponent<Image>().color =
-                FilterData.SetTypeDictionary[setType] ? Color.white : Color.gray;
+            _buttonElementsDictionary[faction].GetComponent<Image>().color =
+                FilterData.FactionDictionary[faction] ? Color.white : Color.gray;
         }
         
         private void UpdateRankButtonDisplay(Enumerators.CardRank rank)
@@ -487,7 +487,7 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfAnyElementSelected()
         {
-            return FilterData.SetTypeDictionary.Any(kvp => kvp.Value);           
+            return FilterData.FactionDictionary.Any(kvp => kvp.Value);           
         }
         
         private bool CheckIfAnyGooCostSelected()
@@ -507,9 +507,9 @@ namespace Loom.ZombieBattleground
         
         private void UpdateAllButtonsStatus()
         {
-            foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
+            foreach (Enumerators.Faction faction in AllAvailableFactionList)
             {
-                UpdateSetTypeButtonDisplay(setType);
+                UpdateFactionButtonDisplay(faction);
             }
             foreach (Enumerators.CardRank rank in AllAvailableRankList)
             {
@@ -546,14 +546,14 @@ namespace Loom.ZombieBattleground
         
         public class CardFilterData
         {            
-            public Dictionary<Enumerators.SetType, bool> SetTypeDictionary;
+            public Dictionary<Enumerators.Faction, bool> FactionDictionary;
             public Dictionary<Enumerators.CardRank, bool> RankDictionary;
             public Dictionary<Enumerators.CardType, bool> TypeDictionary;
             public List<bool> GooCostList;
             
             public CardFilterData(CardFilterData originalData)
             {
-                SetTypeDictionary = originalData.SetTypeDictionary.ToDictionary
+                FactionDictionary = originalData.FactionDictionary.ToDictionary
                 (
                     entry => entry.Key,
                     entry => entry.Value
@@ -573,15 +573,15 @@ namespace Loom.ZombieBattleground
 
             public CardFilterData
             (
-                List<Enumerators.SetType> availableSetTypeList,
+                List<Enumerators.Faction> availableFactionList,
                 List<Enumerators.CardRank> availableRankList,
                 List<Enumerators.CardType> availableTypeList
             )
             {
-                SetTypeDictionary = new Dictionary<Enumerators.SetType, bool>();
-                foreach(Enumerators.SetType setType in availableSetTypeList)
+                FactionDictionary = new Dictionary<Enumerators.Faction, bool>();
+                foreach(Enumerators.Faction faction in availableFactionList)
                 {
-                    SetTypeDictionary.Add(setType, true);
+                    FactionDictionary.Add(faction, true);
                 }
 
                 RankDictionary = new Dictionary<Enumerators.CardRank, bool>();
@@ -603,23 +603,23 @@ namespace Loom.ZombieBattleground
                 }
             }
             
-            public List<Enumerators.SetType> GetFilterSetTypeList()
+            public List<Enumerators.Faction> GetFilterFactionList()
             {
-                List<Enumerators.SetType> setTypeList = new List<Enumerators.SetType>();
-                foreach (KeyValuePair<Enumerators.SetType, bool> kvp in SetTypeDictionary)
+                List<Enumerators.Faction> factionList = new List<Enumerators.Faction>();
+                foreach (KeyValuePair<Enumerators.Faction, bool> kvp in FactionDictionary)
                 {
                     if(kvp.Value)
-                        setTypeList.Add(kvp.Key);
+                        factionList.Add(kvp.Key);
                 }
-                return setTypeList;
+                return factionList;
             }
 
             public void Reset()
             {
-                for(int i=0; i<SetTypeDictionary.Count;++i)
+                for(int i=0; i<FactionDictionary.Count;++i)
                 {
-                    KeyValuePair<Enumerators.SetType, bool> kvp = SetTypeDictionary.ElementAt(i);
-                    SetTypeDictionary[kvp.Key] = true;
+                    KeyValuePair<Enumerators.Faction, bool> kvp = FactionDictionary.ElementAt(i);
+                    FactionDictionary[kvp.Key] = true;
                 }
                 for(int i=0; i<RankDictionary.Count;++i)
                 {

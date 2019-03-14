@@ -369,7 +369,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetPageState()
         {
-            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterSetTypeList();
+            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterFactionList();
             _currentSetTypeIndex = 0;
             _currentPage = 0;
             UpdateAvailableSetTypeCards();
@@ -401,7 +401,7 @@ namespace Loom.ZombieBattleground
             {   
                 keyword = keyword.ToLower();
                 List<Card> resultList = new List<Card>();
-                List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableSetTypeList;
+                List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableFactionList;
                 foreach (Enumerators.Faction item in allAvailableSetTypeList)
                 {
                     Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);

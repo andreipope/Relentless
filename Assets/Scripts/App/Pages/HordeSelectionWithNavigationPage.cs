@@ -277,11 +277,11 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.Faction selectedSetType)
+        private void FilterPopupHidingHandler(Enumerators.Faction selectedFaction)
         {
-            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedSetType)))
+            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedFaction)))
             {   
-                ApplyDeckFilter(selectedSetType);
+                ApplyDeckFilter(selectedFaction);
                 ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
                 popup.ActionPopupHiding -= FilterPopupHidingHandler;
             }
