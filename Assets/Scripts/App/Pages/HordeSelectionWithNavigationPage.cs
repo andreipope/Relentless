@@ -599,7 +599,7 @@ namespace Loom.ZombieBattleground
             if (displayNewDeckButton)
             {
                 int startIndex = 0;
-                int endIndex = _deckInfoAmountPerPage;
+                int endIndex = _deckInfoAmountPerPage-1;
                 for (int i = 0; i < deckList.Count; ++i)
                 {
                     if (i >= startIndex && i < endIndex)
@@ -610,7 +610,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                int startIndex = (_deckInfoAmountPerPage) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
+                int startIndex = (_deckInfoAmountPerPage-1) + (_deckPageIndex-1) * _deckInfoAmountPerPage;
                 int endIndex = startIndex + _deckInfoAmountPerPage;
                 for (int i = 0; i < deckList.Count; ++i)
                 {
@@ -709,13 +709,14 @@ namespace Loom.ZombieBattleground
             _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
             
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
-
+           
             int startObjectIndex = displayNewDeckButton?1:0;
-
-            for (int i=startObjectIndex; i<_deckInfoObjectList.Count; ++i)
+            int deckDataIndex = 0;
+            for (int i=startObjectIndex; i<_deckInfoObjectList.Count; ++i, ++deckDataIndex)
             {
+                
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
-                if(i>=deckListToDisplay.Count)
+                if(deckDataIndex>=deckListToDisplay.Count)
                 {
                     deckInfoObject._button.gameObject.SetActive(false);
                     continue;
@@ -734,7 +735,7 @@ namespace Loom.ZombieBattleground
                 };
 #endif
                 
-                Deck deck = deckListToDisplay[i];
+                Deck deck = deckListToDisplay[deckDataIndex];
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
