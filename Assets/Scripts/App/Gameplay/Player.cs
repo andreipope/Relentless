@@ -20,7 +20,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public partial class Player : BoardObject, IView, IInstanceIdOwner
+    public class Player : BoardObject, IView, IInstanceIdOwner
     {
         private static readonly ILog Log = Logging.GetLog(nameof(Player));
 
