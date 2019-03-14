@@ -181,7 +181,17 @@ namespace Loom.ZombieBattleground
         
         private void ButtonMarketplace()
         {
-            Application.OpenURL(Constants.MarketPlaceLink);
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace link?"); 
+        }
+        
+        private void ConfirmRedirectMarketplaceLink(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectMarketplaceLink;
+            if(status)
+            {
+                Application.OpenURL(Constants.MarketPlaceLink);
+            }
         }
 
         public void OnInputFieldSearchEndedEdit(string value)

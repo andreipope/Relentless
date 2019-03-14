@@ -160,12 +160,32 @@ namespace Loom.ZombieBattleground
         
         private void ButtonHelpHandler()
         {
-            Application.OpenURL(Constants.HelpLink);
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectHelpLink;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to help link?");            
         }
         
+        private void ConfirmRedirectHelpLink(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectHelpLink;
+            if(status)
+            {
+                Application.OpenURL(Constants.HelpLink);
+            }
+        }
+
         private void ButtonSupportHandler()
         {
-            Application.OpenURL(Constants.SupportLink);
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectSupportLink;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to support link?");
+        }
+        
+        private void ConfirmRedirectSupportLink(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmRedirectSupportLink;
+            if(status)
+            {
+                Application.OpenURL(Constants.SupportLink);
+            }
         }
         
         private void ButtonCreditsHandler()
