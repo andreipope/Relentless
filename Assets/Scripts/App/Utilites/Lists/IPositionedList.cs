@@ -18,8 +18,8 @@ namespace Loom.ZombieBattleground
 
         int IndexOf(T item);
 
-        void Insert(int index, T item);
+        void Insert(ItemPosition index, T item);
 
-        void RemoveAt(int index);
+        void RemoveAt(ItemPosition index);
     }
 }
