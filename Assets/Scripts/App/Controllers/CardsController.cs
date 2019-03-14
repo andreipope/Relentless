@@ -822,7 +822,7 @@ namespace Loom.ZombieBattleground
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
                 Helpers.ExceptionReporter.SilentReportException(exception);
-                Log.Error("", exception);
+                Log.Error(exception.ToString());
                 return;
             }
 
