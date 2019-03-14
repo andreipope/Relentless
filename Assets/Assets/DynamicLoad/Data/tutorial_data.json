@@ -214,8 +214,8 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 1,
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 1
             }
           ]
         },
@@ -315,8 +315,8 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 2,
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 2
             }
           ]
         },
@@ -833,12 +833,14 @@
           "ActionToEndThisStep": "ScreenChanged",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
+            "Panel_Battle_Mode",
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_Play",
-            "Button_Shop"
+            "Button_Left",
+            "Button_Right",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards"
           ],
           "ConnectedActivities": [
             2
@@ -846,8 +848,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -5.95,
-                "Y": -2.7,
+                "X": -12,
+                "Y": -2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -878,9 +880,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
               "AppearDelay": 2.5
             }
           ]
@@ -913,87 +915,16 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "BackButton",
               "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "AppearDelay": 0.5
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 0.5,
+              "Rotation": 180
             }
           ]
         },
         {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_OpenPacks",
-            "Button_Shop"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": -2.8,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PlaySelectionPage",
-          "BlockedButtons": [
-            "Button_Tutorial",
-            "Button_PvPMode",
-            "Button_Back"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -4.5,
-                "Y": -2.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "HordeSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
-            "Button_Battle",
-            "Button_Army",
-            "Pulse",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 5.5,
-                "Y": 1.75,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "OverlordSelectionPage",
+          "ActionToEndThisStep": "HordeTabChanged",
           "BlockedButtons": [
             "Button_Back",
             "Button_RightArrow",
@@ -1002,8 +933,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 0,
-                "Y": -5.5,
+                "X": 1.94,
+                "Y": -4.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -1012,20 +943,21 @@
           ]
         },
         {
-          "ActionToEndThisStep": "PopupClosed",
-          "OpenScreen": "OverlordAbilityPopup",
+          "ActionToEndThisStep": "HordeTabChanged",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.5,
-                "Y": -5.5,
+                "X": 1.94,
+                "Y": -4.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePopups"
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -1591,9 +1523,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 2,
-              "TargetTutorialObjectId": 52,
-              "AppearDelay": 5
+              "TargetTutorialObjectId": 52
             }
           ]
         },
@@ -1623,8 +1555,8 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 1,
-              "AppearDelay": 5
+              "AppearDelay": 5,
+              "TutorialObjectIdStepOwner": 1
             }
           ]
         },
@@ -1862,9 +1794,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
               "AppearDelay": 5.5
             }
           ]
@@ -1897,11 +1829,11 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "BackButton",
               "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "AppearDelay": 7.5
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 7.5,
+              "Rotation": 180
             }
           ]
         },
@@ -2291,9 +2223,9 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 5,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -2326,9 +2258,9 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 5,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -2622,6 +2554,16 @@
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
         {
+          "Id": 6,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Don't you want to open your new cards first?",
+          "Position": {
+            "X": 0,
+            "Y": -3.25,
+            "Z": 0
+          },
+          "TutorialTooltipLayer": "AbovePages"
         }
       ],
       "TutorialSteps": [
@@ -2641,9 +2583,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
               "AppearDelay": 7.5
             }
           ]
@@ -2678,9 +2620,9 @@
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "BackButton",
               "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
               "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 7.5
+              "AppearDelay": 7.5,
+              "Rotation": 180
             }
           ]
         },
@@ -2993,8 +2935,8 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 10,
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 10
             }
           ]
         },
@@ -3050,8 +2992,8 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": -1,
-              "AppearDelay": 10
+              "AppearDelay": 10,
+              "TutorialObjectIdStepOwner": -1
             }
           ]
         },
@@ -3094,29 +3036,27 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
-          "RequiredActivitiesToDoneDuringStep": [
-            "BattleframeAttacked",
-            "EnemyOverlordCardPlayed",
-          ],
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
           "ConnectedTurnIndex": 5,
-          "LaunchAIBrain": true
+          "LaunchAIBrain": true,
+          "RequiredActivitiesToDoneDuringStep": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed"
+          ]
         },
         {
           "ActionToEndThisStep": "DeathAbilityCompleted",
-          "RequiredActivitiesToDoneDuringStep": [
-          ],
           "ConnectedTurnIndex": 5,
           "AIShouldBePaused": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "ConnectedTurnIndex": 5,
           "RequiredActivitiesToDoneDuringStep": [
-            "EnemyOverlordCardPlayed",
-          ],
-          "ConnectedTurnIndex": 5
+            "EnemyOverlordCardPlayed"
+          ]
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
@@ -3440,6 +3380,16 @@
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
         {
+          "Id": 6,
+          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Don't you want to open your new cards first?",
+          "Position": {
+            "X": 0,
+            "Y": -3.25,
+            "Z": 0
+          },
+          "TutorialTooltipLayer": "AbovePages"
         }
       ],
       "TutorialSteps": [
@@ -3494,11 +3444,11 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "BackButton",
               "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "AppearDelay": 7.5
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 7.5,
+              "Rotation": 180
             }
           ]
         },
@@ -3781,7 +3731,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 0,
+          "AppearDelay": 2,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
@@ -3821,15 +3771,15 @@
         },
         {
           "ActionToEndThisStep": "EndCardFlipPlayerOrderPopup",
-          "BeginGameplayFlowManually": true,
           "PlayerOrderScreenCloseManually": true,
+          "BeginGameplayFlowManually": true
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
-          "PlayerOrderScreenCloseManually": true,
+          "PlayerOrderScreenCloseManually": true
         },
         {
           "ActionToEndThisStep": "PopupClosed"
