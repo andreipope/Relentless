@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 foreach (Card card in cardLibrary)
                 {
                     _cardNameToDescription[card.Name] =
-                        $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
+                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
                         {
-                            foreach (Card card in cardLibrary.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                            foreach (Card card in cardLibrary.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                             {
                                 EditorGUILayout.BeginHorizontal();
                                 {

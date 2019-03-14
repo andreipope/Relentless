@@ -215,7 +215,10 @@ namespace Loom.ZombieBattleground
                     {
                         _appStateManager.ChangeAppState(_finishMatchAppState);
 
-                        _tutorialManager.CheckNextTutorial();
+                        if (_gameplayManager.IsTutorial)
+                        {
+                            _tutorialManager.CheckNextTutorial();
+                        }
                     }
                     break;
             }

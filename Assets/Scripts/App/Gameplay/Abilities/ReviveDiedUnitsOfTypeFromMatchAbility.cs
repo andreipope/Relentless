@@ -8,12 +8,12 @@ namespace Loom.ZombieBattleground
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -34,13 +34,13 @@ namespace Loom.ZombieBattleground
 
             List<BoardUnitModel> cards = new List<BoardUnitModel>();
             cards.AddRange(GameplayManager.CurrentPlayer.BoardCards
-                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
+                    .FindAll(x => x.Model.Card.Prototype.Faction == Faction)
                     .Select(boardCard => boardCard.Model));
             cards.AddRange(GameplayManager.CurrentPlayer.CardsInHand
-                    .FindAll(x => x.Prototype.CardSetType == SetType));
+                    .FindAll(x => x.Prototype.Faction == Faction));
 
             IReadOnlyList<BoardUnitModel> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
+                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.Faction == Faction &&
                     !cards.Exists(card => card.InstanceId == unit.InstanceId));
 
             foreach (BoardUnitModel unit in units)
@@ -50,12 +50,12 @@ namespace Loom.ZombieBattleground
 
             cards.Clear();
             cards.AddRange(GameplayManager.OpponentPlayer.BoardCards
-                    .FindAll(x => x.Model.Card.Prototype.CardSetType == SetType)
+                    .FindAll(x => x.Model.Card.Prototype.Faction == Faction)
                     .Select(boardCard => boardCard.Model));
             cards.AddRange(GameplayManager.OpponentPlayer.CardsInHand
-                    .FindAll(x => x.Prototype.CardSetType == SetType));
+                    .FindAll(x => x.Prototype.Faction == Faction));
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.CardSetType == SetType &&
+            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(unit => unit.Prototype.Faction == Faction &&
                     !cards.Exists(card => card.InstanceId == unit.InstanceId));
 
 
