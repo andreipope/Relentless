@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             // for local player
             foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                _gameplayManager.CurrentPlayer.LocalCardsController.AddCardToHand3(card, false);
+                _gameplayManager.CurrentPlayer.LocalCardsController.AddCardFromDeckToHand(card, false);
             }
             _gameplayManager.CurrentPlayer.LocalCardsController.SetCardsPreparingToHand(Array.Empty<BoardUnitModel>());
 

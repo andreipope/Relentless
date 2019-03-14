@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
                 switch (abilityTargetType)
                 {
                     case Enumerators.Target.PLAYER:
-                        PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
+                        PlayerCallerOfAbility.LocalCardsController.AddCardFromDeckToHand();
                         break;
                     case Enumerators.Target.OPPONENT:
                         PlayerCallerOfAbility.LocalCardsController.AddCardToHandFromOtherPlayerDeck();
@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                PlayerCallerOfAbility.LocalCardsController.AddCardToHand3();
+                PlayerCallerOfAbility.LocalCardsController.AddCardFromDeckToHand();
             }
         }
     }

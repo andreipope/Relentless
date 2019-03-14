@@ -576,7 +576,7 @@ namespace Loom.ZombieBattleground
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
-                                           boardUnitModel.Owner.LocalCardsController.AddCardToHand3(card.Model);
+                                           boardUnitModel.Owner.LocalCardsController.AddCardFromDeckToHand(card.Model);
                                            boardUnitModel.Owner.LocalCardsController.RemoveCardFromBoard(card.Model, false);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
 

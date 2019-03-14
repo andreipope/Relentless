@@ -1217,14 +1217,14 @@ namespace Loom.ZombieBattleground
             {
                 card = _cardsController.CreateWorkingCardFromCardName(cardInfo.Name, _gameplayManager.CurrentPlayer);
                 card.TutorialObjectId = cardInfo.TutorialObjectId;
-                _gameplayManager.CurrentPlayer.LocalCardsController.AddCardToHand2(new BoardUnitModel(card), true);
+                _gameplayManager.CurrentPlayer.LocalCardsController.AddCardToHand(new BoardUnitModel(card), true);
             }
 
             foreach (SpecificBattlegroundInfo.OverlordCardInfo cardInfo in opponentCards)
             {
                 card = _cardsController.CreateWorkingCardFromCardName(cardInfo.Name, _gameplayManager.OpponentPlayer);
                 card.TutorialObjectId = cardInfo.TutorialObjectId;
-                _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToHand2(new BoardUnitModel(card), true);
+                _gameplayManager.OpponentPlayer.LocalCardsController.AddCardToHand(new BoardUnitModel(card), true);
             }
         }
 

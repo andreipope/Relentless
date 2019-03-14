@@ -707,7 +707,7 @@ namespace Loom.ZombieBattleground
 
         private void DrawAction(Player owner, BoardSkill boardSkill, HeroSkill skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            owner.LocalCardsController.AddCardToHand3();
+            owner.LocalCardsController.AddCardFromDeckToHand();
             owner.PlayDrawCardVFX();
 
             _soundManager.PlaySound(

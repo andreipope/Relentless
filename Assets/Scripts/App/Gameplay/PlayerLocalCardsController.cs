@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
 
             #region Hand
 
-            public IView AddCardToHand3(BoardUnitModel card = null, bool removeCardsFromDeck = true)
+            public IView AddCardFromDeckToHand(BoardUnitModel card = null, bool removeCardsFromDeck = true)
             {
                 if (card == null)
                 {
@@ -202,11 +202,11 @@ namespace Loom.ZombieBattleground
                     RemoveCardFromDeck(card);
                 }
 
-                IView cardView = AddCardToHand2(card);
+                IView cardView = AddCardToHand(card);
                 return cardView;
             }
 
-            public IView AddCardToHand2(BoardUnitModel boardUnitModel, bool silent = false)
+            public IView AddCardToHand(BoardUnitModel boardUnitModel, bool silent = false)
             {
                 IView cardView;
                 _cardsInHand.Insert(ItemPosition.End, boardUnitModel);
@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
 
                 if (Player == OpponentPlayer)
                 {
-                    AddCardToHand2(card);
+                    AddCardToHand(card);
                 }
                 else
                 {
@@ -384,7 +384,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        AddCardToHand3(CardsInDeck[0]);
+                        AddCardFromDeckToHand(CardsInDeck[0]);
                     }
                 }
 
@@ -402,7 +402,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        AddCardToHand3(boardUnitModel, removeCardsFromDeck);
+                        AddCardFromDeckToHand(boardUnitModel, removeCardsFromDeck);
                     }
                 }
 
@@ -568,7 +568,7 @@ namespace Loom.ZombieBattleground
                 if (CheckIsMoreThanMaxCards(boardUnitModel))
                     return;
 
-                IView cardView = AddCardToHand2(boardUnitModel, true);
+                IView cardView = AddCardToHand(boardUnitModel, true);
                 cardView.Transform.position = cardPosition;
 
                 if (Player.IsLocalPlayer)

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             if (card != null)
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                PlayerCallerOfAbility.LocalCardsController.AddCardToHand3(card);
+                PlayerCallerOfAbility.LocalCardsController.AddCardFromDeckToHand(card);
 
                 InvokeUseAbilityEvent();
             }

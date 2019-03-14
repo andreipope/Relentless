@@ -116,7 +116,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            player.LocalCardsController.AddCardToHand3(boardUnitModel);
+            player.LocalCardsController.AddCardFromDeckToHand(boardUnitModel);
         }
         else
         {
@@ -333,7 +333,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            opponentPlayer.LocalCardsController.AddCardToHand3(boardUnitModel);
+            opponentPlayer.LocalCardsController.AddCardFromDeckToHand(boardUnitModel);
             boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
             _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
