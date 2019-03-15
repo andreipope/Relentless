@@ -156,7 +156,8 @@ namespace Loom.ZombieBattleground
             }
 
             BackgroundSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            PictureSprite.sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
+            Model.CardPictureWasUpdated += PictureUpdatedEvent;
+            PictureUpdatedEvent();
 
             SetAmount(0);
             SetShowAmountEnabled(false);
@@ -707,6 +708,11 @@ namespace Loom.ZombieBattleground
                 default:
                     return ability.Value;
             }
+        }
+
+        private void PictureUpdatedEvent()
+        {
+            PictureSprite.sprite = Model.CardPicture;
         }
 
 #if UNITY_EDITOR

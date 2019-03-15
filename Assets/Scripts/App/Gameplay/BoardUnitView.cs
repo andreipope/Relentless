@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
             Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
             string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
 
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
+            _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
             _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.PictureTransform.Position;
             _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.PictureTransform.Scale;
@@ -262,11 +262,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            Model.ArriveUnitOnBoard();
+
             SetNormalGlowFromUnitType();
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
 
-            if(Model.Card.Owner.IsLocalPlayer)
+            if (Model.Card.Owner.IsLocalPlayer)
             {
                 PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
@@ -285,7 +287,7 @@ namespace Loom.ZombieBattleground
         private void ModelOnUnitDamageChanged(int oldValue, int newValue)
         {
             UpdateUnitInfoText(_attackText, Model.CurrentDamage, Model.Card.Prototype.Damage, Model.MaxCurrentDamage);
-            if(Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
+            if (Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
             {
                 SetNormalGlowFromUnitType();
             }
@@ -784,7 +786,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
 
-            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
                 _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != 0 &&
                 _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
                 Model.OwnerPlayer.IsLocalPlayer)
@@ -813,7 +815,7 @@ namespace Loom.ZombieBattleground
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
 
-                    if(_tutorialManager.IsTutorial)
+                    if (_tutorialManager.IsTutorial)
                     {
                         _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                     }
@@ -894,7 +896,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
 
-            if(targetCardView == null || targetCardView.GameObject == null)
+            if (targetCardView == null || targetCardView.GameObject == null)
             {
                 Model.ActionForDying = null;
                 targetCard.ActionForDying = null;

@@ -226,16 +226,21 @@ namespace Loom.ZombieBattleground.Data
             [JsonProperty("ability_data")]
             public AbilityData AbilityData { get; private set; }
 
+            [JsonProperty("attribute")]
+            public string Attribute { get; private set; }
+
             [JsonConstructor]
-            public ChoosableAbility(string description, AbilityData abilityData)
+            public ChoosableAbility(string description, AbilityData abilityData, string attribute)
             {
                 Description = description;
                 AbilityData = abilityData;
+                Attribute = attribute;
             }
 
             public ChoosableAbility(ChoosableAbility source)
             {
                 Description = source.Description;
+                Attribute = source.Attribute;
                 AbilityData = new AbilityData(source.AbilityData);
             }
         }
