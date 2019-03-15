@@ -266,9 +266,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targets));
             }
 
-            private void RanksUpdatedHandler(BoardUnitModel card, List<BoardUnitView> units)
+            private void RanksUpdatedHandler(BoardUnitModel card, IReadOnlyList<BoardUnitModel> targetUnits)
             {
-                AddAction(_playerActionFactory.RankBuff(card.InstanceId, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+                AddAction(_playerActionFactory.RankBuff(card.InstanceId, targetUnits.Select(unit => unit.Card.InstanceId).ToList()));
             }
 
             private void AddAction(PlayerAction playerAction)

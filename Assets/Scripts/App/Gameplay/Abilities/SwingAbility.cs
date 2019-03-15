@@ -53,16 +53,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeDamageToUnit(BoardUnitView unit)
+        private void TakeDamageToUnit(BoardUnitModel unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit.Model);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
  
-            foreach(BoardUnitView unit in BattlegroundController.GetAdjacentUnitsToUnit(_unit))
+            foreach(BoardUnitModel unit in BattlegroundController.GetAdjacentUnitsToUnit(_unit))
             {
                 TakeDamageToUnit(unit);
             }

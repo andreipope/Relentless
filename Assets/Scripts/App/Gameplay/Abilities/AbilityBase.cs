@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         public BoardItem BoardItem;
 
-        public BoardCardView boardCardView;
+        public BoardCardView BoardCardView;
 
         public BoardUnitModel TargetUnit;
 
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _playerAvatar;
 
-        private readonly Player _opponenentAvatar;
+        private readonly Player _opponentAvatar;
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground
             AbilityTargetTypes = ability.AbilityTarget;
             AbilityEffectType = ability.Effect;
             _playerAvatar = GameplayManager.CurrentPlayer;
-            _opponenentAvatar = GameplayManager.OpponentPlayer;
+            _opponentAvatar = GameplayManager.OpponentPlayer;
 
             PermanentInputEndEvent += InputEndedHandler;
 
@@ -244,7 +244,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
             }
 
-            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponenentAvatar;
+            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
         }
 
         public virtual void Update()
@@ -484,13 +484,12 @@ namespace Loom.ZombieBattleground
 
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
-            return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+            return BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(AbilityUnitOwner);
         }
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count)
-                .Select(x => x.Model).ToList()
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
         }
 

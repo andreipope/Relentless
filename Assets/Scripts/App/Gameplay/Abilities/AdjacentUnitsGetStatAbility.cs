@@ -45,32 +45,32 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitView> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
+            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitView unit in adjacent)
+            foreach (BoardUnitModel unit in adjacent)
             {
                 if (StatType == Enumerators.Stat.DEFENSE)
                 {
-                    unit.Model.BuffedDefense += Defense;
-                    unit.Model.CurrentDefense += Defense;
+                    unit.BuffedDefense += Defense;
+                    unit.CurrentDefense += Defense;
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = unit.Model,
+                        Target = unit,
                     });
                 }
                 else if (StatType == Enumerators.Stat.DAMAGE)
                 {
-                    unit.Model.BuffedDamage += Damage;
-                    unit.Model.CurrentDamage += Damage;
+                    unit.BuffedDamage += Damage;
+                    unit.CurrentDamage += Damage;
 
-                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
-                        Target = unit.Model,
+                        Target = unit
                     });
                 }
             }
@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
     }

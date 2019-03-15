@@ -28,9 +28,9 @@ namespace Loom.ZombieBattleground
             _units = new List<BoardUnitModel>();
 
             int targetIndex = -1;
-            for (int i = 0; i < PlayerCallerOfAbility.BoardCards.Count; i++)
+            for (int i = 0; i < PlayerCallerOfAbility.CardsOnBoard.Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards[i].Model == AbilityUnitOwner)
+                if (PlayerCallerOfAbility.CardsOnBoard[i] == AbilityUnitOwner)
                 {
                     targetIndex = i;
                     break;
@@ -41,12 +41,12 @@ namespace Loom.ZombieBattleground
             {
                 if (targetIndex - 1 > -1)
                 {
-                    _units.Add(PlayerCallerOfAbility.BoardCards[targetIndex - 1].Model);
+                    _units.Add(PlayerCallerOfAbility.CardsOnBoard[targetIndex - 1]);
                 }
 
-                if (targetIndex + 1 < PlayerCallerOfAbility.BoardCards.Count)
+                if (targetIndex + 1 < PlayerCallerOfAbility.CardsOnBoard.Count)
                 {
-                    _units.Add(PlayerCallerOfAbility.BoardCards[targetIndex + 1].Model);
+                    _units.Add(PlayerCallerOfAbility.CardsOnBoard[targetIndex + 1]);
                 }
             }
 

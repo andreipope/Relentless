@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
                 await LoadInitialGameState();
             }
 
-            Log.Warn("Match Starting");
+            Log.Info("Match Starting");
 
             GameStartedActionReceived?.Invoke();
 
@@ -289,33 +289,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cardsInHand)
-        {
-            player.CardsInHand.Clear();
-            player.CardsInHand.InsertRange(ItemPosition.Start, cardsInHand.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
-
-            player.ThrowOnHandChanged();
-        }
-
-        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
-        {
-            player.CardsInDeck.Clear();
-            player.CardsInDeck.InsertRange(ItemPosition.Start, cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
-
-            Log.Info("Updating player cards");
-            Log.Info(player.CardsInDeck.Count);
-            Log.Info(cardsInDeck.Count);
-
-            player.InvokeDeckChangedEvent();
-        }
-
         private void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Warn(playerActionEvent); // todo delete
+                Log.Debug("[Player Action] " + playerActionEvent);
 
                 if (playerActionEvent.Block != null)
                 {
@@ -423,12 +403,22 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
         }
 
+        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
+        {
+            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
+        }
+
+        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
+        {
+            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
+        }
+
         private async Task LoadInitialGameState()
         {
             GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
             InitialGameState = getGameStateResponse.GameState;
-            Log.Warn("Initial game state:\n" + InitialGameState);
-            Log.Warn("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
+            Log.Debug("Initial game state:\n" + InitialGameState);
+            Log.Debug("Use backend game logic: " + MatchMetadata.UseBackendGameLogic);
         }
 
         private void OnReceivePlayerLeftAction(PlayerActionEvent playerActionEvent)

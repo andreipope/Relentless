@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<BoardUnitView> _targetUnits;
+        private List<BoardUnitModel> _targetUnits;
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -54,22 +54,22 @@ namespace Loom.ZombieBattleground
 
             base.Action(info);
 
-            _targetUnits = new List<BoardUnitView>();
+            _targetUnits = new List<BoardUnitModel>();
 
             BoardUnitModel unit = (BoardUnitModel) info;
 
             Player playerOwner = unit.OwnerPlayer;
 
-            BoardUnitView leftAdjustment = null, rightAdjastment = null;
+            BoardUnitModel leftAdjustment = null, rightAdjustment = null;
 
             int targetIndex = -1;
-            IReadOnlyList<BoardUnitView> list = null;
-            for (int i = 0; i < playerOwner.BoardCards.Count; i++)
+            IReadOnlyList<BoardUnitModel> list = null;
+            for (int i = 0; i < playerOwner.CardsOnBoard.Count; i++)
             {
-                if (playerOwner.BoardCards[i].Model == unit)
+                if (playerOwner.CardsOnBoard[i] == unit)
                 {
                     targetIndex = i;
-                    list = playerOwner.BoardCards;
+                    list = playerOwner.CardsOnBoard;
                     break;
                 }
             }
@@ -83,20 +83,20 @@ namespace Loom.ZombieBattleground
 
                 if (targetIndex + 1 < list.Count)
                 {
-                    rightAdjastment = list[targetIndex + 1];
+                    rightAdjustment = list[targetIndex + 1];
                 }
             }
 
-            _targetUnits.Add(BattlegroundController.GetBoardUnitViewByModel(unit));
+            _targetUnits.Add(unit);
 
             if (leftAdjustment != null)
             {
                 _targetUnits.Add(leftAdjustment);
             }
 
-            if (rightAdjastment != null)
+            if (rightAdjustment != null)
             {
-                _targetUnits.Add(rightAdjastment);
+                _targetUnits.Add(rightAdjustment);
             }
 
             InvokeActionTriggered(_targetUnits);
@@ -139,11 +139,11 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
+            object caller = AbilityUnitOwner ?? (object) BoardItem;
 
-            foreach (var unit in _targetUnits)
+            foreach (BoardUnitModel unit in _targetUnits)
             {
-                BattleController.AttackUnitByAbility(caller, AbilityData, unit.Model);
+                BattleController.AttackUnitByAbility(caller, AbilityData, unit);
             }
 
             InvokeUseAbilityEvent(

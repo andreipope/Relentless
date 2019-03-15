@@ -1130,9 +1130,9 @@ namespace Loom.ZombieBattleground.Test
                 {
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView =
-                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.BoardUnitModel == boardUnitModel);
+                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == boardUnitModel);
                     Assert.NotNull(boardCardView, $"Card {boardUnitModel} not found in local player hand");
-                    Assert.True(boardCardView.CanBePlayed(boardCardView.BoardUnitModel.Card.Owner),
+                    Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
                     _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
@@ -1154,11 +1154,11 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.ITEM:
                 {
-                    _testBroker.GetPlayer(_player).RemoveCardFromHand(boardUnitModel);
-                    _testBroker.GetPlayer(_player).AddCardToBoard(boardUnitModel, position);
+                    _testBroker.GetPlayer(_player).PlayerCardsController.RemoveCardFromHand(boardUnitModel);
+                    _testBroker.GetPlayer(_player).PlayerCardsController.AddCardToBoard(boardUnitModel, position);
 
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel == boardUnitModel);
+                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
                     _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
@@ -1242,7 +1242,7 @@ namespace Loom.ZombieBattleground.Test
                     arrow.OnPlayerSelected(player);
                     break;
                 case BoardUnitModel boardUnitModel:
-                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel(boardUnitModel));
+                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -1259,17 +1259,14 @@ namespace Loom.ZombieBattleground.Test
             return _testBroker.GetPlayer(_opponent);
         }
 
-        public BoardUnitView GetCardOnBoardByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
         {
-            BoardUnitView boardUnitView =
-                _testBroker.GetPlayer(player)
-                    .BoardCards
-                    .FirstOrDefault(card => card.Model.InstanceId == instanceId);
-
-            if (boardUnitView == null)
+            BoardUnitModel boardUnitModel = BattlegroundController.GetBoardUnitModelByInstanceId(instanceId);
+            if (boardUnitModel == null)
                 throw new Exception($"Card {instanceId} not found on board");
 
-            return boardUnitView;
+            Assert.AreEqual(_testBroker.GetPlayer(player), boardUnitModel.OwnerPlayer, "_testBroker.GetPlayer(player) != boardUnitModel.OwnerPlayer");
+            return boardUnitModel;
         }
 
         /// <summary>

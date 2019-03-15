@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             instanceId = player.InstanceId;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.CardView.BoardUnitModel.InstanceId;
+                            instanceId = handCard.BoardUnitModel.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                             instanceId = player.InstanceId;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.CardView.BoardUnitModel.Card.InstanceId;
+                            instanceId = handCard.BoardUnitModel.Card.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

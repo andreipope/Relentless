@@ -290,11 +290,11 @@ namespace Loom.ZombieBattleground
             if (_uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;    
                 
-            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
+            List<IReadOnlyCard> cardList = _createdBoardCards.Select(i => i.Model.Card.Prototype).ToList();
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.BoardUnitModel.Card.Prototype,
+                boardCard.Model.Card.Prototype,
                 CardInfoWithSearchPopup.PopupType.NONE
             });
         }
@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
             
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
             
-            if (boardCard.BoardUnitModel.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
+            if (boardCard.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
             {
                 _highlightingVFXItem.ChangeState(true);
             }

@@ -377,7 +377,7 @@ namespace Loom.ZombieBattleground
                     if (_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
                         _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                     {
-                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForLocalMatch(false);
                     }
                 };
 
@@ -435,7 +435,7 @@ namespace Loom.ZombieBattleground
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsFirstPlayer() ? CurrentPlayer : OpponentPlayer;
@@ -454,7 +454,7 @@ namespace Loom.ZombieBattleground
                             )
                         );
 
-                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(opponentCardsInHand, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);

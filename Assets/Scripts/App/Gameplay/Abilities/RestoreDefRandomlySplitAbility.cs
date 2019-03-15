@@ -73,10 +73,10 @@ namespace Loom.ZombieBattleground
                             _targets.Add(PlayerCallerOfAbility);
                             break;
                         case Enumerators.Target.PLAYER_CARD:
-                            _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                            _targets.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                             break;
                         case Enumerators.Target.OPPONENT_CARD:
-                            _targets.AddRange(GetOpponentOverlord().BoardCards.Select(x => x.Model));
+                            _targets.AddRange(GetOpponentOverlord().CardsOnBoard);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetType), targetType, null);

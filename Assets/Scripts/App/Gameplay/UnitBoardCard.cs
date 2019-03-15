@@ -25,9 +25,9 @@ namespace Loom.ZombieBattleground
             TypeSprite.sprite =
                 LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", boardUnitModel.Card.InstanceCard.CardType + "_icon"));
 
-            // TODO: unsubscribe
-            BoardUnitModel.UnitDamageChanged += InstanceCardOnStatChanged;
-            BoardUnitModel.UnitDefenseChanged += InstanceCardOnStatChanged;
+            // TODO: refactor-state: unsubscribe
+            Model.UnitDamageChanged += InstanceCardOnStatChanged;
+            Model.UnitDefenseChanged += InstanceCardOnStatChanged;
         }
 
         private void InstanceCardOnStatChanged(int oldValue, int newValue)
@@ -37,11 +37,11 @@ namespace Loom.ZombieBattleground
 
         private void DrawStats()
         {
-            AttackText.text = BoardUnitModel.Card.InstanceCard.Damage.ToString();
-            DefenseText.text = BoardUnitModel.Card.InstanceCard.Defense.ToString();
+            AttackText.text = Model.Card.InstanceCard.Damage.ToString();
+            DefenseText.text = Model.Card.InstanceCard.Defense.ToString();
 
-            FillColor(BoardUnitModel.Card.InstanceCard.Damage, BoardUnitModel.Card.Prototype.Damage, AttackText);
-            FillColor(BoardUnitModel.Card.InstanceCard.Defense, BoardUnitModel.Card.Prototype.Defense, DefenseText);
+            FillColor(Model.Card.InstanceCard.Damage, Model.Card.Prototype.Damage, AttackText);
+            FillColor(Model.Card.InstanceCard.Defense, Model.Card.Prototype.Defense, DefenseText);
         }
 
         private void FillColor(int stat, int initialStat, TextMeshPro text)

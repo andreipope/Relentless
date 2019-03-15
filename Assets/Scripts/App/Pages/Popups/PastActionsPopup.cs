@@ -158,19 +158,19 @@ namespace Loom.ZombieBattleground
                     unitCardElement.Defense = unit.MaxCurrentDefense;
                     break;
                 case ItemBoardCard itemBoardCard:
-                    _leftBlockCardItemElement.Init(itemBoardCard.BoardUnitModel.Card);
+                    _leftBlockCardItemElement.Init(itemBoardCard.Model.Card);
                     break;
                 case BoardItem item:
-                    _leftBlockCardItemElement.Init(item.BoardUnitModel.Card);
+                    _leftBlockCardItemElement.Init(item.Model.Card);
                     break;
                 case UnitBoardCard unitBoardCard:
-                    _leftBlockCardUnitElement.Init(unitBoardCard.BoardUnitModel.Card);
+                    _leftBlockCardUnitElement.Init(unitBoardCard.Model.Card);
                     unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unitBoardCard.BoardUnitModel.CurrentDamage;
-                    unitCardElement.Defense = unitBoardCard.BoardUnitModel.CurrentDefense;
+                    unitCardElement.Damage = unitBoardCard.Model.CurrentDamage;
+                    unitCardElement.Defense = unitBoardCard.Model.CurrentDefense;
                     break;
                 case HandBoardCard card:
-                    _leftBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card);
+                    _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card);
                     break;
                 case BoardUnitView unit:
                     _leftBlockCardUnitElement.Init(unit.Model.Card);
@@ -210,18 +210,18 @@ namespace Loom.ZombieBattleground
                     {
                         case BoardCardView card when card is ItemBoardCard:
                             actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardCardView card when card is UnitBoardCard:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitModel unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case HandBoardCard card:
-                            if(card.CardView is ItemBoardCard)
+                            if(card.BoardCardView is ItemBoardCard)
                             {
                                 actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             }
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
                                 actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             }
 
-                            actionElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                             break;
                         case BoardUnitView unit:
                             actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
@@ -262,16 +262,16 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCardView card when card is ItemBoardCard:
-                        _rightBlockCardItemElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardItemElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardCardView card when card is UnitBoardCard boardCard:
-                        _rightBlockCardUnitElement.Init(boardCard.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(boardCard.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = boardCard.BoardUnitModel.CurrentDamage;
-                        unitCardElement.Defense = boardCard.BoardUnitModel.CurrentDefense;
+                        unitCardElement.Damage = boardCard.Model.CurrentDamage;
+                        unitCardElement.Defense = boardCard.Model.CurrentDefense;
                         break;
                     case HandBoardCard card:
-                        _rightBlockCardUnitElement.Init(card.CardView.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case BoardUnitModel unit:
                         _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
