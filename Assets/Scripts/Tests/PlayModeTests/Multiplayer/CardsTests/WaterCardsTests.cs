@@ -225,8 +225,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(0, pvpTestContext.GetCurrentPlayer().BoardCards.Count);
-                    Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().BoardCards.Count);
+                    Assert.AreEqual(0, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -1405,10 +1405,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "FroZen"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "HoZer"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Znowman"));
-                    Assert.IsNotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(unit => unit.Model.Card.Prototype.Name == "Brook"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "FroZen"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "HoZer"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "Znowman"));
+                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "Brook"));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);

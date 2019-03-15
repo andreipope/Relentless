@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
                             case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardUnitModel);
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -228,8 +228,8 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
-                        _gameplayManager.OpponentPlayer.BoardCards :
-                        _gameplayManager.CurrentPlayer.BoardCards;
+                        _gameplayManager.OpponentPlayer.CardsOnBoard :
+                        _gameplayManager.CurrentPlayer.CardsOnBoard;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
                     FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;

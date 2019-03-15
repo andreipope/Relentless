@@ -30,8 +30,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.BoardCards.Count == 0 || PlayerCallerOfAbility.BoardCards.Count == 1 &&
-                PlayerCallerOfAbility.BoardCards[0].Model == AbilityUnitOwner)
+            if (PlayerCallerOfAbility.CardsOnBoard.Count == 0 ||
+                PlayerCallerOfAbility.CardsOnBoard.Count == 1 &&
+                PlayerCallerOfAbility.CardsOnBoard[0] == AbilityUnitOwner)
             {
                 AbilityUnitOwner.BuffedDefense += Value;
                 AbilityUnitOwner.CurrentDefense += Value;

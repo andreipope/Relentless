@@ -14,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler, IView
+    public class BoardUnitView : IFightSequenceHandler, IView, IBoardUnitView
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
 
@@ -582,17 +582,19 @@ namespace Loom.ZombieBattleground
                 // FIXME: WTF we have logic based on card name?
                 if (Model.Card.Prototype.Name.Equals("Freezzee"))
                 {
-                    IReadOnlyList<BoardUnitView> freezzees =
+                    IReadOnlyList<BoardUnitModel> freezzees =
                         Model
                             .GetEnemyUnitsList(Model)
-                            .FindAll(x => x.Model.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
+                            .FindAll(x => x.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
 
                     if (freezzees.Count > 0)
                     {
-                        foreach (BoardUnitView creature in freezzees)
+                        foreach (BoardUnitModel unitModel in freezzees)
                         {
-                            creature.Model.Stun(Enumerators.StunType.FREEZE, 1);
-                            CreateFrozenVfx(creature.Transform.position);
+                            unitModel.Stun(Enumerators.StunType.FREEZE, 1);
+
+                            BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
+                            CreateFrozenVfx(unitView.Transform.position);
                         }
                     }
                 }
@@ -798,8 +800,8 @@ namespace Loom.ZombieBattleground
             {
                 _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
                 _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
-                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-                _fightTargetingArrow.Owner = this;
+                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
+                _fightTargetingArrow.Owner = this.Model;
 
                 if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
@@ -890,7 +892,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
 
             if(targetCardView == null || targetCardView.GameObject == null)
             {
@@ -1024,6 +1026,11 @@ namespace Loom.ZombieBattleground
             });
 
             sequence.Play();
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

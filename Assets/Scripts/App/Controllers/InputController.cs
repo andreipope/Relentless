@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private BattlegroundController _battlegroundController;
+
         private Camera _raysCamera;
 
         private List<BoardUnitView> _selectedUnitsList;
@@ -57,6 +59,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _selectedUnitsList = new List<BoardUnitView>();
 
@@ -191,8 +194,10 @@ namespace Loom.ZombieBattleground
 
             hasPointerTarget = ProcessTutorialActions(ref hasPointerTarget, collider, isHovering);
 
-            ProcessUnits(ref hasTarget, ref hasPointerTarget, _gameplayManager.CurrentPlayer.BoardCards, collider, permanent, isHovering);
-            ProcessUnits(ref hasTarget, ref hasPointerTarget, _gameplayManager.OpponentPlayer.BoardCards, collider, permanent, isHovering);
+            IReadOnlyList<BoardUnitView> playerCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.CurrentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> opponentCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, playerCardsOnBoardUnitViews, collider, permanent, isHovering);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, opponentCardsOnBoardUnitViews, collider, permanent, isHovering);
 
             ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.CurrentPlayer, collider, permanent, isHovering);
             ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.OpponentPlayer, collider, permanent, isHovering);
@@ -251,12 +256,12 @@ namespace Loom.ZombieBattleground
         private (bool, bool) ProcessUnits(
                 ref bool hasTarget,
                 ref bool hasPoinerTarget,
-                UniquePositionedList<BoardUnitView> BoardCards,
+                IReadOnlyList<BoardUnitView> boardCards,
                 Collider2D collider,
                 bool permanent = false,
                 bool isHovering = false)
         {
-            foreach (BoardUnitView unit in BoardCards)
+            foreach (BoardUnitView unit in boardCards)
             {
                 if (unit.GameObject.GetInstanceID() == collider.gameObject.GetInstanceID())
                 {

@@ -4,20 +4,20 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardItem : OwnableBoardObject
+    public class BoardItem : OwnableBoardObject, IBoardUnitView
     {
         public GameObject GameObject;
 
-        public Transform Transform;
+        public Transform Transform { get; }
 
-        public BoardUnitModel BoardUnitModel;
+        public BoardUnitModel Model { get; }
 
         private readonly OnBehaviourHandler _eventHandler;
 
         public BoardItem(GameObject obj, BoardUnitModel boardUnitModel)
         {
             GameObject = obj;
-            BoardUnitModel = boardUnitModel;
+            Model = boardUnitModel;
 
             if (GameObject != null)
             {

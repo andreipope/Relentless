@@ -116,7 +116,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(player, boardUnitModel);
+            player.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
         }
         else
         {
@@ -270,7 +270,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
+        player.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -316,7 +316,7 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
+        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
         _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
@@ -333,7 +333,7 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
         if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(opponentPlayer, boardUnitModel);
+            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
             boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
             _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
@@ -407,7 +407,7 @@ static class BattleCommandsHandler
         }
         else
         {
-            _cardsController.ReturnCardToHand(obj.Unit);
+            _cardsController.ReturnCardToHand(obj.Unit.Model);
             _gameplayManager.CurrentPlayer.CurrentGoo += obj.GooCost;
         }
     }
@@ -419,20 +419,18 @@ static class BattleCommandsHandler
         BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
         BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.RemoveCardFromGraveyard(unit.Model);
-        player.AddCardToBoard(boardUnitModel, ItemPosition.End);
-        player.BoardCards.Insert(ItemPosition.End, newUnit);
-        _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
+        player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
+        player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+        _battlegroundController.RegisterBoardUnitView(player, newUnit);
 
-        _boardController.UpdateBoard(player.BoardCards, true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
     }
-
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
 
-        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel(obj.AttackingUnitModel);
+        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(obj.AttackingUnitModel);
         if (attackingUnitView.GameObject == null)
         {
             GetCardFromGraveyard(attackingUnitView, _gameplayManager.CurrentPlayer);
@@ -638,7 +636,7 @@ static class BattleCommandsHandler
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.BoardUnitModel.Card == workingCard);
+        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

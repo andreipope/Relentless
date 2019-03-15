@@ -1110,11 +1110,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasFeral);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasFeral);
 
-                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().BoardCards.Count);
-                    Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().BoardCards.Count);
+                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
 
-                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 10).Count);
-                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().BoardCards.FindAll(card => card.Model.Card.Prototype.MouldId == 10).Count);
+                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().CardsOnBoard.FindAll(card => card.Card.Prototype.MouldId == 10).Count);
+                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().CardsOnBoard.FindAll(card => card.Card.Prototype.MouldId == 10).Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public class DecksData
     {
-        public List<Deck> Decks { get; private set; }
+        public List<Deck> Decks { get; }
 
         public DecksData(List<Deck> decks)
         {
