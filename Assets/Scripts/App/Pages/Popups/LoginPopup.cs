@@ -796,13 +796,13 @@ namespace Loom.ZombieBattleground
 #if UNITY_EDITOR
                     Log.Warn("Version Mismatched");
 #elif UNITY_ANDROID
-                    Application.OpenURL(Constants.GameLinkForAndroid);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPlayStore);
 #elif UNITY_IOS
-                    Application.OpenURL(Constants.GameLinkForIOS);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlAppStore);
 #elif UNITY_STANDALONE_OSX
-                    Application.OpenURL(Constants.GameLinkForOSX);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlMac);
 #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(Constants.GameLinkForWindows);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPC);
 #else
                     Log.Warn("Version Mismatched");
 #endif
