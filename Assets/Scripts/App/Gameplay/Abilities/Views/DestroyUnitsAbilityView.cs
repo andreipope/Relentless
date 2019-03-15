@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private ICameraManager _cameraManager;
 
-        private List<BoardUnitView> _unitsViews;
+        private List<BoardUnitModel> _unitsViews;
 
         #region BulldozerFields
 
@@ -29,12 +29,12 @@ namespace Loom.ZombieBattleground
 
             _cameraManager = GameClient.Get<ICameraManager>();
 
-            _unitsViews = new List<BoardUnitView>();
+            _unitsViews = new List<BoardUnitModel>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
-            _unitsViews = (List<BoardUnitView>)info;
+            _unitsViews = (List<BoardUnitModel>)info;
 
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView unitView;
             for (int i = 0; i < _unitsViews.Count; i++)
             {
-                unitView = _unitsViews[i];
+                unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_unitsViews[i]);
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
                     if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground
         private void DestroyUnit(BoardUnitView unit)
         {
             CreateSubParticle(unit.Transform.position);
-            _unitsViews.Remove(unit);
+            _unitsViews.Remove(unit.Model);
             _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
             Ability.DestroyUnit(unit);
         }
