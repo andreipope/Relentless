@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private string _cardName;
 
-        private List<object> _targets;
+        private List<BoardObject> _targets;
 
         public RestoreDefRandomlySplitAbilityView(RestoreDefRandomlySplitAbility ability) : base(ability)
         {
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<object>;
+            _targets = info as List<BoardObject>;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {

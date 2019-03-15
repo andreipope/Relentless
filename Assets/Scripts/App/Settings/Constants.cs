@@ -171,11 +171,6 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal const string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
-        internal const string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
-        internal const string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
-        internal const string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
@@ -220,9 +215,11 @@ namespace Loom.ZombieBattleground.Common
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
         
         internal const string HelpLink = "https://loom.games/en/how-to-play";
-        
+
         internal const string SupportLink = "https://loom.games/en/";
 
         internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
+
+        internal const string ZbVersionLink = "http://auth.loom.games/zbversion?environment=production&version=" + CurrentVersionBase;
     }
 }

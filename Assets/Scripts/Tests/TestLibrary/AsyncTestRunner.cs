@@ -82,6 +82,7 @@ namespace Loom.ZombieBattleground.Test
                         catch
                         {
                             _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
+                            throw;
                         }
                         finally
                         {

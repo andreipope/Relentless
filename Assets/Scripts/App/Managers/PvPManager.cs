@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Player Action] " + playerActionEvent);
+                Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
 
                 if (playerActionEvent.Block != null)
                 {
@@ -405,12 +405,12 @@ namespace Loom.ZombieBattleground
 
         private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
-            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
+            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
         }
 
         private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
         {
-            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))));
+            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
         }
 
         private async Task LoadInitialGameState()

@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                IEnumerable<BoardUnitModel> boardUnitModels = deck.Select(card => new BoardUnitModel(card));
+                BoardUnitModel[] boardUnitModels = deck.Select(card => new BoardUnitModel(card)).ToArray();
                 player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();

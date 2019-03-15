@@ -126,6 +126,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task Start(
             Func<Contract, IContractCallProxy> contractCallProxyFactory,
+            DAppChainClientConfiguration clientConfiguration,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
@@ -139,7 +140,7 @@ namespace Loom.ZombieBattleground.Test
             BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint(), contractCallProxyFactory, log, log);
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
-            await backendFacade.CreateContract(UserDataModel.PrivateKey, onClientCreatedCallback, chainClientCallExecutor);
+            await backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, onClientCreatedCallback, chainClientCallExecutor);
 
             try
             {

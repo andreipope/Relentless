@@ -12,6 +12,8 @@ using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
@@ -80,6 +82,11 @@ namespace Loom.ZombieBattleground
                     .Distinct()
                     .SelectMany(scene => scene.GetRootGameObjects())
                     .ToArray();
+        }
+
+        public static string JsonPrettyPrint(string json)
+        {
+            return JToken.Parse(json).ToString(Formatting.Indented);
         }
 
         #region asset bundles and cache
