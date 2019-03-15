@@ -59,9 +59,10 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.AbilityEffectInfoPositionType.Target:
                         {
-                            foreach (BoardUnitView unit in _opponent.BoardCards)
+                            foreach (BoardUnitModel unit in _opponent.CardsOnBoard)
                             {
-                                position = unit.Transform.position;
+                                BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                                position = unitView.Transform.position;
                                 CreateVfx(position, true, delayBeforeDestroy, true);
                             }
                         }

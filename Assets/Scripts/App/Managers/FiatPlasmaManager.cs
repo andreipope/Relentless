@@ -229,7 +229,7 @@ namespace Loom.ZombieBattleground
             log += "v: " + v + "\n";
             log += "hash: " + hash + "\n";
             string amountStr = "[";
-            for(int i=0; i<amountList.Count;++i)
+            for (int i = 0; i < amountList.Count;++i)
             {
                 amountStr += amountList[i] + " ";
             }

@@ -51,15 +51,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
+            if (UnitStatusType != Enumerators.UnitStatus.NONE && PlayerCallerOfAbility
+                    .CardsOnBoard.FindAll(x => x.UnitStatus == UnitStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (PlayerCallerOfAbility.BoardCards
-                    .FindAll(card => card.Model.Card.Prototype.Faction == Faction &&
-                        card.Model != AbilityUnitOwner &&
-                        card.Model.CurrentDefense > 0 &&
-                        !card.Model.IsDead)
+            else if (Faction != 0 && PlayerCallerOfAbility.CardsOnBoard
+                    .FindAll(card => card.Card.Prototype.Faction == Faction &&
+                        card != AbilityUnitOwner &&
+                        card.CurrentDefense > 0 &&
+                        !card.IsDead)
                     .Count <= 0)
                 return;
 
@@ -69,13 +69,10 @@ namespace Loom.ZombieBattleground
                 switch (abilityTargetType)
                 {
                     case Enumerators.Target.PLAYER:
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility, PlayerCallerOfAbility);
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
                         break;
                     case Enumerators.Target.OPPONENT:
-                        CardsController.AddCardToHandFromOtherPlayerDeck(PlayerCallerOfAbility,
-                            PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
-                                GameplayManager.OpponentPlayer :
-                                GameplayManager.CurrentPlayer);
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardToHandFromOtherPlayerDeck();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
@@ -84,7 +81,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
             }
         }
     }

@@ -14,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler, IView
+    public class BoardUnitView : IFightSequenceHandler, IView, IBoardUnitView
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
 
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
             Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
             string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
 
-            _pictureSprite.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{Model.Card.Prototype.Picture.ToLowerInvariant()}");
+            _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
             _pictureSprite.transform.localPosition = (Vector3)Model.Card.Prototype.PictureTransform.Position;
             _pictureSprite.transform.localScale = (Vector3)Model.Card.Prototype.PictureTransform.Scale;
@@ -262,11 +262,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            Model.ArriveUnitOnBoard();
+
             SetNormalGlowFromUnitType();
             SetAttackGlowFromUnitType();
             SetHighlightingEnabled(false);
 
-            if(Model.Card.Owner.IsLocalPlayer)
+            if (Model.Card.Owner.IsLocalPlayer)
             {
                 PositionOfBoard = _battlegroundController.PlayerBoardObject.transform.position - Vector3.up * 1.7f;
             }
@@ -285,7 +287,7 @@ namespace Loom.ZombieBattleground
         private void ModelOnUnitDamageChanged(int oldValue, int newValue)
         {
             UpdateUnitInfoText(_attackText, Model.CurrentDamage, Model.Card.Prototype.Damage, Model.MaxCurrentDamage);
-            if(Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
+            if (Model.MaxCurrentDamage == 0 && Model.UnitCanBeUsable())
             {
                 SetNormalGlowFromUnitType();
             }
@@ -582,17 +584,19 @@ namespace Loom.ZombieBattleground
                 // FIXME: WTF we have logic based on card name?
                 if (Model.Card.Prototype.Name.Equals("Freezzee"))
                 {
-                    IReadOnlyList<BoardUnitView> freezzees =
+                    IReadOnlyList<BoardUnitModel> freezzees =
                         Model
                             .GetEnemyUnitsList(Model)
-                            .FindAll(x => x.Model.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
+                            .FindAll(x => x.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
 
                     if (freezzees.Count > 0)
                     {
-                        foreach (BoardUnitView creature in freezzees)
+                        foreach (BoardUnitModel unitModel in freezzees)
                         {
-                            creature.Model.Stun(Enumerators.StunType.FREEZE, 1);
-                            CreateFrozenVfx(creature.Transform.position);
+                            unitModel.Stun(Enumerators.StunType.FREEZE, 1);
+
+                            BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
+                            CreateFrozenVfx(unitView.Transform.position);
                         }
                     }
                 }
@@ -782,7 +786,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.IsTutorial && !_tutorialManager.CurrentTutorialStep.ToGameplayStep().UnitsCanAttack)
                 return;
 
-            if(_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
+            if (_tutorialManager.IsTutorial && _tutorialManager.CurrentTutorialStep != null &&
                 _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != 0 &&
                 _tutorialManager.CurrentTutorialStep.ToGameplayStep().TutorialObjectIdStepOwner != Model.TutorialObjectId &&
                 Model.OwnerPlayer.IsLocalPlayer)
@@ -798,8 +802,8 @@ namespace Loom.ZombieBattleground
             {
                 _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
                 _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
-                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.BoardCards;
-                _fightTargetingArrow.Owner = this;
+                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
+                _fightTargetingArrow.Owner = this.Model;
 
                 if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
@@ -811,7 +815,7 @@ namespace Loom.ZombieBattleground
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
 
-                    if(_tutorialManager.IsTutorial)
+                    if (_tutorialManager.IsTutorial)
                     {
                         _tutorialManager.DeactivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
                     }
@@ -890,15 +894,15 @@ namespace Loom.ZombieBattleground
 
         public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
 
-            if(targetCardView == null || targetCardView.GameObject == null)
+            if (targetCardView == null || targetCardView.GameObject == null)
             {
                 Model.ActionForDying = null;
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();
 
-                ExceptionReporter.LogException(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
+                ExceptionReporter.LogExceptionAsWarning(Log, new Exception("target card is NULL. cancel ATTACK! targetCardView: " + targetCardView +
                     " | targetCardView.GameObject: " + targetCardView?.GameObject));
                 return;
             }
@@ -1024,6 +1028,11 @@ namespace Loom.ZombieBattleground
             });
 
             sequence.Play();
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

@@ -73,15 +73,13 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
                     case Enumerators.Target.OPPONENT_CARD:
-                        possibleTargets.AddRange(GetOpponentOverlord().BoardCards
-                            .FindAll(unit => unit.Model.CurrentDefense > 0)
-                            .Select(unit => unit.Model));
+                        possibleTargets.AddRange(GetOpponentOverlord().CardsOnBoard
+                            .FindAll(unit => unit.CurrentDefense > 0));
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
                     case Enumerators.Target.PLAYER_CARD:
-                        possibleTargets.AddRange(PlayerCallerOfAbility.BoardCards
-                            .FindAll(unit => unit.Model.CurrentDefense > 0)
-                            .Select(unit => unit.Model));
+                        possibleTargets.AddRange(PlayerCallerOfAbility.CardsOnBoard
+                            .FindAll(unit => unit.CurrentDefense > 0));
                         break;
                     case Enumerators.Target.PLAYER:
                         possibleTargets.Add(PlayerCallerOfAbility);
@@ -109,14 +107,14 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
             foreach (object target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                     Target = target,
@@ -129,7 +127,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 

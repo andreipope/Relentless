@@ -109,27 +109,23 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             {
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
-                string[] vfxTypes = Enum.GetNames(typeof(Enumerators.VisualEffectType));
-
                 foreach (Data.AbilityData abilityInfo in _selectedCard.Abilities)
                 {
-                    DrawAbilityConfigurtion(abilityInfo, vfxTypes);
+                    DrawAbilityConfigurtion(abilityInfo);
 
                     if (abilityInfo.ChoosableAbilities != null)
                     {
                         foreach (Data.AbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
                         {
-                            DrawAbilityConfigurtion(choosableAbilityInfo, vfxTypes, true);
+                            DrawAbilityConfigurtion(choosableAbilityInfo, true);
                         }
                     }
                 }
             }
         }
 
-        private void DrawAbilityConfigurtion(Data.AbilityData abilityInfo, string[] vfxTypes, bool itsAbilityFromChoosable = false)
+        private void DrawAbilityConfigurtion(Data.AbilityData abilityInfo, bool itsAbilityFromChoosable = false)
         {
-            int indexOfVfxType = 0;
-
             if (itsAbilityFromChoosable)
             {
                 GUILayout.Label("---This ability located in Choosable Abilities---", EditorStyles.label);
@@ -145,11 +141,9 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             for (int i = 0; i < abilityInfo.VisualEffectsToPlay.Count; i++)
             {
                 vfxInfo = abilityInfo.VisualEffectsToPlay[i];
+                Enumerators.VisualEffectType newVfxTypEnum = (Enumerators.VisualEffectType) EditorGUILayout.EnumPopup("Type: ", vfxInfo.Type);
 
-                indexOfVfxType = vfxTypes.ToList().IndexOf(vfxInfo.Type.ToString());
-                indexOfVfxType = EditorGUILayout.Popup("Type: ", indexOfVfxType, vfxTypes);
-
-                vfxInfo.ForceSetType(Utilites.CastStringTuEnum<Enumerators.VisualEffectType>(vfxTypes[indexOfVfxType], true));
+                vfxInfo.ForceSetType(newVfxTypEnum);
                 vfxInfo.ForceSetPath(GUILayout.TextField(vfxInfo.Path, EditorStyles.textField));
 
                 if (EditorGUILayout.DropdownButton(new GUIContent("Delete", "delete vfx"), FocusType.Passive))

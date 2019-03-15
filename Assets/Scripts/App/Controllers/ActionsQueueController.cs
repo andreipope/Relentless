@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
         {
             if (report != null)
             {
-                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.BoardUnitModel == report.BoardUnitModel))
+                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.Model == report.Model))
                 {
                     _bufferActionsReports.Add(report);
                 }
@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Log.Error("", actionSystemException);
+                Log.Error(actionSystemException.ToString());
                 Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 ActionDoneCallback();

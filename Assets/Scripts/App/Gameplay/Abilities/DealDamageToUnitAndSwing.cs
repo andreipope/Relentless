@@ -46,11 +46,11 @@ namespace Loom.ZombieBattleground
 
             TakeDamageToUnit(TargetUnit, Value);
 
-            List<BoardUnitView> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit);
+            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit);
 
-            foreach (BoardUnitView unitView in adjacent)
+            foreach (BoardUnitModel unit in adjacent)
             {
-                TakeDamageToUnit(unitView.Model, Damage);
+                TakeDamageToUnit(unit, Damage);
             }
 
             InvokeUseAbilityEvent(

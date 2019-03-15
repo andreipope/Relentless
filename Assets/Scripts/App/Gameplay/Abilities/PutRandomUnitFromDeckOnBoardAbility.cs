@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             if (PredefinedTargets != null)
             {
@@ -42,18 +42,16 @@ namespace Loom.ZombieBattleground
 
                 foreach (HandBoardCard target in targets)
                 {
-                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
                 }
             }
             else
             {
                 BoardCardView boardCardView;
-                Player playerOwner;
-                UniquePositionedList<BoardUnitModel> filteredCards = null;
 
                 foreach (Enumerators.Target targetType in AbilityData.AbilityTarget)
                 {
-                    playerOwner = null;
+                    Player playerOwner = null;
                     switch (targetType)
                     {
                         case Enumerators.Target.PLAYER:
@@ -66,15 +64,15 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
+                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
 
-                    if (playerOwner.BoardCards.Count < Constants.MaxBoardUnits) 
+                    if (playerOwner.CardsOnBoard.Count < Constants.MaxBoardUnits)
                     {
                         boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref TargetEffects, ref boardCards, true);
+                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref targetEffects, ref boardCards, true);
                     }
                 }
             }
@@ -89,21 +87,21 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 
         private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCardView,
-                                            ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
+                                            ref List<PastActionsPopup.TargetEffectParam> targetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.RemoveCardFromDeck(boardCardView.BoardUnitModel);
+            owner.PlayerCardsController.RemoveCardFromDeck(boardCardView.Model);
 
-            CardsController.SummonUnitFromHand(owner, boardCardView, activateAbility);
+            owner.PlayerCardsController.SummonUnitFromHand(boardCardView, activateAbility);
 
             cards.Add(boardCardView.HandBoardCard);
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
                 Target = boardCardView,

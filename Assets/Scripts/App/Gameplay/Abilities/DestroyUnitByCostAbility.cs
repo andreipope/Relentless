@@ -82,12 +82,12 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
                 {
-                    units.AddRange(GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                    units.AddRange(GetOpponentOverlord().CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }
 
                 if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
                 {
-                    units.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                    units.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }
             }
 
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                BoardUnitModel card = BoardItem?.BoardUnitModel;
+                BoardUnitModel card = BoardItem?.Model;
 
                 if(card != null && card.Prototype.MouldId == TorchCardId)
                 {
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
                         }
                     },
                     CheckForCardOwner = _checkForCardOwner,
-                    BoardUnitModel = card
+                    Model = card
                 });
             }
         }

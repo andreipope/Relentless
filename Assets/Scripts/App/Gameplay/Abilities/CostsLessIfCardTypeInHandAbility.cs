@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -27,7 +28,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             InternalTools.DoActionDelayed(() =>
@@ -49,7 +50,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility,
                 BoardUnitModel,
                 BoardUnitModel.Prototype.Cost + gooCost,
-                boardCardView
+                BoardCardView
             );
         }
         
@@ -58,7 +59,7 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel != BoardUnitModel)
                 return;
 
-            PlayerCallerOfAbility.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 

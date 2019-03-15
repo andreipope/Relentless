@@ -50,8 +50,6 @@ namespace Loom.ZombieBattleground
 
         private BoardCardView _topmostBoardCard;
 
-        private BoardUnitView _selectedBoardUnitView;
-
         private PointerEventSolver _pointerEventSolver;
 
         public bool IsPlayerStunned { get; set; }
@@ -162,7 +160,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                player.SetDeck(workingDeck, isMainTurnSecond);
+                IEnumerable<BoardUnitModel> boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card));
+                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -184,7 +183,7 @@ namespace Loom.ZombieBattleground
                         tutorialStatus = !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization;
                     }
 
-                    player.SetFirstHandForLocalMatch(tutorialStatus);
+                    player.PlayerCardsController.SetFirstHandForLocalMatch(tutorialStatus);
                     break;
                 case Enumerators.MatchType.PVP:
                     List<WorkingCard> workingCards =
@@ -197,7 +196,7 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    player.SetFirstHandForPvPMatch(workingCards);
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(workingCards);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -226,7 +225,6 @@ namespace Loom.ZombieBattleground
             _delayTimerOfClick = 0f;
             _startedOnClickDelay = false;
             _topmostBoardCard = null;
-            _selectedBoardUnitView = null;
         }
 
         public void HandCardPreview(object[] param)
@@ -276,18 +274,11 @@ namespace Loom.ZombieBattleground
 
         public void UpdateHandCardsHighlight()
         {
-            if (_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer))
+            if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
                 foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
                 {
-                    if (card.CanBeBuyed(_gameplayManager.CurrentPlayer))
-                    {
-                        card.SetHighlightingEnabled(true);
-                    }
-                    else
-                    {
-                        card.SetHighlightingEnabled(false);
-                    }
+                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }
@@ -418,7 +409,7 @@ namespace Loom.ZombieBattleground
                 _timeHovering += Time.deltaTime;
                 if (_timeHovering >= Constants.MaxTimeForHovering)
                 {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.BoardUnitModel.Card.TutorialObjectId);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected, _hoveringBoardCard.Model.Card.TutorialObjectId);
 
                     _isHovering = true;
                 }
@@ -449,7 +440,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
 
-            if (_isPreviewHandCard)
+            if (_isPreviewHandCard && _battlegroundController.CardsZoomed)
             {
                 if (_topmostBoardCard != null && !_cardsZooming)
                 {
@@ -488,7 +479,7 @@ namespace Loom.ZombieBattleground
                         {
                             HandCardPreview(new object[]
                             {
-                                _battlegroundController.GetBoardUnitViewByModel(unit)
+                                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)
                             });
                         }
                     }
@@ -502,7 +493,6 @@ namespace Loom.ZombieBattleground
             _startedOnClickDelay = false;
 
             _topmostBoardCard = null;
-            _selectedBoardUnitView = null;
 
             _battlegroundController.CurrentPreviewedCardId = InstanceId.Invalid;
         }

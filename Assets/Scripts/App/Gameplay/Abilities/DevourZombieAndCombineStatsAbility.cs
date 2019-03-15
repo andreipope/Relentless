@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+                _units = PlayerCallerOfAbility.CardsOnBoard.ToList();
             }
 
             foreach (BoardUnitModel unit in _units)
@@ -125,10 +125,10 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;
 
-            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel(unit);
-            RanksController.AddUnitForIgnoreRankBuff(view);
+            RanksController.AddUnitForIgnoreRankBuff(unit);
 
             unit.IsReanimated = true;
+            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
             view.StopSleepingParticles();
 
             unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);

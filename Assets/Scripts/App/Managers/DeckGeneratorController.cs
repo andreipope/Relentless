@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                     collectionData                    
                 );
                 
-                for(int i=0; i<amount; ++i)
+                for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
                     availableCardList.Add(addedCard);

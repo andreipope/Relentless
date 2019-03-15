@@ -43,13 +43,13 @@ namespace Loom.ZombieBattleground
                     unit = _targetUnits[i];
 
                     Vector3 targetPosition = Ability.CardKind == Enumerators.CardKind.CREATURE ?
-                    _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position :
+                    _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position :
                     Ability.SelectedPlayer.Transform.position;
 
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                     id = ParticlesController.RegisterParticleSystem(VfxObject);
                     ParticleIds.Add(id);
 

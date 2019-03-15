@@ -68,7 +68,8 @@ namespace Loom.ZombieBattleground
                        _buttonLowerRightArrow,
                        _buttonSaveDeck,
                        _buttonAbilities,
-                       _buttonAuto;
+                       _buttonAuto,
+                       _buttonRename;
 
         private TextMeshProUGUI _textEditDeckName,
                                 _textEditDeckCardsAmount;
@@ -83,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
-        private readonly Dictionary<Enumerators.Faction, Enumerators.Faction> _setTypeAgainstDictionary =
+        public readonly Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
             new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
@@ -106,13 +107,13 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-        private List<Enumerators.Faction> _availableSetType;
+        private List<Enumerators.Faction> _availableFaction;
 
         private List<Card> _cacheCollectionCardsList;
 
         private int _currentCollectionPage,
                     _currentCollectionPagesAmount,
-                    _currentCollectionSetTypeIndex;
+                    _currentCollectionFactionIndex;
 
         public void Init()
         {
@@ -127,9 +128,9 @@ namespace Loom.ZombieBattleground
             InitBoardCardPrefabsAndLists();
 
             _myDeckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab != HordeSelectionWithNavigationPage.TAB.EDITING)
+                if (tab != HordeSelectionWithNavigationPage.Tab.Editing)
                     return;
 
                 FillCollectionData();
@@ -140,7 +141,7 @@ namespace Loom.ZombieBattleground
                 _inputFieldSearchName.text = "";
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
                 _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";
-            };
+            };           
 
             _cacheCollectionCardsList = new List<Card>();
         }
@@ -153,38 +154,33 @@ namespace Loom.ZombieBattleground
 
             _textEditDeckName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textEditDeckCardsAmount = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Image_CardCounter/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+            
+            _buttonRename = _textEditDeckName.GetComponent<Button>();
+            _buttonRename.onClick.AddListener(ButtonRenameHandler);
 
             _buttonFilter = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
-            _buttonFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonUpperLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
             _buttonUpperLeftArrow.onClick.AddListener(ButtonEditDeckUpperLeftArrowHandler);
-            _buttonUpperLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonUpperRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
             _buttonUpperRightArrow.onClick.AddListener(ButtonEditDeckUpperRightArrowHandler);
-            _buttonUpperRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonLowerLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
             _buttonLowerLeftArrow.onClick.AddListener(ButtonEditDeckLowerLeftArrowHandler);
-            _buttonLowerLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonLowerRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
             _buttonLowerRightArrow.onClick.AddListener(ButtonEditDeckLowerRightArrowHandler);
-            _buttonLowerRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonSaveDeck = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
             _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
-            _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonAbilities = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
             _buttonAbilities.onClick.AddListener(ButtonOverlordAbilitiesHandler);
-            _buttonAbilities.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonAuto = _selfPage.transform.Find("Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
             _buttonAuto.onClick.AddListener(ButtonAutoHandler);
-            _buttonAuto.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _inputFieldSearchName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
@@ -199,6 +195,9 @@ namespace Loom.ZombieBattleground
             _imageAbilitiesPanel = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
 
             LoadBoardCardComponents();
+
+            _myDeckPage.DragAreaCollections.Scrolled += ScrollCollectionAreaHandler;
+            _myDeckPage.DragAreaDeck.Scrolled += ScrollDeckAreaHandler;
         }
 
         public void Update()
@@ -237,8 +236,55 @@ namespace Loom.ZombieBattleground
 
         #region Button Handlers
 
+        private void ScrollDeckAreaHandler(Vector2 scrollDelta)
+        {
+            if (_tutorialManager.BlockAndReport(_buttonUpperLeftArrow.name) ||
+                _tutorialManager.BlockAndReport(_buttonUpperRightArrow.name))
+                return;
+
+            ScrollCardList(true, scrollDelta);
+        }
+
+        private void ScrollCollectionAreaHandler(Vector2 scrollDelta)
+        {
+            if (_tutorialManager.BlockAndReport(_buttonLowerRightArrow.name) ||
+                _tutorialManager.BlockAndReport(_buttonLowerLeftArrow.name))
+                return;
+
+            ScrollCardList(false, scrollDelta);
+        }
+
+        private void ButtonRenameHandler()
+        {
+            if (_tutorialManager.BlockAndReport(_buttonRename.name))
+                return;
+
+            PlayClickSound();
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+        }
+        
+        private void ConfirmSaveDeckHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
+            
+            _myDeckPage.AssignCurrentDeck(false, true);
+            if (status)
+            {                
+                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.Rename);
+            }
+            else
+            {                
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);        
+            }  
+        }
+
         private void ButtonEditDeckFilterHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonFilter.name))
+                return;
+
+            PlayClickSound();
             _uiManager.DrawPopup<CardFilterPopup>();
             CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
@@ -253,36 +299,66 @@ namespace Loom.ZombieBattleground
 
         private void ButtonEditDeckUpperLeftArrowHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonUpperLeftArrow.name))
+                return;
+
+            PlayClickSound();
             MoveDeckPageIndex(-1);
         }
 
         private void ButtonEditDeckUpperRightArrowHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonUpperRightArrow.name))
+                return;
+
+            PlayClickSound();
             MoveDeckPageIndex(1);
         }
 
         private void ButtonEditDeckLowerLeftArrowHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonLowerLeftArrow.name))
+                return;
+
+            PlayClickSound();
             MoveCollectionPageIndex(-1);
         }
 
         private void ButtonEditDeckLowerRightArrowHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonLowerRightArrow.name))
+                return;
+
+            PlayClickSound();
             MoveCollectionPageIndex(1);
         }
 
         private void ButtonSaveEditDeckHandler()
         {
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
+                return;
+
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
+
+            PlayClickSound();
+            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SelectDeck);
         }
 
         private void ButtonOverlordAbilitiesHandler()
         {
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL);
+            if (_tutorialManager.BlockAndReport(_buttonAbilities.name))
+                return;
+
+            PlayClickSound();
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill);
         }
 
         private void ButtonAutoHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonAuto.name))
+                return;
+
+            PlayClickSound();
             FillCollectionData();
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateCardsToDeck
             (
@@ -296,6 +372,9 @@ namespace Loom.ZombieBattleground
 
         public void OnInputFieldSearchEndedEdit(string value)
         {
+            if (_tutorialManager.BlockAndReport(_inputFieldSearchName.name))
+                return;
+
             ResetCollectionPageState();
         }
 
@@ -396,16 +475,10 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragEnded += BoardCardCollectionDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
-                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.SingleClickReceived += () =>
-                {
-                    BoardCardCollectionSingleClickHandler(boardCard);
-                };
-                multiPointerClickHandler.DoubleClickReceived += ()=>
-                {
-                    PlayAddCardSound();
-                    AddCardToDeck(boardCard.BoardUnitModel.Card.Prototype);
-                };
+                DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
+                deckBuilderCard.Page = this;
+                deckBuilderCard.Card = boardCard.Model.Card.Prototype;
+                deckBuilderCard.IsHordeItem = false;
 
                 collectionCardData = _collectionData.GetCardData(card.Name);
                 UpdateBoardCardAmount
@@ -421,12 +494,12 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardCardView card in _createdCollectionsBoardCards)
             {
-                if (card.BoardUnitModel.Card.Prototype.Name == cardId)
+                if (card.Model.Card.Prototype.Name == cardId)
                 {
                     card.SetAmountOfCardsInEditingPage
                     (
                         init,
-                        GetMaxCopiesValue(card.BoardUnitModel.Card.Prototype),
+                        GetMaxCopiesValue(card.Model.Card.Prototype),
                         amount,
                         true
                     );
@@ -447,7 +520,7 @@ namespace Loom.ZombieBattleground
                 bool itemFound = false;
                 foreach (BoardCardView item in _createdDeckBoardCards)
                 {
-                    if (item.BoardUnitModel.Card.Prototype.Name == card.CardName)
+                    if (item.Model.Card.Prototype.Name == card.CardName)
                     {
                         itemFound = true;
                         break;
@@ -475,16 +548,10 @@ namespace Loom.ZombieBattleground
                     eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
                     eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
-                    MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                    multiPointerClickHandler.SingleClickReceived += ()=>
-                    {
-                        BoardCardDeckSingleClickHandler(boardCard);
-                    };
-                    multiPointerClickHandler.DoubleClickReceived += ()=>
-                    {
-                        PlayRemoveCardSound();
-                        RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
-                    };
+                    DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
+                    deckBuilderCard.Page = this;
+                    deckBuilderCard.Card = boardCard.Model.Card.Prototype;
+                    deckBuilderCard.IsHordeItem = true;
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
 
@@ -501,7 +568,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 
-            if (_setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
+            if (FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -537,7 +604,7 @@ namespace Loom.ZombieBattleground
             BoardCardView foundItem = null;
             foreach (BoardCardView item in _createdDeckBoardCards)
             {
-                if (item.BoardUnitModel.Card.Prototype.MouldId == card.MouldId)
+                if (item.Model.Card.Prototype.MouldId == card.MouldId)
                 {
                     foundItem = item;
                     itemFound = true;
@@ -569,15 +636,10 @@ namespace Loom.ZombieBattleground
                 eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
                 eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
-                MultiPointerClickHandler multiPointerClickHandler = boardCard.GameObject.AddComponent<MultiPointerClickHandler>();
-                multiPointerClickHandler.SingleClickReceived += ()=>
-                {
-                    BoardCardDeckSingleClickHandler(boardCard);
-                };
-                multiPointerClickHandler.DoubleClickReceived += ()=>
-                {
-                    RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
-                };
+                DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
+                deckBuilderCard.Page = this;
+                deckBuilderCard.Card = card;
+                deckBuilderCard.IsHordeItem = true;
 
                 _createdDeckBoardCards.Add(boardCard);
             }
@@ -585,7 +647,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
 
             foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.BoardUnitModel.Card.Prototype.Name).Amount);
+                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount);
 
             UpdateDeckCardPage();
             UpdateEditDeckCardsAmount();
@@ -593,6 +655,30 @@ namespace Loom.ZombieBattleground
             if(_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
+            }
+        }
+
+        public void ScrollCardList(bool isHordeItem, Vector2 scrollDelta)
+        {
+            int index = 0;
+            if (scrollDelta.y > 0.5f)
+            {
+                index = 1;
+            }
+            else if (scrollDelta.y < -0.5f)
+            {
+                index = - 1;
+            }
+            if (index != 0)
+            {
+                if (isHordeItem)
+                {
+                    MoveDeckPageIndex(index);
+                }
+                else
+                {
+                    MoveCollectionPageIndex(index);
+                }
             }
         }
 
@@ -607,7 +693,7 @@ namespace Loom.ZombieBattleground
                 collectionCardData.Amount
             );
 
-            BoardCardView boardCard = _createdDeckBoardCards.Find(item => item.BoardUnitModel.Card.Prototype.MouldId == card.MouldId);
+            BoardCardView boardCard = _createdDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
             boardCard.CardsAmountDeckEditing--;
             _myDeckPage.CurrentEditDeck.RemoveCard(card.Name);
 
@@ -621,12 +707,12 @@ namespace Loom.ZombieBattleground
                 int deckPagesAmount = GetDeckPageAmount();
                 if (currentDeckPage >= deckPagesAmount)
                 {
-                    _deckPageIndex = deckPagesAmount - 1;
+                    _deckPageIndex = Mathf.Clamp(deckPagesAmount - 1, 0, deckPagesAmount);
                 }
             }
             else
             {
-                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.BoardUnitModel.Card.Prototype), boardCard.CardsAmountDeckEditing);
+                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.Model.Card.Prototype), boardCard.CardsAmountDeckEditing);
             }
 
             UpdateDeckCardPage();
@@ -679,34 +765,30 @@ namespace Loom.ZombieBattleground
 
         #region Boardcard Handler
 
-        private void BoardCardDeckSingleClickHandler(BoardCardView boardCard)
+        public void SelectCard(DeckBuilderCard deckBuilderCard, IReadOnlyCard card)
         {
             if (_isDragging ||
                 _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
                 return;
 
-            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
+            List<IReadOnlyCard> cardList;
+            CardInfoWithSearchPopup.PopupType popupType;
 
+            if (deckBuilderCard.IsHordeItem)
+            {
+                cardList = _createdDeckBoardCards.Select(i => i.Model.Card.Prototype).ToList();
+                popupType = CardInfoWithSearchPopup.PopupType.REMOVE_CARD;
+            }
+            else
+            {
+                cardList = _createdCollectionsBoardCards.Select(i => i.Model.Card.Prototype).ToList();
+                popupType = CardInfoWithSearchPopup.PopupType.ADD_CARD;
+            }
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.BoardUnitModel.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.REMOVE_CARD
-            });
-        }
-
-        private void BoardCardCollectionSingleClickHandler(BoardCardView boardCard)
-        {
-            if (_isDragging ||
-                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
-                return;
-
-            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.BoardUnitModel.Card.Prototype).ToList();
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
-            {
-                cardList,
-                boardCard.BoardUnitModel.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.ADD_CARD
+                card,
+                popupType
             });
         }
 
@@ -746,13 +828,13 @@ namespace Loom.ZombieBattleground
             {
                 foreach (RaycastHit2D hit in hits)
                 {
-                    if (hit.collider.gameObject == _myDeckPage.DragAreaDeck)
+                    if (hit.collider.gameObject == _myDeckPage.DragAreaDeck.gameObject)
                     {
                         BoardCardView boardCard = _createdCollectionsBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         PlayAddCardSound();
-                        AddCardToDeck(boardCard.BoardUnitModel.Card.Prototype);
+                        AddCardToDeck(boardCard.Model.Card.Prototype);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardDragged);
                     }
@@ -777,13 +859,13 @@ namespace Loom.ZombieBattleground
             {
                 foreach (RaycastHit2D hit in hits)
                 {
-                    if (hit.collider.gameObject == _myDeckPage.DragAreaCollections)
+                    if (hit.collider.gameObject == _myDeckPage.DragAreaCollections.gameObject)
                     {
                         BoardCardView boardCard = _createdDeckBoardCards.Find(x =>
                             x.GameObject.GetInstanceID().ToString() == _draggingObject.name);
 
                         PlayRemoveCardSound();
-                        RemoveCardFromDeck(boardCard.BoardUnitModel.Card.Prototype);
+                        RemoveCardFromDeck(boardCard.Model.Card.Prototype);
                     }
                 }
             }
@@ -853,7 +935,8 @@ namespace Loom.ZombieBattleground
             int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
             int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
             List<BoardCardView> displayCardList = new List<BoardCardView>();
-            for( int i=0; i<_createdDeckBoardCards.Count; ++i)
+
+            for ( int i = 0; i < _createdDeckBoardCards.Count; ++i)
             {
                 if(i >= startIndex && i < endIndex)
                 {
@@ -865,7 +948,7 @@ namespace Loom.ZombieBattleground
                     _createdDeckBoardCards[i].GameObject.SetActive(false);
                 }
             }
-            for(int i=0; i<displayCardList.Count; ++i)
+            for (int i = 0; i < displayCardList.Count; ++i)
             {
                 displayCardList[i].Transform.position = DeckCardPositions[i].position;
             }
@@ -889,10 +972,10 @@ namespace Loom.ZombieBattleground
 
             if (_currentCollectionPage < 0)
             {
-                _currentCollectionSetTypeIndex += direction;
-                if(_currentCollectionSetTypeIndex < 0)
+                _currentCollectionFactionIndex += direction;
+                if(_currentCollectionFactionIndex < 0)
                 {
-                    _currentCollectionSetTypeIndex = _availableSetType.Count-1;
+                    _currentCollectionFactionIndex = _availableFaction.Count-1;
                 }
                 UpdateAvailableCollectionCards();
                 _currentCollectionPage = Mathf.Max(_currentCollectionPagesAmount - 1, 0);
@@ -900,9 +983,9 @@ namespace Loom.ZombieBattleground
             }
             else if (_currentCollectionPage >= _currentCollectionPagesAmount)
             {
-                 _currentCollectionSetTypeIndex += direction;
-                if(_currentCollectionSetTypeIndex >= _availableSetType.Count)
-                    _currentCollectionSetTypeIndex = 0;
+                 _currentCollectionFactionIndex += direction;
+                if(_currentCollectionFactionIndex >= _availableFaction.Count)
+                    _currentCollectionFactionIndex = 0;
                 UpdateAvailableCollectionCards();
                 _currentCollectionPage = 0;
             }
@@ -912,15 +995,15 @@ namespace Loom.ZombieBattleground
 
         private void ResetCollectionPageState()
         {
-            ExcludeFilterDataWithAgainstSetType();
-            _availableSetType = _cardFilterPopup.FilterData.GetFilterSetTypeList();
+            ExcludeFilterDataWithAgainstFaction();
+            _availableFaction = _cardFilterPopup.FilterData.GetFilterFactionList();
             if (_tutorialManager.IsTutorial)
             {
-                _currentCollectionSetTypeIndex = _availableSetType.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                _currentCollectionFactionIndex = _availableFaction.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
             }
             else
             {
-                _currentCollectionSetTypeIndex = 0;
+                _currentCollectionFactionIndex = 0;
             }
             _currentCollectionPage = 0;
             UpdateAvailableCollectionCards();
@@ -947,10 +1030,10 @@ namespace Loom.ZombieBattleground
         {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
-            List<Enumerators.Faction> allAvailableSetTypeList = _cardFilterPopup.AllAvailableSetTypeList;
-            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
-            allAvailableSetTypeList.Remove(againstSetType);
-            foreach (Enumerators.Faction item in allAvailableSetTypeList)
+            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            allAvailableFactionList.Remove(againstFaction);
+            foreach (Enumerators.Faction item in allAvailableFactionList)
             {
                 List<Card> cards;
 
@@ -979,9 +1062,9 @@ namespace Loom.ZombieBattleground
         private void UpdateCollectionCardsByFilter()
         {
             List<Card> resultList = new List<Card>();
-            if (_availableSetType.Count > _currentCollectionSetTypeIndex)
+            if (_availableFaction.Count > _currentCollectionFactionIndex)
             {
-                Enumerators.Faction faction = _availableSetType[_currentCollectionSetTypeIndex];
+                Enumerators.Faction faction = _availableFaction[_currentCollectionFactionIndex];
                 
                 List<Card> cards;
                 if (_tutorialManager.IsTutorial)
@@ -1046,10 +1129,10 @@ namespace Loom.ZombieBattleground
             return _cacheCollectionCardsList.Count > 0;
         }
 
-        private void ExcludeFilterDataWithAgainstSetType()
+        private void ExcludeFilterDataWithAgainstFaction()
         {
-            Enumerators.Faction againstSetType = _setTypeAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
-            _cardFilterPopup.FilterData.SetTypeDictionary[againstSetType] = false;
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            _cardFilterPopup.FilterData.FactionDictionary[againstFaction] = false;
         }
 
         private void ResetSearchAndFilterResult()
@@ -1150,7 +1233,7 @@ namespace Loom.ZombieBattleground
             return maxCopies;
         }
 
-        public async void ProcessEditDeck(Deck deckToSave)
+        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.Tab nextTab)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             _buttonSaveDeck.interactable = false;
@@ -1194,7 +1277,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(Log, e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 success = false;
 
@@ -1224,7 +1307,7 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
+                _myDeckPage.ChangeTab(nextTab);
             }
 
             _myDeckPage.ButtonSaveRenameDeck.interactable = true;
@@ -1252,8 +1335,11 @@ namespace Loom.ZombieBattleground
             }
 
             deckToSave.Name = newName;
+            HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
+                HordeSelectionWithNavigationPage.Tab.Editing :
+                HordeSelectionWithNavigationPage.Tab.SelectDeck;
 
-            ProcessEditDeck(deckToSave);
+            ProcessEditDeck(deckToSave,tab);
         }
 
         private void PlayAddCardSound()
@@ -1266,6 +1352,11 @@ namespace Loom.ZombieBattleground
         {
              GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
                 Constants.SfxSoundVolume, false, false, true);
+        }
+        
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

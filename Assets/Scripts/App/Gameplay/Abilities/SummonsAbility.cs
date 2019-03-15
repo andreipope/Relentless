@@ -42,29 +42,19 @@ namespace Loom.ZombieBattleground
 
             foreach (Enumerators.Target target in TargetTypes)
             {
-                BoardUnitView unit = null;
-
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(GetOpponentOverlord(), Name, ItemPosition.End, IsPVPAbility);
-                            if (unit != null)
-                            {
-                                AddUnitToBoardCards(GetOpponentOverlord(), ItemPosition.End, unit);
-                            }
+                            GetOpponentOverlord().PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
                         }
 
                         break;
                     case Enumerators.Target.PLAYER:
                         for (int i = 0; i < Count; i++)
                         {
-                            unit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End, IsPVPAbility);
-                            if (unit != null)
-                            {
-                                AddUnitToBoardCards(PlayerCallerOfAbility, ItemPosition.End, unit);
-                            }
+                            PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End, IsPVPAbility);
                         }
 
                         break;
@@ -94,18 +84,6 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
-        }
-
-        private void AddUnitToBoardCards(Player owner, ItemPosition position, BoardUnitView unit)
-        {
-            if (owner.IsLocalPlayer)
-            {
-                BattlegroundController.PlayerBoardCards.Insert(position, unit);
-            }
-            else
-            {
-                BattlegroundController.OpponentBoardCards.Insert(position, unit);
-            }
         }
     }
 }
