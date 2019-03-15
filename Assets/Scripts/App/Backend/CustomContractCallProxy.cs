@@ -79,16 +79,16 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     if (exception != null)
                     {
-                        message += $" with exception: {exception}";
+                        message += $" with exception: {exception.Message}";
                     }
 
                     if (timedOut || exception is TimeoutException)
                     {
-                        CallExecutionLog.Warn(message);
+                        CallExecutionLog.Warn(message, exception);
                     }
                     else
                     {
-                        CallExecutionLog.Debug(message);
+                        CallExecutionLog.Debug(message, exception);
                     }
                 }
             };

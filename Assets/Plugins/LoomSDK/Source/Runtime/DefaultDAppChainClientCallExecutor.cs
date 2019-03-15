@@ -4,6 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Loom.Client.Internal.AsyncEx;
 using UnityEngine;
+#if UNITY_WEBGL
+using Loom.Client.Unity.Internal.UnityAsyncAwaitUtil;
+#endif
 
 namespace Loom.Client
 {
@@ -154,7 +157,7 @@ namespace Loom.Client
 #if UNITY_WEBGL
             // TODO: support timeout for WebGL
             await task;
-            return task;
+            return false;
 #else
             if (timeoutMilliseconds == Timeout.Infinite)
             {
@@ -164,7 +167,8 @@ namespace Loom.Client
 
             CancellationTokenSource cts = new CancellationTokenSource();
             Task delayTask = Task.Delay(timeoutMilliseconds, cts.Token);
-            if (await Task.WhenAny(task, delayTask) == task) {
+            Task firstTask = await Task.WhenAny(task, delayTask);
+            if (firstTask == task) {
                 cts.Cancel();
                 await task;
                 return false;
