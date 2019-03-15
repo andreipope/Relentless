@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel revivedBoardUnitModel = new BoardUnitModel(card);
             BoardUnitView revivedBoardUnitView = BattlegroundController.CreateBoardUnit(playerOwner, revivedBoardUnitModel);
 
-            playerOwner.RemoveCardFromGraveyard(revivedBoardUnitModel);
+            playerOwner.RemoveCardFromGraveyard(boardUnitModel);
             playerOwner.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
             playerOwner.BoardCards.Insert(ItemPosition.End, revivedBoardUnitView);
 
