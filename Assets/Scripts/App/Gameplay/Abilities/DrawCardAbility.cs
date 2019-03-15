@@ -51,11 +51,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility
+            if (UnitStatusType != Enumerators.UnitStatus.NONE && PlayerCallerOfAbility
                     .CardsOnBoard.FindAll(x => x.UnitStatus == UnitStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (PlayerCallerOfAbility.CardsOnBoard
+            else if (Faction != 0 && PlayerCallerOfAbility.CardsOnBoard
                     .FindAll(card => card.Card.Prototype.Faction == Faction &&
                         card != AbilityUnitOwner &&
                         card.CurrentDefense > 0 &&

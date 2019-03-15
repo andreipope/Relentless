@@ -213,7 +213,8 @@ namespace Loom.ZombieBattleground
             List<BoardUnitModel> randomCards = new List<BoardUnitModel>();
 
             int count = 0;
-            while (randomCards.Count < mulliganCards.Count) {
+            while (randomCards.Count < mulliganCards.Count)
+            {
                 if (!player.CardsPreparingToHand.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
                 {
                     randomCards.Add(player.CardsInDeck[count]);
@@ -391,18 +392,18 @@ namespace Loom.ZombieBattleground
             boardUnitModel.InvokeUnitPrepairingToDie();
 
             InternalTools.DoActionDelayed(() =>
-                {
-                    _battlegroundController.UnregisterBoardUnitView(unitOwner, boardUnitView);
+            {
+                _battlegroundController.UnregisterBoardUnitView(unitOwner, boardUnitView);
 
-                    boardUnitModel.Die(true);
-                    boardUnitView.DisposeGameObject();
+                boardUnitModel.Die(true);
+                boardUnitView.DisposeGameObject();
 
-                    unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
+                unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
 
-                    unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
 
-                    _gameplayManager.RearrangeHands();
-                },
+                _gameplayManager.RearrangeHands();
+            },
                 2f);
         }
 
@@ -470,7 +471,7 @@ namespace Loom.ZombieBattleground
                             player.PlayerCardsController.RemoveCardFromHand(card.Model);
                             _battlegroundController.RegisterBoardUnitView(player, boardUnitView, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
                             //player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
-                            player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition) card.FuturePositionOnBoard);
+                            player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -545,7 +546,7 @@ namespace Loom.ZombieBattleground
                                 _abilitiesController.CallAbility(card, card.Model,
                                     Enumerators.CardKind.ITEM, boardItem, CallItemCardPlay, true, (status) =>
                                     {
-                                        if(status)
+                                        if (status)
                                         {
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
@@ -578,7 +579,7 @@ namespace Loom.ZombieBattleground
             )
         {
             OpponentHandCard opponentHandCard;
-            if(GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP || _gameplayManager.IsTutorial)
             {
                 opponentHandCard =
                     _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == cardId);
@@ -591,7 +592,7 @@ namespace Loom.ZombieBattleground
                 opponentHandCard = _battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == cardId);
             }
 
-            if(opponentHandCard is null)
+            if (opponentHandCard is null)
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
                 Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
@@ -845,7 +846,7 @@ namespace Loom.ZombieBattleground
 
             GameClient.Get<ICameraManager>().FadeOut(null, 1);
 
-            _gameplayManager.CanDoDragActions = true; 
+            _gameplayManager.CanDoDragActions = true;
 
             CardForAbilityChoosed?.Invoke(choosableAbility);
         }
@@ -907,7 +908,9 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{boardUnitModel.Prototype.Picture.ToLowerInvariant()}");
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
+                $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}_{_mainChoosableAbility.Attribute}");
+
 
             _titleText.text = boardUnitModel.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;

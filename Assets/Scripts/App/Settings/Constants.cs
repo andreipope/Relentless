@@ -222,5 +222,7 @@ namespace Loom.ZombieBattleground.Common
         internal const string HelpLink = "https://loom.games/en/how-to-play";
         
         internal const string SupportLink = "https://loom.games/en/";
+
+        internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
     }
 }

@@ -1224,7 +1224,7 @@ namespace Loom.ZombieBattleground
                 Caller = card,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
                 CheckForCardOwner = false,
-                BoardUnitModel = card.Model
+                Model = card.Model
             });
         }
 
