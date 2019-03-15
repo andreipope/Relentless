@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
 
         private List<DeckInfoObject> _deckInfoObjectList;
         
-        public GameObject DragAreaDeck, 
+        public SimpleScrollNotifier DragAreaDeck, 
                           DragAreaCollections; 
                          
         private CardHighlightingVFXItem _highlightingVFXItem;   
@@ -183,8 +183,8 @@ namespace Loom.ZombieBattleground
 
             _textSelectOverlordSkillDeckname = _selfPage.transform.Find("Tab_SelectOverlordSkill/Panel_FrameComponents/Upper_Items/Text_DeckName").GetComponent<TextMeshProUGUI>();            
              
-            DragAreaDeck = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Deck").gameObject;
-            DragAreaCollections = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Collections").gameObject;
+            DragAreaDeck = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Deck").GetComponent<SimpleScrollNotifier>();
+            DragAreaCollections = _selfPage.transform.Find("Tab_Editing/Panel_Content/DragArea_Collections").GetComponent<SimpleScrollNotifier>();
             
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
@@ -239,6 +239,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonNewDeckHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonNewDeck.name))
+                return;
+
             PlayClickSound();
             ChangeTab(Tab.SelectOverlord);
         }
@@ -276,6 +279,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonBack.name))
+                return;
+
             PlayClickSound();
             ChangeTab(Tab.SelectDeck);
         }
@@ -343,6 +349,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSaveRenameDeckHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(ButtonSaveRenameDeck.name))
+                return;
+
             PlayClickSound();
             Deck deck = GetSelectedDeck();
             string newName = _inputFieldRenameDeckName.text;
@@ -404,6 +413,11 @@ namespace Loom.ZombieBattleground
                 CurrentEditDeck = GetSelectedDeck().Clone();
                 CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
             }
+            if(_tutorialManager.IsTutorial)
+            {
+                isDisplayRenameDeck = false;
+            }
+
             IsDisplayRenameDeck = isDisplayRenameDeck;
         }
 
@@ -444,9 +458,9 @@ namespace Loom.ZombieBattleground
 
         public void ChangeTab(Tab newTab)
         {
-            if(_tab != Tab.None && _tab != newTab)
+            if (_tab != Tab.None && _tab != newTab)
             {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
             }
 
             _tab = newTab;            
@@ -492,7 +506,7 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
-            
+
             EventChangeTab?.Invoke(_tab);
         }
         

@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class DeckBuilderCard : MonoBehaviour, IScrollHandler
     {
-        public HordeEditingPage Page;
+        public HordeEditingTab Page;
 
         public IReadOnlyCard Card;
 
@@ -42,13 +42,13 @@ namespace Loom.ZombieBattleground
 
             if (!IsHordeItem)
             {
-                Page?.AddCardToDeck(this, Card);
+                Page?.AddCardToDeck(Card);
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
             }
             else
             {
-                Page?.RemoveCardFromDeck(this, Card);
+                Page?.RemoveCardFromDeck(Card);
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardRemoved);
             }
