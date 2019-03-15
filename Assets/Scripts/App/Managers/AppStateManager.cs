@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                         HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD);  
+                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);  
                     }
                     else
                         _uiManager.SetPage<OverlordSelectionPage>();

@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
             _textItemNameList.Clear();
             _textItemPriceList.Clear();
             
-            for (int i=0; i<_shopData.NumberOfItems; ++i)
+            for (int i = 0; i < _shopData.NumberOfItems; ++i)
             {
                 int index = i;
                 Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();

@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
             _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab != HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD)
+                if (tab != HordeSelectionWithNavigationPage.Tab.SelectOverlord)
                     return;
                     
                 _textSelectOverlordDeckName.text = "NEW DECK";
@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground
             _imageCross = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Image_cross").GetComponent<Image>();            
             
             _elementImageDictionary.Clear();
-            for (int i=0; i<NumberOfOverlord;++i)
+            for (int i = 0; i < NumberOfOverlord;++i)
             {
                 Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
@@ -242,7 +242,7 @@ namespace Loom.ZombieBattleground
 
                 _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
                 _myDeckPage.AssignCurrentDeck(false, true);
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD_SKILL);
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill);
             }
             _buttonSelectOverlordContinue.interactable = true;
         }

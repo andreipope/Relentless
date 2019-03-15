@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
         private List<Vector3> GetIconPositionList(int amount)
         {
             List<Vector3> positionList = new List<Vector3>();
-            for (int i=0; i<amount; ++i)
+            for (int i = 0; i < amount; ++i)
             {
                 Vector3 position = new Vector3(0f, 0f, 0f);
                 position.x += (i * 184f);
@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
             Hero selectedHero = GetHeroDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedHero.HeroElement);
 
-            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i<_createdDeckIconList.Count; i++)
+            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i < _createdDeckIconList.Count; i++)
             {
                 Deck deck = _dataManager.CachedDecksData.Decks[i];
                 if(deck == selectedDeck)

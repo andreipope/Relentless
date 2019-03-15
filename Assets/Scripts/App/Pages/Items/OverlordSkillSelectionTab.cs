@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
             _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab == HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD_SKILL)
+                if (tab == HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill)
                 {
                     UpdateTabShow();                    
                     UpdateSkillIconAndDescriptionDisplay();
@@ -148,15 +148,15 @@ namespace Loom.ZombieBattleground
             if (success)
             {
                 HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                    HordeSelectionWithNavigationPage.Tab.RENAME :
-                    HordeSelectionWithNavigationPage.Tab.EDITING;
+                    HordeSelectionWithNavigationPage.Tab.Rename :
+                    HordeSelectionWithNavigationPage.Tab.Editing;
             }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
         {
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
-            for (int i=0; i<2;++i)
+            for (int i = 0; i < 2;++i)
             {
                 if(i < items.Count)
                 {

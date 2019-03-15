@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
             _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab != HordeSelectionWithNavigationPage.Tab.EDITING)
+                if (tab != HordeSelectionWithNavigationPage.Tab.Editing)
                     return;
 
                 FillCollectionData();
@@ -247,11 +247,11 @@ namespace Loom.ZombieBattleground
             _myDeckPage.AssignCurrentDeck(false, true);
             if (status)
             {                
-                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.RENAME);
+                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.Rename);
             }
             else
             {                
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.RENAME);        
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);        
             }  
         }
 
@@ -297,13 +297,13 @@ namespace Loom.ZombieBattleground
         private void ButtonSaveEditDeckHandler()
         {
             PlayClickSound();
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SELECT_DECK);
+            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SelectDeck);
         }
 
         private void ButtonOverlordAbilitiesHandler()
         {
             PlayClickSound();
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD_SKILL);
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill);
         }
 
         private void ButtonAutoHandler()
@@ -879,7 +879,7 @@ namespace Loom.ZombieBattleground
             int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
             int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
             List<BoardCardView> displayCardList = new List<BoardCardView>();
-            for ( int i=0; i<_createdDeckBoardCards.Count; ++i)
+            for ( int i = 0; i < _createdDeckBoardCards.Count; ++i)
             {
                 if(i >= startIndex && i < endIndex)
                 {
@@ -891,7 +891,7 @@ namespace Loom.ZombieBattleground
                     _createdDeckBoardCards[i].GameObject.SetActive(false);
                 }
             }
-            for (int i=0; i<displayCardList.Count; ++i)
+            for (int i = 0; i < displayCardList.Count; ++i)
             {
                 displayCardList[i].Transform.position = DeckCardPositions[i].position;
             }
@@ -1279,8 +1279,8 @@ namespace Loom.ZombieBattleground
 
             deckToSave.Name = newName;
             HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                HordeSelectionWithNavigationPage.Tab.EDITING :
-                HordeSelectionWithNavigationPage.Tab.SELECT_DECK;
+                HordeSelectionWithNavigationPage.Tab.Editing :
+                HordeSelectionWithNavigationPage.Tab.SelectDeck;
 
             ProcessEditDeck(deckToSave,tab);
         }
