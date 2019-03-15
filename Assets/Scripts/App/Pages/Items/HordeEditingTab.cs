@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -128,9 +128,9 @@ namespace Loom.ZombieBattleground
             InitBoardCardPrefabsAndLists();
 
             _myDeckPage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab != HordeSelectionWithNavigationPage.TAB.EDITING)
+                if (tab != HordeSelectionWithNavigationPage.Tab.EDITING)
                     return;
 
                 FillCollectionData();
@@ -157,39 +157,30 @@ namespace Loom.ZombieBattleground
             
             _buttonRename = _textEditDeckName.GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
-            _buttonRename.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonFilter = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonEditDeckFilterHandler);
-            _buttonFilter.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonUpperLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperLeftArrow").GetComponent<Button>();
             _buttonUpperLeftArrow.onClick.AddListener(ButtonEditDeckUpperLeftArrowHandler);
-            _buttonUpperLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonUpperRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_UpperRightArrow").GetComponent<Button>();
             _buttonUpperRightArrow.onClick.AddListener(ButtonEditDeckUpperRightArrowHandler);
-            _buttonUpperRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonLowerLeftArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerLeftArrow").GetComponent<Button>();
             _buttonLowerLeftArrow.onClick.AddListener(ButtonEditDeckLowerLeftArrowHandler);
-            _buttonLowerLeftArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonLowerRightArrow = _selfPage.transform.Find("Tab_Editing/Panel_Content/Button_LowerRightArrow").GetComponent<Button>();
             _buttonLowerRightArrow.onClick.AddListener(ButtonEditDeckLowerRightArrowHandler);
-            _buttonLowerRightArrow.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonSaveDeck = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Lower_Items/Button_SaveDeck").GetComponent<Button>();
             _buttonSaveDeck.onClick.AddListener(ButtonSaveEditDeckHandler);
-            _buttonSaveDeck.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonAbilities = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Button>();
             _buttonAbilities.onClick.AddListener(ButtonOverlordAbilitiesHandler);
-            _buttonAbilities.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _buttonAuto = _selfPage.transform.Find("Panel_Frame/Image_ButtonAutoTray/Button_Auto").GetComponent<Button>();
             _buttonAuto.onClick.AddListener(ButtonAutoHandler);
-            _buttonAuto.onClick.AddListener(_myDeckPage.PlayClickSound);
 
             _inputFieldSearchName = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
@@ -244,6 +235,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRenameHandler()
         {
+            PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
             _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
         }
@@ -255,16 +247,17 @@ namespace Loom.ZombieBattleground
             _myDeckPage.AssignCurrentDeck(false, true);
             if (status)
             {                
-                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.RENAME);
+                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.RENAME);
             }
             else
             {                
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);        
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.RENAME);        
             }  
         }
 
         private void ButtonEditDeckFilterHandler()
         {
+            PlayClickSound();
             _uiManager.DrawPopup<CardFilterPopup>();
             CardFilterPopup popup = _uiManager.GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
@@ -279,36 +272,43 @@ namespace Loom.ZombieBattleground
 
         private void ButtonEditDeckUpperLeftArrowHandler()
         {
+            PlayClickSound();
             MoveDeckPageIndex(-1);
         }
 
         private void ButtonEditDeckUpperRightArrowHandler()
         {
+            PlayClickSound();
             MoveDeckPageIndex(1);
         }
 
         private void ButtonEditDeckLowerLeftArrowHandler()
         {
+            PlayClickSound();
             MoveCollectionPageIndex(-1);
         }
 
         private void ButtonEditDeckLowerRightArrowHandler()
         {
+            PlayClickSound();
             MoveCollectionPageIndex(1);
         }
 
         private void ButtonSaveEditDeckHandler()
         {
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
+            PlayClickSound();
+            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SELECT_DECK);
         }
 
         private void ButtonOverlordAbilitiesHandler()
         {
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL);
+            PlayClickSound();
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD_SKILL);
         }
 
         private void ButtonAutoHandler()
         {
+            PlayClickSound();
             FillCollectionData();
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateCardsToDeck
             (
@@ -879,7 +879,7 @@ namespace Loom.ZombieBattleground
             int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
             int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
             List<BoardCardView> displayCardList = new List<BoardCardView>();
-            for( int i=0; i<_createdDeckBoardCards.Count; ++i)
+            for ( int i=0; i<_createdDeckBoardCards.Count; ++i)
             {
                 if(i >= startIndex && i < endIndex)
                 {
@@ -891,7 +891,7 @@ namespace Loom.ZombieBattleground
                     _createdDeckBoardCards[i].GameObject.SetActive(false);
                 }
             }
-            for(int i=0; i<displayCardList.Count; ++i)
+            for (int i=0; i<displayCardList.Count; ++i)
             {
                 displayCardList[i].Transform.position = DeckCardPositions[i].position;
             }
@@ -1176,7 +1176,7 @@ namespace Loom.ZombieBattleground
             return maxCopies;
         }
 
-        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.TAB nextTab)
+        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.Tab nextTab)
         {
             _myDeckPage.ButtonSaveRenameDeck.interactable = false;
             _buttonSaveDeck.interactable = false;
@@ -1278,26 +1278,28 @@ namespace Loom.ZombieBattleground
             }
 
             deckToSave.Name = newName;
+            HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
+                HordeSelectionWithNavigationPage.Tab.EDITING :
+                HordeSelectionWithNavigationPage.Tab.SELECT_DECK;
 
-            if (_myDeckPage.IsDisplayRenameDeck)
-            {
-                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.EDITING);
-            }
-            else
-            {
-                ProcessEditDeck(deckToSave, HordeSelectionWithNavigationPage.TAB.SELECT_DECK);
-            }
+            ProcessEditDeck(deckToSave,tab);
         }
 
         private void PlayAddCardSound()
         {
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,                 Constants.SfxSoundVolume, false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_ADD_CARD,
+                Constants.SfxSoundVolume, false, false, true);
         }
 
         private void PlayRemoveCardSound()
         {
              GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.DECKEDITING_REMOVE_CARD,
                 Constants.SfxSoundVolume, false, false, true);
+        }
+        
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
     }
 }

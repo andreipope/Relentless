@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
             _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI");
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
             _abiPacks = new TextAsset[packTypes.Length];
-            for(int i=0;i<packTypes.Length;++i)
+            for (int i=0;i<packTypes.Length;++i)
             {
                 _abiPacks[i] = _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI");
             }

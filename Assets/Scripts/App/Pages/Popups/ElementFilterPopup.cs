@@ -87,21 +87,21 @@ namespace Loom.ZombieBattleground
             
             _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
-            _buttonClose.onClick.AddListener(PlayClickSound);
             
             _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
-            _buttonSave.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
             foreach(Enumerators.Faction faction in _availableFactionList)
             {
                 Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
-                (
-                    ()=> ButtonElementIconHandler(faction)
+                (()=> 
+                    {
+                        PlayClickSound();
+                        ButtonElementIconHandler(faction); 
+                    }
                 );
-                buttonElementIcon.onClick.AddListener(PlayClickSound);
 
                 _buttonElementsDictionary.Add(faction, buttonElementIcon);
             }
@@ -124,11 +124,13 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
+            PlayClickSound();
             Hide();
         }
         
         private void ButtonSaveHandler()
         {
+            PlayClickSound();
             Hide();
             SaveCache();
             ActionPopupHiding?.Invoke(_selectedFaction);

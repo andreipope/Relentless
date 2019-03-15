@@ -75,23 +75,18 @@ namespace Loom.ZombieBattleground
 
             _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
-            _buttonClose.onClick.AddListener(PlayClickSound);
             
             _buttonLeaveMatch = Self.transform.Find("Scaler/Button_LeaveMatch").GetComponent<Button>();
             _buttonLeaveMatch.onClick.AddListener(ButtonLeaveMatchHandler);
-            _buttonLeaveMatch.onClick.AddListener(PlayClickSound);
             
             _buttonHelp = Self.transform.Find("Scaler/Button_Help").GetComponent<Button>();
             _buttonHelp.onClick.AddListener(ButtonHelpHandler);
-            _buttonHelp.onClick.AddListener(PlayClickSound);
             
             _buttonSupport = Self.transform.Find("Scaler/Button_Support").GetComponent<Button>();
             _buttonSupport.onClick.AddListener(ButtonSupportHandler);
-            _buttonSupport.onClick.AddListener(PlayClickSound);
             
             _buttonCredits = Self.transform.Find("Scaler/Button_Credits").GetComponent<Button>();
             _buttonCredits.onClick.AddListener(ButtonCreditsHandler);
-            _buttonCredits.onClick.AddListener(PlayClickSound);
             
             _sfxVolumeSlider = Self.transform.Find("Scaler/Group_Sounds/Slider_SFXVolume").GetComponent<Slider>();
             _musicVolumeSlider = Self.transform.Find("Scaler/Group_Music/Slider_MusicVolume").GetComponent<Slider>();     
@@ -134,11 +129,13 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
+            PlayClickSound();
             _uiManager.HidePopup<MySettingPopup>();
         }
         
         private void ButtonLeaveMatchHandler()
         {
+            PlayClickSound();
             Action[] actions = new Action[2];
             actions[0] = () =>
             {
@@ -160,6 +157,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonHelpHandler()
         {
+            PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectHelpLink;
             _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to help link?");            
         }
@@ -175,6 +173,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonSupportHandler()
         {
+            PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectSupportLink;
             _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to support link?");
         }
@@ -190,6 +189,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonCreditsHandler()
         {
+            PlayClickSound();
             Hide();
             _uiManager.DrawPopup<CreditPopup>();
         }

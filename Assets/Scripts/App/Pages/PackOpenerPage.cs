@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -328,7 +328,7 @@ namespace Loom.ZombieBattleground
             _packTypeNames = new TextMeshProUGUI[amountOfPackType];
             _packTypeAmountLabels = new TextMeshProUGUI[amountOfPackType];
             _packTypeButtons = new Button[amountOfPackType];
-            for(int i=0; i<amountOfPackType; ++i)
+            for (int i=0; i<amountOfPackType; ++i)
             {   
                 Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContent/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
@@ -373,7 +373,7 @@ namespace Loom.ZombieBattleground
                 _cardsToDisplayQueqe.RemoveAt(0);
             }
                     
-            for( int i=0; i<cards.Count; ++i)
+            for ( int i=0; i<cards.Count; ++i)
             {
                 Card card = cards[i];
                 BoardCardView boardCardView = CreateCard(card, Vector3.up * 12f);
@@ -447,7 +447,7 @@ namespace Loom.ZombieBattleground
         public async Task RetrievePackBalanceAmount()
         {  
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-            for(int i=0; i<packTypes.Length;++i)
+            for (int i=0; i<packTypes.Length;++i)
             {
                 await RetrievePackBalanceAmount(i);
             }              
@@ -899,7 +899,7 @@ namespace Loom.ZombieBattleground
             float moveDuration = 0.4f;
             Vector3 hideCardPosition = -Vector3.up * 14f;
             
-            for(int i=0; i<amount ; ++i)
+            for (int i=0; i<amount ; ++i)
             {
                 Transform displayBoardCard = _createdBoardCards[i].Transform;
                 Sequence hideCardSequence = DOTween.Sequence();
@@ -1019,7 +1019,7 @@ namespace Loom.ZombieBattleground
         {
             _selectedPackTypeIndex = id;
             SetPackToOpenAmount(_packBalanceAmounts[_selectedPackTypeIndex]);
-            for(int i=0;i<_packTypeButtons.Length;++i)
+            for (int i=0;i<_packTypeButtons.Length;++i)
             {
                 _packTypeButtons[i].GetComponent<Image>().sprite = (i == _selectedPackTypeIndex ? _packHolderSelectedSprite : _packHolderNormalSprite);
             }

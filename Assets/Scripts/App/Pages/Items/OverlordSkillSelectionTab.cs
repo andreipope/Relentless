@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,9 +80,9 @@ namespace Loom.ZombieBattleground
             _overlordAbilityItems = new List<OverlordAbilityItem>();
             
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
-            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab == HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL)
+                if (tab == HordeSelectionWithNavigationPage.Tab.SELECT_OVERLORD_SKILL)
                 {
                     UpdateTabShow();                    
                     UpdateSkillIconAndDescriptionDisplay();
@@ -115,7 +115,6 @@ namespace Loom.ZombieBattleground
 
             _continueButton = _backLayerCanvas.transform.Find("Button_Continue").GetComponent<Button>();
             _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
-            _continueButton.onClick.AddListener(_myDeckPage.PlayClickSound);
             
             _abilitiesGroup = _backLayerCanvas.transform.Find("Abilities").gameObject;
         }
@@ -148,21 +147,16 @@ namespace Loom.ZombieBattleground
 
             if (success)
             {
-                if (_myDeckPage.IsDisplayRenameDeck)
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.RENAME);
-                }
-                else
-                {
-                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
-                }
+                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
+                    HordeSelectionWithNavigationPage.Tab.RENAME :
+                    HordeSelectionWithNavigationPage.Tab.EDITING;
             }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
         {
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
-            for(int i=0; i<2;++i)
+            for (int i=0; i<2;++i)
             {
                 if(i < items.Count)
                 {
@@ -219,7 +213,8 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
-            
+
+            PlayClickSound();
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
 
             if (items.Count > 1)
@@ -255,6 +250,11 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
             _uiManager.DrawPopup<WarningPopup>(msg);
+        }
+        
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void FillAvailableAbilities()
@@ -380,6 +380,7 @@ namespace Loom.ZombieBattleground
 
             private void SelectButtonOnClickHandler()
             {
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
                 OverlordAbilitySelected?.Invoke(this);
             }
         }

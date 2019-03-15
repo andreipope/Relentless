@@ -114,23 +114,18 @@ namespace Loom.ZombieBattleground
             
             _buttonLeftArrow = Self.transform.Find("Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
-            _buttonLeftArrow.onClick.AddListener(PlayClickSound);
             
             _buttonRightArrow = Self.transform.Find("Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
-            _buttonRightArrow.onClick.AddListener(PlayClickSound);
             
             _buttonAdd = Self.transform.Find("Button_AddToDeck").GetComponent<Button>();
             _buttonAdd.onClick.AddListener(ButtonAddCardHandler);
-            _buttonAdd.onClick.AddListener(PlayClickSound);
             
             _buttonRemove = Self.transform.Find("Button_Remove").GetComponent<Button>();
             _buttonRemove.onClick.AddListener(ButtonRemoveCardHandler);
-            _buttonRemove.onClick.AddListener(PlayClickSound);
             
             _buttonBack = Self.transform.Find("Background/Button_Back").GetComponent<Button>();
             _buttonBack.onClick.AddListener(ButtonBackHandler);
-            _buttonBack.onClick.AddListener(PlayClickSound);
             
             _inputFieldSearch = Self.transform.Find("InputText_SearchDeckName").GetComponent<TMP_InputField>();
             _inputFieldSearch.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
@@ -167,11 +162,13 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBackHandler()
         {
+            PlayClickSound();
             Hide();
         }
         
         private void ButtonAddCardHandler()
         {
+            PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
                 _filteredCardList[_currentCardIndex]
@@ -181,6 +178,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonRemoveCardHandler()
         {
+            PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (
                 _filteredCardList[_currentCardIndex]
@@ -190,11 +188,13 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftArrowHandler()
         {
+            PlayClickSound();
             MoveCardIndex(-1);
         }
         
         private void ButtonRightArrowHandler()
         {
+            PlayClickSound();
             MoveCardIndex(1);
         }
         

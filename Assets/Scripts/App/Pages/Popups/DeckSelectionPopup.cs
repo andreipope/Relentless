@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -257,7 +257,7 @@ namespace Loom.ZombieBattleground
         private List<Vector3> GetIconPositionList(int amount)
         {
             List<Vector3> positionList = new List<Vector3>();
-            for(int i=0; i<amount; ++i)
+            for (int i=0; i<amount; ++i)
             {
                 Vector3 position = new Vector3(0f, 0f, 0f);
                 position.x += (i * 184f);

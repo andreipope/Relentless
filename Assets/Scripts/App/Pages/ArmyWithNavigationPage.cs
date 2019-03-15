@@ -83,23 +83,18 @@ namespace Loom.ZombieBattleground
             
             _buttonFilter = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_Filter").GetComponent<Button>();
             _buttonFilter.onClick.AddListener(ButtonFilterHandler);
-            _buttonFilter.onClick.AddListener(PlayClickSound);
             
             _buttonMarketplace = _selfPage.transform.Find("Panel_Frame/Upper_Items/Button_MarketPlace").GetComponent<Button>();
             _buttonMarketplace.onClick.AddListener(ButtonMarketplace);
-            _buttonMarketplace.onClick.AddListener(PlayClickSound);
             
             _buttonBuyPacks = _selfPage.transform.Find("Panel_Frame/Lower_Items/Button_BuyMorePacks").GetComponent<Button>();
             _buttonBuyPacks.onClick.AddListener(ButtonBuyPacksHandler);
-            _buttonBuyPacks.onClick.AddListener(PlayClickSound);
             
             _buttonLeftArrow = _selfPage.transform.Find("Panel_Content/Button_LeftArrow").GetComponent<Button>();
             _buttonLeftArrow.onClick.AddListener(ButtonLeftArrowHandler);
-            _buttonLeftArrow.onClick.AddListener(PlayClickSound);
             
             _buttonRightArrow = _selfPage.transform.Find("Panel_Content/Button_RightArrow").GetComponent<Button>();
             _buttonRightArrow.onClick.AddListener(ButtonRightArrowHandler);
-            _buttonRightArrow.onClick.AddListener(PlayClickSound);
             
             _inputFieldSearchName = _selfPage.transform.Find("Panel_Frame/Upper_Items/InputText_Search").GetComponent<TMP_InputField>();
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
@@ -152,6 +147,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonFilterHandler()
         {
+            PlayClickSound();
             GameClient.Get<IUIManager>().DrawPopup<CardFilterPopup>();
             CardFilterPopup popup = GameClient.Get<IUIManager>().GetPopup<CardFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
@@ -166,21 +162,25 @@ namespace Loom.ZombieBattleground
         
         private void ButtonBuyPacksHandler()
         {
+            PlayClickSound();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
         }
         
         private void ButtonLeftArrowHandler()
         {
+            PlayClickSound();
             MoveCardsPage(-1);
         }
         
         private void ButtonRightArrowHandler()
         {
+            PlayClickSound();
             MoveCardsPage(1);
         }
         
         private void ButtonMarketplace()
         {
+            PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
             _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
         }
