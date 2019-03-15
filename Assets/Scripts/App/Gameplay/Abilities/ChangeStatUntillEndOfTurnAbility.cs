@@ -11,15 +11,13 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        private List<BoardUnitView> _boardUnits;
+        private List<BoardUnitModel> _boardUnits = new List<BoardUnitModel>();
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Defense = ability.Defense;
             Damage = ability.Damage;
-
-            _boardUnits = new List<BoardUnitView>();
         }
 
         public override void Activate()
@@ -59,34 +57,34 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.Target.PLAYER_ALL_CARDS:
                     case Enumerators.Target.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.BoardCards);
+                        _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                         break;
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
                     case Enumerators.Target.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().BoardCards);
+                        _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                 }
             }
 
-            foreach (BoardUnitView unit in _boardUnits)
+            foreach (BoardUnitModel unit in _boardUnits)
             {
                 if (Damage != 0)
                 {
-                    unit.Model.DamageDebuffUntillEndOfTurn += Damage;
-                    int buffresult = unit.Model.CurrentDamage + Damage;
+                    unit.DamageDebuffUntillEndOfTurn += Damage;
+                    int buffresult = unit.CurrentDamage + Damage;
 
                     if (buffresult < 0)
                     {
-                        unit.Model.DamageDebuffUntillEndOfTurn -= buffresult;
+                        unit.DamageDebuffUntillEndOfTurn -= buffresult;
                     }
 
-                    unit.Model.CurrentDamage += Damage;
+                    unit.CurrentDamage += Damage;
                 }
 
                 if (Defense != 0)
                 {
-                    unit.Model.HpDebuffUntillEndOfTurn += Defense;
-                    unit.Model.CurrentDefense += Defense;
+                    unit.HpDebuffUntillEndOfTurn += Defense;
+                    unit.CurrentDefense += Defense;
                 }
             }
         }
@@ -98,21 +96,21 @@ namespace Loom.ZombieBattleground
 
             base.TurnEndedHandler();
 
-            foreach (BoardUnitView unit in _boardUnits)
+            foreach (BoardUnitModel unit in _boardUnits)
             {
-                if (unit == null || unit.Model == null)
+                if (unit == null)
                     continue;
 
-                if (unit.Model.DamageDebuffUntillEndOfTurn != 0)
+                if (unit.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.Model.CurrentDamage -= unit.Model.DamageDebuffUntillEndOfTurn;
-                    unit.Model.DamageDebuffUntillEndOfTurn = 0;
+                    unit.CurrentDamage -= unit.DamageDebuffUntillEndOfTurn;
+                    unit.DamageDebuffUntillEndOfTurn = 0;
                 }
 
-                if (unit.Model.HpDebuffUntillEndOfTurn != 0)
+                if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.Model.CurrentDefense -= unit.Model.HpDebuffUntillEndOfTurn;
-                    unit.Model.HpDebuffUntillEndOfTurn = 0;
+                    unit.CurrentDefense -= unit.HpDebuffUntillEndOfTurn;
+                    unit.HpDebuffUntillEndOfTurn = 0;
                 }
             }
 

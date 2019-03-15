@@ -35,12 +35,11 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitView> units = new List<BoardUnitView>();
+                List<BoardUnitModel> units = new List<BoardUnitModel>();
 
                 if (PredefinedTargets != null)
                 {
-                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().
-                             Select(model => BattlegroundController.GetBoardUnitViewByModel(model)).ToList();
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().ToList();
                 }
                 else
                 {
@@ -49,10 +48,10 @@ namespace Loom.ZombieBattleground
                         switch (targetType)
                         {
                             case Enumerators.Target.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
+                                units.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
                                 break;
                             case Enumerators.Target.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.Prototype.Faction == Faction));
+                                units.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
                                 break;
                         }
                     }
@@ -60,14 +59,14 @@ namespace Loom.ZombieBattleground
                     units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
 
-                foreach (BoardUnitView unit in units)
+                foreach (BoardUnitModel unit in units)
                 {
-                    TakeBlitzToUnit(unit.Model);
+                    TakeBlitzToUnit(unit);
                 }
 
                 InvokeUseAbilityEvent(
                     units
-                        .Select(x => new ParametrizedAbilityBoardObject(x.Model))
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
                         .ToList()
                 );
             }

@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -46,22 +45,17 @@ namespace Loom.ZombieBattleground
             _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
             _reanimatedUnit.Model.IsReanimated = true;
 
-            if (owner.CardsInGraveyard.Contains(AbilityUnitOwner))
-            {
-                owner.CardsInGraveyard.Remove(AbilityUnitOwner);
-            }
-
-            owner.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
-            owner.BoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+            owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
+            owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
             if (owner.IsLocalPlayer)
             {
-                BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
             }
             else
             {
-                BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
             }
 
             InvokeActionTriggered(_reanimatedUnit);
@@ -107,7 +101,7 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardUnitView = new BoardUnitView(boardUnitModel, playerBoard.transform);
             boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = playerBoard.transform;
-            boardUnitView.Transform.position = new Vector2(2f * owner.BoardCards.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {

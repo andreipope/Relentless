@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
                 }
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
                         }
 
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
+                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damage);
             }
         }
 
@@ -254,7 +254,7 @@ namespace Loom.ZombieBattleground
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
                     case BoardItem item:
-                        attackedUnitModel.LastAttackingSetType = item.BoardUnitModel.Prototype.Faction;
+                        attackedUnitModel.LastAttackingSetType = item.Model.Prototype.Faction;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);

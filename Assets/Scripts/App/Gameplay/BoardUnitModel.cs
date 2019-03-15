@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private readonly AbilitiesController _abilitiesController;
 
+        private readonly PlayerController _playerController;
+
         private readonly IPvPManager _pvpManager;
 
         private int _stunTurns;
@@ -66,6 +68,7 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
+            _playerController = _gameplayManager.GetController<PlayerController>();
             _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
@@ -210,7 +213,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsHeavyUnit => HasBuffHeavy || HasHeavy;
 
-        public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; private set; } = new List<Enumerators.GameMechanicDescription>();
+        public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; } = new List<Enumerators.GameMechanicDescription>();
 
         public GameplayQueueAction<object> ActionForDying;
 
@@ -659,6 +662,33 @@ namespace Loom.ZombieBattleground
             CreaturePlayableForceSet?.Invoke();
         }
 
+        public virtual bool CanBePlayed(Player owner)
+        {
+            if (!Constants.DevModeEnabled)
+            {
+                return _playerController.IsActive; // && owner.manaStat.effectiveValue >= manaCost;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public virtual bool CanBeBuyed(Player owner)
+        {
+            if (!Constants.DevModeEnabled)
+            {
+                if (_gameplayManager.AvoidGooCost)
+                    return true;
+
+                return owner.CurrentGoo >= Card.InstanceCard.Cost;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public void DoCombat(BoardObject target)
         {
             if (target == null)
@@ -775,11 +805,11 @@ namespace Loom.ZombieBattleground
 
                                     if (HasSwing)
                                     {
-                                        List<BoardUnitView> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+                                        List<BoardUnitModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
 
-                                        foreach (BoardUnitView unit in adjacent)
+                                        foreach (BoardUnitModel unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit.Model,false);
+                                            _battleController.AttackUnitByUnit(this, unit,false);
                                         }
                                     }
 
@@ -873,21 +903,21 @@ namespace Loom.ZombieBattleground
             KilledUnit?.Invoke(boardUnit);
         }
 
-        public UniquePositionedList<BoardUnitView> GetEnemyUnitsList(BoardUnitModel unit)
+        public IReadOnlyList<BoardUnitModel> GetEnemyUnitsList(BoardUnitModel unit)
         {
-            if (_gameplayManager.CurrentPlayer.BoardCards.Select(x => x.Model).Contains(unit))
+            if (_gameplayManager.CurrentPlayer.CardsOnBoard.Contains(unit))
             {
-                return _gameplayManager.OpponentPlayer.BoardCards;
+                return _gameplayManager.OpponentPlayer.CardsOnBoard;
             }
 
-            return _gameplayManager.CurrentPlayer.BoardCards;
+            return _gameplayManager.CurrentPlayer.CardsOnBoard;
         }
 
         public void RemoveUnitFromBoard()
         {
-            OwnerPlayer.BoardCards.Remove(_battlegroundController.GetBoardUnitViewByModel(this));
-            OwnerPlayer.RemoveCardFromBoard(this);
-            OwnerPlayer.AddCardToGraveyard(this);
+            _battlegroundController.BoardUnitViews.Remove(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
+            OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(this);
+            OwnerPlayer.PlayerCardsController.AddCardToGraveyard(this);
 
             UnitFromDeckRemoved?.Invoke();
         }
@@ -895,6 +925,11 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitPrepairingToDie()
         {
             PrepairingToDie?.Invoke(this);
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
         }
     }
 }

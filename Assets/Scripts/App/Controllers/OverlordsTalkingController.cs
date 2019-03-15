@@ -138,7 +138,7 @@ namespace Loom.ZombieBattleground
 
             public float HeightPopup;
 
-            public string Description { get; private set; }
+            public string Description { get; }
 
             private const float DurationOfHide = 0.5f;
             private const float MinHeight = 2.85f;
