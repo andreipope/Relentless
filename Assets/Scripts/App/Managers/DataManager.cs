@@ -581,11 +581,6 @@ namespace Loom.ZombieBattleground
         private async Task LoadZbVersionData()
         {
             ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(Constants.ZbVersionLink, Log, JsonSerializerSettings);
-
-            Constants.GameLinkForAndroid = ZbVersion.Version.DownloadUrlPlayStore;
-            Constants.GameLinkForIOS = ZbVersion.Version.DownloadUrlAppStore;
-            Constants.GameLinkForOSX = ZbVersion.Version.DownloadUrlMac;
-            Constants.GameLinkForWindows = ZbVersion.Version.DownloadUrlPC;
         }
     }
 }

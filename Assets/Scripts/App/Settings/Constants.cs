@@ -171,11 +171,6 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
 
-        internal static string GameLinkForAndroid = "https://developer.cloud.unity3d.com/share/-J3abH-Xx4/";
-        internal static string GameLinkForIOS = "https://testflight.apple.com/join/T7zJgWOj";
-        internal static string GameLinkForWindows = "https://developer.cloud.unity3d.com/share/bJbteBWmxV/";
-        internal static string GameLinkForOSX = "https://developer.cloud.unity3d.com/share/bk4NZSb7lN/";
-
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
