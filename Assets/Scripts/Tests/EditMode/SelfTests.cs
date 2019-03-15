@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test.MultiplayerTests;
@@ -50,7 +51,7 @@ namespace Loom.ZombieBattleground.Test
 
                 try
                 {
-                    await client.Start(contract => new DefaultContractCallProxy(contract), enabledLogs: false);
+                    await client.Start(contract => new DefaultContractCallProxy(contract), new DAppChainClientConfiguration(), enabledLogs: false);
 
                     foreach (Card card in client.CardLibrary)
                     {

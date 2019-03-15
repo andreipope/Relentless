@@ -84,10 +84,11 @@ namespace Loom.Client {
         /// The call into the smart contract is accomplished by committing a transaction to the DAppChain.
         /// </summary>
         /// <param name="tx">Transaction message.</param>
+        /// <param name="args"></param>
         /// <returns>Nothing.</returns>
-        internal async Task CallAsync(Transaction tx)
+        internal async Task CallAsync(Transaction tx, CallContext callContext)
         {
-            await this.Client.CommitTxAsync(tx);
+            await this.Client.CommitTxAsync(tx, callContext);
         }
 
         internal Transaction CreateContractMethodCallTx(string hexData, VMType vmType) {

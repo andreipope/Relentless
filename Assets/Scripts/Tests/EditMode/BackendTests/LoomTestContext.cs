@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground.Test
             if (BackendFacade.IsConnected)
                 return;
 
-            await BackendFacade.CreateContract(_userDataModel.PrivateKey);
+            await BackendFacade.CreateContract(_userDataModel.PrivateKey, new DAppChainClientConfiguration());
         }
     }
 }

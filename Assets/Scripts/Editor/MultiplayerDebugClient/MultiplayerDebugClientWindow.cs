@@ -597,6 +597,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         {
             await DebugClient.Start(
                 contract => new DefaultContractCallProxy(contract),
+                new DAppChainClientConfiguration(),
                 matchMakingFlowController =>
                 {
                     matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
@@ -628,8 +629,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
             EditorGUI.DrawRect(rect, Color.black);
             EditorGUILayout.Space();
         }
-
-
 
         [Serializable]
         private class GameActionsState

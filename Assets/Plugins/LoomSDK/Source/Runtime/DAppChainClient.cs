@@ -19,7 +19,7 @@ namespace Loom.Client
     /// <summary>
     /// Writes to & reads from a Loom DAppChain.
     /// </summary>
-    public class DAppChainClient : IDAppChainClientConfigurationProvider, IDisposable
+    public class DAppChainClient : IDisposable
     {
         private const string LogTag = "Loom.DAppChainClient";
 
@@ -98,7 +98,11 @@ namespace Loom.Client
         /// <param name="readClient">RPC client to use for querying DAppChain state.</param>
         /// <param name="configuration">Client configuration structure.</param>
         /// <param name="callExecutor">Blockchain call execution flow controller.</param>
-        public DAppChainClient(IRpcClient writeClient, IRpcClient readClient, DAppChainClientConfiguration configuration = null, IDAppChainClientCallExecutor callExecutor = null)
+        public DAppChainClient(
+            IRpcClient writeClient,
+            IRpcClient readClient,
+            DAppChainClientConfiguration configuration = null,
+            IDAppChainClientCallExecutor callExecutor = null)
         {
             if (writeClient == null && readClient == null)
                 throw new ArgumentException("Both write and read clients can't be null");
@@ -107,7 +111,7 @@ namespace Loom.Client
             this.readClient = readClient;
 
             this.Configuration = configuration ?? new DAppChainClientConfiguration();
-            this.CallExecutor = callExecutor ?? new DefaultDAppChainClientCallExecutor(this);
+            this.CallExecutor = callExecutor ?? new DefaultDAppChainClientCallExecutor(this.Configuration);
         }
 
         public void Dispose()
@@ -123,12 +127,12 @@ namespace Loom.Client
         /// <returns>The nonce.</returns>
         public async Task<ulong> GetNonceAsync(string key)
         {
-            return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key));
+            return await this.CallExecutor.StaticCall(async () => await GetNonceAsyncRaw(key), new CallContext("nonce", true));
         }
 
         public async Task<ulong> GetNonceAsyncNonBlocking(string key)
         {
-            return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key));
+            return await this.CallExecutor.NonBlockingStaticCall(async () => await GetNonceAsyncRaw(key), new CallContext("nonce", true));
         }
 
         /// <summary>
@@ -141,28 +145,35 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            return await this.CallExecutor.StaticCall(async () =>
-            {
-                await EnsureConnected();
-                var addressStr = await this.readClient.SendAsync<string, ResolveParams>(
-                    "resolve",
-                    new ResolveParams { ContractName = contractName }
-                );
+            return await this.CallExecutor.StaticCall(
+                async () =>
+                {
+                    await EnsureConnected();
+                    var addressStr = await this.readClient.SendAsync<string, ResolveParams>(
+                        "resolve",
+                        new ResolveParams
+                        {
+                            ContractName = contractName
+                        }
+                    );
 
-                if (String.IsNullOrEmpty(addressStr))
-                    throw new LoomException("Unable to find a contract with a matching name");
+                    if (String.IsNullOrEmpty(addressStr))
+                        throw new LoomException("Unable to find a contract with a matching name");
 
-                return Address.FromString(addressStr);
-            });
+                    return Address.FromString(addressStr);
+                },
+                new CallContext("resolve", true)
+            );
         }
 
         /// <summary>
         /// Commits a transaction to the DAppChain.
         /// </summary>
         /// <param name="tx">Transaction to commit.</param>
+        /// <param name="callContext">Call context.</param>
         /// <returns>Commit metadata.</returns>
         /// <exception cref="InvalidTxNonceException">Thrown when transaction is rejected by the DAppChain due to a bad nonce.</exception>
-        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx)
+        internal async Task<BroadcastTxResult> CommitTxAsync(IMessage tx, CallContext callContext)
         {
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
@@ -202,7 +213,7 @@ namespace Loom.Client
 
                     throw;
                 }
-            });
+            }, callContext);
         }
 
         /// <summary>
@@ -213,10 +224,11 @@ namespace Loom.Client
         /// <param name="query">Query parameters object.</param>
         /// <param name="caller">Optional caller address.</param>
         /// <param name="vmType">Virtual machine type.</param>
+        /// <param name="callContext">Call context.</param>
         /// <returns>Deserialized response.</returns>
-        internal async Task<T> QueryAsync<T>(Address contract, IMessage query, Address caller, VMType vmType)
+        internal async Task<T> QueryAsync<T>(Address contract, IMessage query, Address caller, VMType vmType, CallContext callContext)
         {
-            return await QueryAsync<T>(contract, query.ToByteArray(), caller, vmType);
+            return await QueryAsync<T>(contract, query.ToByteArray(), caller, vmType, callContext);
         }
 
         /// <summary>
@@ -227,8 +239,9 @@ namespace Loom.Client
         /// <param name="query">Raw query parameters data.</param>
         /// <param name="caller">Optional caller address.</param>
         /// <param name="vmType">Virtual machine type.</param>
+        /// <param name="callContext">Call context.</param>
         /// <returns>Deserialized response.</returns>
-        internal async Task<T> QueryAsync<T>(Address contract, byte[] query, Address caller, VMType vmType = VMType.Plugin)
+        internal async Task<T> QueryAsync<T>(Address contract, byte[] query, Address caller, VMType vmType, CallContext callContext)
         {
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
@@ -249,7 +262,7 @@ namespace Loom.Client
             {
                 await EnsureConnected();
                 return await this.readClient.SendAsync<T, QueryParams>("query", queryParams);
-            });
+            }, callContext);
         }
 
         private async Task<ulong> GetNonceAsyncRaw(string key)
@@ -286,7 +299,7 @@ namespace Loom.Client
                 this.eventSubs.Add(handler, wrapper);
                 // FIXME: supports topics
                 await this.readClient.SubscribeAsync(wrapper, null);
-            });
+            }, new CallContext("_subscribe", false));
         }
 
         private async void UnsubReadClient(EventHandler<RawChainEventArgs> handler)
@@ -298,7 +311,7 @@ namespace Loom.Client
             {
                 EventHandler<JsonRpcEventData> wrapper = this.eventSubs[handler];
                 await this.readClient.UnsubscribeAsync(wrapper);
-            });
+            }, new CallContext("_unsubscribe", false));
         }
 
         private async Task EnsureConnected()

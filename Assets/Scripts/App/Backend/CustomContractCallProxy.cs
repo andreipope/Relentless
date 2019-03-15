@@ -13,9 +13,10 @@ using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
-    public class TimeMetricsContractCallProxy : IContractCallProxy
+    public class CustomContractCallProxy : IContractCallProxy
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(TimeMetricsContractCallProxy));
+        private static readonly ILog Log = Logging.GetLog(nameof(CustomContractCallProxy));
+        private static readonly ILog CallExecutionLog = Logging.GetLog("CallExecutionTrace");
 
         private readonly Dictionary<string, CallRoundaboutData> _methodToCallRoundabouts = new Dictionary<string, CallRoundaboutData>();
 
@@ -35,12 +36,62 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public int AverageRoundabout { get; private set; }
 
-        public TimeMetricsContractCallProxy(Contract contract, bool enableLogs, bool storeCallMetrics)
+        private readonly Dictionary<int, double> _callNumberToExecutionTimestamp = new Dictionary<int, double>();
+
+        public CustomContractCallProxy(Contract contract, bool enableLogs, bool storeCallMetrics)
         {
             _dataManager = GameClient.Get<IDataManager>();
             Contract = contract ?? throw new ArgumentNullException(nameof(contract));
             EnableLogs = enableLogs;
             StoreCallMetrics = storeCallMetrics;
+
+            NotifyingDAppChainClientCallExecutor callExecutor = Contract.Client.CallExecutor as NotifyingDAppChainClientCallExecutor;
+            if (callExecutor == null)
+                throw new Exception($"{nameof(NotifyingDAppChainClientCallExecutor)} is expected");
+
+            callExecutor.CallStarting += (callNumber, callContext) =>
+            {
+                if (EnableLogs)
+                {
+                    string callType = callContext.IsStatic ? " (static)" : "";
+                    CallExecutionLog.Debug($"Executing call{callType} #{callNumber} ({callContext.Name})");
+                }
+
+                _callNumberToExecutionTimestamp.Add(callNumber, Utilites.GetTimestamp());
+            };
+
+            callExecutor.CallFinished += (callNumber, callContext, exception) =>
+            {
+                double callStartTimestamp = _callNumberToExecutionTimestamp[callNumber];
+                _callNumberToExecutionTimestamp.Remove(callNumber);
+                int elapsedMilliseconds = (int) ((Utilites.GetTimestamp() - callStartTimestamp) * 1000);
+                bool timedOut = elapsedMilliseconds >= Contract.Client.Configuration.CallTimeout;
+                LogCallTime(callContext.Name, elapsedMilliseconds, callContext.IsStatic, timedOut);
+
+                if (EnableLogs)
+                {
+                    string callType = callContext.IsStatic ? " (static)" : "";
+                    string message = $"Finished executing call{callType} #{callNumber} ({callContext.Name}) in {elapsedMilliseconds} ms";
+                    if (timedOut)
+                    {
+                        message += ", timed out!";
+                    }
+
+                    if (exception != null)
+                    {
+                        message += $" with exception: {exception}";
+                    }
+
+                    if (timedOut || exception is TimeoutException )
+                    {
+                        CallExecutionLog.Warn(message);
+                    }
+                    else
+                    {
+                        CallExecutionLog.Debug(message);
+                    }
+                }
+            };
 
             if (StoreCallMetrics)
             {
@@ -70,46 +121,42 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public virtual async Task CallAsync(string method, IMessage args)
         {
+            if (EnableLogs)
+            {
+                CallExecutionLog.Debug($"Queuing call ({method})");
+            }
+
             Task call = Contract.CallAsync(method, args);
-            await LoggingCall(method, false, call);
+            await call;
         }
 
         public virtual async Task<T> CallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
+            if (EnableLogs)
+            {
+                CallExecutionLog.Debug($"Queuing call ({method})");
+            }
+
             Task<T> call = Contract.CallAsync<T>(method, args);
-            await LoggingCall(method, false, call);
             return await call;
         }
 
         public virtual async Task<T> StaticCallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
+            if (EnableLogs)
+            {
+                CallExecutionLog.Debug($"Queuing call (static) ({method})");
+            }
+
             Task<T> call = Contract.StaticCallAsync<T>(method, args);
-            await LoggingCall(method, true, call);
             return await call;
         }
 
-        private async Task LoggingCall(string method, bool isStatic, Task task)
+        public void Dispose()
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
-            bool timedOut = false;
-            try
+            if (StoreCallMetrics)
             {
-                stopwatch.Restart();
-                await task;
-            }
-            catch (TimeoutException e)
-            {
-                timedOut = true;
-                throw;
-            }
-            finally
-            {
-                long elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
-                if (!timedOut)
-                {
-                    timedOut = elapsedMilliseconds >= Contract.Client.Configuration.CallTimeout;
-                }
-                LogCallTime(method, (int) elapsedMilliseconds, isStatic, timedOut);
+                Application.quitting -= ApplicationOnQuitting;
             }
         }
 
@@ -138,37 +185,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
             AverageRoundabout = (int) (roundaboutSum / (double) totalEntries);
-
-            if (EnableLogs)
-            {
-                string log =
-                    $"{(isStatic ? "Static call" : "Call")} to '{method}' finished in {callRoundabout} ms" +
-                    $"{(timedOut ? ", timed out!" : "")}";
-
-#if UNITY_EDITOR
-                if (timedOut)
-                {
-                    log = "<color=red>" + log + "</color>";
-                }
-#endif
-
-                if (timedOut)
-                {
-                    Log.Warn(log);
-                }
-                else
-                {
-                    Log.Debug(log);
-                }
-            }
-        }
-
-        public void Dispose()
-        {
-            if (StoreCallMetrics)
-            {
-                Application.quitting -= ApplicationOnQuitting;
-            }
         }
 
         private void ApplicationOnQuitting()

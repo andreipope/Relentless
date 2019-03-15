@@ -67,7 +67,9 @@ namespace Loom.Client
                 {
                     string heightString = await this.Client.ReadClient.SendAsync<string, object>("getblockheight", null);
                     return BigInteger.Parse(heightString);
-                });
+                },
+                new CallContext("_evmCall", true)
+            );
         }
 
         #region CallAsync methods
@@ -434,7 +436,13 @@ namespace Loom.Client
 
         private async Task<byte[]> StaticCallAsyncByteArray(string callInput)
         {
-            return await this.Client.QueryAsync<byte[]>(this.Address, CryptoUtils.HexStringToBytes(callInput), this.Caller, Protobuf.VMType.Evm);
+            return await this.Client.QueryAsync<byte[]>(
+                this.Address,
+                CryptoUtils.HexStringToBytes(callInput),
+                this.Caller,
+                Protobuf.VMType.Evm,
+                new CallContext("_evmCall", true)
+            );
         }
 
         private async Task StaticCallAsync(string callInput)
@@ -453,7 +461,7 @@ namespace Loom.Client
         private async Task<BroadcastTxResult> CallAsyncBroadcastTxResult(string callInput)
         {
             var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
-            return await this.Client.CommitTxAsync(tx);
+            return await this.Client.CommitTxAsync(tx, new CallContext("_evmCall", false));
         }
 
         private async Task CallAsync(string callInput)
@@ -464,7 +472,7 @@ namespace Loom.Client
         private async Task<TReturn> CallAsync<TReturn>(string callInput, FunctionBuilderBase functionBuilder, Func<FunctionBuilderBase, string, TReturn> decodeFunc)
         {
             var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
-            var result = await this.Client.CommitTxAsync(tx);
+            var result = await this.Client.CommitTxAsync(tx, new CallContext("_evmCall", false));
             var validResult = result?.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0;
             return validResult ? decodeFunc(functionBuilder, CryptoUtils.BytesToHexString(result.DeliverTx.Data)) : default(TReturn);
         }

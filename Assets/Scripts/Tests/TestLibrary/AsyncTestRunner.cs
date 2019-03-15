@@ -74,9 +74,24 @@ namespace Loom.ZombieBattleground.Test
                             await GameSetUp();
                             await taskFunc();
                         }
+                        catch
+                        {
+                            _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
+                            throw;
+                        }
                         finally
                         {
-                            await GameTearDown();
+                            if (!_shouldPauseOnErrorInsteadOfFailing)
+                            {
+                                await GameTearDown();
+                            }
+                            else
+                            {
+#if UNITY_EDITOR
+                                Log.Warn("Error Pause is enabled, Test execution paused due to an error");
+                                UnityEditor.EditorApplication.isPaused = true;
+#endif
+                            }
                         }
                     },
                     timeout,
@@ -198,15 +213,11 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    if (e is OperationCanceledException)
+                    Exception rethrownException = e is OperationCanceledException ? _cancellationReason : e;
+                    Log.Error("", rethrownException);
+                    if (!_shouldPauseOnErrorInsteadOfFailing)
                     {
-                        Log.Error("", _cancellationReason);
-                        ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
-                    }
-                    else
-                    {
-                        Log.Error("", e);
-                        ExceptionDispatchInfo.Capture(e).Throw();
+                        ExceptionDispatchInfo.Capture(rethrownException).Throw();
                     }
                 }
             }

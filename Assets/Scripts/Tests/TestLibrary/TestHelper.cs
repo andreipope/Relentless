@@ -2367,14 +2367,16 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClientOwner = onBehaviourHandler;
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, false));
+                contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, false, false));
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration();
             await client.Start(
                 contractCallProxyFactory,
-                onClientCreatedCallback: chainClient =>
+                new DAppChainClientConfiguration
                 {
-                    chainClient.Configuration.StaticCallTimeout = 10000;
-                    chainClient.Configuration.CallTimeout = 10000;
+                    CallTimeout = 10000,
+                    StaticCallTimeout = 10000
                 },
+                chainClientCallExecutor: new NotifyingDAppChainClientCallExecutor(clientConfiguration),
                 enabledLogs: false);
 
             onBehaviourHandler.Updating += async go =>
