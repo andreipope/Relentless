@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                IEnumerable<BoardUnitModel> boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card));
+                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
                 player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
             }
 
@@ -196,7 +196,8 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    player.PlayerCardsController.SetFirstHandForPvPMatch(workingCards);
+                    BoardUnitModel[] boardUnitModels = workingCards.Select(card => new BoardUnitModel(card)).ToArray();
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
