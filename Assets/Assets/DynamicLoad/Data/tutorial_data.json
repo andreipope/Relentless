@@ -3723,7 +3723,7 @@
             "CardName": "Gloop"
           },
           {
-            "Amount": 4,
+            "Amount": 2,
             "CardName": "Zky"
           },
           {
@@ -3731,7 +3731,7 @@
             "CardName": "Harpoon"
           },
           {
-            "Amount": 3,
+            "Amount": 2,
             "CardName": "Rubble"
           },
           {
@@ -3771,8 +3771,16 @@
             "CardName": "Goo Beaker"
           },
           {
-            "Amount": 1,
+            "Amount": 2,
             "CardName": "Slab"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Trunk"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Blizzard"
           },
           {
             "Amount": 1,
@@ -3780,11 +3788,7 @@
           },
           {
             "Amount": 1,
-            "CardName": "Blizzard"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Shale"
+            "CardName": "Vindrom"
           }
         ]
       },
@@ -3807,22 +3811,19 @@
             "Name": "Slab"
           },
           {
-            "Name": "Burrrnn"
+            "Name": "Slab"
           },
           {
-            "Name": "Rubble"
+            "Name": "Trunk"
           },
           {
             "Name": "Pushhh"
           },
           {
-            "Name": "Rubble"
+            "Name": "Blizzard"
           },
           {
-            "Name": "Shale"
-          },
-          {
-            "Name": "Shale"
+            "Name": "Vindrom"
           }
         ]
       },
