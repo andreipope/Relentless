@@ -71,6 +71,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task CreateContract(
             byte[] privateKey,
+            DAppChainClientConfiguration clientConfiguration,
             Action<DAppChainClient> onClientCreatedCallback = null,
             IDAppChainClientCallExecutor chainClientCallExecutor = null
             )
@@ -97,7 +98,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DAppChainClient client = new DAppChainClient(
                 writer,
                 _reader,
-                callExecutor: chainClientCallExecutor
+                clientConfiguration,
+                chainClientCallExecutor
                 )
             {
                 Logger = logger

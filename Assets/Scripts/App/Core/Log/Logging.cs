@@ -71,7 +71,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static bool NonEssentialLogsDisabled => Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
+        public static bool NonEssentialLogsDisabled =>
+#if FORCE_ENABLE_ALL_LOGS
+            false;
+#else
+            Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #if UNITY_EDITOR

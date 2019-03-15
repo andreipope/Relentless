@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
+using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
@@ -10,6 +12,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ActionCollectorUploader : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionCollectorUploader));
+        public static readonly ILog PlayerActionLog = Logging.GetLog("PlayerActionTrace");
+
         private IGameplayManager _gameplayManager;
 
         private IMatchManager _matchManager;
@@ -273,7 +278,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void AddAction(PlayerAction playerAction)
             {
-                _queueManager.AddAction(_matchRequestFactory.CreateAction(playerAction));
+                PlayerActionRequest matchAction = _matchRequestFactory.CreateAction(playerAction);
+
+                // Exclude ControlGameState from logs for clarity
+                GameState controlGameState = playerAction.ControlGameState;
+                playerAction.ControlGameState = null;
+                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
+                playerAction.ControlGameState = controlGameState;
+
+                _queueManager.AddAction(matchAction);
             }
         }
     }

@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
                     Log.Debug($"UserDataModel.UserId: {_backendDataControlMediator.UserDataModel.UserId}");
                     Log.Debug($"isOpponent: {isOpponent}");
 
-                    foreach(var state in _pvpManager.InitialGameState.PlayerStates)
+                    foreach(PlayerState state in _pvpManager.InitialGameState.PlayerStates)
                     {
                         Log.Debug($"state.id: {state.Id}");
                     }
@@ -155,7 +155,7 @@ namespace Loom.ZombieBattleground
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
 
-                    Log.Debug($"InitialPvPPlayerState: {InitialPvPPlayerState}");
+                    Log.Debug("InitialPvPPlayerState:\r\n" + Utilites.JsonPrettyPrint(InitialPvPPlayerState.ToString()));
 
                     InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
                     MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;

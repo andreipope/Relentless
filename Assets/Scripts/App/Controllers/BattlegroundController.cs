@@ -344,8 +344,8 @@ namespace Loom.ZombieBattleground
             PlayerHandCards.Clear();
             OpponentHandCards.Clear();
 
-            _gameplayManager.CurrentPlayer.PlayerCardsController.ClearCardsOnBoard();
-            _gameplayManager.OpponentPlayer.PlayerCardsController.ClearCardsOnBoard();
+            _gameplayManager.CurrentPlayer?.PlayerCardsController.ClearCardsOnBoard();
+            _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsOnBoard();
 
             PlayerGraveyardCards.Clear();
             OpponentGraveyardCards.Clear();

@@ -91,13 +91,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             try
             {
-                DefaultDAppChainClientCallExecutor chainClientCallExecutor =
-                    new DefaultDAppChainClientCallExecutor(new DAppChainClientConfigurationProvider(new DAppChainClientConfiguration
-                    {
-                        CallTimeout = Constants.BackendCallTimeout,
-                        StaticCallTimeout = Constants.BackendCallTimeout
-                    }));
-                await _backendFacade.CreateContract(UserDataModel.PrivateKey, chainClientCallExecutor: chainClientCallExecutor);
+                await CreateContract();
                 await _backendFacade.SignUp(UserDataModel.UserId);
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
@@ -112,6 +106,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
 
             await _dataManager.StartLoadCache();      
+        }
+
+        private async Task CreateContract()
+        {
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
+            {
+                CallTimeout = Constants.BackendCallTimeout,
+                StaticCallTimeout = Constants.BackendCallTimeout
+            };
+            IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
+            await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
         }
     }
 }
