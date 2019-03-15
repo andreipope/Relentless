@@ -773,56 +773,22 @@ namespace Loom.ZombieBattleground
 
             List<IReadOnlyCard> cardList;
             CardInfoWithSearchPopup.PopupType popupType;
-            BoardCardView boardCard = null;
 
             if (deckBuilderCard.IsHordeItem)
             {
-                boardCard = _createdDeckBoardCards.First(c => c.Model.Card.Prototype.MouldId == card.MouldId);
                 cardList = _createdDeckBoardCards.Select(i => i.Model.Card.Prototype).ToList();
                 popupType = CardInfoWithSearchPopup.PopupType.REMOVE_CARD;
             }
             else
             {
-                boardCard = _createdCollectionsBoardCards.First(c => c.Model.Card.Prototype.MouldId == card.MouldId);
                 cardList = _createdCollectionsBoardCards.Select(i => i.Model.Card.Prototype).ToList();
                 popupType = CardInfoWithSearchPopup.PopupType.ADD_CARD;
             }
             _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
             {
                 cardList,
-                boardCard.Model.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.ADD_CARD
-            });
-        }
-
-        private void BoardCardDeckSingleClickHandler(BoardCardView boardCard)
-        {
-            if (_isDragging ||
-                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
-                return;
-
-            List<IReadOnlyCard> cardList = _createdDeckBoardCards.Select(i => i.Model.Card.Prototype).ToList();
-
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
-            {
-                cardList,
-                boardCard.Model.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.REMOVE_CARD
-            });
-        }
-
-        private void BoardCardCollectionSingleClickHandler(BoardCardView boardCard)
-        {
-            if (_isDragging ||
-                _uiManager.GetPopup<CardInfoWithSearchPopup>().Self != null)
-                return;
-
-            List<IReadOnlyCard> cardList = _createdCollectionsBoardCards.Select(i => i.Model.Card.Prototype).ToList();
-            _uiManager.DrawPopup<CardInfoWithSearchPopup>(new object[]
-            {
-                cardList,
-                boardCard.Model.Card.Prototype,
-                CardInfoWithSearchPopup.PopupType.ADD_CARD
+                card,
+                popupType
             });
         }
 
