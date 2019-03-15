@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Threading.Tasks;
 using Loom.Client.Internal;
 using Loom.Client.Protobuf;
@@ -63,6 +64,22 @@ namespace Loom.Client {
                     this.Client.ChainEventReceived -= NotifyContractEventReceived;
                 }
             }
+        }
+        
+        /// <summary>
+        /// Retrieves the current block height.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<BigInteger> GetBlockHeight()
+        {
+            return await this.Client.CallExecutor.StaticCall(
+                async () =>
+                {
+                    string heightString = await this.Client.ReadClient.SendAsync<string, object>("getblockheight", null);
+                    return BigInteger.Parse(heightString);
+                },
+                new CallDescription("getblockheight", true)
+            );
         }
 
         protected void InvokeChainEvent(object sender, RawChainEventArgs e) {

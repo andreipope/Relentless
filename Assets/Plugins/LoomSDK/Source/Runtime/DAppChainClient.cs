@@ -178,42 +178,46 @@ namespace Loom.Client
             if (this.writeClient == null)
                 throw new InvalidOperationException("Write client was not set");
 
-            return await this.CallExecutor.Call(async () =>
-            {
-                await EnsureConnected();
-
-                byte[] txBytes = tx.ToByteArray();
-                if (this.TxMiddleware != null)
+            return await this.CallExecutor.Call(
+                async () =>
                 {
-                    txBytes = await this.TxMiddleware.Handle(txBytes);
-                }
+                    await EnsureConnected();
 
-                try
-                {
-                    string payload = CryptoBytes.ToBase64String(txBytes);
-                    var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
-                    if (result == null)
-                        return null;
-
-                    CheckForTxError(result.CheckTx);
-                    CheckForTxError(result.DeliverTx);
-
+                    byte[] txBytes = tx.ToByteArray();
                     if (this.TxMiddleware != null)
                     {
-                        this.TxMiddleware.HandleTxResult(result);
+                        txBytes = await this.TxMiddleware.Handle(txBytes);
                     }
 
-                    return result;
-                } catch (LoomException e)
-                {
-                    if (this.TxMiddleware != null)
+                    try
                     {
-                        this.TxMiddleware.HandleTxException(e);
-                    }
+                        string payload = CryptoBytes.ToBase64String(txBytes);
+                        var result = await this.writeClient.SendAsync<BroadcastTxResult, string[]>("broadcast_tx_commit", new[] { payload });
+                        if (result == null)
+                            return null;
 
-                    throw;
-                }
-            }, callDescription);
+                        CheckForTxError(result.CheckTx);
+                        CheckForTxError(result.DeliverTx);
+
+                        if (this.TxMiddleware != null)
+                        {
+                            this.TxMiddleware.HandleTxResult(result);
+                        }
+
+                        return result;
+                    }
+                    catch (LoomException e)
+                    {
+                        if (this.TxMiddleware != null)
+                        {
+                            this.TxMiddleware.HandleTxException(e);
+                        }
+
+                        throw;
+                    }
+                },
+                callDescription
+            );
         }
 
         /// <summary>
@@ -258,11 +262,14 @@ namespace Loom.Client
                 queryParams.CallerAddress = caller.QualifiedAddress;
             }
 
-            return await this.CallExecutor.StaticCall(async () =>
-            {
-                await EnsureConnected();
-                return await this.readClient.SendAsync<T, QueryParams>("query", queryParams);
-            }, callDescription);
+            return await this.CallExecutor.StaticCall(
+                async () =>
+                {
+                    await EnsureConnected();
+                    return await this.readClient.SendAsync<T, QueryParams>("query", queryParams);
+                },
+                callDescription
+            );
         }
 
         private async Task<ulong> GetNonceAsyncRaw(string key)
@@ -282,24 +289,28 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            await this.CallExecutor.Call(async () =>
-            {
-                await EnsureConnected();
-                EventHandler<JsonRpcEventData> wrapper = (sender, e) =>
+            await this.CallExecutor.Call(
+                async () =>
                 {
-                    handler(this,
-                        new RawChainEventArgs(
-                            e.ContractAddress,
-                            e.CallerAddress,
-                            UInt64.Parse(e.BlockHeight),
-                            e.Data,
-                            e.Topics
-                        ));
-                };
-                this.eventSubs.Add(handler, wrapper);
-                // FIXME: supports topics
-                await this.readClient.SubscribeAsync(wrapper, null);
-            }, new CallDescription("_subscribe", false));
+                    await EnsureConnected();
+                    EventHandler<JsonRpcEventData> wrapper = (sender, e) =>
+                    {
+                        handler(this,
+                            new RawChainEventArgs(
+                                e.ContractAddress,
+                                e.CallerAddress,
+                                UInt64.Parse(e.BlockHeight),
+                                e.Data,
+                                e.Topics
+                            ));
+                    };
+                    this.eventSubs.Add(handler, wrapper);
+
+                    // FIXME: supports topics
+                    await this.readClient.SubscribeAsync(wrapper, null);
+                },
+                new CallDescription("_subscribe", false)
+            );
         }
 
         private async void UnsubReadClient(EventHandler<RawChainEventArgs> handler)
@@ -307,11 +318,14 @@ namespace Loom.Client
             if (this.readClient == null)
                 throw new InvalidOperationException("Read client is not set");
 
-            await this.CallExecutor.Call(async () =>
-            {
-                EventHandler<JsonRpcEventData> wrapper = this.eventSubs[handler];
-                await this.readClient.UnsubscribeAsync(wrapper);
-            }, new CallDescription("_unsubscribe", false));
+            await this.CallExecutor.Call(
+                async () =>
+                {
+                    EventHandler<JsonRpcEventData> wrapper = this.eventSubs[handler];
+                    await this.readClient.UnsubscribeAsync(wrapper);
+                },
+                new CallDescription("_unsubscribe", false)
+            );
         }
 
         private async Task EnsureConnected()

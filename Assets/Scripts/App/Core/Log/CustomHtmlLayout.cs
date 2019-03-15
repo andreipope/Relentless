@@ -232,12 +232,12 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
             }
         }
 
-        private static ulong FastHash(string dataToHash)
+        private static ulong FastHash(string stringToHash)
         {
             ulong hashedValue = 3074457345618258791ul;
-            for (int i = 0; i < dataToHash.Length; i++)
+            for (int i = 0; i < stringToHash.Length; i++)
             {
-                hashedValue += dataToHash[i];
+                hashedValue += stringToHash[i];
                 hashedValue *= 3074457345618258799ul;
             }
 

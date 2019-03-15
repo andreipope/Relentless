@@ -25,8 +25,11 @@ namespace Loom.ZombieBattleground
                 Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
                 backendFacadeRpc.Level = Level.Warn;
 
-                Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(CustomContractCallProxy));
-                timeMetricsContractCallProxy.Level = Level.Warn;
+                Logger customContractCallProxy = Logging.GetLogger(nameof(CustomContractCallProxy));
+                customContractCallProxy.Level = Level.Warn;
+
+                Logger callExecutionTrace = Logging.GetLogger("CallExecutionTrace");
+                callExecutionTrace.Level = Level.Warn;
             }
         }
 

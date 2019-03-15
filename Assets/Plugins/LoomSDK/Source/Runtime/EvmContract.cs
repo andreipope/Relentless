@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using Loom.Client.Internal;
 using Loom.Nethereum.ABI.Model;
@@ -54,22 +53,6 @@ namespace Loom.Client
         public EvmEvent<T> GetEvent<T>(string name) where T : new()
         {
             return new EvmEvent<T>(this, this.contractBuilder.GetEventBuilder(name));
-        }
-
-        /// <summary>
-        /// Retrieves the current block height.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<BigInteger> GetBlockHeight()
-        {
-            return await this.Client.CallExecutor.StaticCall(
-                async () =>
-                {
-                    string heightString = await this.Client.ReadClient.SendAsync<string, object>("getblockheight", null);
-                    return BigInteger.Parse(heightString);
-                },
-                new CallDescription("_evmCall", true)
-            );
         }
 
         #region CallAsync methods
@@ -441,7 +424,7 @@ namespace Loom.Client
                 CryptoUtils.HexStringToBytes(callInput),
                 this.Caller,
                 Protobuf.VMType.Evm,
-                new CallDescription("_evmCall", true)
+                new CallDescription("_evmQuery", true)
             );
         }
 
@@ -471,8 +454,7 @@ namespace Loom.Client
 
         private async Task<TReturn> CallAsync<TReturn>(string callInput, FunctionBuilderBase functionBuilder, Func<FunctionBuilderBase, string, TReturn> decodeFunc)
         {
-            var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
-            var result = await this.Client.CommitTxAsync(tx, new CallDescription("_evmCall", false));
+            var result = await CallAsyncBroadcastTxResult(callInput);
             var validResult = result?.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0;
             return validResult ? decodeFunc(functionBuilder, CryptoUtils.BytesToHexString(result.DeliverTx.Data)) : default(TReturn);
         }
