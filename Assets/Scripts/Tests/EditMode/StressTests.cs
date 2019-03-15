@@ -153,7 +153,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             _failedTestsCleanupTasks.Enqueue(Cleanup);
-c
+
             try
             {
                 clients.ForEach(client => client.DeckId = 1);
