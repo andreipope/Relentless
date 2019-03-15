@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -58,7 +58,9 @@ namespace Loom.ZombieBattleground
             LoginPopup.OnLoginSuccess += () =>
             {
                 if (Self != null)
+                {
                     ReloadDeckDataAndDisplay();
+                }
             };
         }
 
@@ -93,13 +95,13 @@ namespace Loom.ZombieBattleground
 
             _deckIconPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/DeckSelection/Image_DeckIcon");
 
-            _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
-            _deckIconGroup = Self.transform.Find("Scaler/Panel_DeckContent/Group");
+            _textDeckName = Self.transform.Find("Text_DeckName").GetComponent<TextMeshProUGUI>();
+            _deckIconGroup = Self.transform.Find("Panel_DeckContent/Group");
             
-            _glowBorderVFX = Self.transform.Find("Scaler/Panel_DeckContent/Image_DeckIcon_Glow").gameObject;
+            _glowBorderVFX = Self.transform.Find("Image_DeckIcon_Glow").gameObject;
 
-            _buttonRight = Self.transform.Find("Scaler/Button_Right").GetComponent<Button>();
-            _buttonLeft = Self.transform.Find("Scaler/Button_Left").GetComponent<Button>();
+            _buttonRight = Self.transform.Find("Button_Right").GetComponent<Button>();
+            _buttonLeft = Self.transform.Find("Button_Left").GetComponent<Button>();
             _buttonRight.onClick.AddListener(ButtonRightHandler);
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
 
@@ -186,6 +188,14 @@ namespace Loom.ZombieBattleground
             return hero;
         }
         
+        private void SetSelectedDeckIndex(int newIndex)
+        {
+            Deck selectedDeck = _deckList[newIndex];
+
+            UpdateSelectedDeckData(selectedDeck);
+            UpdateSelectedDeckDisplay(selectedDeck);
+        }
+
         private void SwitchSelectedDeckIndex(int direction)
         {  
             if (direction == 0)
@@ -206,10 +216,7 @@ namespace Loom.ZombieBattleground
                 nextIndex = _deckList.Count - 1;
             }
 
-            Deck selectedDeck = _deckList[nextIndex];
-
-            UpdateSelectedDeckData(selectedDeck);
-            UpdateSelectedDeckDisplay(selectedDeck);
+            SetSelectedDeckIndex(nextIndex);
         }
 
         #endregion
@@ -236,13 +243,21 @@ namespace Loom.ZombieBattleground
                 );
                 
                 _createdDeckIconList.Add(deckIcon);
+
+                int index = i;
+                Button button = deckIcon.GetComponent<Button>();
+                button.onClick.AddListener
+                (()=>
+                {
+                    SetSelectedDeckIndex(index);
+                });
             }
         }
         
         private List<Vector3> GetIconPositionList(int amount)
         {
             List<Vector3> positionList = new List<Vector3>();
-            for(int i=0; i<amount; ++i)
+            for (int i = 0; i < amount; ++i)
             {
                 Vector3 position = new Vector3(0f, 0f, 0f);
                 position.x += (i * 184f);
@@ -257,7 +272,7 @@ namespace Loom.ZombieBattleground
             Hero selectedHero = GetHeroDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedHero.HeroElement);
 
-            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i<_createdDeckIconList.Count; i++)
+            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i < _createdDeckIconList.Count; i++)
             {
                 Deck deck = _dataManager.CachedDecksData.Decks[i];
                 if(deck == selectedDeck)

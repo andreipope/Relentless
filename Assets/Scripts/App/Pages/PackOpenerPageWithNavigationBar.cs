@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,8 +64,7 @@ namespace Loom.ZombieBattleground
         
         private CardHighlightingVFXItem _createdHighlightingVFXItem;
         
-        private Button _buttonBack, 
-                       _buttonPlus, 
+        private Button _buttonPlus, 
                        _buttonMinus, 
                        _buttonMax, 
                        _buttonOpenPack, 
@@ -222,7 +221,6 @@ namespace Loom.ZombieBattleground
             _vfxCommanderPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_CommanderPackOpenerV2");
             _vfxGeneralPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/OpenPack/ZB_ANM_GeneralPackOpenerV2");   
             
-            _buttonBack = _selfPage.transform.Find("Header/BackButton").GetComponent<Button>();
             _buttonBuyPack = _selfPage.transform.Find("Pack_Panel/Button_BuyPacks").GetComponent<Button>();
             _buttonPlus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonPlus").GetComponent<Button>();
             _buttonMinus = _selfPage.transform.Find("Pack_Panel/pack_screen/ButtonMinus").GetComponent<Button>();
@@ -267,7 +265,6 @@ namespace Loom.ZombieBattleground
             
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
 
-            _buttonBack.gameObject.SetActive(false);
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
             _uiManager.DrawPopup<AreaBarPopup>();
         }
@@ -298,7 +295,6 @@ namespace Loom.ZombieBattleground
         
         private void InitObjects()
         { 
-            _buttonBack.onClick.AddListener(ButtonBackHandler);
             _buttonBuyPack.onClick.AddListener(ButtonBuyPacksHandler);
             _buttonPlus.onClick.AddListener(ButtonPlusHandler);
             _buttonMinus.onClick.AddListener(ButtonMinusHandler);
@@ -352,7 +348,7 @@ namespace Loom.ZombieBattleground
             _packTypeNames = new TextMeshProUGUI[amountOfPackType];
             _packTypeAmountLabels = new TextMeshProUGUI[amountOfPackType];
             _packTypeButtons = new Button[amountOfPackType];
-            for(int i=0; i<amountOfPackType; ++i)
+            for (int i = 0; i < amountOfPackType; ++i)
             {   
                 Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContent/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
@@ -397,7 +393,7 @@ namespace Loom.ZombieBattleground
                 _cardsToDisplayQueqe.RemoveAt(0);
             }
                     
-            for( int i=0; i<cards.Count; ++i)
+            for ( int i = 0; i < cards.Count; ++i)
             {
                 Card card = cards[i];
                 BoardCardView boardCard = CreateCard(card, Vector3.up * 12f);
@@ -471,7 +467,7 @@ namespace Loom.ZombieBattleground
         public async Task RetrievePackBalanceAmount()
         {  
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-            for(int i=0; i<packTypes.Length;++i)
+            for (int i = 0; i < packTypes.Length;++i)
             {
                 await RetrievePackBalanceAmount(i);
             }              
@@ -790,28 +786,6 @@ namespace Loom.ZombieBattleground
         
         #region Button Handler
         
-        private void ButtonBackHandler()
-        {
-            if (_tutorialManager.BlockAndReport(_buttonBack.name))
-                return;
-
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
-            DOTween.KillAll();            
-            DestroyCreatedObject();
-            if (_tutorialManager.IsTutorial)
-            {
-                if(Constants.EnableNewUI)
-                    _uiManager.SetPage<MainMenuWithNavigationPage>();
-                else
-                    _uiManager.SetPage<MainMenuPage>();
-            }
-            else
-            {
-                GameClient.Get<IAppStateManager>().BackAppState();
-            }
-        }
-        
         private void ButtonBuyPacksHandler()
         {
             if (_tutorialManager.BlockAndReport(_buttonBuyPack.name))
@@ -899,7 +873,7 @@ namespace Loom.ZombieBattleground
             float moveDuration = 0.4f;
             Vector3 hideCardPosition = -Vector3.up * 14f;
             
-            for(int i=0; i<amount ; ++i)
+            for (int i = 0; i < amount ; ++i)
             {
                 Transform displayBoardCard = _createdBoardCards[i].Transform;
                 Sequence hideCardSequence = DOTween.Sequence();
@@ -1019,7 +993,7 @@ namespace Loom.ZombieBattleground
         {
             _selectedPackTypeIndex = id;
             SetPackToOpenAmount(_packBalanceAmounts[_selectedPackTypeIndex]);
-            for(int i=0;i<_packTypeButtons.Length;++i)
+            for (int i = 0;i < _packTypeButtons.Length;++i)
             {
                 _packTypeButtons[i].GetComponent<Image>().sprite = (i == _selectedPackTypeIndex ? _packHolderSelectedSprite : _packHolderNormalSprite);
             }

@@ -55,6 +55,7 @@ namespace Loom.ZombieBattleground
             Pages.Add(new HordeSelectionWithNavigationPage());
             Pages.Add(new ArmyWithNavigationPage());
             Pages.Add(new ShopWithNavigationPage());
+            Pages.Add(new LoadingWithAnimationPage());
 
             foreach (IUIElement page in Pages)
             {
@@ -103,6 +104,7 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new CardInfoWithSearchPopup());
             _uiPopups.Add(new MySettingPopup());
             _uiPopups.Add(new LoadingBarPopup());
+            _uiPopups.Add(new CreditPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

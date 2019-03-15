@@ -80,9 +80,9 @@ namespace Loom.ZombieBattleground
             _overlordAbilityItems = new List<OverlordAbilityItem>();
             
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
-            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.TAB tab) =>
+            _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab == HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD_SKILL)
+                if (tab == HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill)
                 {
                     UpdateTabShow();                    
                     UpdateSkillIconAndDescriptionDisplay();
@@ -115,7 +115,6 @@ namespace Loom.ZombieBattleground
 
             _continueButton = _backLayerCanvas.transform.Find("Button_Continue").GetComponent<Button>();
             _continueButton.onClick.AddListener(ContinueButtonOnClickHandler);
-            _continueButton.onClick.AddListener(_myDeckPage.PlayClickSound);
             
             _abilitiesGroup = _backLayerCanvas.transform.Find("Abilities").gameObject;
         }
@@ -134,17 +133,9 @@ namespace Loom.ZombieBattleground
         { 
             bool success = true;
 
-            Hero hero = _myDeckPage.CurrentEditHero;
-            Deck deck = _myDeckPage.CurrentEditDeck;
-            hero.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
-            hero.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
-
-            deck.PrimarySkill = hero.PrimarySkill;
-            deck.SecondarySkill = hero.SecondarySkill;
-
             try
             {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
             }
             catch (Exception e)
             {
@@ -155,13 +146,17 @@ namespace Loom.ZombieBattleground
             }
 
             if (success)
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.TAB.EDITING);
+            {
+                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
+                    HordeSelectionWithNavigationPage.Tab.Rename :
+                    HordeSelectionWithNavigationPage.Tab.Editing;
+            }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
         {
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
-            for(int i=0; i<2;++i)
+            for (int i = 0; i < 2;++i)
             {
                 if(i < items.Count)
                 {
@@ -170,7 +165,7 @@ namespace Loom.ZombieBattleground
                }
                 else
                 {
-                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                     _imageSkillIcons[i].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_empty");
                     _textSkillDescriptions[i].text = "No selected skill";
                 }
             }
@@ -218,7 +213,8 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;
-            
+
+            PlayClickSound();
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
 
             if (items.Count > 1)
@@ -242,17 +238,6 @@ namespace Loom.ZombieBattleground
             {
                 _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
-
-                try
-                {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                    OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-                }
             }
 
             PopupHiding?.Invoke();
@@ -265,6 +250,11 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
             _uiManager.DrawPopup<WarningPopup>(msg);
+        }
+        
+        public void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
         private void FillAvailableAbilities()
@@ -351,6 +341,7 @@ namespace Loom.ZombieBattleground
                         _loadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/UI/Elements/DeckSelection/OverlordAbilityItem"), root, false);
 
+                _selfObject.SetActive(true);
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();
@@ -389,6 +380,7 @@ namespace Loom.ZombieBattleground
 
             private void SelectButtonOnClickHandler()
             {
+                GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
                 OverlordAbilitySelected?.Invoke(this);
             }
         }
