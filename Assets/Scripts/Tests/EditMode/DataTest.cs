@@ -58,8 +58,8 @@ namespace Loom.ZombieBattleground.Test
                     CreateAbilityData(true,
                         () => new List<AbilityData.ChoosableAbility>
                         {
-                            new AbilityData.ChoosableAbility("choosable ability 1", CreateAbilityData(false, null)),
-                            new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null))
+                            new AbilityData.ChoosableAbility("choosable ability 1", CreateAbilityData(false, null), ""),
+                            new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
                         })
                 },
                 new PictureTransform(

@@ -161,7 +161,8 @@ namespace Loom.ZombieBattleground.Data
         {
             return new AbilityData.ChoosableAbility(
                 choosableAbility.Description,
-                choosableAbility.AbilityData.FromProtobuf()
+                choosableAbility.AbilityData.FromProtobuf(),
+                string.Empty
             );
         }
 

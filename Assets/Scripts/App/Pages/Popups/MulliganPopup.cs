@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            _cardElement.Init(boardUnitModel.Card);
+            _cardElement.Init(boardUnitModel.Card, cardPicture: BoardUnitModel.CardPicture);
         }
 
         public void SetChangedState(bool state)

@@ -135,19 +135,16 @@ namespace Loom.ZombieBattleground
                         player.SelfHero.HeroElement + "_EXP");
                     break;
                 case BoardUnitModel unit:
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{unit.Card.Prototype.Picture.ToLowerInvariant()}");
+                    sprite = unit.CardPicture;
                     break;
                 case BoardCardView card:
-                    if (card.PictureSprite && card.PictureSprite != null)
-                    {
-                        sprite = card.PictureSprite.sprite;
-                    }
+                    sprite = card.Model.CardPicture;
                     break;
                 case BoardSkill skill:
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
                     break;
                 case BoardItem item:
-                    sprite = LoadObjectsManager.GetObjectByPath<Sprite>($"Images/Cards/Illustrations/{item.Model.Prototype.Picture.ToLowerInvariant()}");
+                    sprite = item.Model.CardPicture;
                     break;
                 case null:
                     break;

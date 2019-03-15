@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -132,6 +132,9 @@ namespace Loom.ZombieBattleground
                 overlordButton.onClick.AddListener
                 (() =>
                 {
+                    if (_tutorialManager.BlockAndReport(overlordButton.name))
+                        return;
+
                     ChangeOverlordIndex(index);
                     PlayClickSound();
                 });
@@ -187,6 +190,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectOverlordContinueHandler()
         {
+            if (_tutorialManager.BlockAndReport(_buttonSelectOverlordContinue.name))
+                return;
+
             PlayClickSound();
             _buttonSelectOverlordContinue.interactable = false;
             _myDeckPage.CurrentEditHero = _dataManager.CachedHeroesData.Heroes[_selectOverlordIndex];

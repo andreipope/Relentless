@@ -901,7 +901,7 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.CardsOnBoard.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-                        _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+                        
 
                         _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, boardUnitModel.InstanceId, target, null, (x, y) =>
                         {
@@ -915,7 +915,6 @@ namespace Loom.ZombieBattleground
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
                                 _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
 
                                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, boardUnitModel.InstanceId, target, null, (x, y) =>
                                 {
@@ -957,9 +956,8 @@ namespace Loom.ZombieBattleground
                         GameObject boardUnit = boardUnitViewElement.GameObject;
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
-
-                        _battlegroundController.BoardUnitViews.Add(boardUnitViewElement);
-
+                        _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+                        _battlegroundController.RegisterBoardUnitView(_gameplayManager.OpponentPlayer, boardUnitViewElement, ItemPosition.End);
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,

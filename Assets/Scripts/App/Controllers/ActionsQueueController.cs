@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
         {
             if (report != null)
             {
-                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.BoardUnitModel == report.BoardUnitModel))
+                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.Model == report.Model))
                 {
                     _bufferActionsReports.Add(report);
                 }
