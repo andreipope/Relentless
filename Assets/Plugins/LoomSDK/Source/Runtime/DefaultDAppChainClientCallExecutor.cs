@@ -86,7 +86,7 @@ namespace Loom.Client
             Task task = taskProducer();
             try
             {
-                bool timedOut = await TimedOutAsync(task, timeoutMs);
+                bool timedOut = await RunTaskWithTimeout(task, timeoutMs);
                 if (!timedOut)
                     return task;
             } catch (AggregateException e)
@@ -146,7 +146,14 @@ namespace Loom.Client
             throw lastNonceException;
         }
 
-        private static async Task<bool> TimedOutAsync(Task task, int timeoutMilliseconds)
+        /// <summary>
+        /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>
+        /// and returns whether it completed in time.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="timeoutMilliseconds"></param>
+        /// <returns>True if task timed out, false otherwise.</returns>
+        private static async Task<bool> RunTaskWithTimeout(Task task, int timeoutMilliseconds)
         {
             if (timeoutMilliseconds < 0)
                 throw new ArgumentOutOfRangeException(nameof(timeoutMilliseconds));
