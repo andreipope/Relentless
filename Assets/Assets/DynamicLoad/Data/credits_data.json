@@ -1,7 +1,7 @@
 {
   "creditsInfo": [
     {
-      "subsectionType": "Main",
+      "subsectionType": "Loom Network",
       "posts": [
         {
           "Post": "Executive Producer",
@@ -16,7 +16,12 @@
               "FullName": "James Duffy"
             },
           ]
-        },
+        }        
+      ]
+    },
+    {
+      "subsectionType": "Production",
+      "posts": [
         {
           "Post": "Game Director",
           "credits": [
@@ -24,14 +29,9 @@
               "FullName": "Roy Shapira"
             }
           ]
-        }
-      ]
-    },
-    {
-      "subsectionType": "Production",
-      "posts": [
+        },
         {
-          "Post": "Lead Producer",
+          "Post": "Lead Game Producer",
           "credits": [
             {
               "FullName": "Diana Shapira"
@@ -39,7 +39,7 @@
           ]
         },
         {
-          "Post": "Producer",
+          "Post": "Game Producer",
           "credits": [
             {
               "FullName": "Monika Guballa"
@@ -52,13 +52,26 @@
       "subsectionType": "Game Design",
       "posts": [
         {
-          "Post": "Game Designer",
+          "Post": "Senior Game Designer",
           "credits": [
             {
               "FullName": "Alexei Menardo"
-            },
+            }
+          ]
+        },
+        {
+          "Post": "Technical Designer",
+          "credits": [
             {
               "FullName": "Sara Santillan"
+            }
+          ]
+        },
+        {
+          "Post": "Game Designer",
+          "credits": [
+            {
+              "FullName": "Nelson Capilos"
             }
           ]
         }
@@ -109,9 +122,6 @@
               "FullName": "Artem Shyriaiev"
             },
             {
-              "FullName": "Gaurav Garg"
-            },
-            {
               "FullName": "Eugene Grudniy"
             },
             {
@@ -127,6 +137,9 @@
             },
             {
               "FullName": "Parth Desai"
+            },
+            {
+              "FullName": "Pathorn Tengkiattrakul"
             }
           ]
         },
@@ -134,23 +147,7 @@
           "Post": "Serverside Programmer",
           "credits": [
             {
-              "FullName": "Sebastian Klier"
-            }
-          ]
-        },
-        {
-          "Post": "Junior Serverside Programmer",
-          "credits": [
-            {
-              "FullName": "Siddhant Mutha"
-            }
-          ]
-        },
-        {
-          "Post": "Test Automation Engineer",
-          "credits": [
-            {
-              "FullName": "Sahin Aliyev"
+              "FullName": "Gaurav Garg"
             }
           ]
         },
@@ -173,6 +170,9 @@
             },
             {
               "FullName": "Mark Traisenee"
+            },
+            {
+              "FullName": "Tharathip Malaimarn"
             }
           ]
         },
@@ -225,20 +225,17 @@
           "Post": "Senior 2D Artist",
           "credits": [
             {
+              "FullName": "Lanny “Wu” Suhandy"
+            },
+            {
               "FullName": "Alex Alexandrov"
             },
             {
               "FullName": "Karen Manalastas"
-            },
-            {
-              "FullName": "Lanny “Wu” Suhandy"
-            },
+            },            
             {
               "FullName": "Milica Celikovic"
-            },
-            {
-              "FullName": "Roger Luzardo"
-            },
+            },            
             {
               "FullName": "Niles Arguelles"
             },
@@ -260,41 +257,49 @@
               "FullName": "Pat Sevilla"
             }
           ]
+        },
+        {
+          "Post": "Additional Art",
+          "credits": [
+            {
+              "FullName": "Basith Ibrahim"
+            },
+            {
+              "FullName": "Josef Kucera"
+            }
+          ]
         }
       ]
     },
     {
-      "subsectionType": "3D and Animations",
+      "subsectionType": "Animation and VFX",
       "posts": [
         {
-          "Post": "3D Artist",
+          "Post": "Animator and VFX Artist",
+          "credits": [
+            {
+              "FullName": "Alexis Desuyo"
+            },
+            {
+              "FullName": "Yuriy Tarasov"
+            }            
+          ]
+        },
+        {
+          "Post": "Additional 3D Art",
           "credits": [
             {
               "FullName": "Alexandru Salajan"
             }
           ]
-        },
-        {
-          "Post": "Animator and VFX Artist",
-          "credits": [
-            {
-              "FullName": "Yuriy Tarasov"
-            },
-            {
-              "FullName": "Alexis Desuyo"
-            },
-            {
-              "FullName": "Martina Mazzitelli"
-            },
-          ]
-        }
+        }        
       ]
     },
     {
       "subsectionType": "Music and Sound \n W.O.W Sound",
       "posts": [
         {
-          "Post": "Sound Designer and Composer",
+          "Post": "W.O.W Sound",
           "credits": [
             {
               "FullName": "Sing Huey Lee"
@@ -310,7 +315,7 @@
       "subsectionType": "Voice Acting",
       "posts": [
         {
-          "Post": "Jane Voice Actress",
+          "Post": "Jane",
           "credits": [
             {
               "FullName": "Lana Charto"
@@ -318,7 +323,7 @@
           ]
         },
         {
-          "Post": "Zombies Voice Actor",
+          "Post": "Zombies",
           "credits": [
             {
               "FullName": "Ryan Withrow"
@@ -412,6 +417,14 @@
               "FullName": "Peter Savkovich"
             }
           ]
+        },
+        {
+          "Post": "Graphic Designer",
+          "credits": [
+            {
+              "FullName": "Atthapon Alamsombat"
+            }
+          ]
         }
       ]
     },
@@ -434,6 +447,14 @@
             },
             {
               "FullName": "Mingjin Jang "
+            }
+          ]
+        },
+        {
+          "Post": "Graphic Designer and Animator",
+          "credits": [
+            {
+              "FullName": "Roger Luzardo"
             }
           ]
         }

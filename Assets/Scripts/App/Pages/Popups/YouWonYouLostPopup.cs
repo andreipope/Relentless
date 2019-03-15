@@ -91,14 +91,15 @@ namespace Loom.ZombieBattleground
             
             _buttonPlayAgain = Self.transform.Find("Scaler/Button_PlayAgain").GetComponent<Button>();                        
             _buttonPlayAgain.onClick.AddListener(ButtonPlayAgainHandler);
-            _buttonPlayAgain.onClick.AddListener(PlayClickSound);
             
             _buttonContinue = Self.transform.Find("Scaler/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
-            _buttonContinue.onClick.AddListener(PlayClickSound);
             
             _groupYouWin.SetActive(_isWin);
             _groupYouLost.SetActive(!_isWin);
+
+            Enumerators.SoundType soundType = _isWin ? Enumerators.SoundType.WON_POPUP : Enumerators.SoundType.LOST_POPUP;
+            _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);  
 
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
             
@@ -138,19 +139,29 @@ namespace Loom.ZombieBattleground
 
         private void ButtonPlayAgainHandler()
         {
+            PlayClickSound();
             //TODO Play Again
-            if(_isWin)
+            if (_isWin)
+            {
                 ContinueOnWin();
+            }
             else
+            {
                 ContinueOnLost();
+            }
         }
         
         private void ButtonContinueHandler()
         {
-            if(_isWin)
+            PlayClickSound();
+            if (_isWin)
+            {
                 ContinueOnWin();
+            }
             else
+            {
                 ContinueOnLost();
+            }
         }
 
         #endregion
@@ -158,19 +169,20 @@ namespace Loom.ZombieBattleground
         private void ContinueOnWin()
         {
             _uiManager.HidePopup<YouWonYouLostPopup>();
+            _soundManager.StopPlaying(Enumerators.SoundType.WON_POPUP);
 
             if (_tutorialManager.IsTutorial)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
                     if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
                     {
-                        GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
+                        await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
                     } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
@@ -191,9 +203,10 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
 
             _uiManager.HidePopup<YouWonYouLostPopup>();
+            _soundManager.StopPlaying(Enumerators.SoundType.LOST_POPUP);
         }
         
-        public Sprite GetOverlordPortraitSprite(Enumerators.SetType heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
         {
             string path = "Images/UI/WinLose/OverlordPortrait/results_overlord_"+heroElement.ToString().ToLower();
             return _loadObjectsManager.GetObjectByPath<Sprite>(path);       

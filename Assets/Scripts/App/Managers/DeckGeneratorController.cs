@@ -37,9 +37,9 @@ namespace Loom.ZombieBattleground
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
             Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
-            Enumerators.SetType setType = hero.HeroElement;
+            Enumerators.Faction faction = hero.HeroElement;
             
-            CardSet heroElementSet = SetTypeUtility.GetCardSet(_dataManager, setType);
+            Faction heroElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> cards = heroElementSet.Cards.ToList();
             
             List<Card> availableCardList = new List<Card>();
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                     collectionData                    
                 );
                 
-                for(int i=0; i<amount; ++i)
+                for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
                     availableCardList.Add(addedCard);

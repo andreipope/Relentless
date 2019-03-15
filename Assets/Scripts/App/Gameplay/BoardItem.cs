@@ -4,22 +4,20 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSpell : OwnableBoardObject
+    public class BoardItem : OwnableBoardObject, IBoardUnitView
     {
         public GameObject GameObject;
 
-        public Transform Transform;
+        public Transform Transform { get; }
 
-        public BoardArrow TargetingArrow;
-
-        public WorkingCard Card;
+        public BoardUnitModel Model { get; }
 
         private readonly OnBehaviourHandler _eventHandler;
 
-        public BoardSpell(GameObject obj, WorkingCard card)
+        public BoardItem(GameObject obj, BoardUnitModel boardUnitModel)
         {
             GameObject = obj;
-            Card = card;
+            Model = boardUnitModel;
 
             if (GameObject != null)
             {
@@ -35,12 +33,6 @@ namespace Loom.ZombieBattleground
 
         private void DestroyingHandler(GameObject obj)
         {
-            if (TargetingArrow != null)
-            {
-                Object.Destroy(TargetingArrow.gameObject);
-                TargetingArrow = null;
-            }
-
             Used?.Invoke();
         }
     }

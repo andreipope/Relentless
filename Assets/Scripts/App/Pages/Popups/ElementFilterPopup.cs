@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
     {
         public GameObject Self { get; private set; }
         
-        public event Action<Enumerators.SetType> ActionPopupHiding;
+        public event Action<Enumerators.Faction> ActionPopupHiding;
         
         private IUIManager _uiManager;
 
@@ -25,19 +25,22 @@ namespace Loom.ZombieBattleground
 
         private Image _imageGlow;
 
-        private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
+        private Dictionary<Enumerators.Faction, Button> _buttonElementsDictionary;
 
-        private readonly List<Enumerators.SetType> _availableSetTypeList = new List<Enumerators.SetType>()
+        private readonly List<Enumerators.Faction> _availableFactionList = new List<Enumerators.Faction>()
         {
-            Enumerators.SetType.AIR,
-            Enumerators.SetType.EARTH,
-            Enumerators.SetType.LIFE,
-            Enumerators.SetType.FIRE,
-            Enumerators.SetType.TOXIC,
-            Enumerators.SetType.WATER
+            Enumerators.Faction.AIR,
+            Enumerators.Faction.EARTH,
+            Enumerators.Faction.LIFE,
+            Enumerators.Faction.FIRE,
+            Enumerators.Faction.TOXIC,
+            Enumerators.Faction.WATER
         };
 
-        private Enumerators.SetType _selectedSetType;
+        private Enumerators.Faction _selectedFaction,
+                                    _cacheSelectedFaction;
+
+        private const Enumerators.Faction DefaultSelectedFaction = Enumerators.Faction.AIR;
 
         #region IUIPopup
 
@@ -45,7 +48,10 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
+            _buttonElementsDictionary = new Dictionary<Enumerators.Faction, Button>();
+
+            _selectedFaction = DefaultSelectedFaction;
+            _cacheSelectedFaction = DefaultSelectedFaction;
         }
 
         public void Dispose()
@@ -77,30 +83,30 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/ElementFilterPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
-            _imageGlow = Self.transform.Find("Scaler/Image_glow").GetComponent<Image>();  
+            _imageGlow = Self.transform.Find("Image_glow").GetComponent<Image>();  
             
-            _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();                        
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
-            _buttonClose.onClick.AddListener(PlayClickSound);
             
-            _buttonSave = Self.transform.Find("Scaler/Button_Save").GetComponent<Button>();                        
+            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
-            _buttonSave.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
-            foreach(Enumerators.SetType setType in _availableSetTypeList)
+            foreach(Enumerators.Faction faction in _availableFactionList)
             {
-                Button buttonElementIcon = Self.transform.Find("Scaler/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
-                (
-                    ()=> ButtonElementIconHandler(setType)
+                (()=> 
+                    {
+                        PlayClickSound();
+                        ButtonElementIconHandler(faction); 
+                    }
                 );
-                buttonElementIcon.onClick.AddListener(PlayClickSound);
 
-                _buttonElementsDictionary.Add(setType, buttonElementIcon);
+                _buttonElementsDictionary.Add(faction, buttonElementIcon);
             }
 
-            UpdateSelectedSetType(Enumerators.SetType.NONE);      
+            LoadCache();   
         }
         
         public void Show(object data)
@@ -118,34 +124,39 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
-            _uiManager.HidePopup<ElementFilterPopup>();
+            PlayClickSound();
+            Hide();
         }
         
         private void ButtonSaveHandler()
         {
-            _uiManager.HidePopup<ElementFilterPopup>();
-            ActionPopupHiding?.Invoke(_selectedSetType);
+            PlayClickSound();
+            Hide();
+            SaveCache();
+            ActionPopupHiding?.Invoke(_selectedFaction);
         }
         
-        private void ButtonElementIconHandler(Enumerators.SetType setType)
+        private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
-            UpdateSelectedSetType(setType);            
+            UpdateSelectedFaction(faction);            
         }
 
         #endregion
         
-        private void UpdateSelectedSetType(Enumerators.SetType setType)
+        private void UpdateSelectedFaction(Enumerators.Faction faction)
         {
-            _selectedSetType = setType;
-            if (_selectedSetType == Enumerators.SetType.NONE)
-            {
-                _imageGlow.gameObject.SetActive(false);
-            }
-            else
-            {
-                _imageGlow.gameObject.SetActive(true);
-                _imageGlow.transform.position = _buttonElementsDictionary[setType].transform.position;
-            }
+            _selectedFaction = faction;
+            _imageGlow.transform.position = _buttonElementsDictionary[faction].transform.position;
+        }
+        
+        private void SaveCache()
+        {
+            _cacheSelectedFaction = _selectedFaction;
+        }
+        
+        private void LoadCache()
+        {
+            UpdateSelectedFaction(_cacheSelectedFaction);   
         }
 
         public void PlayClickSound()

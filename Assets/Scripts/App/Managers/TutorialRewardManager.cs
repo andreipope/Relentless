@@ -14,12 +14,14 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
 using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
     public class TutorialRewardManager : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(TutorialRewardManager));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(TutorialRewardManager) + "Rpc");
 
         #region Contract
         private TextAsset _abiTutorialReward;
@@ -94,17 +96,17 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.DrawPopup<RewardPopup>();
             if(Constants.EnableNewUI)
-                _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+                await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
             else    
-                _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
+                await _uiManager.GetPage<PackOpenerPage>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }
         
-        private void WarningPopupConfirmationReceived()
+        private async void WarningPopupConfirmationReceived()
         {
             WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
             popup.ConfirmationReceived -= WarningPopupConfirmationReceived;
 
-            CallRewardTutorialFlow();
+            await CallRewardTutorialFlow();
         }
 
         public async Task<RewardTutorialCompletedResponse> CallRewardTutorialComplete()
@@ -125,7 +127,7 @@ namespace Loom.ZombieBattleground
         public async Task CallTutorialRewardContract(RewardTutorialCompletedResponse rewardTutorialCompletedResponse)
         {            
             ContractRequest contractParams = ParseContractRequestFromRewardTutorialCompletedResponse(rewardTutorialCompletedResponse);
-            _tutorialRewardContract = await GetContract
+            _tutorialRewardContract = GetContract
             (
                 PrivateKey,
                 PublicKey,
@@ -168,17 +170,19 @@ namespace Loom.ZombieBattleground
             Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {        
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        {
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     

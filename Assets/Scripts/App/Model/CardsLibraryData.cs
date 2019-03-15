@@ -9,11 +9,11 @@ namespace Loom.ZombieBattleground.Data
 {
     public class CardsLibraryData
     {
-        public List<CardSet> Sets { get; private set; }
+        public List<Faction> Factions { get; private set; }
 
         public IList<Card> Cards { get; private set; }
 
-        public int CardsInActiveSetsCount { get; private set; }
+        public int CardsInActiveFactionsCount { get; private set; }
 
         public CardsLibraryData(IList<Card> cards)
         {
@@ -42,21 +42,18 @@ namespace Loom.ZombieBattleground.Data
         private void InitData()
         {
             Cards = Cards.OrderBy(card => card.Cost).ToList();
-            Sets =
+            Factions =
                 Cards
-                    .GroupBy(card => card.CardSetType)
-                    .Select(group => new CardSet(group.Key, group.ToList()))
+                    .GroupBy(card => card.Faction)
+                    .Select(group => new Faction(group.Key, group.ToList()))
                     .OrderBy(set => set.Name)
                     .ToList();
 
-            foreach (CardSet set in Sets)
+            foreach (Faction set in Factions)
             {
                 foreach (Card card in set.Cards)
                 {
-                    if (card.CardSetType != Enumerators.SetType.OTHERS)
-                    {
-                        CardsInActiveSetsCount++;
-                    }
+                    CardsInActiveFactionsCount++;
                 }
             }
         }
@@ -68,12 +65,12 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
-    public class CardSet
+    public class Faction
     {
-        public Enumerators.SetType Name { get; }
+        public Enumerators.Faction Name { get; }
         public List<Card> Cards { get; }
 
-        public CardSet(Enumerators.SetType name, List<Card> cards)
+        public Faction(Enumerators.Faction name, List<Card> cards)
         {
             Name = name;
             Cards = cards;

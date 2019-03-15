@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using Loom.ZombieBattleground.Common;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using log4net;
 using Object = UnityEngine.Object;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class MainMenuWithNavigationPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MainMenuWithNavigationPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -111,12 +114,10 @@ namespace Loom.ZombieBattleground
 
         private void ButtonPlayHandler()
         {
-            if (GameClient.Get<ITutorialManager>().IsButtonBlockedInTutorial(_buttonPlay.name))
-            {
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.IncorrectButtonTapped);
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonPlay.name))
                 return;
-            }
-            else if (_isReturnToTutorial)
+
+            if (_isReturnToTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
 
@@ -131,6 +132,9 @@ namespace Loom.ZombieBattleground
 
         private void ButtonChangeModeHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonChangeMode.name))
+                return;
+
             _uiManager.DrawPopup<GameModePopup>();
         }
 
@@ -157,30 +161,30 @@ namespace Loom.ZombieBattleground
             }  
         }
 
-        public void SetOverlordPortrait(Enumerators.SetType setType)
+        public void SetOverlordPortrait(Enumerators.Faction faction)
         {
-            switch(setType)
+            switch(faction)
             {
-                case Enumerators.SetType.AIR:
+                case Enumerators.Faction.AIR:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_air");                  
                     break;
-                case Enumerators.SetType.FIRE:
+                case Enumerators.Faction.FIRE:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_fire");
                     break;
-                case Enumerators.SetType.EARTH:
+                case Enumerators.Faction.EARTH:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_earth");
                     break;
-                case Enumerators.SetType.TOXIC:
+                case Enumerators.Faction.TOXIC:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_toxic");
                     break;
-                case Enumerators.SetType.WATER:
+                case Enumerators.Faction.WATER:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_water");
                     break;
-                case Enumerators.SetType.LIFE:
+                case Enumerators.Faction.LIFE:
                     _imageOverlordPortrait.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MainMenu/OverlordPortrait/main_portrait_life");
                     break;
                 default:
-                    Debug.Log($"No OverlordPortrait found for setType {setType}");
+                    Log.Info($"No OverlordPortrait found for faction {faction}");
                     return;
             }            
         }

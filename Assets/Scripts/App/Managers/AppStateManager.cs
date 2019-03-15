@@ -46,7 +46,14 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AppState.APP_INIT:
                     GameClient.Get<ITimerManager>().Dispose();
-                    _uiManager.SetPage<LoadingPage>();
+                    if (Constants.EnableNewUI)
+                    {
+                         _uiManager.SetPage<LoadingWithAnimationPage>();
+                    }   
+                    else
+                    {
+                        _uiManager.SetPage<LoadingPage>();
+                    }
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,
                         128,
@@ -68,7 +75,7 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.SetPage<HordeSelectionWithNavigationPage>();
                         HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.TAB.SELECT_OVERLORD);  
+                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);  
                     }
                     else
                         _uiManager.SetPage<OverlordSelectionPage>();
@@ -105,20 +112,16 @@ namespace Loom.ZombieBattleground
                             loginPopup.Show();
                             return;
                         }
+
+                        if (Constants.EnableNewUI)
+                            _uiManager.SetPage<ShopWithNavigationPage>();
                         else
-                        {
-                            if (Constants.EnableNewUI)
-                                _uiManager.SetPage<ShopWithNavigationPage>();
-                            else
-                                _uiManager.SetPage<ShopPage>();
-                        }
-                        break;
+                            _uiManager.SetPage<ShopPage>();
                     }
                     else
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Shop is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
-                        return;
-                    }                    
+                    }
                     break;
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)

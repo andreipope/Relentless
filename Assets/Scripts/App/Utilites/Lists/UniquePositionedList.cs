@@ -76,16 +76,10 @@ namespace Loom.ZombieBattleground
             return _list.IndexOf(item);
         }
 
-        public void Insert(int index, T item)
-        {
-            ThrowIfContains(item);
-            _list.Insert(index, item);
-        }
-
         public void Insert(ItemPosition position, T item)
         {
             ThrowIfContains(item);
-            Insert(position.GetIndex(this), item);
+            _list.Insert(position, item);
         }
 
         public void InsertRange(int index, IEnumerable<T> collection)
@@ -103,7 +97,7 @@ namespace Loom.ZombieBattleground
             InsertRange(position.GetIndex(this), collection);
         }
 
-        public void RemoveAt(int index)
+        public void RemoveAt(ItemPosition index)
         {
             _list.RemoveAt(index);
         }

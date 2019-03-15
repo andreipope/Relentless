@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
                        _buttonType,
                        _buttonGooCost;
 
-        private Dictionary<Enumerators.SetType, Button> _buttonElementsDictionary;
+        private Dictionary<Enumerators.Faction, Button> _buttonElementsDictionary;
 
         private Dictionary<Enumerators.CardRank, Button> _buttonRankDictionary;
         
@@ -38,15 +38,15 @@ namespace Loom.ZombieBattleground
         
         private List<Button> _buttonGooCostList;
         
-        public readonly List<Enumerators.SetType> AllAvailableSetTypeList = new List<Enumerators.SetType>()
+        public readonly List<Enumerators.Faction> AllAvailableFactionList = new List<Enumerators.Faction>()
         {
-            Enumerators.SetType.FIRE,
-            Enumerators.SetType.WATER,
-            Enumerators.SetType.EARTH,
-            Enumerators.SetType.AIR,
-            Enumerators.SetType.LIFE,
-            Enumerators.SetType.TOXIC,
-            Enumerators.SetType.ITEM
+            Enumerators.Faction.FIRE,
+            Enumerators.Faction.WATER,
+            Enumerators.Faction.EARTH,
+            Enumerators.Faction.AIR,
+            Enumerators.Faction.LIFE,
+            Enumerators.Faction.TOXIC,
+            Enumerators.Faction.ITEM
         };
 
         public readonly List<Enumerators.CardRank> AllAvailableRankList = new List<Enumerators.CardRank>()
@@ -67,20 +67,22 @@ namespace Loom.ZombieBattleground
 
         public CardFilterData FilterData;
         
-        public enum TAB
+        private CardFilterData _cacheFilterData;
+        
+        public enum Tab
         {
-            NONE = -1,
-            ELEMENT = 0,
-            RANK = 1,
-            TYPE = 2,
-            GOO_COST = 3
+            None = -1,
+            Element = 0,
+            Rank = 1,
+            Type = 2,
+            GooCost = 3
         }
         
-        private TAB _tab;
+        private Tab _tab;
         
         private GameObject[] _tabObjects;
         
-        public event Action<TAB> EventChangeTab;
+        public event Action<Tab> EventChangeTab;
 
         #region IUIPopup
 
@@ -88,15 +90,16 @@ namespace Loom.ZombieBattleground
         {
             _uiManager = GameClient.Get<IUIManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
-            _buttonElementsDictionary = new Dictionary<Enumerators.SetType, Button>();
+            _buttonElementsDictionary = new Dictionary<Enumerators.Faction, Button>();
             _buttonRankDictionary = new Dictionary<Enumerators.CardRank, Button>();
             _buttonTypeDictionary = new Dictionary<Enumerators.CardType, Button>();
             FilterData = new CardFilterData
             (
-                AllAvailableSetTypeList,
+                AllAvailableFactionList,
                 AllAvailableRankList,
                 AllAvailableTypeList
             );
+            SaveCacheFilterData();
             _buttonGooCostList = new List<Button>();
         }
 
@@ -117,6 +120,8 @@ namespace Loom.ZombieBattleground
             _buttonRankDictionary.Clear();
             _buttonTypeDictionary.Clear();
             _buttonGooCostList.Clear();
+
+            ResetEventSubscriptions();
         }
 
         public void SetMainPriority()
@@ -132,60 +137,56 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardFilterPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false); 
             
-            _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();                        
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();                        
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
-            _buttonClose.onClick.AddListener(PlayClickSound);
             
-            _buttonSave = Self.transform.Find("Scaler/Button_Save").GetComponent<Button>();                        
+            _buttonSave = Self.transform.Find("Button_Save").GetComponent<Button>();                        
             _buttonSave.onClick.AddListener(ButtonSaveHandler);
-            _buttonSave.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectNone = Self.transform.Find("Scaler/Button_SelectNone").GetComponent<Button>();                        
+            _buttonSelectNone = Self.transform.Find("Button_SelectNone").GetComponent<Button>();                        
             _buttonSelectNone.onClick.AddListener(ButtonSelectNoneHandler);
-            _buttonSelectNone.onClick.AddListener(PlayClickSound);
             
-            _buttonSelectAll = Self.transform.Find("Scaler/Button_SelectAll").GetComponent<Button>();                        
+            _buttonSelectAll = Self.transform.Find("Button_SelectAll").GetComponent<Button>();                        
             _buttonSelectAll.onClick.AddListener(ButtonSelectAllHandler);
-            _buttonSelectAll.onClick.AddListener(PlayClickSound);
             
-            _buttonElement = Self.transform.Find("Scaler/Button_Element").GetComponent<Button>();                        
+            _buttonElement = Self.transform.Find("Button_Element").GetComponent<Button>();                        
             _buttonElement.onClick.AddListener(ButtonElementHandler);
-            _buttonElement.onClick.AddListener(PlayClickSound);
             
-            _buttonRank = Self.transform.Find("Scaler/Button_Rank").GetComponent<Button>();                        
+            _buttonRank = Self.transform.Find("Button_Rank").GetComponent<Button>();                        
             _buttonRank.onClick.AddListener(ButtonRankHandler);
-            _buttonRank.onClick.AddListener(PlayClickSound);
             
-            _buttonType = Self.transform.Find("Scaler/Button_Type").GetComponent<Button>();                        
+            _buttonType = Self.transform.Find("Button_Type").GetComponent<Button>();                        
             _buttonType.onClick.AddListener(ButtonTypeHandler);
-            _buttonType.onClick.AddListener(PlayClickSound);
             
-            _buttonGooCost = Self.transform.Find("Scaler/Button_GooCost").GetComponent<Button>();                        
+            _buttonGooCost = Self.transform.Find("Button_GooCost").GetComponent<Button>();                        
             _buttonGooCost.onClick.AddListener(ButtonGooCostHandler);
-            _buttonGooCost.onClick.AddListener(PlayClickSound);
 
             _buttonElementsDictionary.Clear();
-            foreach(Enumerators.SetType setType in AllAvailableSetTypeList)
+            foreach(Enumerators.Faction faction in AllAvailableFactionList)
             {
-                Button buttonElementIcon = Self.transform.Find("Scaler/Tab_Element/Group_ElementIcons/Button_element_"+setType.ToString().ToLower()).GetComponent<Button>();
+                Button buttonElementIcon = Self.transform.Find("Tab_Element/Group_ElementIcons/Button_element_"+faction.ToString().ToLower()).GetComponent<Button>();
                 buttonElementIcon.onClick.AddListener
-                (
-                    ()=> ButtonElementIconHandler(setType)
+                (()=>
+                    {
+                        PlayClickSound();
+                        ButtonElementIconHandler(faction);
+                    }
                 );
-                buttonElementIcon.onClick.AddListener(PlayClickSound);
 
-                _buttonElementsDictionary.Add(setType, buttonElementIcon);
+                _buttonElementsDictionary.Add(faction, buttonElementIcon);
             }
 
             _buttonRankDictionary.Clear();
             foreach (Enumerators.CardRank rank in AllAvailableRankList)
             {
-                Button button = Self.transform.Find("Scaler/Tab_Rank/Group_RankIcons/Button_rank_"+rank.ToString().ToLower()).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_Rank/Group_RankIcons/Button_rank_"+rank.ToString().ToLower()).GetComponent<Button>();
                 button.onClick.AddListener
-                (
-                    ()=> ButtonRankIconHandler(rank)
+                (()=>
+                    {
+                        PlayClickSound();
+                        ButtonRankIconHandler(rank);
+                    }
                 );
-                button.onClick.AddListener(PlayClickSound);
 
                 _buttonRankDictionary.Add(rank, button);
             }
@@ -193,40 +194,43 @@ namespace Loom.ZombieBattleground
             _buttonTypeDictionary.Clear();
             foreach (Enumerators.CardType type in AllAvailableTypeList)
             {
-                Button button = Self.transform.Find("Scaler/Tab_Type/Group_TypeIcons/Button_type_"+type.ToString().ToLower()).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_Type/Group_TypeIcons/Button_type_"+type.ToString().ToLower()).GetComponent<Button>();
                 button.onClick.AddListener
-                (
-                    ()=> ButtonTypeIconHandler(type)
+                (()=>
+                    {
+                        PlayClickSound();
+                        ButtonTypeIconHandler(type);
+                    }
                 );
-                button.onClick.AddListener(PlayClickSound);
 
                 _buttonTypeDictionary.Add(type, button);
             }
 
             _buttonGooCostList.Clear();
-            for(int i=0;i<11;++i)
+            for (int i = 0;i < 11;++i)
             {
                 int gooIndex = i;
-                Button button = Self.transform.Find("Scaler/Tab_GooCost/Group_GooIcons/Button_element_goo_" + i).GetComponent<Button>();
+                Button button = Self.transform.Find("Tab_GooCost/Group_GooIcons/Button_element_goo_" + i).GetComponent<Button>();
                 button.onClick.AddListener(() =>
-                    {
-                        FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
-                        UpdateGooCostButtonDisplay(gooIndex);
-                    });
-                button.onClick.AddListener(PlayClickSound);
+                {
+                    PlayClickSound();
+                    FilterData.GooCostList[gooIndex] = !FilterData.GooCostList[gooIndex];
+                    UpdateGooCostButtonDisplay(gooIndex);
+                });
                 _buttonGooCostList.Add(button);
             }
 
             _tabObjects = new GameObject[]
             {
-                Self.transform.Find("Scaler/Tab_Element").gameObject,
-                Self.transform.Find("Scaler/Tab_Rank").gameObject,
-                Self.transform.Find("Scaler/Tab_Type").gameObject,
-                Self.transform.Find("Scaler/Tab_GooCost").gameObject
+                Self.transform.Find("Tab_Element").gameObject,
+                Self.transform.Find("Tab_Rank").gameObject,
+                Self.transform.Find("Tab_Type").gameObject,
+                Self.transform.Find("Tab_GooCost").gameObject
             };
 
-            FilterData.Reset();
-            LoadTabs();  
+            LoadCacaheFilterData();
+            LoadTabs();
+            UpdateAllButtonsStatus();
         }
         
         public void Show(object data)
@@ -244,11 +248,13 @@ namespace Loom.ZombieBattleground
 
         private void ButtonCloseHandler()
         {
-            _uiManager.HidePopup<CardFilterPopup>();
+            PlayClickSound();
+            Hide();
         }
         
         private void ButtonSaveHandler()
         {            
+            PlayClickSound();
             if (!CheckIfAnyElementSelected())
             {
                 OpenAlertDialog("No element selected!\nPlease select atleast one.");
@@ -273,51 +279,58 @@ namespace Loom.ZombieBattleground
                 return;
             }
             
-            _uiManager.HidePopup<CardFilterPopup>();
-            ActionPopupHiding?.Invoke(FilterData);            
+            SaveCacheFilterData();
+            ActionPopupHiding?.Invoke(FilterData);
+            Hide();
         }
         
-        private void ButtonElementIconHandler(Enumerators.SetType setType)
+        private void ButtonElementIconHandler(Enumerators.Faction faction)
         {
-            ToggleSelectedSetType(setType);            
+            PlayClickSound();
+            ToggleSelectedFaction(faction);            
         }
 
         private void ButtonRankIconHandler(Enumerators.CardRank rank)
         {
+            PlayClickSound();
             FilterData.RankDictionary[rank] = !FilterData.RankDictionary[rank];
             UpdateRankButtonDisplay(rank);
         }
         
         private void ButtonTypeIconHandler(Enumerators.CardType type)
         {
+            PlayClickSound();
             FilterData.TypeDictionary[type] = !FilterData.TypeDictionary[type];
             UpdateTypeButtonDisplay(type);
         }
 
         private void ButtonSelectNoneHandler()
         {
+            PlayClickSound();
             switch (_tab)
             {
-                case TAB.ELEMENT:
-                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
-                        SetSelectedSetType(setType, false);
+                case Tab.Element:
+                    foreach (Enumerators.Faction faction in AllAvailableFactionList)
+                    {
+                        SetSelectedFaction(faction, false);
+                    }
                     break;
-                case TAB.RANK:
+                case Tab.Rank:
                     foreach (Enumerators.CardRank rank in AllAvailableRankList)
                     {
                         FilterData.RankDictionary[rank] = false;
                         UpdateRankButtonDisplay(rank);
                     }
                     break;
-                case TAB.TYPE:
+                case Tab.Type:
                     foreach (Enumerators.CardType type in AllAvailableTypeList)
                     {
                         FilterData.TypeDictionary[type] = false;
                         UpdateTypeButtonDisplay(type);
                     }
                     break;
-                case TAB.GOO_COST:
-                    for(int i=0; i<FilterData.GooCostList.Count;++i)
+                case Tab.GooCost:
+                    for (int i = 0; i < FilterData.GooCostList.Count;++i)
                     {
                         FilterData.GooCostList[i] = false;
                         UpdateGooCostButtonDisplay(i);
@@ -330,28 +343,31 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSelectAllHandler()
         {
+            PlayClickSound();
             switch (_tab)
             {
-                case TAB.ELEMENT:
-                    foreach (Enumerators.SetType setType in AllAvailableSetTypeList)
-                        SetSelectedSetType(setType, true);
+                case Tab.Element:
+                    foreach (Enumerators.Faction faction in AllAvailableFactionList)
+                    {
+                        SetSelectedFaction(faction, true);
+                    }
                     break;
-                case TAB.RANK:
+                case Tab.Rank:
                     foreach (Enumerators.CardRank rank in AllAvailableRankList)
                     {
                         FilterData.RankDictionary[rank] = true;
                         UpdateRankButtonDisplay(rank);
                     }
                     break;
-                case TAB.TYPE:
+                case Tab.Type:
                     foreach (Enumerators.CardType type in AllAvailableTypeList)
                     {
                         FilterData.TypeDictionary[type] = true;
                         UpdateTypeButtonDisplay(type);
                     }
                     break;
-                case TAB.GOO_COST:
-                    for(int i=0; i<FilterData.GooCostList.Count;++i)
+                case Tab.GooCost:
+                    for (int i = 0; i < FilterData.GooCostList.Count;++i)
                     {
                         FilterData.GooCostList[i] = true;
                         UpdateGooCostButtonDisplay(i);
@@ -364,40 +380,44 @@ namespace Loom.ZombieBattleground
         
         private void ButtonElementHandler()
         {
-            ChangeTab(TAB.ELEMENT);
+            PlayClickSound();
+            ChangeTab(Tab.Element);
         }
         
         private void ButtonRankHandler()
         {
-            ChangeTab(TAB.RANK);
+            PlayClickSound();
+            ChangeTab(Tab.Rank);
         }
         
         private void ButtonTypeHandler()
         {
-            ChangeTab(TAB.TYPE);
+            PlayClickSound();
+            ChangeTab(Tab.Type);
         }
         
         private void ButtonGooCostHandler()
         {
-            ChangeTab(TAB.GOO_COST);
+            PlayClickSound();
+            ChangeTab(Tab.GooCost);
         }
 
         #endregion
         
         private void LoadTabs()
         {
-            _tab = TAB.NONE;
-            ChangeTab(TAB.ELEMENT);
+            _tab = Tab.None;
+            ChangeTab(Tab.Element);
         }
         
-        public void ChangeTab(TAB newTab)
+        public void ChangeTab(Tab newTab)
         {
             if (newTab == _tab)
                 return;
                 
             _tab = newTab;            
             
-            for(int i=0; i<_tabObjects.Length;++i)
+            for (int i = 0; i < _tabObjects.Length;++i)
             {
                 GameObject tabObject = _tabObjects[i];
                 tabObject.SetActive(i == (int)newTab);
@@ -405,15 +425,15 @@ namespace Loom.ZombieBattleground
             
             switch (newTab)
             {
-                case TAB.NONE:
+                case Tab.None:
                     break;
-                case TAB.ELEMENT:
+                case Tab.Element:
                     break;
-                case TAB.RANK:
+                case Tab.Rank:
                     break;
-                case TAB.TYPE:                                      
+                case Tab.Type:                                      
                     break;
-                case TAB.GOO_COST:                    
+                case Tab.GooCost:                    
                     break;
                 default:
                     break;
@@ -421,25 +441,38 @@ namespace Loom.ZombieBattleground
             
             EventChangeTab?.Invoke(_tab);
         }
+        
+        private void SaveCacheFilterData()
+        {
+            _cacheFilterData = new CardFilterData(FilterData);
+        }
+        
+        private void LoadCacaheFilterData()
+        {
+            if (_cacheFilterData != null)
+            {
+                FilterData = new CardFilterData(_cacheFilterData);
+            }
+        }
 
         #region Filter
 
-        private void SetSelectedSetType(Enumerators.SetType setType, bool status)
+        private void SetSelectedFaction(Enumerators.Faction faction, bool status)
         {
-            FilterData.SetTypeDictionary[setType] = status;
-            UpdateSetTypeButtonDisplay(setType);
+            FilterData.FactionDictionary[faction] = status;
+            UpdateFactionButtonDisplay(faction);
         }
         
-        private void ToggleSelectedSetType(Enumerators.SetType setType)
+        private void ToggleSelectedFaction(Enumerators.Faction faction)
         {
-            FilterData.SetTypeDictionary[setType] = !FilterData.SetTypeDictionary[setType];
-            UpdateSetTypeButtonDisplay(setType);
+            FilterData.FactionDictionary[faction] = !FilterData.FactionDictionary[faction];
+            UpdateFactionButtonDisplay(faction);
         }
         
-        private void UpdateSetTypeButtonDisplay(Enumerators.SetType setType)
+        private void UpdateFactionButtonDisplay(Enumerators.Faction faction)
         {
-            _buttonElementsDictionary[setType].GetComponent<Image>().color =
-                FilterData.SetTypeDictionary[setType] ? Color.white : Color.gray;
+            _buttonElementsDictionary[faction].GetComponent<Image>().color =
+                FilterData.FactionDictionary[faction] ? Color.white : Color.gray;
         }
         
         private void UpdateRankButtonDisplay(Enumerators.CardRank rank)
@@ -463,7 +496,7 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfAnyElementSelected()
         {
-            return FilterData.SetTypeDictionary.Any(kvp => kvp.Value);           
+            return FilterData.FactionDictionary.Any(kvp => kvp.Value);           
         }
         
         private bool CheckIfAnyGooCostSelected()
@@ -481,6 +514,31 @@ namespace Loom.ZombieBattleground
             return FilterData.TypeDictionary.Any(kvp => kvp.Value);           
         }
         
+        private void UpdateAllButtonsStatus()
+        {
+            foreach (Enumerators.Faction faction in AllAvailableFactionList)
+            {
+                UpdateFactionButtonDisplay(faction);
+            }
+            foreach (Enumerators.CardRank rank in AllAvailableRankList)
+            {
+                UpdateRankButtonDisplay(rank);
+            }
+            foreach (Enumerators.CardType type in AllAvailableTypeList)
+            {
+                UpdateTypeButtonDisplay(type);
+            }
+            for (int i = 0; i < FilterData.GooCostList.Count; ++i)
+            {
+                UpdateGooCostButtonDisplay(i);
+            }
+        }
+        
+        private void ResetEventSubscriptions()
+        {
+            ActionPopupHiding = null;
+        }
+
         #endregion
 
         public void PlayClickSound()
@@ -497,22 +555,42 @@ namespace Loom.ZombieBattleground
         
         public class CardFilterData
         {            
-            public Dictionary<Enumerators.SetType, bool> SetTypeDictionary;
+            public Dictionary<Enumerators.Faction, bool> FactionDictionary;
             public Dictionary<Enumerators.CardRank, bool> RankDictionary;
             public Dictionary<Enumerators.CardType, bool> TypeDictionary;
             public List<bool> GooCostList;
             
+            public CardFilterData(CardFilterData originalData)
+            {
+                FactionDictionary = originalData.FactionDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                RankDictionary = originalData.RankDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                TypeDictionary = originalData.TypeDictionary.ToDictionary
+                (
+                    entry => entry.Key,
+                    entry => entry.Value
+                );
+                GooCostList = originalData.GooCostList.ToList();
+            }
+
             public CardFilterData
             (
-                List<Enumerators.SetType> availableSetTypeList,
+                List<Enumerators.Faction> availableFactionList,
                 List<Enumerators.CardRank> availableRankList,
                 List<Enumerators.CardType> availableTypeList
             )
             {
-                SetTypeDictionary = new Dictionary<Enumerators.SetType, bool>();
-                foreach(Enumerators.SetType setType in availableSetTypeList)
+                FactionDictionary = new Dictionary<Enumerators.Faction, bool>();
+                foreach(Enumerators.Faction faction in availableFactionList)
                 {
-                    SetTypeDictionary.Add(setType, true);
+                    FactionDictionary.Add(faction, true);
                 }
 
                 RankDictionary = new Dictionary<Enumerators.CardRank, bool>();
@@ -528,36 +606,36 @@ namespace Loom.ZombieBattleground
                 }
                 
                 GooCostList = new List<bool>();
-                for(int i=0; i<11; ++i)
+                for (int i = 0; i < 11; ++i)
                 {
                     GooCostList.Add(true);
                 }
             }
             
-            public List<Enumerators.SetType> GetFilterSetTypeList()
+            public List<Enumerators.Faction> GetFilterFactionList()
             {
-                List<Enumerators.SetType> setTypeList = new List<Enumerators.SetType>();
-                foreach (KeyValuePair<Enumerators.SetType, bool> kvp in SetTypeDictionary)
+                List<Enumerators.Faction> factionList = new List<Enumerators.Faction>();
+                foreach (KeyValuePair<Enumerators.Faction, bool> kvp in FactionDictionary)
                 {
                     if(kvp.Value)
-                        setTypeList.Add(kvp.Key);
+                        factionList.Add(kvp.Key);
                 }
-                return setTypeList;
+                return factionList;
             }
 
             public void Reset()
             {
-                for(int i=0; i<SetTypeDictionary.Count;++i)
+                for (int i = 0; i < FactionDictionary.Count;++i)
                 {
-                    KeyValuePair<Enumerators.SetType, bool> kvp = SetTypeDictionary.ElementAt(i);
-                    SetTypeDictionary[kvp.Key] = true;
+                    KeyValuePair<Enumerators.Faction, bool> kvp = FactionDictionary.ElementAt(i);
+                    FactionDictionary[kvp.Key] = true;
                 }
-                for(int i=0; i<RankDictionary.Count;++i)
+                for (int i = 0; i < RankDictionary.Count;++i)
                 {
                     KeyValuePair<Enumerators.CardRank, bool> kvp = RankDictionary.ElementAt(i);
                     RankDictionary[kvp.Key] = true;
                 }
-                for(int i=0; i<TypeDictionary.Count;++i)
+                for (int i = 0; i < TypeDictionary.Count;++i)
                 {
                     KeyValuePair<Enumerators.CardType, bool> kvp = TypeDictionary.ElementAt(i);
                     TypeDictionary[kvp.Key] = true;

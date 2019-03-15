@@ -108,29 +108,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     if (target.BoardObject == null)
                         continue;
 
-                    ParametrizedAbilityInstanceId targetParametrizedInstanceId;
                     InstanceId instanceId;
-                    Enumerators.AffectObjectType affectObjectType;
-
                     switch (target.BoardObject)
                     {
                         case BoardUnitModel model:
                             instanceId = model.Card.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Character;
                             break;
                         case Player player:
                             instanceId = player.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Player;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.CardView.WorkingCard.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Card;
+                            instanceId = handCard.BoardUnitModel.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
+                    ParametrizedAbilityInstanceId targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
                     parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
                 }
             }
@@ -198,29 +192,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     if (target.BoardObject == null)
                         continue;
 
-                    ParametrizedAbilityInstanceId targetParametrizedInstanceId;
                     InstanceId instanceId;
-                    Enumerators.AffectObjectType affectObjectType;
-
                     switch (target.BoardObject)
                     {
                         case BoardUnitModel model:
                             instanceId = model.Card.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Character;
                             break;
                         case Player player:
                             instanceId = player.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Player;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.CardView.WorkingCard.InstanceId;
-                            affectObjectType = Enumerators.AffectObjectType.Card;
+                            instanceId = handCard.BoardUnitModel.Card.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
+                    ParametrizedAbilityInstanceId targetParametrizedInstanceId = new ParametrizedAbilityInstanceId(instanceId, target.Parameters);
                     parametrizedTargetsInstanceIds.Add(targetParametrizedInstanceId);
                 }
             }

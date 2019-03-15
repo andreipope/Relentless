@@ -321,7 +321,7 @@ namespace Loom.ZombieBattleground {
             if (await CancelIfNeededAndSetCanceledState())
                 return;
 
-            Log.Debug("SetState " + state);
+            Log.Debug("SetState: " + state);
             await SetStateUnchecked(state);
         }
 

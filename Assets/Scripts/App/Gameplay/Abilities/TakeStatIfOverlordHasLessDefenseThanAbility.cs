@@ -9,19 +9,19 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public int Damage;
 
-        public Enumerators.StatType StatType;
+        public Enumerators.Stat StatType;
 
         public TakeStatIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
         }
 
         public override void Activate()
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -42,12 +42,12 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.Defense <= Value)
             {
-                if (StatType == Enumerators.StatType.HEALTH)
+                if (StatType == Enumerators.Stat.DEFENSE)
                 {
-                    AbilityUnitOwner.BuffedHp += Health;
-                    AbilityUnitOwner.CurrentHp += Health;
+                    AbilityUnitOwner.BuffedDefense += Defense;
+                    AbilityUnitOwner.CurrentDefense += Defense;
                 }
-                else if (StatType == Enumerators.StatType.DAMAGE)
+                else if (StatType == Enumerators.Stat.DAMAGE)
                 {
                     AbilityUnitOwner.BuffedDamage += Damage;
                     AbilityUnitOwner.CurrentDamage += Damage;

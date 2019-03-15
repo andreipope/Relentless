@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                if (Ability.BoardSpell != null && Ability.BoardSpell.Card.LibraryCard.MouldId == LawnmowerCardId)
+                if (Ability.BoardItem != null && Ability.BoardItem.Model.Prototype.MouldId == LawnmowerCardId)
                 {
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
                     VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                         switch (boardObject)
                         {
                             case BoardUnitModel unit:
-                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel(unit));
+                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit));
                                 break;
                             default:
                                 break;
@@ -81,17 +81,18 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType target in Ability.AbilityTargetTypes)
+                    foreach (Enumerators.Target target in Ability.AbilityTargetTypes)
                     {
                         switch (target)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
+                            case Enumerators.Target.OPPONENT_ALL_CARDS:
                                 CustomCreateVfx(offset, true, delayBeforeDestroy, justPosition);
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                                foreach (BoardUnitView cardPlayer in Ability.PlayerCallerOfAbility.BoardCards)
+                            case Enumerators.Target.PLAYER_ALL_CARDS:
+                                foreach (BoardUnitModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                                 {
-                                    CreateVfx(cardPlayer.Transform.position, true);
+                                    BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                    CreateVfx(cardPlayerView.Transform.position, true);
                                 }
                                 break;
                         }

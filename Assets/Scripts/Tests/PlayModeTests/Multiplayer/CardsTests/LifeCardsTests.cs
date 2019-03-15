@@ -58,10 +58,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.LibraryCard.MouldId)).ToList()[0]);
-                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.MouldId)).ToList()[0]);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.Model.Card.Prototype.MouldId)).ToList()[0]);
+                    Assert.AreEqual(149, (TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.Model.Card.Prototype.MouldId)).ToList()[0]);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, enableBackendGameLogicMatch: true);
@@ -113,8 +113,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -213,8 +213,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Count);
 
                     Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMonZoonId));
                     Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMonZoon2Id));
@@ -369,8 +369,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTinyId)).CurrentHp);
-                    Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTinyId)).CurrentHp);
+                    Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTinyId)).CurrentDefense);
+                    Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTinyId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -475,8 +475,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Tainted Goo";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.WorkingCard.LibraryCard.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.WorkingCard.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.PlayerHandCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -634,8 +634,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId)).CurrentHp);
-                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId)).CurrentHp);
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId)).CurrentDefense);
+                    Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -696,8 +696,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp-3, pvpTestContext.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialHp-3, pvpTestContext.GetOpponentPlayer().Defense);
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense-3, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense-3, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -746,8 +746,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Ember";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -802,8 +802,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "WiZp";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -857,8 +857,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                   Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerShroomId)).CurrentHp);
-                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId)).CurrentHp);
+                   Assert.AreEqual(2, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerShroomId)).CurrentDefense);
+                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -919,8 +919,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSapperId)).CurrentHp);
-                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSapperId)).CurrentHp);
+                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerSapperId)).CurrentDefense);
+                   Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentSapperId)).CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -995,9 +995,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         }
                     }
 
-                    foreach (BoardCard card in TestHelper.BattlegroundController.PlayerHandCards)
+                    foreach (BoardCardView card in TestHelper.BattlegroundController.PlayerHandCards)
                     {
-                        if (card.LibraryCard.Name == cardToFind)
+                        if (card.Model.Card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
                             break;
@@ -1015,7 +1015,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
                     {
-                        if (card.WorkingCard.LibraryCard.Name == cardToFind)
+                        if (card.Model.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
                             break;
@@ -1144,8 +1144,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Bark";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1221,11 +1221,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     Assert.AreEqual(13, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZVirusId)).CurrentDamage);
-                    Assert.AreEqual(16, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZVirusId)).CurrentHp);
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.PlayerBoardCards.Count);
+                    Assert.AreEqual(16, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZVirusId)).CurrentDefense);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Count);
                     Assert.AreEqual(13, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentDamage);
-                    Assert.AreEqual(16, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentHp);
-                    Assert.AreEqual(1, TestHelper.BattlegroundController.OpponentBoardCards.Count);
+                    Assert.AreEqual(16, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZVirusId)).CurrentDefense);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1277,8 +1277,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Azuraz";
 
-                    Assert.NotNull(TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1326,8 +1326,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Zplitter";
 
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind).ToList().Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -1377,26 +1377,26 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Blightling";
 
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.PlayerBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind).ToList().Count);
-                    Assert.AreEqual(2, TestHelper.BattlegroundController.OpponentBoardCards.Select(card => card.Model.Card.LibraryCard.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
 
                     cardToFind = "Blight";
 
                     bool playerHasBlight = false;
                     bool opponentHasBlight = false;
 
-                    foreach (BoardUnitView card in TestHelper.BattlegroundController.PlayerBoardCards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard)
                     {
-                        if (card.Model.Card.LibraryCard.Name == cardToFind)
+                        if (card.Card.Prototype.Name == cardToFind)
                         {
                             playerHasBlight = true;
                             break;
                         }
                     }
 
-                    foreach (BoardUnitView card in TestHelper.BattlegroundController.OpponentBoardCards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard)
                     {
-                        if (card.Model.Card.LibraryCard.Name == cardToFind)
+                        if (card.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasBlight = true;
                             break;
@@ -1468,8 +1468,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialHp, pvpTestContext.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId)).CurrentHp);   
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId)).CurrentDefense);   
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

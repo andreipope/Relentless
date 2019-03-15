@@ -190,6 +190,9 @@ namespace Loom.ZombieBattleground.Editor
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
             {
+                if (file.FullName == Logging.GetLogFilePath())
+                    continue;
+
                 file.Delete();
             }
 
@@ -349,12 +352,18 @@ namespace Loom.ZombieBattleground.Editor
                 EditorUtility.GetBuildAssetBundleOptions(buildTarget),
                 buildTarget);
 
-            // Delete existing StreamingAssets bundles
+
             string assetBundleStreamingRoot = Utilites.GetAssetBundleLocalRoot();
+            if (!Directory.Exists(assetBundleStreamingRoot))
+            {
+                Directory.CreateDirectory(assetBundleStreamingRoot);
+            }
+
+            // Delete existing StreamingAssets bundles
             string[] existingBundles = Directory.GetFiles(assetBundleStreamingRoot);
             foreach (string existingBundle in existingBundles)
             {
-                if (existingBundle == ".dummy")
+                if (Path.GetFileName(existingBundle) == ".gitkeep")
                     continue;
 
                 File.Delete(existingBundle);

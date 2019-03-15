@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
+using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,6 +36,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
 
         private IDataManager _dataManager;
+
+        private IInputManager _inputManager;
 
         private BackendFacade _backendFacade;
 
@@ -96,6 +99,8 @@ namespace Loom.ZombieBattleground
         private InputField _OTPFieldOTP;
         private Image _backgroundDarkImage;
 
+        private EventSystem _currentEventSystem;
+
         private string _lastErrorMessage;
 
         private LoginState _state;
@@ -105,6 +110,8 @@ namespace Loom.ZombieBattleground
         private string _lastGUID;
 
         private bool _gameStarted = false;
+
+        private int _onEnterInputIndex = -1;
 
         public GameObject Self { get; private set; }
 
@@ -118,6 +125,8 @@ namespace Loom.ZombieBattleground
             _appStateManager = GameClient.Get<IAppStateManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _inputManager = GameClient.Get<IInputManager>();
+            _currentEventSystem = EventSystem.current;
         }
 
         public void Dispose()
@@ -134,6 +143,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+
+            _inputManager.UnregisterInputHandler(_onEnterInputIndex);
         }
 
         public void SetMainPriority()
@@ -208,6 +219,9 @@ namespace Loom.ZombieBattleground
                 SetUIState(LoginState.InitiateLogin);
                 Self.SetActive(true);
             }
+
+            _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                (int)KeyCode.Return, null, OnInputDownEnterButton);
         }
 
         public void Show(object data)
@@ -254,6 +268,14 @@ namespace Loom.ZombieBattleground
         {
             Show();
             SetLoginAsGuestState();
+        }
+
+        private void OnInputDownEnterButton()
+        {
+            if (_currentEventSystem.currentSelectedGameObject == _passwordFieldLogin.gameObject)
+            {
+                PressedLoginHandler();
+            }
         }
 
         private void PressedSendOTPHandler()
@@ -429,9 +451,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
-                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -448,9 +469,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Info(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -478,9 +497,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Info(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
@@ -711,7 +728,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                        await GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
                     }
                 }
                 else

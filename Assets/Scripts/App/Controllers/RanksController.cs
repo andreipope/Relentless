@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,14 +11,16 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(RanksController));
 
-        public event Action<WorkingCard, List<BoardUnitView>> RanksUpdated;
+        public delegate void RanksUpdatedDelegate(BoardUnitModel originUnit, IReadOnlyList<BoardUnitModel> targetUnits);
+        public event RanksUpdatedDelegate RanksUpdated;
 
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
+        private BattlegroundController _battlegroundController;
 
         private Action _ranksUpgradeCompleteAction;
 
-        private List<BoardUnitView> _unitsForIgnoreRankBuff;
+        private List<BoardUnitModel> _unitsForIgnoreRankBuff;
 
         public void Dispose()
         {
@@ -30,7 +30,8 @@ namespace Loom.ZombieBattleground
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
-            _unitsForIgnoreRankBuff = new List<BoardUnitView>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _unitsForIgnoreRankBuff = new List<BoardUnitModel>();
         }
 
         public void Update()
@@ -41,11 +42,11 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(IReadOnlyList<BoardUnitView> units, WorkingCard card, GameplayQueueAction<object> actionInQueue)
+        public void UpdateRanksByElements(IReadOnlyList<BoardUnitModel> units, BoardUnitModel boardUnitModel, GameplayQueueAction<object> actionInQueue)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                if (!card.Owner.IsLocalPlayer)
+                if (!boardUnitModel.Owner.IsLocalPlayer)
                     return;
             }
 
@@ -53,10 +54,11 @@ namespace Loom.ZombieBattleground
                    {
                        _ranksUpgradeCompleteAction = completeCallback;
 
-                       List<BoardUnitView> filter = units.Where(unit =>
-                                    unit.Model.Card.LibraryCard.CardSetType == card.LibraryCard.CardSetType &&
-                                    (int)unit.Model.Card.LibraryCard.CardRank < (int)card.LibraryCard.CardRank &&
-                                    !unit.WasDestroyed && !unit.Model.IsDead &&
+                       List<BoardUnitModel> filter = units.Where(unit =>
+                                    unit.Card.Prototype.Faction == boardUnitModel.Prototype.Faction &&
+                                    (int) unit.Card.Prototype.CardRank < (int) boardUnitModel.Prototype.CardRank &&
+                                    !_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).WasDestroyed &&
+                                    !unit.IsDead &&
                                     !_unitsForIgnoreRankBuff.Contains(unit))
                                     .ToList();
 
@@ -66,9 +68,9 @@ namespace Loom.ZombieBattleground
                            (_tutorialManager.IsTutorial &&
                            _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.RankSystemHasEnabled)))
                        {
-                           DoRankUpgrades(filter, card);
+                           DoRankUpgrades(filter, boardUnitModel);
 
-                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].Model.OwnerPlayer.SelfHero,
+                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfHero,
                             Common.Enumerators.ExperienceActionType.ActivateRankAbility);
 
                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
@@ -81,38 +83,38 @@ namespace Loom.ZombieBattleground
                    };
         }
 
-        public void DoRankUpgrades(List<BoardUnitView> units, WorkingCard card, bool randomly = true)
+        public void DoRankUpgrades(List<BoardUnitModel> targetUnits, BoardUnitModel originUnit, bool randomly = true)
         {
-            switch (card.LibraryCard.CardSetType)
+            switch (originUnit.Prototype.Faction)
             {
-                case Enumerators.SetType.AIR:
-                    AirRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.AIR:
+                    AirRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.EARTH:
-                    EarthRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.EARTH:
+                    EarthRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.WATER:
-                    WaterRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.WATER:
+                    WaterRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.FIRE:
-                    FireRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.FIRE:
+                    FireRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.TOXIC:
-                    ToxicRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.TOXIC:
+                    ToxicRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
-                case Enumerators.SetType.LIFE:
-                    LifeRankBuff(units, card.LibraryCard.CardRank, card, randomly);
+                case Enumerators.Faction.LIFE:
+                    LifeRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.LibraryCard.CardSetType), card.LibraryCard.CardSetType, null);
+                    throw new ArgumentOutOfRangeException(nameof(originUnit.Prototype.Faction), originUnit.Prototype.Faction, null);
             }
         }
 
-        private void AirRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
+        private void AirRankBuff(List<BoardUnitModel> targetUnits, Enumerators.CardRank originUnitRank, BoardUnitModel originUnit, bool randomly = true)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
-            switch (rank)
+            switch (originUnitRank)
             {
                 case Enumerators.CardRank.OFFICER:
                     buffs.Add(Enumerators.BuffType.GUARD);
@@ -128,13 +130,13 @@ namespace Loom.ZombieBattleground
                     count = 3;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
+                    throw new ArgumentOutOfRangeException(nameof(originUnitRank), originUnitRank, null);
             }
 
-            BuffRandomAlly(units, count, buffs, card, randomly);
+            BuffRandomAlly(targetUnits, count, buffs, originUnit, randomly);
         }
 
-        private void EarthRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
+        private void EarthRankBuff(List<BoardUnitModel> units, Enumerators.CardRank rank, BoardUnitModel boardUnitModel, bool randomly = true)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -157,10 +159,10 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
-            BuffRandomAlly(units, count, buffs, card, randomly);
+            BuffRandomAlly(units, count, buffs, boardUnitModel, randomly);
         }
 
-        private void FireRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
+        private void FireRankBuff(List<BoardUnitModel> units, Enumerators.CardRank rank, BoardUnitModel boardUnitModel, bool randomly = true)
         {
             List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
             int count = 1;
@@ -183,10 +185,86 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
             }
 
-            BuffRandomAlly(units, count, buffs, card, randomly);
+            BuffRandomAlly(units, count, buffs, boardUnitModel, randomly);
         }
 
-        public void AddUnitForIgnoreRankBuff(BoardUnitView unit)
+        private void LifeRankBuff(List<BoardUnitModel> units, Enumerators.CardRank rank, BoardUnitModel boardUnitModel, bool randomly = true)
+        {
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
+            {
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.REANIMATE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
+            }
+
+            BuffRandomAlly(units, count, buffs, boardUnitModel, randomly);
+        }
+
+        private void ToxicRankBuff(List<BoardUnitModel> units, Enumerators.CardRank rank, BoardUnitModel boardUnitModel, bool randomly = true)
+        {
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
+            {
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.DESTROY);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.DESTROY);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.DESTROY);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
+            }
+
+            BuffRandomAlly(units, count, buffs, boardUnitModel, randomly);
+        }
+
+        private void WaterRankBuff(List<BoardUnitModel> units, Enumerators.CardRank rank, BoardUnitModel boardUnitModel, bool randomly = true)
+        {
+            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
+            int count = 1;
+            switch (rank)
+            {
+                case Enumerators.CardRank.OFFICER:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    break;
+                case Enumerators.CardRank.COMMANDER:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 2;
+                    break;
+                case Enumerators.CardRank.GENERAL:
+                    buffs.Add(Enumerators.BuffType.FREEZE);
+                    buffs.Add(Enumerators.BuffType.ATTACK);
+                    count = 3;
+                    break;
+            }
+
+            BuffRandomAlly(units, count, buffs, boardUnitModel, randomly);
+        }
+
+        public void AddUnitForIgnoreRankBuff(BoardUnitModel unit)
         {
             if (!_unitsForIgnoreRankBuff.Contains(unit))
             {
@@ -194,114 +272,38 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void LifeRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
-        {
-            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
-            int count = 1;
-            switch (rank)
-            {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 2;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.REANIMATE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 3;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
-            }
-
-            BuffRandomAlly(units, count, buffs, card, randomly);
-        }
-
-        private void ToxicRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
-        {
-            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
-            int count = 1;
-            switch (rank)
-            {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 2;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.DESTROY);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 3;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(rank), rank, null);
-            }
-
-            BuffRandomAlly(units, count, buffs, card, randomly);
-        }
-
-        private void WaterRankBuff(List<BoardUnitView> units, Enumerators.CardRank rank, WorkingCard card, bool randomly = true)
-        {
-            List<Enumerators.BuffType> buffs = new List<Enumerators.BuffType>();
-            int count = 1;
-            switch (rank)
-            {
-                case Enumerators.CardRank.OFFICER:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
-                    break;
-                case Enumerators.CardRank.COMMANDER:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 2;
-                    break;
-                case Enumerators.CardRank.GENERAL:
-                    buffs.Add(Enumerators.BuffType.FREEZE);
-                    buffs.Add(Enumerators.BuffType.ATTACK);
-                    count = 3;
-                    break;
-            }
-
-            BuffRandomAlly(units, count, buffs, card, randomly);
-        }
-
-        private void BuffRandomAlly(List<BoardUnitView> units, int count,
+        private void BuffRandomAlly(List<BoardUnitModel> targetUnits, int count,
                                     List<Enumerators.BuffType> buffTypes,
-                                    WorkingCard card, bool randomly = true)
+                                    BoardUnitModel originUnit, bool randomly = true)
         {
             if (_tutorialManager.IsTutorial)
             {
-                units = units.FindAll(x => x.Model.UnitCanBeUsable());
+                targetUnits = targetUnits.FindAll(x => x.UnitCanBeUsable());
             }
 
             if (randomly)
             {
-                units = InternalTools.GetRandomElementsFromList(units, count);
+                targetUnits = InternalTools.GetRandomElementsFromList(targetUnits, count);
             }
 
             foreach (Enumerators.BuffType buff in buffTypes)
             {
-                foreach (BoardUnitView unit in units)
+                foreach (BoardUnitModel unit in targetUnits)
                 {
-                    if (unit == null || unit.Model == null)
+                    if (unit == null)
                     {
-                        ExceptionReporter.LogException(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
+                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception("Tried to Buff Null Unit in Ranks System"));
                         continue;
                     }
 
-                    unit.Model.ApplyBuff(buff);
+                    unit.ApplyBuff(buff);
                 }
             }
 
 
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
-                if (!card.Owner.IsLocalPlayer)
+                if (!originUnit.Owner.IsLocalPlayer)
                 {
                     _ranksUpgradeCompleteAction?.Invoke();
                     _ranksUpgradeCompleteAction = null;
@@ -309,13 +311,13 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            RanksUpdated?.Invoke(card, units);
+            RanksUpdated?.Invoke(originUnit, targetUnits);
 
             _ranksUpgradeCompleteAction?.Invoke();
             _ranksUpgradeCompleteAction = null;
         }
 
-        public void BuffAllyManually(List<BoardUnitView> units, WorkingCard card)
+        public void BuffAllyManually(List<BoardUnitModel> units, BoardUnitModel card)
         {
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
                  (parameter, completeCallback) =>

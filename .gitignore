@@ -12,7 +12,6 @@
 /[Ll]ogs/
 /Assets/AssetStoreTools*
 /Assets/StreamingAssets/AssetBundles/*
-!/Assets/StreamingAssets/AssetBundles/.dummy
 
 !/TestSubsetCategories.txt
 
@@ -78,3 +77,5 @@ Assets/Scripts/Tests/AltUnityTests/run-tests.sh
 Assets/Scripts/Tests/AltUnityTests/*.zip
 Assets/Scripts/Tests/AltUnityTests/test-reports
 Assets/Scripts/Tests/AltUnityTests/.vscode
+# Keep
+!.gitkeep

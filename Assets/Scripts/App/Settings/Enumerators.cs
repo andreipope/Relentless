@@ -4,14 +4,14 @@ namespace Loom.ZombieBattleground.Common
 {
     public class Enumerators
     {
-        public enum AbilityActivityType
+        public enum AbilityActivity
         {
             UNDEFINED,
             PASSIVE,
             ACTIVE
         }
 
-        public enum AbilityCallType
+        public enum AbilityTrigger
         {
             UNDEFINED,
             TURN,
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Common
             KILL_UNIT
         }
 
-        public enum AbilityEffectType
+        public enum AbilityEffect
         {
             NONE,
             MASSIVE_WATER_WAVE,
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_FRESH_MEAT
         }
 
-        public enum AbilityTargetType
+        public enum Target
         {
             NONE,
             PLAYER,
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground.Common
             ONLY_DIFFERENT
         }
 
-        public enum GameMechanicDescriptionType
+        public enum GameMechanicDescription
         {
             [EnumMember(Value = "UNDEFINED")]
             Undefined,
@@ -344,7 +344,7 @@ namespace Loom.ZombieBattleground.Common
         {
             UNDEFINED,
             CREATURE,
-            SPELL
+            ITEM
         }
 
         public enum CardPackType
@@ -459,17 +459,15 @@ namespace Loom.ZombieBattleground.Common
             BLIZZARD
         }
 
-        public enum SetType
+        public enum Faction
         {
-            NONE,
-            FIRE,
+            FIRE = 1,
             WATER,
             EARTH,
             AIR,
             LIFE,
             TOXIC,
             ITEM,
-            OTHERS,
         }
 
         public enum SkillTargetType
@@ -544,10 +542,10 @@ namespace Loom.ZombieBattleground.Common
             ZOMBIE_DEATH_ANIMATIONS
         }
 
-        public enum StatType
+        public enum Stat
         {
             UNDEFINED,
-            HEALTH,
+            DEFENSE,
             DAMAGE
         }
 
@@ -566,7 +564,7 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum UnitStatusType
+        public enum UnitStatus
         {
             NONE,
             FROZEN
@@ -603,7 +601,8 @@ namespace Loom.ZombieBattleground.Common
             Distract,
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
-            Swing
+            Swing,
+            Devour
         }
         public enum ScreenMode
         {
@@ -674,7 +673,7 @@ namespace Loom.ZombieBattleground.Common
             YourOverlord
         }
 
-        public enum UniqueAnimationType
+        public enum UniqueAnimation
         {
             None,
             ShammannArrival,
@@ -841,7 +840,9 @@ namespace Loom.ZombieBattleground.Common
 
             CardWithAbilityPlayed,
 
-            EndCardFlipPlayerOrderPopup
+            EndCardFlipPlayerOrderPopup,
+
+            HordeTabChanged
         }
 
         public enum TutorialActivityActionHandler

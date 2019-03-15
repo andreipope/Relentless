@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                     if (unit == Ability.AbilityUnitOwner)
                         continue;
 
-                    unitTransform = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+                    unitTransform = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
 
                     random = UnityEngine.Random.Range(0, prefabs.Length);
                     VfxObject = Object.Instantiate(prefabs[random]);

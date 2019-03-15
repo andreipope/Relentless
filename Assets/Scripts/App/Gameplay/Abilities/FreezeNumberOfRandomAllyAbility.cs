@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _allies.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                _allies.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                 _allies.Remove(AbilityUnitOwner);
                 _allies.Add(PlayerCallerOfAbility);
 
