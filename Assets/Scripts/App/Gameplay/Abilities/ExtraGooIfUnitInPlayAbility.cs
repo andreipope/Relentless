@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action(new object[] { PlayerCallerOfAbility, 1 });
@@ -31,6 +31,13 @@ namespace Loom.ZombieBattleground
         protected override void UnitDiedHandler()
         {
             base.UnitDiedHandler();
+
+            Action(new object[] { PlayerCallerOfAbility, -1 });
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
 
             Action(new object[] { PlayerCallerOfAbility, -1 });
         }

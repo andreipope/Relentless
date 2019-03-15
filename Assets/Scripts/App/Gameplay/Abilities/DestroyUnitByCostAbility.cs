@@ -28,10 +28,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 _isRandom = true;
                 _unit = GetRandomUnit();
@@ -80,14 +80,14 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
                 {
-                    units.AddRange(GetOpponentOverlord().BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                    units.AddRange(GetOpponentOverlord().CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
                 {
-                    units.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model.Card.InstanceCard.Cost <= Cost).Select(x => x.Model).ToList());
+                    units.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }
             }
 
@@ -112,9 +112,9 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                WorkingCard card = BoardSpell?.Card;
+                BoardUnitModel card = BoardItem?.Model;
 
-                if(card != null && card.LibraryCard.MouldId == TorchCardId)
+                if(card != null && card.Prototype.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }
@@ -131,8 +131,8 @@ namespace Loom.ZombieBattleground
                             Target = unit
                         }
                     },
-                    checkForCardOwner = _checkForCardOwner,
-                    workingCard = card
+                    CheckForCardOwner = _checkForCardOwner,
+                    BoardUnitModel = card
                 });
             }
         }

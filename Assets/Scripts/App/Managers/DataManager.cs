@@ -9,9 +9,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using log4net;
+using log4net.Core;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -171,7 +174,7 @@ namespace Loom.ZombieBattleground
             return CachedBuffsTooltipData.CardTypes.Find(x => x.Type == cardType);
         }
 
-        public TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic)
+        public TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescription gameMechanic)
         {
             return CachedBuffsTooltipData.Mechanics.Find(x => x.Type == gameMechanic);
         }
@@ -209,12 +212,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        private uint GetMaxCopiesValue(Data.Card card, Enumerators.SetType setName)
+        private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
         {
             Enumerators.CardRank rank = card.CardRank;
             uint maxCopies;
 
-            if (setName == Enumerators.SetType.ITEM)
+            if (setName == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;
@@ -285,6 +288,12 @@ namespace Loom.ZombieBattleground
 
         private void ShowLoadDataFailMessage(string msg)
         {
+            // Crash fast on CI
+            if (UnitTestDetector.IsRunningUnitTests)
+            {
+                throw new RpcClientException(msg,-1, null);
+            }
+
             _uiManager.HidePopup<LoginPopup>();
             _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
         }
@@ -441,7 +450,7 @@ namespace Loom.ZombieBattleground
             {
                 foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
 
-                if (foundCard == null || foundCard is default(Card))
+                if (foundCard == null)
                 {
                     CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
                     i--;
@@ -551,7 +560,7 @@ namespace Loom.ZombieBattleground
                 Cards = new List<CollectionCardData>()
             };
 
-            foreach (Data.CardSet set in CachedCardsLibraryData.Sets)
+            foreach (Data.Faction set in CachedCardsLibraryData.Factions)
             {
                 foreach (Data.Card card in set.Cards)
                 {

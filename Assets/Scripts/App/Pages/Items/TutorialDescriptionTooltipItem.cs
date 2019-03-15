@@ -38,6 +38,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.TooltipAlign Align => _align;
 
+        public int OwnerId => _ownerId;
+
         public float Width;
 
         public Enumerators.TutorialObjectOwner OwnerType;
@@ -47,6 +49,8 @@ namespace Loom.ZombieBattleground
         private Vector3 _currentPosition;
 
         private BoardUnitView _ownerUnit;
+
+        private BoardCardView _ownerCardInHand;
 
         private bool _dynamicPosition;
 
@@ -118,17 +122,34 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
+                BoardUnitModel boardUnitModel = null;
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                        boardUnitModel = _gameplayManager.CurrentPlayer.CardsOnBoard.First((x) =>
+                            x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                        boardUnitModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
+                            x.TutorialObjectId == ownerId);
                         break;
-                    default: break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerId != 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.Model.Card.TutorialObjectId == ownerId);
+                        }
+                        else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if (boardUnitModel != null)
+                {
+                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                 }
             }
             else if(boardObjectOwner != null)
@@ -138,7 +159,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardObjectOwner as BoardUnitModel);
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardObjectOwner as BoardUnitModel);
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;
@@ -297,6 +318,15 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
+                        break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerCardInHand == null || !_ownerCardInHand.GameObject || _ownerCardInHand.GameObject == null)
+                        {
+                            UpdatePossibilityForClose();
+                            Hide();
+                        }
+
+                        _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }
             }

@@ -1,0 +1,27 @@
+{
+  "NumberOfItems": 4,
+  "ItemCosts": [
+  	"$1.99",
+    "$2.99", 
+    "$4.99",
+    "$9.99"
+  ],
+  "ItemNames": [
+  	"1 PACK",
+    "2 PACKS",
+    "5 PACKS",
+    "10 PACKS"
+  ],
+  "ItemDescriptions": [
+  	"1 pack of cards",
+    "2 packs of cards",
+    "5 packs of cards",
+    "10 packs of cards"
+  ],
+  "ProductID": [
+    "booster_pack_1",
+    "booster_pack_2",
+    "booster_pack_5",
+    "booster_pack_10"
+  ]
+}

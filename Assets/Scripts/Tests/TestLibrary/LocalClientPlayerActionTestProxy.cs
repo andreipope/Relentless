@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -19,6 +20,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class LocalClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LocalClientPlayerActionTestProxy));
+
         private readonly TestHelper _testHelper;
         private readonly IPvPManager _pvpManager;
         private readonly IQueueManager _queueManager;
@@ -61,14 +64,14 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
+            BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
 
             if (!forceSkipForPlayerToo)
             {
                 skipEntryAbilities = false;
             }
-            
-            await _testHelper.PlayCardFromHandToBoard(workingCard, position, entryAbilityTargetBoardObject, skipEntryAbilities);
+
+            await _testHelper.PlayCardFromHandToBoard(boardUnitModel, position, entryAbilityTargetBoardObject, skipEntryAbilities);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
@@ -98,13 +101,15 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitView boardUnitView = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitModel boardUnitModel = _testHelper.GetBoardUnitModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+
             void CheckAttacker()
             {
-                Assert.NotNull(boardUnitView.Model.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
-                Assert.True(boardUnitView.Model.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.NotNull(boardUnitModel.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(boardUnitModel.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
                 Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
-                Assert.True(boardUnitView.Model.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+                Assert.True(boardUnitModel.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
             }
 
             CheckAttacker();
@@ -157,7 +162,7 @@ namespace Loom.ZombieBattleground.Test
             // TODO: Handle non-entry targetable abilities (do they even exist)?
             if (abilityBoardArrow != null)
             {
-                Debug.Log("! oh wow, abilityBoardArrow", abilityBoardArrow);
+                Log.Info("! oh wow, abilityBoardArrow " + abilityBoardArrow);
             }
             if (abilityBoardArrow && _cardAbilityRequestsQueue.Count == 0)
             {

@@ -59,6 +59,7 @@ namespace Loom.Client
         /// <returns>The return value of the smart contract method.</returns>
         public async Task<T> StaticCallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
+            this.Client.Logger.Log("Executing static call: " + method);
             var query = new ContractMethodCall
             {
                 Method = method,
@@ -115,6 +116,7 @@ namespace Loom.Client
 
         private Transaction CreateContractMethodCallTx(string method, IMessage args)
         {
+            this.Client.Logger.Log("Executing call: " + method);
             var methodTx = new ContractMethodCall
             {
                 Method = method,

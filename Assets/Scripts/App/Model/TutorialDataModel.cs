@@ -215,7 +215,7 @@ namespace Loom.ZombieBattleground
             public string Name;
             public bool IsManuallyPlayable;
             public int TutorialObjectId;
-            public int BuffedHealth;
+            public int BuffedDefense;
             public int BuffedDamage;
 
             public UnitOnBoardInfo()
@@ -369,7 +369,7 @@ namespace Loom.ZombieBattleground
 
     public class SpecificHordeInfo
     {
-        public Enumerators.SetType MainSet;
+        public Enumerators.Faction MainSet;
         public List<Data.CollectionCardData> CardsForArmy;
         public int MaximumCardsCount;
 

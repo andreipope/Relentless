@@ -74,8 +74,8 @@ namespace Loom.ZombieBattleground
 
         private List<CardZoneOnBoardStatus> _deckStatus, _graveyardStatus;
 
-        private TextMeshPro _playerHealthText,
-            _opponentHealthText,
+        private TextMeshPro _playerDefenseText,
+            _opponentDefenseText,
             _playerCardDeckCountText,
             _opponentCardDeckCountText,
             _playerNameText,
@@ -306,8 +306,8 @@ namespace Loom.ZombieBattleground
             _opponentGraveyardStatusTexture = GameObject.Find("Opponent/Graveyard_Illustration/Graveyard")
                 .GetComponent<SpriteRenderer>();
 
-            _playerHealthText = GameObject.Find("Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
-            _opponentHealthText = GameObject.Find("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
+            _playerDefenseText = GameObject.Find("Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
+            _opponentDefenseText = GameObject.Find("Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText").GetComponent<TextMeshPro>();
 
             // improve find to get it from OBJECTS ON BOARD!!
             _playerNameText = GameObject.Find("Player/NameBoard/NameText").GetComponent<TextMeshPro>();
@@ -446,11 +446,11 @@ namespace Loom.ZombieBattleground
             Player player = _gameplayManager.CurrentPlayer;
             Player opponent = _gameplayManager.OpponentPlayer;
 
-            player.DeckChanged += OnPlayerDeckChangedHandler;
+            player.PlayerCardsController.DeckChanged += OnPlayerDeckChangedHandler;
             player.PlayerDefenseChanged += OnPlayerDefenseChanged;
             player.PlayerCurrentGooChanged += OnPlayerCurrentGooChanged;
             player.PlayerGooVialsChanged += OnPlayerGooVialsChanged;
-            opponent.DeckChanged += OnOpponentDeckChangedHandler;
+            opponent.PlayerCardsController.DeckChanged += OnOpponentDeckChangedHandler;
             opponent.PlayerDefenseChanged += OnOpponentDefenseChanged;
             opponent.PlayerCurrentGooChanged += OnOpponentCurrentGooChanged;
             opponent.PlayerGooVialsChanged += OnOpponentGooVialsChanged;
@@ -574,20 +574,20 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerDefenseChanged(int health)
+        private void OnPlayerDefenseChanged(int defense)
         {
             if (!_isPlayerInited)
                 return;
 
-            _playerHealthText.text = health.ToString();
+            _playerDefenseText.text = defense.ToString();
 
-            if (health > 9)
+            if (defense > 9)
             {
-                _playerHealthText.color = Color.white;
+                _playerDefenseText.color = Color.white;
             }
             else
             {
-                _playerHealthText.color = Color.red;
+                _playerDefenseText.color = Color.red;
             }
         }
 
@@ -607,20 +607,20 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetVialGoo(currentTurnGoo);
         }
 
-        private void OnOpponentDefenseChanged(int health)
+        private void OnOpponentDefenseChanged(int defense)
         {
             if (!_isPlayerInited)
                 return;
 
-            _opponentHealthText.text = health.ToString();
+            _opponentDefenseText.text = defense.ToString();
 
-            if (health > 9)
+            if (defense > 9)
             {
-                _opponentHealthText.color = Color.white;
+                _opponentDefenseText.color = Color.white;
             }
             else
             {
-                _opponentHealthText.color = Color.red;
+                _opponentDefenseText.color = Color.red;
             }
         }
 
@@ -693,7 +693,7 @@ namespace Loom.ZombieBattleground
 
         public void SettingsButtonOnClickHandler()
         {
-            _uiManager.DrawPopup<SettingsPopup>();
+            _uiManager.DrawPopup<MySettingPopup>();
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
