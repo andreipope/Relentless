@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground
 
         public GetVersionsResponse CachedVersions { get; set; }
 
+        public ZbVersion ZbVersion { get; private set; }
+
         public async Task LoadRemoteConfig()
         {
             CachedVersions = new GetVersionsResponse();
@@ -188,7 +190,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void Init()
+        public async void Init()
         {
             Log.Info("Encryption: " + ConfigData.EncryptData);
             Log.Info("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
@@ -200,6 +202,8 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
+
+            await LoadZbVersionData();
 
             LoadLocalCachedData();
 
@@ -572,6 +576,16 @@ namespace Loom.ZombieBattleground
                         });
                 }
             }
+        }
+
+        private async Task LoadZbVersionData()
+        {
+            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(Constants.ZbVersionLink, Log, JsonSerializerSettings);
+
+            Constants.GameLinkForAndroid = ZbVersion.Version.DownloadUrlPlayStore;
+            Constants.GameLinkForIOS = ZbVersion.Version.DownloadUrlAppStore;
+            Constants.GameLinkForOSX = ZbVersion.Version.DownloadUrlMac;
+            Constants.GameLinkForWindows = ZbVersion.Version.DownloadUrlPC;
         }
     }
 }
