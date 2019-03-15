@@ -28,7 +28,7 @@ namespace Loom.Client
             this.configuration = configuration;
         }
 
-        public virtual async Task<T> Call<T>(Func<Task<T>> taskProducer, CallContext callContext)
+        public virtual async Task<T> Call<T>(Func<Task<T>> taskProducer, CallDescription callDescription)
         {
             Task<T> task = (Task<T>) await ExecuteTaskWithRetryOnInvalidTxNonceException(
                 () => ExecuteTaskWaitForOtherTasks(
@@ -38,7 +38,7 @@ namespace Loom.Client
             return await task;
         }
 
-        public virtual async Task Call(Func<Task> taskProducer, CallContext callContext)
+        public virtual async Task Call(Func<Task> taskProducer, CallDescription callDescription)
         {
             Task task = await ExecuteTaskWithRetryOnInvalidTxNonceException(
                 () => ExecuteTaskWaitForOtherTasks(
@@ -48,7 +48,7 @@ namespace Loom.Client
             await task;
         }
 
-        public virtual async Task<T> StaticCall<T>(Func<Task<T>> taskProducer, CallContext callContext)
+        public virtual async Task<T> StaticCall<T>(Func<Task<T>> taskProducer, CallDescription callDescription)
         {
             Task<T> task = (Task<T>) await ExecuteTaskWaitForOtherTasks(
                 () => ExecuteTaskWithTimeout(taskProducer, this.configuration.StaticCallTimeout)
@@ -57,7 +57,7 @@ namespace Loom.Client
             return await task;
         }
 
-        public virtual async Task StaticCall(Func<Task> taskProducer, CallContext callContext)
+        public virtual async Task StaticCall(Func<Task> taskProducer, CallDescription callDescription)
         {
             Task task = await ExecuteTaskWaitForOtherTasks(
                 () => ExecuteTaskWithTimeout(taskProducer, this.configuration.StaticCallTimeout)
@@ -66,13 +66,13 @@ namespace Loom.Client
             await task;
         }
 
-        public virtual async Task<T> NonBlockingStaticCall<T>(Func<Task<T>> taskProducer, CallContext callContext)
+        public virtual async Task<T> NonBlockingStaticCall<T>(Func<Task<T>> taskProducer, CallDescription callDescription)
         {
             Task<T> task = (Task<T>) await ExecuteTaskWithTimeout(taskProducer, this.configuration.StaticCallTimeout);
             return await task;
         }
 
-        public virtual async Task NonBlockingStaticCall(Func<Task> taskProducer, CallContext callContext)
+        public virtual async Task NonBlockingStaticCall(Func<Task> taskProducer, CallDescription callDescription)
         {
             Task task = await ExecuteTaskWithTimeout(taskProducer, this.configuration.StaticCallTimeout);
             await task;

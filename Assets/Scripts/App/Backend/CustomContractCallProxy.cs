@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 if (EnableLogs)
                 {
                     string callType = callContext.IsStatic ? " (static)" : "";
-                    CallExecutionLog.Debug($"Executing call{callType} #{callNumber} ({callContext.Name})");
+                    CallExecutionLog.Debug($"Executing call{callType} #{callNumber} ({callContext.CalledMethodName})");
                 }
 
                 _callNumberToExecutionTimestamp.Add(callNumber, Utilites.GetTimestamp());
@@ -66,12 +66,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 _callNumberToExecutionTimestamp.Remove(callNumber);
                 int elapsedMilliseconds = (int) ((Utilites.GetTimestamp() - callStartTimestamp) * 1000);
                 bool timedOut = elapsedMilliseconds >= Contract.Client.Configuration.CallTimeout;
-                LogCallTime(callContext.Name, elapsedMilliseconds, callContext.IsStatic, timedOut);
+                LogCallTime(callContext.CalledMethodName, elapsedMilliseconds, callContext.IsStatic, timedOut);
 
                 if (EnableLogs)
                 {
                     string callType = callContext.IsStatic ? " (static)" : "";
-                    string message = $"Finished executing call{callType} #{callNumber} ({callContext.Name}) in {elapsedMilliseconds} ms";
+                    string message = $"Finished executing call{callType} #{callNumber} ({callContext.CalledMethodName}) in {elapsedMilliseconds} ms";
                     if (timedOut)
                     {
                         message += ", timed out!";
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         message += $" with exception: {exception}";
                     }
 
-                    if (timedOut || exception is TimeoutException )
+                    if (timedOut || exception is TimeoutException)
                     {
                         CallExecutionLog.Warn(message);
                     }

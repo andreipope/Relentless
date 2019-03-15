@@ -114,7 +114,7 @@ namespace Loom.Client
                     byte[] bytes = CryptoBytes.FromBase64String(base64);
                     return EthFilterLogList.Parser.ParseFrom(bytes);
                 },
-                new CallContext("getevmlogs", true)
+                new CallDescription("getevmlogs", true)
             );
         }
 

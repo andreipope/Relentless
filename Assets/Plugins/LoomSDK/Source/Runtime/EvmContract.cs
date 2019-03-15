@@ -68,7 +68,7 @@ namespace Loom.Client
                     string heightString = await this.Client.ReadClient.SendAsync<string, object>("getblockheight", null);
                     return BigInteger.Parse(heightString);
                 },
-                new CallContext("_evmCall", true)
+                new CallDescription("_evmCall", true)
             );
         }
 
@@ -441,7 +441,7 @@ namespace Loom.Client
                 CryptoUtils.HexStringToBytes(callInput),
                 this.Caller,
                 Protobuf.VMType.Evm,
-                new CallContext("_evmCall", true)
+                new CallDescription("_evmCall", true)
             );
         }
 
@@ -461,7 +461,7 @@ namespace Loom.Client
         private async Task<BroadcastTxResult> CallAsyncBroadcastTxResult(string callInput)
         {
             var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
-            return await this.Client.CommitTxAsync(tx, new CallContext("_evmCall", false));
+            return await this.Client.CommitTxAsync(tx, new CallDescription("_evmCall", false));
         }
 
         private async Task CallAsync(string callInput)
@@ -472,7 +472,7 @@ namespace Loom.Client
         private async Task<TReturn> CallAsync<TReturn>(string callInput, FunctionBuilderBase functionBuilder, Func<FunctionBuilderBase, string, TReturn> decodeFunc)
         {
             var tx = this.CreateContractMethodCallTx(callInput, Protobuf.VMType.Evm);
-            var result = await this.Client.CommitTxAsync(tx, new CallContext("_evmCall", false));
+            var result = await this.Client.CommitTxAsync(tx, new CallDescription("_evmCall", false));
             var validResult = result?.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0;
             return validResult ? decodeFunc(functionBuilder, CryptoUtils.BytesToHexString(result.DeliverTx.Data)) : default(TReturn);
         }

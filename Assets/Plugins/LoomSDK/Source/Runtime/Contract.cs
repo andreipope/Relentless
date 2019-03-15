@@ -32,7 +32,7 @@ namespace Loom.Client
         public async Task CallAsync(string method, IMessage args)
         {
             Transaction tx = this.CreateContractMethodCallTx(method, args);
-            await CallAsync(tx, new CallContext(method, false));
+            await CallAsync(tx, new CallDescription(method, false));
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace Loom.Client
         public async Task<T> CallAsync<T>(string method, IMessage args) where T : IMessage, new()
         {
             var tx = this.CreateContractMethodCallTx(method, args);
-            return await CallAsync<T>(tx, new CallContext(method, false));
+            return await CallAsync<T>(tx, new CallDescription(method, false));
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Loom.Client
                 Method = method,
                 Args = args.ToByteString()
             };
-            var result = await this.Client.QueryAsync<byte[]>(this.Address, query, this.Caller, VMType.Plugin, new CallContext(method, true));
+            var result = await this.Client.QueryAsync<byte[]>(this.Address, query, this.Caller, VMType.Plugin, new CallDescription(method, true));
             if (result != null)
             {
                 T msg = new T();
@@ -95,11 +95,11 @@ namespace Loom.Client
         /// </summary>
         /// <typeparam name="T">Smart contract method return type.</typeparam>
         /// <param name="tx">Transaction message.</param>
-        /// <param name="callContext">Call context.</param>
+        /// <param name="callDescription">Call high-level description.</param>
         /// <returns>The return value of the smart contract method.</returns>
-        private async Task<T> CallAsync<T>(Transaction tx, CallContext callContext) where T : IMessage, new()
+        private async Task<T> CallAsync<T>(Transaction tx, CallDescription callDescription) where T : IMessage, new()
         {
-            var result = await this.Client.CommitTxAsync(tx, callContext);
+            var result = await this.Client.CommitTxAsync(tx, callDescription);
             if (result != null && result.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0)
             {
                 var resp = new Response();

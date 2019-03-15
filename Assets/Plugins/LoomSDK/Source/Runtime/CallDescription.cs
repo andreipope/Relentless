@@ -3,15 +3,15 @@ namespace Loom.Client
     /// <summary>
     /// Stores meta information about the initial call.
     /// </summary>
-    public struct CallContext
+    public struct CallDescription
     {
-        public string Name { get; }
+        public string CalledMethodName { get; }
         
         public bool IsStatic { get; }
 
-        public CallContext(string name, bool isStatic)
+        public CallDescription(string calledMethodName, bool isStatic)
         {
-            Name = name;
+            CalledMethodName = calledMethodName;
             IsStatic = isStatic;
         }
     }
