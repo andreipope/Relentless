@@ -280,7 +280,29 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            ChangeTab(Tab.SelectDeck);
+            if (_tab == Tab.Editing)
+            {
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
+                _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+            }
+            else
+            {
+                ChangeTab(Tab.SelectDeck);
+            }
+        }
+        
+        private void ConfirmSaveDeckHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
+            
+            if (status)
+            {
+                HordeEditTab.SaveDeck(Tab.SelectDeck);
+            }
+            else
+            {                
+                ChangeTab(Tab.SelectDeck);        
+            }  
         }
         
         private void ButtonSelectDeckFilterHandler()
@@ -315,7 +337,6 @@ namespace Loom.ZombieBattleground
                 return;
                 
             PlayClickSound();
-            AssignCurrentDeck();
             ChangeTab(Tab.Editing);
         }        
         
@@ -496,7 +517,8 @@ namespace Loom.ZombieBattleground
             else
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
-            }            
+            }
+            AssignCurrentDeck();            
         }
 
         private void UpdateShowBackButton(bool isShow)

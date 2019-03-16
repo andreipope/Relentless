@@ -193,7 +193,7 @@ namespace Loom.ZombieBattleground
             FinishDeleteDeck?.Invoke(success,deck);
         }
         
-        public bool VerifyDeckName(string deckName)
+        public bool VerifyDeckName(string deckName, string previousDeckName = null)
         {
             if (string.IsNullOrWhiteSpace(deckName))
             {
@@ -201,6 +201,12 @@ namespace Loom.ZombieBattleground
                 return false;
             }
             
+            if(!string.IsNullOrEmpty(previousDeckName))
+            {
+                if (string.Equals(deckName, previousDeckName))
+                    return true;
+            }
+
             List<Deck> deckList =  _dataManager.CachedDecksData.Decks;
             foreach (Deck deck in deckList)
             {

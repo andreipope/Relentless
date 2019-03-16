@@ -115,6 +115,8 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
+        private HordeSelectionWithNavigationPage.Tab _nextTab;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -269,21 +271,13 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
             
             if (status)
-            {
-                DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
-                deckGeneratorController.FinishEditDeck += FinishEditDeckForRename;
-                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            {                
+                SaveDeck(HordeSelectionWithNavigationPage.Tab.Rename);
             }
             else
             {                
                 _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);        
             }  
-        }
-        
-        private void FinishEditDeckForRename(bool success, Deck deck)
-        {
-            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeckForRename; 
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
         }
 
         private void ButtonEditDeckFilterHandler()
@@ -347,22 +341,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
             PlayClickSound();
-            
-            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
-            if(_myDeckPage.IsEditingNewDeck)
-            {
-                deckGeneratorController.FinishAddDeck += FinishAddDeck;
-                deckGeneratorController.ProcessAddDeck
-                (
-                    _myDeckPage.CurrentEditDeck,
-                    _myDeckPage.CurrentEditHero
-                );
-            }
-            else
-            {                                
-                deckGeneratorController.FinishEditDeck += FinishEditDeck;
-                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
-            }
+
+            SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
         }
         
         private void FinishAddDeck(bool success, Deck deck)
@@ -370,13 +350,14 @@ namespace Loom.ZombieBattleground
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
             _myDeckPage.IsEditingNewDeck = false;
             _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
+            _myDeckPage.AssignCurrentDeck();
+            _myDeckPage.ChangeTab(_nextTab);
         }
         
         private void FinishEditDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
+            _myDeckPage.ChangeTab(_nextTab);
         }
 
         private void ButtonOverlordAbilitiesHandler()
@@ -1267,12 +1248,35 @@ namespace Loom.ZombieBattleground
 
             return maxCopies;
         }
+        
+        public void SaveDeck(HordeSelectionWithNavigationPage.Tab nextTab)
+        {
+            _nextTab = nextTab;
+            
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            if(_myDeckPage.IsEditingNewDeck)
+            {
+                deckGeneratorController.FinishAddDeck += FinishAddDeck;
+                deckGeneratorController.ProcessAddDeck
+                (
+                    _myDeckPage.CurrentEditDeck,
+                    _myDeckPage.CurrentEditHero
+                );
+            }
+            else
+            {                                
+                deckGeneratorController.FinishEditDeck += FinishEditDeck;
+                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            }
+        }
 
         public void RenameDeck(string newName)
         {
             DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+
+            string previousDeckName = _myDeckPage.IsEditingNewDeck ? "" : _myDeckPage.CurrentEditDeck.Name;
             
-            if (!deckGeneratorController.VerifyDeckName(newName))
+            if (!deckGeneratorController.VerifyDeckName(newName,previousDeckName))
                 return;
 
             _myDeckPage.CurrentEditDeck.Name = newName;
@@ -1283,15 +1287,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                deckGeneratorController.FinishEditDeck += FinishEditDeck;                      
-                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);            
+                SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);            
             }
-        }
-        
-        private void FinishEditDeckName(bool success, Deck deck)
-        {
-            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeckName;
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectDeck);
         }
 
         private void PlayAddCardSound()
