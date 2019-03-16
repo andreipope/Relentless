@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,11 +13,26 @@ namespace Loom.ZombieBattleground
 {
     public class DeckGeneratorController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(HordeSelectionWithNavigationPage));
+    
         private IDataManager _dataManager;
+        
+        private BackendFacade _backendFacade;
+        
+        private BackendDataControlMediator _backendDataControlMediator;
+        
+        private IAnalyticsManager _analyticsManager;
+
+        public Action<bool, Deck> FinishAddDeck,
+                                  FinishEditDeck,
+                                  FinishDeleteDeck;
     
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
+            _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
         }
         
         public void Update()
@@ -32,6 +48,170 @@ namespace Loom.ZombieBattleground
         public void ResetAll()
         {
 
+        }
+        
+        public async void ProcessAddDeck(Deck deck, Hero hero)
+        {
+            bool success = false;
+            deck.HeroId = hero.HeroId;
+            deck.PrimarySkill = hero.PrimarySkill;
+            deck.SecondarySkill = hero.SecondarySkill;
+
+            try
+            {
+                long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+                deck.Id = newDeckId;
+                _dataManager.CachedDecksData.Decks.Add(deck);
+                _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
+                Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+
+                if(GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    _dataManager.CachedUserLocalData.TutorialSavedDeck = deck;
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                }
+                success = true;
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
+
+                if (e is Client.RpcClientException || e is TimeoutException)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                }
+                else
+                {
+                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
+                }
+            }
+            
+            if (success)
+            {
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);                
+
+                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
+            }
+            
+            FinishAddDeck?.Invoke(success,deck);
+        }
+        
+        public async void ProcessEditDeck(Deck deck)
+        {
+            bool success = false;
+            try
+            {
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+
+                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+                {
+                    if (_dataManager.CachedDecksData.Decks[i].Id == deck.Id)
+                    {
+                        _dataManager.CachedDecksData.Decks[i] = deck;
+                        break;
+                    }
+                }
+
+                _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
+                Log.Info(" ====== Edit Deck Successfully ==== ");
+                success = true;
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);                
+
+                if (e is Client.RpcClientException || e is TimeoutException)
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                }
+                else
+                {
+                    string message = e.Message;
+
+                    string[] description = e.Message.Split('=');
+                    if (description.Length > 0)
+                    {
+                        message = description[description.Length - 1].TrimStart(' ');
+                        message = char.ToUpper(message[0]) + message.Substring(1);
+                    }
+                    if (GameClient.Get<ITutorialManager>().IsTutorial)
+                    {
+                        message = Constants.ErrorMessageForConnectionFailed;
+                    }
+                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                }
+            }
+
+            if (success)
+            {
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            }
+
+            FinishEditDeck?.Invoke(success, deck);
+        }
+        
+        public async void ProcessDeleteDeck(Deck deck)
+        {
+            bool success = false;
+            try
+            {
+                _dataManager.CachedDecksData.Decks.Remove(deck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    deck.Id
+                );
+
+                Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
+                success = true;
+            }
+            catch (TimeoutException e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+            }
+            catch (Client.RpcClientException e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
+                OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + e.Message);
+                return;
+            }
+
+            FinishDeleteDeck?.Invoke(success,deck);
+        }
+        
+        public bool VerifyDeckName(string deckName)
+        {
+            if (string.IsNullOrWhiteSpace(deckName))
+            {
+                OpenAlertDialog("Saving Deck with an empty name is not allowed.");
+                return false;
+            }
+            
+            List<Deck> deckList =  _dataManager.CachedDecksData.Decks;
+            foreach (Deck deck in deckList)
+            {
+                if (deck.Name.Trim().Equals(deckName.Trim(), StringComparison.InvariantCultureIgnoreCase))
+                {
+                    OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
+                    return false;
+                }
+            }
+            
+            return true;
         }
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
@@ -59,6 +239,28 @@ namespace Loom.ZombieBattleground
             }
 
             BasicDeckGenerationStyle(deck, availableCardList.ToList());
+        }
+        
+        public string GenerateDeckName()
+        {
+            int index = _dataManager.CachedDecksData.Decks.Count;
+            string newName = "HORDE " + index;
+            while (true)
+            {
+                bool isNameCollide = false;
+                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; ++i)
+                {
+                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,newName))
+                    {
+                        isNameCollide = true;
+                        ++index;
+                        newName = "HORDE " + index;
+                        break;
+                    }
+                }
+                if (!isNameCollide)
+                    return newName;
+            }
         }
         
         private void BasicDeckGenerationStyle(Deck deck, List<Card> availableCardList)
@@ -99,6 +301,13 @@ namespace Loom.ZombieBattleground
         private int GetCardsAmount(string cardName, CollectionData collectionData)
         {
             return collectionData.GetCardData(cardName).Amount;
+        }
+        
+        public void OpenAlertDialog(string msg)
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
+                false, false, true);
+            GameClient.Get<IUIManager>().DrawPopup<WarningPopup>(msg);
         }
     }
 }
