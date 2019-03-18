@@ -111,8 +111,6 @@ namespace Loom.ZombieBattleground
                 await LoadCachedData((Enumerators.CacheDataType) i);
             }
 
-            await LoadZbVersionData();
-
             // FIXME: remove next line after fetching collection from backend is implemented
             FillFullCollection();
 
@@ -578,7 +576,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task LoadZbVersionData()
+        public async Task LoadZbVersionData()
         {
             string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
                         BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
