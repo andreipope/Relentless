@@ -276,13 +276,13 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
-                    boardUnitView.Model.InvokeUnitDied();
-
                     UnregisterBoardUnitView(boardUnitModel.OwnerPlayer, boardUnitView);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
-                    if(_tutorialManager.IsTutorial)
+                    boardUnitView.Model.InvokeUnitDied();
+
+                    if (_tutorialManager.IsTutorial)
                     {
                         if (boardUnitModel.OwnerPlayer.IsLocalPlayer)
                         {
