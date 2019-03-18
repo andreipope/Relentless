@@ -983,6 +983,7 @@ namespace Loom.ZombieBattleground
             IsPlayable = false;
             IsAttacking = false;
             UnitStatus = Enumerators.UnitStatus.NONE;
+            IsDead = false;
 
             UseShieldFromBuff();
             ClearUnitTypeEffects();
