@@ -522,8 +522,6 @@ namespace Loom.ZombieBattleground
 
             InitialUnitType = Card.Prototype.CardType;
 
-            InitialUnitType = Card.Prototype.CardType;
-
             ClearUnitTypeEffects();
 
             SetPicture();
@@ -961,6 +959,33 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
+        }
+
+        public void ResetToInitial()
+        {
+            Card.InstanceCard.Abilities = Card.Prototype.Abilities;
+            Card.InstanceCard.Cost = Card.Prototype.Cost;
+            Card.InstanceCard.Damage = Card.Prototype.Damage;
+            Card.InstanceCard.Defense = Card.Prototype.Defense;
+            InitialUnitType = Card.Prototype.CardType;
+            BuffedDefense = 0;
+            BuffedDamage = 0;
+            NumTurnsOnBoard = 0;
+            _stunTurns = 0;
+            WasDistracted = false;
+            IsCreatedThisTurn = true;
+            CanAttackByDefault = true;
+            TakeFreezeToAttacked = false;
+            HasSwing = false;
+            AttackedThisTurn = false;
+            HasBuffRush = false;
+            HasBuffHeavy = false;
+            IsPlayable = false;
+            IsAttacking = false;
+            UnitStatus = Enumerators.UnitStatus.NONE;
+
+            UseShieldFromBuff();
+            ClearUnitTypeEffects();
         }
 
         public override string ToString()

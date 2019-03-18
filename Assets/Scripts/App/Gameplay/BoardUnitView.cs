@@ -113,6 +113,7 @@ namespace Loom.ZombieBattleground
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
+            Model.ResetToInitial();
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
