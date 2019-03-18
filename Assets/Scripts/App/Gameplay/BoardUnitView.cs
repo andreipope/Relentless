@@ -113,6 +113,7 @@ namespace Loom.ZombieBattleground
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
+            Model.ResetToInitial();
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -478,6 +479,8 @@ namespace Loom.ZombieBattleground
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged -= BoardUnitDistractEffectStateChanged;
             Model.GameMechanicDescriptionsOnUnitChanged -= BoardUnitGameMechanicDescriptionsOnUnitChanged;
+            _inputController.DragOnBoardObjectEvent -= UnitSelectedEventHandler;
+            _inputController.UnitDeselectedEvent -= UnitDeselectedEventHandler;
         }
 
         private void BoardUnitOnUnitDied()

@@ -522,8 +522,6 @@ namespace Loom.ZombieBattleground
 
             InitialUnitType = Card.Prototype.CardType;
 
-            InitialUnitType = Card.Prototype.CardType;
-
             ClearUnitTypeEffects();
 
             SetPicture();
@@ -961,6 +959,42 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
+        }
+
+        public void ResetToInitial()
+        {
+            Card.InstanceCard.Abilities = Card.Prototype.Abilities;
+            Card.InstanceCard.Cost = Card.Prototype.Cost;
+            Card.InstanceCard.Damage = Card.Prototype.Damage;
+            Card.InstanceCard.Defense = Card.Prototype.Defense;
+            InitialUnitType = Card.Prototype.CardType;
+            BuffedDefense = 0;
+            BuffedDamage = 0;
+            NumTurnsOnBoard = 0;
+            _stunTurns = 0;
+            HpDebuffUntillEndOfTurn = 0;
+            DamageDebuffUntillEndOfTurn = 0;
+            WasDistracted = false;
+            IsCreatedThisTurn = true;
+            CanAttackByDefault = true;
+            TakeFreezeToAttacked = false;
+            HasSwing = false;
+            AttackedThisTurn = false;
+            HasBuffRush = false;
+            HasBuffHeavy = false;
+            HasFeral = false;
+            IsPlayable = false;
+            IsAttacking = false;
+            IsDead = false;
+            AttackAsFirst = false;
+            CantAttackInThisTurnBlocker = false;
+            UnitStatus = Enumerators.UnitStatus.NONE;
+            AttackRestriction = Enumerators.AttackRestriction.ANY;
+            LastAttackingSetType = Card.Prototype.Faction;
+            BuffsOnUnit.Clear();
+            AttackedBoardObjectsThisTurn.Clear();
+            UseShieldFromBuff();
+            ClearUnitTypeEffects();
         }
 
         public override string ToString()
