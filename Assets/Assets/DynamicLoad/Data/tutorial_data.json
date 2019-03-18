@@ -64,6 +64,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow my deck while you learn the ropes.",
@@ -73,6 +74,7 @@
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Destroy the enemy overlord to win!",
@@ -82,6 +84,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -92,6 +95,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -102,6 +106,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -111,6 +116,7 @@
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2,
             3
@@ -118,10 +124,12 @@
           "TutorialObjectIdStepOwner": 51
         },
         {
-          "ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -147,6 +155,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -169,12 +178,14 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true,
           "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -185,6 +196,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -221,6 +233,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "HandPointers": [
@@ -238,6 +251,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -261,6 +275,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
           "LaunchAIBrain": true,
           "UnitsCanAttack": true,
@@ -270,6 +285,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -285,6 +301,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -322,6 +339,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "TutorialObjectIdStepOwner": 1,
           "CanInteractWithGameplay": true,
@@ -350,15 +368,18 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "CanInteractWithGameplay": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             2,
             3,
@@ -370,15 +391,18 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 7
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 7,
           "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -396,6 +420,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 8,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -404,13 +429,16 @@
           "UnitsCanAttack": true
         },
         {
-          "ActionToEndThisStep": "OverlordSayPopupHided"
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "NOICE! \nYou won your first match!",
@@ -420,6 +448,7 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupClosed",
+          "TutorialStepType": "GameplayStep",
           "HandPointers": [
             {
               "StartPosition": {
@@ -434,7 +463,8 @@
           ]
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep",
         }
       ],
       "ActionActivityHandlers": [
@@ -831,6 +861,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
             "Button_Login",
@@ -858,6 +889,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             6
           ],
@@ -887,6 +919,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -896,6 +929,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
@@ -923,6 +957,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
             "Button_Login",
@@ -946,6 +981,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PlaySelectionPage",
           "BlockedButtons": [
             "Button_Tutorial",
@@ -966,6 +1002,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -993,6 +1030,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "OverlordSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -1013,6 +1051,7 @@
         },
         {
           "ActionToEndThisStep": "PopupClosed",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "OverlordAbilityPopup",
           "BlockedButtons": [
             "Button_Cancel"
@@ -1031,6 +1070,7 @@
         },
         {
           "ActionToEndThisStep": "CardDragged",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
@@ -1064,6 +1104,7 @@
         },
         {
           "ActionToEndThisStep": "CardRemoved",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
@@ -1095,6 +1136,7 @@
         },
         {
           "ActionToEndThisStep": "CardAdded",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             2
           ],
@@ -1126,6 +1168,7 @@
         },
         {
           "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             4,
             5
@@ -1148,6 +1191,7 @@
         },
         {
           "ActionToEndThisStep": "HordeSaved",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -1169,6 +1213,7 @@
         },
         {
           "ActionToEndThisStep": "BattleStarted",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -1395,6 +1440,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
@@ -1404,6 +1450,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1414,6 +1461,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -1424,17 +1472,20 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "TutorialObjectIdStepOwner": 51
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -1448,6 +1499,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2,
             3
@@ -1456,6 +1508,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "UnitsCanAttack": true,
@@ -1478,6 +1531,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1495,6 +1549,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1508,6 +1563,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             4,
             7
@@ -1517,6 +1573,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1550,6 +1607,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             5
           ],
@@ -1558,6 +1616,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             6
           ],
@@ -1566,6 +1625,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             6,
             7
@@ -1599,6 +1659,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             5
           ],
@@ -1630,6 +1691,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordAbilityUsed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1661,6 +1723,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1671,7 +1734,8 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
         },
         {
           "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
@@ -1848,6 +1912,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -1871,6 +1936,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -1880,6 +1946,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
@@ -1907,6 +1974,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
             "Button_Login",
@@ -1930,6 +1998,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PlaySelectionPage",
           "BlockedButtons": [
             "Button_Tutorial",
@@ -1950,6 +2019,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -1977,6 +2047,7 @@
         },
         {
           "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -1992,6 +2063,7 @@
         },
         {
           "ActionToEndThisStep": "HordeSaved",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -2013,6 +2085,7 @@
         },
         {
           "ActionToEndThisStep": "BattleStarted",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -2173,6 +2246,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Zombies also have ranks, which give buffs to other zombies.\n\nCome, I'll show you how it works.",
@@ -2182,6 +2256,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -2191,6 +2266,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
@@ -2208,6 +2284,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
@@ -2225,17 +2302,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2255,6 +2335,7 @@
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1,
             2
@@ -2263,6 +2344,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyBattleframeDied",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             3
           ],
@@ -2305,6 +2387,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyBattleframeDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -2340,17 +2423,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2369,6 +2455,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             4
           ],
@@ -2383,6 +2470,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "TutorialObjectIdStepOwner": 21,
           "CanInteractWithGameplay": true,
@@ -2393,6 +2481,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2403,10 +2492,12 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep",
         }
       ],
       "ActionActivityHandlers": [
@@ -2627,6 +2718,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -2650,6 +2742,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -2659,6 +2752,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
@@ -2686,6 +2780,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
             "Button_Login",
@@ -2709,6 +2804,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PlaySelectionPage",
           "BlockedButtons": [
             "Button_Tutorial",
@@ -2729,6 +2825,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -2756,6 +2853,7 @@
         },
         {
           "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -2771,6 +2869,7 @@
         },
         {
           "ActionToEndThisStep": "HordeSaved",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -2792,6 +2891,7 @@
         },
         {
           "ActionToEndThisStep": "BattleStarted",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -2948,6 +3048,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Let's learn about Goo-Carriers.\n\nThese special cards give you extra goo to spend in the same turn. This effect is called \"Overflow\".",
@@ -2957,6 +3058,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -2966,22 +3068,26 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "RequiredActivitiesToDoneDuringStep": [
             "EnemyOverlordCardPlayed"
           ]
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
           "TutorialObjectIdStepOwner": 52
         },
         {
+          "TutorialStepType": "GameplayStep",
           "ActionToEndThisStep": "EndTurn"
         },
         {
           "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
@@ -3000,6 +3106,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2
           ],
@@ -3007,6 +3114,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "TutorialObjectIdStepOwner": 20,
           "CanInteractWithGameplay": true,
@@ -3017,17 +3125,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3057,6 +3168,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3072,6 +3184,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3081,6 +3194,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3090,10 +3204,12 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
+          "TutorialStepType": "GameplayStep",
           "RequiredActivitiesToDoneDuringStep": [
             "BattleframeAttacked",
             "EnemyOverlordCardPlayed",
@@ -3106,6 +3222,7 @@
         },
         {
           "ActionToEndThisStep": "DeathAbilityCompleted",
+          "TutorialStepType": "GameplayStep",
           "RequiredActivitiesToDoneDuringStep": [
           ],
           "ConnectedTurnIndex": 5,
@@ -3113,6 +3230,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "RequiredActivitiesToDoneDuringStep": [
             "EnemyOverlordCardPlayed",
           ],
@@ -3120,6 +3238,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3148,6 +3267,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3157,6 +3277,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -3167,10 +3288,12 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep",
         }
       ],
       "ActionActivityHandlers": [
@@ -3445,6 +3568,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -3468,6 +3592,7 @@
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "BackButton",
@@ -3477,6 +3602,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PackOpenerPage",
           "BlockedButtons": [
             "ButtonMinus",
@@ -3504,6 +3630,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "MainMenuPage",
           "BlockedButtons": [
             "Button_Login",
@@ -3527,6 +3654,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "PlaySelectionPage",
           "BlockedButtons": [
             "Button_Tutorial",
@@ -3547,6 +3675,7 @@
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -3574,6 +3703,7 @@
         },
         {
           "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -3589,6 +3719,7 @@
         },
         {
           "ActionToEndThisStep": "HordeSaved",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
             "Button_Buy",
@@ -3610,6 +3741,7 @@
         },
         {
           "ActionToEndThisStep": "BattleStarted",
+          "TutorialStepType": "MenuStep",
           "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
             "Button_Back",
@@ -3812,6 +3944,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "This time it's all up to you...\n\nUse everything you've learned and make me proud!",
@@ -3821,21 +3954,25 @@
         },
         {
           "ActionToEndThisStep": "EndCardFlipPlayerOrderPopup",
+          "TutorialStepType": "GameplayStep",
           "BeginGameplayFlowManually": true,
           "PlayerOrderScreenCloseManually": true,
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
           "PlayerOrderScreenCloseManually": true,
         },
         {
-          "ActionToEndThisStep": "PopupClosed"
+          "ActionToEndThisStep": "PopupClosed",
+          "TutorialStepType": "GameplayStep",
         },
         {
           "ActionToEndThisStep": "PopupClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
@@ -3845,6 +3982,7 @@
         },
         {
           "ActionToEndThisStep": "EndMatchPopupAppear",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
@@ -3858,6 +3996,7 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "MenuStep",
           "BattleShouldBeWonBlocker": true,
           "BlockedButtons": [
             "Button_Back",
@@ -3873,6 +4012,7 @@
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "There's nothing more I can teach you. Congratulations!\n\nNow you can take your skills online by challenging other players in VS mode.",
