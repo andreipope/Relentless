@@ -479,6 +479,8 @@ namespace Loom.ZombieBattleground
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged -= BoardUnitDistractEffectStateChanged;
             Model.GameMechanicDescriptionsOnUnitChanged -= BoardUnitGameMechanicDescriptionsOnUnitChanged;
+            _inputController.DragOnBoardObjectEvent -= UnitSelectedEventHandler;
+            _inputController.UnitDeselectedEvent -= UnitDeselectedEventHandler;
         }
 
         private void BoardUnitOnUnitDied()

@@ -982,12 +982,17 @@ namespace Loom.ZombieBattleground
             AttackedThisTurn = false;
             HasBuffRush = false;
             HasBuffHeavy = false;
+            HasFeral = false;
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
             AttackAsFirst = false;
+            CantAttackInThisTurnBlocker = false;
             UnitStatus = Enumerators.UnitStatus.NONE;
+            AttackRestriction = Enumerators.AttackRestriction.ANY;
+            LastAttackingSetType = Card.Prototype.Faction;
             BuffsOnUnit.Clear();
+            AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
         }
