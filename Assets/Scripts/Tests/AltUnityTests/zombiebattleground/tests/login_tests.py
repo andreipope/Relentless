@@ -4,15 +4,16 @@ import unittest
 
 import xmlrunner
 from appium import webdriver
+
 from altunityrunner import AltrunUnityDriver, NotFoundException
-from pages.base import CZBTests 
-from pages.login_popup_page import Login_Popup_Page
-from pages.succes_forgot_page import Succes_Forgot_Page
-from pages.register_popup_page import Regitration_Popup_Page
-from pages.forgot_password_page import Forgot_Password_Page
-from pages.main_menu_page import Main_Menu_Page
-from pages.wait_page import Wait_Page
-from pages.area_bar_popup_page import Area_Bar_Popup_Page
+from area_bar_popup_page import Area_Bar_Popup_Page
+from base import CZBTests
+from forgot_password_page import Forgot_Password_Page
+from login_popup_page import Login_Popup_Page
+from main_menu_page import Main_Menu_Page
+from register_popup_page import Regitration_Popup_Page
+from succes_forgot_page import Succes_Forgot_Page
+from wait_page import Wait_Page
 
 
 class CZBLoginTests(CZBTests):
@@ -71,11 +72,11 @@ class CZBLoginTests(CZBTests):
         actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.title_text)
         self.assertEqual(expectedMessage,actualMessage)
 
-        expectedMessage='We just sent you a unique link to reset your password.\nGo ahead and click that link to get back your account.\nAnd welcome back to Zombie Battleground!'
+        expectedMessage='We just sent you a unique link to reset your password.\\nGo ahead and click that link to get back your account.\\nAnd welcome back to Zombie Battleground!'
         actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.desc_text)
         self.assertEqual(expectedMessage,actualMessage)
 
-        expectedMessage='(Note: Double-check your spam folder and "Promotions" tab if you don\'t see the email.)'
+        expectedMessage='(Note: Double-check your spam folder and "Promotions" tab if you don\\\'t see the email.)'
         actualMessage=succes_forgot_page.read_tmp_UGUI_text(succes_forgot_page.note_text)
         self.assertEqual(expectedMessage,actualMessage)
 
