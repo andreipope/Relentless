@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             public string DataVersion { get; private set; }
 
             [JsonProperty("is_maintenace_mode")]
-            public bool IsMaintenaceMode { get; private set; }
+            public bool IsMaintenanceMode { get; private set; }
 
             [JsonProperty("is_force_update")]
             public bool IsForceUpdate { get; private set; }
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                 WriteUrl = writeUrl;
                 VaultUrl = vaultUrl;
                 DataVersion = dataVersion;
-                IsMaintenaceMode = isMaintenaceMode;
+                IsMaintenanceMode = isMaintenaceMode;
                 IsForceUpdate = isForceUpdate;
                 DownloadUrlPC = downloadUrlPC;
                 DownloadUrlMac = downloadUrlMac;
