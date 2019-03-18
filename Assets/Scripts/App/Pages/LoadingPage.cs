@@ -98,6 +98,15 @@ namespace Loom.ZombieBattleground
                     _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
                 }
 
+                try
+                {
+                    await GameClient.Get<IDataManager>().LoadZbVersionData();
+                }
+                catch (Exception e)
+                {
+                    Log.Info(e.Message);
+                }
+
                 if (_backendDataControlMediator.UserDataModel != null)
                 {
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);

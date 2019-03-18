@@ -51,5 +51,7 @@ namespace Loom.ZombieBattleground
         string GetPersistentDataPath(string fileName);
 
         Task LoadRemoteConfig();
+
+        Task LoadZbVersionData();
     }
 }

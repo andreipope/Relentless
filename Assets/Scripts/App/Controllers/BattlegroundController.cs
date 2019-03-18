@@ -276,13 +276,13 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
-                    boardUnitView.Model.InvokeUnitDied();
-
                     UnregisterBoardUnitView(boardUnitModel.OwnerPlayer, boardUnitView);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
-                    if(_tutorialManager.IsTutorial)
+                    boardUnitView.Model.InvokeUnitDied();
+
+                    if (_tutorialManager.IsTutorial)
                     {
                         if (boardUnitModel.OwnerPlayer.IsLocalPlayer)
                         {
@@ -996,7 +996,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public BoardUnitView CreateBoardUnit(Player owner, BoardUnitModel boardUnitModel)
+        public BoardUnitView CreateBoardUnit(Player owner, BoardUnitModel boardUnitModel, bool playArrivalImmediately = true)
         {
             GameObject playerBoard = owner.IsLocalPlayer ? PlayerBoardObject : OpponentBoardObject;
 
@@ -1005,7 +1005,10 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.SetParent(playerBoard.transform);
             boardUnitView.Transform.position = new Vector2(1.9f * owner.CardsOnBoard.Count, 0);
 
-            boardUnitView.PlayArrivalAnimation();
+            if (playArrivalImmediately)
+            {
+                boardUnitView.PlayArrivalAnimation();
+            }
 
             return boardUnitView;
         }

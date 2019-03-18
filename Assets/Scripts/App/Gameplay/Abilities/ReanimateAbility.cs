@@ -94,14 +94,7 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
-            GameObject playerBoard = owner.IsLocalPlayer ?
-                BattlegroundController.PlayerBoardObject :
-                BattlegroundController.OpponentBoardObject;
-
-            BoardUnitView boardUnitView = new BoardUnitView(boardUnitModel, playerBoard.transform);
-            boardUnitView.Transform.tag = owner.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
-            boardUnitView.Transform.parent = playerBoard.transform;
-            boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
+            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel, false);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {

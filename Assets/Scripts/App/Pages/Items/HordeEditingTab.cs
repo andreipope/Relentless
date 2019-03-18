@@ -1021,7 +1021,7 @@ namespace Loom.ZombieBattleground
 
             if (!CheckIfAnyCacheCollectionCardsExist() && !_tutorialManager.IsTutorial)
             {
-                _myDeckPage.OpenAlertDialog("Sorry, no matches card found.");
+                _myDeckPage.OpenAlertDialog("Sorry, you can't add zombies from that faction to this deck");
                 ResetSearchAndFilterResult();
             }
         }
@@ -1090,7 +1090,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _myDeckPage.OpenAlertDialog("Sorry, no matches elements found.");
+                _myDeckPage.OpenAlertDialog("Sorry, no matches faction found.");
             }
             UpdateCacheFilteredCardList(resultList);
         }

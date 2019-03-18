@@ -898,5 +898,11 @@ namespace Loom.ZombieBattleground.Common
             Small = 8,
             Minion = 9            
         }
+
+        public enum TutorialStepType
+        {
+            MenuStep,
+            GameplayStep
+        }
     }
 }
