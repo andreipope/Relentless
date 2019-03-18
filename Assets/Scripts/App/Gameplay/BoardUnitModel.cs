@@ -972,6 +972,8 @@ namespace Loom.ZombieBattleground
             BuffedDamage = 0;
             NumTurnsOnBoard = 0;
             _stunTurns = 0;
+            HpDebuffUntillEndOfTurn = 0;
+            DamageDebuffUntillEndOfTurn = 0;
             WasDistracted = false;
             IsCreatedThisTurn = true;
             CanAttackByDefault = true;
@@ -982,8 +984,10 @@ namespace Loom.ZombieBattleground
             HasBuffHeavy = false;
             IsPlayable = false;
             IsAttacking = false;
+            IsDead = false;
+            AttackAsFirst = false;
             UnitStatus = Enumerators.UnitStatus.NONE;
-
+            BuffsOnUnit.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
         }
