@@ -226,10 +226,11 @@ namespace Loom.ZombieBattleground
             Enumerators.Faction faction = hero.HeroElement;
             
             Faction heroElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> cards = heroElementSet.Cards.ToList();
+            List<Card> creatureCards = heroElementSet.Cards.ToList();
+            List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
             
-            List<Card> availableCardList = new List<Card>();
-            foreach (Card card in cards)
+            List<Card> availableCreatureCardList = new List<Card>();
+            foreach (Card card in creatureCards)
             {
                 int amount = GetCardsAmount
                 (
@@ -240,11 +241,27 @@ namespace Loom.ZombieBattleground
                 for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
-                    availableCardList.Add(addedCard);
+                    availableCreatureCardList.Add(addedCard);
+                }
+            }
+            
+            List<Card> availableItemCardList = new List<Card>();
+            foreach (Card card in itemCards)
+            {
+                int amount = GetCardsAmount
+                (
+                    card.Name,
+                    collectionData                    
+                );
+                
+                for (int i = 0; i < amount; ++i)
+                {
+                    Card addedCard = new Card(card);
+                    availableItemCardList.Add(addedCard);
                 }
             }
 
-            BasicDeckGenerationStyle(deck, availableCardList.ToList());
+            MidRangeDeckGenerationStyle(deck, availableCreatureCardList.ToList(), availableItemCardList.ToList());
         }
         
         public string GenerateDeckName()
@@ -273,12 +290,108 @@ namespace Loom.ZombieBattleground
         {
             RemoveAllCardsFromDeck(deck);
             
-            while(deck.GetNumCards() < Constants.DeckMaxSize)
+            int amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
+            while(amountLeftToFill > 0)
             {
+                if (amountLeftToFill > availableCardList.Count)
+                    break;
+                
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
                 deck.AddCard(card.Name);
                 availableCardList.Remove(card);
+                
+                amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
+            }
+        }
+        
+        private void MidRangeDeckGenerationStyle(Deck deck, List<Card> creatureCardList, List<Card> itemCardList)
+        {
+            RemoveAllCardsFromDeck(deck);
+
+            List<Card> cardsToAdd = new List<Card>();
+
+            List<List<Card>> cardSortByGooCost = new List<List<Card>>();
+            for (int i = 0; i < 11; ++i)
+            {
+                cardSortByGooCost.Add(new List<Card>());
+            }
+            foreach(Card card in creatureCardList)
+            {
+                if (card.CardKind == Enumerators.CardKind.ITEM)
+                     continue;
+                     
+                int index = Mathf.Clamp(card.Cost, 0, 10);
+                cardSortByGooCost[index].Add(card);
+            }
+            
+            for (int i = 0; i < 7; ++i)
+            {
+                int randCost = Random.Range(1, 4);
+                if(cardSortByGooCost[randCost].Count > 0)
+                {
+                    List<Card> cardList = cardSortByGooCost[randCost];
+                    Card card = cardList[Random.Range(0, cardList.Count)];
+                    cardsToAdd.Add(card);
+                    cardList.Remove(card);
+                    creatureCardList.Remove(card);
+                }
+            }
+            
+            for (int i = 0; i < 12; ++i)
+            {
+                int randCost = Random.Range(4, 8);
+                if(cardSortByGooCost[randCost].Count > 0)
+                {
+                    List<Card> cardList = cardSortByGooCost[randCost];
+                    Card card = cardList[Random.Range(0, cardList.Count)];
+                    cardsToAdd.Add(card);
+                    cardList.Remove(card);
+                    creatureCardList.Remove(card);
+                }
+            }
+            
+            for (int i = 0; i < 4; ++i)
+            {
+                int randCost = Random.Range(8, 11);
+                if(cardSortByGooCost[randCost].Count > 0)
+                {
+                    List<Card> cardList = cardSortByGooCost[randCost];
+                    Card card = cardList[Random.Range(0, cardList.Count)];
+                    cardsToAdd.Add(card);
+                    cardList.Remove(card);
+                    creatureCardList.Remove(card);
+                }
+            }
+
+            for (int i = 0; i < 7; ++i)
+            {
+                if (itemCardList.Count < 0)
+                    break;
+                    
+                Card card = itemCardList[Random.Range(0, itemCardList.Count)];
+                cardsToAdd.Add(card);
+                itemCardList.Remove(card);
+            }
+
+            int amountLeftToFill = (int)(Constants.DeckMaxSize - cardsToAdd.Count);
+            while(amountLeftToFill > 0)
+            {
+                if (amountLeftToFill > creatureCardList.Count)
+                    break;
+                
+                int randomIndex = Random.Range(0, creatureCardList.Count);
+                Card card = creatureCardList[randomIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                
+                amountLeftToFill = (int)(Constants.DeckMaxSize - cardsToAdd.Count);
+            }
+
+            cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
+            foreach(Card card in cardsToAdd)
+            {
+                deck.AddCard(card.Name);
             }
         }
 
