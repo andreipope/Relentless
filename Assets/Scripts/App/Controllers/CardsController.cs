@@ -402,6 +402,8 @@ namespace Loom.ZombieBattleground
 
                 unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
 
+                boardUnitModel.ResetToInitial();
+
                 _gameplayManager.RearrangeHands();
             },
                 2f);
