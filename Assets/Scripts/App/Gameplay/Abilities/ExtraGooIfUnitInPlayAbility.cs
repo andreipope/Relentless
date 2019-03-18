@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
         private const int MaxExtraGooValue = 9999;
         private const int MinExtraGooValue = 0;
 
+        private bool _gooWasChanged;
+
         public int Value { get; }
 
         public ExtraGooIfUnitInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -32,14 +34,20 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            Action(new object[] { PlayerCallerOfAbility, -1 });
+            if (_gooWasChanged)
+            {
+                Action(new object[] { PlayerCallerOfAbility, -1 });
+            }
         }
 
         public override void Deactivate()
         {
             base.Deactivate();
 
-            Action(new object[] { PlayerCallerOfAbility, -1 });
+            if (_gooWasChanged)
+            {
+                Action(new object[] { PlayerCallerOfAbility, -1 });
+            }
         }
 
         protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
@@ -55,8 +63,14 @@ namespace Loom.ZombieBattleground
             Player player = ((object[])info)[0] as Player;
             int revertSymbol = (int)((object[])info)[1];
 
+            _gooWasChanged = revertSymbol > 0;
+
             player.ExtraGoo = Mathf.Clamp(player.ExtraGoo + (Value * revertSymbol), MinExtraGooValue, MaxExtraGooValue);
-            player.CurrentGoo += (Value * revertSymbol);
+
+            if (GameplayManager.CurrentTurnPlayer.Equals(player))
+            {
+                player.CurrentGoo += (Value * revertSymbol);
+            }
         }
     }
 }
