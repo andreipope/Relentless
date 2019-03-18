@@ -1,4 +1,4 @@
-from base import CZBTests
+from .base import CZBTests
 class Overlord_Ability_Popup_Page(CZBTests):
 
     def __init__(self,altdriver):

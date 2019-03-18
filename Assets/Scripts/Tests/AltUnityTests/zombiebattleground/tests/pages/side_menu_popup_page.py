@@ -1,4 +1,4 @@
-from pages.base import CZBTests
+from .base import CZBTests
 
 class Side_Menu_Popup_Page(CZBTests):
 

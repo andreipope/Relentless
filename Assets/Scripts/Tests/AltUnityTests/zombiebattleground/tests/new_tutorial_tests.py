@@ -1,23 +1,10 @@
-import os
-import unittest
-from appium import webdriver
-from altunityrunner import AltrunUnityDriver
-import xmlrunner
 import time
-from pages.base import CZBTests
-import re
-import sys
+import unittest
 
-from pages.gameplay_page import Gameplay_Page
-from pages.main_menu_page import Main_Menu_Page
-from pages.open_packs_page import Open_Packs_Page
-from pages.match_selection_page import Match_Selection_Page
-from pages.deck_selection_page import Deck_Selection_Page
-from pages.overlord_selection_page import Overlord_Selection_Page
-from pages.overlord_ability_popup_page import Overlord_Ability_Popup_Page
-from pages.horde_editing_page import Horde_Editing_Page
-reload(sys)
-sys.setdefaultencoding('utf8')
+import xmlrunner
+
+from .pages.base import CZBTests
+from .pages.gameplay_page import Gameplay_Page
 
 
 class CZBTutorialTests(CZBTests):
@@ -25,52 +12,52 @@ class CZBTutorialTests(CZBTests):
     def setUp(self):
         super(CZBTutorialTests, self).setUp()
     
-    # def test_first_gameplay_tutorial(self):
-    #     questionPopUp=self.altdriver.wait_for_element('QuestionPopup(Clone)')
-    #     self.altdriver.find_element(questionPopUp.name+'/Button_Yes').mobile_tap()
+    def test_first_gameplay_tutorial(self):
+        questionPopUp=self.altdriver.wait_for_element('QuestionPopup(Clone)')
+        self.altdriver.find_element(questionPopUp.name+'/Button_Yes').mobile_tap()
 
-    #     gameplay_page=Gameplay_Page(self.altdriver,self.driver)
-
-
-    #     self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-    #     self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
-    #     self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
-        
-    #     self.altdriver.wait_for_element('TutorialDescriptionTooltip(Clone)')
-    #     time.sleep(2)
-        
-    #     board = self.altdriver.wait_for_element('PlayerBoard')
-    #     board.mobile_tap()
-
-    #     self.altdriver.wait_for_element('CreatureCard(Clone)')
-    #     time.sleep(4)
+        gameplay_page=Gameplay_Page(self.altdriver,self.driver)
 
 
-    #     gameplay_page.swipe_card_from_hand_to_board(0)
-    #     gameplay_page.end_turn_and_wait_for_your_turn()
+        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
+        self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
+        self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
 
-    #     gameplay_page.swipe_board_card_to_opponent_creature(0,0)
+        self.altdriver.wait_for_element('TutorialDescriptionTooltip(Clone)')
+        self.driver.save_screenshot('./screenshots/ToolTipShow.png')
+        time.sleep(2)
+
+        board = self.altdriver.wait_for_element('PlayerBoard')
+        board.mobile_tap()
+
+        self.altdriver.wait_for_element('CreatureCard(Clone)')
+        time.sleep(4)
+        self.driver.save_screenshot('./screenshots/ZombiesOnBoard.png')
+
+        gameplay_page.swipe_card_from_hand_to_board(0)
+        gameplay_page.end_turn_and_wait_for_your_turn()
+
+        gameplay_page.swipe_board_card_to_opponent_creature(0,0)
        
-    #     gameplay_page.swipe_card_from_hand_to_board(0)
+        gameplay_page.swipe_card_from_hand_to_board(0)
 
-    #     board.mobile_tap()
+        board.mobile_tap()
 
-    #     gameplay_page.end_turn_and_wait_for_your_turn()
+        gameplay_page.end_turn_and_wait_for_your_turn()
+        self.driver.save_screenshot('./screenshots/EndTurn')
 
-    #     gameplay_page.swipe_board_card_to_opponent_face(1)
-    #     gameplay_page.swipe_board_card_to_opponent_face(0)
+        gameplay_page.swipe_board_card_to_opponent_face(1)
+        gameplay_page.swipe_board_card_to_opponent_face(0)
         
-    #     gameplay_page.swipe_card_from_hand_to_board(0)
-        
+        gameplay_page.swipe_card_from_hand_to_board(0)
 
-    #     gameplay_page.end_turn_and_wait_for_your_turn()
-    #     gameplay_page.swipe_card_from_hand_to_board(0)
+        gameplay_page.end_turn_and_wait_for_your_turn()
+        gameplay_page.swipe_card_from_hand_to_board(0)
 
-
-       
-    #     time.sleep(1)
-    #     gameplay_page.opponent_face.mobile_tap()
-    #     self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
+        time.sleep(1)
+        gameplay_page.opponent_face.mobile_tap()
+        self.driver.save_screenshot('./screenshots/FirstTutorialCompleted.png')
+        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
 
     
 

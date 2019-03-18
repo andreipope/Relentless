@@ -1,19 +1,15 @@
 import datetime
-import time
 import unittest
 
 import xmlrunner
-from appium import webdriver
-
-from altunityrunner import AltrunUnityDriver, NotFoundException
-from area_bar_popup_page import Area_Bar_Popup_Page
-from base import CZBTests
-from forgot_password_page import Forgot_Password_Page
-from login_popup_page import Login_Popup_Page
-from main_menu_page import Main_Menu_Page
-from register_popup_page import Regitration_Popup_Page
-from succes_forgot_page import Succes_Forgot_Page
-from wait_page import Wait_Page
+from altunityrunner import NotFoundException
+from .pages.area_bar_popup_page import Area_Bar_Popup_Page
+from .pages.base import CZBTests
+from .pages.forgot_password_page import Forgot_Password_Page
+from .pages.login_popup_page import Login_Popup_Page
+from .pages.register_popup_page import Regitration_Popup_Page
+from .pages.succes_forgot_page import Succes_Forgot_Page
+from .pages.wait_page import Wait_Page
 
 
 class CZBLoginTests(CZBTests):
@@ -30,7 +26,7 @@ class CZBLoginTests(CZBTests):
         expectedMessage='The process could not be completed with error:\n The Username and/or Password are not correct. \n\nPlease try again.'
         actualMessage=self.altdriver.wait_for_element('Canvas3/WarningPopup(Clone)/Text_Message').get_component_property('TMPro.TextMeshProUGUI', 'text', 'Unity.TextMeshPro')
         
-        # self.assertEqual(expectedMessage,actualMessage)
+        self.assertEqual(expectedMessage,actualMessage)
         self.altdriver.wait_for_element('Button_GotIt').mobile_tap()
         self.altdriver.find_element('LoginPopup(Clone)')
 

@@ -1,19 +1,14 @@
 import unittest
-from appium import webdriver
-import xmlrunner
-from base import CZBTests 
-import time
-from main_menu_page import Main_Menu_Page
-from base import CZBTests 
-from main_menu_page import Main_Menu_Page
-from match_selection_page import Match_Selection_Page
-from deck_selection_page import Deck_Selection_Page
-from overlord_selection_page import Overlord_Selection_Page
-from overlord_ability_popup_page import Overlord_Ability_Popup_Page
-from horde_editing_page import Horde_Editing_Page
-from side_menu_popup_page import Side_Menu_Popup_Page
-from deck_rename_tab_page import Deck_Rename_Tab_Page
 
+import xmlrunner
+
+from .pages.base import CZBTests
+from .pages.deck_rename_tab_page import Deck_Rename_Tab_Page
+from .pages.deck_selection_page import Deck_Selection_Page
+from .pages.horde_editing_page import Horde_Editing_Page
+from .pages.overlord_ability_popup_page import Overlord_Ability_Popup_Page
+from .pages.overlord_selection_page import Overlord_Selection_Page
+from .pages.side_menu_popup_page import Side_Menu_Popup_Page
 
 
 class CZBHordeTests(CZBTests):

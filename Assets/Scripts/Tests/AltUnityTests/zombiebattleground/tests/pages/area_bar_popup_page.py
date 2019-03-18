@@ -1,4 +1,4 @@
-from pages.base import CZBTests
+from .base import CZBTests
 
 class Area_Bar_Popup_Page(CZBTests):
 

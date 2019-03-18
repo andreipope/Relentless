@@ -1,4 +1,4 @@
-from pages.base import CZBTests
+from .base import CZBTests
 
 class Main_Menu_Page(CZBTests):
 

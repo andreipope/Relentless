@@ -1,4 +1,4 @@
-from base import CZBTests
+from .base import CZBTests
 class Succes_Forgot_Page(CZBTests):
 
     def __init__(self,altdriver):
@@ -21,4 +21,3 @@ class Succes_Forgot_Page(CZBTests):
         return self.altdriver.wait_for_element(self.succes_forgot_popup.name+'/Button_Confirm_BG/Button_Confirm')
     
 
-    

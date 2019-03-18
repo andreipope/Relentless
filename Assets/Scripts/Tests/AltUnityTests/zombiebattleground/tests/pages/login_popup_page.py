@@ -1,4 +1,4 @@
-from pages.base import CZBTests
+from .base import CZBTests
 
 class Login_Popup_Page(CZBTests):
 

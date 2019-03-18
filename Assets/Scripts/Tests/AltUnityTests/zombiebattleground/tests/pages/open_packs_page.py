@@ -1,4 +1,4 @@
-from base import CZBTests
+from .base import CZBTests
 import time
 import re
 
@@ -46,4 +46,3 @@ class Open_Packs_Page(CZBTests):
     def press_back_button(self):
         print(self.back_button.x,self.back_button.y,self.back_button.mobileY)
         self.button_pressed(self.back_button)
-    

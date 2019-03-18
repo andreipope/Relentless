@@ -21,19 +21,19 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
     private Vector3 _position;
     private AltSocketServer _socketServer;
 
-    private readonly string errorNotFoundMessage = "error:notFound";
-    private readonly string errorPropertyNotFoundMessage = "error:propertyNotFound";
-    private readonly string errorMethodNotFoundMessage = "error:methodNotFound";
-    private readonly string errorComponentNotFoundMessage = "error:componentNotFound";
-    private readonly string errorCouldNotPerformOperationMessage = "error:couldNotPerformOperation";
-    private readonly string errorCouldNotParseJsonString = "error:couldNotParseJsonString";
-    private readonly string errorIncorrectNumberOfParameters = "error:incorrectNumberOfParameters";
-    private readonly string errorFailedToParseArguments = "error:failedToParseMethodArguments";
-    private readonly string errorObjectWasNotFound = "error:objectNotFound";
-    private readonly string errorPropertyNotSet = "error:propertyCannotBeSet";
-    private readonly string errorNullRefferenceMessage = "error:nullRefferenceException";
-    private readonly string errorUnknownError = "error:unknownError";
-    private readonly string errorFormatException = "error:formatException";
+    private readonly string errorNotFoundMessage = "altUnityError:notFound";
+    private readonly string errorPropertyNotFoundMessage = "altUnityError:propertyNotFound";
+    private readonly string errorMethodNotFoundMessage = "altUnityError:methodNotFound";
+    private readonly string errorComponentNotFoundMessage = "altUnityError:componentNotFound";
+    private readonly string errorCouldNotPerformOperationMessage = "altUnityError:couldNotPerformOperation";
+    private readonly string errorCouldNotParseJsonString = "altUnityError:couldNotParseJsonString";
+    private readonly string errorIncorrectNumberOfParameters = "altUnityError:incorrectNumberOfParameters";
+    private readonly string errorFailedToParseArguments = "altUnityError:failedToParseMethodArguments";
+    private readonly string errorObjectWasNotFound = "altUnityError:objectNotFound";
+    private readonly string errorPropertyNotSet = "altUnityError:propertyCannotBeSet";
+    private readonly string errorNullRefferenceMessage = "altUnityError:nullRefferenceException";
+    private readonly string errorUnknownError = "altUnityError:unknownError";
+    private readonly string errorFormatException = "altUnityError:formatException";
 
     private JsonSerializerSettings _jsonSettings;
 

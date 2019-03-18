@@ -1,4 +1,4 @@
-from pages.base import CZBTests
+from .base import CZBTests
 import time
 class Deck_Rename_Tab_Page(CZBTests):
 
