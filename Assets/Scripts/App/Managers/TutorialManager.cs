@@ -777,6 +777,13 @@ namespace Loom.ZombieBattleground
                 PlayTutorialSound(step.SoundToPlay, step.SoundToPlayBeginDelay);
             }
 
+            BlockedButtons.Clear();
+
+            if (step.BlockedButtons != null)
+            {
+                BlockedButtons.AddRange(step.BlockedButtons);
+            }
+
             switch (step)
             {
                 case TutorialGameplayStep gameStep:
@@ -855,9 +862,6 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case TutorialMenuStep menuStep:
-
-                    BlockedButtons.Clear();
-
                     if (!string.IsNullOrEmpty(menuStep.OpenScreen))
                     {
                         if (menuStep.OpenScreen.EndsWith("Popup"))
@@ -868,11 +872,6 @@ namespace Loom.ZombieBattleground
                         {
                             _uiManager.SetPageByName(menuStep.OpenScreen);
                         }
-                    }
-
-                    if (menuStep.BlockedButtons != null)
-                    {
-                        BlockedButtons.AddRange(menuStep.BlockedButtons);
                     }
 
                     if(menuStep.BattleShouldBeWonBlocker && !PlayerWon)

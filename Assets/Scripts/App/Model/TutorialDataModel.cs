@@ -96,9 +96,13 @@ namespace Loom.ZombieBattleground
 
         public List<HandPointerInfo> HandPointers;
 
+        public List<string> BlockedButtons;
+
         public string SoundToPlay;
 
         public float SoundToPlayBeginDelay;
+
+        public Enumerators.TutorialStepType TutorialStepType;
 
         public TutorialStep()
         {
@@ -109,6 +113,8 @@ namespace Loom.ZombieBattleground
             ConnectedActivities = new List<int>();
 
             HandPointers = new List<HandPointerInfo>();
+
+            BlockedButtons = new List<string>();
         }
     }
 
@@ -137,7 +143,7 @@ namespace Loom.ZombieBattleground
 
         public bool BeginGameplayFlowManually;
 
-        public TutorialGameplayStep()
+        public TutorialGameplayStep() : base()
         {
             SelectableTargets = new List<Enumerators.SkillTargetType>();
 
@@ -398,15 +404,11 @@ namespace Loom.ZombieBattleground
     public class TutorialMenuStep : TutorialStep
     {
         public string OpenScreen;
-        public List<string> BlockedButtons;
         public bool CardsInteractingLocked;
         public bool BattleShouldBeWonBlocker;
         public bool CanDragCards;
         public bool CanDoubleTapCards;
 
-        public TutorialMenuStep()
-        {
-            BlockedButtons = new List<string>();
-        }
+        public TutorialMenuStep() : base() { }
     }
 }
