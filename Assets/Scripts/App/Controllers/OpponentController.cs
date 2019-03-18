@@ -533,7 +533,7 @@ namespace Loom.ZombieBattleground
 
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
 
-            if (boardObjectCaller == null)
+            if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
                 // FIXME: why do we have recursion here??
                 GameClient.Get<IQueueManager>().AddTask(async () =>
