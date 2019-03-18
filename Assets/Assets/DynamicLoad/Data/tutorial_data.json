@@ -1325,7 +1325,7 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10,
+                "X": 10.5,
                 "Y": -4,
                 "Z": 0
               },
@@ -1995,15 +1995,16 @@
       "TutorialDescriptionTooltips": [
         {
           "Id": 6,
-          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
           "Description": "Don't you want to open your new cards first?",
           "Position": {
-            "X": 0,
+            "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "AppearDelay": 10,
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -2150,9 +2151,16 @@
           ],
           "HandPointers": [
             {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Edit",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI"
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         },
@@ -2216,7 +2224,8 @@
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_SaveDeck",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
             }
           ]
         },
@@ -2245,7 +2254,8 @@
               "TutorialHandPointerType": "Single",
               "TutorialUIElementOwnerName": "Button_Battle",
               "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI"
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 2.5
             }
           ]
         },
@@ -2267,12 +2277,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10,
+                "X": 10.5,
                 "Y": -4,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI"
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         }
@@ -2656,7 +2667,10 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened",
-          "TutorialStepType": "GameplayStep"
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
           "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
@@ -2890,10 +2904,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Don't you want to open your new cards first?",
           "Position": {
-            "X": 0,
+            "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
+          "AppearDelay": 10,
           "TutorialTooltipLayer": "AbovePages"
         }
       ],
@@ -2901,6 +2916,9 @@
         {
           "ActionToEndThisStep": "ScreenChanged",
           "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
           "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
             "Panel_Battle_Mode",
@@ -2964,6 +2982,184 @@
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 9.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_LeftArrow",
+            "Button_RightArrow",
+            "Image_ButtonBackTray"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Edit",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            4,
+            5
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ],
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
+          ],
+          "ConnectedActivities": [
+            1
+          ],
+          "CanDragCards": true,
+          "CanDoubleTapCards": true
+        },
+        {
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
+          ],
+          "CardsInteractingLocked": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
+          "BlockedButtons": [
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 2.5
             }
           ]
@@ -2971,17 +3167,14 @@
         {
           "ActionToEndThisStep": "BattleStarted",
           "TutorialStepType": "MenuStep",
-          "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
-            "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back"
           ],
           "ConnectedActivities": [
             0
@@ -2989,12 +3182,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 10.5,
+                "Y": -4,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         }
@@ -3366,7 +3560,10 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened",
-          "TutorialStepType": "GameplayStep"
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
           "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
@@ -3645,10 +3842,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Don't you want to open your new cards first?",
           "Position": {
-            "X": 0,
+            "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
+          "AppearDelay": 10,
           "TutorialTooltipLayer": "AbovePages"
         }
       ],
@@ -3656,6 +3854,9 @@
         {
           "ActionToEndThisStep": "ScreenChanged",
           "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
           "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
             "Panel_Battle_Mode",
@@ -3719,6 +3920,184 @@
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 9.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackCollected",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_Setting",
+            "Button_Login"
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_LeftArrow",
+            "Button_RightArrow",
+            "Image_ButtonBackTray"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Edit",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            4,
+            5
+          ],
+          "TutorialDescriptionTooltipsToDeactivate": [
+            2
+          ],
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
+          ],
+          "ConnectedActivities": [
+            1
+          ],
+          "CanDragCards": true,
+          "CanDoubleTapCards": true
+        },
+        {
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
+          ],
+          "CardsInteractingLocked": true,
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.5,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
+          "BlockedButtons": [
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 2.5
             }
           ]
@@ -3726,17 +4105,14 @@
         {
           "ActionToEndThisStep": "BattleStarted",
           "TutorialStepType": "MenuStep",
-          "OpenScreen": "HordeSelectionPage",
           "BlockedButtons": [
-            "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back"
           ],
           "ConnectedActivities": [
             0
@@ -3744,12 +4120,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 10.5,
+                "Y": -4,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         }
@@ -3981,7 +4358,7 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened",
-          "TutorialStepType": "GameplayStep",
+          "TutorialStepType": "MenuStep",
           "BattleShouldBeWonBlocker": true,
           "BlockedButtons": [
             "Button_Back",
