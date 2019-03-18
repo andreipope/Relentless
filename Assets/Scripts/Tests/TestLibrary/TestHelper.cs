@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Test
         /// When false, tests are executed as fast as possible.
         /// When true, they are executed slowly to easy debugging.
         /// </summary>
-        private const bool DebugTests = true;
+        private const bool DebugTests = false;
 
         /// <summary>
         /// To be in line with AI Brain, 1.1f was taken as value from AIController.
