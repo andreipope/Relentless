@@ -41,15 +41,6 @@ namespace Loom.ZombieBattleground
                     Target = boardUnitModel,
                 });
 
-                if (AbilityUnitOwner.OwnerPlayer.IsLocalPlayer)
-                {
-                    BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, boardUnitView);
-                }
-                else
-                {
-                    BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, boardUnitView);
-                }
-
                 targets.Add(boardUnitModel);
             }
 
