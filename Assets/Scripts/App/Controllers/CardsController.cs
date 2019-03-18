@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCardView card)
         {
             IReadOnlyCard prototype = card.Model.Card.Prototype;
-            if (prototype.CardKind == Enumerators.CardKind.CREATURE &&
+            if (prototype.Kind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.CardsOnBoard.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
                 int newIndexOfCard = 0;
@@ -439,7 +439,7 @@ namespace Loom.ZombieBattleground
                 GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
                 GameplayQueueAction<object> rankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
-                switch (card.Model.Card.Prototype.CardKind)
+                switch (card.Model.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         {
@@ -657,7 +657,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCardView;
-            switch (boardUnitModel.Prototype.CardKind)
+            switch (boardUnitModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
@@ -736,9 +736,9 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.Prototype.Defense,
                     boardUnitModel.Prototype.Faction,
                     boardUnitModel.Prototype.Frame,
-                    boardUnitModel.Prototype.CardKind,
-                    boardUnitModel.Prototype.CardRank,
-                    boardUnitModel.Prototype.CardType,
+                    boardUnitModel.Prototype.Kind,
+                    boardUnitModel.Prototype.Rank,
+                    boardUnitModel.Prototype.Type,
                     boardUnitModel.Prototype.Abilities
                         .Select(a => new AbilityData(a))
                         .ToList(),
@@ -882,7 +882,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
-            string prefabName = boardUnitModel.Prototype.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
+            string prefabName = boardUnitModel.Prototype.Kind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
 
             SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName),
                                             parent,
@@ -899,7 +899,7 @@ namespace Loom.ZombieBattleground
             _behaviourHandler.MouseUpTriggered += MouseUpTriggered;
 
             string setName = boardUnitModel.Prototype.Faction.ToString();
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), boardUnitModel.Prototype.CardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), boardUnitModel.Prototype.Rank);
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
             if (!string.IsNullOrEmpty(boardUnitModel.Prototype.Frame))
@@ -916,7 +916,7 @@ namespace Loom.ZombieBattleground
             _descriptionText.text = choosableAbility.Description;
             _gooCostText.text = boardUnitModel.InstanceCard.Cost.ToString();
 
-            if (boardUnitModel.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+            if (boardUnitModel.Prototype.Kind == Enumerators.CardKind.CREATURE)
             {
                 _unitType = SelfObject.transform.Find("Image_Type").GetComponent<SpriteRenderer>();
 

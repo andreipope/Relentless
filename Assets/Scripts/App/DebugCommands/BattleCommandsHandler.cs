@@ -203,12 +203,11 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Adds xp to an overlord. ")]
     private static void AddXP([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int xpAmount)
     {
-        Hero hero = _dataManager.CachedHeroesData.Heroes
-            .Find(x => x.Name == overlordName);
+        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords.Find(x => x.Name == overlordName);
 
-        if (hero == null)
+        if (overlord == null)
         {
-            Log.Error(" Hero not found");
+            Log.Error("Overlord not found");
             return;
         }
 
@@ -218,10 +217,10 @@ static class BattleCommandsHandler
             return;
         }
 
-        _overlordManager.InitializeExperienceInfoInMatch(hero);
+        _overlordManager.InitializeExperienceInfoInMatch(overlord);
 
-        _overlordManager.ApplyExperience(hero, xpAmount);
-        if (hero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
+        _overlordManager.ApplyExperience(overlord, xpAmount);
+        if (overlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
         {
             _uiManager.DrawPopup<LevelUpPopup>();
         }
@@ -230,12 +229,12 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Adds xp to an overlord. ")]
     private static void SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
     {
-        Hero hero = _dataManager.CachedHeroesData.Heroes
+        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords
             .Find(x => x.Name == overlordName);
 
-        if (hero == null)
+        if (overlord == null)
         {
-            Log.Error(" Hero not found");
+            Log.Error("Overlord not found");
             return;
         }
 
@@ -245,17 +244,17 @@ static class BattleCommandsHandler
             return;
         }
 
-        hero.Level = level;
+        overlord.Level = level;
 
-        _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+        _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 
     public static IEnumerable<string> OverlordsNames()
     {
-        string[] overlordNames = new string[_dataManager.CachedHeroesData.Heroes.Count];
-        for (var i = 0; i < _dataManager.CachedHeroesData.Heroes.Count; i++)
+        string[] overlordNames = new string[_dataManager.CachedOverlordData.Overlords.Count];
+        for (var i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
         {
-            overlordNames[i] = _dataManager.CachedHeroesData.Heroes[i].Name;
+            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Name;
         }
         return overlordNames;
     }
@@ -459,53 +458,53 @@ static class BattleCommandsHandler
     private static void RevertOverlordSkill(IMove move)
     {
         PlayOverlordSkill obj = (PlayOverlordSkill) move;
-        switch (obj.Skill.Skill.OverlordSkill)
+        switch (obj.Skill.Skill.Skill)
         {
-            case Enumerators.OverlordSkill.NONE:
+            case Enumerators.Skill.NONE:
                 break;
-            case Enumerators.OverlordSkill.PUSH:
+            case Enumerators.Skill.PUSH:
                 RevertPush(obj);
                 break;
-            case Enumerators.OverlordSkill.DRAW:
+            case Enumerators.Skill.DRAW:
                 RevertDraw(obj);
                 break;
-            case Enumerators.OverlordSkill.HARDEN:
+            case Enumerators.Skill.HARDEN:
                 RevertHarden(obj);
                 break;
-            case Enumerators.OverlordSkill.STONE_SKIN:
+            case Enumerators.Skill.STONE_SKIN:
                 RevertStoneSkin(obj);
                 break;
-            case Enumerators.OverlordSkill.FIRE_BOLT:
+            case Enumerators.Skill.FIRE_BOLT:
                 RevertFireBolt(obj);
                 break;
-            case Enumerators.OverlordSkill.RABIES:
+            case Enumerators.Skill.RABIES:
                 RevertRabies(obj);
                 break;
-            case Enumerators.OverlordSkill.FIREBALL:
+            case Enumerators.Skill.FIREBALL:
                 RevertFireball(obj);
                 break;
-            case Enumerators.OverlordSkill.HEALING_TOUCH:
+            case Enumerators.Skill.HEALING_TOUCH:
                 RevertHealingTouch(obj);
                 break;
-            case Enumerators.OverlordSkill.MEND:
+            case Enumerators.Skill.MEND:
                 RevertMend(obj);
                 break;
-            case Enumerators.OverlordSkill.POISON_DART:
+            case Enumerators.Skill.POISON_DART:
                 RevertPosionDartAttack(obj);
                 break;
-            case Enumerators.OverlordSkill.TOXIC_POWER:
+            case Enumerators.Skill.TOXIC_POWER:
                 RevertToxicPowerAttack(obj);
                 break;
-            case Enumerators.OverlordSkill.FREEZE:
+            case Enumerators.Skill.FREEZE:
                 RevertFreeze(obj);
                 break;
-            case Enumerators.OverlordSkill.ICE_BOLT:
+            case Enumerators.Skill.ICE_BOLT:
                 RevertIceBolt(obj);
                 break;
-            case Enumerators.OverlordSkill.ICE_WALL:
+            case Enumerators.Skill.ICE_WALL:
                 RevertIceWall(obj);
                 break;
-            case Enumerators.OverlordSkill.BLIZZARD:
+            case Enumerators.Skill.BLIZZARD:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -653,8 +652,8 @@ static class BattleCommandsHandler
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
-            unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Attack;
-            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Attack;
+            unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Damage;
+            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Damage;
 
             playOverlordSkill.Skill.SetCoolDown(0);
         }
@@ -704,11 +703,11 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Unlocks current overlord abilities")]
     private static void UnlockAllCurrentOverlordAbilities()
     {
-        foreach (var skill in _gameplayManager.CurrentPlayer.SelfHero.Skills)
+        foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
         {
             skill.Unlocked = true;
         }
 
-        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 }

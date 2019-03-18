@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer = player;
 
-            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
+            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfOverlord);
 
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&

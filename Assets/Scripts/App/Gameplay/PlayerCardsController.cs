@@ -804,7 +804,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCardView;
-            switch (boardUnitModel.Card.Prototype.CardKind)
+            switch (boardUnitModel.Card.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardsController.CreatureCardViewPrefab);

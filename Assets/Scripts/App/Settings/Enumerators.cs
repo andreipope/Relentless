@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.Common
             APP_INIT,
             LOGIN,
             MAIN_MENU,
-            HERO_SELECTION,
+            OVERLORD_SELECTION,
             HordeSelection,
             ARMY,
             SHOP,
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground.Common
         public enum CacheDataType
         {
             CARDS_LIBRARY_DATA,
-            HEROES_DATA,
+            OVERLORDS_DATA,
             COLLECTION_DATA,
             DECKS_DATA,
             DECKS_OPPONENT_DATA,
@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground.Common
             PVE
         }
 
-        public enum OverlordSkill
+        public enum Skill
         {
             NONE,
 
@@ -470,7 +470,7 @@ namespace Loom.ZombieBattleground.Common
             ITEM,
         }
 
-        public enum SkillTargetType
+        public enum SkillTarget
         {
             NONE,
             PLAYER,
@@ -564,7 +564,7 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum UnitStatus
+        public enum UnitSpecialStatus
         {
             NONE,
             FROZEN

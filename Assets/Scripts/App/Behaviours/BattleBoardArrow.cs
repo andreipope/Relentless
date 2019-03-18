@@ -14,9 +14,9 @@ namespace Loom.ZombieBattleground
 
         public bool IgnoreHeavy;
 
-        public Enumerators.UnitStatus TargetUnitStatusType;
+        public Enumerators.UnitSpecialStatus _targetUnitSpecialStatusType;
 
-        public List<Enumerators.UnitStatus> BlockedUnitStatusTypes;
+        public List<Enumerators.UnitSpecialStatus> BlockedUnitStatusTypes;
 
         public void End(BoardUnitView creature)
         {
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             SelectedPlayer?.SetGlowStatus(false);
 
             if (TutorialManager.IsTutorial &&
-                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
+                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT_CARD))
                 return;
 
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
@@ -80,21 +80,21 @@ namespace Loom.ZombieBattleground
 
             if (BlockedUnitStatusTypes == null) 
             {
-                BlockedUnitStatusTypes = new List<Enumerators.UnitStatus>();
+                BlockedUnitStatusTypes = new List<Enumerators.UnitSpecialStatus>();
             }
 
-            if (TargetsType.Contains(Enumerators.SkillTargetType.ALL_CARDS) ||
-                TargetsType.Contains(Enumerators.SkillTargetType.PLAYER_CARD) &&
+            if (TargetsType.Contains(Enumerators.SkillTarget.ALL_CARDS) ||
+                TargetsType.Contains(Enumerators.SkillTarget.PLAYER_CARD) &&
                 unit.Transform.CompareTag(SRTags.PlayerOwned) ||
-                TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT_CARD) &&
+                TargetsType.Contains(Enumerators.SkillTarget.OPPONENT_CARD) &&
                 unit.Transform.CompareTag(SRTags.OpponentOwned))
             {
                 bool opponentHasProvoke = OpponentHasHeavyUnits();
                 if (!opponentHasProvoke || opponentHasProvoke && unit.Model.IsHeavyUnit || IgnoreHeavy)
                 {
-                    if ((TargetUnitStatusType == Enumerators.UnitStatus.NONE ||
-                        unit.Model.UnitStatus == TargetUnitStatusType) &&
-                        !BlockedUnitStatusTypes.Contains(unit.Model.UnitStatus))
+                    if ((_targetUnitSpecialStatusType == Enumerators.UnitSpecialStatus.NONE ||
+                        unit.Model.UnitSpecialStatus == _targetUnitSpecialStatusType) &&
+                        !BlockedUnitStatusTypes.Contains(unit.Model.UnitSpecialStatus))
                     {
                         SelectedCard?.SetSelectedUnit(false);
 
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
             SelectedCard = null;
 
             if (TutorialManager.IsTutorial &&
-                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT))
+                !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT))
                 return;
 
             if (player.Defense <= 0)
@@ -135,9 +135,9 @@ namespace Loom.ZombieBattleground
             if (Owner != null && !Owner.HasFeral && Owner.HasBuffRush)
                 return;
 
-            if (TargetsType.Contains(Enumerators.SkillTargetType.OPPONENT) &&
+            if (TargetsType.Contains(Enumerators.SkillTarget.OPPONENT) &&
                 player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
-                TargetsType.Contains(Enumerators.SkillTargetType.PLAYER) &&
+                TargetsType.Contains(Enumerators.SkillTarget.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned))
             {
                 if (!OpponentHasHeavyUnits() || IgnoreHeavy)

@@ -19,6 +19,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityAsyncAwaitUtil;
 using UnityEngine.TestTools;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
@@ -1119,11 +1120,11 @@ namespace Loom.ZombieBattleground.Test
                 if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0 && !HasChoosableAbilities(boardUnitModel.Prototype))
                 {
                     needTargetForAbility =
-                        boardUnitModel.InstanceCard.Abilities.FindAll(x => x.AbilityTarget.Count > 0).Count > 0;
+                        boardUnitModel.InstanceCard.Abilities.FindAll(x => x.Targets.Count > 0).Count > 0;
                 }
             }
 
-            switch (boardUnitModel.Prototype.CardKind)
+            switch (boardUnitModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE
                     when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
@@ -1549,7 +1550,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+            await AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
 
             await PickOverlord("Valash", false);
             await PickOverlordAbility(0);
@@ -1588,7 +1589,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+            await AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
 
             await PickOverlord("Kalile", false);
             await PickOverlordAbility(1);
@@ -1625,7 +1626,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             await ClickGenericButton("Image_BaackgroundGeneral");
-            await AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+            await AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
 
             await PickOverlord("Razu", true);
             await PickOverlordAbility(1);

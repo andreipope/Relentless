@@ -568,7 +568,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 
-            if (FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
+            if (FactionAgainstDictionary[_myDeckPage.CurrentEditOverlord.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -590,7 +590,7 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 _myDeckPage.OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
+                    card.Rank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
@@ -726,7 +726,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             int amount = _collectionData.GetCardData(card.Name).Amount;
 
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
@@ -737,7 +737,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
             boardCard.SetShowAmountEnabled(true);
@@ -891,27 +891,27 @@ namespace Loom.ZombieBattleground
         private void UpdateOverlordAbilitiesButton()
         {
             Deck deck = _myDeckPage.CurrentEditDeck;
-            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
-            if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            if(deck.PrimarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
-            if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+            if(deck.SecondarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
 
-            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+hero.HeroElement.ToString().ToLower());
+            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+overlord.Faction.ToString().ToLower());
         }
 
         private void UpdateEditDeckCardsAmount()
@@ -1031,7 +1031,7 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditOverlord.Faction];
             allAvailableFactionList.Remove(againstFaction);
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
@@ -1116,12 +1116,12 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIfSatisfyRankFilter(Card card)
         {
-            return _cardFilterPopup.FilterData.RankDictionary[card.CardRank];
+            return _cardFilterPopup.FilterData.RankDictionary[card.Rank];
         }
 
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
-            return _cardFilterPopup.FilterData.TypeDictionary[card.CardType];
+            return _cardFilterPopup.FilterData.TypeDictionary[card.Type];
         }
 
         private bool CheckIfAnyCacheCollectionCardsExist()
@@ -1131,7 +1131,7 @@ namespace Loom.ZombieBattleground
 
         private void ExcludeFilterDataWithAgainstFaction()
         {
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditOverlord.Faction];
             _cardFilterPopup.FilterData.FactionDictionary[againstFaction] = false;
         }
 
@@ -1201,7 +1201,7 @@ namespace Loom.ZombieBattleground
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
         {
-            Enumerators.CardRank rank = card.CardRank;
+            Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
             Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);

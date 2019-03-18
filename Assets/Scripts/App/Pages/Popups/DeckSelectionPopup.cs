@@ -181,11 +181,11 @@ namespace Loom.ZombieBattleground
             return _dataManager.CachedDecksData.Decks;
         }
 
-        private Hero GetHeroDataFromDeck(Deck deck)
+        private OverlordModel GetOverlordDataFromDeck(Deck deck)
         {
-            int heroId = deck.HeroId;
-            Hero hero = _dataManager.CachedHeroesData.Heroes[heroId];
-            return hero;
+            int overlordId = deck.OverlordId;
+            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[overlordId];
+            return overlord;
         }
         
         private void SetSelectedDeckIndex(int newIndex)
@@ -239,7 +239,7 @@ namespace Loom.ZombieBattleground
                 Deck deck = _dataManager.CachedDecksData.Decks[i];
                 deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
                 ( 
-                    GetHeroDataFromDeck(deck).HeroElement
+                    GetOverlordDataFromDeck(deck).Faction
                 );
                 
                 _createdDeckIconList.Add(deckIcon);
@@ -269,8 +269,8 @@ namespace Loom.ZombieBattleground
         private void UpdateSelectedDeckDisplay(Deck selectedDeck)
         {
             _textDeckName.text = selectedDeck.Name;
-            Hero selectedHero = GetHeroDataFromDeck(selectedDeck);
-            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedHero.HeroElement);
+            OverlordModel selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
+            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Faction);
 
             for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i < _createdDeckIconList.Count; i++)
             {

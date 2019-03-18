@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
         public DestroyFrozenZombieAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetUnitStatusType = ability.TargetUnitStatus;
+            TargetUnitSpecialStatus = ability.TargetUnitSpecialStatus;
         }
 
         protected override void InputEndedHandler()

@@ -7,6 +7,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
 using UnityEngine;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test

@@ -284,7 +284,7 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case WorkingCard workingCard:
-                        if(workingCard.Prototype.CardKind == Enumerators.CardKind.ITEM)
+                        if(workingCard.Prototype.Kind == Enumerators.CardKind.ITEM)
                         {
                             _rightBlockCardItemElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
                                 _loadObjectsManager.GetObjectByPath<Sprite>($"{Constants.PathToCardsIllustrations}{workingCard.Prototype.Picture.ToLowerInvariant()}"));
@@ -439,7 +439,7 @@ namespace Loom.ZombieBattleground
                     DrawStats();
                 };
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
 
                 string setName = prototype.Faction.ToString();
 
@@ -452,7 +452,7 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = cardPicture;
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.CardType + "_icon"));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.Type + "_icon"));
 
                 if (_withEffect)
                 {
@@ -554,7 +554,7 @@ namespace Loom.ZombieBattleground
                 _bodyText.text = prototype.Description;
                 _gooText.text = prototype.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
 
                 string setName = prototype.Faction.ToString();
 
@@ -628,7 +628,7 @@ namespace Loom.ZombieBattleground
             public override void Init(Player player, Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None,
                                       bool hasValue = false, int value = 0)
             {
-                _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfHero.HeroElement.ToString() + "_EXP");
+                _overlordImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("CZB_2D_Hero_Portrait_" + player.SelfOverlord.Faction.ToString() + "_EXP");
 
                 if (_withEffect)
                 {
@@ -775,7 +775,7 @@ namespace Loom.ZombieBattleground
                 _attackText.text = prototype.Damage.ToString();
                 _defenseText.text = prototype.Defense.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
 
                 string setName = prototype.Faction.ToString();
 
@@ -788,7 +788,7 @@ namespace Loom.ZombieBattleground
 
                 _frameImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
                 _pictureImage.sprite = cardPicture;
-                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.CardType + "_icon"));
+                _unitTypeIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/{0}", prototype.Type + "_icon"));
 
                 if (_withEffect)
                 {
@@ -871,7 +871,7 @@ namespace Loom.ZombieBattleground
                 _bodyText.text = prototype.Description;
                 _gooText.text = prototype.Cost.ToString();
 
-                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.CardRank);
+                string rarity = Enum.GetName(typeof(Enumerators.CardRank), prototype.Rank);
 
                 string setName = prototype.Faction.ToString();
 

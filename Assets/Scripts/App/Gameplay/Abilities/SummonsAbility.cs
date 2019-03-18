@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
         {
             Name = ability.Name;
             Count = ability.Count;
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
         }
 
         public override void Activate()

@@ -116,6 +116,8 @@ namespace Loom.ZombieBattleground
 
             T view =
                 BoardUnitViews
+                .Concat(PlayerHandCards)
+                .Concat(OpponentHandCards)
                 .OfType<T>()
                 .Where(v => v.Model == boardUnitModel)
                 .SingleOrDefault();
@@ -135,6 +137,12 @@ namespace Loom.ZombieBattleground
         {
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
+
+            if (BoardUnitViews.Contains(view))
+            {
+                Log.Warn($"{nameof(RegisterBoardUnitView)}: Attempt to add card view {view} to BoardUnitViews when it is already added");
+                return;
+            }
 
             BoardUnitViews.Add(view);
         }
@@ -678,7 +686,7 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCardView;
-            switch (card.Prototype.CardKind)
+            switch (card.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
@@ -970,10 +978,10 @@ namespace Loom.ZombieBattleground
             boardUnit.SetAsWalkerUnit();
             boardUnit.UseShieldFromBuff();
             boardUnit.AttackRestriction = Enumerators.AttackRestriction.ANY;
-            boardUnit.AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
+            boardUnit.AttackTargetsAvailability = new List<Enumerators.SkillTarget>()
             {
-                Enumerators.SkillTargetType.OPPONENT,
-                Enumerators.SkillTargetType.OPPONENT_CARD
+                Enumerators.SkillTarget.OPPONENT,
+                Enumerators.SkillTarget.OPPONENT_CARD
             };
 
             DeactivateAllAbilitiesOnUnit(boardUnit);

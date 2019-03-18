@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Faction = ability.Faction;
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
 
             _boardUnits = new List<BoardUnitModel>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();

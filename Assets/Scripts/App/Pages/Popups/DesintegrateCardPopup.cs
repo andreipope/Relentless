@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
 
             Card prototype = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
                 .First(card => card.Name == _cardData.CardName);
-            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) prototype.CardRank + 1));
+            GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) prototype.Rank + 1));
 
             _uiManager.GetPage<ArmyPage>().UpdateGooValue();
         }

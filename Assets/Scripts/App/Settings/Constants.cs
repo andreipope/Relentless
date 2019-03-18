@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalConfigDataFileName = "config_data.json";
 
-        internal const string LocalHeroesDataFileName = "heroes_data.json";
+        internal const string LocalOverlordsDataFileName = "overlords_data.json";
 
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.Common
             2f;
 #endif
 
-        internal const int TutorialPlayerHeroId = 4;
+        internal const int TutorialPlayerOverlordId = 4;
 
         internal const uint DeckMaxSize = 30;
 
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float EndTurnClickSoundVolume = 0.1f;
 
-        internal const float HeroDeathSoundVolume = 0.1f;
+        internal const float OverlordDeathSoundVolume = 0.1f;
 
         internal const float CardsMoveSoundVolume = 0.05f;
 

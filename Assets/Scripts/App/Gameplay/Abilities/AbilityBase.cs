@@ -18,19 +18,19 @@ namespace Loom.ZombieBattleground
 
         public bool IsPVPAbility;
 
-        public Enumerators.AbilityActivity AbilityActivityType;
+        public Enumerators.AbilityActivity AbilityActivity;
 
         public Enumerators.AbilityTrigger AbilityTrigger;
 
         public Enumerators.AffectObjectType AffectObjectType;
 
-        public Enumerators.AbilityEffect AbilityEffectType;
+        public Enumerators.AbilityEffect AbilityEffect;
 
         public Enumerators.CardType TargetCardType = Enumerators.CardType.UNDEFINED;
 
-        public Enumerators.UnitStatus TargetUnitStatusType = Enumerators.UnitStatus.NONE;
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
 
-        public List<Enumerators.Target> AbilityTargetTypes;
+        public List<Enumerators.Target> AbilityTargets;
 
         public Enumerators.CardKind CardKind;
 
@@ -131,10 +131,10 @@ namespace Loom.ZombieBattleground
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityActivityType = ability.Activity;
+            AbilityActivity = ability.Activity;
             AbilityTrigger = ability.Trigger;
-            AbilityTargetTypes = ability.AbilityTarget;
-            AbilityEffectType = ability.Effect;
+            AbilityTargets = ability.Targets;
+            AbilityEffect = ability.Effect;
             _playerAvatar = GameplayManager.CurrentPlayer;
             _opponentAvatar = GameplayManager.OpponentPlayer;
 
@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
         public AbilityData AbilityData { get; protected set; }
 
         public void ActivateSelectTarget(
-            List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
+            List<Enumerators.SkillTarget> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
@@ -163,9 +163,9 @@ namespace Loom.ZombieBattleground
                 Object
                 .Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object"))
                 .AddComponent<AbilityBoardArrow>();
-            TargettingArrow.PossibleTargets = AbilityTargetTypes;
+            TargettingArrow.PossibleTargets = AbilityTargets;
             TargettingArrow.TargetUnitType = TargetCardType;
-            TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
+            TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
             TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
 
