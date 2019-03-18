@@ -137,6 +137,7 @@ namespace Loom.ZombieBattleground
             BehaviourHandler.Destroying += DestroyingHandler;
 
             Model = boardUnitModel;
+            Model.ResetToInitial();
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
