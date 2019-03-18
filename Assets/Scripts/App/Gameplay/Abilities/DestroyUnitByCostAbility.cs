@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
                         }
                     },
                     CheckForCardOwner = _checkForCardOwner,
-                    BoardUnitModel = card
+                    Model = card
                 });
             }
         }

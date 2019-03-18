@@ -523,11 +523,12 @@ namespace Loom.ZombieBattleground
                                            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
   
                                            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel, true);
-                                           boardUnitModel.Owner.PlayerCardsController.AddCardToBoard(boardUnitModel, (ItemPosition) card.FuturePositionOnBoard);
                                            boardUnitModel.Owner.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
                                            if (card.Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                                            {
+                                               boardUnitModel.Owner.PlayerCardsController.AddCardToBoard(boardUnitModel, (ItemPosition)card.FuturePositionOnBoard);
+
                                                InternalTools.DoActionDelayed(() =>
                                                {
                                                    Object.Destroy(card.GameObject);
@@ -1155,10 +1156,11 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfHero, Common.Enumerators.ExperienceActionType.PlayCard);
 
                 card.Model.Card.Owner.PlayerCardsController.RemoveCardFromHand(card.Model);
-                card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition) card.FuturePositionOnBoard);
 
                 if (card.Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
                 {
+                    card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
+
                     InternalTools.DoActionDelayed(() =>
                     {
                         Object.Destroy(card.GameObject);
@@ -1222,7 +1224,7 @@ namespace Loom.ZombieBattleground
                 Caller = card,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
                 CheckForCardOwner = false,
-                BoardUnitModel = card.Model
+                Model = card.Model
             });
         }
 

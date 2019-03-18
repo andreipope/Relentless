@@ -440,7 +440,7 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
             }
 
-            if (_isPreviewHandCard)
+            if (_isPreviewHandCard && _battlegroundController.CardsZoomed)
             {
                 if (_topmostBoardCard != null && !_cardsZooming)
                 {

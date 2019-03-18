@@ -661,21 +661,23 @@ namespace Loom.ZombieBattleground
             yield return new WaitForSeconds(0.3f);
 
             WorkingCard card = null;
+            BoardUnitModel boardUnitModel = null;
 
             switch (target)
             {
                 case BoardCardView card1:
                     card = card1.Model.Card;
+                    boardUnitModel = card1.Model;
                     break;
                 case BoardUnitView unit:
                     card = unit.Model.Card;
+                    boardUnitModel = unit.Model;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
             }
 
             BoardCardView boardCardView;
-            BoardUnitModel boardUnitModel = new BoardUnitModel(card);
             switch (card.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:

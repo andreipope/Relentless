@@ -433,10 +433,6 @@ namespace Loom.ZombieBattleground
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _armyCardsContainer);
                 boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
-                DeckBuilderCard deckBuilderCard = boardCardView.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Page = this;
-                deckBuilderCard.Card = card;
-
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
 
                 eventHandler.DragBegan += BoardCardDragBeganHandler;
@@ -523,11 +519,6 @@ namespace Loom.ZombieBattleground
                 {
                     BoardCardView boardCardView = CreateCard(prototype, Vector3.zero, _hordeCardsContainer);
                     boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
-
-                    DeckBuilderCard deckBuilderCard = boardCardView.GameObject.AddComponent<DeckBuilderCard>();
-                    deckBuilderCard.Page = this;
-                    deckBuilderCard.Card = prototype;
-                    deckBuilderCard.IsHordeItem = true;
 
                     _createdHordeCards.Add(boardCardView);
 
@@ -668,11 +659,6 @@ namespace Loom.ZombieBattleground
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _hordeCardsContainer);
                 boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
                 foundItem = boardCardView;
-
-                DeckBuilderCard deckBuilderCard = boardCardView.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Page = this;
-                deckBuilderCard.Card = card;
-                deckBuilderCard.IsHordeItem = true;
                 
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
 

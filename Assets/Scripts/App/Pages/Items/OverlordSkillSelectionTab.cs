@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -150,6 +150,8 @@ namespace Loom.ZombieBattleground
                 HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
                     HordeSelectionWithNavigationPage.Tab.Rename :
                     HordeSelectionWithNavigationPage.Tab.Editing;
+
+                _myDeckPage.ChangeTab(tab);
             }
         }
         
@@ -380,6 +382,9 @@ namespace Loom.ZombieBattleground
 
             private void SelectButtonOnClickHandler()
             {
+                if (GameClient.Get<ITutorialManager>().BlockAndReport(_selectButton.name))
+                    return;
+
                 GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
                 OverlordAbilitySelected?.Invoke(this);
             }

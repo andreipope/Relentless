@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ITutorialManager _tutorialManager;
 
+        private readonly ILoadObjectsManager _loadObjectsManager;
+
         private readonly BattlegroundController _battlegroundController;
 
         private readonly BattleController _battleController;
@@ -59,10 +61,13 @@ namespace Loom.ZombieBattleground
 
         public int TutorialObjectId => Card.TutorialObjectId;
 
+        public Sprite CardPicture { get; private set; }
+
         public BoardUnitModel(WorkingCard card)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _battleController = _gameplayManager.GetController<BattleController>();
@@ -132,6 +137,8 @@ namespace Loom.ZombieBattleground
         public event Action<bool> BuffSwingStateChanged;
 
         public event Action GameMechanicDescriptionsOnUnitChanged;
+
+        public event Action CardPictureWasUpdated;
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
@@ -297,13 +304,10 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz))
+                    if (NumTurnsOnBoard == 0 && !HasFeral)
                     {
-                        if (NumTurnsOnBoard == 0)
-                        {
-                            AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
-                            HasBuffRush = true;
-                        }
+                        AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
+                        HasBuffRush = true;
                     }
                     break;
                 case Enumerators.BuffType.GUARD:
@@ -522,34 +526,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            switch (InitialUnitType)
-            {
-                case Enumerators.CardType.FERAL:
-                    HasFeral = true;
-                    IsPlayable = true;
-                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Feral);
-                    break;
-                case Enumerators.CardType.HEAVY:
-                    HasHeavy = true;
-                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Heavy);
-                    break;
-                case Enumerators.CardType.WALKER:
-                default:
-                    break;
-            }
-
-            if (Card.InstanceCard.Abilities != null)
-            {
-                foreach (AbilityData ability in Card.InstanceCard.Abilities)
-                {
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescription);
-
-                    if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
-                    {
-                        AddGameMechanicDescriptionOnUnit(ability.GameMechanicDescription);
-                    }
-                }
-            }
+            SetPicture();
         }
 
         public void OnStartTurn()
@@ -925,6 +902,65 @@ namespace Loom.ZombieBattleground
         public void InvokeUnitPrepairingToDie()
         {
             PrepairingToDie?.Invoke(this);
+        }
+
+        public void SetPicture(string name = "", string attribute = "")
+        {
+            if (CardPicture != null)
+            {
+                MonoBehaviour.Destroy(CardPicture);
+            }
+
+            string imagePath = $"{Constants.PathToCardsIllustrations}";
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                imagePath += $"{name}";
+            }
+            else
+            {
+                imagePath += $"{Prototype.Picture.ToLowerInvariant()}";
+            }
+
+            if (!string.IsNullOrEmpty(attribute))
+            {
+                imagePath += $"_{attribute}";
+            }
+
+            CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
+            CardPictureWasUpdated?.Invoke();
+        }
+
+        public void ArriveUnitOnBoard()
+        {
+            switch (InitialUnitType)
+            {
+                case Enumerators.CardType.FERAL:
+                    HasFeral = true;
+                    IsPlayable = true;
+                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Feral);
+                    break;
+                case Enumerators.CardType.HEAVY:
+                    HasHeavy = true;
+                    AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Heavy);
+                    break;
+                case Enumerators.CardType.WALKER:
+                default:
+                    break;
+            }
+
+            if (Card.InstanceCard.Abilities != null)
+            {
+                foreach (AbilityData ability in Card.InstanceCard.Abilities)
+                {
+                    TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescription);
+
+                    if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
+                    {
+                        AddGameMechanicDescriptionOnUnit(ability.GameMechanicDescription);
+                    }
+                }
+            }
         }
 
         public override string ToString()
