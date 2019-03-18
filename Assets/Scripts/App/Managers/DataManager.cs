@@ -190,7 +190,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async void Init()
+        public void Init()
         {
             Log.Info("Encryption: " + ConfigData.EncryptData);
             Log.Info("Skip Card Data Backend: " + ConfigData.SkipBackendCardData);
@@ -202,8 +202,6 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
-
-            await LoadZbVersionData();
 
             LoadLocalCachedData();
 
@@ -578,9 +576,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task LoadZbVersionData()
+        public async Task LoadZbVersionData()
         {
-            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(Constants.ZbVersionLink, Log, JsonSerializerSettings);
+            string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
+                        BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
+                        Key.ToString().ToLowerInvariant());
+
+            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(
+                $"{GameClient.GetDefaultBackendEndpoint().AuthHost}{zbVersionParsedLink}", Log, JsonSerializerSettings);
         }
     }
 }
