@@ -402,6 +402,8 @@ namespace Loom.ZombieBattleground
 
                 unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
 
+                boardUnitModel.ResetToInitial();
+
                 _gameplayManager.RearrangeHands();
             },
                 2f);
@@ -716,7 +718,7 @@ namespace Loom.ZombieBattleground
                     boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
                 }
 
-                boardCardView.Model.Card.InstanceCard.Cost = value;
+                boardCardView.Model.Card.InstanceCard.Cost = Mathf.Max(0, value);
                 boardCardView.UpdateCardCost();
 
                 bool isActive = boardCardView.Model.Card.InstanceCard.Cost < boardCardView.Model.Card.Prototype.Cost;
