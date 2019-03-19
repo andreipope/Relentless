@@ -140,7 +140,15 @@ namespace Loom.ZombieBattleground
                 UpdateOverlordAbilitiesButton();
                 _inputFieldSearchName.text = "";
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
-                _textEditDeckCardsAmount.text =  $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";
+
+                if (_tutorialManager.IsTutorial)
+                {
+                    _textEditDeckCardsAmount.text = $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                }
+                else
+                {
+                    _textEditDeckCardsAmount.text = $"{_myDeckPage.CurrentEditDeck.GetNumCards()}/{Constants.MaxDeckSize}";
+                }
             };           
 
             _cacheCollectionCardsList = new List<Card>();
