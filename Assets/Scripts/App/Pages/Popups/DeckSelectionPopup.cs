@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
             
             Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
             
-            if(selectedDeck == null)
+            if(selectedDeck == null && _dataManager.CachedDecksData.Decks.Count > 0)
             {
                 selectedDeck = _dataManager.CachedDecksData.Decks[0];
             }
@@ -157,7 +157,7 @@ namespace Loom.ZombieBattleground
             _deckList = new List<Deck>();
             _deckList.AddRange(_dataManager.CachedDecksData.Decks);
 
-            if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
+            if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
                 _deckList.Remove(_deckList[0]);
                 selectedDeck = _deckList[_deckList.Count - 1];
