@@ -1541,11 +1541,8 @@ namespace Loom.ZombieBattleground
             }
 
             boardUnitView.PlayArrivalAnimation();
-            boardUnitView.StopSleepingParticles();
 
             _gameplayManager.CanDoDragActions = true;
-
-            _gameplayManager.GetController<BoardController>().UpdateCurrentBoardOfPlayer(owner, null);
 
             boardUnitView.StopSleepingParticles();
             boardUnitView.ChangeModelVisibility(false);
@@ -1556,13 +1553,9 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                _battlegroundController.RegisterBoardUnitView(owner, boardUnitView);
                 _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, boardUnitModel, owner);
             }
-            else
-            {
-                _battlegroundController.RegisterBoardUnitView(owner, boardUnitView);
-            }
+            _battlegroundController.RegisterBoardUnitView(owner, boardUnitView);
 
             return boardUnitView;
         }
