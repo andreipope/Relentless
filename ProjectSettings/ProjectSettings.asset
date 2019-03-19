@@ -650,7 +650,7 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
-    1: USE_STAGING_BACKEND;DEVELOPMENT
+    1:
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

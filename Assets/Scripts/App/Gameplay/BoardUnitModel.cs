@@ -904,11 +904,6 @@ namespace Loom.ZombieBattleground
 
         public void SetPicture(string name = "", string attribute = "")
         {
-            if (CardPicture != null)
-            {
-                MonoBehaviour.Destroy(CardPicture);
-            }
-
             string imagePath = $"{Constants.PathToCardsIllustrations}";
 
             if (!string.IsNullOrEmpty(name))
@@ -927,6 +922,8 @@ namespace Loom.ZombieBattleground
 
             CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
             CardPictureWasUpdated?.Invoke();
+
+            Resources.UnloadUnusedAssets();
         }
 
         public void ArriveUnitOnBoard()

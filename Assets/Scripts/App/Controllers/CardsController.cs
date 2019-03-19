@@ -910,9 +910,15 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}_{_mainChoosableAbility.Attribute}");
 
+            string imagePath = $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}";
+
+            if (!string.IsNullOrEmpty(_mainChoosableAbility.Attribute))
+            {
+                imagePath += $"_{ _mainChoosableAbility.Attribute}";
+            }
+
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
 
             _titleText.text = boardUnitModel.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;
