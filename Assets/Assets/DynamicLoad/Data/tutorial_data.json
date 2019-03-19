@@ -1997,13 +1997,13 @@
           "Id": 6,
           "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Don't you want to open your new cards first?",
+          "Description": "Let's check out your new cards first.",
           "Position": {
             "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
-          "AppearDelay": 10,
+          "AppearDelay": 0,
           "TutorialTooltipLayer": "AboveUI"
         }
       ],
@@ -2900,15 +2900,15 @@
       "TutorialDescriptionTooltips": [
         {
           "Id": 6,
-          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Don't you want to open your new cards first?",
+          "Description": "Let's check out your new cards first.",
           "Position": {
             "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
-          "AppearDelay": 10,
+          "AppearDelay": 0,
           "TutorialTooltipLayer": "AbovePages"
         }
       ],
@@ -3838,15 +3838,15 @@
       "TutorialDescriptionTooltips": [
         {
           "Id": 6,
-          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Don't you want to open your new cards first?",
+          "Description": "Let's check out your new cards first.",
           "Position": {
             "X": -10.5,
             "Y": -3.25,
             "Z": 0
           },
-          "AppearDelay": 10,
+          "AppearDelay": 0,
           "TutorialTooltipLayer": "AbovePages"
         }
       ],
