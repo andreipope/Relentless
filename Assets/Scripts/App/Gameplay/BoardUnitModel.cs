@@ -180,11 +180,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public bool IsPlayable
-        {
-            get => _isPlayable;
-            set => _isPlayable = value;
-        }
+        public bool IsPlayable { get; set; }
 
         public WorkingCard Card { get; set; }
 
@@ -227,7 +223,6 @@ namespace Loom.ZombieBattleground
         public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; } = new List<Enumerators.GameMechanicDescription>();
 
         public GameplayQueueAction<object> ActionForDying;
-        private bool _isPlayable;
 
         public bool WasDistracted { get; private set; }
 
