@@ -437,7 +437,8 @@ namespace Loom.ZombieBattleground
         private string GenerateDeckName()
         {
             int index = _dataManager.CachedDecksData.Decks.Count;
-            string newName = "HORDE " + index;
+            string newName = _tutorialManager.IsTutorial ? "Tutorial" : "HORDE " + index;
+
             while (true)
             {
                 bool isNameCollide = false;
@@ -520,7 +521,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
-            }            
+            }
+            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
+            {
+                SelectDeckIndex = 1;
+            }
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -730,7 +735,8 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
             int startObjectIndex = displayNewDeckButton?1:0;
-            int deckDataIndex = 0;
+            int deckDataIndex = _tutorialManager.IsTutorial ? 1 : 0;
+
             for (int i=startObjectIndex; i < _deckInfoObjectList.Count; ++i, ++deckDataIndex)
             {
                 
