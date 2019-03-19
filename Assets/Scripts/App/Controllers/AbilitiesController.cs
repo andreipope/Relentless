@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class AbilitiesController : IController
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(AbilitiesController));
+
         public delegate void AbilityUsedEventHandler(
             BoardUnitModel boardUnitModel,
             Enumerators.AbilityType abilityType,
@@ -730,10 +733,16 @@ namespace Loom.ZombieBattleground
             AbilityUsed?.Invoke(boardUnitModel, abilityType, targets);
         }
 
-        public void BuffUnitByAbility(Enumerators.AbilityType ability, object target, Enumerators.CardKind cardKind, BoardUnitModel boardUnitModel, Player owner)
+        public void BuffUnitByAbility(Enumerators.AbilityType ability,
+                                    object target,
+                                    Enumerators.CardKind cardKind,
+                                    BoardUnitModel boardUnitModel,
+                                    Player owner,
+                                    bool callAbilityUsageEvent = false)
         {
             ActiveAbility activeAbility =
                 CreateActiveAbility(GetAbilityDataByType(ability), cardKind, target, owner, boardUnitModel);
+            activeAbility.Ability.IgnoreAbilityUsageEvent = true;
             activeAbility.Ability.Activate();
         }
 
@@ -777,14 +786,20 @@ namespace Loom.ZombieBattleground
             {
                 if (_PvPToggleFirstLastAbility)
                 {
-                    abilityData = boardUnitModel.InstanceCard.Abilities.First(x => x.Ability == ability);
+                    abilityData = boardUnitModel.InstanceCard.Abilities.FirstOrDefault(x => x.Ability == ability);
                     _PvPToggleFirstLastAbility = false;
                 }
                 else
                 {
-                    abilityData = boardUnitModel.InstanceCard.Abilities.Last(x => x.Ability == ability);
+                    abilityData = boardUnitModel.InstanceCard.Abilities.LastOrDefault(x => x.Ability == ability);
                     _PvPToggleFirstLastAbility = true;
                 }
+            }
+
+            if (abilityData == null || (abilityData is default(AbilityData)))
+            {
+                Log?.Warn($"abilityData: '{abilityData}' is null or default when trying to play it from event.");
+                return;
             }
 
             ActiveAbility activeAbility = CreateActiveAbility(abilityData, boardUnitModel.Prototype.CardKind, abilityCaller, owner, boardUnitModel);

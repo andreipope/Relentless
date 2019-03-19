@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsPVPAbility;
 
+        public bool IgnoreAbilityUsageEvent;
+
         public Enumerators.AbilityActivity AbilityActivityType;
 
         public Enumerators.AbilityTrigger AbilityTrigger;
@@ -519,6 +521,9 @@ namespace Loom.ZombieBattleground
 
         protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
         {
+            if (IgnoreAbilityUsageEvent)
+                return;
+
             AbilitiesController.InvokeUseAbilityEvent(
                 BoardUnitModel,
                 AbilityData.Ability,
