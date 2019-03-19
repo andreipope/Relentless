@@ -67,13 +67,13 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/AreaBarPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
-            _buttonLogin = Self.transform.Find("Scaler/Button_Login").GetComponent<Button>();
+            _buttonLogin = Self.transform.Find("Button_Login").GetComponent<Button>();
             _buttonLogin.onClick.AddListener(ButtonLoginHandler);
             
-            _buttonSettings = Self.transform.Find("Scaler/Button_Setting").GetComponent<Button>();
+            _buttonSettings = Self.transform.Find("Button_Setting").GetComponent<Button>();
             _buttonSettings.onClick.AddListener(ButtonSettingHandler);
             
-            _textPlayerName = Self.transform.Find("Scaler/Text_PlayerName").GetComponent<TextMeshProUGUI>();
+            _textPlayerName = Self.transform.Find("Text_PlayerName").GetComponent<TextMeshProUGUI>();
         }
         
         public void Show(object data)
@@ -92,6 +92,7 @@ namespace Loom.ZombieBattleground
                     if (!_buttonLogin.gameObject.activeSelf)
                     {
                         _buttonLogin.gameObject.SetActive(true);
+                        _textPlayerName.text = "Guest Player";
                     }
                 }
                 else
@@ -99,6 +100,7 @@ namespace Loom.ZombieBattleground
                     if (_buttonLogin.gameObject.activeSelf)
                     {
                         _buttonLogin.gameObject.SetActive(false);
+                        _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
                     }
                 }
             }
