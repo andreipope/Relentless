@@ -1062,7 +1062,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(10, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, ignoreGooRequirements: false);
+                Action afterSetupAction = () => TestHelper.DebugCheats.IgnoreGooRequirements = false;
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, afterSetupAction: afterSetupAction);
             });
         }
 
