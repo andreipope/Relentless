@@ -257,12 +257,18 @@ namespace Loom.ZombieBattleground
                 _createdDeckIconList.Add(deckIcon);
 
                 int index = i;
-                Button button = deckIcon.GetComponent<Button>();
-                button.onClick.AddListener
-                (()=>
+                MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
+                multiPointerClickHandler.SingleClickReceived += ()=>
                 {
                     SetSelectedDeckIndex(index);
-                });
+                };
+                multiPointerClickHandler.DoubleClickReceived += ()=>
+                {
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+                    HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                    hordeSelection.SelectDeckIndex = index;
+                    hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+                };
             }
         }
         
