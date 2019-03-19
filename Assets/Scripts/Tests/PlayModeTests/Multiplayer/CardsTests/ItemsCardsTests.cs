@@ -1345,12 +1345,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Supply Drop", 1),
+                    new DeckCardData("Supply Drop", 10),
                     new DeckCardData("Slab", 10),
                     new DeckCardData("Znowman", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("Supply Drop", 1),
+                    new DeckCardData("Supply Drop", 10),
                     new DeckCardData("Slab", 10),
                     new DeckCardData("Znowman", 10)
                 );
@@ -1388,9 +1388,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerCardId, ItemPosition.Start);
                            player.LetsThink(2);
-                           playerZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowmanId);
-                           opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowmanId);
-                           
                        },
                        opponent =>
                        {
@@ -1399,6 +1396,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
+                           playerZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowmanId);
+                           opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowmanId);
+
                            player.LetsThink(2);
                            player.AssertInQueue(() => {
                                Assert.NotNull(playerZnowman);

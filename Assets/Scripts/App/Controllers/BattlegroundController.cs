@@ -116,12 +116,18 @@ namespace Loom.ZombieBattleground
 
             T view =
                 BoardUnitViews
-                .OfType<T>()
-                .Where(v => v.Model == boardUnitModel)
-                .SingleOrDefault();
+                    .Concat(PlayerHandCards)
+                    .Concat(OpponentHandCards)
+                    .OfType<T>()
+                    .Where(v => v.Model == boardUnitModel)
+                    .SingleOrDefault();
 
-            //if (view == null)
-            //    throw new Exception($"No view found for model {boardUnitModel}");
+            if (view == null)
+            {
+                Log.Warn($"View of type {typeof(T).Name} not found for model {boardUnitModel}");
+                //throw new Exception($"No view found for model {boardUnitModel}");
+            }
+            
 
             return view;
         }
@@ -136,6 +142,7 @@ namespace Loom.ZombieBattleground
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
 
+            Log.Info($"RegisterBoardUnitView(IBoardUnitView view == {view})");
             BoardUnitViews.Add(view);
         }
 
@@ -144,7 +151,12 @@ namespace Loom.ZombieBattleground
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
 
-            BoardUnitViews.Remove(view);
+            Log.Info($"UnregisterBoardUnitView(IBoardUnitView view == {view})");
+            bool removed = BoardUnitViews.Remove(view);
+            if (!removed)
+            {
+                Log.Info($"UnregisterBoardUnitView: attempted to unregister non-registered view {view}");
+            }
         }
 
 
@@ -1077,12 +1089,14 @@ namespace Loom.ZombieBattleground
         public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
         {
             BoardUnitModel boardUnitModel =
-                _gameplayManager.OpponentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
+                _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model))
                     .FirstOrDefault(model => model != null && model.Card.InstanceId == id);
 
             return boardUnitModel;

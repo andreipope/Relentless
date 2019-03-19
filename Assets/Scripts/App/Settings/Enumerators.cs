@@ -461,7 +461,8 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            FIRE = 1,
+            Undefined,
+            FIRE,
             WATER,
             EARTH,
             AIR,

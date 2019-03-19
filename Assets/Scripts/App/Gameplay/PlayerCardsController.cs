@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground
                 return null;
             }
 
-            if (removeCardsFromDeck)
+            if (removeCardsFromDeck && _cardsInDeck.Contains(boardUnitModel))
             {
                 RemoveCardFromDeck(boardUnitModel);
             }
@@ -549,7 +549,7 @@ namespace Loom.ZombieBattleground
 
             GameObject board = Player.IsLocalPlayer ? _cardsController.PlayerBoard : _cardsController.OpponentBoard;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.Model.Card), board.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(card.Model, board.transform);
             boardUnitView.Transform.tag = Player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * Player.CardsOnBoard.Count, 0);
