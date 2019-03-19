@@ -470,6 +470,9 @@ namespace Loom.ZombieBattleground
                                     Caller = item,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
+
+                                // TODO: make sure this works later
+                                //_gameplayManager.OpponentPlayer.BoardItemsInUse.Remove(item);
                                 break;
                         }
 

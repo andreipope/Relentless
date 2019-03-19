@@ -38,7 +38,11 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                IEnumerable<HandBoardCard> targets = PredefinedTargets.Select(x => x.BoardObject as HandBoardCard);
+                IReadOnlyList<HandBoardCard> targets =
+                    PredefinedTargets
+                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
+                        .ToList();
 
                 foreach (HandBoardCard target in targets)
                 {
