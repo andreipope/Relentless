@@ -3,8 +3,8 @@ import unittest
 
 import xmlrunner
 
-from .pages.base import CZBTests
-from .pages.gameplay_page import Gameplay_Page
+from pages.base import CZBTests
+from pages.gameplay_page import Gameplay_Page
 
 
 class CZBTutorialTests(CZBTests):

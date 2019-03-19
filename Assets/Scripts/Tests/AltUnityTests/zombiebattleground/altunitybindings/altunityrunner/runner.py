@@ -522,32 +522,32 @@ class AltrunUnityDriver(object):
 
 
     def handle_errors(self, data):
-        if ('error' in data):
-            if ('error:notFound' in data):
+        if ('altUnityError' in data):
+            if ('altUnityError:notFound' in data):
                 raise  NotFoundException(data)
-            elif ('error:propertyNotFound' in data): 
+            elif ('altUnityError:propertyNotFound' in data): 
                 raise  PropertyNotFoundException(data)
-            elif ('error:methodNotFound' in data): 
+            elif ('altUnityError:methodNotFound' in data): 
                 raise  MethodNotFoundException(data)
-            elif ('error:componentNotFound' in data): 
+            elif ('altUnityError:componentNotFound' in data): 
                 raise  ComponentNotFoundException(data)
-            elif ('error:couldNotPerformOperation' in data): 
+            elif ('altUnityError:couldNotPerformOperation' in data): 
                 raise  CouldNotPerformOperationException(data)
-            elif ('error:couldNotParseJsonString' in data): 
+            elif ('altUnityError:couldNotParseJsonString' in data): 
                 raise  CouldNotParseJsonStringException(data)
-            elif ('error:incorrectNumberOfParameters' in data): 
+            elif ('altUnityError:incorrectNumberOfParameters' in data): 
                 raise  IncorrectNumberOfParametersException(data)
-            elif ('error:failedToParseMethodArguments' in data): 
+            elif ('altUnityError:failedToParseMethodArguments' in data): 
                 raise  FailedToParseArgumentsException(data)
-            elif ('error:objectNotFound' in data): 
+            elif ('altUnityError:objectNotFound' in data): 
                 raise  ObjectWasNotFoundException(data)
-            elif ('error:propertyCannotBeSet' in data): 
+            elif ('altUnityError:propertyCannotBeSet' in data): 
                 raise  PropertyNotFoundException(data)
-            elif ('error:nullRefferenceException' in data): 
+            elif ('altUnityError:nullRefferenceException' in data): 
                 raise  NullRefferenceException(data)
-            elif ('error:unknownError' in data): 
+            elif ('altUnityError:unknownError' in data): 
                 raise  UnknownErrorException(data)
-            elif ('error:formatException' in data): 
+            elif ('altUnityError:formatException' in data): 
                 raise  FormatException(data)
         else:
             return data
