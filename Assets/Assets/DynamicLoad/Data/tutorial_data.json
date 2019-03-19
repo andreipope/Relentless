@@ -503,8 +503,8 @@
               "TutorialObjectId": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -530,8 +530,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -576,7 +576,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -616,7 +616,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 51
             }
           ]
@@ -671,11 +671,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             },
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         },
@@ -701,19 +701,19 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 3
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 2
             }
           ]
@@ -746,7 +746,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 4,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -1760,8 +1760,8 @@
               "TutorialObjectId": 2
             }
           ],
-          "PrimaryOverlordAbility": "POISON_DART",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "POISON_DART",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 4,
@@ -1779,8 +1779,8 @@
               "TutorialObjectId": 52
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -1801,7 +1801,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1830,7 +1830,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1870,18 +1870,18 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 52
             },
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ],
           "UseOverlordSkillsSequence": [
             {
               "SkillType": "PRIMARY",
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -2531,8 +2531,8 @@
           ],
           "CardsOnBoard": [
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -2556,8 +2556,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -2605,11 +2605,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -2648,11 +2648,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -2693,11 +2693,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 22,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 21,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -3345,8 +3345,8 @@
               "BuffedDamage": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -3386,8 +3386,8 @@
               "TutorialObjectId": 57
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -3434,7 +3434,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3456,11 +3456,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -3483,11 +3483,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 10,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3501,7 +3501,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 55,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
@@ -3511,22 +3511,22 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             }
           ]
@@ -3540,14 +3540,14 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 12,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 55
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -4117,8 +4117,8 @@
               "Name": "Pit"
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "AISpecificOrderEnabled": false,
         "DisabledInitialization": true,

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -31,6 +32,7 @@ namespace Loom.ZombieBattleground.Data
     {
         public long Id { get; set; }
 
+        [JsonProperty("HeroId")]
         public int OverlordId { get; set; }
 
         public string Name { get; set; }
