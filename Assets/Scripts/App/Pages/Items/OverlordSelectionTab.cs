@@ -208,7 +208,7 @@ namespace Loom.ZombieBattleground
             _myDeckPage.CurrentEditDeck.HeroId = _myDeckPage.CurrentEditHero.HeroId;
             _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
             _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
-            Debug.LogError(_myDeckPage.CurrentEditDeck.Name);
+
             try
             {
                 long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
