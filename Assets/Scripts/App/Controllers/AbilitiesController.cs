@@ -577,6 +577,8 @@ namespace Loom.ZombieBattleground
                                            handCard.ResetToHandAnimation();
                                            handCard.CheckStatusOfHighlight();
 
+                                           boardUnitModel.SetPicture();
+
                                            boardUnitModel.Owner.PlayerCardsController.AddCardFromDeckToHand(card.Model);
                                            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromBoard(card.Model, false);
                                            _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
@@ -686,9 +688,11 @@ namespace Loom.ZombieBattleground
                            {
                                Action<AbilityData.ChoosableAbility> callback = null;
 
-                               callback = (x) =>
+                               callback = (selectedChoosableAbility) =>
                                {
-                                    instance.Abilities[instance.Abilities.IndexOf(choosableAbility)] = x.AbilityData;
+                                   boardUnitModel.SetPicture(string.Empty, selectedChoosableAbility.Attribute);
+
+                                    instance.Abilities[instance.Abilities.IndexOf(choosableAbility)] = selectedChoosableAbility.AbilityData;
                                     abilityEndAction.Invoke();
                                     _cardsController.CardForAbilityChoosed -= callback;
                                };
