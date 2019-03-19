@@ -297,11 +297,11 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.Faction selectedFaction)
+        private void FilterPopupHidingHandler()
         {
-            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedFaction)))
+            if(CheckAvailableDeckExist())
             {   
-                ApplyDeckFilter(selectedFaction);
+                ApplyDeckFilter();
                 ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
                 popup.ActionPopupHiding -= FilterPopupHidingHandler;
             }
@@ -850,10 +850,29 @@ namespace Loom.ZombieBattleground
             ChangeSelectDeckIndex(indexInPage);
         }
 
-        public void ApplyDeckFilter(Enumerators.Faction faction)
+        public void ApplyDeckFilter()
         {
-            _inputFieldSearchDeckName.text = "";
-            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(faction);
+            _inputFieldSearchDeckName.text = "";            
+            
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            if(elementFilterPopup.SelectedFactionList.Count == elementFilterPopup.AvailableFactionList.Count)
+            {
+                _cacheDeckListToDisplay = GetDeckList();
+            }
+            else
+            {
+                List<Deck> decks = new List<Deck>();
+                foreach (Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+                {
+                    List<Deck> deckListByFaction = GetDeckListByElementToDisplay(faction);
+                    if (deckListByFaction.Count <= 0)
+                        continue;
+    
+                    decks = decks.Union(deckListByFaction).ToList();
+                }
+                _cacheDeckListToDisplay = decks;
+            }
+            
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
         }
@@ -865,9 +884,20 @@ namespace Loom.ZombieBattleground
             UpdateDeckInfoObjects();
         }
         
-        private bool CheckAvailableDeckExist(List<Deck> decks)
+        private bool CheckAvailableDeckExist()
         {
-            return decks.Count > 0;
+            bool isAvailable = false;
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            foreach(Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+            {
+                List<Deck> deckListByFaction = GetDeckListByElementToDisplay(faction);
+                if (deckListByFaction.Count > 0)
+                {
+                    isAvailable = true;
+                    break;
+                }
+            }
+            return isAvailable;
         }
 
         private void UpdateSelectedDeckDisplay(int selectedDeckIndex)
