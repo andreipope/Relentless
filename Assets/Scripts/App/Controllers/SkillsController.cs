@@ -1939,9 +1939,12 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitModel> units = null;
 
-            if (!boardSkill.IsLocal && targets != null)
+            if (!boardSkill.IsLocal)
             {
-                units = targets.Select(target => target.BoardObject as BoardUnitModel).ToList();
+                if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel)
+                {
+                    units = targets.Select(target => target.BoardObject as BoardUnitModel).ToList();
+                }
             }
             else
             {
@@ -1953,24 +1956,27 @@ namespace Loom.ZombieBattleground
                 _targets = units.Select(target => new ParametrizedAbilityBoardObject(target)).ToList();
             }
 
-            foreach (BoardUnitModel unit in units)
+            if (units != null)
             {
-                unit.SetAsFeralUnit();
-
-                _vfxController.CreateVfx(
-                    _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
-                    unit, delay: 14f, isIgnoreCastVfx: true);
-                _soundManager.PlaySound(
-                    Enumerators.SoundType.OVERLORD_ABILITIES,
-                    skill.Title.Trim().ToLowerInvariant(),
-                    Constants.OverlordAbilitySoundVolume,
-                    Enumerators.CardSoundType.NONE);
-
-                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                foreach (BoardUnitModel unit in units)
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.Feral,
-                    Target = unit
-                });
+                    unit.SetAsFeralUnit();
+
+                    _vfxController.CreateVfx(
+                        _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/RabiesVFX"),
+                        unit, delay: 14f, isIgnoreCastVfx: true);
+                    _soundManager.PlaySound(
+                        Enumerators.SoundType.OVERLORD_ABILITIES,
+                        skill.Title.Trim().ToLowerInvariant(),
+                        Constants.OverlordAbilitySoundVolume,
+                        Enumerators.CardSoundType.NONE);
+
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Feral,
+                        Target = unit
+                    });
+                }
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
