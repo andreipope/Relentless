@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             // for local player
             foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card, false);
+                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
             }
             _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(Array.Empty<BoardUnitModel>());
 
@@ -401,6 +401,8 @@ namespace Loom.ZombieBattleground
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
 
                 unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
+
+                boardUnitModel.ResetToInitial();
 
                 _gameplayManager.RearrangeHands();
             },
@@ -716,7 +718,7 @@ namespace Loom.ZombieBattleground
                     boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
                 }
 
-                boardCardView.Model.Card.InstanceCard.Cost = value;
+                boardCardView.Model.Card.InstanceCard.Cost = Mathf.Max(0, value);
                 boardCardView.UpdateCardCost();
 
                 bool isActive = boardCardView.Model.Card.InstanceCard.Cost < boardCardView.Model.Card.Prototype.Cost;

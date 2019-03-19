@@ -470,9 +470,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public object GetCaller()
+        public BoardObject GetCaller()
         {
-            return AbilityUnitOwner ?? (object) BoardItem;
+            return AbilityUnitOwner ?? (BoardObject) BoardItem;
         }
 
         public Player GetOpponentOverlord()
