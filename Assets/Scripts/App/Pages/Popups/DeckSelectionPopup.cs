@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -25,6 +25,8 @@ namespace Loom.ZombieBattleground
         private ISoundManager _soundManager;
 
         private IDataManager _dataManager;
+
+        private ITutorialManager _tutorialManager;
 
         private TextMeshProUGUI _textDeckName;
 
@@ -54,6 +56,7 @@ namespace Loom.ZombieBattleground
             _uiManager = GameClient.Get<IUIManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             LoginPopup.OnLoginSuccess += () =>
             {
@@ -151,9 +154,15 @@ namespace Loom.ZombieBattleground
                 selectedDeck = _dataManager.CachedDecksData.Decks[0];
             }
 
-            UpdateSelectedDeckData(selectedDeck);
+            _deckList = new List<Deck>();
+            _deckList.AddRange(_dataManager.CachedDecksData.Decks);
+            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
+            {
+                _deckList.Remove(_deckList[0]);
+                selectedDeck = _deckList[_deckList.Count - 1];
+            }
 
-            _deckList = _dataManager.CachedDecksData.Decks;            
+            UpdateSelectedDeckData(selectedDeck);
         }       
 
         private void UpdateSelectedDeckData(Deck deck)
@@ -167,18 +176,21 @@ namespace Loom.ZombieBattleground
         {
             UpdateSelectedDeckData
             (
-                _dataManager.CachedDecksData.Decks.Find(x => x.Id == deckId)
+                _deckList.Find(x => x.Id == deckId)
             );            
         }
         
         public Deck GetSelectedDeck()
         {
-            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);            
+            if (_deckList != null && _deckList.Count > 0)
+                return _deckList.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            else
+                return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
         }
         
         public List<Deck> GetDeckList()
         {
-            return _dataManager.CachedDecksData.Decks;
+            return _deckList;
         }
 
         private Hero GetHeroDataFromDeck(Deck deck)
@@ -227,16 +239,16 @@ namespace Loom.ZombieBattleground
         {
             DisposeCreatedObject();
             _createdDeckIconList = new List<GameObject>();
-            List<Vector3> positionList = GetIconPositionList(_dataManager.CachedDecksData.Decks.Count);
+            List<Vector3> positionList = GetIconPositionList(_deckList.Count);
             
-            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+            for (int i = 0; i < _deckList.Count; i++)
             {
                 GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
                 deckIcon.transform.SetParent(_deckIconGroup);
                 deckIcon.transform.localPosition = positionList[i];
                 deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
 
-                Deck deck = _dataManager.CachedDecksData.Decks[i];
+                Deck deck = _deckList[i];
                 deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
                 ( 
                     GetHeroDataFromDeck(deck).HeroElement
@@ -272,9 +284,9 @@ namespace Loom.ZombieBattleground
             Hero selectedHero = GetHeroDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedHero.HeroElement);
 
-            for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count && i < _createdDeckIconList.Count; i++)
+            for (int i = 0; i < _deckList.Count && i < _createdDeckIconList.Count; i++)
             {
-                Deck deck = _dataManager.CachedDecksData.Decks[i];
+                Deck deck = _deckList[i];
                 if(deck == selectedDeck)
                 {
                     _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
@@ -327,7 +339,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonRightHandler()
         {
-            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonRight.name))
+            if (_tutorialManager.BlockAndReport(_buttonRight.name))
                 return;
 
             SwitchSelectedDeckIndex(1);
@@ -335,7 +347,7 @@ namespace Loom.ZombieBattleground
         
         private void ButtonLeftHandler()
         {
-            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonLeft.name))
+            if (_tutorialManager.BlockAndReport(_buttonLeft.name))
                 return;
 
             SwitchSelectedDeckIndex(-1);
