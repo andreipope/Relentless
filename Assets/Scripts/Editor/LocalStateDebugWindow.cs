@@ -118,7 +118,7 @@ namespace Editor
                                 string description = GameStateGUI.FormatCardInstance(model.Card.ToProtobuf());
                                 if (drawType)
                                 {
-                                    description = $"<b>Type: </b> {((object) view ?? model).GetType().Name}, {description}";
+                                    description = $"<b>Type: </b>{((object) view ?? model).GetType().Name}, {description}";
                                 }
 
                                 GUILayout.Label(
