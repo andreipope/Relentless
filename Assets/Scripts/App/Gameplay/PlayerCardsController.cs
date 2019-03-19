@@ -132,7 +132,10 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(RemoveCardFromDeck)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
             
             bool removed = _cardsInDeck.Remove(boardUnitModel);
-            Assert.AreEqual(true, removed, $"Item {boardUnitModel} not removed");
+            if (!removed)
+            {
+                CallLog($"{nameof(RemoveCardFromDeck)}: item {boardUnitModel} wasn't present in the list", true);
+            }
 
             InvokeDeckChanged();
         }
@@ -211,7 +214,7 @@ namespace Loom.ZombieBattleground
                 return null;
             }
 
-            if (removeCardsFromDeck && _cardsInDeck.Contains(boardUnitModel))
+            if (removeCardsFromDeck)
             {
                 RemoveCardFromDeck(boardUnitModel);
             }
