@@ -767,7 +767,14 @@ namespace Loom.ZombieBattleground
                 Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
 
                 deckInfoObject._textDeckName.text = deckName;
-                deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                if (_tutorialManager.IsTutorial)
+                {
+                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                }
+                else
+                {
+                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                }
                 deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
 
                 if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
