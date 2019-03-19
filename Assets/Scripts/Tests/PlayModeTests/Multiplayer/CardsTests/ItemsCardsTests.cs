@@ -1388,9 +1388,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerCardId, ItemPosition.Start);
                            player.LetsThink(2);
-                           playerZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowmanId);
-                           opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowmanId);
-                           
                        },
                        opponent =>
                        {
@@ -1399,6 +1396,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
+                           playerZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowmanId);
+                           opponentZnowman = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowmanId);
+
                            player.LetsThink(2);
                            player.AssertInQueue(() => {
                                Assert.NotNull(playerZnowman);

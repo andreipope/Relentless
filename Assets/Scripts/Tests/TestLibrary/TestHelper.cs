@@ -1154,9 +1154,6 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.ITEM:
                 {
-                    _testBroker.GetPlayer(_player).PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-                    _testBroker.GetPlayer(_player).PlayerCardsController.AddCardToBoard(boardUnitModel, position);
-
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
