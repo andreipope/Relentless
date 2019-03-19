@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
     {
 #if USE_PLASMA_DEV_ENVIRONMENT
         //DEV ENVIRONMENT (asia1)
-        public const string ContractAddressCardFaucet = "0xbd54b4b26ac8e4bd202b70f3fbad6b3d5a885eec";  
+        public const string ContractAddressCardFaucet = "0xb903ba7d4834b97b694d27f857eb44ade6bc70dd";  
         public const string ContractAddressBoosterPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
         public const string ContractAddressSuperPack = "0x60ab575af210cc952999976854e938447e919871";
         public const string ContractAddressAirPack = "0xb681fbf4b36c49e0811ee640cca1933ab57be81e";
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public const string FiatClaimURL = "https://dev-auth.loom.games/fiat/claim-orders";       
 #else
         //STAGING ENVIRONMENT
-        public const string ContractAddressCardFaucet = "0xa99d2de260dd88a46017d9187c381e1dfc9bb0d0";  
+        public const string ContractAddressCardFaucet = "0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41";  
         public const string ContractAddressBoosterPack = "0xdc745ac9945c981a63748a6b46dc31c2909bc865";
         public const string ContractAddressSuperPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
         public const string ContractAddressAirPack = "0x04aed4899e1514e9ebd3b1ea19d845d60f9eab95";
