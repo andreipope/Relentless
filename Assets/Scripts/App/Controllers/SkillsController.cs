@@ -1481,7 +1481,14 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal && targets != null)
             {
-                cards = targets.Select(card => card.BoardObject as BoardUnitModel).ToList();
+                List<BoardUnitModel> foundCards = new List<BoardUnitModel>();
+
+                foreach (ParametrizedAbilityBoardObject boardObject in targets)
+                {
+                    foundCards.Add(owner.CardsInGraveyard.FirstOrDefault(card => card.InstanceId.Id.ToString() == boardObject.Parameters.CardName));
+                }
+
+                cards = foundCards;
             }
             else
             {
@@ -1492,7 +1499,11 @@ namespace Loom.ZombieBattleground
                 cards = InternalTools.GetRandomElementsFromList(cards, skill.Count);
 
                 _targets = cards
-                    .Select(target => new ParametrizedAbilityBoardObject(target))
+                    .Select(target => new ParametrizedAbilityBoardObject(owner,
+                        new ParametrizedAbilityParameters()
+                        {
+                            CardName = target.InstanceId.Id.ToString()
+                        }))
                     .ToList();
             }
 
@@ -1533,18 +1544,17 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
-            BoardUnitView boardUnitView = _battlegroundController.CreateBoardUnit(owner, boardUnitModel, false);
+            BoardUnitView boardUnitView = _battlegroundController.CreateBoardUnit(owner, boardUnitModel);
 
             if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
             {
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.PlayArrivalAnimation();
+            boardUnitView.StopSleepingParticles();
 
             _gameplayManager.CanDoDragActions = true;
-
-            boardUnitView.StopSleepingParticles();
+            
             boardUnitView.ChangeModelVisibility(false);
 
             owner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);

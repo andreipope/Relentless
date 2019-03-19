@@ -96,14 +96,13 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
-            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel, false);
+            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.PlayArrivalAnimation();
             boardUnitView.StopSleepingParticles();
 
             GameplayManager.CanDoDragActions = true;
