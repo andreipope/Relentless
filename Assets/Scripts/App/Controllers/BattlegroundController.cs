@@ -1285,14 +1285,12 @@ namespace Loom.ZombieBattleground
                 workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
                 workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
-                RegisterBoardUnitView(_gameplayManager.CurrentPlayer, workingUnitView);
             }
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
                 workingUnitView = _gameplayManager.CurrentPlayer.PlayerCardsController.SpawnUnitOnBoard(cardInfo.Name, ItemPosition.End);
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                RegisterBoardUnitView(_gameplayManager.OpponentPlayer, workingUnitView);
             }
         }
 
