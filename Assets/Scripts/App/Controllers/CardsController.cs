@@ -393,8 +393,6 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {
-                _battlegroundController.UnregisterBoardUnitView(unitOwner, boardUnitView);
-
                 boardUnitModel.Die(true);
                 boardUnitView.DisposeGameObject();
 
@@ -515,8 +513,6 @@ namespace Loom.ZombieBattleground
                                             {
                                                 rankBuffAction.Action = null;
                                                 rankBuffAction.ForceActionDone();
-
-                                                _battlegroundController.UnregisterBoardUnitView(_gameplayManager.CurrentPlayer, boardUnitView);
 
                                                 boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true);

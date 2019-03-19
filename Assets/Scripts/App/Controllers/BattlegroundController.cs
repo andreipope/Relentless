@@ -288,7 +288,6 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
-                    UnregisterBoardUnitView(boardUnitModel.OwnerPlayer, boardUnitView);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
@@ -1086,17 +1085,30 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id, bool onlyCardsInPlay = false)
         {
-            BoardUnitModel boardUnitModel =
-                _gameplayManager.CurrentPlayer.CardsOnBoard
+            IEnumerable<BoardUnitModel> boardUnitModels;
+            if (!onlyCardsInPlay)
+            {
+                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
                     .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
                     .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
-                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+            }
+            else
+            {
+                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+            }
+
+            BoardUnitModel boardUnitModel =
+                boardUnitModels
                     .FirstOrDefault(model => model != null && model.Card.InstanceId == id);
 
             return boardUnitModel;
@@ -1104,7 +1116,7 @@ namespace Loom.ZombieBattleground
 
         public BoardObject GetBoardObjectByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id, true);
             if(boardUnitModel != null)
                 return boardUnitModel;
 

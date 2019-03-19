@@ -267,10 +267,10 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Error:
                 case LogType.Exception:
                 case LogType.Warning:
+                case LogType.Assert:
                     HandleError(condition, new Exception(condition + "\r\n" + stacktrace), type == LogType.Warning);
 
                     break;
-                case LogType.Assert:
                 case LogType.Log:
                     break;
             }

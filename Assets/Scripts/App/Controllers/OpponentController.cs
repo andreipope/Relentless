@@ -269,7 +269,6 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in boardUnits)
             {
-                _battlegroundController.UnregisterBoardUnitView(unit.Model.OwnerPlayer, unit);
                 unit.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit.Model);
 
                 unit.DisposeGameObject();

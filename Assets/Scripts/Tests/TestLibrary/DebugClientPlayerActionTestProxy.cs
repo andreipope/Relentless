@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground.Test
                 boardUnitModel.InstanceCard.Abilities
                     .Where(x =>
                         _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
-                        !_testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x))
+                        !(_testHelper.AbilitiesController.HasTargets(x) && _testHelper.AbilitiesController.IsAbilityCallsAtStart(x)))
                     .ToArray();
 
             foreach (AbilityData entryAbility in entryAbilities)
