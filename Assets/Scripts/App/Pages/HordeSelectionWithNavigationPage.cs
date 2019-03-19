@@ -862,9 +862,10 @@ namespace Loom.ZombieBattleground
             else
             {
                 List<Deck> decks = new List<Deck>();
+                List<Deck> deckListByFaction;
                 foreach (Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
                 {
-                    List<Deck> deckListByFaction = GetDeckListByElementToDisplay(faction);
+                    deckListByFaction = GetDeckListByElementToDisplay(faction);
                     if (deckListByFaction.Count <= 0)
                         continue;
     
