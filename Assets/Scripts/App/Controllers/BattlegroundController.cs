@@ -546,6 +546,9 @@ namespace Loom.ZombieBattleground
 
         public void StopTurn(GameState pvpControlGameState = null)
         {
+            if (TurnWaitingForEnd)
+                return;
+
             TurnWaitingForEnd = true;
 
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
@@ -562,11 +565,11 @@ namespace Loom.ZombieBattleground
                          {
                              _uiManager.DrawPopup<YourTurnPopup>();
 
-                             _timerManager.AddTimer((x) =>
+                             InternalTools.DoActionDelayed(() =>
                              {
                                  StartTurn();
                                  completeCallback?.Invoke();
-                             }, null, Constants.DelayBetweenYourTurnPopup);
+                             }, Constants.DelayBetweenYourTurnPopup);
                          }
                          else
                          {
