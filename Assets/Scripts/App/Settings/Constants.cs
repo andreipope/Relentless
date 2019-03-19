@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.13";
+        internal const string CurrentVersionBase = "0.1.14";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -145,8 +145,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string Opponent = "Opponent";
 
-        internal const float MatchmakingTimeOut = 120;
-
         internal const float TurnTime = 120;
 
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
@@ -161,8 +159,9 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float DescriptionTooltipMinimumShowTime = 2f;
 
-
         internal const float HandPointerSpeed = 4f;
+
+        internal const int BackendCallTimeout = 10000;
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
@@ -183,11 +182,11 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool MulliganEnabled = false;
 
-        public const bool AlwaysGuestLogin = false;
+        public static readonly bool AlwaysGuestLogin = false;
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public const bool DevModeEnabled = false;
+        public static readonly bool DevModeEnabled = false;
 
         public const bool UsingCardTooltips = false;
 
@@ -208,11 +207,22 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal const bool EnableShopPage = false;
+        internal static readonly bool EnableShopPage = true;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
+        internal const int LastTutorialId = 8;
+        
+        internal static readonly bool EnableNewUI = true;
+
+        internal const string MarketPlaceLink = "https://loom.games/en/browse";
+        
+        internal const string HelpLink = "https://loom.games/en/how-to-play";
+        
+        internal const string SupportLink = "https://loom.games/en/";
+
+        internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
     }
 }

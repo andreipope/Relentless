@@ -1,0 +1,3 @@
+﻿<linker>
+    <assembly fullname="log4net" preserve="all"/>
+</linker>

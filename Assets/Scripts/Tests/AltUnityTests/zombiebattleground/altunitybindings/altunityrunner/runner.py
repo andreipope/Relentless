@@ -234,7 +234,7 @@ class AltrunUnityDriver(object):
     
     def get_alt_element(self, data):
         print(data)
-        if (data != '' and 'error:' not in data):
+        if (data != '' and 'altUnityError:' not in data):
             alt_el = None
             try:
                 alt_el = AltElement(self, self.appium_driver, data)
@@ -253,7 +253,7 @@ class AltrunUnityDriver(object):
         return None
     
     def get_alt_elements(self, data):
-        if (data != '' and 'error:' not in data):
+        if (data != '' and 'altUnityError:' not in data):
             alt_elements = []
             elements = []
             try:

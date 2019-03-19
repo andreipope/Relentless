@@ -1,16 +1,13 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
-using Loom.ZombieBattleground.BackendCommunication;
-using Loom.ZombieBattleground.Test;
 using NUnit.Framework;
 using UnityEngine;
-using Stopwatch = System.Diagnostics.Stopwatch;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -18,7 +15,7 @@ namespace Loom.ZombieBattleground.Test
     {
         private static readonly ILog Log = Logging.GetLog(nameof(AsyncTestRunner));
 
-        private const int FlappyErrorMaxRetryCount = 4;
+        private const int FlappyErrorMaxRetryCount = 5;
 
         private static readonly string[] KnownErrors =
         {
@@ -26,16 +23,24 @@ namespace Loom.ZombieBattleground.Test
             "Invalid SortingGroup index set in Renderer"
         };
 
+        private static readonly string[] WarningsToTreatLikeError =
+        {
+            "An error inside a tween callback was silently taken care of"
+        };
+
         private static readonly string[] FlappyTestErrorSubstrings =
         {
             "RpcClientException",
-            "Call took longer than"
+            "WebSocketException",
+            "Call took longer than",
+            "invalid player"
         };
 
         public static AsyncTestRunner Instance { get; } = new AsyncTestRunner();
 
         private Task _currentRunningTestTask;
         private CancellationTokenSource _currentTestCancellationTokenSource;
+        private bool _shouldPauseOnErrorInsteadOfFailing;
 
         private Exception _cancellationReason;
 
@@ -74,9 +79,23 @@ namespace Loom.ZombieBattleground.Test
                             await GameSetUp();
                             await taskFunc();
                         }
+                        catch
+                        {
+                            _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
+                        }
                         finally
                         {
-                            await GameTearDown();
+                            if (!_shouldPauseOnErrorInsteadOfFailing)
+                            {
+                                await GameTearDown();
+                            }
+                            else
+                            {
+#if UNITY_EDITOR
+                                Log.Warn("Error Pause is enabled, Test execution paused due to an error");
+                                UnityEditor.EditorApplication.isPaused = true;
+#endif
+                            }
                         }
                     },
                     timeout,
@@ -198,15 +217,11 @@ namespace Loom.ZombieBattleground.Test
                 }
                 else
                 {
-                    if (e is OperationCanceledException)
+                    Exception rethrownException = e is OperationCanceledException ? _cancellationReason : e;
+                    Log.Error("", rethrownException);
+                    if (!_shouldPauseOnErrorInsteadOfFailing)
                     {
-                        Log.Error("", _cancellationReason);
-                        ExceptionDispatchInfo.Capture(_cancellationReason).Throw();
-                    }
-                    else
-                    {
-                        Log.Error("", e);
-                        ExceptionDispatchInfo.Capture(e).Throw();
+                        ExceptionDispatchInfo.Capture(rethrownException).Throw();
                     }
                 }
             }
@@ -225,23 +240,22 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        private bool IsFlappyException(Exception e)
-        {
-            string exceptionString = e.ToString();
-            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
-        }
-
         private void FinishCurrentTest()
         {
             _currentRunningTestTask = null;
             _currentTestCancellationTokenSource = null;
             _cancellationReason = null;
+            _shouldPauseOnErrorInsteadOfFailing = false;
         }
 
         private void CancelTestWithReason(Exception reason)
         {
+            if (_cancellationReason != null)
+                return;
+
             _cancellationReason = reason;
             _currentTestCancellationTokenSource.Cancel();
+            Log.Warn("=== CANCELING TEST WITH REASON: " + reason);
         }
 
         private void IgnoreAssertsLogMessageReceivedHandler(string condition, string stacktrace, LogType type)
@@ -250,16 +264,60 @@ namespace Loom.ZombieBattleground.Test
             {
                 case LogType.Error:
                 case LogType.Exception:
-                    if (KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1))
+                case LogType.Warning:
+                    if (IsKnownError(condition))
                         break;
 
-                    CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
+                    bool shouldCancel = true;
+                    if (type == LogType.Warning)
+                    {
+                        shouldCancel = IsWarningToTreatLikeError(condition);
+                    }
+
+                    if (shouldCancel)
+                    {
+                        CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
+                    }
+
                     break;
                 case LogType.Assert:
-                case LogType.Warning:
                 case LogType.Log:
                     break;
             }
+        }
+
+        private static bool IsFlappyException(Exception e)
+        {
+            string exceptionString = e.ToString();
+            return FlappyTestErrorSubstrings.Any(s => exceptionString.Contains(s));
+        }
+
+        private static bool IsKnownError(string condition)
+        {
+            return KnownErrors.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
+        }
+
+        private static bool IsWarningToTreatLikeError(string condition)
+        {
+            return WarningsToTreatLikeError.Any(knownError => condition.IndexOf(knownError, StringComparison.InvariantCultureIgnoreCase) != -1);
+        }
+
+        private static bool ShouldPauseOnErrorInsteadOfFailing()
+        {
+#if UNITY_EDITOR
+            if (Application.isBatchMode)
+                return false;
+
+            PropertyInfo consoleFlagsProperty =
+                typeof(UnityEditor.Editor).Assembly
+                    .GetType("UnityEditor.LogEntries")
+                    .GetProperty("consoleFlags", BindingFlags.Public | BindingFlags.Static);
+            int consoleFlagValue = (int) consoleFlagsProperty.GetValue(null, null);
+            const int errorPauseFlag = 4;
+            return (consoleFlagValue & errorPauseFlag) != 0;
+#else
+            return false;
+#endif
         }
     }
 }

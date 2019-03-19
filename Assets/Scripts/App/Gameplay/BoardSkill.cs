@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
         public HeroSkill Skill;
 
-        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
+        public List<Enumerators.UnitStatus> BlockedUnitStatusTypes;
 
         private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -32,6 +32,8 @@ namespace Loom.ZombieBattleground
         private readonly SkillsController _skillsController;
 
         private readonly BoardArrowController _boardArrowController;
+
+        private readonly BattlegroundController _battlegroundController;
 
         private readonly GameObject _glowObject;
 
@@ -61,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
+        public override Player OwnerPlayer { get; }
+
         public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;
@@ -72,11 +76,11 @@ namespace Loom.ZombieBattleground
             _cooldown = skillInfo.Cooldown;
             _singleUse = skillInfo.SingleUse;
 
-            BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+            BlockedUnitStatusTypes = new List<Enumerators.UnitStatus>();
 
             if(Skill.OverlordSkill == Enumerators.OverlordSkill.FREEZE)
             {
-                BlockedUnitStatusTypes.Add(Enumerators.UnitStatusType.FROZEN);
+                BlockedUnitStatusTypes.Add(Enumerators.UnitStatus.FROZEN);
             }
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
@@ -88,6 +92,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
@@ -177,7 +182,7 @@ namespace Loom.ZombieBattleground
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
                             case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardUnitModel);
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -223,8 +228,8 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
-                        _gameplayManager.OpponentPlayer.BoardCards :
-                        _gameplayManager.CurrentPlayer.BoardCards;
+                        _gameplayManager.OpponentPlayer.CardsOnBoard :
+                        _gameplayManager.CurrentPlayer.CardsOnBoard;
                     FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
                     FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
                     FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
@@ -314,7 +319,10 @@ namespace Loom.ZombieBattleground
 
         public void OnMouseDownEventHandler()
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions || _gameplayManager.IsGameplayInputBlocked)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle ||
+                !_gameplayManager.CanDoDragActions ||
+                _gameplayManager.IsGameplayInputBlocked ||
+                _battlegroundController.TurnWaitingForEnd)
                 return;
 
             if (!_gameplayManager.IsGameplayReady())
@@ -553,7 +561,7 @@ namespace Loom.ZombieBattleground
 
             private readonly SpriteRenderer _buffIconPicture;
 
-            private readonly TextMeshPro _callTypeText;
+            private readonly TextMeshPro _triggerText;
 
             private readonly TextMeshPro _descriptionText;
 
@@ -568,13 +576,13 @@ namespace Loom.ZombieBattleground
 
                 Transform.localPosition = position;
 
-                _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
+                _triggerText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = skill.Title.ToUpperInvariant();
+                _triggerText.text = skill.Title.ToUpperInvariant();
                 _descriptionText.text = "    " + skill.Description;
 
                 _buffIconPicture.sprite =

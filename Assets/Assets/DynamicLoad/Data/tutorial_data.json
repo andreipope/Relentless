@@ -134,11 +134,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -230,11 +225,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 2.4,
                 "Y": -0.4,
@@ -1331,8 +1321,8 @@
           "TutorialTooltipOwnerId": 1,
           "Description": "This is how much goo your card costs.",
           "Position": {
-            "X": 7.45,
-            "Y": -6,
+            "X": 5.65,
+            "Y": 5.7,
             "Z": 0
           },
           "AppearDelay": 2.3,
@@ -2205,11 +2195,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -2227,11 +2212,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -3006,11 +2986,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -3018,6 +2993,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
+              "TutorialObjectIdStepOwner": 10,
               "AppearDelay": 2.5
             }
           ]
@@ -3067,11 +3043,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 7.1,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 4,
                 "Y": -0.25,
@@ -3079,6 +3050,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
+              "TutorialObjectIdStepOwner": -1,
               "AppearDelay": 10
             }
           ]
@@ -3122,6 +3094,10 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
+          "RequiredActivitiesToDoneDuringStep": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed",
+          ],
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
@@ -3130,11 +3106,16 @@
         },
         {
           "ActionToEndThisStep": "DeathAbilityCompleted",
+          "RequiredActivitiesToDoneDuringStep": [
+          ],
           "ConnectedTurnIndex": 5,
           "AIShouldBePaused": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed",
+          ],
           "ConnectedTurnIndex": 5
         },
         {
@@ -3154,11 +3135,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": -1.55,
                 "Y": 3,
@@ -3242,7 +3218,7 @@
               "Name": "GooZilla",
               "TutorialObjectId": 20,
               "IsManuallyPlayable": true,
-              "BuffedHealth": 4,
+              "BuffedDefense": 4,
               "BuffedDamage": 4
             }
           ],
@@ -3805,7 +3781,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2,
+          "AppearDelay": 0,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
@@ -3844,12 +3820,16 @@
           }
         },
         {
+          "ActionToEndThisStep": "EndCardFlipPlayerOrderPopup",
+          "BeginGameplayFlowManually": true,
+          "PlayerOrderScreenCloseManually": true,
+        },
+        {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
           "PlayerOrderScreenCloseManually": true,
-          "BeginGameplayFlowManually": true
         },
         {
           "ActionToEndThisStep": "PopupClosed"

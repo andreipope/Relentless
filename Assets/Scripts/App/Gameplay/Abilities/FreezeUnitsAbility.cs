@@ -22,9 +22,9 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardUnitView unit in _opponent.BoardCards)
+            foreach (BoardUnitModel unit in _opponent.CardsOnBoard)
             {
-                unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
+                unit.Stun(Enumerators.StunType.FREEZE, Value);
             }
 
             InvokeUseAbilityEvent();

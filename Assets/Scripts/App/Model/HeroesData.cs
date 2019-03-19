@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.Data
 {
     public class HeroesData
     {
-        public List<Hero> Heroes { get; private set; }
+        public List<Hero> Heroes { get; }
 
         public HeroesData(List<Hero> heroes)
         {
@@ -19,24 +19,24 @@ namespace Loom.ZombieBattleground.Data
 
     public class Hero
     {
-        public int HeroId { get; private set; }
+        public int HeroId { get; }
 
-        public string Icon { get; private set; }
+        public string Icon { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public string ShortDescription { get; private set; }
+        public string ShortDescription { get; }
 
-        public string LongDescription { get; private set; }
+        public string LongDescription { get; }
 
         public long Experience { get; set; }
 
         public int Level { get; set; }
 
         [JsonProperty("Element")]
-        public Enumerators.SetType HeroElement { get; private set; }
+        public Enumerators.Faction HeroElement { get; private set; }
 
-        public List<HeroSkill> Skills { get; private set; }
+        public List<HeroSkill> Skills { get; }
 
         public Enumerators.OverlordSkill PrimarySkill;
 
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Data
             string longDescription,
             long experience,
             int level,
-            Enumerators.SetType heroElement,
+            Enumerators.Faction heroElement,
             List<HeroSkill> skills,
 
             Enumerators.OverlordSkill primaryAbility,
@@ -84,23 +84,23 @@ namespace Loom.ZombieBattleground.Data
 
     public class HeroSkill
     {
-        public int Id { get; private set; }
+        public int Id { get; }
 
-        public string Title { get; private set; }
+        public string Title { get; }
 
-        public string IconPath { get; private set; }
+        public string IconPath { get; }
 
-        public string Description { get; private set; }
+        public string Description { get; }
 
-        public int Cooldown { get; private set; }
+        public int Cooldown { get; }
 
-        public int InitialCooldown { get; private set; }
+        public int InitialCooldown { get; }
 
-        public int Value { get; private set; }
+        public int Value { get; }
 
-        public int Attack { get; private set; }
+        public int Attack { get; }
 
-        public int Count { get; private set; }
+        public int Count { get; }
 
         [JsonProperty("Skill")]
         public Enumerators.OverlordSkill OverlordSkill { get; private set; }
@@ -109,16 +109,16 @@ namespace Loom.ZombieBattleground.Data
         public List<Enumerators.SkillTargetType> SkillTargetTypes { get; private set; }
 
         [JsonProperty("TargetUnitSpecialStatus")]
-        public Enumerators.UnitStatusType TargetUnitStatusType { get; private set; }
+        public Enumerators.UnitStatus TargetUnitStatusType { get; private set; }
 
         [JsonProperty("ElementTargets")]
-        public List<Enumerators.SetType> ElementTargetTypes { get; private set; }
+        public List<Enumerators.Faction> ElementTargetTypes { get; private set; }
 
         public bool Unlocked { get; set; }
 
-        public bool CanSelectTarget { get; private set; }
+        public bool CanSelectTarget { get; }
 
-        public bool SingleUse { get; private set; }
+        public bool SingleUse { get; }
 
         public HeroSkill(
             int id,
@@ -132,8 +132,8 @@ namespace Loom.ZombieBattleground.Data
             int count,
             Enumerators.OverlordSkill overlordSkill,
             List<Enumerators.SkillTargetType> skillTargetTypes,
-            Enumerators.UnitStatusType targetUnitStatusType,
-            List<Enumerators.SetType> elementTargetTypes,
+            Enumerators.UnitStatus targetUnitStatusType,
+            List<Enumerators.Faction> elementTargetTypes,
             bool unlocked,
             bool canSelectTarget,
             bool singleUse)
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground.Data
             OverlordSkill = overlordSkill;
             SkillTargetTypes = skillTargetTypes ?? new List<Enumerators.SkillTargetType>();
             TargetUnitStatusType = targetUnitStatusType;
-            ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.SetType>();
+            ElementTargetTypes = elementTargetTypes ?? new List<Enumerators.Faction>();
             CanSelectTarget = canSelectTarget;
             Unlocked = unlocked;
             SingleUse = singleUse;

@@ -428,7 +428,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1707410455269388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.92, z: 0}
+  m_LocalPosition: {x: 23.87, y: -1.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4025547853480930}
@@ -487,12 +487,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardName: 
   cardNameOfAbility: 0
-  delayBeforeEffect: 6
-  delayAfterEffect: 3
-  delayForChangeState: 2.5
+  delayBeforeEffect: 3
+  delayAfterEffect: 0.45
+  delayForChangeState: 0.45
   soundName: CZB_AUD_Earthshaker_F1_EXP
   delayForSound: 2
   offset: {x: 0, y: 0, z: 0}
+  localOffset: {x: 0, y: 0, z: 0}
+  isRotate: 0
   positionInfo:
     type: 0
 --- !u!198 &198080471752463526
@@ -514,7 +516,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.2
+    scalar: 0.25
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -1410,7 +1412,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -5212,7 +5214,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.15
+    scalar: 0.2
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -6072,7 +6074,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.45333
+      time: 0.12
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -9964,7 +9966,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -14617,7 +14619,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -15477,7 +15479,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -19360,7 +19362,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.3
+    scalar: 0.35
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -20220,7 +20222,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.45333
+      time: 0.12
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -23968,7 +23970,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.15
+    scalar: 0.2
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -24828,7 +24830,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.45333
+      time: 0.12
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -28720,7 +28722,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -29580,7 +29582,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -33382,7 +33384,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.15
+    scalar: 0.2
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -34242,7 +34244,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.45333
+      time: 0.12
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -38134,7 +38136,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -38994,7 +38996,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -42877,7 +42879,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.1
+    scalar: 0.15
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -43737,7 +43739,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -47494,7 +47496,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.2
+    scalar: 0.25
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -48390,7 +48392,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -52165,7 +52167,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -53025,7 +53027,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -56827,7 +56829,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 0.95
+    scalar: 0
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -57687,7 +57689,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.333
+      time: 0
       countCurve:
         serializedVersion: 2
         minMaxState: 0
@@ -61570,7 +61572,7 @@ ParticleSystem:
   startDelay:
     serializedVersion: 2
     minMaxState: 0
-    scalar: 1.15
+    scalar: 0.2
     minScalar: 0
     maxCurve:
       serializedVersion: 2
@@ -62430,7 +62432,7 @@ ParticleSystem:
     m_BurstCount: 1
     m_Bursts:
     - serializedVersion: 2
-      time: 1.45333
+      time: 0.12
       countCurve:
         serializedVersion: 2
         minMaxState: 0

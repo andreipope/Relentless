@@ -23,15 +23,15 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitHpChangedHandler()
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            base.UnitHpChangedHandler();
+            base.UnitHpChangedHandler(oldValue, newValue);
 
             if (!PvPManager.UseBackendGameLogic)
             {
                 if (!_wasChanged)
                 {
-                    if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                    if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
                     {
                         _wasChanged = true;
                         AbilityUnitOwner.BuffedDamage += Value;
@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                    if (AbilityUnitOwner.CurrentDefense >= AbilityUnitOwner.MaxCurrentDefense)
                     {
                         AbilityUnitOwner.BuffedDamage -= Value;
                         AbilityUnitOwner.CurrentDamage -= Value;

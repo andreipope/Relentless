@@ -39,11 +39,12 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                foreach (BoardUnitView unit in Ability.PlayerCallerOfAbility.BoardCards)
+                foreach (BoardUnitModel unit in Ability.PlayerCallerOfAbility.CardsOnBoard)
                 {
-                    Vector3 targetPosition = unit.Transform.position;
+                    BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    Vector3 targetPosition = unitView.Transform.position;
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.SetParent(unit.Transform, false);
+                    VfxObject.transform.SetParent(unitView.Transform, false);
                     VfxObject.transform.localPosition = Vector3.zero;
                     ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
                 }

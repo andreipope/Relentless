@@ -72,25 +72,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CardsInPlay =
                 {
                     player.CardsOnBoard
-                        .Concat(player.BoardCards.Select(card => card.Model.Card))
-                        .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInDeck =
                 {
-                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInDeck.Select(card => card.Card.ToProtobuf()).ToArray()
                 },
                 CardsInHand =
                 {
                     player.CardsInHand
                         .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInGraveyard =
                 {
-                    player.CardsInGraveyard.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInGraveyard.Select(card => card.Card.ToProtobuf()).ToArray()
                 }
             };
 
@@ -111,7 +109,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return playerState;
         }
 
-        private  GameState CreateGameState(int currentActionIndex, bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
+        private GameState CreateGameState(int currentActionIndex, bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
         {
             Player player0 = isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
             Player player1 = !isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;

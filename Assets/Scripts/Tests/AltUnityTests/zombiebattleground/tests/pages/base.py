@@ -28,11 +28,12 @@ class CZBTests(unittest.TestCase):
         self.desired_caps = {}
         if (self.platform == "android"):
             self.setup_android()
-            self.get_android_device_screen_size()
+            # self.get_android_device_screen_size()
         else:
             self.setup_ios()
         self.driver = webdriver.Remote(
             'http://localhost:4723/wd/hub', self.desired_caps)
+        self.get_appium_device_screen_size()
         self.altdriver = AltrunUnityDriver(self.driver, self.platform,screen_height=self.device_screen_height,screen_width=self.device_screen_width)
         self.altdriver.wait_for_current_scene_to_be('APP_INIT')
         try:
@@ -61,6 +62,15 @@ class CZBTests(unittest.TestCase):
         self.desired_caps['automationName'] = 'XCUITest'
         self.desired_caps['app'] = PATH('../application.ipa')
         self.desired_caps['orientation']='LANDSCAPE'
+    
+    def get_appium_device_screen_size(self):
+        size=self.driver.get_window_size()
+        print(size)
+        self.device_screen_height=size['height']
+        self.device_screen_width=size['width']
+        print(self.device_screen_height)
+        print(self.device_screen_width)
+
 
     def get_android_device_screen_size(self):
         # The output of the command looks like this:
@@ -68,14 +78,14 @@ class CZBTests(unittest.TestCase):
         # Override size: 1080x1920
         # Also it can only have just the first line if the device uses the physical size resolution
 
-        sub = subprocess.Popen(['adb','shell','wm','size'], shell=True,
+        sub = subprocess.Popen(['adb','shell','wm','size'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
         commant_output=sub.stdout.read()
         if('error:' in commant_output):
             print(commant_output)
         else:
-            splited_text=commant_output.split("\r\n")
+            splited_text=commant_output.split("\n")
             print(splited_text)
             if(len(splited_text)==3):
                 screen_size=splited_text[1].split(" ")[2]
@@ -126,7 +136,8 @@ class CZBTests(unittest.TestCase):
         self.altdriver.wait_for_element('HiddenUI')
         self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','true','UnityEngine.CoreModule')
         self.altdriver.find_element('InputField').set_component_property('UnityEngine.UI.InputField','text',tutorialNumber,'UnityEngine.UI')
-        self.altdriver.find_element('JumpToTutorial').mobile_tap()
+        time.sleep(1)
+        self.altdriver.find_element('JumpToTutorial').tap()
         self.altdriver.find_element('Root',enabled=False).call_component_method('UnityEngine.GameObject','SetActive','false','UnityEngine.CoreModule')
     def jump_to_tutorial_from_another_tutorial(self,tutorialNumber):
         self.altdriver.wait_for_element('HiddenUI')

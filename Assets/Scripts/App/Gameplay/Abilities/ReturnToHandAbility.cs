@@ -34,11 +34,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel(TargetUnit).Transform.position;
+            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(TargetUnit));
+            CardsController.ReturnCardToHand(TargetUnit);
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>

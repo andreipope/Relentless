@@ -19,13 +19,13 @@ namespace Loom.ZombieBattleground
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
+                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = UnityEngine.Object.Instantiate(VfxObject);
-                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
+                VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position);
                 targetPosition = Utilites.CastVfxPosition(targetPosition);
                 VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
@@ -46,14 +46,14 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
-                foreach (Enumerators.AbilityTargetType target in Ability.TargetTypes)
+                foreach (Enumerators.Target target in Ability.TargetTypes)
                 {
                     switch (target)
                     {
-                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             CreateVfx(Utilites.CastVfxPosition(Ability.GetOpponentOverlord().AvatarObject.transform.position), true, 5f, true);
                             break;
-                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             CreateVfx(Utilites.CastVfxPosition(Ability.PlayerCallerOfAbility.AvatarObject.transform.position), true, 5f, true);
                             break;
                         default:

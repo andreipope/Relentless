@@ -10,20 +10,20 @@ namespace Loom.ZombieBattleground
     public class BlitzAbility : AbilityBase
     {
         private int Count { get; }
-        private Enumerators.SetType SetType { get; }
+        private Enumerators.Faction Faction { get; }
 
         public BlitzAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -33,26 +33,25 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitView> units = new List<BoardUnitView>();
+                List<BoardUnitModel> units = new List<BoardUnitModel>();
 
                 if (PredefinedTargets != null)
                 {
-                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().
-                             Select(model => BattlegroundController.GetBoardUnitViewByModel(model)).ToList();
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().ToList();
                 }
                 else
                 {
-                    foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                    foreach (Enumerators.Target targetType in AbilityTargetTypes)
                     {
                         switch (targetType)
                         {
-                            case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                            case Enumerators.Target.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
                                 break;
-                            case Enumerators.AbilityTargetType.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Model.Card.LibraryCard.CardSetType == SetType));
+                            case Enumerators.Target.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
                                 break;
                         }
                     }
@@ -60,14 +59,14 @@ namespace Loom.ZombieBattleground
                     units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
 
-                foreach (BoardUnitView unit in units)
+                foreach (BoardUnitModel unit in units)
                 {
-                    TakeBlitzToUnit(unit.Model);
+                    TakeBlitzToUnit(unit);
                 }
 
                 InvokeUseAbilityEvent(
                     units
-                        .Select(x => new ParametrizedAbilityBoardObject(x.Model))
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
                         .ToList()
                 );
             }
@@ -86,7 +85,6 @@ namespace Loom.ZombieBattleground
         private void TakeBlitzToUnit(BoardUnitModel unit)
         {
             unit.ApplyBuff(Enumerators.BuffType.BLITZ);
-            unit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
         }
     }
 }

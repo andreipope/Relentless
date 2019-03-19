@@ -16,14 +16,14 @@ namespace Loom.ZombieBattleground
     public class MulliganPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
-        public event Action<List<WorkingCard>> MulliganCards;
+        public event Action<List<BoardUnitModel>> MulliganCards;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
         private IGameplayManager _gameplayManager;
         private ISoundManager _soundManager;
 
-        private GameObject _spellCardPrefab,
+        private GameObject _itemCardPrefab,
                            _unitCardPrefab;
 
         private GameObject _panelDeckObject,
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
 
-            _spellCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Spell");
+            _itemCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Spell");
             _unitCardPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/Mulligan/MulliganCard_Unit");
         }
 
@@ -128,9 +128,9 @@ namespace Loom.ZombieBattleground
             GameObject prefab = null;
             MulliganCardItem item = null;
             int index = 0;
-            foreach (WorkingCard card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                prefab = card.LibraryCard.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _spellCardPrefab;
+                prefab = card.Prototype.CardKind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _itemCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
                 _mulliganCardItems.Add(item);
                 item.eventHandler.DragBegan += DragBeganEventHandler;
@@ -206,17 +206,17 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
-                _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.card).ToList());
+                _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.BoardUnitModel).ToList());
             }
 
-            InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.card).ToList());
+            InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.BoardUnitModel).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<MulliganPopup>();
         }    
 
-        public void InvokeMulliganCardsEvent(List<WorkingCard> cards) 
+        public void InvokeMulliganCardsEvent(List<BoardUnitModel> cards)
         {
             MulliganCards?.Invoke(cards);
         }    
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject selfObject;
 
-        public WorkingCard card;
+        public BoardUnitModel BoardUnitModel;
 
         public int lastIndex;
 
@@ -246,9 +246,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isFirstUpdatePosition = false;
 
-        public MulliganCardItem(GameObject prefab, Transform parent, WorkingCard card)
+        public MulliganCardItem(GameObject prefab, Transform parent, BoardUnitModel boardUnitModel)
         {
-            this.card = card;
+            this.BoardUnitModel = boardUnitModel;
 
             selfObject = Object.Instantiate(prefab, parent, false);
 
@@ -256,19 +256,19 @@ namespace Loom.ZombieBattleground
 
             eventHandler = selfObject.transform.GetComponent<OnBehaviourHandler>();
 
-            switch (card.LibraryCard.CardKind)
+            switch (boardUnitModel.Prototype.CardKind)
             {
                 case Enumerators.CardKind.CREATURE:
                     _cardElement = new UnitCardElement(selfObject);
                     break;
-                case Enumerators.CardKind.SPELL:
-                    _cardElement = new SpellCardElement(selfObject);
+                case Enumerators.CardKind.ITEM:
+                    _cardElement = new ItemCardElement(selfObject);
                     break;
                 default:
                     break;
             }
 
-            _cardElement.Init(card);
+            _cardElement.Init(boardUnitModel.Card, cardPicture: BoardUnitModel.CardPicture);
         }
 
         public void SetChangedState(bool state)

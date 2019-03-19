@@ -17,9 +17,6 @@ namespace Loom.ZombieBattleground {
     <!-- mark.js -->
     <script src=""https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js""></script>
 
-    <!-- readmore.js -->
-    <script src=""https://fastcdn.org/Readmore.js/2.1.0/readmore.min.js""></script>
-
     <style type=""text/css"">
         .table td.fit,
         .table th.fit {
@@ -34,7 +31,21 @@ namespace Loom.ZombieBattleground {
 
         #loading-modal
         {
+            display: block;
             background: rgba(255, 255, 255, 0.8);
+        }
+
+        #loading-modal h4
+        {
+            width: 100%;
+        }
+
+        #log-table {
+            display: none;
+        }
+
+        .collapsed-message {
+            overflow: hidden;
         }
 
         {{CUSTOM_CSS}}
@@ -44,6 +55,15 @@ namespace Loom.ZombieBattleground {
         var filteredCellIndexes = [ {{FILTERED_CELL_INDEXES}} ]
         var maxTextLengthBeforeCollapse = {{MAX_TEXT_LENGTH_BEFORE_COLLAPSE}}
 
+        var checkIfMustUseExpandCollapseFunction = function(row, index) {
+            return row.cellsText[index].length > maxTextLengthBeforeCollapse
+        }
+
+        var logTable = null
+        var filterInput = null
+        var logsRows = null
+        var currentMark = null
+
         function wrapElement (toWrap, wrapper) {
             wrapper = wrapper || document.createElement('div');
             toWrap.parentNode.appendChild(wrapper);
@@ -51,54 +71,110 @@ namespace Loom.ZombieBattleground {
         };
 
         function debounce(func, wait, immediate) {
-        	var timeout;
-        	return function() {
-        		var context = this, args = arguments;
-        		var later = function() {
-        			timeout = null;
-        			if (!immediate) func.apply(context, args);
-        		};
-        		var callNow = immediate && !timeout;
-        		clearTimeout(timeout);
-        		timeout = setTimeout(later, wait);
-        		if (callNow) func.apply(context, args);
-        	};
+            var timeout;
+            return function() {
+                var context = this, args = arguments;
+                var later = function() {
+                    timeout = null;
+                    if (!immediate) func.apply(context, args);
+                };
+                var callNow = immediate && !timeout;
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+                if (callNow) func.apply(context, args);
+            };
         };
-        
+
+        function setRowVisible(row, visible) {
+            if (row.visible == visible)
+                return
+
+            row.visible = visible
+            if (visible) {
+                $(row.row).show()
+            } else {
+                $(row.row).hide()
+            }
+        }
+
         function handleFilter() {
-            var value = $(""#filter"").val().toLowerCase().trim();
+            var value = filterInput.val().toLowerCase().trim();
             if (currentMark != null) {
+                logTable.hide()
                 currentMark.unmark()
             }
 
-            filteredCells = []
+            var forceVisible = false
+            if (value.length < 2) {
+                forceVisible = true
+            }
+
+            logTable.hide()
+
+            var filteredCells = []
             logsRows.forEach(function(row) {
-                visible = false
+                var visible = false
                 for (index = 0; index < row.cells.length; ++index) {
-                    cellText = row.cellsText[index]
-                    if (cellText.includes(value)) {
+                    if (forceVisible || row.cellsText[index].includes(value)) {
                         visible = true
                         filteredCells.push(row.cells[index])
                     }
                 }
-    
-                if (visible) {
-                    $(row.row).show()
-                } else {
-                    $(row.row).hide()
-                }
+
+                setRowVisible(row, visible)
             })
-    
-            if (value.length > 1) {
+
+            if (!forceVisible) {
                 currentMark = new Mark(filteredCells)
-                currentMark.mark(value)
+                currentMark.mark(value, {
+                    'separateWordSearch': false
+                })
             }
+
+            logTable.show()
         }
 
-        var logsRows = $(""#log-table tr:not(.special-row)"").toArray().splice(1)
-        var currentMark = null
+        function addExpandCollapse(element) {
+            const collapsedAttributeName = 'aria-collapsed'
+            function switchState(link, container) {
+                var isCollapsed = link.getAttribute(collapsedAttributeName) == 'true'
+                isCollapsed = !isCollapsed
+                setState(link, container, isCollapsed)
+            }
+
+            function setState(link, container, isCollapsed) {
+                const expandString = ""Expand""
+                const collapseString = ""Collapse""
+
+                link.innerText = isCollapsed ? expandString : collapseString
+                height = isCollapsed ? ""{{COLLAPSED_TEXT_HEIGHT}}"" + ""px"" : ""none""
+                $(container).css({ maxHeight: height })
+                link.setAttribute(collapsedAttributeName, isCollapsed)
+            }
+
+            var wrapper = document.createElement('div')
+            wrapper.classList.add('collapsed-message')
+            wrapElement(element, wrapper)
+
+            var link = document.createElement('a')
+            link.href = ""#""
+            link.setAttribute(collapsedAttributeName, false)
+            wrapper.parentNode.appendChild(link)
+
+            link.onclick = function(e) {
+                e.preventDefault()
+                switchState(link, wrapper)
+            }
+            setState(link, wrapper, true)
+        }
+
+        {{JS_BEFORE_LOAD}}
 
         // Preload data
+        logTable = $('#log-table')
+        logsRows = $(""#log-table tr:not(.special-row)"").toArray().splice(1)
+        filterInput = $(""#filter"")
+
         logsRows = logsRows.map(function(row) {
             cells = Array.from(row.querySelectorAll('td'))
             cells = filteredCellIndexes.map(function(x) { return cells[x] })
@@ -106,34 +182,31 @@ namespace Loom.ZombieBattleground {
             return {
                 'row': row,
                 'cells': cells,
-                'cellsText': cellsText
+                'cellsText': cellsText,
+                'visible': true
             }
         })
 
         // Apply expand/collapse
         logsRows.forEach(function(row) {
             for (index = 0; index < row.cells.length; ++index) {
-                if (row.cellsText[index].length > maxTextLengthBeforeCollapse) {
-                    wrapper = document.createElement('div')
-                    wrapper.style = 'overflow: hidden;'
-                    wrapElement(row.cells[index].childNodes[0], wrapper)
-                    $(wrapper).readmore({
-                        collapsedHeight: {{COLLAPSED_TEXT_HEIGHT}},
-                        moreLink: '<a href=""#"">Expand</a>',
-                        lessLink: '<a href=""#"">Collapse</a>',
-                    });
+                if (checkIfMustUseExpandCollapseFunction(row, index)) {
+                    addExpandCollapse(row.cells[index].childNodes[0])
                 }
             }
         })
 
         // Handle filter field
-        $(""#filter"").on(""keyup"", debounce(function() {
+        filterInput.on(""keyup"", debounce(function() {
             handleFilter()
         }, 250, false));
 
         handleFilter()
-        
+
+        {{JS_AFTER_LOAD}}
+
         // Finish loading
+        logTable.show()
         $('#loading-modal').hide()
     });
     </script>
@@ -145,7 +218,7 @@ namespace Loom.ZombieBattleground {
                     <div class=""modal-dialog modal-dialog-centered"">
                         <div class=""modal-content"">
                             <div class=""modal-header"">
-                                <h4 class=""modal-title text-center"" style=""width: 100%;"">Loading...</h4>
+                                <h4 class=""modal-title text-center"">Loading...</h4>
                             </div>
                         </div>
                     </div>

@@ -57,13 +57,13 @@ namespace Loom.ZombieBattleground
         {
             if (report != null)
             {
-                if (report.checkForCardOwner && !ActionsReports.Exists(x => x.workingCard == report.workingCard))
+                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.Model == report.Model))
                 {
                     _bufferActionsReports.Add(report);
                 }
                 else
                 {
-                    AddNewPostGameActionReport(report, !report.checkForCardOwner);
+                    AddNewPostGameActionReport(report, !report.CheckForCardOwner);
                 }
             }
         }
@@ -198,6 +198,8 @@ namespace Loom.ZombieBattleground
             {
                 if (_actionsToDo.IndexOf(previousAction) == 0)
                 {
+                    _actionsToDo.Remove(previousAction);
+
                     if (ActionInProgress == previousAction || ActionInProgress == null)
                     {
                         TryCallNewActionFromQueue();
@@ -207,8 +209,10 @@ namespace Loom.ZombieBattleground
                         ActionInProgress = null;
                     }
                 }
-
-                _actionsToDo.Remove(previousAction);
+                else
+                {
+                    _actionsToDo.Remove(previousAction);
+                }
             }
             else
             {
@@ -300,7 +304,7 @@ namespace Loom.ZombieBattleground
             catch (Exception ex)
             {
                 ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Log.Error("", actionSystemException);
+                Log.Error(actionSystemException.ToString());
                 Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 ActionDoneCallback();

@@ -1,4 +1,4 @@
-from base import CZBTests
+from .base import CZBTests
 import time
 
 
@@ -28,7 +28,7 @@ class Gameplay_Page(CZBTests):
             'id('+str(cards[cardPosition].id)+')/GooText')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
                           int(self.player_board.x), int(self.player_board.mobileY), 2000)
-        time.sleep(3)
+        time.sleep(4)
 
     def get_player_board_creatures(self):
         cards=self.altdriver.find_elements('PlayerBoard/BoardCreature(Clone)')
@@ -41,7 +41,8 @@ class Gameplay_Page(CZBTests):
 
     def end_turn_and_wait_for_your_turn(self):
         self.end_turn_button.mobile_tap()
-        self.altdriver.wait_for_element_to_not_be_present('id('+str(self.end_turn_button.id)+')/EndTurnGlowEffect', timeout=60)
+        time.sleep(4)
+        self.altdriver.wait_for_element('YourTurnPopup(Clone)')
         self.altdriver.wait_for_element('id('+str(self.end_turn_button.id)+')/EndTurnGlowEffect', timeout=60)
         time.sleep(5)#sleep is to wait for the card player draws go to player hand
     
