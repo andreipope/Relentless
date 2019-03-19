@@ -1483,7 +1483,7 @@ namespace Loom.ZombieBattleground
             {
                 List<BoardUnitModel> foundCards = new List<BoardUnitModel>();
 
-                foreach(ParametrizedAbilityBoardObject boardObject in targets)
+                foreach (ParametrizedAbilityBoardObject boardObject in targets)
                 {
                     foundCards.Add(owner.CardsInGraveyard.FirstOrDefault(card => card.InstanceId.Id.ToString() == boardObject.Parameters.CardName));
                 }
@@ -1508,28 +1508,31 @@ namespace Loom.ZombieBattleground
             }
 
             List<BoardUnitView> units = new List<BoardUnitView>();
+            BoardUnitView reanimatedUnit = null;
 
             foreach (BoardUnitModel card in cards)
             {
+                if (card == null)
+                    continue;
+
                 if (owner.CardsOnBoard.Count >= owner.MaxCardsInPlay)
                     break;
 
-                units.Add(owner.PlayerCardsController.SpawnUnitOnBoard(
-                    card,
-                    ItemPosition.End,
-                    onComplete: () =>
-                    {
-                        ReanimateUnit(units);
-                    }));
-                units[units.Count - 1].ChangeModelVisibility(false);
-                owner.PlayerCardsController.RemoveCardFromGraveyard(card);
+                card.ResetToInitial();
 
+                reanimatedUnit = CreateBoardUnit(card, owner);
+                units.Add(reanimatedUnit);
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Reanimate,
-                    Target = units[units.Count - 1]
+                    Target = reanimatedUnit
                 });
             }
+
+            _gameplayManager.GetController<BoardController>().UpdateCurrentBoardOfPlayer(owner, () =>
+            {
+                ReanimateUnit(units);
+            });
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -1537,6 +1540,34 @@ namespace Loom.ZombieBattleground
                 Caller = boardSkill,
                 TargetEffects = targetEffects
             });
+        }
+
+        private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
+        {
+            BoardUnitView boardUnitView = _battlegroundController.CreateBoardUnit(owner, boardUnitModel);
+
+            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+            {
+                boardUnitView.Model.IsPlayable = true;
+            }
+
+            boardUnitView.StopSleepingParticles();
+
+            _gameplayManager.CanDoDragActions = true;
+            
+            boardUnitView.ChangeModelVisibility(false);
+
+            owner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
+
+            owner.PlayerCardsController.AddCardToBoard(boardUnitView.Model, ItemPosition.End);
+
+            if (owner.IsLocalPlayer)
+            {
+                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, boardUnitModel, owner);
+            }
+            _battlegroundController.RegisterBoardUnitView(owner, boardUnitView);
+
+            return boardUnitView;
         }
 
         private void ReanimateUnit(List<BoardUnitView> units)
@@ -1548,16 +1579,6 @@ namespace Loom.ZombieBattleground
                 InternalTools.DoActionDelayed(() =>
                 {
                     unit.ChangeModelVisibility(true);
-
-                    if (!unit.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
-                    {
-                        unit.Model.IsPlayable = true;
-                    }
-
-                    if (unit.Model.OwnerPlayer.IsLocalPlayer)
-                    {
-                        _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.OwnerPlayer);
-                    }
                 }, 3f);
             }
         }
