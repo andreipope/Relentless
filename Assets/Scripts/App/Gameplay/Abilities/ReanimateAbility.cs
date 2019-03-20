@@ -42,11 +42,29 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            AbilityUnitOwner.ResetToInitial();
-            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
-            _reanimatedUnit.Model.IsReanimated = true;
 
             owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
+
+            AbilityUnitOwner.ResetToInitial();
+            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
+            AbilityUnitOwner.IsReanimated = true;
+
+            if (_reanimatedUnit != null)
+            {
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
+            }
+
+            if (PlayerCallerOfAbility.IsLocalPlayer)
+            {
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+            }
+            else
+            {
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
+            }
+
+            AbilityUnitOwner.Owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
             InvokeActionTriggered(_reanimatedUnit);
         }
@@ -73,23 +91,6 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction?.ForceActionDone();
 
             base.UnitDiedHandler();
-
-            if (_reanimatedUnit != null)
-            {
-                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
-            }
-
-            AbilityUnitOwner.Owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
-
-            if (PlayerCallerOfAbility.IsLocalPlayer)
-            {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
-            }
-            else
-            {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
-            }
 
             _gameplayManager.CanDoDragActions = true;
         }
