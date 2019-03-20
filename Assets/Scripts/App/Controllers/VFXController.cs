@@ -568,7 +568,6 @@ namespace Loom.ZombieBattleground
             {
                 AnimationEventReceived("End");
             }
-
             DestroyUnitTriggered?.Invoke(this);
         }
 

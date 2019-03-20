@@ -281,13 +281,14 @@ namespace Loom.ZombieBattleground
             {
                 Action endOfDestroyAnimationCallback = () =>
                 {
-                    boardUnitView.DisposeGameObject();
+                    boardUnitView.GameObject.SetActive(false);
 
                     boardUnitView.WasDestroyed = true;
                 };
 
                 Action endOfAnimationCallback = () =>
                 {
+                    boardUnitView.DisposeGameObject();
                     boardUnitModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
@@ -312,8 +313,8 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    endOfAnimationCallback();
                     endOfDestroyAnimationCallback();
+                    endOfAnimationCallback();
 
                     if (updateBoard)
                     {
