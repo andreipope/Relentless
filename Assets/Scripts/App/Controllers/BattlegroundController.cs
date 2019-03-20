@@ -1029,7 +1029,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetByInstanceId(InstanceId id) {
+        public BoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true) {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
@@ -1040,12 +1040,15 @@ namespace Loom.ZombieBattleground
             if (boardUnitModelById != null)
                 return boardUnitModelById;
 
-            BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
-            if (card != null)
+            if (createHandCardByDefault)
             {
-                BoardCardView boardCardView = CreateCustomHandBoardCard(card);
-                Object.Destroy(boardCardView.GameObject);
-                return boardCardView.HandBoardCard;
+                BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
+                if (card != null)
+                {
+                    BoardCardView boardCardView = CreateCustomHandBoardCard(card);
+                    Object.Destroy(boardCardView.GameObject);
+                    return boardCardView.HandBoardCard;
+                }
             }
 
             return null;
