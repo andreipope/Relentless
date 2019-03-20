@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
             }
             
             _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
-            _buttonQuit.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.MAIN_MENU);
+            _buttonQuit.gameObject.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
         }
 
         public void Show(object data)
