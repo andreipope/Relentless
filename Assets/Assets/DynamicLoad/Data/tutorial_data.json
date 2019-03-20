@@ -806,7 +806,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "It's time to BATTLE!",
           "Position": {
-            "X": 8,
+            "X": 9,
             "Y": -1.9,
             "Z": 0
           },
@@ -850,7 +850,6 @@
         },
         {
           "Id": 7,
-          "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "UI",
           "Description": "Open your pack.",
           "Position": {
@@ -912,7 +911,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -946,7 +946,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -963,7 +964,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -1036,7 +1038,8 @@
             "Button_DeckIcon_1",
             "Button_DeckIcon_2",
             "Button_DeckIcon_3",
-            "Button_DeckIcon_4"
+            "Button_DeckIcon_4",
+            "Button_DeckIcon_5"
           ],
           "HandPointers": [
             {
@@ -2061,7 +2064,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -2095,7 +2099,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -2112,7 +2117,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -2966,7 +2972,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3000,7 +3007,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -3904,7 +3912,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3938,7 +3947,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -4275,7 +4285,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2,
+          "AppearDelay": 0.5,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
