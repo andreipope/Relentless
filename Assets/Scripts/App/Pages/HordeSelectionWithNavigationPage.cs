@@ -805,7 +805,9 @@ namespace Loom.ZombieBattleground
         private void UpdatePageDotObjects(List<Deck> deckList)
         {
             foreach (Transform child in _paginationGroup)
+            {
                 Object.Destroy(child.gameObject);
+            }
             
             int page = _deckPageIndex;
             int maxPage = GetDeckPageAmount(deckList);
@@ -889,9 +891,10 @@ namespace Loom.ZombieBattleground
         {
             bool isAvailable = false;
             ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            List<Deck> deckListByFaction;
             foreach(Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
             {
-                List<Deck> deckListByFaction = GetDeckListByElementToDisplay(faction);
+                deckListByFaction = GetDeckListByElementToDisplay(faction);
                 if (deckListByFaction.Count > 0)
                 {
                     isAvailable = true;
