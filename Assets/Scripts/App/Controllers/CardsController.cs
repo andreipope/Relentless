@@ -468,7 +468,7 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.Card.Owner = card.Model.Card.Owner;
                             boardUnitView.Model.Card.TutorialObjectId = card.Model.Card.TutorialObjectId;
 
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.RegisterBoardUnitView(player, boardUnitView, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
                             //player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
@@ -528,7 +528,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.ITEM:
                         {
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
