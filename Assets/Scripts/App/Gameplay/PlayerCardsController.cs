@@ -248,6 +248,13 @@ namespace Loom.ZombieBattleground
             return cardView;
         }
 
+        public void AddCardFromBoardToHand(BoardUnitModel boardUnitModel)
+        {
+            CallLog($"{nameof(AddCardFromBoardToHand)}(BoardUnitModel boardUnitModel = {boardUnitModel}");
+            _cardsInHand.Insert(ItemPosition.End, boardUnitModel);
+            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel, false);
+        }
+
         private BoardCardView CreateAndAddPlayerHandCard(BoardUnitModel boardUnitModel, bool silent = false)
         {
             CallLog($"{nameof(CreateAndAddPlayerHandCard)}(BoardUnitModel boardUnitModel = {boardUnitModel}, bool silent = {silent})");
