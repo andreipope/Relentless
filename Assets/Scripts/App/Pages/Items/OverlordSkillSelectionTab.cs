@@ -214,7 +214,14 @@ namespace Loom.ZombieBattleground
 
             if (_myDeckPage.IsEditingNewDeck)
             {
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+                }
+                else
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+                }
             }
             else
             {
