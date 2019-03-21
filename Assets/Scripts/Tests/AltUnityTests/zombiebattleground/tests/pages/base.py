@@ -13,11 +13,12 @@ def PATH(p): return os.path.abspath(
 )
 
 
-class CZBTests(unittest.TestCase):
+class CZBTests():
     platform = "android"  # set to `ios` or `android` to change platform
     tester_key = "c0ca1ecde904"
 
     def setUp(self):
+        print('Hello')
         set_platform = None
         try:
             set_platform = os.environ['TESTPLATFORM']
