@@ -36,14 +36,7 @@ namespace Loom.ZombieBattleground
 
             int increaseOn;
 
-            if (!PlayerCallerOfAbility.IsLocalPlayer) 
-            {
-                increaseOn = (PlayerCallerOfAbility.CurrentGoo - AbilityUnitOwner.InstanceCard.Cost) * Value;
-            }
-            else
-            {
-                increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
-            }
+            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
 
             AbilityUnitOwner.BuffedDefense += increaseOn;
             AbilityUnitOwner.CurrentDefense += increaseOn;
