@@ -504,8 +504,11 @@ namespace Loom.ZombieBattleground
                 BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
                 BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId, false);
 
-                if (attackerUnit == null || target == null)
+                if (attackerUnit == null || target == null || attackerUnit is default(BoardUnitModel) || attackerUnit is default(BoardUnitModel))
+                {
                     ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}"));
+                    return;
+                }
 
                 Action callback = () =>
                 {
