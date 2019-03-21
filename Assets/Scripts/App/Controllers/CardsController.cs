@@ -398,9 +398,9 @@ namespace Loom.ZombieBattleground
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
-
                 boardUnitModel.ResetToInitial();
+
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);               
 
                 _gameplayManager.RearrangeHands();
             },
