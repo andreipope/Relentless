@@ -2173,13 +2173,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -3080,13 +3073,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -4020,13 +4006,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
