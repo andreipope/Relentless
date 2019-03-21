@@ -125,39 +125,6 @@ namespace Loom.ZombieBattleground
             ResetItems();
         }
         
-<<<<<<< HEAD
-=======
-        private async void ProcessEditOverlordSkills()
-        { 
-            bool success = true;
-
-            Deck deckToSave = _dataManager.CachedDecksData.Decks.ToList()[_myDeckPage.SelectDeckIndex];
-            deckToSave.PrimarySkill = _myDeckPage.CurrentEditDeck.PrimarySkill;
-            deckToSave.SecondarySkill = _myDeckPage.CurrentEditDeck.SecondarySkill;
-
-            try
-            {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deckToSave);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-            }
-
-            if (success)
-            {
-                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                    HordeSelectionWithNavigationPage.Tab.Rename :
-                    HordeSelectionWithNavigationPage.Tab.Editing;
-
-                _myDeckPage.ChangeTab(tab);
-            }
-        }
-        
->>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
         private void UpdateSkillIconAndDescriptionDisplay()
         {
             List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);

@@ -456,32 +456,6 @@ namespace Loom.ZombieBattleground
             );
             return deck;
         }
-<<<<<<< HEAD
-=======
-        
-        private string GenerateDeckName()
-        {
-            int index = _dataManager.CachedDecksData.Decks.Count;
-            string newName = _tutorialManager.IsTutorial ? "Tutorial" : "HORDE " + index;
-
-            while (true)
-            {
-                bool isNameCollide = false;
-                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; ++i)
-                {
-                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,newName))
-                    {
-                        isNameCollide = true;
-                        ++index;
-                        newName = "HORDE " + index;
-                        break;
-                    }
-                }
-                if (!isNameCollide)
-                    return newName;
-            }
-        }
->>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
 
         public void ChangeTab(Tab newTab)
         {
@@ -547,14 +521,13 @@ namespace Loom.ZombieBattleground
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
             }
-<<<<<<< HEAD
-            AssignCurrentDeck();            
-=======
+            
             if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
             {
                 SelectDeckIndex = 1;
             }
->>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
+            
+            AssignCurrentDeck();    
         }
 
         private void UpdateShowBackButton(bool isShow)

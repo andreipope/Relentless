@@ -115,11 +115,9 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
-<<<<<<< HEAD
         private HordeSelectionWithNavigationPage.Tab _nextTab;
-=======
+
         private const float BoardCardScale = 0.265f;
->>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
 
         public void Init()
         {
