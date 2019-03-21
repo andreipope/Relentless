@@ -522,6 +522,8 @@ namespace Loom.ZombieBattleground
 
             InitialUnitType = Card.Prototype.CardType;
 
+            LastAttackingSetType = Faction;
+
             ClearUnitTypeEffects();
 
             SetPicture();
