@@ -698,6 +698,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                     boardCardView = new UnitBoardCard(CurrentBoardCard, boardUnitModel);
+                    (boardCardView as UnitBoardCard).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
@@ -721,9 +722,6 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitView boardUnit:
                     boardCardView.DrawTooltipInfoOfUnit(boardUnit);
-                    UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
-                    boardCardUnit.Model.Card.InstanceCard.Damage = boardUnit.Model.MaxCurrentDamage;
-                    boardCardUnit.Model.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentDefense;
                     break;
                 case BoardCardView tooltipCard:
                     boardCardView.DrawTooltipInfoOfCard(tooltipCard);
@@ -1029,7 +1027,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetByInstanceId(InstanceId id) {
+        public BoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true) {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
@@ -1040,12 +1038,15 @@ namespace Loom.ZombieBattleground
             if (boardUnitModelById != null)
                 return boardUnitModelById;
 
-            BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
-            if (card != null)
+            if (createHandCardByDefault)
             {
-                BoardCardView boardCardView = CreateCustomHandBoardCard(card);
-                Object.Destroy(boardCardView.GameObject);
-                return boardCardView.HandBoardCard;
+                BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
+                if (card != null)
+                {
+                    BoardCardView boardCardView = CreateCustomHandBoardCard(card);
+                    Object.Destroy(boardCardView.GameObject);
+                    return boardCardView.HandBoardCard;
+                }
             }
 
             return null;

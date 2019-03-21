@@ -323,6 +323,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonDeleteHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
+                return;
+
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {

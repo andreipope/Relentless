@@ -39,7 +39,9 @@ namespace Loom.ZombieBattleground
 
             boardUnitModel = CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, boardUnitModel, Value);
 
-            InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+            if (boardUnitModel != null)
+            {
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(PlayerCallerOfAbility,
                         new ParametrizedAbilityParameters()
@@ -47,7 +49,8 @@ namespace Loom.ZombieBattleground
                             CardName = boardUnitModel.InstanceId.Id.ToString()
                         })
                 }
-            );
+                );
+            }
         }
     }
 }
