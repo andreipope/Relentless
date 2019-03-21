@@ -314,8 +314,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
                 }
 
-                boardCardView.SetAmount(cardData.Amount);
-                boardCardView.SetShowAmountEnabled(true);
+                boardCardView.SetAmount(BoardCardView.AmountTrayType.Counter, cardData.Amount);
                 boardCardView.SetHighlightingEnabled(false);
                 boardCardView.Transform.position = CardPositions[i % CardPositions.Count].position;
                 boardCardView.Transform.localScale = Vector3.one * 0.32f;
