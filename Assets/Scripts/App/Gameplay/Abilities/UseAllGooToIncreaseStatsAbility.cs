@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,7 +36,15 @@ namespace Loom.ZombieBattleground
 
             int increaseOn;
 
-            increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
+            if (!PlayerCallerOfAbility.IsLocalPlayer) 
+            {
+                increaseOn = (PlayerCallerOfAbility.CurrentGoo - AbilityUnitOwner.InstanceCard.Cost) * Value;
+            }
+            else
+            {
+                increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
+            }
+
             AbilityUnitOwner.BuffedDefense += increaseOn;
             AbilityUnitOwner.CurrentDefense += increaseOn;
             AbilityUnitOwner.BuffedDamage += increaseOn;

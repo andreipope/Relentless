@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
 
         GetVersionsResponse CachedVersions { get; set; }
 
+        ZbVersion ZbVersion { get; }
+
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
@@ -49,5 +51,7 @@ namespace Loom.ZombieBattleground
         string GetPersistentDataPath(string fileName);
 
         Task LoadRemoteConfig();
+
+        Task LoadZbVersionData();
     }
 }

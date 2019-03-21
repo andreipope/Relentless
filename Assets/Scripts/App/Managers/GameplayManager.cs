@@ -454,7 +454,8 @@ namespace Loom.ZombieBattleground
                             )
                         );
 
-                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(opponentCardsInHand, false);
+                        BoardUnitModel[] boardUnitModels = opponentCardsInHand.Select(card => new BoardUnitModel(card)).ToArray();
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);

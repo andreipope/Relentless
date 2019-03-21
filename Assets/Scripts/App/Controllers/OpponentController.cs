@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                IEnumerable<BoardUnitModel> boardUnitModels = deck.Select(card => new BoardUnitModel(card));
+                BoardUnitModel[] boardUnitModels = deck.Select(card => new BoardUnitModel(card)).ToArray();
                 player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
 
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
@@ -269,7 +269,6 @@ namespace Loom.ZombieBattleground
         {
             foreach (BoardUnitView unit in boardUnits)
             {
-                _battlegroundController.UnregisterBoardUnitView(unit.Model.OwnerPlayer, unit);
                 unit.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit.Model);
 
                 unit.DisposeGameObject();
@@ -470,6 +469,9 @@ namespace Loom.ZombieBattleground
                                     Caller = item,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
+
+                                // TODO: make sure this works later
+                                //_gameplayManager.OpponentPlayer.BoardItemsInUse.Remove(item);
                                 break;
                         }
 
@@ -496,14 +498,17 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
+
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
             {
-
                 BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
-                BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId);
+                BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId, false);
 
-                if (attackerUnit == null || target == null)
-                    throw new Exception($"GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}");
+                if (attackerUnit == null || target == null || attackerUnit is default(BoardUnitModel) || attackerUnit is default(BoardUnitModel))
+                {
+                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}"));
+                    return;
+                }
 
                 Action callback = () =>
                 {
@@ -533,7 +538,7 @@ namespace Loom.ZombieBattleground
 
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
 
-            if (boardObjectCaller == null)
+            if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
                 // FIXME: why do we have recursion here??
                 GameClient.Get<IQueueManager>().AddTask(async () =>
@@ -612,27 +617,28 @@ namespace Loom.ZombieBattleground
             skill.UseSkillFromEvent(parametrizedAbilityObjects);
         }
 
-        private void GotActionMulligan(MulliganModel model)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            // todo implement logic..
-        }
-
         private void GotActionRankBuff(InstanceId card, IList<Unit> targets)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnitModel> units = _battlegroundController.GetTargetsByInstanceId(targets)
-                .Where(x => x != null)
-                .OfType<BoardUnitModel>()
-                .ToList();
+            List<BoardUnitModel> units = new List<BoardUnitModel>();
+
+            foreach (BoardObject boardObject in _battlegroundController.GetTargetsByInstanceId(targets))
+            {
+                if (boardObject != null && boardObject is BoardUnitModel)
+                {
+                    units.Add(boardObject as BoardUnitModel);
+                }
+                else
+                {
+                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to BoardUnitModel"));
+                }
+            }
 
             BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
             if (boardUnitModel == null)
-                throw new Exception($"Board unit with instance ID {card} not found");
+                ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
             _ranksController.BuffAllyManually(units, boardUnitModel);
         }

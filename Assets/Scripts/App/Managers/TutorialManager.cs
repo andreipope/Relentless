@@ -392,6 +392,8 @@ namespace Loom.ZombieBattleground
 
         private void CompletelyFinishTutorial()
         {
+            RemoveTutorialDeck();
+            _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
             _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
 
             _gameplayManager.IsTutorial = false;
@@ -777,6 +779,13 @@ namespace Loom.ZombieBattleground
                 PlayTutorialSound(step.SoundToPlay, step.SoundToPlayBeginDelay);
             }
 
+            BlockedButtons.Clear();
+
+            if (step.BlockedButtons != null)
+            {
+                BlockedButtons.AddRange(step.BlockedButtons);
+            }
+
             switch (step)
             {
                 case TutorialGameplayStep gameStep:
@@ -855,9 +864,6 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case TutorialMenuStep menuStep:
-
-                    BlockedButtons.Clear();
-
                     if (!string.IsNullOrEmpty(menuStep.OpenScreen))
                     {
                         if (menuStep.OpenScreen.EndsWith("Popup"))
@@ -868,11 +874,6 @@ namespace Loom.ZombieBattleground
                         {
                             _uiManager.SetPageByName(menuStep.OpenScreen);
                         }
-                    }
-
-                    if (menuStep.BlockedButtons != null)
-                    {
-                        BlockedButtons.AddRange(menuStep.BlockedButtons);
                     }
 
                     if(menuStep.BattleShouldBeWonBlocker && !PlayerWon)
@@ -1349,7 +1350,6 @@ namespace Loom.ZombieBattleground
             CompletelyFinishTutorial();
             StopTutorial(true);
             _handPointerController.ResetAll();
-            CreateStarterDeck();
         }
 
         private async void CreateStarterDeck()
@@ -1371,12 +1371,57 @@ namespace Loom.ZombieBattleground
                 savedTutorialDeck = new Deck(-1, 4, nameOfDeck, cards, 0, 0);
 
                 long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
-                savedTutorialDeck.Id = newDeckId;
+                savedTutorialDeck.Id = 2;
                 _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
             }
             _dataManager.CachedUserLocalData.TutorialSavedDeck = savedTutorialDeck;
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)savedTutorialDeck.Id;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+        }
+
+        private async void RemoveTutorialDeck()
+        {
+            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            {
+                Deck currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+
+                if (currentDeck == null)
+                    return;
+
+                try
+                {
+                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+
+                    await _backendFacade.DeleteDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        currentDeck.Id
+                    );
+
+                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                }
+                catch (TimeoutException e)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(e);
+                    Log.Warn("Time out ==", e);
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                }
+                catch (Client.RpcClientException exception)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(exception);
+                    Log.Warn(" RpcException == " + exception);
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                }
+                catch (Exception e)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(e);
+                    Log.Info("Result === " + e);
+                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
+                    return;
+                }
+            }
         }
 
         private List<DeckCardData> GetCardsForStarterDeck()

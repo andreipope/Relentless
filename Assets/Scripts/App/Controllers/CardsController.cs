@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             // for local player
             foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card, false);
+                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
             }
             _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(Array.Empty<BoardUnitModel>());
 
@@ -393,14 +393,14 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {
-                _battlegroundController.UnregisterBoardUnitView(unitOwner, boardUnitView);
-
                 boardUnitModel.Die(true);
                 boardUnitView.DisposeGameObject();
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
 
                 unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
+
+                boardUnitModel.ResetToInitial();
 
                 _gameplayManager.RearrangeHands();
             },
@@ -468,7 +468,7 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.Card.Owner = card.Model.Card.Owner;
                             boardUnitView.Model.Card.TutorialObjectId = card.Model.Card.TutorialObjectId;
 
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.RegisterBoardUnitView(player, boardUnitView, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
                             //player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
@@ -514,8 +514,6 @@ namespace Loom.ZombieBattleground
                                                 rankBuffAction.Action = null;
                                                 rankBuffAction.ForceActionDone();
 
-                                                _battlegroundController.UnregisterBoardUnitView(_gameplayManager.CurrentPlayer, boardUnitView);
-
                                                 boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true);
 
@@ -530,7 +528,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.ITEM:
                         {
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -716,7 +714,7 @@ namespace Loom.ZombieBattleground
                     boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
                 }
 
-                boardCardView.Model.Card.InstanceCard.Cost = value;
+                boardCardView.Model.Card.InstanceCard.Cost = Mathf.Max(0, value);
                 boardCardView.UpdateCardCost();
 
                 bool isActive = boardCardView.Model.Card.InstanceCard.Cost < boardCardView.Model.Card.Prototype.Cost;
@@ -908,9 +906,15 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}_{_mainChoosableAbility.Attribute}");
 
+            string imagePath = $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}";
+
+            if (!string.IsNullOrEmpty(_mainChoosableAbility.Attribute))
+            {
+                imagePath += $"_{ _mainChoosableAbility.Attribute}";
+            }
+
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
 
             _titleText.text = boardUnitModel.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;

@@ -133,9 +133,13 @@ namespace Loom.ZombieBattleground
         { 
             bool success = true;
 
+            Deck deckToSave = _dataManager.CachedDecksData.Decks.ToList()[_myDeckPage.SelectDeckIndex];
+            deckToSave.PrimarySkill = _myDeckPage.CurrentEditDeck.PrimarySkill;
+            deckToSave.SecondarySkill = _myDeckPage.CurrentEditDeck.SecondarySkill;
+
             try
             {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, _myDeckPage.CurrentEditDeck);
+                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deckToSave);
             }
             catch (Exception e)
             {

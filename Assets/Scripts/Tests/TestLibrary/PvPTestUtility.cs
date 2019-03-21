@@ -24,7 +24,8 @@ namespace Loom.ZombieBattleground.Test
             bool enableReverseMatch = true,
             bool enableBackendGameLogicMatch = false,
             bool enableClientGameLogicMatch = true,
-            bool onlyReverseMatch = false
+            bool onlyReverseMatch = false,
+            Action afterSetupAction = null
             )
         {
             void LogTestMode()
@@ -52,6 +53,7 @@ namespace Loom.ZombieBattleground.Test
                         TestHelper.DebugCheats.IgnoreGooRequirements = true;
                         TestHelper.DebugCheats.CustomRandomSeed = 1337;
                         GameClient.Get<IPvPManager>().UseBackendGameLogic = pvpTestContext.UseBackendLogic;
+                        afterSetupAction?.Invoke();
                     },
                     cheats =>
                     {

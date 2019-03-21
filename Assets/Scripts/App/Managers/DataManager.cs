@@ -90,6 +90,8 @@ namespace Loom.ZombieBattleground
 
         public GetVersionsResponse CachedVersions { get; set; }
 
+        public ZbVersion ZbVersion { get; private set; }
+
         public async Task LoadRemoteConfig()
         {
             CachedVersions = new GetVersionsResponse();
@@ -572,6 +574,16 @@ namespace Loom.ZombieBattleground
                         });
                 }
             }
+        }
+
+        public async Task LoadZbVersionData()
+        {
+            string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
+                        BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
+                        Key.ToString().ToLowerInvariant());
+
+            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(
+                $"{GameClient.GetDefaultBackendEndpoint().AuthHost}{zbVersionParsedLink}", Log, JsonSerializerSettings);
         }
     }
 }

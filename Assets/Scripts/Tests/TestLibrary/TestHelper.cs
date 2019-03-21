@@ -1154,9 +1154,6 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.ITEM:
                 {
-                    _testBroker.GetPlayer(_player).PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-                    _testBroker.GetPlayer(_player).PlayerCardsController.AddCardToBoard(boardUnitModel, position);
-
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
@@ -2196,14 +2193,16 @@ namespace Loom.ZombieBattleground.Test
             _opponentDebugClientOwner = onBehaviourHandler;
 
             Func<Contract, IContractCallProxy> contractCallProxyFactory =
-                contract => new ThreadedContractCallProxyWrapper(new TimeMetricsContractCallProxy(contract, false, false));
+                contract => new ThreadedContractCallProxyWrapper(new CustomContractCallProxy(contract, false, false));
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration();
             await client.Start(
                 contractCallProxyFactory,
-                onClientCreatedCallback: chainClient =>
+                new DAppChainClientConfiguration
                 {
-                    chainClient.Configuration.StaticCallTimeout = 10000;
-                    chainClient.Configuration.CallTimeout = 10000;
+                    CallTimeout = 10000,
+                    StaticCallTimeout = 10000
                 },
+                chainClientCallExecutor: new NotifyingDAppChainClientCallExecutor(clientConfiguration),
                 enabledLogs: false);
 
             onBehaviourHandler.Updating += async go =>

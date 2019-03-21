@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
+        private IDataManager _dataManager;
+
         private ButtonShiftingContent _quitButton, _updateButton;
 
         private Action _callbackOnUpdate, _callbackOnQuit;
@@ -22,6 +24,7 @@ namespace Loom.ZombieBattleground
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
+            _dataManager = GameClient.Get<IDataManager>();
         }
 
         public void Dispose()
@@ -65,6 +68,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (Self != null && Self.activeInHierarchy)
+            {
+                _updateButton.interactable = _dataManager.ZbVersion != null;
+            }
         }
 
         private void UpdateButtonOnClickHandler()

@@ -661,6 +661,8 @@ namespace Loom.ZombieBattleground
             _isTransitioningState = true;
             _gooPoolAnimator.enabled = true;
             _gooPoolAnimator.Play("OpenCardPackAnim", 0, 0f);
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.OPEN_PACK, Constants.SfxSoundVolume,
+                false, false, true);
             _vignetteCollectCard.enabled = true;
             Sequence sequence = DOTween.Sequence();
             sequence.AppendInterval(3.05f);
@@ -683,23 +685,31 @@ namespace Loom.ZombieBattleground
         private void CreateCardVFX(BoardCardView boardCard)
         {
             GameObject vfxPrefab;
+            Enumerators.SoundType soundType;
             switch(boardCard.Model.Card.Prototype.CardRank)
             {
                 case Enumerators.CardRank.MINION:
+                    soundType = Enumerators.SoundType.CARD_REVEAL_MINION;
                     vfxPrefab = _vfxMinionPrefab;
                     break;
                 case Enumerators.CardRank.OFFICER:
+                    soundType = Enumerators.SoundType.CARD_REVEAL_OFFICER;
                     vfxPrefab = _vfxOfficerPrefab;
                     break;
                 case Enumerators.CardRank.COMMANDER:
+                    soundType = Enumerators.SoundType.CARD_REVEAL_COMMANDER;
                     vfxPrefab = _vfxCommanderPrefab;
                     break;
                 case Enumerators.CardRank.GENERAL:
+                    soundType = Enumerators.SoundType.CARD_REVEAL_GENERAL;
                     vfxPrefab = _vfxGeneralPrefab;
                     break;
                 default:
                     return;
             }
+            
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.OPEN_PACK, Constants.SfxSoundVolume,
+                false, false, true);
             
             GameObject vfxParent = new GameObject("VFX");
             vfxParent.transform.parent = boardCard.GameObject.transform;
@@ -791,8 +801,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonBuyPack.name))
                 return;
 
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            PlayClickSound();
             DOTween.KillAll();            
             DestroyCreatedObject();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
@@ -803,8 +812,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonPlus.name))
                 return;
 
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            PlayClickSound();
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
                 return;
             SetPackToOpenAmount( _packToOpenAmount+1 );
@@ -815,8 +823,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonMinus.name))
                 return;
 
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            PlayClickSound();
             if (_packToOpenAmount <= 0)
                 return;
             SetPackToOpenAmount( _packToOpenAmount-1 );
@@ -827,8 +834,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonMax.name))
                 return;
 
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            PlayClickSound();
             if (_packToOpenAmount >= _packBalanceAmounts[_selectedPackTypeIndex])
                 return;
             SetPackToOpenAmount( _packBalanceAmounts[_selectedPackTypeIndex] );
@@ -839,8 +845,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonOpenPack.name))
                 return;
 
-            GameClient.Get<ISoundManager>()
-                .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+            PlayClickSound();
         
             if (_state == STATE.READY)
             {
@@ -859,11 +864,14 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPackTypeHandler( int id )
         {
+            PlayClickSound();
             ChangeSelectedPackType(id);
         }
 
         private void ButtonCollectHandler()
         {
+            PlayClickSound();
+        
             _buttonCollect.gameObject.SetActive(false);
             _createdHighlightingVFXItem.ChangeState(false);
             
@@ -997,12 +1005,18 @@ namespace Loom.ZombieBattleground
             {
                 _packTypeButtons[i].GetComponent<Image>().sprite = (i == _selectedPackTypeIndex ? _packHolderSelectedSprite : _packHolderNormalSprite);
             }
+            UpdateOpenButtonInteractable();
         }
         
+        private void UpdateOpenButtonInteractable()
+        {
+            _buttonOpenPack.interactable = _packBalanceAmounts[_selectedPackTypeIndex] > 0;
+        }
+
         #endregion
-        
+
         #region Util
-        
+
         private BoardCardView CreateCard(IReadOnlyCard card, Vector3 worldPos)
         {        
             GameObject go;
@@ -1030,6 +1044,11 @@ namespace Loom.ZombieBattleground
             
             return boardCard;        
         }
-#endregion
+        
+        private void PlayClickSound()
+        {
+            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+        #endregion
     }
 }
