@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitModel boardUnit:
                     {
-                        if (boardUnit.Card.Prototype.Faction == Faction)
+                        if (Faction == Enumerators.Faction.Undefined || Faction == boardUnit.Card.Prototype.Faction)
                         {
                             switch (StatType)
                             {

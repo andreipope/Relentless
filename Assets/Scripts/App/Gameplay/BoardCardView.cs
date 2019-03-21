@@ -137,6 +137,7 @@ namespace Loom.ZombieBattleground
             BehaviourHandler.Destroying += DestroyingHandler;
 
             Model = boardUnitModel;
+            //Model.ResetToInitial();
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
@@ -713,6 +714,11 @@ namespace Loom.ZombieBattleground
         private void PictureUpdatedEvent()
         {
             PictureSprite.sprite = Model.CardPicture;
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

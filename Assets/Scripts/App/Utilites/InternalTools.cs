@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground.Helpers
             }
             else
             {
-                log?.Warn($"Request error: {request.error}");
+                log?.Warn($"{uri} : request error: {request.downloadHandler?.text}");
             }
 
             return result;

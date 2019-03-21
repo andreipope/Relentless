@@ -220,6 +220,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
 
-        internal const string ZbVersionLink = "http://auth.loom.games/zbversion?environment=production&version=" + CurrentVersionBase;
+        internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
+
+        internal const string EnvironmentPointText = "%environment_point%";
     }
 }

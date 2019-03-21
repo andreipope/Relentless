@@ -132,7 +132,10 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(RemoveCardFromDeck)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
             
             bool removed = _cardsInDeck.Remove(boardUnitModel);
-            Assert.AreEqual(true, removed, $"Item {boardUnitModel} not removed");
+            if (!removed)
+            {
+                CallLog($"{nameof(RemoveCardFromDeck)}: item {boardUnitModel} wasn't present in the list", true);
+            }
 
             InvokeDeckChanged();
         }
@@ -243,6 +246,13 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(AddCardToHand)} returned {cardView}");
 
             return cardView;
+        }
+
+        public void AddCardFromBoardToHand(BoardUnitModel boardUnitModel)
+        {
+            CallLog($"{nameof(AddCardFromBoardToHand)}(BoardUnitModel boardUnitModel = {boardUnitModel}");
+            _cardsInHand.Insert(ItemPosition.End, boardUnitModel);
+            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel, false);
         }
 
         private BoardCardView CreateAndAddPlayerHandCard(BoardUnitModel boardUnitModel, bool silent = false)
@@ -549,7 +559,7 @@ namespace Loom.ZombieBattleground
 
             GameObject board = Player.IsLocalPlayer ? _cardsController.PlayerBoard : _cardsController.OpponentBoard;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.Model.Card), board.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(card.Model, board.transform);
             boardUnitView.Transform.tag = Player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * Player.CardsOnBoard.Count, 0);

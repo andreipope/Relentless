@@ -316,11 +316,11 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.Faction selectedFaction)
+        private void FilterPopupHidingHandler()
         {
-            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedFaction)))
+            if(CheckAvailableDeckExist())
             {   
-                ApplyDeckFilter(selectedFaction);
+                ApplyDeckFilter();
                 ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
                 popup.ActionPopupHiding -= FilterPopupHidingHandler;
             }
@@ -342,6 +342,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonDeleteHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
+                return;
+
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {
@@ -453,6 +456,32 @@ namespace Loom.ZombieBattleground
             );
             return deck;
         }
+<<<<<<< HEAD
+=======
+        
+        private string GenerateDeckName()
+        {
+            int index = _dataManager.CachedDecksData.Decks.Count;
+            string newName = _tutorialManager.IsTutorial ? "Tutorial" : "HORDE " + index;
+
+            while (true)
+            {
+                bool isNameCollide = false;
+                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; ++i)
+                {
+                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,newName))
+                    {
+                        isNameCollide = true;
+                        ++index;
+                        newName = "HORDE " + index;
+                        break;
+                    }
+                }
+                if (!isNameCollide)
+                    return newName;
+            }
+        }
+>>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
 
         public void ChangeTab(Tab newTab)
         {
@@ -518,7 +547,14 @@ namespace Loom.ZombieBattleground
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
             }
+<<<<<<< HEAD
             AssignCurrentDeck();            
+=======
+            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
+            {
+                SelectDeckIndex = 1;
+            }
+>>>>>>> 2c81aab904afd3e228a14896cdb9210af04d9549
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -689,7 +725,8 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
             int startObjectIndex = displayNewDeckButton?1:0;
-            int deckDataIndex = 0;
+            int deckDataIndex = _tutorialManager.IsTutorial ? 1 : 0;
+
             for (int i=startObjectIndex; i < _deckInfoObjectList.Count; ++i, ++deckDataIndex)
             {
                 
@@ -720,7 +757,14 @@ namespace Loom.ZombieBattleground
                 Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
 
                 deckInfoObject._textDeckName.text = deckName;
-                deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                if (_tutorialManager.IsTutorial)
+                {
+                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                }
+                else
+                {
+                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                }
                 deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
 
                 if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
@@ -758,7 +802,9 @@ namespace Loom.ZombieBattleground
         private void UpdatePageDotObjects(List<Deck> deckList)
         {
             foreach (Transform child in _paginationGroup)
+            {
                 Object.Destroy(child.gameObject);
+            }
             
             int page = _deckPageIndex;
             int maxPage = GetDeckPageAmount(deckList);
@@ -803,10 +849,30 @@ namespace Loom.ZombieBattleground
             ChangeSelectDeckIndex(indexInPage);
         }
 
-        public void ApplyDeckFilter(Enumerators.Faction faction)
+        public void ApplyDeckFilter()
         {
-            _inputFieldSearchDeckName.text = "";
-            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(faction);
+            _inputFieldSearchDeckName.text = "";            
+            
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            if(elementFilterPopup.SelectedFactionList.Count == elementFilterPopup.AvailableFactionList.Count)
+            {
+                _cacheDeckListToDisplay = GetDeckList();
+            }
+            else
+            {
+                List<Deck> decks = new List<Deck>();
+                List<Deck> deckListByFaction;
+                foreach (Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+                {
+                    deckListByFaction = GetDeckListByElementToDisplay(faction);
+                    if (deckListByFaction.Count <= 0)
+                        continue;
+    
+                    decks = decks.Union(deckListByFaction).ToList();
+                }
+                _cacheDeckListToDisplay = decks;
+            }
+            
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
         }
@@ -818,9 +884,21 @@ namespace Loom.ZombieBattleground
             UpdateDeckInfoObjects();
         }
         
-        private bool CheckAvailableDeckExist(List<Deck> decks)
+        private bool CheckAvailableDeckExist()
         {
-            return decks.Count > 0;
+            bool isAvailable = false;
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            List<Deck> deckListByFaction;
+            foreach(Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+            {
+                deckListByFaction = GetDeckListByElementToDisplay(faction);
+                if (deckListByFaction.Count > 0)
+                {
+                    isAvailable = true;
+                    break;
+                }
+            }
+            return isAvailable;
         }
 
         private void UpdateSelectedDeckDisplay(int selectedDeckIndex)

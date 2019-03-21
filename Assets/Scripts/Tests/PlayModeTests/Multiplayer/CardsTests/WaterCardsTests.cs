@@ -171,10 +171,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
                     new DeckCardData("Maelstrom", 1),
-                    new DeckCardData("Whizpar", 2));
+                    new DeckCardData("Whizpar", 20));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
                     new DeckCardData("Maelstrom", 1),
-                    new DeckCardData("Whizpar", 2));
+                    new DeckCardData("Whizpar", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
@@ -217,10 +217,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentWhizparId2, ItemPosition.Start);
-                           opponent.CardPlay(opponentMaelstromrId, ItemPosition.Start);
                        },
                        player => {},
-                       opponent => {},
+                       opponent => {
+                           opponent.CardPlay(opponentMaelstromrId, ItemPosition.Start);
+                       },
+                        player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
