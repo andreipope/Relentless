@@ -206,28 +206,28 @@ namespace Loom.ZombieBattleground.Test
             return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static Deck GetDeckWithCards(string name, int heroId = 0, params DeckCardData[] cards)
+        public static Deck GetDeckWithCards(string name, int overlordId = 0, params DeckCardData[] cards)
         {
             Deck deck = new Deck(
                  0,
-                 heroId,
+                 overlordId,
                  name,
                  cards.ToList(),
-                 Enumerators.OverlordSkill.NONE,
-                 Enumerators.OverlordSkill.NONE
+                 Enumerators.Skill.NONE,
+                 Enumerators.Skill.NONE
              );
 
             return deck;
         }
 
         public static Deck GetDeckWithCards(string name,
-                                    int heroId = 0,
-                                    Enumerators.OverlordSkill primaryskill = Enumerators.OverlordSkill.NONE,
-                                    Enumerators.OverlordSkill secondarySkill = Enumerators.OverlordSkill.NONE,
+                                    int overlordId = 0,
+                                    Enumerators.Skill primarySkill = Enumerators.Skill.NONE,
+                                    Enumerators.Skill secondarySkill = Enumerators.Skill.NONE,
                                     params DeckCardData[] cards)
         {
-            Deck deck = GetDeckWithCards(name, heroId, cards);
-            deck.PrimarySkill = primaryskill;
+            Deck deck = GetDeckWithCards(name, overlordId, cards);
+            deck.PrimarySkill = primarySkill;
             deck.SecondarySkill = secondarySkill;
 
             return deck;

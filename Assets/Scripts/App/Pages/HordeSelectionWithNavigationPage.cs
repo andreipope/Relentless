@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
         public Deck CurrentEditDeck;
 
-        public Hero CurrentEditHero;
+        public OverlordModel CurrentEditOverlord;
 
         public bool IsEditingNewDeck;
         
@@ -414,7 +414,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 CurrentEditDeck = GetSelectedDeck().Clone();
-                CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
+                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
             }
             if(_tutorialManager.IsTutorial)
             {
@@ -428,7 +428,7 @@ namespace Loom.ZombieBattleground
         {
             Deck deck = new Deck(
                 -1,
-                CurrentEditHero.HeroId,
+                CurrentEditOverlord.OverlordId,
                 GenerateDeckName(),                
                 new List<DeckCardData>(),
                 0,
@@ -548,7 +548,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                 await _backendFacade.DeleteDeck(
                     _backendDataControlMediator.UserDataModel.UserId,
@@ -604,8 +604,8 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
             {
-                Hero hero = _dataManager.CachedHeroesData.Heroes[deckList[i].HeroId];
-                if( faction == hero.HeroElement )
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deckList[i].OverlordId];
+                if( faction == overlord.Faction )
                         deckListToDisplay.Add(deckList[i]);                
             }
 
@@ -769,7 +769,7 @@ namespace Loom.ZombieBattleground
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
-                Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
                 deckInfoObject.TextDeckName.text = deckName;
                 if (_tutorialManager.IsTutorial)
@@ -780,25 +780,25 @@ namespace Loom.ZombieBattleground
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
                 }
-                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
+                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(overlord.Faction);
 
-                if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.PrimarySkill == Enumerators.Skill.NONE)
                 {
                     deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
+                    string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
                     deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
                 }
                 
-                if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.SecondarySkill == Enumerators.Skill.NONE)
                 {
                     deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
+                    string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
                     deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
@@ -926,10 +926,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction heroElement)
+        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/MyDecks/OverlordDeckThumbnail";
-            switch(heroElement)
+            switch(overlordFaction)
             {
                 case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_air"); 
@@ -944,7 +944,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Log.Info($"No Overlord thumbnail found for faction {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for faction {overlordFaction}");
                     return null;
             }        
         }

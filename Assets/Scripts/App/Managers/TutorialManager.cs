@@ -822,7 +822,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (!CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization &&
                             CurrentTutorial.TutorialContent.ToGameplayContent().
-                            SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
+                            SpecificBattlegroundInfo.PlayerInfo.PrimarySkill != Enumerators.Skill.NONE)
                         {
                             _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill.SetCoolDown(0);
                         }
@@ -1009,14 +1009,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CurrentPlayerDeck =
                          new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId,
                          "TutorialDeck", new List<DeckCardData>(),
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility,
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondaryOverlordAbility);
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimarySkill,
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondarySkill);
 
             _gameplayManager.OpponentPlayerDeck =
                         new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId,
                         "TutorialDeckOpponent", new List<DeckCardData>(),
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility,
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility);
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimarySkill,
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondarySkill);
         }
 
         public void PlayTutorialSound(string sound, float delay = 0f)
@@ -1400,7 +1400,7 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                     _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                     await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                     await _backendFacade.DeleteDeck(
                         _backendDataControlMediator.UserDataModel.UserId,

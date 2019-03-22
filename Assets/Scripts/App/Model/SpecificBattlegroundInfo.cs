@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
             public int MaximumDefense;
             public int CurrentGoo;
             public int MaximumGoo;
-            public int HeroId;
+            public int OverlordId;
 
             public Enumerators.AIType AIType;
 
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
                 MaximumGoo = Constants.DefaultPlayerGoo;
                 CurrentGoo = MaximumGoo;
 
-                HeroId = 0;
+                OverlordId = 0;
             }
         }
 

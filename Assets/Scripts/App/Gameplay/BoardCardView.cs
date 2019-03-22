@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
 
             IsNewCard = true;
 
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.CardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.Rank);
 
             string setName = Model.Card.Prototype.Faction.ToString();
 
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
             SetAmount(AmountTrayType.None,0);
             DistibuteCardObject.SetActive(false);
 
-            if (Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+            if (Model.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
             {
                 ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
                 ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
@@ -390,10 +390,10 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Model.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
             {
                 TooltipContentData.RankInfo rankInfo =
-                    DataManager.GetCardRankInfo(unit.Model.Card.Prototype.CardRank);
+                    DataManager.GetCardRankInfo(unit.Model.Card.Prototype.Rank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
@@ -527,7 +527,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCardView.Model.Card.Prototype.CardKind == Enumerators.CardKind.ITEM)
+            if (boardCardView.Model.Card.Prototype.Kind == Enumerators.CardKind.ITEM)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -540,9 +540,9 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCardView.Model.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
+            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.CardRank);
+                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.Rank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(

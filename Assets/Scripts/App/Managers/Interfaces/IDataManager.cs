@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         CardsLibraryData CachedCardsLibraryData { get; set; }
 
-        HeroesData CachedHeroesData { get; set; }
+        OverlordData CachedOverlordData { get; set; }
 
         CollectionData CachedCollectionData { get; set; }
 

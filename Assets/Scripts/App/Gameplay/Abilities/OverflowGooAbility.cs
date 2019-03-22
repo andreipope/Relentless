@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             // FIXME: why are we hardcoding card names??
-            if (CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfHero.HeroElement ||
+            if (CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Faction ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");

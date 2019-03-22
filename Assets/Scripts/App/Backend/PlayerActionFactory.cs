@@ -165,7 +165,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             PlayerActionCardAbilityUsed cardAbilityUsed = new PlayerActionCardAbilityUsed
             {
-                AbilityType = (CardAbilityType.Types.Enum) abilityType,
+                AbilityType = (AbilityType.Types.Enum) abilityType,
                 Card = card.ToProtobuf(),
                 Targets = { targets }
             };

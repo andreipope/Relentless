@@ -226,30 +226,30 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Heroes
+        #region Overlords
 
-        private const string HeroesList = "ListHeroes";
+        private const string OverlordsList = "ListOverlords";
 
-        public async Task<ListHeroesResponse> GetHeroesList(string userId)
+        public async Task<ListOverlordsResponse> GetOverlordList(string userId)
         {
-            ListHeroesRequest request = new ListHeroesRequest
+            ListOverlordsRequest request = new ListOverlordsRequest
             {
                 UserId = userId
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
         }
 
-        private const string GlobalHeroesList = "ListHeroLibrary";
+        private const string GlobalOverlordsList = "ListOverlordLibrary";
 
-        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
+        public async Task<ListOverlordLibraryResponse> GetGlobalOverlordsList()
         {
-            ListHeroLibraryRequest request = new ListHeroLibraryRequest
+            ListOverlordLibraryRequest request = new ListOverlordLibraryRequest
             {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
         }
 
         #endregion

@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCard;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
@@ -315,7 +315,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
             int amount = cardData.Amount;
@@ -443,12 +443,12 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfSatisfyRankFilter(Card card)
         {
-            return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.CardRank];
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.Rank];
         }
         
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
-            return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.CardType];
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.Type];
         }
         
         private void UpdateCacheFilteredCardList(List<Card> cardList)

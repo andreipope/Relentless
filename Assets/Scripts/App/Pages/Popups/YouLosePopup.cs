@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         private Button _buttonOk;
 
-        private SpriteRenderer _selectHeroSpriteRenderer;
+        private SpriteRenderer _selectOverlordSpriteRenderer;
 
         public GameObject Self { get; private set; }
 
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouLosePopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer =
+            _selectOverlordSpriteRenderer =
                 Self.transform.Find("Pivot/YouLosePopup/SelectHero").GetComponent<SpriteRenderer>();
 
             _buttonOk = Self.transform.Find("Pivot/YouLosePopup/UI/Button_Continue").GetComponent<Button>();
@@ -70,11 +70,11 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
-            int heroId = GameClient.Get<IDataManager>().CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
-            Hero currentPlayerHero = GameClient.Get<IDataManager>().CachedHeroesData.Heroes[heroId];
-            string heroName = currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
-            _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant() + "_bnw");
+            int overlordId = GameClient.Get<IDataManager>().CachedDecksData.Decks.First(d => d.Id == playerDeckId).OverlordId;
+            OverlordModel currentPlayerOverlord = GameClient.Get<IDataManager>().CachedOverlordData.Overlords[overlordId];
+            string overlordName = currentPlayerOverlord.Faction.ToString().ToLowerInvariant();
+            _selectOverlordSpriteRenderer.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + overlordName.ToLowerInvariant() + "_bnw");
 
             if (_tutorialManager.IsTutorial)
             {

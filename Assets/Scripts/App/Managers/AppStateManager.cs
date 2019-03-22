@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                     else
                         _uiManager.SetPage<MainMenuPage>();
                     break;
-                case Enumerators.AppState.HERO_SELECTION:
+                case Enumerators.AppState.OVERLORD_SELECTION:
                     if (Constants.EnableNewUI)
                     {
                         _uiManager.SetPage<HordeSelectionWithNavigationPage>();

@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
             _abilityNameText = Self.transform.Find("AbilityName").GetComponent<TextMeshProUGUI>();
             _abilityDescriptionText = Self.transform.Find("AbilityDescription").GetComponent<TextMeshProUGUI>();
 
-            HeroSkill skill = (HeroSkill) data;
+            OverlordSkill skill = (OverlordSkill) data;
 
             _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/Icons/" + skill.IconPath);
             _abilityNameText.text = skill.Title;
