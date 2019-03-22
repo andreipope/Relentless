@@ -3547,7 +3547,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 1
+              "AppearDelay": 3
             }
           ]
         },
