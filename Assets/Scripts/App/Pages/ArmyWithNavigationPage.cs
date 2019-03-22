@@ -319,14 +319,11 @@ namespace Loom.ZombieBattleground
             }
 
             int amount = cardData.Amount;
-            boardCard.SetShowAmountEnabled(true);
-            boardCard.SetAmount(amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.None, amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * 0.3f;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            boardCard.Transform.Find("AmountForArmy").gameObject.SetActive(false);
             
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
             
@@ -379,7 +376,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetPageState()
         {
-            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterFactionList();
+            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilteredFactionList();
             _currentSetTypeIndex = 0;
             _currentPage = 0;
             UpdateAvailableSetTypeCards();

@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
 
         public bool IsPVPAbility;
 
+        public bool IgnoreAbilityUsageEvent;
+
         public Enumerators.AbilityActivity AbilityActivity;
 
         public Enumerators.AbilityTrigger AbilityTrigger;
@@ -470,9 +472,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public object GetCaller()
+        public BoardObject GetCaller()
         {
-            return AbilityUnitOwner ?? (object) BoardItem;
+            return AbilityUnitOwner ?? (BoardObject) BoardItem;
         }
 
         public Player GetOpponentOverlord()
@@ -519,6 +521,9 @@ namespace Loom.ZombieBattleground
 
         protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
         {
+            if (IgnoreAbilityUsageEvent)
+                return;
+
             AbilitiesController.InvokeUseAbilityEvent(
                 BoardUnitModel,
                 AbilityData.Ability,

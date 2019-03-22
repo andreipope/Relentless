@@ -152,10 +152,18 @@ namespace Loom.ZombieBattleground
                     _leftBlockOverlordSkillElement.Init(skill);
                     break;
                 case BoardUnitModel unit:
-                    _leftBlockCardUnitElement.Init(unit.Card, cardPicture: unit.CardPicture);
-                    unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unit.MaxCurrentDamage;
-                    unitCardElement.Defense = unit.MaxCurrentDefense;
+                    switch (unit.Card.Prototype.CardKind)
+                    {
+                        case Enumerators.CardKind.CREATURE:
+                            _leftBlockCardUnitElement.Init(unit.Card, cardPicture: unit.CardPicture);
+                            unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
+                            unitCardElement.Damage = unit.MaxCurrentDamage;
+                            unitCardElement.Defense = unit.MaxCurrentDefense;
+                            break;
+                        case Enumerators.CardKind.ITEM:
+                            _leftBlockCardItemElement.Init(unit.Card, cardPicture: unit.CardPicture);
+                            break;
+                    }
                     break;
                 case ItemBoardCard itemBoardCard:
                     _leftBlockCardItemElement.Init(itemBoardCard.Model.Card, cardPicture: itemBoardCard.Model.CardPicture);

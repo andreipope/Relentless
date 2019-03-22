@@ -135,9 +135,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.PreviewCardInstantiated += boardCardView =>
             {
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
-                boardCardView.Transform.Find("AmountForArmy").gameObject.SetActive(false);
-                boardCardView.SetAmountOfCardsInEditingPage(true, 0, 0);
+                boardCardView.SetAmount(BoardCardView.AmountTrayType.None, 0);
             };
 
             _collectionData = new CollectionData();
@@ -431,7 +429,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _armyCardsContainer);
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -468,8 +465,7 @@ namespace Loom.ZombieBattleground
 
             int amount = _collectionData.GetCardData(card.Name).Amount;
 
-            boardCardView.SetAmount(amount);
-            boardCardView.SetShowAmountEnabled(true);
+            boardCardView.SetAmount(BoardCardView.AmountTrayType.None, amount);
             boardCardView.SetHighlightingEnabled(false);
             boardCardView.Transform.position = worldPos;
             boardCardView.Transform.localScale = Vector3.one * 0.3f;
@@ -518,11 +514,16 @@ namespace Loom.ZombieBattleground
                 if (!itemFound)
                 {
                     BoardCardView boardCardView = CreateCard(prototype, Vector3.zero, _hordeCardsContainer);
-                    boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
                     _createdHordeCards.Add(boardCardView);
 
-                    boardCardView.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount);
+                    boardCardView.SetAmountOfCardsInEditingPage
+                    (
+                        true, 
+                        GetMaxCopiesValue(prototype), 
+                        card.Amount, 
+                        BoardCardView.AmountTrayType.Radio
+                    );
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
                     UpdateNumCardsText();
@@ -594,7 +595,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                boardCardView.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCardView.Model.Card.Prototype), boardCardView.CardsAmountDeckEditing);
+                boardCardView.SetAmountOfCardsInEditingPage
+                (
+                    false, 
+                    GetMaxCopiesValue(boardCardView.Model.Card.Prototype), 
+                    boardCardView.CardsAmountDeckEditing,
+                    BoardCardView.AmountTrayType.Radio
+                );
             }
         }
 
@@ -657,7 +664,6 @@ namespace Loom.ZombieBattleground
             if (!itemFound)
             {
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _hordeCardsContainer);
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
                 foundItem = boardCardView;
                 
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
@@ -674,8 +680,13 @@ namespace Loom.ZombieBattleground
 
             _currentDeck.AddCard(card.Name);
 
-            foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _currentDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount);
+            foundItem.SetAmountOfCardsInEditingPage
+            (
+                false, 
+                GetMaxCopiesValue(card),
+                _currentDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,
+                BoardCardView.AmountTrayType.Radio
+            );
 
             // Animated moving card
             if (sender != null)
@@ -744,7 +755,7 @@ namespace Loom.ZombieBattleground
             {
                 if (card.Model.Card.Prototype.Name == cardId)
                 {
-                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.Model.Card.Prototype), amount, true);
+                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.Model.Card.Prototype), amount, BoardCardView.AmountTrayType.Counter);
                     break;
                 }
             }
@@ -1081,7 +1092,6 @@ namespace Loom.ZombieBattleground
             Action<int> setPageIndexAction)
         {
             BoardCardView animatedCard = CreateCard(targetLibraryCard, sourceCardPosition, null);
-            animatedCard.Transform.Find("Amount").gameObject.SetActive(false);
             animatedCard.GameObject.GetComponent<SortingGroup>().sortingOrder++;
 
             int foundItemIndex = targetRowCards.FindIndex(c => c.Model.Card.Prototype.MouldId == targetLibraryCard.MouldId);
@@ -1119,8 +1129,6 @@ namespace Loom.ZombieBattleground
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
-            _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
-            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
             _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
 

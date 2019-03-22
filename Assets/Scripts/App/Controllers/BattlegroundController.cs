@@ -116,14 +116,18 @@ namespace Loom.ZombieBattleground
 
             T view =
                 BoardUnitViews
-                .Concat(PlayerHandCards)
-                .Concat(OpponentHandCards)
-                .OfType<T>()
-                .Where(v => v.Model == boardUnitModel)
-                .SingleOrDefault();
+                    .Concat(PlayerHandCards)
+                    .Concat(OpponentHandCards)
+                    .OfType<T>()
+                    .Where(v => v.Model == boardUnitModel)
+                    .SingleOrDefault();
 
-            //if (view == null)
-            //    throw new Exception($"No view found for model {boardUnitModel}");
+            if (view == null)
+            {
+                Log.Warn($"View of type {typeof(T).Name} not found for model {boardUnitModel}");
+                //throw new Exception($"No view found for model {boardUnitModel}");
+            }
+            
 
             return view;
         }
@@ -138,12 +142,12 @@ namespace Loom.ZombieBattleground
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
 
+            Log.Info($"RegisterBoardUnitView(IBoardUnitView view == {view})");
             if (BoardUnitViews.Contains(view))
             {
                 Log.Warn($"{nameof(RegisterBoardUnitView)}: Attempt to add card view {view} to BoardUnitViews when it is already added");
                 return;
             }
-
             BoardUnitViews.Add(view);
         }
 
@@ -152,7 +156,12 @@ namespace Loom.ZombieBattleground
             if (view == null)
                 throw new ArgumentNullException(nameof(view));
 
-            BoardUnitViews.Remove(view);
+            Log.Info($"UnregisterBoardUnitView(IBoardUnitView view == {view})");
+            bool removed = BoardUnitViews.Remove(view);
+            if (!removed)
+            {
+                Log.Info($"UnregisterBoardUnitView: attempted to unregister non-registered view {view}");
+            }
         }
 
 
@@ -277,14 +286,14 @@ namespace Loom.ZombieBattleground
             {
                 Action endOfDestroyAnimationCallback = () =>
                 {
-                    boardUnitView.DisposeGameObject();
+                    boardUnitView.GameObject.SetActive(false);
 
                     boardUnitView.WasDestroyed = true;
                 };
 
                 Action endOfAnimationCallback = () =>
                 {
-                    UnregisterBoardUnitView(boardUnitModel.OwnerPlayer, boardUnitView);
+                    boardUnitView.DisposeGameObject();
                     boardUnitModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
@@ -309,8 +318,8 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    endOfAnimationCallback();
                     endOfDestroyAnimationCallback();
+                    endOfAnimationCallback();
 
                     if (updateBoard)
                     {
@@ -694,6 +703,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
                     boardCardView = new UnitBoardCard(CurrentBoardCard, boardUnitModel);
+                    (boardCardView as UnitBoardCard).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
@@ -717,9 +727,6 @@ namespace Loom.ZombieBattleground
             {
                 case BoardUnitView boardUnit:
                     boardCardView.DrawTooltipInfoOfUnit(boardUnit);
-                    UnitBoardCard boardCardUnit = boardCardView as UnitBoardCard;
-                    boardCardUnit.Model.Card.InstanceCard.Damage = boardUnit.Model.MaxCurrentDamage;
-                    boardCardUnit.Model.Card.InstanceCard.Defense = boardUnit.Model.MaxCurrentDefense;
                     break;
                 case BoardCardView tooltipCard:
                     boardCardView.DrawTooltipInfoOfCard(tooltipCard);
@@ -972,7 +979,9 @@ namespace Loom.ZombieBattleground
 
         public void DistractUnit(BoardUnitModel boardUnit)
         {
+            boardUnit.CurrentDamage -= boardUnit.BuffedDamage;
             boardUnit.BuffedDamage = 0;
+            boardUnit.CurrentDefense -= boardUnit.BuffedDefense;
             boardUnit.BuffedDefense = 0;
             boardUnit.HasSwing = false;
             boardUnit.TakeFreezeToAttacked = false;
@@ -1025,7 +1034,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetByInstanceId(InstanceId id) {
+        public BoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true) {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
@@ -1036,12 +1045,15 @@ namespace Loom.ZombieBattleground
             if (boardUnitModelById != null)
                 return boardUnitModelById;
 
-            BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
-            if (card != null)
+            if (createHandCardByDefault)
             {
-                BoardCardView boardCardView = CreateCustomHandBoardCard(card);
-                Object.Destroy(boardCardView.GameObject);
-                return boardCardView.HandBoardCard;
+                BoardUnitModel card = GetBoardUnitModelByInstanceId(id);
+                if (card != null)
+                {
+                    BoardCardView boardCardView = CreateCustomHandBoardCard(card);
+                    Object.Destroy(boardCardView.GameObject);
+                    return boardCardView.HandBoardCard;
+                }
             }
 
             return null;
@@ -1082,15 +1094,30 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id)
+        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId id, bool onlyCardsInPlay = false)
         {
-            BoardUnitModel boardUnitModel =
-                _gameplayManager.OpponentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
+            IEnumerable<BoardUnitModel> boardUnitModels;
+            if (!onlyCardsInPlay)
+            {
+                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+            }
+            else
+            {
+                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+            }
+
+            BoardUnitModel boardUnitModel =
+                boardUnitModels
                     .FirstOrDefault(model => model != null && model.Card.InstanceId == id);
 
             return boardUnitModel;
@@ -1098,7 +1125,7 @@ namespace Loom.ZombieBattleground
 
         public BoardObject GetBoardObjectByInstanceId(InstanceId id)
         {
-            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id);
+            BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id, true);
             if(boardUnitModel != null)
                 return boardUnitModel;
 
@@ -1279,14 +1306,12 @@ namespace Loom.ZombieBattleground
                 workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
                 workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
-                RegisterBoardUnitView(_gameplayManager.CurrentPlayer, workingUnitView);
             }
 
             foreach (SpecificBattlegroundInfo.UnitOnBoardInfo cardInfo in opponentCards)
             {
                 workingUnitView = _gameplayManager.CurrentPlayer.PlayerCardsController.SpawnUnitOnBoard(cardInfo.Name, ItemPosition.End);
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                RegisterBoardUnitView(_gameplayManager.OpponentPlayer, workingUnitView);
             }
         }
 

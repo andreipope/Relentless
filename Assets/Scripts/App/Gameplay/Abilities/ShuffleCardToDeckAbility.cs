@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
-                // FIXME: doesn't this cause de-sync?
+                BoardUnitModel.ResetToInitial();
                 PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(BoardUnitModel, true);
             }
             AbilityProcessingAction?.ForceActionDone();

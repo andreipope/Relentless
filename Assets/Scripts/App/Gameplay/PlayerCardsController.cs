@@ -132,7 +132,10 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(RemoveCardFromDeck)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
             
             bool removed = _cardsInDeck.Remove(boardUnitModel);
-            Assert.AreEqual(true, removed, $"Item {boardUnitModel} not removed");
+            if (!removed)
+            {
+                CallLog($"{nameof(RemoveCardFromDeck)}: item {boardUnitModel} wasn't present in the list", true);
+            }
 
             InvokeDeckChanged();
         }
@@ -205,15 +208,16 @@ namespace Loom.ZombieBattleground
                 boardUnitModel = CardsInDeck[0];
             }
 
-            if (CheckIsMoreThanMaxCards(boardUnitModel))
-            {
-                CallLog($"{nameof(AddCardFromDeckToHand)} returned null");
-                return null;
-            }
-
             if (removeCardsFromDeck)
             {
                 RemoveCardFromDeck(boardUnitModel);
+            }
+
+            if (CheckIsMoreThanMaxCards(boardUnitModel))
+            {
+                CallLog($"{nameof(AddCardFromDeckToHand)} returned null");
+                AddCardToGraveyard(boardUnitModel);
+                return null;
             }
 
             IView cardView = AddCardToHand(boardUnitModel);
@@ -243,6 +247,13 @@ namespace Loom.ZombieBattleground
             CallLog($"{nameof(AddCardToHand)} returned {cardView}");
 
             return cardView;
+        }
+
+        public void AddCardFromBoardToHand(BoardUnitModel boardUnitModel)
+        {
+            CallLog($"{nameof(AddCardFromBoardToHand)}(BoardUnitModel boardUnitModel = {boardUnitModel}");
+            _cardsInHand.Insert(ItemPosition.End, boardUnitModel);
+            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel, false);
         }
 
         private BoardCardView CreateAndAddPlayerHandCard(BoardUnitModel boardUnitModel, bool silent = false)
@@ -549,7 +560,7 @@ namespace Loom.ZombieBattleground
 
             GameObject board = Player.IsLocalPlayer ? _cardsController.PlayerBoard : _cardsController.OpponentBoard;
 
-            BoardUnitView boardUnitView = new BoardUnitView(new BoardUnitModel(card.Model.Card), board.transform);
+            BoardUnitView boardUnitView = new BoardUnitView(card.Model, board.transform);
             boardUnitView.Transform.tag = Player.IsLocalPlayer ? SRTags.PlayerOwned : SRTags.OpponentOwned;
             boardUnitView.Transform.parent = board.transform;
             boardUnitView.Transform.position = new Vector2(Constants.DefaultPositonOfUnitWhenSpawn * Player.CardsOnBoard.Count, 0);
@@ -786,14 +797,8 @@ namespace Loom.ZombieBattleground
 
         public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel)
         {
-            // TODO : Temp fix to not to check max cards in hand for now
-            // TODO : because the cards in hand is not matching on both the clients
-            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
-                return false;
-
             if (CardsInHand.Count >= Player.MaxCardsInHand)
             {
-                // IMPROVE ANIMATION
                 return true;
             }
 

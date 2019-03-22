@@ -114,8 +114,9 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitModel unit in _boardUnits)
                 {
                     BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
-                    BattlegroundController.UnregisterBoardUnitView(unit.OwnerPlayer, unitView);
                     unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit);
+
+                    BattlegroundController.DeactivateAllAbilitiesOnUnit(unit);
 
                     unitView.DisposeGameObject();
                 }
@@ -124,8 +125,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (ReplaceUnitInfo unitInfo in _replaceUnitInfos)
                 {
-                    BattlegroundController.UnregisterBoardUnitView(unitInfo.OldUnitView.Model.OwnerPlayer, unitInfo.OldUnitView);
                     unitInfo.OldUnitView.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
+
+                    BattlegroundController.DeactivateAllAbilitiesOnUnit(unitInfo.OldUnitView.Model);
 
                     unitInfo.OldUnitView.DisposeGameObject();
                 }

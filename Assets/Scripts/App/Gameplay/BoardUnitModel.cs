@@ -281,7 +281,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Add(type);
         }
 
-        public void ApplyBuff(Enumerators.BuffType type)
+        public void ApplyBuff(Enumerators.BuffType type, bool ignoreTurnsOnBoard = false)
         {
             switch (type)
             {
@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if (NumTurnsOnBoard == 0 && !HasFeral)
+                    if ((ignoreTurnsOnBoard || NumTurnsOnBoard == 0) && !HasFeral)
                     {
                         AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
                         HasBuffRush = true;
@@ -521,6 +521,8 @@ namespace Loom.ZombieBattleground
             BuffedDefense = 0;
 
             InitialUnitType = Card.Prototype.Type;
+
+            LastAttackingSetType = Faction;
 
             ClearUnitTypeEffects();
 
@@ -907,11 +909,6 @@ namespace Loom.ZombieBattleground
 
         public void SetPicture(string name = "", string attribute = "")
         {
-            if (CardPicture != null)
-            {
-                MonoBehaviour.Destroy(CardPicture);
-            }
-
             string imagePath = $"{Constants.PathToCardsIllustrations}";
 
             if (!string.IsNullOrEmpty(name))
@@ -930,6 +927,8 @@ namespace Loom.ZombieBattleground
 
             CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
             CardPictureWasUpdated?.Invoke();
+
+            Resources.UnloadUnusedAssets();
         }
 
         public void ArriveUnitOnBoard()

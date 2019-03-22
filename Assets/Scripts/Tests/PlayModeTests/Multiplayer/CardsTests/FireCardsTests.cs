@@ -554,6 +554,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>() {
                             new ParametrizedAbilityInstanceId(playerCard1Id)
                         });
+                        player.LetsThink(4, true);
+                        player.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     opponent =>
                     {
@@ -561,17 +567,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>() {
                             new ParametrizedAbilityInstanceId(opponentCard1Id)
                         });
+                        opponent.LetsThink(4, true);
+                        opponent.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     player => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -721,6 +728,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         {
                             new ParametrizedAbilityInstanceId(playerCard1Id)
                         });
+                        player.LetsThink(4, true);
+                        player.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard1Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     opponent =>
                     {
@@ -730,6 +743,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         {
                             new ParametrizedAbilityInstanceId(opponentCard1Id)
                         });
+                        opponent.LetsThink(4, true);
+                        opponent.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard1Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     player => {},
                     opponent => {},
@@ -737,12 +756,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard1Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard1Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasFeral);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasFeral);
                 };
@@ -953,6 +966,15 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                             new ParametrizedAbilityInstanceId(playerCard1Id),
                             new ParametrizedAbilityInstanceId(playerCard2Id)
                         });
+                        player.LetsThink(4, true);
+                        player.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard1Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard2Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     opponent => 
                     {
@@ -962,24 +984,21 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                             new ParametrizedAbilityInstanceId(opponentCard1Id),
                             new ParametrizedAbilityInstanceId(opponentCard2Id)
                         });
+                        opponent.LetsThink(4, true);
+                        opponent.AssertInQueue(() =>
+                        {
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard1Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard2Id)).
+                                GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
+                        });
                     },
                     player => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard1Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard1Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard2Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard2Id)).
-                                                    GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
-
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasFeral);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasFeral);
                 };

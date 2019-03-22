@@ -46,7 +46,11 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                IEnumerable<HandBoardCard> boardCardsTargets = PredefinedTargets.Select(x => x.BoardObject as HandBoardCard);
+                IReadOnlyList<HandBoardCard> boardCardsTargets =
+                    PredefinedTargets
+                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
+                        .ToList();
 
                 foreach (HandBoardCard target in boardCardsTargets)
                 {
@@ -58,12 +62,15 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                 return;
 
-            IReadOnlyList<BoardCardView> cards = BattlegroundController.PlayerHandCards.FindAll(
-                x => x.Model.Card.InstanceCard.Cost <= Value &&
-                    x.Model.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
+            IReadOnlyList<BoardUnitModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
+                x => x.Card.InstanceCard.Cost <= Value &&
+                    x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
             );
 
-            cards = cards.FindAll(x => x.Model.Card.Prototype.Faction == Faction);
+            if (Faction != Enumerators.Faction.Undefined)
+            {
+                cards = cards.FindAll(x => x.Card.Prototype.Faction == Faction);
+            }
 
             cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
 
@@ -77,7 +84,8 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                     break;
 
-                PutCardFromHandToBoard(PlayerCallerOfAbility, cards[i], ref targetEffects, ref boardCards, true);
+                BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
             }
 
             InvokeUseAbilityEvent(

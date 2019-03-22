@@ -1009,10 +1009,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("GooZilla", 10)
+                    new DeckCardData("GooZilla", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("GooZilla", 10)
+                    new DeckCardData("GooZilla", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1047,11 +1047,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => {
                            player.CardPlay(playerCardId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent => {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.USE_ALL_GOO_TO_INCREASE_STATS, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {}
                    };
@@ -1065,7 +1063,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
                 Action afterSetupAction = () => TestHelper.DebugCheats.IgnoreGooRequirements = false;
-
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, afterSetupAction: afterSetupAction);
             });
         }

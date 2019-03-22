@@ -88,7 +88,7 @@ namespace Editor
                 _scrollPosition = scrollView.scrollPosition;
                 EditorGUILayout.BeginVertical();
                 {
-                    void DrawViewList<T>(string title, IReadOnlyList<T> items)
+                    void DrawViewList<T>(string title, IReadOnlyList<T> items, bool drawType = false)
                     {
                         GUILayout.Label($"<b>{title} ({typeof(T).Name})</b>", GameStateGUI.Styles.RichLabel);
                         if (items.Count == 0)
@@ -115,15 +115,22 @@ namespace Editor
                                 if (model == null)
                                     throw new Exception("model == null");
 
+                                string description = GameStateGUI.FormatCardInstance(model.Card.ToProtobuf());
+                                if (drawType)
+                                {
+                                    description = $"<b>Type: </b>{((object) view ?? model).GetType().Name}, {description}";
+                                }
+
                                 GUILayout.Label(
-                                    GameStateGUI.FormatCardInstance(model.Card.ToProtobuf()),
+                                    description,
                                     GameStateGUI.Styles.RichLabel,
                                     GUILayout.ExpandWidth(false)
                                 );
 
                                 if (view != null)
                                 {
-                                    EditorGUILayout.ObjectField(view.Transform.gameObject, typeof(GameObject), true, GUILayout.Width(150));
+                                    GameObject viewGameObject = view.Transform != null ? view.Transform.gameObject : null;
+                                    EditorGUILayout.ObjectField(viewGameObject, typeof(GameObject), true, GUILayout.Width(150));
                                 }
                             }
                             EditorGUILayout.EndHorizontal();
@@ -163,7 +170,7 @@ namespace Editor
                         GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, AfterPlayerDrawnHandlerCallback, ref isExpanded);
 
-                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.BoardUnitViews);
+                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.BoardUnitViews, true);
                 }
                 EditorGUILayout.EndVertical();
             }

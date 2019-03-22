@@ -461,7 +461,8 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            FIRE = 1,
+            Undefined,
+            FIRE,
             WATER,
             EARTH,
             AIR,
@@ -539,7 +540,12 @@ namespace Loom.ZombieBattleground.Common
             DISTRACT_LOOP,
             RAGE_LOOP,
             UNIQUE_ARRIVALS,
-            ZOMBIE_DEATH_ANIMATIONS
+            ZOMBIE_DEATH_ANIMATIONS,
+            OPEN_PACK,
+            CARD_REVEAL_MINION,
+            CARD_REVEAL_OFFICER,
+            CARD_REVEAL_GENERAL,
+            CARD_REVEAL_COMMANDER
         }
 
         public enum Stat

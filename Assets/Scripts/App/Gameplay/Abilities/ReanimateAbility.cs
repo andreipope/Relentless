@@ -42,21 +42,32 @@ namespace Loom.ZombieBattleground
                 return;
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
-            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
-            _reanimatedUnit.Model.IsReanimated = true;
 
             owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
-            owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
-            if (owner.IsLocalPlayer)
+            AbilityUnitOwner.ResetToInitial();
+            _reanimatedUnit = CreateBoardUnit(AbilityUnitOwner, owner);
+            AbilityUnitOwner.IsReanimated = true;
+
+            if (_reanimatedUnit != null)
+            {
+                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
+            }
+
+            if (PlayerCallerOfAbility.IsLocalPlayer)
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
-                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, owner);
+                _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
             }
             else
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
+                if (_gameplayManager.IsLocalPlayerTurn()) {
+                    _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+                }
             }
+
+            AbilityUnitOwner.Owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);
 
             InvokeActionTriggered(_reanimatedUnit);
         }
@@ -84,24 +95,18 @@ namespace Loom.ZombieBattleground
 
             base.UnitDiedHandler();
 
-            if (_reanimatedUnit != null)
-            {
-                _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
-            }
-
             _gameplayManager.CanDoDragActions = true;
         }
 
         private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
         {
-            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel, false);
+            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
 
             if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
             {
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.PlayArrivalAnimation();
             boardUnitView.StopSleepingParticles();
 
             GameplayManager.CanDoDragActions = true;

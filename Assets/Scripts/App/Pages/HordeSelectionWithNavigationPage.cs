@@ -297,11 +297,11 @@ namespace Loom.ZombieBattleground
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
         
-        private void FilterPopupHidingHandler(Enumerators.Faction selectedFaction)
+        private void FilterPopupHidingHandler()
         {
-            if(CheckAvailableDeckExist(GetDeckListByElementToDisplay(selectedFaction)))
+            if(CheckAvailableDeckExist())
             {   
-                ApplyDeckFilter(selectedFaction);
+                ApplyDeckFilter();
                 ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
                 popup.ActionPopupHiding -= FilterPopupHidingHandler;
             }
@@ -323,6 +323,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonDeleteHandler()
         {
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonDelete.name))
+                return;
+
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {
@@ -437,7 +440,8 @@ namespace Loom.ZombieBattleground
         private string GenerateDeckName()
         {
             int index = _dataManager.CachedDecksData.Decks.Count;
-            string newName = "HORDE " + index;
+            string newName = _tutorialManager.IsTutorial ? "Tutorial" : "HORDE " + index;
+
             while (true)
             {
                 bool isNameCollide = false;
@@ -520,7 +524,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
-            }            
+            }
+            if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
+            {
+                SelectDeckIndex = 1;
+            }
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -698,12 +706,14 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < 4; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
-                deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
-                deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._imageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
-                deckInfoObject._imageAbilityIcons = new Image[]
+                
+                string path = $"Tab_SelectDeck/Panel_Content/Button_DeckSelect_{i}";
+                deckInfoObject.Button = _selfPage.transform.Find(path).GetComponent<Button>();
+                deckInfoObject.TextDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.TextCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.ImagePanel = _selfPage.transform.Find(path+"/Image_DeckThumbnailNormal").GetComponent<Image>();                
+                deckInfoObject.ImageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
+                deckInfoObject.ImageAbilityIcons = new Image[]
                 {
                     _selfPage.transform.Find(path+"/Image_SkillIcon_1").GetComponent<Image>(),
                     _selfPage.transform.Find(path+"/Image_SkillIcon_2").GetComponent<Image>()
@@ -725,27 +735,28 @@ namespace Loom.ZombieBattleground
         {
             bool displayNewDeckButton = (_deckPageIndex == 0);
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
-            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
+            _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
             
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
             int startObjectIndex = displayNewDeckButton?1:0;
-            int deckDataIndex = 0;
+            int deckDataIndex = _tutorialManager.IsTutorial ? 1 : 0;
+
             for (int i=startObjectIndex; i < _deckInfoObjectList.Count; ++i, ++deckDataIndex)
             {
                 
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(deckDataIndex >= deckListToDisplay.Count)
                 {
-                    deckInfoObject._button.gameObject.SetActive(false);
+                    deckInfoObject.Button.gameObject.SetActive(false);
                     continue;
                 }
 
                 int index = i;
-                deckInfoObject._button.gameObject.SetActive(true);
+                deckInfoObject.Button.gameObject.SetActive(true);
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
-                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();                
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
                     ChangeSelectDeckIndex(index);
@@ -760,32 +771,39 @@ namespace Loom.ZombieBattleground
                 int cardsAmount = deck.GetNumCards();
                 OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
-                deckInfoObject._textDeckName.text = deckName;
-                deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
-                deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(overlord.Faction);
+                deckInfoObject.TextDeckName.text = deckName;
+                if (_tutorialManager.IsTutorial)
+                {
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                }
+                else
+                {
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                }
+                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
 
                 if(deck.PrimarySkill == Enumerators.Skill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
                     string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
                 }
                 
                 if(deck.SecondarySkill == Enumerators.Skill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
                     string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();                
-                deckInfoObject._button.onClick.AddListener(() =>
+                deckInfoObject.Button.onClick.RemoveAllListeners();                
+                deckInfoObject.Button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
                     PlayClickSound();
@@ -799,7 +817,9 @@ namespace Loom.ZombieBattleground
         private void UpdatePageDotObjects(List<Deck> deckList)
         {
             foreach (Transform child in _paginationGroup)
+            {
                 Object.Destroy(child.gameObject);
+            }
             
             int page = _deckPageIndex;
             int maxPage = GetDeckPageAmount(deckList);
@@ -844,10 +864,30 @@ namespace Loom.ZombieBattleground
             ChangeSelectDeckIndex(indexInPage);
         }
 
-        public void ApplyDeckFilter(Enumerators.Faction faction)
+        public void ApplyDeckFilter()
         {
-            _inputFieldSearchDeckName.text = "";
-            _cacheDeckListToDisplay = GetDeckListByElementToDisplay(faction);
+            _inputFieldSearchDeckName.text = "";            
+            
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            if(elementFilterPopup.SelectedFactionList.Count == elementFilterPopup.AvailableFactionList.Count)
+            {
+                _cacheDeckListToDisplay = GetDeckList();
+            }
+            else
+            {
+                List<Deck> decks = new List<Deck>();
+                List<Deck> deckListByFaction;
+                foreach (Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+                {
+                    deckListByFaction = GetDeckListByElementToDisplay(faction);
+                    if (deckListByFaction.Count <= 0)
+                        continue;
+    
+                    decks = decks.Union(deckListByFaction).ToList();
+                }
+                _cacheDeckListToDisplay = decks;
+            }
+            
             _deckPageIndex = 0;
             UpdateDeckInfoObjects();
         }
@@ -859,9 +899,21 @@ namespace Loom.ZombieBattleground
             UpdateDeckInfoObjects();
         }
         
-        private bool CheckAvailableDeckExist(List<Deck> decks)
+        private bool CheckAvailableDeckExist()
         {
-            return decks.Count > 0;
+            bool isAvailable = false;
+            ElementFilterPopup elementFilterPopup = _uiManager.GetPopup<ElementFilterPopup>();
+            List<Deck> deckListByFaction;
+            foreach(Enumerators.Faction faction in elementFilterPopup.SelectedFactionList)
+            {
+                deckListByFaction = GetDeckListByElementToDisplay(faction);
+                if (deckListByFaction.Count > 0)
+                {
+                    isAvailable = true;
+                    break;
+                }
+            }
+            return isAvailable;
         }
 
         private void UpdateSelectedDeckDisplay(int selectedDeckIndex)
@@ -870,7 +922,7 @@ namespace Loom.ZombieBattleground
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
-                deckInfoObject._button.GetComponent<Image>().sprite = sprite;
+                deckInfoObject.ImagePanel.sprite = sprite;
             }
         }
 
@@ -897,14 +949,14 @@ namespace Loom.ZombieBattleground
             }        
         }
 
-        //TODO Constructor
         private class DeckInfoObject
         {
-            public Button _button;
-            public TextMeshProUGUI _textDeckName;
-            public Image _imageOverlordThumbnail;
-            public Image[] _imageAbilityIcons;
-            public TextMeshProUGUI _textCardsAmount;
+            public Button Button;
+            public TextMeshProUGUI TextDeckName;
+            public Image ImagePanel;
+            public Image ImageOverlordThumbnail;
+            public Image[] ImageAbilityIcons;
+            public TextMeshProUGUI TextCardsAmount;
         }
 
 #endregion

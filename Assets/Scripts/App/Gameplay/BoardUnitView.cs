@@ -113,7 +113,6 @@ namespace Loom.ZombieBattleground
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
             Model = model;
-            Model.ResetToInitial();
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -165,7 +164,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; }
 
-        public Transform Transform => GameObject?.transform;
+        public Transform Transform => GameObject != null ? GameObject.transform : null;
 
         public GameObject GameObject { get; private set; }
 
@@ -182,10 +181,12 @@ namespace Loom.ZombieBattleground
 
         public void DisposeGameObject()
         {
-            Log.Info($"GameObject of BoardUnitView was disposed");
+            Log.Info($"GameObject of BoardUnitView was disposed (Model: {Model})");
 
             Transform.DOKill();
             Object.Destroy(GameObject);
+
+            _battlegroundController.UnregisterBoardUnitView(Model.OwnerPlayer, this);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)

@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
         {
-            if (_gameplayManager.IsGameEnded)
+            if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
             // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
