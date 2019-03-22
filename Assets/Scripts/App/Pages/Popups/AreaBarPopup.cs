@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSettings.name))
                 return;
 
-            _uiManager.DrawPopup<MySettingPopup>(true);
+            _uiManager.DrawPopup<SettingsWithCreditsPopup>(true);
         }
         
         private void ButtonLoginHandler()
