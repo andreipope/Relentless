@@ -1111,7 +1111,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_AddToDeck",
+            "Button_Remove"
           ],
           "CanDragCards": true,
           "HandPointers": [
@@ -1159,7 +1161,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
@@ -1202,7 +1206,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
