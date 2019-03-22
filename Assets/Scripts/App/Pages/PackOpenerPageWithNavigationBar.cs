@@ -708,7 +708,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
             
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.OPEN_PACK, Constants.SfxSoundVolume,
+            GameClient.Get<ISoundManager>().PlaySound(soundType, Constants.SfxSoundVolume,
                 false, false, true);
             
             GameObject vfxParent = new GameObject("VFX");

@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
-        private const float BoardCardScale = 0.265f;
+        private const float BoardCardScale = 0.2756f;
 
         public void Init()
         {
@@ -512,7 +512,7 @@ namespace Loom.ZombieBattleground
                         init,
                         GetMaxCopiesValue(card.Model.Card.Prototype),
                         amount,
-                        true
+                        BoardCardView.AmountTrayType.Counter                        
                     );
                     break;
                 }
@@ -547,12 +547,17 @@ namespace Loom.ZombieBattleground
                         Vector3.zero,
                         BoardCardScale
                     );
-                    boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
                     _createdDeckBoardCards.Add(boardCard);
 
-                    boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount, true);                    
-
+                    boardCard.SetAmountOfCardsInEditingPage
+                    (
+                        true,
+                        GetMaxCopiesValue(prototype),
+                        card.Amount, 
+                        BoardCardView.AmountTrayType.Radio
+                    );
+                        
                     OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
                     eventHandler.DragBegan += BoardCardDragBeganHandler;
@@ -638,7 +643,6 @@ namespace Loom.ZombieBattleground
                     Vector3.zero,
                     BoardCardScale
                 );
-                boardCard.Transform.Find("Amount").gameObject.SetActive(false);
                 foundItem = boardCard;
 
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
@@ -657,8 +661,13 @@ namespace Loom.ZombieBattleground
 
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
 
-            foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,true);
+            foundItem.SetAmountOfCardsInEditingPage
+            (
+                false, 
+                GetMaxCopiesValue(card),
+                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,
+                BoardCardView.AmountTrayType.Radio
+            );
 
             UpdateDeckCardPage();
             UpdateEditDeckCardsAmount();
@@ -723,7 +732,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.Model.Card.Prototype), boardCard.CardsAmountDeckEditing, true);
+                boardCard.SetAmountOfCardsInEditingPage
+                (
+                    false, 
+                    GetMaxCopiesValue(boardCard.Model.Card.Prototype), 
+                    boardCard.CardsAmountDeckEditing, 
+                    BoardCardView.AmountTrayType.Radio
+                );
             }
 
             UpdateDeckCardPage();
@@ -751,13 +766,11 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
             }
 
-            boardCard.SetShowAmountEnabled(true);
-            boardCard.SetAmount(amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.None,amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
@@ -813,8 +826,6 @@ namespace Loom.ZombieBattleground
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
-            _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
-            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
             _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
             _draggingObject.GetComponent<SortingGroup>().sortingOrder = 2;

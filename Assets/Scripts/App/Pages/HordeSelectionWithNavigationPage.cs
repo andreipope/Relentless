@@ -706,12 +706,22 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < 4; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
+<<<<<<< HEAD
                 string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
                 deckInfoObject.Button = _selfPage.transform.Find(path).GetComponent<Button>();
                 deckInfoObject.TextDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
                 deckInfoObject.TextCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
                 deckInfoObject.ImageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
                 deckInfoObject.ImageAbilityIcons = new Image[]
+=======
+                string path = $"Tab_SelectDeck/Panel_Content/Button_DeckSelect_{i}";
+                deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
+                deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
+                deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+                deckInfoObject._imagePanel = _selfPage.transform.Find(path+"/Image_DeckThumbnailNormal").GetComponent<Image>();
+                deckInfoObject._imageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
+                deckInfoObject._imageAbilityIcons = new Image[]
+>>>>>>> 7edf3944f3ab3ee26eb6f00588dcd81abc26dd60
                 {
                     _selfPage.transform.Find(path+"/Image_SkillIcon_1").GetComponent<Image>(),
                     _selfPage.transform.Find(path+"/Image_SkillIcon_2").GetComponent<Image>()
@@ -920,7 +930,11 @@ namespace Loom.ZombieBattleground
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
+<<<<<<< HEAD
                 deckInfoObject.Button.GetComponent<Image>().sprite = sprite;
+=======
+                deckInfoObject._imagePanel.sprite = sprite;
+>>>>>>> 7edf3944f3ab3ee26eb6f00588dcd81abc26dd60
             }
         }
 
@@ -949,11 +963,20 @@ namespace Loom.ZombieBattleground
 
         private class DeckInfoObject
         {
+<<<<<<< HEAD
             public Button Button;
             public TextMeshProUGUI TextDeckName;
             public Image ImageOverlordThumbnail;
             public Image[] ImageAbilityIcons;
             public TextMeshProUGUI TextCardsAmount;
+=======
+            public Button _button;
+            public TextMeshProUGUI _textDeckName;
+            public Image _imagePanel;
+            public Image _imageOverlordThumbnail;
+            public Image[] _imageAbilityIcons;
+            public TextMeshProUGUI _textCardsAmount;
+>>>>>>> 7edf3944f3ab3ee26eb6f00588dcd81abc26dd60
         }
 
 #endregion
