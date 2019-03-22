@@ -502,12 +502,6 @@ namespace Loom.ZombieBattleground
                                             {
                                                 player.ThrowPlayCardEvent(card.Model, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.Card.InstanceCard.Cost));
-                                                if (card is UnitBoardCard)
-                                                {
-                                                    UnitBoardCard unitBoardCard = card as UnitBoardCard;
-                                                    unitBoardCard.Model.Card.InstanceCard.Damage = boardUnitView.Model.MaxCurrentDamage;
-                                                    unitBoardCard.Model.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentDefense;
-                                                }
                                             }
                                             else
                                             {
