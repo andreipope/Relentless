@@ -279,7 +279,6 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
             
-            _myDeckPage.AssignCurrentDeck(false, true);
             if (status)
             {                
                 ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.Rename);
