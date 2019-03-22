@@ -152,7 +152,7 @@ namespace Loom.ZombieBattleground
                     _leftBlockOverlordSkillElement.Init(skill);
                     break;
                 case BoardUnitModel unit:
-                    switch (unit.Card.Prototype.CardKind)
+                    switch (unit.Card.Prototype.Kind)
                     {
                         case Enumerators.CardKind.CREATURE:
                             _leftBlockCardUnitElement.Init(unit.Card, cardPicture: unit.CardPicture);

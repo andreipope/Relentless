@@ -1400,7 +1400,7 @@ namespace Loom.ZombieBattleground
                     _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                     _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                     await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                     await _backendFacade.DeleteDeck(
                         _backendDataControlMediator.UserDataModel.UserId,

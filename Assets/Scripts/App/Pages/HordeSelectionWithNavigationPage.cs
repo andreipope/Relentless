@@ -780,7 +780,7 @@ namespace Loom.ZombieBattleground
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
                 }
-                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
+                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(overlord.Faction);
 
                 if(deck.PrimarySkill == Enumerators.Skill.NONE)
                 {

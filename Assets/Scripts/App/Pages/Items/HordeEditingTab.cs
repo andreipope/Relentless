@@ -16,6 +16,10 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using System.IO;
+using Loom.ZombieBattleground.Protobuf;
+using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using Faction = Loom.ZombieBattleground.Data.Faction;
 
 namespace Loom.ZombieBattleground
 {
@@ -582,8 +586,8 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck == null)
                 return;
 
-            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
-            if (FactionAgainstDictionary[hero.Faction] == card.Faction)
+            OverlordModel overlordData = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            if (FactionAgainstDictionary[overlordData.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -1016,9 +1020,9 @@ namespace Loom.ZombieBattleground
 
         private void ResetCollectionPageState()
         {
-            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[hero.HeroElement];
-            
+            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
+
             _availableFaction = _cardFilterPopup.FilterData.GetFilteredFactionList();
             _availableFaction = ExcludeFactionFromList
             (
@@ -1028,7 +1032,7 @@ namespace Loom.ZombieBattleground
             _availableFaction = SortFactionList
             (
                 _availableFaction,
-                hero.HeroElement
+                overlordModel.Faction
             );
             
             if (_tutorialManager.IsTutorial)
@@ -1099,8 +1103,8 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
-            Hero hero = _dataManager.CachedOverlordsData.Heroes[_myDeckPage.CurrentEditDeck.OverlordId];
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[hero.Faction];
+            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
             allAvailableFactionList.Remove(againstFaction);
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
