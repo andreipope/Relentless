@@ -208,15 +208,16 @@ namespace Loom.ZombieBattleground
                 boardUnitModel = CardsInDeck[0];
             }
 
-            if (CheckIsMoreThanMaxCards(boardUnitModel))
-            {
-                CallLog($"{nameof(AddCardFromDeckToHand)} returned null");
-                return null;
-            }
-
             if (removeCardsFromDeck)
             {
                 RemoveCardFromDeck(boardUnitModel);
+            }
+
+            if (CheckIsMoreThanMaxCards(boardUnitModel))
+            {
+                CallLog($"{nameof(AddCardFromDeckToHand)} returned null");
+                AddCardToGraveyard(boardUnitModel);
+                return null;
             }
 
             IView cardView = AddCardToHand(boardUnitModel);
@@ -796,14 +797,8 @@ namespace Loom.ZombieBattleground
 
         public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel)
         {
-            // TODO : Temp fix to not to check max cards in hand for now
-            // TODO : because the cards in hand is not matching on both the clients
-            if (_matchManager.MatchType == Enumerators.MatchType.PVP)
-                return false;
-
             if (CardsInHand.Count >= Player.MaxCardsInHand)
             {
-                // IMPROVE ANIMATION
                 return true;
             }
 
