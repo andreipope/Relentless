@@ -707,11 +707,11 @@ namespace Loom.ZombieBattleground
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
                 string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
-                deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
-                deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._imageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
-                deckInfoObject._imageAbilityIcons = new Image[]
+                deckInfoObject.Button = _selfPage.transform.Find(path).GetComponent<Button>();
+                deckInfoObject.TextDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.TextCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.ImageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
+                deckInfoObject.ImageAbilityIcons = new Image[]
                 {
                     _selfPage.transform.Find(path+"/Image_SkillIcon_1").GetComponent<Image>(),
                     _selfPage.transform.Find(path+"/Image_SkillIcon_2").GetComponent<Image>()
@@ -733,7 +733,7 @@ namespace Loom.ZombieBattleground
         {
             bool displayNewDeckButton = (_deckPageIndex == 0);
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
-            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
+            _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
             
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
@@ -746,15 +746,15 @@ namespace Loom.ZombieBattleground
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(deckDataIndex >= deckListToDisplay.Count)
                 {
-                    deckInfoObject._button.gameObject.SetActive(false);
+                    deckInfoObject.Button.gameObject.SetActive(false);
                     continue;
                 }
 
                 int index = i;
-                deckInfoObject._button.gameObject.SetActive(true);
+                deckInfoObject.Button.gameObject.SetActive(true);
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
-                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();                
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
                     ChangeSelectDeckIndex(index);
@@ -769,39 +769,39 @@ namespace Loom.ZombieBattleground
                 int cardsAmount = deck.GetNumCards();
                 Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
 
-                deckInfoObject._textDeckName.text = deckName;
+                deckInfoObject.TextDeckName.text = deckName;
                 if (_tutorialManager.IsTutorial)
                 {
-                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
                 }
                 else
                 {
-                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
                 }
-                deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
+                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
 
                 if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
                     string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
                 }
                 
                 if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
                     string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();                
-                deckInfoObject._button.onClick.AddListener(() =>
+                deckInfoObject.Button.onClick.RemoveAllListeners();                
+                deckInfoObject.Button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
                     PlayClickSound();
@@ -920,7 +920,7 @@ namespace Loom.ZombieBattleground
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
-                deckInfoObject._button.GetComponent<Image>().sprite = sprite;
+                deckInfoObject.Button.GetComponent<Image>().sprite = sprite;
             }
         }
 
@@ -947,14 +947,13 @@ namespace Loom.ZombieBattleground
             }        
         }
 
-        //TODO Constructor
         private class DeckInfoObject
         {
-            public Button _button;
-            public TextMeshProUGUI _textDeckName;
-            public Image _imageOverlordThumbnail;
-            public Image[] _imageAbilityIcons;
-            public TextMeshProUGUI _textCardsAmount;
+            public Button Button;
+            public TextMeshProUGUI TextDeckName;
+            public Image ImageOverlordThumbnail;
+            public Image[] ImageAbilityIcons;
+            public TextMeshProUGUI TextCardsAmount;
         }
 
 #endregion
