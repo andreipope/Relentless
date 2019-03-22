@@ -649,7 +649,7 @@ namespace Loom.ZombieBattleground
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.Page = this;
-                deckBuilderCard.Card = card;
+                deckBuilderCard.Card = boardCard.Model.Prototype;
                 deckBuilderCard.IsHordeItem = true;
 
                 _createdDeckBoardCards.Add(boardCard);

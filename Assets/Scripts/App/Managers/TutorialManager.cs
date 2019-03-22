@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         private const string InGameTutorialDataPath = "Data/ingame_tutorial";
 
+        private const int FirstDeckBuildTutorialIndex = 1;
+
         private IUIManager _uiManager;
 
         private ISoundManager _soundManager;
@@ -269,6 +271,11 @@ namespace Loom.ZombieBattleground
 
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
+
+            if(CurrentTutorial.Id == FirstDeckBuildTutorialIndex)
+            {
+                RemoveTutorialDeck();
+            }
 
             StartTutorialEvent(CurrentTutorial.Id);
         }

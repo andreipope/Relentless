@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +79,8 @@ namespace Loom.ZombieBattleground
                           _trayEnd, 
                           _panelCollect, 
                           _greenPoolVFX;
+
+        private Transform _panelPackContent;
         
         private SpriteRenderer _vignetteCollectCard;
 
@@ -309,8 +311,10 @@ namespace Loom.ZombieBattleground
             
             _gooPoolAnimator = _createdGooPool.transform.Find("OpenPack").GetComponent<Animator>();
             _gooPoolAnimator.enabled = true;
-            _greenPoolVFX = _createdGooPool.transform.Find("OpenPack/OpenPack").GetComponent<Transform>();           
-                        
+            _greenPoolVFX = _createdGooPool.transform.Find("OpenPack/OpenPack").GetComponent<Transform>();
+
+            _panelPackContent = _selfPage.transform.Find("pack_holder_tray/PackContent");
+
             _createdGooPool.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             _createdGooPool.GetComponent<SortingGroup>().sortingOrder = 1;            
             
@@ -864,6 +868,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPackTypeHandler( int id )
         {
+            if (_tutorialManager.BlockAndReport(_panelPackContent.name))
+                return;
+
             PlayClickSound();
             ChangeSelectedPackType(id);
         }
