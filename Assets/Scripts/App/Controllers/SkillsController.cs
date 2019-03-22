@@ -1359,6 +1359,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel boardUnitModel in boardUnitModels)
             {
+                boardUnitModel.ResetToInitial();
                 unit = owner.PlayerCardsController.SpawnUnitOnBoard(
                     boardUnitModel,
                     ItemPosition.End,

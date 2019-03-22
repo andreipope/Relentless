@@ -99,6 +99,10 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> targetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
+            if (!activateAbility && GameClient.Get<IGameplayManager>().IsLocalPlayerTurn()) {
+                activateAbility = true;
+            }
+            
             owner.PlayerCardsController.RemoveCardFromDeck(boardCardView.Model);
 
             owner.PlayerCardsController.SummonUnitFromHand(boardCardView, activateAbility);
