@@ -810,7 +810,7 @@
           "TutorialTooltipOwner": "UI",
           "Description": "It's time to BATTLE!",
           "Position": {
-            "X": 8,
+            "X": 9,
             "Y": -1.9,
             "Z": 0
           },
@@ -854,7 +854,6 @@
         },
         {
           "Id": 7,
-          "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "UI",
           "Description": "Open your pack.",
           "Position": {
@@ -916,7 +915,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -950,7 +950,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -967,7 +968,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -1040,7 +1042,8 @@
             "Button_DeckIcon_1",
             "Button_DeckIcon_2",
             "Button_DeckIcon_3",
-            "Button_DeckIcon_4"
+            "Button_DeckIcon_4",
+            "Button_DeckIcon_5"
           ],
           "HandPointers": [
             {
@@ -1112,7 +1115,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_AddToDeck",
+            "Button_Remove"
           ],
           "CanDragCards": true,
           "HandPointers": [
@@ -1160,7 +1165,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
@@ -1203,7 +1210,9 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
@@ -1295,7 +1304,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -2065,7 +2079,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -2099,7 +2114,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -2116,7 +2132,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -2171,13 +2188,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -2246,7 +2256,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -2970,7 +2985,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3004,7 +3020,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -3076,13 +3093,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -3151,7 +3161,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -3536,7 +3551,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 1
+              "AppearDelay": 3
             }
           ]
         },
@@ -3908,7 +3923,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3942,7 +3958,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -4014,13 +4031,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -4089,7 +4099,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -4279,7 +4294,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2,
+          "AppearDelay": 0.5,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
