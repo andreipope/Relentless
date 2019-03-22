@@ -453,7 +453,7 @@ namespace Loom.ZombieBattleground
         
         private void UpdateCacheFilteredCardList(List<Card> cardList)
         {
-            _cacheFilteredSetTypeCardsList = cardList.ToList();
+            _cacheFilteredSetTypeCardsList = cardList.FindAll(card => !card.Hidden).ToList();
             _currentPagesAmount = Mathf.CeilToInt
             (
                 _cacheFilteredSetTypeCardsList.Count / (float) CardPositions.Count
