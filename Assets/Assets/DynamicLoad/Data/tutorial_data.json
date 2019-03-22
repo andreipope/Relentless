@@ -1294,7 +1294,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -2241,7 +2246,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -3141,7 +3151,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -4074,7 +4089,12 @@
             "Button_MyDecks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
