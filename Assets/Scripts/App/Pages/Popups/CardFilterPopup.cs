@@ -612,7 +612,7 @@ namespace Loom.ZombieBattleground
                 }
             }
             
-            public List<Enumerators.Faction> GetFilterFactionList()
+            public List<Enumerators.Faction> GetFilteredFactionList()
             {
                 List<Enumerators.Faction> factionList = new List<Enumerators.Faction>();
                 foreach (KeyValuePair<Enumerators.Faction, bool> kvp in FactionDictionary)

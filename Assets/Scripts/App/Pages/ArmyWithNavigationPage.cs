@@ -376,7 +376,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetPageState()
         {
-            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterFactionList();
+            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilteredFactionList();
             _currentSetTypeIndex = 0;
             _currentPage = 0;
             UpdateAvailableSetTypeCards();

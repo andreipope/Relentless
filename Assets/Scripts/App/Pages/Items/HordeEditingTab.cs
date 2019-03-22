@@ -583,8 +583,8 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck == null)
                 return;
 
-
-            if (FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
+            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
+            if (FactionAgainstDictionary[hero.HeroElement] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -1017,8 +1017,21 @@ namespace Loom.ZombieBattleground
 
         private void ResetCollectionPageState()
         {
-            ExcludeFilterDataWithAgainstFaction();
-            _availableFaction = _cardFilterPopup.FilterData.GetFilterFactionList();
+            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[hero.HeroElement];
+            
+            _availableFaction = _cardFilterPopup.FilterData.GetFilteredFactionList();
+            _availableFaction = ExcludeFactionFromList
+            (
+                _availableFaction,
+                againstFaction
+            );
+            _availableFaction = SortFactionList
+            (
+                _availableFaction,
+                hero.HeroElement
+            );
+            
             if (_tutorialManager.IsTutorial)
             {
                 _currentCollectionFactionIndex = _availableFaction.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
@@ -1028,8 +1041,42 @@ namespace Loom.ZombieBattleground
                 _currentCollectionFactionIndex = 0;
             }
             _currentCollectionPage = 0;
+            
             UpdateAvailableCollectionCards();
             LoadCollectionsCards();
+        }
+        
+        private List<Enumerators.Faction> SortFactionList(List<Enumerators.Faction> factions, Enumerators.Faction firstFaction)
+        {
+            if (!factions.Contains(firstFaction))
+            {
+                return factions.ToList();
+            }
+
+            int index = factions.IndexOf(firstFaction);
+            if(index == 0)
+            {
+                return factions.ToList();
+            }
+            
+            List<Enumerators.Faction> resultList = factions.ToList();
+            Enumerators.Faction tmpFaction = resultList[0];
+            resultList[0] = firstFaction;
+            resultList[index] = tmpFaction;           
+
+            return resultList;
+        }
+        
+        private List<Enumerators.Faction> ExcludeFactionFromList(List<Enumerators.Faction> factions, Enumerators.Faction excludeFaction)
+        {
+            if (!factions.Contains(excludeFaction))
+            {
+                return factions.ToList();
+            }
+            
+            List<Enumerators.Faction> resultList = factions.ToList();
+            resultList.Remove(excludeFaction);
+            return resultList;
         }
 
         private void UpdateAvailableCollectionCards()
@@ -1053,7 +1100,8 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[hero.HeroElement];
             allAvailableFactionList.Remove(againstFaction);
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
@@ -1149,12 +1197,6 @@ namespace Loom.ZombieBattleground
         private bool CheckIfAnyCacheCollectionCardsExist()
         {
             return _cacheCollectionCardsList.Count > 0;
-        }
-
-        private void ExcludeFilterDataWithAgainstFaction()
-        {
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
-            _cardFilterPopup.FilterData.FactionDictionary[againstFaction] = false;
         }
 
         private void ResetSearchAndFilterResult()
