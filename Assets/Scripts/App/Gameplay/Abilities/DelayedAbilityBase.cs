@@ -52,8 +52,6 @@ namespace Loom.ZombieBattleground
             CheckDelayEnded();
 
             _delayedTurnsLeft--;
-
-            Debug.Log("DONE DELAY");
         }
 
         private void CheckDelayEnded()
