@@ -974,7 +974,9 @@ namespace Loom.ZombieBattleground
 
         public void DistractUnit(BoardUnitModel boardUnit)
         {
+            boardUnit.CurrentDamage -= boardUnit.BuffedDamage;
             boardUnit.BuffedDamage = 0;
+            boardUnit.CurrentDefense -= boardUnit.BuffedDefense;
             boardUnit.BuffedDefense = 0;
             boardUnit.HasSwing = false;
             boardUnit.TakeFreezeToAttacked = false;
