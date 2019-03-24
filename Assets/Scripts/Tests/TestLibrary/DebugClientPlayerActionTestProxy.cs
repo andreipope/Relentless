@@ -73,24 +73,24 @@ namespace Loom.ZombieBattleground.Test
                     ));
             }
 
-            if (skipEntryAbilities)
-                return;
-
-            // Second, fire non-targetable entry abilities
-            AbilityData[] entryAbilities =
-                boardUnitModel.InstanceCard.Abilities
-                    .Where(x =>
-                        _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
-                        !(_testHelper.AbilitiesController.HasTargets(x) && _testHelper.AbilitiesController.IsAbilityCallsAtStart(x)))
-                    .ToArray();
-
-            foreach (AbilityData entryAbility in entryAbilities)
+            if (!skipEntryAbilities)
             {
-                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
-                    card,
-                    entryAbility.Ability,
-                    new ParametrizedAbilityInstanceId[]{ }
-                ));
+                // Second, fire non-targetable entry abilities
+                AbilityData[] entryAbilities =
+                    boardUnitModel.InstanceCard.Abilities
+                        .Where(x =>
+                            _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
+                            !(_testHelper.AbilitiesController.HasTargets(x) && _testHelper.AbilitiesController.IsAbilityCallsAtStart(x)))
+                        .ToArray();
+
+                foreach (AbilityData entryAbility in entryAbilities)
+                {
+                    await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                        card,
+                        entryAbility.Ability,
+                        new ParametrizedAbilityInstanceId[] { }
+                    ));
+                }
             }
         }
 
