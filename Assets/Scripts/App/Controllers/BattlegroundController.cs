@@ -37,11 +37,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public UniquePositionedList<BoardUnitView> OpponentGraveyardCards { get; } =  new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
-
         public UniquePositionedList<OpponentHandCard> OpponentHandCards { get; } =  new UniquePositionedList<OpponentHandCard>(new PositionedList<OpponentHandCard>());
-
-        public UniquePositionedList<BoardUnitView> PlayerGraveyardCards { get; } = new UniquePositionedList<BoardUnitView>(new PositionedList<BoardUnitView>());
 
         public UniquePositionedList<BoardCardView> PlayerHandCards { get; } = new UniquePositionedList<BoardCardView>(new PositionedList<BoardCardView>());
 
@@ -107,7 +103,9 @@ namespace Loom.ZombieBattleground
 
         public bool TurnWaitingForEnd { get; private set; }
 
-        public UniqueList<IBoardUnitView> BoardUnitViews = new UniqueList<IBoardUnitView>();
+        public IReadOnlyList<IBoardUnitView> BoardUnitViews => _boardUnitViews;
+
+        private readonly UniqueList<IBoardUnitView> _boardUnitViews = new UniqueList<IBoardUnitView>();
 
         public T GetBoardUnitViewByModel<T>(BoardUnitModel boardUnitModel) where T : IBoardUnitView
         {
@@ -127,7 +125,6 @@ namespace Loom.ZombieBattleground
                 Log.Warn($"View of type {typeof(T).Name} not found for model {boardUnitModel}");
                 //throw new Exception($"No view found for model {boardUnitModel}");
             }
-            
 
             return view;
         }
@@ -143,12 +140,13 @@ namespace Loom.ZombieBattleground
                 throw new ArgumentNullException(nameof(view));
 
             Log.Info($"RegisterBoardUnitView(IBoardUnitView view == {view})");
-            if (BoardUnitViews.Contains(view))
+            if (_boardUnitViews.Contains(view))
             {
                 Log.Warn($"{nameof(RegisterBoardUnitView)}: Attempt to add card view {view} to BoardUnitViews when it is already added");
                 return;
             }
-            BoardUnitViews.Add(view);
+
+            _boardUnitViews.Add(view);
         }
 
         public void UnregisterBoardUnitView(Player player, IBoardUnitView view)
@@ -157,7 +155,7 @@ namespace Loom.ZombieBattleground
                 throw new ArgumentNullException(nameof(view));
 
             Log.Info($"UnregisterBoardUnitView(IBoardUnitView view == {view})");
-            bool removed = BoardUnitViews.Remove(view);
+            bool removed = _boardUnitViews.Remove(view);
             if (!removed)
             {
                 Log.Info($"UnregisterBoardUnitView: attempted to unregister non-registered view {view}");
@@ -363,9 +361,6 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer?.PlayerCardsController.ClearCardsOnBoard();
             _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsOnBoard();
-
-            PlayerGraveyardCards.Clear();
-            OpponentGraveyardCards.Clear();
         }
 
         public void InitializeBattleground()
@@ -602,7 +597,6 @@ namespace Loom.ZombieBattleground
             }
 
             UnregisterBoardUnitView(_gameplayManager.CurrentPlayer, boardCardView);
-            PlayerGraveyardCards.Insert(ItemPosition.End, boardCardView);
 
             boardCardView.SetHighlightingEnabled(false);
             boardCardView.StopSleepingParticles();

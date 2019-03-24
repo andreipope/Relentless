@@ -152,14 +152,10 @@ namespace Editor
                         if (isCurrentPlayer)
                         {
                             DrawViewList("BattlegroundController.PlayerHandCards", battlegroundController.PlayerHandCards);
-                            EditorGUILayout.Space();
-                            DrawViewList("BattlegroundController.PlayerGraveyardCards", battlegroundController.PlayerGraveyardCards);
                         }
                         else
                         {
                             DrawViewList("BattlegroundController.OpponentHandCards", battlegroundController.OpponentHandCards);
-                            EditorGUILayout.Space();
-                            DrawViewList("BattlegroundController.OpponentGraveyardCards", battlegroundController.OpponentGraveyardCards);
                         }
                     }
 

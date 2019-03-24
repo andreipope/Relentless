@@ -895,7 +895,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveUnitFromBoard()
         {
-            _battlegroundController.BoardUnitViews.Remove(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
+            _battlegroundController.UnregisterBoardUnitView(this.OwnerPlayer, _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
             OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(this);
             OwnerPlayer.PlayerCardsController.AddCardToGraveyard(this);
 
