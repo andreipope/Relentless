@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             Self = Object.Instantiate(
-                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopupEdited"));
+                _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonYouLostPopup"));
             Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
             _groupYouWin = Self.transform.Find("Scaler/Image_Panel_Win").gameObject; 

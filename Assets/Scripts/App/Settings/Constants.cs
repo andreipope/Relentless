@@ -209,8 +209,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
         internal const int LastTutorialId = 8;
-        
-        internal static readonly bool EnableNewUI = true;
 
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
         
