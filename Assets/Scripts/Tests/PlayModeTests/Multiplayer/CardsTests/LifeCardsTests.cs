@@ -1078,18 +1078,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardAttack(playerEnragerId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                       },
+                        },
                        opponent =>
                        {
-                           opponent.CardAbilityUsed(opponentHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
                            opponent.CardPlay(opponentHealz1Id, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
                            opponent.CardPlay(opponentHealz2Id, ItemPosition.Start);
                        },
                        player => {
-                           player.CardAbilityUsed(playerHealz1Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerHealz1Id, ItemPosition.Start);
-                           player.CardAbilityUsed(playerHealz2Id, Enumerators.AbilityType.TAKE_DEFENSE_TO_OVERLORD_WITH_DEFENSE, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerHealz2Id, ItemPosition.Start);
                        },
                        opponent => {}
