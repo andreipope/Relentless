@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
             _targets.Clear();
 
-            foreach (Enumerators.Target target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {

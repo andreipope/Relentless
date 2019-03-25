@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
 
         public override Player OwnerPlayer => Card.Owner;
 
-        public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
+        public List<Enumerators.SkillTarget> AttackTargetsAvailability;
 
         public int TutorialObjectId => Card.TutorialObjectId;
 
@@ -83,12 +83,12 @@ namespace Loom.ZombieBattleground
 
             CanAttackByDefault = true;
 
-            UnitStatus = Enumerators.UnitStatus.NONE;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
 
-            AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
+            AttackTargetsAvailability = new List<Enumerators.SkillTarget>()
             {
-                Enumerators.SkillTargetType.OPPONENT,
-                Enumerators.SkillTargetType.OPPONENT_CARD
+                Enumerators.SkillTarget.OPPONENT,
+                Enumerators.SkillTarget.OPPONENT_CARD
             };
 
             IsAllAbilitiesResolvedAtStart = true;
@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
 
         public bool AttackAsFirst { get; set; }
 
-        public Enumerators.UnitStatus UnitStatus { get; set; }
+        public Enumerators.UnitSpecialStatus UnitSpecialStatus { get; set; }
 
         public Enumerators.Faction LastAttackingSetType { get; set; }
 
@@ -281,7 +281,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Add(type);
         }
 
-        public void ApplyBuff(Enumerators.BuffType type)
+        public void ApplyBuff(Enumerators.BuffType type, bool ignoreTurnsOnBoard = false)
         {
             switch (type)
             {
@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if (NumTurnsOnBoard == 0 && !HasFeral)
+                    if ((ignoreTurnsOnBoard || NumTurnsOnBoard == 0) && !HasFeral)
                     {
                         AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
                         HasBuffRush = true;
@@ -319,7 +319,7 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
-                            Card.Prototype.CardKind,
+                            Card.Prototype.Kind,
                             this,
                             OwnerPlayer
                             );
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.Prototype.CardKind,
+                        Card.Prototype.Kind,
                         this,
                         OwnerPlayer
                         );
@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            InitialUnitType = Card.Prototype.CardType;
+            InitialUnitType = Card.Prototype.Type;
 
             CardTypeChanged?.Invoke(InitialUnitType);
         }
@@ -520,9 +520,9 @@ namespace Loom.ZombieBattleground
             BuffedDamage = 0;
             BuffedDefense = 0;
 
-            InitialUnitType = Card.Prototype.CardType;
+            InitialUnitType = Card.Prototype.Type;
 
-            InitialUnitType = Card.Prototype.CardType;
+            LastAttackingSetType = Faction;
 
             ClearUnitTypeEffects();
 
@@ -542,7 +542,7 @@ namespace Loom.ZombieBattleground
             if (_stunTurns == 0)
             {
                 IsPlayable = true;
-                UnitStatus = Enumerators.UnitStatus.NONE;
+                UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             }
 
             if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
@@ -596,14 +596,14 @@ namespace Loom.ZombieBattleground
 
             IsPlayable = false;
 
-            UnitStatus = Enumerators.UnitStatus.FROZEN;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.FROZEN;
 
             Stunned?.Invoke(true);
         }
 
         public void RevertStun()
         {
-            UnitStatus = Enumerators.UnitStatus.NONE;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             _stunTurns = 0;
             Stunned?.Invoke(false);
         }
@@ -697,7 +697,7 @@ namespace Loom.ZombieBattleground
                                 SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                 info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                 info.Target == Enumerators.SkillTarget.OPPONENT))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -753,7 +753,7 @@ namespace Loom.ZombieBattleground
                                     !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
                                      info.TutorialObjectId == TutorialObjectId &&
                                      (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
-                                         info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
+                                         info.TargetTutorialObjectId == 0 && info.Target != Enumerators.SkillTarget.OPPONENT)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -818,9 +818,12 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (IsDead || CurrentDefense <= 0 ||
-                CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
+            if (IsDead ||
+                CurrentDefense <= 0 ||
+                CurrentDamage <= 0 ||
+                IsStun ||
+                CantAttackInThisTurnBlocker ||
+                !CanAttackByDefault)
             {
                 return false;
             }
@@ -906,11 +909,6 @@ namespace Loom.ZombieBattleground
 
         public void SetPicture(string name = "", string attribute = "")
         {
-            if (CardPicture != null)
-            {
-                MonoBehaviour.Destroy(CardPicture);
-            }
-
             string imagePath = $"{Constants.PathToCardsIllustrations}";
 
             if (!string.IsNullOrEmpty(name))
@@ -929,6 +927,8 @@ namespace Loom.ZombieBattleground
 
             CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
             CardPictureWasUpdated?.Invoke();
+
+            Resources.UnloadUnusedAssets();
         }
 
         public void ArriveUnitOnBoard()
@@ -961,6 +961,42 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
+        }
+
+        public void ResetToInitial()
+        {
+            Card.InstanceCard.Abilities = new List<AbilityData>(Card.Prototype.Abilities);
+            Card.InstanceCard.Cost = Card.Prototype.Cost;
+            Card.InstanceCard.Damage = Card.Prototype.Damage;
+            Card.InstanceCard.Defense = Card.Prototype.Defense;
+            InitialUnitType = Card.Prototype.Type;
+            BuffedDefense = 0;
+            BuffedDamage = 0;
+            NumTurnsOnBoard = 0;
+            _stunTurns = 0;
+            HpDebuffUntillEndOfTurn = 0;
+            DamageDebuffUntillEndOfTurn = 0;
+            WasDistracted = false;
+            IsCreatedThisTurn = true;
+            CanAttackByDefault = true;
+            TakeFreezeToAttacked = false;
+            HasSwing = false;
+            AttackedThisTurn = false;
+            HasBuffRush = false;
+            HasBuffHeavy = false;
+            HasFeral = false;
+            IsPlayable = false;
+            IsAttacking = false;
+            IsDead = false;
+            AttackAsFirst = false;
+            CantAttackInThisTurnBlocker = false;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
+            AttackRestriction = Enumerators.AttackRestriction.ANY;
+            LastAttackingSetType = Card.Prototype.Faction;
+            BuffsOnUnit.Clear();
+            AttackedBoardObjectsThisTurn.Clear();
+            UseShieldFromBuff();
+            ClearUnitTypeEffects();
         }
 
         public override string ToString()

@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
 
         private int _currentElementPage, _numElementPages, _numHordePages, _currentHordePage;
 
-        private Enumerators.Faction _currentSet;
+        private Enumerators.Faction _currentFaction;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
         private CollectionData _collectionData;
 
         private int _currentDeckId;
-        private Hero _currentHero;
+        private OverlordModel _currentOverlord;
 
         private List<BoardCardView> _createdArmyCards, _createdHordeCards;
 
@@ -116,9 +116,9 @@ namespace Loom.ZombieBattleground
             set => _currentDeckId = value;
         }
 
-        public Hero CurrentHero
+        public OverlordModel CurrentOverlord
         {
-            set => _currentHero = value;
+            set => _currentOverlord = value;
         }
 
         public void Init()
@@ -135,9 +135,7 @@ namespace Loom.ZombieBattleground
             _cardInfoPopupHandler.Init();
             _cardInfoPopupHandler.PreviewCardInstantiated += boardCardView =>
             {
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
-                boardCardView.Transform.Find("AmountForArmy").gameObject.SetActive(false);
-                boardCardView.SetAmountOfCardsInEditingPage(true, 0, 0);
+                boardCardView.SetAmount(BoardCardView.AmountTrayType.None, 0);
             };
 
             _collectionData = new CollectionData();
@@ -285,7 +283,7 @@ namespace Loom.ZombieBattleground
             {
                 _currentDeck = new Deck(
                     -1,
-                    _currentHero.HeroId,
+                    _currentOverlord.OverlordId,
                     "HORDE " + _dataManager.CachedDecksData.Decks.Count,
                     new List<DeckCardData>(),
                     0,
@@ -348,11 +346,11 @@ namespace Loom.ZombieBattleground
 
             if (_currentElementPage < 0)
             {
-                _currentSet += direction;
+                _currentFaction += direction;
 
-                if (_currentSet < Enumerators.Faction.FIRE)
+                if (_currentFaction < Enumerators.Faction.FIRE)
                 {
-                    _currentSet = Enumerators.Faction.ITEM;
+                    _currentFaction = Enumerators.Faction.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -367,11 +365,11 @@ namespace Loom.ZombieBattleground
             }
             else if (_currentElementPage >= _numElementPages)
             {
-                _currentSet += direction;
+                _currentFaction += direction;
 
-                if (_currentSet > Enumerators.Faction.ITEM)
+                if (_currentFaction > Enumerators.Faction.ITEM)
                 {
-                    _currentSet = Enumerators.Faction.FIRE;
+                    _currentFaction = Enumerators.Faction.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -431,7 +429,6 @@ namespace Loom.ZombieBattleground
                 }
 
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _armyCardsContainer);
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
 
@@ -452,7 +449,7 @@ namespace Loom.ZombieBattleground
             BoardCardView boardCardView;
             GameObject go;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
@@ -463,13 +460,12 @@ namespace Loom.ZombieBattleground
                     boardCardView = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
             int amount = _collectionData.GetCardData(card.Name).Amount;
 
-            boardCardView.SetAmount(amount);
-            boardCardView.SetShowAmountEnabled(true);
+            boardCardView.SetAmount(BoardCardView.AmountTrayType.None, amount);
             boardCardView.SetHighlightingEnabled(false);
             boardCardView.Transform.position = worldPos;
             boardCardView.Transform.localScale = Vector3.one * 0.3f;
@@ -518,11 +514,16 @@ namespace Loom.ZombieBattleground
                 if (!itemFound)
                 {
                     BoardCardView boardCardView = CreateCard(prototype, Vector3.zero, _hordeCardsContainer);
-                    boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
 
                     _createdHordeCards.Add(boardCardView);
 
-                    boardCardView.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount);
+                    boardCardView.SetAmountOfCardsInEditingPage
+                    (
+                        true, 
+                        GetMaxCopiesValue(prototype), 
+                        card.Amount, 
+                        BoardCardView.AmountTrayType.Radio
+                    );
 
                     _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
                     UpdateNumCardsText();
@@ -547,7 +548,7 @@ namespace Loom.ZombieBattleground
             if (sender != null)
             {
                 GetSetAndIndexForCard(boardCardView.Model.Card.Prototype, out int setIndex, out int cardIndex);
-                _currentSet = SetTypeUtility.GetCardFaction(_dataManager, setIndex);
+                _currentFaction = SetTypeUtility.GetCardFaction(_dataManager, setIndex);
                 _currentElementPage = cardIndex / CardsPerPage;
                 UpdateCardsPage();
 
@@ -594,7 +595,13 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                boardCardView.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCardView.Model.Card.Prototype), boardCardView.CardsAmountDeckEditing);
+                boardCardView.SetAmountOfCardsInEditingPage
+                (
+                    false, 
+                    GetMaxCopiesValue(boardCardView.Model.Card.Prototype), 
+                    boardCardView.CardsAmountDeckEditing,
+                    BoardCardView.AmountTrayType.Radio
+                );
             }
         }
 
@@ -604,10 +611,10 @@ namespace Loom.ZombieBattleground
                 return;
             
 
-            if (_against[_currentHero.HeroElement] == card.Faction)
+            if (_against[_currentOverlord.Faction] == card.Faction)
             {
                 OpenAlertDialog(
-                    "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
+                    "It's not possible to add cards to the deck \n from the faction from which the overlord is weak against");
                 return;
             }
 
@@ -626,7 +633,7 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
+                    card.Rank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
@@ -657,7 +664,6 @@ namespace Loom.ZombieBattleground
             if (!itemFound)
             {
                 BoardCardView boardCardView = CreateCard(card, Vector3.zero, _hordeCardsContainer);
-                boardCardView.Transform.Find("Amount").gameObject.SetActive(false);
                 foundItem = boardCardView;
                 
                 OnBehaviourHandler eventHandler = boardCardView.GameObject.GetComponent<OnBehaviourHandler>();
@@ -674,8 +680,13 @@ namespace Loom.ZombieBattleground
 
             _currentDeck.AddCard(card.Name);
 
-            foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _currentDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount);
+            foundItem.SetAmountOfCardsInEditingPage
+            (
+                false, 
+                GetMaxCopiesValue(card),
+                _currentDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,
+                BoardCardView.AmountTrayType.Radio
+            );
 
             // Animated moving card
             if (sender != null)
@@ -706,7 +717,7 @@ namespace Loom.ZombieBattleground
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
         {
-            Enumerators.CardRank rank = card.CardRank;
+            Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
             Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
@@ -744,7 +755,7 @@ namespace Loom.ZombieBattleground
             {
                 if (card.Model.Card.Prototype.Name == cardId)
                 {
-                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.Model.Card.Prototype), amount, true);
+                    card.SetAmountOfCardsInEditingPage(init, GetMaxCopiesValue(card.Model.Card.Prototype), amount, BoardCardView.AmountTrayType.Counter);
                     break;
                 }
             }
@@ -789,9 +800,9 @@ namespace Loom.ZombieBattleground
             bool success = true;
             if (_currentDeckId == -1)
             {
-                _currentDeck.HeroId = _currentHero.HeroId;
-                _currentDeck.PrimarySkill = _currentHero.PrimarySkill;
-                _currentDeck.SecondarySkill = _currentHero.SecondarySkill;
+                _currentDeck.OverlordId = _currentOverlord.OverlordId;
+                _currentDeck.PrimarySkill = _currentOverlord.PrimarySkill;
+                _currentDeck.SecondarySkill = _currentOverlord.SecondarySkill;
 
                 try
                 {
@@ -983,18 +994,18 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial)
             {
-                _currentSet = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet;
+                _currentFaction = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet;
             }
             else
             {
-                Enumerators.Faction heroSetType = _dataManager.CachedHeroesData.Heroes
-                    .Find(x => x.HeroId == _currentDeck.HeroId).HeroElement;
+                Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.Overlords
+                    .Find(x => x.OverlordId == _currentDeck.OverlordId).Faction;
 
-                _currentSet = heroSetType;
+                _currentFaction = overlordFaction;
             }
             _currentElementPage = 0;
             CalculateNumberOfPages();
-            LoadCards(_currentElementPage, _currentSet);
+            LoadCards(_currentElementPage, _currentFaction);
         }
 
         private void GetSetAndIndexForCard(IReadOnlyCard card, out int setIndex, out int cardIndex)
@@ -1014,7 +1025,7 @@ namespace Loom.ZombieBattleground
         private void UpdateCardsPage()
         {
             CalculateNumberOfPages();
-            LoadCards(_currentElementPage, _currentSet);
+            LoadCards(_currentElementPage, _currentFaction);
         }
 
         private void CalculateNumberOfPages()
@@ -1022,11 +1033,11 @@ namespace Loom.ZombieBattleground
             int count = 0;
             if(_tutorialManager.IsTutorial)
             {
-                count = _tutorialManager.GetSpecificCardsBySet(_currentSet).Count;
+                count = _tutorialManager.GetSpecificCardsBySet(_currentFaction).Count;
             }
             else
             {
-                count = SetTypeUtility.GetCardFaction(_dataManager, _currentSet).Cards.Count;
+                count = SetTypeUtility.GetCardFaction(_dataManager, _currentFaction).Cards.Count;
             }
 
             _numElementPages = Mathf.CeilToInt(count /
@@ -1081,7 +1092,6 @@ namespace Loom.ZombieBattleground
             Action<int> setPageIndexAction)
         {
             BoardCardView animatedCard = CreateCard(targetLibraryCard, sourceCardPosition, null);
-            animatedCard.Transform.Find("Amount").gameObject.SetActive(false);
             animatedCard.GameObject.GetComponent<SortingGroup>().sortingOrder++;
 
             int foundItemIndex = targetRowCards.FindIndex(c => c.Model.Card.Prototype.MouldId == targetLibraryCard.MouldId);
@@ -1119,8 +1129,6 @@ namespace Loom.ZombieBattleground
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
-            _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
-            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
             _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
 
@@ -1209,15 +1217,15 @@ namespace Loom.ZombieBattleground
 
         private void ToggleChooseOnValueChangedHandler(Enumerators.Faction type)
         {
-            if (type == _currentSet)
+            if (type == _currentFaction)
                 return;
 
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
 
-            _currentSet = type;
+            _currentFaction = type;
             _currentElementPage = 0;
-            LoadCards(_currentElementPage, _currentSet);
+            LoadCards(_currentElementPage, _currentFaction);
         }
 
         private void BackButtonHandler()

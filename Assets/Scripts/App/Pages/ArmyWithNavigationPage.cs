@@ -304,7 +304,7 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCard;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
@@ -315,18 +315,15 @@ namespace Loom.ZombieBattleground
                     boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
             int amount = cardData.Amount;
-            boardCard.SetShowAmountEnabled(true);
-            boardCard.SetAmount(amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.None, amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * 0.3f;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-            boardCard.Transform.Find("AmountForArmy").gameObject.SetActive(false);
             
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
             
@@ -379,7 +376,7 @@ namespace Loom.ZombieBattleground
         
         private void ResetPageState()
         {
-            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilterFactionList();
+            _availableSetType = _uiManager.GetPopup<CardFilterPopup>().FilterData.GetFilteredFactionList();
             _currentSetTypeIndex = 0;
             _currentPage = 0;
             UpdateAvailableSetTypeCards();
@@ -446,17 +443,17 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfSatisfyRankFilter(Card card)
         {
-            return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.CardRank];
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.Rank];
         }
         
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
-            return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.CardType];
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.Type];
         }
         
         private void UpdateCacheFilteredCardList(List<Card> cardList)
         {
-            _cacheFilteredSetTypeCardsList = cardList.ToList();
+            _cacheFilteredSetTypeCardsList = cardList.FindAll(card => !card.Hidden).ToList();
             _currentPagesAmount = Mathf.CeilToInt
             (
                 _cacheFilteredSetTypeCardsList.Count / (float) CardPositions.Count

@@ -22,7 +22,6 @@ using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using CardList = Loom.ZombieBattleground.Data.CardList;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using Hero = Loom.ZombieBattleground.Data.Hero;
 
 namespace Loom.ZombieBattleground
 {
@@ -60,7 +59,7 @@ namespace Loom.ZombieBattleground
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData(new List<Card>());
-            CachedHeroesData = new HeroesData(new List<Hero>());
+            CachedOverlordData = new OverlordData(new List<OverlordModel>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
             CachedAiDecksData = new AIDecksData();
@@ -74,7 +73,7 @@ namespace Loom.ZombieBattleground
 
         public CardsLibraryData CachedCardsLibraryData { get; set; }
 
-        public HeroesData CachedHeroesData { get; set; }
+        public OverlordData CachedOverlordData { get; set; }
 
         public CollectionData CachedCollectionData { get; set; }
 
@@ -89,6 +88,8 @@ namespace Loom.ZombieBattleground
         public UserInfo UserInfo { get; set; }
 
         public GetVersionsResponse CachedVersions { get; set; }
+
+        public ZbVersion ZbVersion { get; private set; }
 
         public async Task LoadRemoteConfig()
         {
@@ -140,8 +141,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
                     break;
-                case Enumerators.CacheDataType.HEROES_DATA:
-                    data = SerializePersistentObject(CachedHeroesData);
+                case Enumerators.CacheDataType.OVERLORDS_DATA:
+                    data = SerializePersistentObject(CachedOverlordData);
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
@@ -214,7 +215,7 @@ namespace Loom.ZombieBattleground
 
         private uint GetMaxCopiesValue(Data.Card card, Enumerators.Faction setName)
         {
-            Enumerators.CardRank rank = card.CardRank;
+            Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
             if (setName == Enumerators.Faction.ITEM)
@@ -327,22 +328,22 @@ namespace Loom.ZombieBattleground
                     CachedCardsLibraryData = new CardsLibraryData(cardList);
 
                     break;
-                case Enumerators.CacheDataType.HEROES_DATA:
+                case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
                         if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedHeroesData = DeserializeObjectFromPersistentData<HeroesData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                            CachedOverlordData = DeserializeObjectFromPersistentData<OverlordData>(GetPersistentDataPath(_cacheDataFileNames[type]));
                         }
                         else
                         {
-                            ListHeroesResponse heroesList = await _backendFacade.GetHeroesList(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedHeroesData = new HeroesData(heroesList.Heroes.Select(hero => hero.FromProtobuf()).ToList());
+                            ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
+                            CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                         }
                     }
                     catch (Exception)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Heroes Data");
+                        ShowLoadDataFailMessage("Issue with Loading Overlords Data");
                         throw;
                     }
                     break;
@@ -486,7 +487,7 @@ namespace Loom.ZombieBattleground
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Constants.LocalBuffsTooltipDataFileName
                 },
                 {
-                    Enumerators.CacheDataType.HEROES_DATA, Constants.LocalHeroesDataFileName
+                    Enumerators.CacheDataType.OVERLORDS_DATA, Constants.LocalOverlordsDataFileName
                 },
                 {
                     Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName
@@ -572,6 +573,16 @@ namespace Loom.ZombieBattleground
                         });
                 }
             }
+        }
+
+        public async Task LoadZbVersionData()
+        {
+            string zbVersionParsedLink = Constants.ZbVersionLink.Replace(Constants.EnvironmentPointText,
+                        BackendEndpointsContainer.Endpoints.FirstOrDefault(point => point.Value == GameClient.GetDefaultBackendEndpoint()).
+                        Key.ToString().ToLowerInvariant());
+
+            ZbVersion = await InternalTools.GetJsonFromLink<ZbVersion>(
+                $"{GameClient.GetDefaultBackendEndpoint().AuthHost}{zbVersionParsedLink}", Log, JsonSerializerSettings);
         }
     }
 }

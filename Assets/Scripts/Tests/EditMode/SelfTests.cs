@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using log4net;
+using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test.MultiplayerTests;
@@ -21,6 +22,14 @@ namespace Loom.ZombieBattleground.Test
         [UnityTest]
         public IEnumerator CheckForMissingCardTests()
         {
+            string NormalizeTestName(string name)
+            {
+                return
+                    name
+                        .Replace(" ", "")
+                        .Replace("-", "");
+            }
+
             List<Type> cardTestFixtureTypes = new List<Type>
             {
                 typeof(GeneralMultiplayerTests),
@@ -39,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
                     .SelectMany(type => type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public))
                     .Where(method =>
                         method.GetCustomAttribute<TestAttribute>() != null || method.GetCustomAttribute<UnityTestAttribute>() != null)
-                    .Select(method => method.Name)
+                    .Select(method => NormalizeTestName(method.Name))
                     .ToList();
 
             return TestUtility.AsyncTest(async () =>
@@ -50,7 +59,7 @@ namespace Loom.ZombieBattleground.Test
 
                 try
                 {
-                    await client.Start(contract => new DefaultContractCallProxy(contract), enabledLogs: false);
+                    await client.Start(contract => new DefaultContractCallProxy(contract), new DAppChainClientConfiguration(), enabledLogs: false);
 
                     foreach (Card card in client.CardLibrary)
                     {
@@ -61,7 +70,7 @@ namespace Loom.ZombieBattleground.Test
                             continue;
                         }
 
-                        if (testNames.Any(testName => testName.IndexOf(card.Name, StringComparison.InvariantCultureIgnoreCase) != -1))
+                        if (testNames.Any(testName => testName.IndexOf(NormalizeTestName(card.Name), StringComparison.InvariantCultureIgnoreCase) != -1))
                             continue;
 
                         cardsWithMissingTests.Add(card);

@@ -58,10 +58,8 @@ namespace Loom.ZombieBattleground
         protected TextMeshPro BodyText;
 
         protected TextMeshPro AmountText;
-
-        protected TextMeshPro AmountTextForArmy;
-
-        protected Transform IconsForArmyPanel;
+        
+        protected GameObject AmountTrayWithRadio, AmountTrayWithCounter;
 
         protected Animator CardAnimator;
 
@@ -112,9 +110,10 @@ namespace Loom.ZombieBattleground
             CostText = Transform.Find("GooText").GetComponent<TextMeshPro>();
             NameText = Transform.Find("TitleText").GetComponent<TextMeshPro>();
             BodyText = Transform.Find("BodyText").GetComponent<TextMeshPro>();
-            AmountText = Transform.Find("Amount/Text").GetComponent<TextMeshPro>();
-            AmountTextForArmy = Transform.Find("AmountForArmy/Text").GetComponent<TextMeshPro>();
-            IconsForArmyPanel = Transform.Find("AmountForArmy/RankIcons");
+            AmountText = Transform.Find("AmountWithCounterTray/Text").GetComponent<TextMeshPro>();
+
+            AmountTrayWithRadio = Transform.Find("AmountWithRadioTray").gameObject;
+            AmountTrayWithCounter = Transform.Find("AmountWithCounterTray").gameObject;
 
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
@@ -137,6 +136,7 @@ namespace Loom.ZombieBattleground
             BehaviourHandler.Destroying += DestroyingHandler;
 
             Model = boardUnitModel;
+            //Model.ResetToInitial();
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground
 
             IsNewCard = true;
 
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.CardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), Model.Card.Prototype.Rank);
 
             string setName = Model.Card.Prototype.Faction.ToString();
 
@@ -159,11 +159,10 @@ namespace Loom.ZombieBattleground
             Model.CardPictureWasUpdated += PictureUpdatedEvent;
             PictureUpdatedEvent();
 
-            SetAmount(0);
-            SetShowAmountEnabled(false);
+            SetAmount(AmountTrayType.None,0);
             DistibuteCardObject.SetActive(false);
 
-            if (Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+            if (Model.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
             {
                 ParentOfLeftBlockOfCardInfo = Transform.Find("Group_LeftBlockInfo");
                 ParentOfRightBlockOfCardInfo = Transform.Find("Group_RightBlockInfo");
@@ -201,16 +200,20 @@ namespace Loom.ZombieBattleground
         public BoardUnitModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
-
-        public void SetAmount(int amount)
+        
+        public enum AmountTrayType
         {
-            AmountText.text = amount.ToString();
+            None,
+            Radio,
+            Counter
         }
 
-        public void SetShowAmountEnabled(bool show)
+        public void SetAmount(AmountTrayType amountTrayType, int amount = -1)
         {
-            AmountText.transform.parent.gameObject.SetActive(show);
-            AmountTextForArmy.transform.parent.gameObject.SetActive(show);
+            AmountTrayWithRadio.SetActive(amountTrayType == AmountTrayType.Radio);
+            ParentOfEditingGroupUI.gameObject.SetActive(amountTrayType == AmountTrayType.Radio);
+            AmountTrayWithCounter.SetActive(amountTrayType == AmountTrayType.Counter);
+            AmountText.text = amount.ToString();            
         }
 
         public int FuturePositionOnBoard = 0;
@@ -332,13 +335,11 @@ namespace Loom.ZombieBattleground
         }
 
         // editing deck page
-        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, bool isArmy = false)
+        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, AmountTrayType amountTrayType)
         {
             CardsAmountDeckEditing = amount;
             if (init)
             {
-                AmountTextForArmy.transform.parent.gameObject.SetActive(isArmy);
-
                 foreach (Transform child in ParentOfEditingGroupUI)
                 {
                     Object.Destroy(child.gameObject);
@@ -367,20 +368,12 @@ namespace Loom.ZombieBattleground
                 ElementSlotsOfCards[i].SetStatus(i < amount);
             }
 
-            float offset = 0;
-            float spacing = 1.5f;
+            float offset = -0.18f;
+            float spacing = 1.2f;
             float offsetY = 0f;
-
-            if (isArmy)
-            {
-                offsetY = -0.17f;
-                AmountTextForArmy.text = amount.ToString();
-                if (Model.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE)
-                {
-                    IconsForArmyPanel.Find("Icon_" + Model.Card.Prototype.CardRank.ToString())?.gameObject.SetActive(true);
-                }
-            }
             InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
+
+            SetAmount(amountTrayType, amount);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
@@ -397,10 +390,10 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Model.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
             {
                 TooltipContentData.RankInfo rankInfo =
-                    DataManager.GetCardRankInfo(unit.Model.Card.Prototype.CardRank);
+                    DataManager.GetCardRankInfo(unit.Model.Card.Prototype.Rank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
@@ -534,7 +527,7 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<ICameraManager>().FadeIn(0.8f, 1);
 
-            if (boardCardView.Model.Card.Prototype.CardKind == Enumerators.CardKind.ITEM)
+            if (boardCardView.Model.Card.Prototype.Kind == Enumerators.CardKind.ITEM)
                 return;
 
             BuffOnCardInfoObjects = new List<BuffOnCardInfoObject>();
@@ -547,9 +540,9 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCardView.Model.Card.Prototype.CardRank != Enumerators.CardRank.MINION)
+            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
             {
-                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.CardRank);
+                TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.Rank);
                 if (rankInfo != null)
                 {
                     TooltipContentData.RankInfo.RankDescription rankDescription = rankInfo.Info.Find(
@@ -713,6 +706,11 @@ namespace Loom.ZombieBattleground
         private void PictureUpdatedEvent()
         {
             PictureSprite.sprite = Model.CardPicture;
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

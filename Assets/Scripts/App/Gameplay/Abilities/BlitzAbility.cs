@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.Target targetType in AbilityTargetTypes)
+                    foreach (Enumerators.Target targetType in AbilityTargets)
                     {
                         switch (targetType)
                         {

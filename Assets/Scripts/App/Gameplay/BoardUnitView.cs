@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
 
         public BoardUnitModel Model { get; }
 
-        public Transform Transform => GameObject?.transform;
+        public Transform Transform => GameObject != null ? GameObject.transform : null;
 
         public GameObject GameObject { get; private set; }
 
@@ -181,10 +181,12 @@ namespace Loom.ZombieBattleground
 
         public void DisposeGameObject()
         {
-            Log.Info($"GameObject of BoardUnitView was disposed");
+            Log.Info($"GameObject of BoardUnitView was disposed (Model: {Model})");
 
             Transform.DOKill();
             Object.Destroy(GameObject);
+
+            _battlegroundController.UnregisterBoardUnitView(Model.OwnerPlayer, this);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)
@@ -199,7 +201,7 @@ namespace Loom.ZombieBattleground
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
             Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
-            string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
+            string rank = Model.Card.Prototype.Rank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
@@ -478,6 +480,8 @@ namespace Loom.ZombieBattleground
             Model.UnitFromDeckRemoved -= BoardUnitOnUnitFromDeckRemoved;
             Model.UnitDistractEffectStateChanged -= BoardUnitDistractEffectStateChanged;
             Model.GameMechanicDescriptionsOnUnitChanged -= BoardUnitGameMechanicDescriptionsOnUnitChanged;
+            _inputController.DragOnBoardObjectEvent -= UnitSelectedEventHandler;
+            _inputController.UnitDeselectedEvent -= UnitDeselectedEventHandler;
         }
 
         private void BoardUnitOnUnitDied()
@@ -562,7 +566,7 @@ namespace Loom.ZombieBattleground
 
             if (!_ignoreArrivalEndEvents)
             {
-                if (Model.Card.Prototype.CardRank == Enumerators.CardRank.COMMANDER)
+                if (Model.Card.Prototype.Rank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
 

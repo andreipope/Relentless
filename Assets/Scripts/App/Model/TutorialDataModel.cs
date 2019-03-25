@@ -96,9 +96,13 @@ namespace Loom.ZombieBattleground
 
         public List<HandPointerInfo> HandPointers;
 
+        public List<string> BlockedButtons;
+
         public string SoundToPlay;
 
         public float SoundToPlayBeginDelay;
+
+        public Enumerators.TutorialStepType TutorialStepType;
 
         public TutorialStep()
         {
@@ -109,6 +113,8 @@ namespace Loom.ZombieBattleground
             ConnectedActivities = new List<int>();
 
             HandPointers = new List<HandPointerInfo>();
+
+            BlockedButtons = new List<string>();
         }
     }
 
@@ -118,7 +124,7 @@ namespace Loom.ZombieBattleground
 
         public int TutorialObjectIdStepOwner;
 
-        public List<Enumerators.SkillTargetType> SelectableTargets;
+        public List<Enumerators.SkillTarget> SelectableTargets;
         public List<Enumerators.TutorialActivityAction> RequiredActivitiesToDoneDuringStep;
 
         public bool MatchShouldBePaused;
@@ -137,9 +143,9 @@ namespace Loom.ZombieBattleground
 
         public bool BeginGameplayFlowManually;
 
-        public TutorialGameplayStep()
+        public TutorialGameplayStep() : base()
         {
-            SelectableTargets = new List<Enumerators.SkillTargetType>();
+            SelectableTargets = new List<Enumerators.SkillTarget>();
 
             OverlordSayTooltips = new List<OverlordSayTooltipInfo>();
         }
@@ -185,8 +191,8 @@ namespace Loom.ZombieBattleground
             public List<OverlordCardInfo> CardsInDeck;
             public List<UnitOnBoardInfo> CardsOnBoard;
 
-            public Enumerators.OverlordSkill PrimaryOverlordAbility;
-            public Enumerators.OverlordSkill SecondaryOverlordAbility;
+            public Enumerators.Skill PrimarySkill;
+            public Enumerators.Skill SecondarySkill;
 
             public SpecificBattlegroundOverlordInfo()
             {
@@ -299,21 +305,21 @@ namespace Loom.ZombieBattleground
     public class UseBattleframeActionInfo
     {
         public int TutorialObjectId;
-        public Enumerators.SkillTargetType TargetType;
+        public Enumerators.SkillTarget Target;
         public int TargetTutorialObjectId;
     }
 
     public class UseOverlordSkillActionInfo
     {
         public Enumerators.SkillType SkillType;
-        public Enumerators.SkillTargetType TargetType;
+        public Enumerators.SkillTarget Target;
         public int TargetTutorialObjectId;
     }
 
     public class PlayCardActionInfo
     {
         public int TutorialObjectId;
-        public Enumerators.SkillTargetType TargetType;
+        public Enumerators.SkillTarget Target;
         public int TargetTutorialObjectId;
     }
 
@@ -398,15 +404,11 @@ namespace Loom.ZombieBattleground
     public class TutorialMenuStep : TutorialStep
     {
         public string OpenScreen;
-        public List<string> BlockedButtons;
         public bool CardsInteractingLocked;
         public bool BattleShouldBeWonBlocker;
         public bool CanDragCards;
         public bool CanDoubleTapCards;
 
-        public TutorialMenuStep()
-        {
-            BlockedButtons = new List<string>();
-        }
+        public TutorialMenuStep() : base() { }
     }
 }

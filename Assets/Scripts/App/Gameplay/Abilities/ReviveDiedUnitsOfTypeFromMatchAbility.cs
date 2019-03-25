@@ -8,12 +8,17 @@ namespace Loom.ZombieBattleground
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
+        private IGameplayManager _gameplayManager;
+
+        private AbilitiesController _abilitiesController;
         public Enumerators.Faction Faction;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
@@ -60,22 +65,24 @@ namespace Loom.ZombieBattleground
             if (playerOwner.CardsOnBoard.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card prototype = new Card(boardUnitModel.Prototype);
-
-            WorkingCard card = new WorkingCard(prototype, prototype, playerOwner);
-            BoardUnitModel revivedBoardUnitModel = new BoardUnitModel(card);
+            playerOwner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
+            boardUnitModel.ResetToInitial();
+            BoardUnitModel revivedBoardUnitModel = boardUnitModel;
             BoardUnitView revivedBoardUnitView = BattlegroundController.CreateBoardUnit(playerOwner, revivedBoardUnitModel);
 
-            playerOwner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
             playerOwner.PlayerCardsController.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
 
             if (playerOwner.IsLocalPlayer)
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, revivedBoardUnitView);
+                _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
             }
             else
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, revivedBoardUnitView);
+                if (_gameplayManager.IsLocalPlayerTurn()) {
+                    _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+                }
             }
 
             RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitModel);

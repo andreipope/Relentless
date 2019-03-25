@@ -662,7 +662,7 @@ namespace Loom.ZombieBattleground
         private void CreateCardVFX(BoardCardView boardCardView)
         {
             GameObject vfxPrefab;
-            switch(boardCardView.Model.Card.Prototype.CardRank)
+            switch(boardCardView.Model.Card.Prototype.Rank)
             {
                 case Enumerators.CardRank.MINION:
                     vfxPrefab = _vfxMinionPrefab;
@@ -781,7 +781,7 @@ namespace Loom.ZombieBattleground
                 if (Constants.EnableNewUI)
                 {
                     GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HERO_SELECTION);
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.OVERLORD_SELECTION);
                 }
                 else
                     _uiManager.SetPage<MainMenuPage>();
@@ -1034,7 +1034,7 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCardView;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
@@ -1045,7 +1045,7 @@ namespace Loom.ZombieBattleground
                     boardCardView = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:                
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
             boardCardView.SetHighlightingEnabled(false);

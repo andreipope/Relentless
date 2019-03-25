@@ -38,7 +38,11 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                IEnumerable<HandBoardCard> targets = PredefinedTargets.Select(x => x.BoardObject as HandBoardCard);
+                IReadOnlyList<HandBoardCard> targets =
+                    PredefinedTargets
+                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
+                        .ToList();
 
                 foreach (HandBoardCard target in targets)
                 {
@@ -49,7 +53,7 @@ namespace Loom.ZombieBattleground
             {
                 BoardCardView boardCardView;
 
-                foreach (Enumerators.Target targetType in AbilityData.AbilityTarget)
+                foreach (Enumerators.Target targetType in AbilityData.Targets)
                 {
                     Player playerOwner = null;
                     switch (targetType)
@@ -64,7 +68,7 @@ namespace Loom.ZombieBattleground
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE);
+                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
@@ -95,6 +99,10 @@ namespace Loom.ZombieBattleground
                                             ref List<PastActionsPopup.TargetEffectParam> targetEffects,
                                             ref List<HandBoardCard> cards, bool activateAbility)
         {
+            if (!activateAbility && GameClient.Get<IGameplayManager>().IsLocalPlayerTurn()) {
+                activateAbility = true;
+            }
+            
             owner.PlayerCardsController.RemoveCardFromDeck(boardCardView.Model);
 
             owner.PlayerCardsController.SummonUnitFromHand(boardCardView, activateAbility);

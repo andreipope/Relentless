@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         private const string InGameTutorialDataPath = "Data/ingame_tutorial";
 
+        private const int FirstDeckBuildTutorialIndex = 1;
+
         private IUIManager _uiManager;
 
         private ISoundManager _soundManager;
@@ -270,6 +272,11 @@ namespace Loom.ZombieBattleground
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
 
+            if(CurrentTutorial.Id == FirstDeckBuildTutorialIndex)
+            {
+                RemoveTutorialDeck();
+            }
+
             StartTutorialEvent(CurrentTutorial.Id);
         }
 
@@ -392,6 +399,8 @@ namespace Loom.ZombieBattleground
 
         private void CompletelyFinishTutorial()
         {
+            RemoveTutorialDeck();
+            _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
             _analyticsManager.SetEvent(AnalyticsManager.SkipTutorial);
 
             _gameplayManager.IsTutorial = false;
@@ -777,6 +786,13 @@ namespace Loom.ZombieBattleground
                 PlayTutorialSound(step.SoundToPlay, step.SoundToPlayBeginDelay);
             }
 
+            BlockedButtons.Clear();
+
+            if (step.BlockedButtons != null)
+            {
+                BlockedButtons.AddRange(step.BlockedButtons);
+            }
+
             switch (step)
             {
                 case TutorialGameplayStep gameStep:
@@ -806,7 +822,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (!CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization &&
                             CurrentTutorial.TutorialContent.ToGameplayContent().
-                            SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
+                            SpecificBattlegroundInfo.PlayerInfo.PrimarySkill != Enumerators.Skill.NONE)
                         {
                             _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill.SetCoolDown(0);
                         }
@@ -855,9 +871,6 @@ namespace Loom.ZombieBattleground
 
                     break;
                 case TutorialMenuStep menuStep:
-
-                    BlockedButtons.Clear();
-
                     if (!string.IsNullOrEmpty(menuStep.OpenScreen))
                     {
                         if (menuStep.OpenScreen.EndsWith("Popup"))
@@ -868,11 +881,6 @@ namespace Loom.ZombieBattleground
                         {
                             _uiManager.SetPageByName(menuStep.OpenScreen);
                         }
-                    }
-
-                    if (menuStep.BlockedButtons != null)
-                    {
-                        BlockedButtons.AddRange(menuStep.BlockedButtons);
                     }
 
                     if(menuStep.BattleShouldBeWonBlocker && !PlayerWon)
@@ -1001,14 +1009,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CurrentPlayerDeck =
                          new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId,
                          "TutorialDeck", new List<DeckCardData>(),
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility,
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondaryOverlordAbility);
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimarySkill,
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondarySkill);
 
             _gameplayManager.OpponentPlayerDeck =
                         new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId,
                         "TutorialDeckOpponent", new List<DeckCardData>(),
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility,
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility);
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimarySkill,
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondarySkill);
         }
 
         public void PlayTutorialSound(string sound, float delay = 0f)
@@ -1349,7 +1357,6 @@ namespace Loom.ZombieBattleground
             CompletelyFinishTutorial();
             StopTutorial(true);
             _handPointerController.ResetAll();
-            CreateStarterDeck();
         }
 
         private async void CreateStarterDeck()
@@ -1371,12 +1378,57 @@ namespace Loom.ZombieBattleground
                 savedTutorialDeck = new Deck(-1, 4, nameOfDeck, cards, 0, 0);
 
                 long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
-                savedTutorialDeck.Id = newDeckId;
+                savedTutorialDeck.Id = 2;
                 _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
             }
             _dataManager.CachedUserLocalData.TutorialSavedDeck = savedTutorialDeck;
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)savedTutorialDeck.Id;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+        }
+
+        private async void RemoveTutorialDeck()
+        {
+            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            {
+                Deck currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+
+                if (currentDeck == null)
+                    return;
+
+                try
+                {
+                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+
+                    await _backendFacade.DeleteDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        currentDeck.Id
+                    );
+
+                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                }
+                catch (TimeoutException e)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(e);
+                    Log.Warn("Time out ==", e);
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                }
+                catch (Client.RpcClientException exception)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(exception);
+                    Log.Warn(" RpcException == " + exception);
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+                }
+                catch (Exception e)
+                {
+                    Helpers.ExceptionReporter.SilentReportException(e);
+                    Log.Info("Result === " + e);
+                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
+                    return;
+                }
+            }
         }
 
         private List<DeckCardData> GetCardsForStarterDeck()

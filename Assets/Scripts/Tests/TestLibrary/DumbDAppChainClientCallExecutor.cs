@@ -9,7 +9,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
     /// </summary>
     public class DumbDAppChainClientCallExecutor : DefaultDAppChainClientCallExecutor
     {
-        public DumbDAppChainClientCallExecutor(IDAppChainClientConfigurationProvider configurationProvider) : base(configurationProvider)
+        public DumbDAppChainClientCallExecutor(DAppChainClientConfiguration configuration)
+            : base(configuration)
         {
         }
 

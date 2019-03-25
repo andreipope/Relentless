@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.Common
             APP_INIT,
             LOGIN,
             MAIN_MENU,
-            HERO_SELECTION,
+            OVERLORD_SELECTION,
             HordeSelection,
             ARMY,
             SHOP,
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground.Common
         public enum CacheDataType
         {
             CARDS_LIBRARY_DATA,
-            HEROES_DATA,
+            OVERLORDS_DATA,
             COLLECTION_DATA,
             DECKS_DATA,
             DECKS_OPPONENT_DATA,
@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground.Common
             PVE
         }
 
-        public enum OverlordSkill
+        public enum Skill
         {
             NONE,
 
@@ -461,7 +461,8 @@ namespace Loom.ZombieBattleground.Common
 
         public enum Faction
         {
-            FIRE = 1,
+            Undefined,
+            FIRE,
             WATER,
             EARTH,
             AIR,
@@ -470,7 +471,7 @@ namespace Loom.ZombieBattleground.Common
             ITEM,
         }
 
-        public enum SkillTargetType
+        public enum SkillTarget
         {
             NONE,
             PLAYER,
@@ -539,7 +540,12 @@ namespace Loom.ZombieBattleground.Common
             DISTRACT_LOOP,
             RAGE_LOOP,
             UNIQUE_ARRIVALS,
-            ZOMBIE_DEATH_ANIMATIONS
+            ZOMBIE_DEATH_ANIMATIONS,
+            OPEN_PACK,
+            CARD_REVEAL_MINION,
+            CARD_REVEAL_OFFICER,
+            CARD_REVEAL_GENERAL,
+            CARD_REVEAL_COMMANDER
         }
 
         public enum Stat
@@ -564,7 +570,7 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum UnitStatus
+        public enum UnitSpecialStatus
         {
             NONE,
             FROZEN
@@ -897,6 +903,12 @@ namespace Loom.ZombieBattleground.Common
             Water = 7,
             Small = 8,
             Minion = 9            
+        }
+
+        public enum TutorialStepType
+        {
+            MenuStep,
+            GameplayStep
         }
     }
 }
