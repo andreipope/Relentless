@@ -109,9 +109,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
-                case Enumerators.AppState.CREDITS:
-                    _uiManager.SetPage<CreditsPage>();
-                    break;
                 case Enumerators.AppState.PlaySelection:
                     _uiManager.SetPage<MainMenuWithNavigationPage>();
                     _uiManager.DrawPopup<GameModePopup>(); 
