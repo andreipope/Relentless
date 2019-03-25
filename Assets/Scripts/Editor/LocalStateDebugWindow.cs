@@ -149,14 +149,14 @@ namespace Editor
                         DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
                         EditorGUILayout.Space();
 
-                        if (isCurrentPlayer)
+                        /*if (isCurrentPlayer)
                         {
                             DrawViewList("BattlegroundController.PlayerHandCards", battlegroundController.PlayerHandCards);
                         }
                         else
                         {
                             DrawViewList("BattlegroundController.OpponentHandCards", battlegroundController.OpponentHandCards);
-                        }
+                        }*/
                     }
 
                     bool isExpanded = true;

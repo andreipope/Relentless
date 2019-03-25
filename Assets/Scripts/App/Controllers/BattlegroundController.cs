@@ -37,9 +37,9 @@ namespace Loom.ZombieBattleground
 
         public int CurrentTurn;
 
-        public UniquePositionedList<OpponentHandCard> OpponentHandCards { get; } =  new UniquePositionedList<OpponentHandCard>(new PositionedList<OpponentHandCard>());
+        //public UniquePositionedList<OpponentHandCard> OpponentHandCards { get; } =  new UniquePositionedList<OpponentHandCard>(new PositionedList<OpponentHandCard>());
 
-        public UniquePositionedList<BoardCardView> PlayerHandCards { get; } = new UniquePositionedList<BoardCardView>(new PositionedList<BoardCardView>());
+        //public UniquePositionedList<BoardCardView> PlayerHandCards { get; } = new UniquePositionedList<BoardCardView>(new PositionedList<BoardCardView>());
 
         public GameObject PlayerBoardObject, OpponentBoardObject, PlayerGraveyardObject, OpponentGraveyardObject;
 
@@ -114,8 +114,6 @@ namespace Loom.ZombieBattleground
 
             T view =
                 BoardUnitViews
-                    .Concat(PlayerHandCards)
-                    .Concat(OpponentHandCards)
                     .OfType<T>()
                     .Where(v => v.Model == boardUnitModel)
                     .SingleOrDefault();
@@ -132,6 +130,11 @@ namespace Loom.ZombieBattleground
         public IReadOnlyList<BoardUnitView> GetBoardUnitViewsFromModels(IReadOnlyList<BoardUnitModel> models)
         {
             return models.Select(GetBoardUnitViewByModel<BoardUnitView>).ToList();
+        }
+
+        public IReadOnlyList<T> GetViewsFromModels<T>(IReadOnlyList<BoardUnitModel> models) where T : IBoardUnitView
+        {
+            return models.Select(GetBoardUnitViewByModel<T>).ToList();
         }
 
         public void RegisterBoardUnitView(Player player, IBoardUnitView view, ItemPosition position = default(ItemPosition))
@@ -356,8 +359,8 @@ namespace Loom.ZombieBattleground
 
         public void ClearBattleground()
         {
-            PlayerHandCards.Clear();
-            OpponentHandCards.Clear();
+            _gameplayManager.CurrentPlayer?.PlayerCardsController.ClearCardsInHand();
+            _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsInHand();
 
             _gameplayManager.CurrentPlayer?.PlayerCardsController.ClearCardsOnBoard();
             _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsOnBoard();
@@ -430,6 +433,8 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitView> currentPlayerCardsOnBoardUnitViews = GetBoardUnitViewsFromModels(_gameplayManager.CurrentPlayer.CardsOnBoard);
             IReadOnlyList<BoardUnitView> opponentPlayerCardsOnBoardUnitViews = GetBoardUnitViewsFromModels(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardCardView> currentPlayerCardsInHandUnitViews = GetViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 List<BoardUnitView> creatures = new List<BoardUnitView>();
@@ -469,7 +474,7 @@ namespace Loom.ZombieBattleground
                     card.Model.OnStartTurn();
                 }
 
-                foreach (BoardCardView card in PlayerHandCards)
+                foreach (BoardCardView card in currentPlayerCardsInHandUnitViews)
                 {
                     card.SetHighlightingEnabled(false);
                 }
@@ -786,6 +791,8 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsInPlayerHand(bool isMove = false)
         {
+            IReadOnlyList<BoardCardView> boardCardViews = GetViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+
             float handWidth = 0.0f;
             float spacing = -1.5f;
             float scaling = 0.25f;
@@ -800,32 +807,32 @@ namespace Loom.ZombieBattleground
                 twistPerCard = -3;
             }
 
-            for (int i = 0; i < PlayerHandCards.Count; i++)
+            for (int i = 0; i < boardCardViews.Count; i++)
             {
                 handWidth += spacing;
             }
 
             handWidth -= spacing;
 
-            if (PlayerHandCards.Count == 1)
+            if (boardCardViews.Count == 1)
             {
                 twistPerCard = 0;
             }
 
-            int totalTwist = twistPerCard * PlayerHandCards.Count;
+            int totalTwist = twistPerCard * boardCardViews.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
             float scalingFactor = 0.04f;
             Vector3 moveToPosition = Vector3.zero;
 
-            for (int i = 0; i < PlayerHandCards.Count; i++)
+            for (int i = 0; i < boardCardViews.Count; i++)
             {
-                BoardCardView card = PlayerHandCards[i];
+                BoardCardView card = boardCardViews[i];
                 float twist = startTwist - i * twistPerCard;
                 float nudge = Mathf.Abs(twist);
 
                 nudge *= scalingFactor;
                 moveToPosition = new Vector3(pivot.x - handWidth / 2, pivot.y - nudge,
-                    (PlayerHandCards.Count - i) * 0.1f);
+                    (boardCardViews.Count - i) * 0.1f);
 
                 if (isMove)
                 {
@@ -834,7 +841,7 @@ namespace Loom.ZombieBattleground
 
                 card.UpdateCardPositionInHand(moveToPosition, Vector3.forward * twist, Vector3.one * scaling);
 
-                pivot.x += handWidth / PlayerHandCards.Count;
+                pivot.x += handWidth / boardCardViews.Count;
 
                 card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
                 card.GameObject.GetComponent<SortingGroup>().sortingOrder = i;
@@ -843,11 +850,13 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsInOpponentHand(bool isMove = false, bool isNewCard = false)
         {
+            IReadOnlyList<OpponentHandCard> boardCardViews = GetViewsFromModels<OpponentHandCard>(_gameplayManager.OpponentPlayer.CardsInHand);
+
             float handWidth = 0.0f;
             float spacing = -1.0f;
             float zPositionKoef = -0.1f;
 
-            for (int i = 0; i < OpponentHandCards.Count; i++)
+            for (int i = 0; i < boardCardViews.Count; i++)
             {
                 handWidth += spacing;
             }
@@ -857,17 +866,17 @@ namespace Loom.ZombieBattleground
             Vector3 pivot = new Vector3(-3.2f, 8.5f, 0f);
             int twistPerCard = 5;
 
-            if (OpponentHandCards.Count == 1)
+            if (boardCardViews.Count == 1)
             {
                 twistPerCard = 0;
             }
 
-            int totalTwist = twistPerCard * OpponentHandCards.Count;
+            int totalTwist = twistPerCard * boardCardViews.Count;
             float startTwist = (totalTwist - twistPerCard) / 2f;
 
-            for (int i = 0; i < OpponentHandCards.Count; i++)
+            for (int i = 0; i < boardCardViews.Count; i++)
             {
-                OpponentHandCard card = OpponentHandCards[i];
+                OpponentHandCard card = boardCardViews[i];
                 float twist = startTwist - i * twistPerCard;
 
                 Vector3 movePosition = new Vector3(pivot.x - handWidth / 2, pivot.y, i * zPositionKoef);
@@ -875,7 +884,7 @@ namespace Loom.ZombieBattleground
 
                 if (isMove)
                 {
-                    if (i == OpponentHandCards.Count - 1 && isNewCard)
+                    if (i == boardCardViews.Count - 1 && isNewCard)
                     {
                         card.Transform.position = new Vector3(-8.2f, 5.7f, 0);
                         card.Transform.eulerAngles = Vector3.forward * 90f;
@@ -891,7 +900,7 @@ namespace Loom.ZombieBattleground
                     UpdateOpponentHandCardLayer(card.GameObject);
                 }
 
-                pivot.x += handWidth / OpponentHandCards.Count;
+                pivot.x += handWidth / boardCardViews.Count;
             }
         }
 
@@ -912,9 +921,9 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView GetBoardCardFromHisObject(GameObject cardObject)
         {
-            BoardCardView card = PlayerHandCards.FirstOrDefault(x => x.GameObject == cardObject);
-
-            return card;
+            return BoardUnitViews
+                .OfType<BoardCardView>()
+                .FirstOrDefault(view => view.GameObject == cardObject);
         }
 
         public void DestroyBoardUnit(BoardUnitModel unit,

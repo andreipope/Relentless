@@ -689,6 +689,13 @@ namespace Loom.ZombieBattleground
 
             _cardsOnBoard.Clear();
         }
+        
+        public void ClearCardsInHand()
+        {
+            CallLog($"{nameof(ClearCardsInHand)}()");
+
+            _cardsInHand.Clear();
+        }
 
         public BoardUnitView SpawnUnitOnBoard(string name, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null)
         {
