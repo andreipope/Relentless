@@ -1,0 +1,427 @@
+{
+	"name": "TestModel",
+	"models": [
+		{
+			"name": "TestModel",
+			"generator": "random(edge_coverage(100) && vertex_coverage(100))",
+			"startElementId": "tutorial_popup_page",
+			"vertices": [
+				{
+					"id": "tutorial_popup_page",
+					"name": "tutorial_popup_page"
+				},
+				{
+					"id": "side_menu_page",
+					"name": "side_menu_page"
+				},
+				{
+					"id": "main_menu_page_navigation_model",
+					"name": "main_menu_page",
+                  	"sharedState":"main_menu_page"
+				},
+				{
+					"id": "area_bar_popup_page",
+					"name": "area_bar_page",
+                  "sharedState":"area_bar_page"
+				},
+				
+             	
+				{
+					"id": "my_shop_menu_page",
+					"name": "my_shop_menu_page"
+				},
+				{
+					"id": "my_decks_page_navigation_model",
+					"name": "my_decks_page",
+                  	"sharedState":"my_decks_page"
+				},
+				{
+					"id": "my_packs_page",
+					"name": "my_packs_page"
+				},
+				{
+					"id": "my_cards_page",
+					"name": "my_cards_page"
+				}
+	
+			],
+			"edges": [
+				{
+					"id": "press_no_button",
+					"name": "press_no_button",
+					"sourceVertexId": "tutorial_popup_page",
+					"targetVertexId": "main_menu_page_navigation_model"
+				},
+				{
+					"id": "select_area_bar",
+					"name": "select_area_bar",
+					"sourceVertexId": "main_menu_page_navigation_model",
+					"targetVertexId": "area_bar_popup_page"
+				},
+				
+				
+				{
+					"id": "select_side_menu",
+					"name": "select_side_menu",
+					"sourceVertexId": "main_menu_page_navigation_model",
+					"targetVertexId": "side_menu_page"
+				},
+				{
+					"id": "press_my_decks_button",
+					"name": "press_my_decks_button",
+					"sourceVertexId": "side_menu_page",
+					"targetVertexId": "my_decks_page_navigation_model"
+				},
+				{
+					"id": "press_main_menu_page",
+					"name": "press_main_menu_page",
+					"sourceVertexId": "side_menu_page",
+					"targetVertexId": "main_menu_page_navigation_model"
+				},
+				{
+					"id": "press_my_cards_button",
+					"name": "press_my_cards_button",
+					"sourceVertexId": "side_menu_page",
+					"targetVertexId": "my_cards_page"
+				},
+				{
+					"id": "press_my_shop_button",
+					"name": "press_my_shop_button",
+					"sourceVertexId": "side_menu_page",
+					"targetVertexId": "my_shop_menu_page"
+				},
+				{
+					"id": "press_open_packs_button",
+					"name": "press_open_packs_button",
+					"sourceVertexId": "side_menu_page",
+					"targetVertexId": "my_packs_page"
+				},
+				{
+					"id": "select_side_menu_from_my_packs_page",
+					"name": "select_side_menu",
+					"sourceVertexId": "my_packs_page",
+					"targetVertexId": "side_menu_page"
+				},
+				{
+					"id": "select_side_menu_from_my_decks_page",
+					"name": "select_side_menu",
+					"sourceVertexId": "my_decks_page_navigation_model",
+					"targetVertexId": "side_menu_page"
+				},
+				{
+					"id": "select_side_menu_from_my_cards_page",
+					"name": "select_side_menu",
+					"sourceVertexId": "my_cards_page",
+					"targetVertexId": "side_menu_page"
+				},
+				{
+					"id": "select_side_menu_from_my_shop_menu_page",
+					"name": "select_side_menu",
+					"sourceVertexId": "my_shop_menu_page",
+					"targetVertexId": "side_menu_page"
+				},
+             	 {
+					"id": "return_from_login_model",
+					"name": "return_from_login_model",
+					"sourceVertexId": "area_bar_popup_page",
+					"targetVertexId": "main_menu_page_navigation_model"
+				}
+              	
+              
+
+			]
+		},
+      	{
+        	"name": "LoginModel",
+			"generator": "random(edge_coverage(100) && vertex_coverage(100))",
+			"startElementId": "area_bar_page",
+            "vertices": [
+              {
+                	"id": "area_bar_page",
+					"name": "area_bar_page",
+                	"sharedState":"area_bar_page"
+              },
+              {
+					"id": "settings_page",
+					"name": "settings_page"
+              },
+              {
+                "id": "credits_page",
+                "name": "credits_page"
+              },
+             
+                 {
+					"id": "login_popup_page",
+					"name": "login_popup_page"
+				},
+				{
+					"id": "register_popup_page",
+					"name": "register_popup_page"
+				},
+				{
+					"id": "forgot_password_page",
+					"name": "forgot_password_page"
+				}
+              ],
+			"edges": [   
+              {
+					"id": "press_register_button",
+					"name": "press_register_button",
+					"sourceVertexId": "login_popup_page",
+					"targetVertexId": "register_popup_page"
+				},
+				{
+					"id": "press_forgot_password_button",
+					"name": "press_forgot_password_button",
+					"sourceVertexId": "login_popup_page",
+					"targetVertexId": "forgot_password_page"
+				},
+              	{
+					"id": "fill_and_send_forgot_password_form",
+					"name": "fill_and_send_forgot_password_form",
+					"sourceVertexId": "forgot_password_page",
+					"targetVertexId": "login_popup_page"
+				},
+              	{
+					"id": "fill_and_send_register_form",
+					"name": "fill_and_send_register_form",
+					"sourceVertexId": "register_popup_page",
+					"targetVertexId": "area_bar_page"
+				},
+				{
+					"id": "login_with_valid_account",
+					"name": "login_with_valid_account",
+					"sourceVertexId": "login_popup_page",
+					"targetVertexId": "area_bar_page"
+				},
+              	{
+					"id": "press_setting_button",
+					"name": "press_setting_button",
+					"sourceVertexId": "area_bar_page",
+					"targetVertexId": "settings_page"
+				},
+              	{
+					"id": "press_credits_button",
+					"name": "press_credits_button",
+					"sourceVertexId": "settings_page",
+					"targetVertexId": "credits_page"
+				},
+              {
+                	"id": "press_close_settings",
+					"name": "press_close_settings",
+					"sourceVertexId": "settings_page",
+					"targetVertexId": "area_bar_page"
+              },
+               {
+                	"id": "press_close_credits",
+					"name": "press_close_settings",
+					"sourceVertexId": "credits_page",
+					"targetVertexId": "area_bar_page"
+              }
+              	
+             
+
+			]
+        },
+      {
+        	"name": "MyDeckModel",
+			"generator": "random(edge_coverage(100) && vertex_coverage(100))",
+			"startElementId": "my_decks_page",
+            "vertices": [
+              {
+					"id": "exit_my_deck",
+					"name": "exit_my_deck",
+                  	"sharedState":"my_decks_page"
+				},
+              	{
+					"id": "my_decks_page",
+					"name": "my_decks_page"
+                  	
+				},
+              	{
+					"id": "overlord_selection_page",
+					"name": "overlord_selection_page"
+				},
+				
+				{
+					"id": "overlord_ability_popup_page",
+					"name": "overlord_ability_popup_page"
+				},
+              	{
+					"id": "rename_deck_popup_page",
+					"name": "rename_deck_popup_page"
+				},
+              	{
+                  	"id": "horde_editing_page",
+					"name": "horde_editing_page"
+                }
+              
+              ],
+			"edges": [   
+              {
+                  	"id": "create_new_deck",
+					"name": "create_new_deck",
+					"sourceVertexId": "my_decks_page",
+					"targetVertexId": "overlord_selection_page"
+              	},
+              	{
+                  	"id": "press_overlord_selection_page_continue_button",
+					"name": "press_overlord_selection_page_continue_button",
+					"sourceVertexId": "overlord_selection_page",
+					"targetVertexId": "overlord_ability_popup_page"
+              	},
+              	{
+                  	"id": "press_overlord_ability_popup_page_continue_button",
+					"name": "press_ooverlord_ability_popup_page_continue_button",
+					"sourceVertexId": "overlord_ability_popup_page",
+					"targetVertexId": "rename_deck_popup_page"
+              	},
+              	{
+                  	"id": "press_save_button",
+					"name": "press_save_button",
+					"sourceVertexId": "rename_deck_popup_page",
+					"targetVertexId": "horde_editing_page"
+              	},
+              	{
+                  	"id": "add_card_to_deck",
+					"name": "add_card_to_deck",
+					"sourceVertexId": "horde_editing_page",
+					"targetVertexId": "horde_editing_page"
+              	},
+              	{
+                  	"id": "press_save_deck_button",
+					"name": "press_save_deck_button",
+					"sourceVertexId": "horde_editing_page",
+					"targetVertexId": "my_decks_page"
+              	},
+              	{
+                  	"id": "press_rename_button",
+					"name": "press_rename_button",
+					"sourceVertexId": "my_decks_page",
+					"targetVertexId": "my_decks_page"
+              	},
+              	{
+                  	"id": "select_overlord",
+					"name": "select_overlord",
+					"sourceVertexId": "overlord_selection_page",
+					"targetVertexId": "overlord_selection_page"
+                },
+              	{
+                  	"id": "press_back_button_from_overlord_selection_page",
+					"name": "press_back_button_from_overlord_selection_page",
+					"sourceVertexId": "overlord_selection_page",
+					"targetVertexId": "my_decks_page"
+                },
+              	{
+                  	"id": "press_back_button_from_overlord_ability_page",
+					"name": "press_back_button_from_overlord_ability_page",
+					"sourceVertexId": "overlord_ability_popup_page",
+					"targetVertexId": "my_decks_page"
+                },
+              	{
+                  	"id": "press_back_button_from_horde_editing_page",
+					"name": "press_back_button_from_horde_editing_page",
+					"sourceVertexId": "horde_editing_page",
+					"targetVertexId": "my_decks_page"
+                },
+              	{
+                  	"id": "press_rename_from_horde_editing_page",
+					"name": "press_rename_from_horde_editing_page",
+					"sourceVertexId": "horde_editing_page",
+					"targetVertexId": "rename_deck_popup_page"
+                },
+              	{
+                  	"id": "go_to_navigation_page",
+					"name": "go_to_navigation_page",
+					"sourceVertexId": "overlord_selection_page",
+					"targetVertexId": "exit_my_deck"
+                },
+              	{
+                  	"id": "go_to_navigation_page6",
+					"name": "go_to_navigation_page",
+					"sourceVertexId": "my_decks_page",
+					"targetVertexId": "exit_my_deck"
+                }
+              ,
+              	{
+                  	"id": "go_to_navigation_page2",
+					"name": "go_to_navigation_page",
+					"sourceVertexId": "overlord_ability_popup_page",
+					"targetVertexId": "exit_my_deck"
+                }
+              ,
+              	{
+                  	"id": "go_to_navigation_page3",
+					"name": "go_to_navigation_page",
+					"sourceVertexId": "rename_deck_popup_page",
+					"targetVertexId": "exit_my_deck"
+                }
+              ,
+              	{
+                  	"id": "go_to_navigation_page4",
+					"name": "go_to_navigation_page",
+					"sourceVertexId": "horde_editing_page",
+					"targetVertexId": "exit_my_deck"
+                }
+
+			]
+        },
+        {
+        	"name": "BattleModel",
+			"generator": "random(edge_coverage(100) && vertex_coverage(100))",
+			"startElementId": "main_menu_page",
+            "vertices": [
+              	{
+					"id": "main_menu_page",
+					"name": "main_menu_page",
+                  	"sharedState":"main_menu_page"
+				},
+				{
+					"id": "battle_mode_selection_page",
+					"name": "battle_mode_selection_pop_up_page"
+				}
+              
+             
+              ],
+			"edges": [  
+              {
+                  	"id": "press_select_game_mode",
+					"name": "press_select_game_mode",
+					"sourceVertexId": "main_menu_page",
+					"targetVertexId": "battle_mode_selection_page"
+                },
+              {
+                  	"id": "select_solo_mode",
+					"name": "select_solo_mode",
+					"sourceVertexId": "battle_mode_selection_page",
+					"targetVertexId": "main_menu_page"
+                },
+              	{
+                  	"id": "select_pvp_mode",
+					"name": "select_pvp_mode",
+					"sourceVertexId": "battle_mode_selection_page",
+					"targetVertexId": "main_menu_page"
+                },
+              	{
+                  	"id": "start_tutorial",
+					"name": "start_tutorial",
+					"sourceVertexId": "battle_mode_selection_page",
+					"targetVertexId": "main_menu_page"
+                },
+              {
+                  	"id": "start_game",
+					"name": "start_game",
+					"sourceVertexId": "main_menu_page",
+					"targetVertexId": "main_menu_page"
+                }
+              
+              
+              
+             
+
+			]
+        }
+
+
+	]
+}

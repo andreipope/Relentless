@@ -33,4 +33,4 @@ class Side_Menu_Popup_Page(CZBTests):
     def press_battle_button(self):
         self.button_pressed(self.battle_button)
     def press_my_cards_button(self):
-        self.button_pressed(self.open_packs_button)
+        self.button_pressed(self.my_cards_button)

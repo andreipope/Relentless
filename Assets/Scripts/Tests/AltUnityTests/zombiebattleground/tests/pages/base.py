@@ -18,7 +18,6 @@ class CZBTests():
     tester_key = "c0ca1ecde904"
 
     def setUp(self):
-        print('Hello')
         set_platform = None
         try:
             set_platform = os.environ['TESTPLATFORM']
