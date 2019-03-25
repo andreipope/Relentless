@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction Faction;
 
+        public Enumerators.Faction TargetFaction;
+
         public Enumerators.Stat StatType;
 
         public int Value { get; }
@@ -23,6 +25,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
+            TargetFaction = ability.TargetFaction;
             StatType = ability.Stat;
             Value = ability.Value;
             Count = ability.Count;
@@ -54,7 +57,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction && x != AbilityUnitOwner).Count > 0)
+                    if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == TargetFaction && x != AbilityUnitOwner).Count > 0)
                     {
                         ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility);
                     }
