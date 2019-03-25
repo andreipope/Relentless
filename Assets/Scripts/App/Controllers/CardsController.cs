@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             // for local player
             foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
             {
-                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card, false);
+                _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
             }
             _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(Array.Empty<BoardUnitModel>());
 
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
         public void HoverPlayerCardOnBattleground(Player player, BoardCardView card)
         {
             IReadOnlyCard prototype = card.Model.Card.Prototype;
-            if (prototype.CardKind == Enumerators.CardKind.CREATURE &&
+            if (prototype.Kind == Enumerators.CardKind.CREATURE &&
                 _gameplayManager.CurrentPlayer.CardsOnBoard.Count < _gameplayManager.CurrentPlayer.MaxCardsInPlay)
             {
                 int newIndexOfCard = 0;
@@ -393,14 +393,14 @@ namespace Loom.ZombieBattleground
 
             InternalTools.DoActionDelayed(() =>
             {
-                _battlegroundController.UnregisterBoardUnitView(unitOwner, boardUnitView);
-
                 boardUnitModel.Die(true);
                 boardUnitView.DisposeGameObject();
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(boardUnitModel);
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);
+                boardUnitModel.ResetToInitial();
+
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);               
 
                 _gameplayManager.RearrangeHands();
             },
@@ -439,7 +439,7 @@ namespace Loom.ZombieBattleground
                 GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
                 GameplayQueueAction<object> rankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
-                switch (card.Model.Card.Prototype.CardKind)
+                switch (card.Model.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         {
@@ -468,7 +468,7 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Model.Card.Owner = card.Model.Card.Owner;
                             boardUnitView.Model.Card.TutorialObjectId = card.Model.Card.TutorialObjectId;
 
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.RegisterBoardUnitView(player, boardUnitView, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
                             //player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
@@ -502,19 +502,11 @@ namespace Loom.ZombieBattleground
                                             {
                                                 player.ThrowPlayCardEvent(card.Model, card.FuturePositionOnBoard);
                                                 OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.Card.InstanceCard.Cost));
-                                                if (card is UnitBoardCard)
-                                                {
-                                                    UnitBoardCard unitBoardCard = card as UnitBoardCard;
-                                                    unitBoardCard.Model.Card.InstanceCard.Damage = boardUnitView.Model.MaxCurrentDamage;
-                                                    unitBoardCard.Model.Card.InstanceCard.Defense = boardUnitView.Model.MaxCurrentDefense;
-                                                }
                                             }
                                             else
                                             {
                                                 rankBuffAction.Action = null;
                                                 rankBuffAction.ForceActionDone();
-
-                                                _battlegroundController.UnregisterBoardUnitView(_gameplayManager.CurrentPlayer, boardUnitView);
 
                                                 boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true);
@@ -530,7 +522,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.ITEM:
                         {
-                            player.PlayerCardsController.RemoveCardFromHand(card.Model);
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
@@ -657,7 +649,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCardView;
-            switch (boardUnitModel.Prototype.CardKind)
+            switch (boardUnitModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
@@ -716,7 +708,7 @@ namespace Loom.ZombieBattleground
                     boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
                 }
 
-                boardCardView.Model.Card.InstanceCard.Cost = value;
+                boardCardView.Model.Card.InstanceCard.Cost = Mathf.Max(0, value);
                 boardCardView.UpdateCardCost();
 
                 bool isActive = boardCardView.Model.Card.InstanceCard.Cost < boardCardView.Model.Card.Prototype.Cost;
@@ -736,9 +728,9 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.Prototype.Defense,
                     boardUnitModel.Prototype.Faction,
                     boardUnitModel.Prototype.Frame,
-                    boardUnitModel.Prototype.CardKind,
-                    boardUnitModel.Prototype.CardRank,
-                    boardUnitModel.Prototype.CardType,
+                    boardUnitModel.Prototype.Kind,
+                    boardUnitModel.Prototype.Rank,
+                    boardUnitModel.Prototype.Type,
                     boardUnitModel.Prototype.Abilities
                         .Select(a => new AbilityData(a))
                         .ToList(),
@@ -882,7 +874,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = GameClient.Get<IGameplayManager>().GetController<AbilitiesController>();
             _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
-            string prefabName = boardUnitModel.Prototype.CardKind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
+            string prefabName = boardUnitModel.Prototype.Kind == Enumerators.CardKind.CREATURE ? "Card_BoardUnit" : "Card_Item";
 
             SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ForChooseAbilities/" + prefabName),
                                             parent,
@@ -899,7 +891,7 @@ namespace Loom.ZombieBattleground
             _behaviourHandler.MouseUpTriggered += MouseUpTriggered;
 
             string setName = boardUnitModel.Prototype.Faction.ToString();
-            string rarity = Enum.GetName(typeof(Enumerators.CardRank), boardUnitModel.Prototype.CardRank);
+            string rarity = Enum.GetName(typeof(Enumerators.CardRank), boardUnitModel.Prototype.Rank);
             string frameName = string.Format("Images/Cards/Frames/frame_{0}_{1}", setName, rarity);
 
             if (!string.IsNullOrEmpty(boardUnitModel.Prototype.Frame))
@@ -908,15 +900,21 @@ namespace Loom.ZombieBattleground
             }
 
             _frame.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(frameName);
-            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(
-                $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}_{_mainChoosableAbility.Attribute}");
 
+            string imagePath = $"{Constants.PathToCardsIllustrations}{boardUnitModel.Prototype.Picture.ToLowerInvariant()}";
+
+            if (!string.IsNullOrEmpty(_mainChoosableAbility.Attribute))
+            {
+                imagePath += $"_{ _mainChoosableAbility.Attribute}";
+            }
+
+            _picture.sprite = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
 
             _titleText.text = boardUnitModel.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;
             _gooCostText.text = boardUnitModel.InstanceCard.Cost.ToString();
 
-            if (boardUnitModel.Prototype.CardKind == Enumerators.CardKind.CREATURE)
+            if (boardUnitModel.Prototype.Kind == Enumerators.CardKind.CREATURE)
             {
                 _unitType = SelfObject.transform.Find("Image_Type").GetComponent<SpriteRenderer>();
 

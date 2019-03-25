@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 AddItem("Name", cardInstance.Prototype.Name) + ", " +
                 AddItem("Dmg", cardInstance.Instance.Damage) + ", " +
                 AddItem("Def", cardInstance.Instance.Defense) + ", " +
-                AddItem("Cost", cardInstance.Instance.GooCost);
+                AddItem("Cost", cardInstance.Instance.Cost);
         }
 
         public static class Styles

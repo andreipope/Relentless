@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
 
                        List<BoardUnitModel> filter = units.Where(unit =>
                                     unit.Card.Prototype.Faction == boardUnitModel.Prototype.Faction &&
-                                    (int) unit.Card.Prototype.CardRank < (int) boardUnitModel.Prototype.CardRank &&
+                                    (int) unit.Card.Prototype.Rank < (int) boardUnitModel.Prototype.Rank &&
                                     !_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).WasDestroyed &&
                                     !unit.IsDead &&
                                     !_unitsForIgnoreRankBuff.Contains(unit))
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                        {
                            DoRankUpgrades(filter, boardUnitModel);
 
-                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfHero,
+                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfOverlord,
                             Common.Enumerators.ExperienceActionType.ActivateRankAbility);
 
                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
@@ -88,22 +88,22 @@ namespace Loom.ZombieBattleground
             switch (originUnit.Prototype.Faction)
             {
                 case Enumerators.Faction.AIR:
-                    AirRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    AirRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 case Enumerators.Faction.EARTH:
-                    EarthRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    EarthRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 case Enumerators.Faction.WATER:
-                    WaterRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    WaterRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 case Enumerators.Faction.FIRE:
-                    FireRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    FireRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 case Enumerators.Faction.TOXIC:
-                    ToxicRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    ToxicRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 case Enumerators.Faction.LIFE:
-                    LifeRankBuff(targetUnits, originUnit.Prototype.CardRank, originUnit, randomly);
+                    LifeRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(originUnit.Prototype.Faction), originUnit.Prototype.Faction, null);

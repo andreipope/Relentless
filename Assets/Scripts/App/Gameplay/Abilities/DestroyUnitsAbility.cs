@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
 
             _units = new List<BoardUnitModel>();
 
-            foreach (Enumerators.Target target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {

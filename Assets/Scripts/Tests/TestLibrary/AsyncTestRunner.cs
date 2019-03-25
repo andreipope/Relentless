@@ -79,9 +79,11 @@ namespace Loom.ZombieBattleground.Test
                             await GameSetUp();
                             await taskFunc();
                         }
-                        catch
+                        catch (Exception e)
                         {
+                            HandleError(e.ToString(), e, false);
                             _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
+                            throw;
                         }
                         finally
                         {
@@ -92,7 +94,7 @@ namespace Loom.ZombieBattleground.Test
                             else
                             {
 #if UNITY_EDITOR
-                                Log.Warn("Error Pause is enabled, Test execution paused due to an error");
+                                Log.Error("Error Pause is enabled, test execution paused due to an error");
                                 UnityEditor.EditorApplication.isPaused = true;
 #endif
                             }
@@ -265,24 +267,29 @@ namespace Loom.ZombieBattleground.Test
                 case LogType.Error:
                 case LogType.Exception:
                 case LogType.Warning:
-                    if (IsKnownError(condition))
-                        break;
-
-                    bool shouldCancel = true;
-                    if (type == LogType.Warning)
-                    {
-                        shouldCancel = IsWarningToTreatLikeError(condition);
-                    }
-
-                    if (shouldCancel)
-                    {
-                        CancelTestWithReason(new Exception(condition + "\r\n" + stacktrace));
-                    }
+                case LogType.Assert:
+                    HandleError(condition, new Exception(condition + "\r\n" + stacktrace), type == LogType.Warning);
 
                     break;
-                case LogType.Assert:
                 case LogType.Log:
                     break;
+            }
+        }
+
+        private void HandleError(string condition, Exception e, bool isWarning)
+        {
+            if (IsKnownError(condition))
+                return;
+
+            bool shouldCancel = true;
+            if (isWarning)
+            {
+                shouldCancel = IsWarningToTreatLikeError(condition);
+            }
+
+            if (shouldCancel)
+            {
+                CancelTestWithReason(e);
             }
         }
 

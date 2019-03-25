@@ -35,8 +35,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck opponentDeck = new Deck(
@@ -47,8 +47,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
@@ -117,8 +117,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -129,8 +129,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Bane", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
@@ -177,8 +177,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -189,8 +189,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Zeptic", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
@@ -270,8 +270,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck opponentDeck = new Deck(
@@ -282,8 +282,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
@@ -330,8 +330,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Zpitter", 2),
                         new DeckCardData("Burn", 2)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -343,8 +343,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Zpitter", 2),
                         new DeckCardData("Burn", 2)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -392,8 +392,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Ghoul", 2),
                         new DeckCardData("Burn", 10)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -405,8 +405,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Ghoul", 2),
                         new DeckCardData("Burn", 10)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -464,8 +464,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Zlopper", 2),
                         new DeckCardData("Cerberuz", 10)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -477,8 +477,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Zlopper", 2),
                         new DeckCardData("Cerberuz", 10)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -542,8 +542,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Cerberuz", 2),
                         new DeckCardData("Burn", 4)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -556,8 +556,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         new DeckCardData("Cerberuz", 2),
                         new DeckCardData("Burn", 4)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)

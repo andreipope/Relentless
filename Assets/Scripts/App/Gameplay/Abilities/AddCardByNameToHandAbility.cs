@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
             if (Name != "Corrupted Goo" && Name != "Tainted Goo" ||
                 (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
-                CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfHero.HeroElement)
+                CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Faction)
             {
                 BoardUnitModel card = PlayerCallerOfAbility.PlayerCardsController.CreateNewCardByNameAndAddToHand(Name);
 

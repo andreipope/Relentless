@@ -123,10 +123,10 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
                 case "Logger":
                     // Use name hashcode as a hue
                     double hue =
-                        unchecked((uint) loggingEvent.LoggerName.GetHashCode()) /
-                        (double) uint.MaxValue * 360f;
-                    (int r, int g, int b) = ColorFromHsv(hue, 1, 0.7);
-                    return $"color: rgb({r}, {g}, {b});";
+                        FastHash(loggingEvent.LoggerName) /
+                        (double) ulong.MaxValue;
+                    UnityEngine.Color32 color = UnityEngine.Color.HSVToRGB((float) hue, 1f, 0.7f);
+                    return $"color: rgb({color.r}, {color.g}, {color.b});";
                 default:
                     return base.GetLogItemCellStyle(patternConverter, loggingEvent);
             }
@@ -176,33 +176,6 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
 
         protected override void WriteException(TextWriter writer, TextWriter htmlWriter, LoggingEvent loggingEvent)
         {
-        }
-
-        private static (int r, int g, int b) ColorFromHsv(double hue, double saturation, double value)
-        {
-            int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
-            double f = hue / 60 - Math.Floor(hue / 60);
-
-            value = value * 255;
-            int v = Convert.ToInt32(value);
-            int p = Convert.ToInt32(value * (1 - saturation));
-            int q = Convert.ToInt32(value * (1 - f * saturation));
-            int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
-
-            switch (hi) {
-                case 0:
-                    return (v, t, p);
-                case 1:
-                    return (q, v, p);
-                case 2:
-                    return (p, v, t);
-                case 3:
-                    return (p, q, v);
-                case 4:
-                    return (t, p, v);
-                default:
-                    return (v, p, q);
-            }
         }
 
         private static string GetStackTrace(StackFrameItem[] stackFrames)
@@ -257,6 +230,18 @@ checkIfMustUseExpandCollapseFunction = function(row, index) {
             {
                 stringBuilder.AppendLine("An exception occurred while retrieving method information. " + ex);
             }
+        }
+
+        private static ulong FastHash(string stringToHash)
+        {
+            ulong hashedValue = 3074457345618258791ul;
+            for (int i = 0; i < stringToHash.Length; i++)
+            {
+                hashedValue += stringToHash[i];
+                hashedValue *= 3074457345618258799ul;
+            }
+
+            return hashedValue;
         }
     }
 }

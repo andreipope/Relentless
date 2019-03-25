@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
         public ShuffleCardToDeckAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
         }
 
         public override void Activate()
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
-                // FIXME: doesn't this cause de-sync?
+                BoardUnitModel.ResetToInitial();
                 PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(BoardUnitModel, true);
             }
             AbilityProcessingAction?.ForceActionDone();

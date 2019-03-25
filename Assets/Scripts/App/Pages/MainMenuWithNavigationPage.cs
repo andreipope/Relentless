@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
         }
 
         private GameMode _gameMode;
+
+        private const GameMode DefaultGameMode = GameMode.SOLO;
         
         #region IUIElement
 
@@ -52,7 +54,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();                   
+            _playerManager = GameClient.Get<IPlayerManager>();
+
+            _gameMode = DefaultGameMode;
         }
         
         public void Update()
@@ -76,7 +80,7 @@ namespace Loom.ZombieBattleground
             
             _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
 
-            SetGameMode(GameMode.SOLO);
+            SetGameMode(_gameMode);
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       

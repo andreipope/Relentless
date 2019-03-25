@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
             Value = AbilityData.Value;
             Defense = AbilityData.Defense;
             Defense2 = AbilityData.Defense2;
-            TargetTypes = AbilityData.AbilityTarget;
+            TargetTypes = AbilityData.Targets;
         }
 
         public override void Activate()

@@ -7,79 +7,79 @@ namespace Loom.ZombieBattleground.Data
 {
     public class AbilityData
     {
-        [JsonProperty("type")]
+        [JsonProperty]
         public Enumerators.AbilityType Ability { get; private set; }
 
-        [JsonProperty("activity_type")]
+        [JsonProperty]
         public Enumerators.AbilityActivity Activity { get; private set; }
 
-        [JsonProperty("call_type")]
+        [JsonProperty]
         public Enumerators.AbilityTrigger Trigger { get; private set; }
 
-        [JsonProperty("target_type")]
-        public List<Enumerators.Target> AbilityTarget { get; private set; }
+        [JsonProperty]
+        public List<Enumerators.Target> Targets { get; private set; }
 
-        [JsonProperty("stat_type")]
+        [JsonProperty]
         public Enumerators.Stat Stat { get; private set; }
 
-        [JsonProperty("set_type")]
+        [JsonProperty]
         public Enumerators.Faction Faction { get; private set; }
 
-        [JsonProperty("effect_type")]
+        [JsonProperty]
         public Enumerators.AbilityEffect Effect { get; private set; }
 
-        [JsonProperty("attack_restriction")]
+        [JsonProperty]
         public Enumerators.AttackRestriction AttackRestriction { get; private set; }
 
-        [JsonProperty("card_type")]
+        [JsonProperty]
         public Enumerators.CardType TargetCardType { get; private set; }
 
-        [JsonProperty("unit_status")]
-        public Enumerators.UnitStatus TargetUnitStatus { get; private set; }
+        [JsonProperty]
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus { get; private set; }
 
-        [JsonProperty("unit_type")]
+        [JsonProperty]
         public Enumerators.CardType TargetUnitType { get; private set; }
 
-        [JsonProperty("value")]
+        [JsonProperty]
         public int Value { get; private set; }
 
-        [JsonProperty("damage")]
+        [JsonProperty]
+        public string Name { get; private set; }
+        
+        [JsonProperty]
         public int Damage { get; private set; }
 
-        [JsonProperty("health")]
+        [JsonProperty]
         public int Defense { get; private set; }
 
-        [JsonProperty("name")]
-        public string Name { get; private set; }
-
-        [JsonProperty("turns")]
+        [JsonProperty]
         public int Turns { get; private set; }
 
-        [JsonProperty("count")]
+        [JsonProperty]
         public int Count { get; private set; }
 
-        [JsonProperty("delay")]
+        [JsonProperty]
         public int Delay { get; private set; }
 
-        [JsonProperty("VisualEffectsToPlay")]
+        [JsonProperty]
         public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
 
-        [JsonProperty("mechanic_description_type")]
+        [JsonProperty]
         public Enumerators.GameMechanicDescription GameMechanicDescription { get; private set; }
 
-        [JsonProperty("target_set")]
+        [JsonProperty]
         public Enumerators.Faction TargetFaction { get; private set; }
 
-        [JsonProperty("sub_trigger")]
+        [JsonProperty]
         public Enumerators.AbilitySubTrigger SubTrigger { get; private set; }
 
-        [JsonProperty("choosable_abilities")]
+        [JsonProperty]
         public List<ChoosableAbility> ChoosableAbilities { get; private set; }
 
-        [JsonProperty("defense")]
+        [JsonProperty]
         public int Defense2 { get; private set; }
 
-        [JsonProperty("cost")]
+        [JsonProperty]
         public int Cost { get; private set; }
 
         [JsonConstructor]
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.AbilityEffect effect,
             Enumerators.AttackRestriction attackRestriction,
             Enumerators.CardType targetCardType,
-            Enumerators.UnitStatus targetUnitStatus,
+            Enumerators.UnitSpecialStatus targetUnitSpecialStatus,
             Enumerators.CardType targetUnitType,
             int value,
             int damage,
@@ -113,13 +113,13 @@ namespace Loom.ZombieBattleground.Data
             Ability = ability;
             Activity = activity;
             Trigger = trigger;
-            AbilityTarget = abilityTarget ?? new List<Enumerators.Target>();
+            Targets = abilityTarget ?? new List<Enumerators.Target>();
             Stat = stat;
             Faction = faction;
             Effect = effect;
             AttackRestriction = attackRestriction;
             TargetCardType = targetCardType;
-            TargetUnitStatus = targetUnitStatus;
+            TargetUnitSpecialStatus = targetUnitSpecialStatus;
             TargetUnitType = targetUnitType;
             Value = value;
             Damage = damage;
@@ -141,13 +141,13 @@ namespace Loom.ZombieBattleground.Data
             source.Ability,
             source.Activity,
             source.Trigger,
-            source.AbilityTarget.ToList(),
+            source.Targets.ToList(),
             source.Stat,
             source.Faction,
             source.Effect,
             source.AttackRestriction,
             source.TargetCardType,
-            source.TargetUnitStatus,
+            source.TargetUnitSpecialStatus,
             source.TargetUnitType,
             source.Value,
             source.Damage,
@@ -188,10 +188,10 @@ namespace Loom.ZombieBattleground.Data
 
         public class VisualEffectInfo
         {
-            [JsonProperty("Type")]
+            [JsonProperty]
             public Enumerators.VisualEffectType Type { get; private set; }
 
-            [JsonProperty("Path")]
+            [JsonProperty]
             public string Path { get; private set; }
 
             [JsonConstructor]
@@ -220,13 +220,13 @@ namespace Loom.ZombieBattleground.Data
 
         public class ChoosableAbility
         {
-            [JsonProperty("description")]
+            [JsonProperty]
             public string Description { get; private set; }
 
-            [JsonProperty("ability_data")]
+            [JsonProperty]
             public AbilityData AbilityData { get; private set; }
 
-            [JsonProperty("attribute")]
+            [JsonProperty]
             public string Attribute { get; private set; }
 
             [JsonConstructor]

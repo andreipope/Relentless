@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -96,6 +96,15 @@ namespace Loom.ZombieBattleground
                 {
                     Log.Info(e.Message);
                     _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+                }
+
+                try
+                {
+                    await GameClient.Get<IDataManager>().LoadZbVersionData();
+                }
+                catch (Exception e)
+                {
+                    Log.Info(e.Message);
                 }
 
                 if (_backendDataControlMediator.UserDataModel != null)

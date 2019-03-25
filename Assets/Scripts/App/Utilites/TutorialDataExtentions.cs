@@ -33,7 +33,17 @@ namespace Loom.ZombieBattleground
     {
         protected override TutorialStep Create(Type objectType, JObject jsonObject)
         {
-            if (jsonObject["BlockedButtons"] != null)
+            Common.Enumerators.TutorialStepType tutorialStepType = Common.Enumerators.TutorialStepType.MenuStep;
+
+            if (jsonObject.TryGetValue("TutorialStepType", out JToken value))
+            {
+               if(!Enum.TryParse(value.ToObject<string>(), out tutorialStepType))
+               {
+                    Helpers.ExceptionReporter.SilentReportException(new Exception($"parse value: {value.ToObject<string>()} from tutorial data error"));
+               }
+            }
+
+            if (tutorialStepType == Common.Enumerators.TutorialStepType.MenuStep)
             {
                 return new TutorialMenuStep();
             }

@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
 
                 if (_tutorialManager.IsTutorial)
                 {
-                    index = _dataManager.CachedHeroesData.Heroes.FindIndex(hero => hero.HeroElement == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+                    index = _dataManager.CachedOverlordData.Overlords.FindIndex(overlord => overlord.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
                 }
 
                 ChangeOverlordIndex(index);
@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
                 Image overlordIcon = _selfPage.transform.Find("Tab_SelectOverlord/Panel_Content/Group_DeckIcon/Button_DeckIcon_" + i).GetComponent<Image>();
                 Sprite sprite = GameClient.Get<IUIManager>().GetPopup<DeckSelectionPopup>().GetDeckIconSprite
                 (
-                    _dataManager.CachedHeroesData.Heroes[i].HeroElement
+                    _dataManager.CachedOverlordData.Overlords[i].Faction
                 );
                 overlordIcon.sprite = sprite;
                 
@@ -139,12 +139,12 @@ namespace Loom.ZombieBattleground
                     PlayClickSound();
                 });
 
-                string elementName = _dataManager.CachedHeroesData.Heroes[i].HeroElement.ToString().ToLower();
+                string elementName = _dataManager.CachedOverlordData.Overlords[i].Faction.ToString().ToLower();
                 Image elementImage = _selfPage.transform.Find
                 (
                     "Tab_SelectOverlord/Panel_Content/Group_Elements/Image_Element_"+elementName
                 ).GetComponent<Image>();
-                _elementImageDictionary.Add(_dataManager.CachedHeroesData.Heroes[i].HeroElement, elementImage);
+                _elementImageDictionary.Add(_dataManager.CachedOverlordData.Overlords[i].Faction, elementImage);
             }
         }
         
@@ -195,7 +195,7 @@ namespace Loom.ZombieBattleground
 
             PlayClickSound();
             _buttonSelectOverlordContinue.interactable = false;
-            _myDeckPage.CurrentEditHero = _dataManager.CachedHeroesData.Heroes[_selectOverlordIndex];
+            _myDeckPage.CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[_selectOverlordIndex];
             _myDeckPage.AssignCurrentDeck(true);
             ProcessAddDeck();            
         }
@@ -205,9 +205,9 @@ namespace Loom.ZombieBattleground
         private async void ProcessAddDeck()
         {
             bool success = true;
-            _myDeckPage.CurrentEditDeck.HeroId = _myDeckPage.CurrentEditHero.HeroId;
-            _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
-            _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
+            _myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.OverlordId;
+            _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditOverlord.PrimarySkill;
+            _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditOverlord.SecondarySkill;
 
             try
             {
@@ -261,26 +261,26 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedOverlordDisplay(int selectedOverlordIndex)
         {
-            Hero hero = _dataManager.CachedHeroesData.Heroes[selectedOverlordIndex];
+            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[selectedOverlordIndex];
             _imageSelectOverlordGlow.transform.position = _selectOverlordIconList[selectedOverlordIndex].position;
             _imageSelectOverlordPortrait.sprite = GetOverlordPortraitSprite
             (
-                hero.HeroElement
+                overlord.Faction
             );
-            _textSelectOverlordName.text = hero.FullName;
-            _textSelectOverlordDescription.text = hero.ShortDescription;
+            _textSelectOverlordName.text = overlord.FullName;
+            _textSelectOverlordDescription.text = overlord.ShortDescription;
             
             Enumerators.Faction againstFaction = _myDeckPage.HordeEditTab.FactionAgainstDictionary
             [
-                hero.HeroElement
+                overlord.Faction
             ];
             _imageCross.transform.position = _elementImageDictionary[againstFaction].transform.position;        
         }
         
-        public Sprite GetOverlordPortraitSprite(Enumerators.Faction heroElement)
+        public Sprite GetOverlordPortraitSprite(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/MyDecks/OverlordPortrait";
-            switch(heroElement)
+            switch(overlordFaction)
             {
                 case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_air"); 
@@ -295,7 +295,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/overlord_portrait_life"); 
                 default:
-                    Log.Info($"No Overlord portrait found for faction {heroElement}");
+                    Log.Info($"No Overlord portrait found for faction {overlordFaction}");
                     return null;
             }        
         }

@@ -484,10 +484,10 @@ public class UserReportingScript : MonoBehaviour
                 BackendFacade backendFacade = GameClient.Get<BackendFacade>();
                 IDataManager dataManager = GameClient.Get<IDataManager>();
                 if (backendFacade.ContractCallProxy is ThreadedContractCallProxyWrapper threadedCallProxy &&
-                    threadedCallProxy.WrappedProxy is TimeMetricsContractCallProxy timeMetricsCallProxy)
+                    threadedCallProxy.WrappedProxy is CustomContractCallProxy timeMetricsCallProxy)
                 {
                     string callMetricsJson = dataManager.SerializeToJson(timeMetricsCallProxy.MethodToCallRoundabouts, true);
-                    AddTextAttachment(br, TimeMetricsContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
+                    AddTextAttachment(br, CustomContractCallProxy.CallMetricsFileName, callMetricsJson, "application/json");
                 }
             }
             catch (Exception e)

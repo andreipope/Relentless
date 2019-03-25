@@ -6,6 +6,7 @@ using System.Linq;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,7 +21,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
 
             _targets = new List<BoardObject>();
         }

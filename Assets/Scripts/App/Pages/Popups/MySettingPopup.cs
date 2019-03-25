@@ -22,6 +22,7 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         private Button _buttonClose,
+                       _buttonQuit,
                        _buttonLeaveMatch,
                        _buttonHelp,
                        _buttonSupport,
@@ -73,23 +74,26 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/MySettingsPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _buttonClose = Self.transform.Find("Scaler/Button_Close").GetComponent<Button>();
+            _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
             
-            _buttonLeaveMatch = Self.transform.Find("Scaler/Button_LeaveMatch").GetComponent<Button>();
+            _buttonQuit = Self.transform.Find("Button_Quit").GetComponent<Button>();
+            _buttonQuit.onClick.AddListener(ButtonQuitHandler);
+            
+            _buttonLeaveMatch = Self.transform.Find("Button_LeaveMatch").GetComponent<Button>();
             _buttonLeaveMatch.onClick.AddListener(ButtonLeaveMatchHandler);
             
-            _buttonHelp = Self.transform.Find("Scaler/Button_Help").GetComponent<Button>();
+            _buttonHelp = Self.transform.Find("Button_Help").GetComponent<Button>();
             _buttonHelp.onClick.AddListener(ButtonHelpHandler);
             
-            _buttonSupport = Self.transform.Find("Scaler/Button_Support").GetComponent<Button>();
+            _buttonSupport = Self.transform.Find("Button_Support").GetComponent<Button>();
             _buttonSupport.onClick.AddListener(ButtonSupportHandler);
             
-            _buttonCredits = Self.transform.Find("Scaler/Button_Credits").GetComponent<Button>();
+            _buttonCredits = Self.transform.Find("Button_Credits").GetComponent<Button>();
             _buttonCredits.onClick.AddListener(ButtonCreditsHandler);
             
-            _sfxVolumeSlider = Self.transform.Find("Scaler/Group_Sounds/Slider_SFXVolume").GetComponent<Slider>();
-            _musicVolumeSlider = Self.transform.Find("Scaler/Group_Music/Slider_MusicVolume").GetComponent<Slider>();     
+            _sfxVolumeSlider = Self.transform.Find("Group_Sounds/Slider_SFXVolume").GetComponent<Slider>();
+            _musicVolumeSlider = Self.transform.Find("Group_Music/Slider_MusicVolume").GetComponent<Slider>();     
             
             _sfxVolumeSlider.onValueChanged.AddListener(SFXVolumeChangedHandler);
             _musicVolumeSlider.onValueChanged.AddListener(MusicVolumeChangedHandler);
@@ -101,6 +105,9 @@ namespace Loom.ZombieBattleground
             {
                 _appStateManager.SetPausingApp(true);
             }
+            
+            _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
+            _buttonQuit.gameObject.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
         }
 
         public void Show(object data)
@@ -109,11 +116,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void Update()
-        {
-            if (Self == null)
-                return;
-
-            _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
+        {           
         }
 
 
@@ -125,7 +128,12 @@ namespace Loom.ZombieBattleground
 
             _initialInit = false;
         }
-
+        
+        private void ButtonQuitHandler()
+        {
+            PlayClickSound();
+            _appStateManager.QuitApplication();
+        }
 
         private void ButtonCloseHandler()
         {

@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground.Test
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(Assert)}()");
+                LogAction($"{nameof(AssertInQueue)}()");
                 return Proxy.AssertInQueue(action);
             });
         }

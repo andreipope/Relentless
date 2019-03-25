@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
                 attackedUnitModel.CurrentDefense -= damage;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground
             if (healingPlayer != null)
             {
                 healedPlayer.Defense += skill.Skill.Value;
-                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN &&
-                    skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
+                if (skill.Skill.Skill != Enumerators.Skill.HARDEN &&
+                    skill.Skill.Skill != Enumerators.Skill.ICE_WALL)
                 {
                     if (healingPlayer.Defense > Constants.DefaultPlayerHp)
                     {
@@ -320,7 +320,7 @@ namespace Loom.ZombieBattleground
         {
             if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentDefense == 0)
             {
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillMinion);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillMinion);
             }
         }
 

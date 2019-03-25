@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private List<IController> _controllers;
+        private List<IController> _controllers = new List<IController>();
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
 
@@ -387,7 +387,7 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                         {
-                            CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                            CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                         });
                     }
                     else
@@ -454,7 +454,8 @@ namespace Loom.ZombieBattleground
                             )
                         );
 
-                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(opponentCardsInHand, false);
+                        BoardUnitModel[] boardUnitModels = opponentCardsInHand.Select(card => new BoardUnitModel(card)).ToArray();
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -462,7 +463,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
-                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                    CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                 });
             }
 

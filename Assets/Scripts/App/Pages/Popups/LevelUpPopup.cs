@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
 
         private Animator _backgroundAnimator, _containerAnimator;
 
-        private Hero _selectedHero;
+        private OverlordModel _selectedOverlord;
 
         public GameObject Self { get; private set; }
 
@@ -117,11 +117,11 @@ namespace Loom.ZombieBattleground
             int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             IDataManager dataManager = GameClient.Get<IDataManager>();
 
-            int heroId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).HeroId;
+            int overlordId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).OverlordId;
 
-            _selectedHero = dataManager.CachedHeroesData.Heroes[heroId];
+            _selectedOverlord = dataManager.CachedOverlordData.Overlords[overlordId];
 
-            _currentLevel.text = _selectedHero.Level.ToString();
+            _currentLevel.text = _selectedOverlord.Level.ToString();
 
             _newOpenAbility = null;
 
@@ -176,9 +176,9 @@ namespace Loom.ZombieBattleground
             {
                 abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
 
-                if (i < _selectedHero.Skills.Count && _selectedHero.Skills[i].Unlocked)
+                if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].Unlocked)
                 {
-                    abilityInstance.Skill = _selectedHero.Skills[i];
+                    abilityInstance.Skill = _selectedOverlord.Skills[i];
                 }
                 isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Transform _parentGameObject;
 
-            private HeroSkill _skill;
+            private OverlordSkill _skill;
 
             private bool _isSelected;
 
@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public HeroSkill Skill
+            public OverlordSkill Skill
             {
                 get => _skill;
                 set

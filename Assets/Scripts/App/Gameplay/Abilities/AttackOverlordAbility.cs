@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
             Value = ability.Value;
         }
 

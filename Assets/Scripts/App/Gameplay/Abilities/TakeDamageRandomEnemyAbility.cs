@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             List<BoardObject> possibleTargets = new List<BoardObject>();
 
-            foreach (Enumerators.Target abilityTarget in AbilityData.AbilityTarget)
+            foreach (Enumerators.Target abilityTarget in AbilityData.Targets)
             {
                 switch (abilityTarget)
                 {
