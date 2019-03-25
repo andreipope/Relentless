@@ -67,7 +67,6 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new MatchMakingPopup());
             _uiPopups.Add(new ConnectionPopup());         
             _uiPopups.Add(new PastActionsPopup());
-            _uiPopups.Add(new SettingsPopup());
             _uiPopups.Add(new UpdatePopup());
             _uiPopups.Add(new MulliganPopup());
             _uiPopups.Add(new LoadDataMessagePopup());
