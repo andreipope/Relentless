@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    foreach (Enumerators.Target targetType in AbilityTargetTypes)
+                    foreach (Enumerators.Target targetType in AbilityTargets)
                     {
                         switch (targetType)
                         {
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         private void TakeBlitzToUnit(BoardUnitModel unit)
         {
-            unit.ApplyBuff(Enumerators.BuffType.BLITZ, true);
+            unit.ApplyBuff(Enumerators.BuffType.BLITZ);
         }
     }
 }

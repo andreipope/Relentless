@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -31,28 +32,29 @@ namespace Loom.ZombieBattleground.Data
     {
         public long Id { get; set; }
 
-        public int HeroId { get; set; }
+        [JsonProperty("HeroId")]
+        public int OverlordId { get; set; }
 
         public string Name { get; set; }
 
         public List<DeckCardData> Cards;
 
-        public Enumerators.OverlordSkill PrimarySkill { get; set; }
+        public Enumerators.Skill PrimarySkill { get; set; }
 
-        public Enumerators.OverlordSkill SecondarySkill { get; set; }
+        public Enumerators.Skill SecondarySkill { get; set; }
 
         public Deck(
             long id,
-            int heroId,
+            int overlordId,
             string name,
             List<DeckCardData> cards,
 
-            Enumerators.OverlordSkill primarySkill,
-            Enumerators.OverlordSkill secondarySkill
+            Enumerators.Skill primarySkill,
+            Enumerators.Skill secondarySkill
             )
         {
             Id = id;
-            HeroId = heroId;
+            OverlordId = overlordId;
             Name = name;
             Cards = cards ?? new List<DeckCardData>();
             PrimarySkill = primarySkill;
@@ -110,7 +112,7 @@ namespace Loom.ZombieBattleground.Data
             Deck deck = new Deck
             (
                 Id,
-                HeroId,
+                OverlordId,
                 Name,
                 Cards.Select(c => c.Clone()).ToList(),
                 PrimarySkill,

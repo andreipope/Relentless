@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
@@ -196,7 +197,7 @@ namespace Loom.ZombieBattleground
 
                     boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(changeStatOutcome.InstanceId.FromProtobuf());
 
-                    if (changeStatOutcome.Stat == StatType.Types.Enum.Damage)
+                    if (changeStatOutcome.Stat == Stat.Types.Enum.Damage)
                     {
                         BoardObject targetObject =
                             _battlegroundController.GetBoardObjectByInstanceId(changeStatOutcome.TargetInstanceId
@@ -219,7 +220,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.BuffedDamage = changeStatOutcome.NewDamage;
                         boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
                     }
-                    else if (changeStatOutcome.Stat == StatType.Types.Enum.Defense)
+                    else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
                         boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
@@ -310,7 +311,7 @@ namespace Loom.ZombieBattleground
             // TODO : have to see... how to invoke this
             //InvokeActionTriggered(unit);
             AbilityData abilityData = AbilitiesController.GetAbilityDataByType(Enumerators.AbilityType.REANIMATE_UNIT);
-            AbilityBase ability = new ReanimateAbility(prototype.CardKind, abilityData);
+            AbilityBase ability = new ReanimateAbility(prototype.Kind, abilityData);
             AbilityViewBase abilityView = new ReanimateAbilityView((ReanimateAbility)ability);
             ability.InvokeActionTriggered(unit);
         }
@@ -430,7 +431,7 @@ namespace Loom.ZombieBattleground
                     null,
                     boardUnitModel =>
                     {
-                        switch (boardUnitModel.Prototype.CardKind)
+                        switch (boardUnitModel.Prototype.Kind)
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement = new BoardUnitView(boardUnitModel, _battlegroundController.OpponentBoardObject.transform);
@@ -479,7 +480,7 @@ namespace Loom.ZombieBattleground
                     },
                     (workingCard, boardObject) =>
                     {
-                        switch (workingCard.Prototype.CardKind)
+                        switch (workingCard.Prototype.Kind)
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);

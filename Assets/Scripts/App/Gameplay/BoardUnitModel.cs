@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
 
         public override Player OwnerPlayer => Card.Owner;
 
-        public List<Enumerators.SkillTargetType> AttackTargetsAvailability;
+        public List<Enumerators.SkillTarget> AttackTargetsAvailability;
 
         public int TutorialObjectId => Card.TutorialObjectId;
 
@@ -83,12 +83,12 @@ namespace Loom.ZombieBattleground
 
             CanAttackByDefault = true;
 
-            UnitStatus = Enumerators.UnitStatus.NONE;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
 
-            AttackTargetsAvailability = new List<Enumerators.SkillTargetType>()
+            AttackTargetsAvailability = new List<Enumerators.SkillTarget>()
             {
-                Enumerators.SkillTargetType.OPPONENT,
-                Enumerators.SkillTargetType.OPPONENT_CARD
+                Enumerators.SkillTarget.OPPONENT,
+                Enumerators.SkillTarget.OPPONENT_CARD
             };
 
             IsAllAbilitiesResolvedAtStart = true;
@@ -210,7 +210,7 @@ namespace Loom.ZombieBattleground
 
         public bool AttackAsFirst { get; set; }
 
-        public Enumerators.UnitStatus UnitStatus { get; set; }
+        public Enumerators.UnitSpecialStatus UnitSpecialStatus { get; set; }
 
         public Enumerators.Faction LastAttackingSetType { get; set; }
 
@@ -319,7 +319,7 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
-                            Card.Prototype.CardKind,
+                            Card.Prototype.Kind,
                             this,
                             OwnerPlayer
                             );
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground
                         _abilitiesController.BuffUnitByAbility(
                         Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
                         this,
-                        Card.Prototype.CardKind,
+                        Card.Prototype.Kind,
                         this,
                         OwnerPlayer
                         );
@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            InitialUnitType = Card.Prototype.CardType;
+            InitialUnitType = Card.Prototype.Type;
 
             CardTypeChanged?.Invoke(InitialUnitType);
         }
@@ -520,7 +520,9 @@ namespace Loom.ZombieBattleground
             BuffedDamage = 0;
             BuffedDefense = 0;
 
-            InitialUnitType = Card.Prototype.CardType;
+            InitialUnitType = Card.Prototype.Type;
+
+            LastAttackingSetType = Faction;
 
             ClearUnitTypeEffects();
 
@@ -540,7 +542,7 @@ namespace Loom.ZombieBattleground
             if (_stunTurns == 0)
             {
                 IsPlayable = true;
-                UnitStatus = Enumerators.UnitStatus.NONE;
+                UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             }
 
             if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
@@ -594,14 +596,14 @@ namespace Loom.ZombieBattleground
 
             IsPlayable = false;
 
-            UnitStatus = Enumerators.UnitStatus.FROZEN;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.FROZEN;
 
             Stunned?.Invoke(true);
         }
 
         public void RevertStun()
         {
-            UnitStatus = Enumerators.UnitStatus.NONE;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             _stunTurns = 0;
             Stunned?.Invoke(false);
         }
@@ -695,7 +697,7 @@ namespace Loom.ZombieBattleground
                                 SpecificBattlegroundInfo.DisabledInitialization && OwnerPlayer.IsLocalPlayer)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info => info.TutorialObjectId == TutorialObjectId &&
-                                 info.TargetType == Enumerators.SkillTargetType.OPPONENT))
+                                 info.Target == Enumerators.SkillTarget.OPPONENT))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -751,7 +753,7 @@ namespace Loom.ZombieBattleground
                                     !_tutorialManager.GetCurrentTurnInfo().UseBattleframesSequence.Exists(info =>
                                      info.TutorialObjectId == TutorialObjectId &&
                                      (info.TargetTutorialObjectId == targetCardModel.TutorialObjectId ||
-                                         info.TargetTutorialObjectId == 0 && info.TargetType != Enumerators.SkillTargetType.OPPONENT)))
+                                         info.TargetTutorialObjectId == 0 && info.Target != Enumerators.SkillTarget.OPPONENT)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     _tutorialManager.ActivateSelectHandPointer(Enumerators.TutorialObjectOwner.PlayerBattleframe);
@@ -816,9 +818,12 @@ namespace Loom.ZombieBattleground
 
         public bool UnitCanBeUsable()
         {
-            if (IsDead || CurrentDefense <= 0 ||
-                CurrentDamage <= 0 || IsStun ||
-                CantAttackInThisTurnBlocker  || !CanAttackByDefault)
+            if (IsDead ||
+                CurrentDefense <= 0 ||
+                CurrentDamage <= 0 ||
+                IsStun ||
+                CantAttackInThisTurnBlocker ||
+                !CanAttackByDefault)
             {
                 return false;
             }
@@ -960,11 +965,11 @@ namespace Loom.ZombieBattleground
 
         public void ResetToInitial()
         {
-            Card.InstanceCard.Abilities = Card.Prototype.Abilities;
+            Card.InstanceCard.Abilities = new List<AbilityData>(Card.Prototype.Abilities);
             Card.InstanceCard.Cost = Card.Prototype.Cost;
             Card.InstanceCard.Damage = Card.Prototype.Damage;
             Card.InstanceCard.Defense = Card.Prototype.Defense;
-            InitialUnitType = Card.Prototype.CardType;
+            InitialUnitType = Card.Prototype.Type;
             BuffedDefense = 0;
             BuffedDamage = 0;
             NumTurnsOnBoard = 0;
@@ -985,7 +990,7 @@ namespace Loom.ZombieBattleground
             IsDead = false;
             AttackAsFirst = false;
             CantAttackInThisTurnBlocker = false;
-            UnitStatus = Enumerators.UnitStatus.NONE;
+            UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             AttackRestriction = Enumerators.AttackRestriction.ANY;
             LastAttackingSetType = Card.Prototype.Faction;
             BuffsOnUnit.Clear();

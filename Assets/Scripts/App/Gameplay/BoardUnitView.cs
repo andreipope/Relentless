@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
 
             Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
-            string rank = Model.Card.Prototype.CardRank.ToString().ToLowerInvariant();
+            string rank = Model.Card.Prototype.Rank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
@@ -566,7 +566,7 @@ namespace Loom.ZombieBattleground
 
             if (!_ignoreArrivalEndEvents)
             {
-                if (Model.Card.Prototype.CardRank == Enumerators.CardRank.COMMANDER)
+                if (Model.Card.Prototype.Rank == Enumerators.CardRank.COMMANDER)
                 {
                     _soundManager.PlaySound(Enumerators.SoundType.CARDS,
 

@@ -312,10 +312,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     Assert.IsTrue(!((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId))
-                                     .AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT));
+                                     .AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT));
 
                     Assert.IsTrue(!((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId))
-                                     .AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT));
+                                     .AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -639,8 +639,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        new DeckCardData("Cynderman", 2),
                        new DeckCardData("Slab", 2)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 Deck playerDeck = new Deck(
@@ -652,8 +652,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        new DeckCardData("Cynderman", 2),
                        new DeckCardData("Slab", 2)
                     },
-                    Enumerators.OverlordSkill.NONE,
-                    Enumerators.OverlordSkill.NONE
+                    Enumerators.Skill.NONE,
+                    Enumerators.Skill.NONE
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)

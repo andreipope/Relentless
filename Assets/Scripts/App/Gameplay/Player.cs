@@ -11,7 +11,6 @@ using log4net;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Hero = Loom.ZombieBattleground.Data.Hero;
 using Random = UnityEngine.Random;
 
 #if UNITY_EDITOR
@@ -194,7 +193,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            int heroId = -1;
+            int overlordId = -1;
 
             if (!isOpponent)
             {
@@ -206,18 +205,18 @@ namespace Loom.ZombieBattleground
                         {
                             if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                             {
-                                heroId = (int) playerState.Deck.HeroId;
+                                overlordId = (int) playerState.Deck.OverlordId;
                             }
                         }
                     }
                     else
                     {
-                        heroId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).HeroId;
+                        overlordId = _dataManager.CachedDecksData.Decks.First(d => d.Id == _gameplayManager.PlayerDeckId).OverlordId;
                     }
                 }
                 else
                 {
-                    heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
+                    overlordId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
                 }
             }
             else
@@ -229,25 +228,25 @@ namespace Loom.ZombieBattleground
                             !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                             SpecificBattlegroundInfo.DisabledInitialization)
                         {
-                            heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
+                            overlordId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                         }
                         else
                         {
-                            heroId = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == _gameplayManager.OpponentDeckId).Deck.HeroId;
+                            overlordId = _dataManager.CachedAiDecksData.Decks.First(d => d.Deck.Id == _gameplayManager.OpponentDeckId).Deck.OverlordId;
                         }
                         break;
                     case Enumerators.MatchType.PVP:
-                        heroId = (int) InitialPvPPlayerState.Deck.HeroId;
+                        overlordId = (int) InitialPvPPlayerState.Deck.OverlordId;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
 
-            SelfHero = _dataManager.CachedHeroesData.Heroes[heroId];
+            SelfOverlord = _dataManager.CachedOverlordData.Overlords[overlordId];
 
             // TODO: REMOVE logs when issue will be fixed
-            Log.Debug($"SelfHero: {SelfHero}");
+            Log.Debug($"SelfOverlord: {SelfOverlord}");
 
             InitialDefense = _defense;
             BuffedDefense = 0;
@@ -259,7 +258,7 @@ namespace Loom.ZombieBattleground
             _freezedHighlightObject = _overlordRegularObject.transform.Find("RegularPosition/Avatar/FreezedHighlight").gameObject;
             _drawCradParticle = playerObject.transform.Find("Deck_Illustration/DrawCardVFX").GetComponent<ParticleSystem>();
 
-            string name = SelfHero.HeroElement.ToString() + "HeroFrame";
+            string name = SelfOverlord.Faction + "HeroFrame";
             GameObject prefab = GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>("Prefabs/Gameplay/OverlordFrames/" + name);
             Transform frameObjectTransform = MonoBehaviour.Instantiate(prefab,
                         _overlordRegularObject.transform.Find("RegularPosition/Avatar/FactionFrame"),
@@ -313,7 +312,7 @@ namespace Loom.ZombieBattleground
 
         public Transform Transform => PlayerObject.transform;
 
-        public Hero SelfHero { get; }
+        public OverlordModel SelfOverlord { get; }
 
         public int GooVials
         {
@@ -460,7 +459,7 @@ namespace Loom.ZombieBattleground
 
             _skillsController.DisableSkillsContent(this);
 
-            switch (SelfHero.HeroElement)
+            switch (SelfOverlord.Faction)
             {
                 case Enumerators.Faction.FIRE:
                 case Enumerators.Faction.WATER:
@@ -468,11 +467,11 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Faction.AIR:
                 case Enumerators.Faction.LIFE:
                 case Enumerators.Faction.TOXIC:
-                    Enumerators.SoundType soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfHero.HeroElement);
-                    _soundManager.PlaySound(soundType, Constants.HeroDeathSoundVolume);
+                    Enumerators.SoundType soundType = (Enumerators.SoundType)Enum.Parse(typeof(Enumerators.SoundType), "HERO_DEATH_" + SelfOverlord.Faction);
+                    _soundManager.PlaySound(soundType, Constants.OverlordDeathSoundVolume);
                     break;
                 default:
-                    _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.HeroDeathSoundVolume);
+                    _soundManager.PlaySound(Enumerators.SoundType.HERO_DEATH, Constants.OverlordDeathSoundVolume);
                     break;
             }
 
@@ -590,7 +589,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfHero.Name);
+            DebugCardInfoDrawer.Draw(AvatarObject.transform.position, InstanceId.Id, SelfOverlord.Name);
         }
 #endif
 
@@ -602,7 +601,7 @@ namespace Loom.ZombieBattleground
             {
                 if (!IsLocalPlayer)
                 {
-                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillOverlord);
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillOverlord);
                 }
 
                 PlayerDie();

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,6 +79,8 @@ namespace Loom.ZombieBattleground
                           _trayEnd, 
                           _panelCollect, 
                           _greenPoolVFX;
+
+        private Transform _panelPackContent;
         
         private SpriteRenderer _vignetteCollectCard;
 
@@ -309,8 +311,10 @@ namespace Loom.ZombieBattleground
             
             _gooPoolAnimator = _createdGooPool.transform.Find("OpenPack").GetComponent<Animator>();
             _gooPoolAnimator.enabled = true;
-            _greenPoolVFX = _createdGooPool.transform.Find("OpenPack/OpenPack").GetComponent<Transform>();           
-                        
+            _greenPoolVFX = _createdGooPool.transform.Find("OpenPack/OpenPack").GetComponent<Transform>();
+
+            _panelPackContent = _selfPage.transform.Find("pack_holder_tray/PackContent");
+
             _createdGooPool.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             _createdGooPool.GetComponent<SortingGroup>().sortingOrder = 1;            
             
@@ -686,7 +690,7 @@ namespace Loom.ZombieBattleground
         {
             GameObject vfxPrefab;
             Enumerators.SoundType soundType;
-            switch(boardCard.Model.Card.Prototype.CardRank)
+            switch(boardCard.Model.Card.Prototype.Rank)
             {
                 case Enumerators.CardRank.MINION:
                     soundType = Enumerators.SoundType.CARD_REVEAL_MINION;
@@ -708,8 +712,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
             
-            GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.OPEN_PACK, Constants.SfxSoundVolume,
-                false, false, true);
+            GameClient.Get<ISoundManager>().PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);
             
             GameObject vfxParent = new GameObject("VFX");
             vfxParent.transform.parent = boardCard.GameObject.transform;
@@ -864,6 +867,9 @@ namespace Loom.ZombieBattleground
         
         private void ButtonPackTypeHandler( int id )
         {
+            if (_tutorialManager.BlockAndReport(_panelPackContent.name))
+                return;
+
             PlayClickSound();
             ChangeSelectedPackType(id);
         }
@@ -1022,7 +1028,7 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCard;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
@@ -1033,7 +1039,7 @@ namespace Loom.ZombieBattleground
                     boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:                
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
         
             boardCard.SetHighlightingEnabled(false);

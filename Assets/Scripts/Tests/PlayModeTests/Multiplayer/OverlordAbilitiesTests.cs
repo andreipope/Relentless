@@ -27,8 +27,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.FIREBALL,
-                    Enumerators.OverlordSkill.MASS_RABIES
+                    Enumerators.Skill.FIREBALL,
+                    Enumerators.Skill.MASS_RABIES
                 );
 
                 Deck playerDeck = new Deck(
@@ -39,8 +39,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         new DeckCardData("Slab", 30)
                     },
-                    Enumerators.OverlordSkill.FIREBALL,
-                    Enumerators.OverlordSkill.MASS_RABIES
+                    Enumerators.Skill.FIREBALL,
+                    Enumerators.Skill.MASS_RABIES
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck) {
@@ -93,13 +93,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.REANIMATE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Puffer", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    Enumerators.OverlordSkill.REANIMATE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.REANIMATE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Puffer", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -195,13 +195,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    Enumerators.OverlordSkill.HEALING_TOUCH,
-                    Enumerators.OverlordSkill.ENHANCE,
+                    Enumerators.Skill.HEALING_TOUCH,
+                    Enumerators.Skill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    Enumerators.OverlordSkill.HEALING_TOUCH,
-                    Enumerators.OverlordSkill.ENHANCE,
+                    Enumerators.Skill.HEALING_TOUCH,
+                    Enumerators.Skill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -268,13 +268,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    Enumerators.OverlordSkill.MEND,
-                    Enumerators.OverlordSkill.ENHANCE,
+                    Enumerators.Skill.MEND,
+                    Enumerators.Skill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    Enumerators.OverlordSkill.MEND,
-                    Enumerators.OverlordSkill.ENHANCE,
+                    Enumerators.Skill.MEND,
+                    Enumerators.Skill.ENHANCE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -346,13 +346,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
             Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                Enumerators.OverlordSkill.RESSURECT,
-                Enumerators.OverlordSkill.NONE,
+                Enumerators.Skill.RESSURECT,
+                Enumerators.Skill.NONE,
                 new DeckCardData("Puffer", 15));
 
             Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                Enumerators.OverlordSkill.RESSURECT,
-                Enumerators.OverlordSkill.NONE,
+                Enumerators.Skill.RESSURECT,
+                Enumerators.Skill.NONE,
                 new DeckCardData("Puffer", 15));
 
             PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -436,13 +436,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    Enumerators.OverlordSkill.ENHANCE,
-                    Enumerators.OverlordSkill.HEALING_TOUCH,
+                    Enumerators.Skill.ENHANCE,
+                    Enumerators.Skill.HEALING_TOUCH,
                     new DeckCardData("Keeper", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    Enumerators.OverlordSkill.ENHANCE,
-                    Enumerators.OverlordSkill.HEALING_TOUCH,
+                    Enumerators.Skill.ENHANCE,
+                    Enumerators.Skill.HEALING_TOUCH,
                     new DeckCardData("Keeper", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -524,13 +524,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    Enumerators.OverlordSkill.POISON_DART,
-                    Enumerators.OverlordSkill.TOXIC_POWER,
+                    Enumerators.Skill.POISON_DART,
+                    Enumerators.Skill.TOXIC_POWER,
                     new DeckCardData("Hazmaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    Enumerators.OverlordSkill.POISON_DART,
-                    Enumerators.OverlordSkill.TOXIC_POWER,
+                    Enumerators.Skill.POISON_DART,
+                    Enumerators.Skill.TOXIC_POWER,
                     new DeckCardData("Hazmaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -596,13 +596,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    Enumerators.OverlordSkill.TOXIC_POWER,
-                    Enumerators.OverlordSkill.POISON_DART,
+                    Enumerators.Skill.TOXIC_POWER,
+                    Enumerators.Skill.POISON_DART,
                     new DeckCardData("Hazmaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    Enumerators.OverlordSkill.TOXIC_POWER,
-                    Enumerators.OverlordSkill.POISON_DART,
+                    Enumerators.Skill.TOXIC_POWER,
+                    Enumerators.Skill.POISON_DART,
                     new DeckCardData("Hazmaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -667,14 +667,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3,
-                    Enumerators.OverlordSkill.PUSH,
-                    Enumerators.OverlordSkill.DRAW,
+                    Enumerators.Skill.PUSH,
+                    Enumerators.Skill.DRAW,
                     new DeckCardData("Bouncer", 1),
                     new DeckCardData("Whizpar", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3,
-                    Enumerators.OverlordSkill.PUSH,
-                    Enumerators.OverlordSkill.DRAW,
+                    Enumerators.Skill.PUSH,
+                    Enumerators.Skill.DRAW,
                     new DeckCardData("Bouncer", 1),
                     new DeckCardData("Whizpar", 15));
 
@@ -746,13 +746,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3,
-                    Enumerators.OverlordSkill.DRAW,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.DRAW,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3,
-                    Enumerators.OverlordSkill.DRAW,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.DRAW,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -820,14 +820,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3,
-                    Enumerators.OverlordSkill.RETREAT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.RETREAT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Bouncer", 1),
                     new DeckCardData("Whizpar", 15));
 
             Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3,
-                    Enumerators.OverlordSkill.RETREAT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.RETREAT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Bouncer", 1),
                     new DeckCardData("Whizpar", 15));
 
@@ -900,13 +900,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    Enumerators.OverlordSkill.HARDEN,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.HARDEN,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    Enumerators.OverlordSkill.HARDEN,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.HARDEN,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -959,13 +959,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    Enumerators.OverlordSkill.STONE_SKIN,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.STONE_SKIN,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    Enumerators.OverlordSkill.STONE_SKIN,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.STONE_SKIN,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1037,13 +1037,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    Enumerators.OverlordSkill.FORTIFY,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FORTIFY,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    Enumerators.OverlordSkill.FORTIFY,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FORTIFY,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1110,13 +1110,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    Enumerators.OverlordSkill.PHALANX,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.PHALANX,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    Enumerators.OverlordSkill.PHALANX,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.PHALANX,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1206,13 +1206,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    Enumerators.OverlordSkill.FREEZE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FREEZE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Znowy", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    Enumerators.OverlordSkill.FREEZE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FREEZE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Znowy", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1262,8 +1262,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowyId)).UnitStatus == Enumerators.UnitStatus.FROZEN);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowyId)).UnitStatus == Enumerators.UnitStatus.FROZEN);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZnowyId)).UnitSpecialStatus == Enumerators.UnitSpecialStatus.FROZEN);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZnowyId)).UnitSpecialStatus == Enumerators.UnitSpecialStatus.FROZEN);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -1277,13 +1277,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    Enumerators.OverlordSkill.ICE_BOLT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.ICE_BOLT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    Enumerators.OverlordSkill.ICE_BOLT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.ICE_BOLT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1356,13 +1356,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    Enumerators.OverlordSkill.ICE_WALL,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.ICE_WALL,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Znowy", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    Enumerators.OverlordSkill.ICE_WALL,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.ICE_WALL,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Znowy", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1433,13 +1433,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    Enumerators.OverlordSkill.FREEZE,
-                    Enumerators.OverlordSkill.SHATTER,
+                    Enumerators.Skill.FREEZE,
+                    Enumerators.Skill.SHATTER,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    Enumerators.OverlordSkill.FREEZE,
-                    Enumerators.OverlordSkill.SHATTER,
+                    Enumerators.Skill.FREEZE,
+                    Enumerators.Skill.SHATTER,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1518,13 +1518,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                    Enumerators.OverlordSkill.METEOR_SHOWER,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.METEOR_SHOWER,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    Enumerators.OverlordSkill.METEOR_SHOWER,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.METEOR_SHOWER,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1622,13 +1622,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                    Enumerators.OverlordSkill.RABIES,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.RABIES,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Pyromaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    Enumerators.OverlordSkill.RABIES,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.RABIES,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Pyromaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1695,13 +1695,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                    Enumerators.OverlordSkill.FIRE_BOLT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FIRE_BOLT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    Enumerators.OverlordSkill.FIRE_BOLT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FIRE_BOLT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1766,13 +1766,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    Enumerators.OverlordSkill.FORTRESS,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FORTRESS,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    Enumerators.OverlordSkill.FORTRESS,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.FORTRESS,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1847,13 +1847,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    Enumerators.OverlordSkill.BLIZZARD,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.BLIZZARD,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    Enumerators.OverlordSkill.BLIZZARD,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.BLIZZARD,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1928,13 +1928,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3,
-                    Enumerators.OverlordSkill.WIND_SHIELD,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.WIND_SHIELD,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3,
-                    Enumerators.OverlordSkill.WIND_SHIELD,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.WIND_SHIELD,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -2003,13 +2003,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3,
-                    Enumerators.OverlordSkill.LEVITATE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.LEVITATE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3,
-                    Enumerators.OverlordSkill.LEVITATE,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.LEVITATE,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Whizpar", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -2081,13 +2081,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    Enumerators.OverlordSkill.BREAKOUT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.BREAKOUT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    Enumerators.OverlordSkill.BREAKOUT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.BREAKOUT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Slab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -2195,13 +2195,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
-                    Enumerators.OverlordSkill.MASS_RABIES,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.MASS_RABIES,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Pyromaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    Enumerators.OverlordSkill.MASS_RABIES,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.MASS_RABIES,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Pyromaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -2279,13 +2279,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    Enumerators.OverlordSkill.INFECT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.INFECT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Hazmaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    Enumerators.OverlordSkill.INFECT,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.INFECT,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Hazmaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -2368,13 +2368,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    Enumerators.OverlordSkill.EPIDEMIC,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.EPIDEMIC,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Hazmaz", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    Enumerators.OverlordSkill.EPIDEMIC,
-                    Enumerators.OverlordSkill.NONE,
+                    Enumerators.Skill.EPIDEMIC,
+                    Enumerators.Skill.NONE,
                     new DeckCardData("Hazmaz", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)

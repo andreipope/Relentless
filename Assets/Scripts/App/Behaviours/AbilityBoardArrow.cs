@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType TargetUnitType;
 
-        public Enumerators.UnitStatus TargetUnitStatusType;
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatusType;
 
         public int UnitDefense = 0;
 
@@ -48,9 +48,9 @@ namespace Loom.ZombieBattleground
             if (TutorialManager.IsTutorial)
             {
                 if ((!unit.Model.OwnerPlayer.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD)) ||
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT_CARD)) ||
                     (unit.Model.OwnerPlayer.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER_CARD)))
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.PLAYER_CARD)))
                     return;
             }
 
@@ -62,8 +62,8 @@ namespace Loom.ZombieBattleground
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
-                    if (TargetUnitStatusType == Enumerators.UnitStatus.NONE ||
-                        unit.Model.UnitStatus == TargetUnitStatusType)
+                    if (TargetUnitSpecialStatusType == Enumerators.UnitSpecialStatus.NONE ||
+                        unit.Model.UnitSpecialStatus == TargetUnitSpecialStatusType)
                     {
                         if ((UnitDefense > 0 && unit.Model.CurrentDefense <= UnitDefense) || UnitDefense == 0)
                         {
@@ -107,9 +107,9 @@ namespace Loom.ZombieBattleground
             if (TutorialManager.IsTutorial)
             {
                 if ((!player.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT)) ||
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT)) ||
                     (player.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER)))
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.PLAYER)))
                     return;
             }
 

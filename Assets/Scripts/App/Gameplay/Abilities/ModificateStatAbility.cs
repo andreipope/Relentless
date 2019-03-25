@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
                 InvokeUseAbilityEvent();
             }
             else if(AbilityTrigger == Enumerators.AbilityTrigger.ENTRY &&
-                    AbilityActivityType == Enumerators.AbilityActivity.PASSIVE)
+                    AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
             {
                 List<BoardUnitModel> targets = new List<BoardUnitModel>();
 
-                foreach (Enumerators.Target targetType in AbilityTargetTypes)
+                foreach (Enumerators.Target targetType in AbilityTargets)
                 {
                     switch (targetType)
                     {
