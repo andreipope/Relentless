@@ -1869,7 +1869,8 @@ namespace Loom.ZombieBattleground.Test
 
                 for (int counter = 0; counter < count; counter++)
                 {
-                    _uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
+                    //FIXME since HordeEditingPage is outdated and removed, have to fix this method
+                    //_uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
 
                     await LetsThink();
                 }
