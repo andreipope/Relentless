@@ -12,11 +12,11 @@ class Area_Bar_Popup_Page(CZBTests):
     def get_area_bar_popup_page(self):
         return self.altdriver.wait_for_element('AreaBarPopup(Clone)')
     def get_login_button(self):
-        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Scaler/Button_Login')
+        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Button_Login')
     def get_player_name_object(self):
-        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Scaler/Text_PlayerName')
+        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Text_PlayerName')
     def get_settings_button(self):
-        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Scaler/Button_Setting')
+        return self.altdriver.wait_for_element(self.area_bar_popup_page.name+'/Button_Setting')
 
     def get_player_name_text(self):
         return self.read_tmp_UGUI_text(self.player_name_object)
