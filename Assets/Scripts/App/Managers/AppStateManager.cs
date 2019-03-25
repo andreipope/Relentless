@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                //TODO Play Again
+                _uiManager.GetPage<MainMenuWithNavigationPage>().StartMatch();
             }
 
             QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
