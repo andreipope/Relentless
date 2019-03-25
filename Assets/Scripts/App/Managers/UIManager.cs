@@ -65,7 +65,6 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new QuestionPopup());
             _uiPopups.Add(new TutorialAvatarPopup());
             _uiPopups.Add(new PreparingForBattlePopup());
-            _uiPopups.Add(new YouLosePopup());
             _uiPopups.Add(new LevelUpPopup());
             _uiPopups.Add(new YourTurnPopup());
             _uiPopups.Add(new ConfirmationPopup());
