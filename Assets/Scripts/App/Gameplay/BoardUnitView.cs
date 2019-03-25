@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
             Transform.DOKill();
             Object.Destroy(GameObject);
 
-            _battlegroundController.UnregisterBoardUnitView(Model.OwnerPlayer, this);
+            _battlegroundController.UnregisterBoardUnitView(this, Model.OwnerPlayer);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)

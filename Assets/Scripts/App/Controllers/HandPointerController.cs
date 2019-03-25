@@ -222,17 +222,23 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                     BoardCardView boardCard = null;
+                    BoardUnitModel boardCardModel = null;
                     if (tutorialObjectIdStepOwner != 0)
                     {
-                        boardCard =
-                            _gameplayManager.GetController<BattlegroundController>().PlayerHandCards
-                                .FirstOrDefault(card => card.Model.Card.TutorialObjectId == tutorialObjectIdStepOwner);
+                        boardCardModel =
+                            _gameplayManager.CurrentPlayer.CardsInHand
+                                .FirstOrDefault(card => card.Card.TutorialObjectId == tutorialObjectIdStepOwner);
                     }
-                    else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                    else if(_gameplayManager.CurrentPlayer.CardsInHand.Count > 0)
                     {
-                        boardCard = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        boardCardModel = _gameplayManager.CurrentPlayer.CardsInHand[0];
                     }
-                    
+
+                    if (boardCardModel != null)
+                    {
+                        boardCard = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardCardModel);
+                    }
+
                     if (boardCard != null)
                     {
                         _ownerObject = boardCard.GameObject;

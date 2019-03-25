@@ -420,7 +420,7 @@ static class BattleCommandsHandler
 
         player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
         player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
-        _battlegroundController.RegisterBoardUnitView(player, newUnit);
+        _battlegroundController.RegisterBoardUnitView(newUnit, player);
 
         _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
     }
@@ -633,9 +633,10 @@ static class BattleCommandsHandler
     {
         Player player = _gameplayManager.CurrentPlayer;
         BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
-        WorkingCard workingCard = targetUnit.Card;
 
-        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == workingCard);
+        BoardCardView card =
+            _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
+                _gameplayManager.CurrentPlayer.CardsInHand.First(x => x == targetUnit));
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);

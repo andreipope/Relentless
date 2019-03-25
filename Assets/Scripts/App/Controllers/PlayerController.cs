@@ -277,9 +277,10 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
-                foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
+                IReadOnlyList<BoardCardView> views = _battlegroundController.GetViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+                foreach (BoardCardView card in views)
                 {
-                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card?.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }

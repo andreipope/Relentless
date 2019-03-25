@@ -475,8 +475,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Tainted Goo";
 
-                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsInHand.Select(card => card.Model.Card.Prototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.BattlegroundController.OpponentHandCards.Select(card => card.Model.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsInHand.Select(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -981,49 +980,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    bool playerHasEverlazting = false;
-                    bool opponentHasEverlazting = false;
-
-                    string cardToFind = "EverlaZting";
-
-                    foreach (DeckCardData card in TestHelper.GameplayManager.CurrentPlayerDeck.Cards)
-                    {
-                        if (card.CardName == cardToFind)
-                        {
-                            playerHasEverlazting = true;
-                            break;
-                        }
-                    }
-
-                    foreach (BoardCardView card in TestHelper.GameplayManager.CurrentPlayer.CardsInHand)
-                    {
-                        if (card.Model.Card.Prototype.Name == cardToFind)
-                        {
-                            playerHasEverlazting = true;
-                            break;
-                        }
-                    }
-
-                    foreach (DeckCardData card in TestHelper.GameplayManager.OpponentPlayerDeck.Cards)
-                    {
-                        if (card.CardName == cardToFind)
-                        {
-                            opponentHasEverlazting = true;
-                            break;
-                        }
-                    }
-
-                    foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
-                    {
-                        if (card.Model.Card.Prototype.Name == cardToFind)
-                        {
-                            opponentHasEverlazting = true;
-                            break;
-                        }
-                    }
-
-                    Assert.IsTrue(playerHasEverlazting);
-                    Assert.IsTrue(opponentHasEverlazting);
+                    const string cardToFind = "EverlaZting";
+                    Assert.IsTrue(TestHelper.GameplayManager.CurrentPlayer.CardsInHand.Any(model => model.Card.Prototype.Name == cardToFind));
+                    Assert.IsTrue(TestHelper.GameplayManager.OpponentPlayer.CardsInHand.Any(model => model.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

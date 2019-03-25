@@ -587,7 +587,7 @@ namespace Loom.ZombieBattleground
                                            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                            if (boardUnitView != null)
                                            {
-                                               _battlegroundController.UnregisterBoardUnitView(boardUnitModel.Owner, boardUnitView);
+                                               _battlegroundController.UnregisterBoardUnitView(boardUnitView);
                                            }
 
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();

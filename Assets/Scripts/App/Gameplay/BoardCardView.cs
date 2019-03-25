@@ -312,28 +312,6 @@ namespace Loom.ZombieBattleground
             Object.Destroy(GameObject);
         }
 
-        public void DrawCardFromOpponentDeckToPlayer()
-        {
-            GameObject.transform.localScale = Vector3.zero;
-
-            GameObject.transform.DOScale(new Vector3(0.2f, 0.2f, 0.2f), 0.15f);
-
-            CardAnimator.enabled = true;
-            CardAnimator.StopPlayback();
-            CardAnimator.Play("MoveCardFromOpponentDeckToPlayerHand");
-
-            TimerManager.AddTimer(
-                x =>
-                {
-                    CardAnimator.enabled = false;
-
-                    BattlegroundController.PlayerHandCards.Insert(ItemPosition.End, this);
-                    BattlegroundController.UpdatePositionOfCardsInPlayerHand(true);
-                },
-                null,
-                2f);
-        }
-
         // editing deck page
         public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, AmountTrayType amountTrayType)
         {

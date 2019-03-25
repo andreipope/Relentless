@@ -74,12 +74,12 @@ namespace Loom.ZombieBattleground
 
             if (playerOwner.IsLocalPlayer)
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, revivedBoardUnitView);
+                BattlegroundController.RegisterBoardUnitView(revivedBoardUnitView, GameplayManager.CurrentPlayer);
                 _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
             }
             else
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, revivedBoardUnitView);
+                BattlegroundController.RegisterBoardUnitView(revivedBoardUnitView, GameplayManager.OpponentPlayer);
                 if (_gameplayManager.IsLocalPlayerTurn()) {
                     _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
                 }
