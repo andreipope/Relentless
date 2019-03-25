@@ -349,7 +349,7 @@ namespace Loom.ZombieBattleground
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI3;
-            boardCard.Transform.Find("Amount")?.gameObject.SetActive(false);
+            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
