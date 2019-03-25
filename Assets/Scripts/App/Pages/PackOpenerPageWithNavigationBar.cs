@@ -1045,7 +1045,6 @@ namespace Loom.ZombieBattleground
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
             boardCard.Transform.localScale = Vector3.one * 0.16f;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
             return boardCard;        
