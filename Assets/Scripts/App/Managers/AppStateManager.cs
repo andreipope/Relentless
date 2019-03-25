@@ -151,10 +151,7 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
-                if (_uiManager.CurrentPage == page) {
-                    page.BattleButtonOnClickHandler();
-                }
+                //TODO Play Again
             }
 
             QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
