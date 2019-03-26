@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using log4net;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
@@ -193,17 +194,28 @@ namespace Loom.ZombieBattleground
 
             _battlegroundController.StartGameplayTurns();
 
-            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
+            if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP &&
+                GameClient.Get<BackendFacade>().IsConnected)
             {
-                int highestInstanceId =
-                    _pvpManager.InitialGameState.PlayerStates
-                    .SelectMany(state =>
-                        state.MulliganCards
-                            .Concat(state.CardsInDeck)
-                            .Concat(state.CardsInHand)
-                            .Concat(state.CardsInPlay)
-                            .Concat(state.CardsInGraveyard))
-                    .Max(card => card.InstanceId.Id);
+                IEnumerable<Protobuf.CardInstance> cards = _pvpManager.InitialGameState.PlayerStates
+                 .SelectMany(state =>
+                     state.MulliganCards
+                         .Concat(state.CardsInDeck)
+                         .Concat(state.CardsInHand)
+                         .Concat(state.CardsInPlay)
+                         .Concat(state.CardsInGraveyard));
+
+                int highestInstanceId = 0;
+
+                if (cards.Count() > 0)
+                {
+                    cards.Max(card => card.InstanceId.Id);
+                }
+                else
+                {
+                    Log.Warn($"[Out of sync] Sequence contains no elements in player state. connection status: {GameClient.Get<BackendFacade>().IsConnected}");
+                }
+
                 SetNewCardInstanceId(highestInstanceId);
             }
         }
