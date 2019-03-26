@@ -140,7 +140,13 @@ namespace Loom.ZombieBattleground
         private void ButtonPlayAgainHandler()
         {
             PlayClickSound();
-            //TODO Play Again
+
+            if (!_tutorialManager.IsTutorial)
+            {
+                MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
+                matchManager.AppStateWasLoaded += PlayAgainWhenAppStateLoaded;
+            }
+            
             if (_isWin)
             {
                 ContinueOnWin();
@@ -149,6 +155,13 @@ namespace Loom.ZombieBattleground
             {
                 ContinueOnLost();
             }
+        }
+        
+        private void PlayAgainWhenAppStateLoaded()
+        {
+            MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
+            matchManager.AppStateWasLoaded -= PlayAgainWhenAppStateLoaded;
+            _uiManager.GetPage<MainMenuWithNavigationPage>().StartMatch();
         }
         
         private void ButtonContinueHandler()
