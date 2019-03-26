@@ -1345,8 +1345,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -2,
-                "Y": 1.7,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -2303,8 +2303,8 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -2,
-                "Y": 1.7,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
@@ -3212,13 +3212,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -4153,13 +4154,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
