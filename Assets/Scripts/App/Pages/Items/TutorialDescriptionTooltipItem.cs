@@ -328,8 +328,9 @@ namespace Loom.ZombieBattleground
                         {
                             UpdatePossibilityForClose();
                             Hide();
+                            return;
                         }
-
+                         
                         _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }

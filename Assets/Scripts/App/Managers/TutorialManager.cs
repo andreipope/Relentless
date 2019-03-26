@@ -1405,6 +1405,7 @@ namespace Loom.ZombieBattleground
                 {
                     _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                     _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
                     await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                     await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 

@@ -141,8 +141,8 @@ namespace Loom.ZombieBattleground
 
                 _inputFieldSearchName.text = "";
                 FillCollectionData();
-                ResetCollectionPageState();
                 SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
+                ResetCollectionPageState();
                 ResetDeckPageState();
 
                 UpdateOverlordAbilitiesButton();
@@ -527,7 +527,7 @@ namespace Loom.ZombieBattleground
         {
             foreach(DeckCardData card in deck.Cards)
             {
-                _collectionData.GetCardData(card.CardName).Amount -= card.Amount; 
+                _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
             }
         }
 
