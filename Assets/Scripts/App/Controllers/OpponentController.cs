@@ -578,7 +578,8 @@ namespace Loom.ZombieBattleground
                         boardUnitModel = tempBoardUnitModel;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(boardObjectCaller));
+                        Log.Warn(new ArgumentOutOfRangeException($"{nameof(boardObjectCaller)} has type: {boardObjectCaller?.GetType().ToString()}"));
+                        return;
                 }
 
                 _abilitiesController.PlayAbilityFromEvent(
