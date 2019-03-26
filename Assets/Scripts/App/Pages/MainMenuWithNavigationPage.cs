@@ -179,7 +179,10 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfSelectDeckContainEnoughCards(Deck deck)
         {
-            return deck.GetNumCards() == Constants.DeckMaxSize;
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+                return true;
+                
+            return deck.GetNumCards() == Constants.MinDeckSize;
         }
 
         public void SetOverlordPortrait(Enumerators.Faction faction)
