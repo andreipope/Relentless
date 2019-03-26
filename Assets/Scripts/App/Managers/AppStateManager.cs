@@ -193,10 +193,7 @@ namespace Loom.ZombieBattleground
         {
             if (decision)
             {
-                HordeSelectionPage page = _uiManager.GetPage<HordeSelectionPage>();
-                if (_uiManager.CurrentPage == page) {
-                    page.BattleButtonOnClickHandler();
-                }
+                _uiManager.GetPage<MainMenuWithNavigationPage>().StartMatch();
             }
 
             QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
