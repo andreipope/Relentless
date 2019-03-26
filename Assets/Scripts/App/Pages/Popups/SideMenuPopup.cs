@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/SideMenuPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas.transform, false);
 
             _buttonBattle = Self.transform.Find("Group/Button_Battle").GetComponent<Button>();
             _buttonShop = Self.transform.Find("Group/Button_Shop").GetComponent<Button>();           
