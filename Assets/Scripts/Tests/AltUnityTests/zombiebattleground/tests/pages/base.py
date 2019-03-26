@@ -13,7 +13,7 @@ def PATH(p): return os.path.abspath(
 )
 
 
-class CZBTests(unittest.TestCase):
+class CZBTests():
     platform = "android"  # set to `ios` or `android` to change platform
     tester_key = "c0ca1ecde904"
 

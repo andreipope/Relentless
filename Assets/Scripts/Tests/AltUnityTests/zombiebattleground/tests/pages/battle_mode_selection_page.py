@@ -20,9 +20,9 @@ class Battle_Mode_Selection_Page(CZBTests):
     def get_tutorial_button(self):
         return self.altdriver.wait_for_element(self.battle_mode_selection_page.name+'/Button_Tutorial')
 
-    def start_solo_match(self):
+    def press_solo_mode(self):
         self.button_pressed(self.solo_mode_button)
-    def start_pvp_match(self):
+    def press_pvp_mode(self):
         self.button_pressed(self.pvp_mode_button)
     def go_back_to_menu(self):
         self.button_pressed(self.back_button)
