@@ -834,10 +834,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
-            "X": 11.15,
-            "Y": -2.42,
+            "X": 0,
+            "Y": 0,
             "Z": 0
           },
+          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipLayer": "AbovePages"
         },
         {
