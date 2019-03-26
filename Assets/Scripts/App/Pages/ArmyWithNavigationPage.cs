@@ -231,15 +231,12 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            ResetPageState();
-            UpdateCardCounterText();
+            ResetPageState();            
         }
         
-        private void UpdateCardCounterText()
+        private void UpdateCardCounterText(int amount)
         {
-            //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
-            //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
+            _cardCounter.text = amount + "/" +
                 _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
         }
 
@@ -395,14 +392,36 @@ namespace Loom.ZombieBattleground
                 foreach(Card card in cards)
                 {
                     if
-                    ( 
+                    (
                         CheckIfSatisfyGooCostFilter(card) &&
                         CheckIfSatisfyRankFilter(card) &&
                         CheckIfSatisfyTypeFilter(card)
                     )
+                    {
                         resultList.Add(card);
+                    }
                 }
                 UpdateCacheFilteredCardList(resultList);
+                
+                List<Card> countAllFactionList = new List<Card>();
+                foreach (Enumerators.Faction item in _availableSetType)
+                {
+                    Faction setFaction = SetTypeUtility.GetCardFaction(_dataManager, item);
+                    List<Card> cardList = setFaction.Cards.ToList();
+                    foreach(Card card in cardList)
+                    {
+                        if
+                        (
+                            CheckIfSatisfyGooCostFilter(card) &&
+                            CheckIfSatisfyRankFilter(card) &&
+                            CheckIfSatisfyTypeFilter(card)
+                        )
+                        {
+                            countAllFactionList.Add(card);
+                        }
+                    }
+                }
+                UpdateCardCounterText(countAllFactionList.Count);
             }
             else
             {   
@@ -419,6 +438,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 UpdateCacheFilteredCardList(resultList);
+                UpdateCardCounterText(resultList.Count);
             }
         }
         
