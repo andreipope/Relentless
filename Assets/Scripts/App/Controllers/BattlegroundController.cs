@@ -1105,18 +1105,22 @@ namespace Loom.ZombieBattleground
                 boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
-                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+
+                    //.Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
                     .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
-                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck);
+
+                //.Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
             }
             else
             {
                 boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
-                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
-                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+
+                    //.Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard);
+
+                //.Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
             }
 
             BoardUnitModel boardUnitModel =
@@ -1137,8 +1141,8 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer,
                 _gameplayManager.OpponentPlayer,
             };
-            boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardItemsInUse);
-            boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardItemsInUse);
+            //boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardItemsInUse);
+            //boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardItemsInUse);
 
             BoardObject foundObject = boardObjects.Find(boardObject =>
             {
