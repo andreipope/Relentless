@@ -89,10 +89,10 @@ namespace Loom.ZombieBattleground
             _groupYouWin = Self.transform.Find("Scaler/Image_Panel_Win").gameObject; 
             _groupYouLost = Self.transform.Find("Scaler/Image_Panel_Lose").gameObject;
             
-            _buttonPlayAgain = Self.transform.Find("Scaler/Button_PlayAgain").GetComponent<Button>();                        
+            _buttonPlayAgain = Self.transform.Find("Scaler/Group_Buttons/Button_PlayAgain").GetComponent<Button>();                        
             _buttonPlayAgain.onClick.AddListener(ButtonPlayAgainHandler);
             
-            _buttonContinue = Self.transform.Find("Scaler/Button_Continue").GetComponent<Button>();
+            _buttonContinue = Self.transform.Find("Scaler/Group_Buttons/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
             
             _groupYouWin.SetActive(_isWin);
@@ -118,6 +118,11 @@ namespace Loom.ZombieBattleground
             _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
             _textDeckName.text = deck.Name;
             _textLevel.text = "1";
+
+            _buttonPlayAgain.gameObject.SetActive
+            (
+                !_tutorialManager.IsTutorial
+            );
         }
         
         public void Show(object data)
@@ -140,7 +145,13 @@ namespace Loom.ZombieBattleground
         private void ButtonPlayAgainHandler()
         {
             PlayClickSound();
-            //TODO Play Again
+
+            if (!_tutorialManager.IsTutorial)
+            {
+                MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
+                matchManager.AppStateWasLoaded += PlayAgainWhenAppStateLoaded;
+            }
+            
             if (_isWin)
             {
                 ContinueOnWin();
@@ -149,6 +160,13 @@ namespace Loom.ZombieBattleground
             {
                 ContinueOnLost();
             }
+        }
+        
+        private void PlayAgainWhenAppStateLoaded()
+        {
+            MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
+            matchManager.AppStateWasLoaded -= PlayAgainWhenAppStateLoaded;
+            _uiManager.GetPage<MainMenuWithNavigationPage>().StartMatch();
         }
         
         private void ButtonContinueHandler()
