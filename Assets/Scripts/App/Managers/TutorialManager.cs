@@ -487,8 +487,12 @@ namespace Loom.ZombieBattleground
 
         public void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = 0)
         {
+            Debug.LogError(action);
+
             if (!IsTutorial)
                 return;
+
+            
 
             if (action == Enumerators.TutorialActivityAction.TapOnScreen)
             {
@@ -764,7 +768,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
                                            tooltip.TutorialTooltipLayer,
-                                           tooltip.MinimumShowTime);
+                                           tooltip.MinimumShowTime,
+                                           tooltip.TutorialUIElementOwnerName);
                 }
             }
 
@@ -1079,7 +1084,8 @@ namespace Loom.ZombieBattleground
                                            float appearDelay,
                                            bool dynamicPosition,
                                            Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
+                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
+                                           string tutorialUIElementOwnerName = Constants.Empty)
         {
             if (appearDelay > 0)
             {
@@ -1094,7 +1100,8 @@ namespace Loom.ZombieBattleground
                                                                                                     dynamicPosition,
                                                                                                     ownerId,
                                                                                                     layer,
-                                                                                                    minimumShowTime: minimumShowTime);
+                                                                                                    minimumShowTime: minimumShowTime,
+                                                                                                    tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
@@ -1110,7 +1117,8 @@ namespace Loom.ZombieBattleground
                                                                                                 dynamicPosition,
                                                                                                 ownerId,
                                                                                                 layer,
-                                                                                                minimumShowTime: minimumShowTime);
+                                                                                                minimumShowTime: minimumShowTime,
+                                                                                                tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -1134,7 +1142,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
@@ -1163,7 +1172,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
