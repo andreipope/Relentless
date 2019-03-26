@@ -2168,7 +2168,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -3073,7 +3074,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -4011,7 +4013,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
