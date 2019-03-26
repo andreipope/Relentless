@@ -129,19 +129,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isCollectedTutorialCards = false;
 
-        private const bool SimulateAnimationForDebugging = false;
-        
-        private bool _isCollectedSimulateCards = false;
-
-        private readonly List<string> _simulateCardNameList = new List<string>()
-        {
-            "Pyromaz",
-            "Zlinger",
-            "Sparky",
-            "Quazi",
-            "Ember"
-        };
-
         #region IUIElement
 
         public void Init()
@@ -267,13 +254,7 @@ namespace Loom.ZombieBattleground
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
             
-            if(SimulateAnimationForDebugging)
-            {
-                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
-                SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
-                _isCollectedSimulateCards = false;
-            }
-            else if (_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
@@ -578,22 +559,6 @@ namespace Loom.ZombieBattleground
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
         }
-        
-        private async Task SimulateRetriveCardsFromPack()
-        {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
-            _cardsToDisplayQueqe.Clear();
-            foreach(string cardName in _simulateCardNameList)
-            {
-                _cardsToDisplayQueqe.Add
-                (
-                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardName)
-                );
-            }
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            await Task.Delay(TimeSpan.FromSeconds(1));
-            ChangeState(STATE.CARD_EMERGED);          
-        }
 
         private async Task RetryRequestOpenPack(bool confirmRetry)
         {
@@ -609,21 +574,7 @@ namespace Loom.ZombieBattleground
 
         private async void ProcessOpenPackLogic()
         {
-            if(SimulateAnimationForDebugging)
-            {
-                if(!_isCollectedSimulateCards)
-                {
-                    _isCollectedSimulateCards = true;
-                    await SimulateRetriveCardsFromPack();
-                    _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 0;
-                }
-                else
-                {
-                    _cardsToDisplayQueqe.Clear();
-                    ChangeState(STATE.CARD_EMERGED);    
-                }
-            }
-            else if (_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
                 if (!_isCollectedTutorialCards)
                 {
