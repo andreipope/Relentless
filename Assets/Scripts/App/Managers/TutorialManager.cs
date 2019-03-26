@@ -487,12 +487,8 @@ namespace Loom.ZombieBattleground
 
         public void ReportActivityAction(Enumerators.TutorialActivityAction action, int sender = 0)
         {
-            Debug.LogError(action);
-
             if (!IsTutorial)
                 return;
-
-            
 
             if (action == Enumerators.TutorialActivityAction.TapOnScreen)
             {
