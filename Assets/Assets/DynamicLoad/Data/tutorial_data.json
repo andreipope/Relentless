@@ -814,7 +814,7 @@
             "Y": -1.9,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AboveUI"
         },
         {
           "Id": 4,
@@ -1344,11 +1344,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": -2,
+                "Y": 1.7,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AboveUI"
             }
           ]
@@ -2018,11 +2020,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
           "TutorialTooltipLayer": "AboveUI"
         }
       ],
@@ -2299,13 +2302,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": -2,
+                "Y": 1.7,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -2926,12 +2930,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -3866,12 +3871,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
