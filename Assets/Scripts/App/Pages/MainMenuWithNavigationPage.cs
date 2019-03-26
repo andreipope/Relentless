@@ -86,7 +86,12 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<AreaBarPopup>();       
             _uiManager.DrawPopup<DeckSelectionPopup>();
 
-            AnimateOverlordPortrait();         
+            AnimateOverlordPortrait(); 
+            
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
+
+            _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent += OnSelectDeckEvent;
         }
         
         public void Hide()
@@ -97,6 +102,8 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
+            
+            _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent -= OnSelectDeckEvent;
 
             OnHide();
         }
@@ -112,6 +119,11 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
             _uiManager.HidePopup<DeckSelectionPopup>();
+        }
+        
+        private void OnSelectDeckEvent(Deck deck)
+        {
+            _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
         }
 
         #region Buttons Handlers
@@ -163,6 +175,11 @@ namespace Loom.ZombieBattleground
             {
                 startMatch?.Invoke();
             }  
+        }
+        
+        private bool CheckIfSelectDeckContainEnoughCards(Deck deck)
+        {
+            return deck.GetNumCards() == Constants.DeckMaxSize;
         }
 
         public void SetOverlordPortrait(Enumerators.Faction faction)
