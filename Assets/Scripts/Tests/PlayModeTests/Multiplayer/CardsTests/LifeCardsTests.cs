@@ -1329,6 +1329,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardAbilityUsed(opponentBlightId, Enumerators.AbilityType.DELAYED_PLACE_COPIES_IN_PLAY_DESTROY_UNIT, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {},
+                       opponent => {},
+                       player => {},
+                       opponent => {},
+                       player => {},
                        opponent => {}
                 };
 
@@ -1336,34 +1340,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     string cardToFind = "Blightling";
 
-                    Assert.AreEqual(2, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
-                    Assert.AreEqual(2, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Where(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
+                    Assert.AreEqual(2, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Where(card => card.Card.Prototype.Name == cardToFind).ToList().Count);
 
                     cardToFind = "Blight";
 
-                    bool playerHasBlight = false;
-                    bool opponentHasBlight = false;
-
-                    foreach (BoardUnitModel card in TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard)
-                    {
-                        if (card.Card.Prototype.Name == cardToFind)
-                        {
-                            playerHasBlight = true;
-                            break;
-                        }
-                    }
-
-                    foreach (BoardUnitModel card in TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard)
-                    {
-                        if (card.Card.Prototype.Name == cardToFind)
-                        {
-                            opponentHasBlight = true;
-                            break;
-                        }
-                    }
-
-                    Assert.IsFalse(playerHasBlight);
-                    Assert.IsFalse(opponentHasBlight);
+                    Assert.IsFalse(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Any(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.IsFalse(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Any(card => card.Card.Prototype.Name == cardToFind));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
