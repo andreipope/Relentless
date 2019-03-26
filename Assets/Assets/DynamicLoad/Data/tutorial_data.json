@@ -1335,7 +1335,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -2289,7 +2290,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -3195,7 +3197,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -4134,7 +4137,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
