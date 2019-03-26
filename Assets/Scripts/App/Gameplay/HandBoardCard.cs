@@ -246,4 +246,18 @@ public class HandBoardCard : OwnableBoardObject
                 _isReturnToHand = false;
             });
     }
+
+    public void OnHovering()
+    {
+        Transform.DOScale(BoardCardView.ScaleOnHand * 1.5f, _timePreview);
+        Transform.DOMove(BoardCardView.PositionOnHand + Vector3.up * 2.8f, _timePreview);
+        Transform.DORotate(Vector3.zero, 0.15f);
+        _oldSortingOrder = Transform.GetComponent<SortingGroup>().sortingOrder;
+        Transform.GetComponent<SortingGroup>().sortingOrder = 100;
+    }
+
+    public void OnUnhovering()
+    {
+
+    }
 }
