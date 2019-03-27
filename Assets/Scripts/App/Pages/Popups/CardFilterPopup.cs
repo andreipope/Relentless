@@ -414,6 +414,21 @@ namespace Loom.ZombieBattleground
         {
             if (newTab == _tab)
                 return;
+               
+            switch (_tab)
+            {
+                case Tab.Element:
+                    _buttonElement.GetComponent<Image>().sprite = _buttonElement.spriteState.disabledSprite;
+                    break;
+                case Tab.Rank:
+                    _buttonRank.GetComponent<Image>().sprite = _buttonRank.spriteState.disabledSprite;
+                    break;
+                case Tab.GooCost:  
+                    _buttonGooCost.GetComponent<Image>().sprite = _buttonGooCost.spriteState.disabledSprite;                  
+                    break;
+                default:
+                    break;
+            }        
                 
             _tab = newTab;            
             
@@ -428,12 +443,15 @@ namespace Loom.ZombieBattleground
                 case Tab.None:
                     break;
                 case Tab.Element:
+                    _buttonElement.GetComponent<Image>().sprite = _buttonElement.spriteState.pressedSprite;
                     break;
                 case Tab.Rank:
+                    _buttonRank.GetComponent<Image>().sprite = _buttonRank.spriteState.pressedSprite;
                     break;
                 case Tab.Type:                                      
                     break;
-                case Tab.GooCost:                    
+                case Tab.GooCost: 
+                    _buttonGooCost.GetComponent<Image>().sprite = _buttonGooCost.spriteState.pressedSprite;                    
                     break;
                 default:
                     break;
@@ -471,14 +489,21 @@ namespace Loom.ZombieBattleground
         
         private void UpdateFactionButtonDisplay(Enumerators.Faction faction)
         {
-            _buttonElementsDictionary[faction].GetComponent<Image>().color =
-                FilterData.FactionDictionary[faction] ? Color.white : Color.gray;
+            Button button = _buttonElementsDictionary[faction].GetComponent<Button>();
+
+            _buttonElementsDictionary[faction].GetComponent<Image>().sprite =
+                FilterData.FactionDictionary[faction] ? 
+                button.spriteState.pressedSprite : 
+                button.spriteState.disabledSprite;
         }
         
         private void UpdateRankButtonDisplay(Enumerators.CardRank rank)
         {
-            _buttonRankDictionary[rank].GetComponent<Image>().color =
-                FilterData.RankDictionary[rank] ? Color.white : Color.gray;
+            Button button = _buttonRankDictionary[rank].GetComponent<Button>();
+            _buttonRankDictionary[rank].GetComponent<Image>().sprite =
+                FilterData.RankDictionary[rank] ? 
+                button.spriteState.pressedSprite : 
+                button.spriteState.disabledSprite;
         }
         
         private void UpdateTypeButtonDisplay(Enumerators.CardType type)
@@ -489,9 +514,12 @@ namespace Loom.ZombieBattleground
         
         private void UpdateGooCostButtonDisplay(int gooIndex)
         {
-            _buttonGooCostList[gooIndex].GetComponent<Image>().color =
-                FilterData.GooCostList[gooIndex] ? Color.white : Color.gray;
-            _buttonGooCostList[gooIndex].transform.GetChild(0).GetComponent<TextMeshProUGUI>().color = _buttonGooCostList[gooIndex].GetComponent<Image>().color;
+            Button button = _buttonGooCostList[gooIndex].GetComponent<Button>();
+            
+            _buttonGooCostList[gooIndex].GetComponent<Image>().sprite =
+                FilterData.GooCostList[gooIndex] ?  
+                button.spriteState.pressedSprite : 
+                button.spriteState.disabledSprite;
         }
         
         private bool CheckIfAnyElementSelected()
