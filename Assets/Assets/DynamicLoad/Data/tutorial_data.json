@@ -3390,6 +3390,10 @@
           "TutorialStepType": "GameplayStep"
         },
         {
+          "ActionToEndThisStep": "StartTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
           "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
           "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
