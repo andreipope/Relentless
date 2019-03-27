@@ -79,6 +79,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ActionsQueueController _actionsQueueController;
 
+        private readonly BoardArrowController _boardArrowController;
+
         private readonly GameObject _avatarObject;
 
         private readonly Animator _overlordFactionFrameAnimator;
@@ -130,6 +132,7 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             PlayerCardsController = new PlayerCardsController(this);
 
@@ -458,6 +461,7 @@ namespace Loom.ZombieBattleground
             );
 
             _skillsController.DisableSkillsContent(this);
+            _boardArrowController.ResetCurrentBoardArrow();
 
             switch (SelfOverlord.Faction)
             {

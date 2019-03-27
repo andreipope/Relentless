@@ -168,6 +168,12 @@ namespace Loom.ZombieBattleground
 
         private void UpdateSelectedDeckData(Deck deck)
         {
+            if (deck == null || _dataManager.CachedDecksData.Decks == null)
+            {
+                Log.Warn($"deck: {deck} or CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
+                return;
+            }
+
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);            
