@@ -367,17 +367,10 @@ namespace Loom.ZombieBattleground
                                    }
                                }
 
-                               int index = 0;
-                               int count = 0;
-                               while (count < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count)
+                               for (int i = 0; i < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count; i++)
                                {
-                                   BoardUnitModel card = _gameplayManager.CurrentPlayer.CardsInDeck[index];
-                                   if (!_gameplayManager.CurrentPlayer.CardsPreparingToHand.Contains(card))
-                                   {
-                                       finalCardsInHand.Add(card);
-                                       count++;
-                                   }
-                                   index++;
+                                   BoardUnitModel card = _gameplayManager.CurrentPlayer.CardsInDeck[i];
+                                   finalCardsInHand.Add(card);
                                }
 
                                _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
@@ -407,22 +400,15 @@ namespace Loom.ZombieBattleground
                                    }
                                    if (!found) 
                                    {
-                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
                                        _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(cardInHand);
+                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
                                    }
                                }
 
-                               int index = 0;
-                               int count = 0;
-                               while (count < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count)
+                               for (int i = 0; i < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count; i++)
                                {
-                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[index];
-                                   if (!_gameplayManager.OpponentPlayer.CardsInHand.Contains(card))
-                                   {
-                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
-                                       count++;
-                                   }
-                                   index++;
+                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[i];
+                                   _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
                                }
                             }
                         }
