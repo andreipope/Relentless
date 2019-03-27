@@ -462,10 +462,7 @@ namespace Loom.ZombieBattleground
 
         public void ChangeTab(Tab newTab)
         {
-            if (_tab != Tab.None && _tab != newTab)
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
-            }
+            Tab oldTabl = _tab;
 
             _tab = newTab;            
             
@@ -512,6 +509,11 @@ namespace Loom.ZombieBattleground
             }
 
             EventChangeTab?.Invoke(_tab);
+
+            if (oldTabl != Tab.None && oldTabl != newTab)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
+            }
         }
         
         private void ChangeSelectDeckIndex(int newIndexInPage)
