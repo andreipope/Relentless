@@ -349,6 +349,7 @@ namespace Loom.ZombieBattleground
                             if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
+                               int cardsRemoved = 0;
                                foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand) 
                                {
                                    bool found = false;
@@ -364,10 +365,11 @@ namespace Loom.ZombieBattleground
                                    if (!found) 
                                    {
                                        _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                       cardsRemoved++;
                                    }
                                }
 
-                               for (int i = 0; i < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count; i++)
+                               for (int i = 0; i < cardsRemoved; i++)
                                {
                                    BoardUnitModel card = _gameplayManager.CurrentPlayer.CardsInDeck[i];
                                    finalCardsInHand.Add(card);
@@ -387,6 +389,7 @@ namespace Loom.ZombieBattleground
                         } else {
                             if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
+                               List<BoardUnitModel> cardsToRemove = new List<BoardUnitModel>();
                                foreach (BoardUnitModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand) 
                                {
                                    bool found = false;
@@ -400,12 +403,17 @@ namespace Loom.ZombieBattleground
                                    }
                                    if (!found) 
                                    {
-                                       _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(cardInHand);
-                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                       cardsToRemove.Add(cardInHand);
                                    }
                                }
 
-                               for (int i = 0; i < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count; i++)
+                               foreach (BoardUnitModel card in cardsToRemove) 
+                               {
+                                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
+                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
+                               }
+
+                               for (int i = 0; i < cardsToRemove.Count; i++)
                                {
                                    BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[i];
                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
