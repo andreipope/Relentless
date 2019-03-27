@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class BoardItem : OwnableBoardObject, IBoardUnitView
     {
-        public GameObject GameObject;
+        public GameObject GameObject { get; }
 
         public Transform Transform { get; }
 

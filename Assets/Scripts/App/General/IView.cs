@@ -7,6 +7,8 @@ namespace Loom.ZombieBattleground.View
     /// </summary>
     public interface IView
     {
+        GameObject GameObject { get; }
+
         Transform Transform { get; }
     }
 }

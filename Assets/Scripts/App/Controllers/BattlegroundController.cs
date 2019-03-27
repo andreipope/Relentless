@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground
             }
 
             T view =
-                BoardUnitViews
+                _boardUnitViews
                     .OfType<T>()
                     .Where(v => v.Model == boardUnitModel)
                     .SingleOrDefault();
@@ -364,6 +364,8 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer?.PlayerCardsController.ClearCardsOnBoard();
             _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsOnBoard();
+
+            _boardUnitViews.Clear();
         }
 
         public void InitializeBattleground()
@@ -921,7 +923,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView GetBoardCardFromHisObject(GameObject cardObject)
         {
-            return BoardUnitViews
+            return _boardUnitViews
                 .OfType<BoardCardView>()
                 .FirstOrDefault(view => view.GameObject == cardObject);
         }

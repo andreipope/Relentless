@@ -129,8 +129,7 @@ namespace Editor
 
                                 if (view != null)
                                 {
-                                    GameObject viewGameObject = view.Transform != null ? view.Transform.gameObject : null;
-                                    EditorGUILayout.ObjectField(viewGameObject, typeof(GameObject), true, GUILayout.Width(150));
+                                    EditorGUILayout.ObjectField(view.GameObject, typeof(GameObject), true, GUILayout.Width(150));
                                 }
                             }
                             EditorGUILayout.EndHorizontal();
@@ -148,15 +147,6 @@ namespace Editor
 
                         DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
                         EditorGUILayout.Space();
-
-                        /*if (isCurrentPlayer)
-                        {
-                            DrawViewList("BattlegroundController.PlayerHandCards", battlegroundController.PlayerHandCards);
-                        }
-                        else
-                        {
-                            DrawViewList("BattlegroundController.OpponentHandCards", battlegroundController.OpponentHandCards);
-                        }*/
                     }
 
                     bool isExpanded = true;

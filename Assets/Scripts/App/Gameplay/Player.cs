@@ -310,6 +310,8 @@ namespace Loom.ZombieBattleground
 
         public GameObject AvatarObject => _avatarObject?.transform.parent?.gameObject;
 
+        public GameObject GameObject => PlayerObject;
+
         public Transform Transform => PlayerObject.transform;
 
         public OverlordModel SelfOverlord { get; }
