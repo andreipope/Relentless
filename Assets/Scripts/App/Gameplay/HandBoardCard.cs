@@ -35,6 +35,8 @@ public class HandBoardCard : OwnableBoardObject
 
     private readonly OnBehaviourHandler _behaviourHandler;
 
+    private readonly SortingGroup _sortingGroup;
+
     private bool _isHandCard = true;
 
     private bool _alreadySelected;
@@ -43,9 +45,7 @@ public class HandBoardCard : OwnableBoardObject
 
     private bool _isHovering;
 
-    private float _timePreview = 0.15f;
-
-    private int _oldSortingOrder;
+    private int _normalSortingOrder;
 
     public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
@@ -62,6 +62,8 @@ public class HandBoardCard : OwnableBoardObject
         _cardsController = _gameplayManager.GetController<CardsController>();
 
         _behaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
+
+        _sortingGroup = GameObject.GetComponent<SortingGroup>();
 
         _behaviourHandler.MouseUpTriggered += MouseUp;
         _behaviourHandler.Updating += UpdatingHandler;
@@ -253,30 +255,30 @@ public class HandBoardCard : OwnableBoardObject
             });
     }
 
-    public void OnHovering()
+    public void HoveringAndZoom()
     {
-        Transform.DOScale(BoardCardView.ScaleOnHand * 1.5f, _timePreview);
-        Transform.DOMove(BoardCardView.PositionOnHand + Vector3.up * 2.8f, _timePreview);
+        Transform.DOScale(Constants.DefaultScaleForZoomedCardInHand, Constants.DurationHoveringHandCard);
+        Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -5f, 0), Constants.DurationHoveringHandCard);
         Transform.DORotate(Vector3.zero, 0.15f);
-        _oldSortingOrder = Transform.GetComponent<SortingGroup>().sortingOrder;
-        Transform.GetComponent<SortingGroup>().sortingOrder = 100;
+        _normalSortingOrder = _sortingGroup.sortingOrder;
+        _sortingGroup.sortingOrder = 100;
         _isHovering = true;
     }
 
-    public void OnUnhovering(bool isMove = true, Action onComplete = null)
+    public void ResetHoveringAndZoom(bool isMove = true, Action onComplete = null)
     {
         if (isMove)
         {
-            Transform.DOMove(BoardCardView.PositionOnHand, _timePreview);
+            Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
         }
-        Transform.DOScale(BoardCardView.ScaleOnHand, _timePreview);
-        Transform.DORotate(BoardCardView.RotationOnHand, _timePreview).OnComplete(() =>
+        Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
+        Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard).OnComplete(() =>
         {
             onComplete?.Invoke();
             _isHovering = false;
         });
 
-        Transform.GetComponent<SortingGroup>().sortingOrder = _oldSortingOrder;
+        _sortingGroup.sortingOrder = _normalSortingOrder;
 
     }
 }

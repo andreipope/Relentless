@@ -161,6 +161,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float HandPointerSpeed = 4f;
 
+        internal const float DurationHoveringHandCard = 0.15f;
+
         internal const int BackendCallTimeout = 10000;
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
@@ -170,6 +172,8 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 RightPlayerOverlordPositionForChat = new Vector3(3.95f, -4.65f, 0);
         internal static Vector3 LeftOpponentOverlordPositionForChat = new Vector3(-3.95f, 5.7f, 0);
         internal static Vector3 RightOpponentOverlordPositionForChat = new Vector3(3.95f, 5.7f, 0);
+
+        internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
@@ -181,7 +185,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public static readonly bool DevModeEnabled = false;
+        public static readonly bool DevModeEnabled = true;
 
         public const bool UsingCardTooltips = false;
 

@@ -47,6 +47,10 @@ namespace Loom.ZombieBattleground
 
         private float _timeHovering;
 
+        private bool _isMoveHoveringCard = false;
+
+        private BoardCardView _hoveringHandCard;
+
         private BoardCardView _hoveringBoardCard;
 
         private BoardCardView _topmostBoardCard;
@@ -231,8 +235,6 @@ namespace Loom.ZombieBattleground
 
         public void HandCardPreview(object[] param)
         {
-            Debug.LogError(3333);
-
             if (_gameplayManager.IsTutorial &&
                 !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                 SpecificBattlegroundInfo.DisabledInitialization)
@@ -349,7 +351,7 @@ namespace Loom.ZombieBattleground
                         _timerManager.StopTimer(SetStatusZoomingFalse);
                         _cardsZooming = true;
                         _timerManager.AddTimer(SetStatusZoomingFalse);
-
+                        
                         _battlegroundController.CardsZoomed = false;
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
                     }
@@ -386,7 +388,7 @@ namespace Loom.ZombieBattleground
                         CheckColliders(hit.collider);
                     }
                 }
-                else if(!_isMoveSelectedCard && _gameplayManager.CanDoDragActions)
+                else if(!_isMoveHoveringCard && _gameplayManager.CanDoDragActions && !_battlegroundController.IsPreviewActive && !_cardsZooming && !_startedOnClickDelay)
                 {
                     List<BoardCardView> boardCardViews = new List<BoardCardView>();
                     BoardCardView boardCardView = null;
@@ -407,29 +409,29 @@ namespace Loom.ZombieBattleground
 
                     if (boardCardView != null)
                     {
-                        if (_selectedHandCard != boardCardView)
+                        if (_hoveringHandCard != boardCardView)
                         {
-                            if (_selectedHandCard != null)
+                            if (_hoveringHandCard != null)
                             {
-                                HideHandCardPreview();
+                                HideHoveringAndZoom();
                             }
 
-                            _selectedHandCard = boardCardView;
-                            ShowHandCardPreview();
+                            _hoveringHandCard = boardCardView;
+                            ShowHoveringAndZoom();
                         }
                     }
-                    else if (_selectedHandCard != null)
+                    else if (_hoveringHandCard != null)
                     {
-                        HideHandCardPreview();
+                        HideHoveringAndZoom();
                     }
                 }
             }
             else
             {
                 ClearHovering();
-                if(_selectedHandCard != null)
+                if(_hoveringHandCard != null)
                 {
-                    HideHandCardPreview();
+                    HideHoveringAndZoom(!_cardsZooming);
                 }
             }
         }
@@ -443,24 +445,21 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ShowHandCardPreview()
+        private void ShowHoveringAndZoom()
         {
-            _selectedHandCard.HandBoardCard?.OnHovering();
+            _hoveringHandCard.HandBoardCard?.HoveringAndZoom();
         }
 
-        private void HideHandCardPreview(bool isMove = true)
+        private void HideHoveringAndZoom(bool isMove = true)
         {
-            _isMoveSelectedCard = true;
+            _isMoveHoveringCard = true;
             Action onComplete = () =>
             {
-                _isMoveSelectedCard = false;
+                _isMoveHoveringCard = false;
             };
-            _selectedHandCard.HandBoardCard?.OnUnhovering(isMove, onComplete);
-            _selectedHandCard = null;
+            _hoveringHandCard.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
+            _hoveringHandCard = null;
         }
-
-        private bool _isMoveSelectedCard = false;
-        private BoardCardView _selectedHandCard;
 
         private void UpdateHovering(BoardCardView boardCardView)
         {
@@ -491,9 +490,9 @@ namespace Loom.ZombieBattleground
 
         private void PointerSolverDragStartedHandler()
         {
-            if (_selectedHandCard != null)
+            if (_hoveringHandCard != null)
             {
-                HideHandCardPreview(false);
+                HideHoveringAndZoom(false);
             }
 
             _topmostBoardCard?.HandBoardCard?.OnSelected();
@@ -533,6 +532,11 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(SetStatusZoomingFalse);
             _cardsZooming = true;
             _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
+
+            if (_hoveringHandCard != null)
+            {
+                HideHoveringAndZoom(false);
+            }
 
             _battlegroundController.CardsZoomed = true;
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
