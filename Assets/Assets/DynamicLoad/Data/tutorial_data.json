@@ -774,11 +774,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 1,
@@ -786,11 +787,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": -2.2,
-            "Y": 2.6,
+            "X": 4.05,
+            "Y": 4.7,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 2,
@@ -798,11 +800,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 3,
@@ -1124,17 +1127,19 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.2,
+                "Y": 1,
                 "Z": 0
               },
               "EndPosition": {
-                "X": -3.8,
-                "Y": 3.8,
+                "X": 2.2,
+                "Y": 6.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1174,12 +1179,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": 4,
+                "X": 2.6,
+                "Y": 6,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1219,12 +1226,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.25,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
