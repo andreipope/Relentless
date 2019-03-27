@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private BackendDataControlMediator _backendDataControlMediator;
 
+        private GameObject _panelVideoSettings;
+
         private Button _buttonClose,
                        _buttonQuit,
                        _buttonQuitToMainMenu,
@@ -32,6 +34,11 @@ namespace Loom.ZombieBattleground
                                       
         private Slider _sfxVolumeSlider,
                        _musicVolumeSlider;
+                       
+#if !UNITY_ANDROID && !UNITY_IOS
+        private TMP_Dropdown _resolutionDropdown;
+        private TMP_Dropdown _screenModeDropdown;
+#endif
 
         private bool _initialInit = true;
 
@@ -100,15 +107,14 @@ namespace Loom.ZombieBattleground
             _buttonCredits = Self.transform.Find("Tray_Right/Button_Credits").GetComponent<Button>();
             _buttonCredits.onClick.AddListener(ButtonCreditsHandler);
             
-            _sfxVolumeSlider = Self.transform.Find("GrouAudio/Slider_SFXVolume").GetComponent<Slider>();
-            _musicVolumeSlider = Self.transform.Find("GrouAudio/Slider_MusicVolume").GetComponent<Slider>();     
+            _sfxVolumeSlider = Self.transform.Find("Panel_Group/GroupAudio/Slider_SFXVolume").GetComponent<Slider>();
+            _musicVolumeSlider = Self.transform.Find("Panel_Group/GroupAudio/Slider_MusicVolume").GetComponent<Slider>();     
             
             _sfxVolumeSlider.onValueChanged.AddListener(SFXVolumeChangedHandler);
             _musicVolumeSlider.onValueChanged.AddListener(MusicVolumeChangedHandler);
-
+            
             _gameplayManager.IsGameplayInputBlocked = true;
-
-            FillInfo();
+            
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
             {
                 _appStateManager.SetPausingApp(true);
@@ -116,6 +122,19 @@ namespace Loom.ZombieBattleground
             
             _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
             _buttonQuit.gameObject.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
+            
+            _panelVideoSettings = Self.transform.Find("Panel_Group/GroupVideo").gameObject;
+            
+#if UNITY_ANDROID || UNITY_IOS
+            _buttonQuitToDesktop.transform.Find("Shifted/Text").GetComponent<TextMeshProUGUI>().text = "QUIT";
+            _panelVideoSettings.SetActive(false);
+#else
+            _resolutionDropdown = _panelVideoSettings.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
+            _screenModeDropdown = _panelVideoSettings.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
+            _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
+            _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
+#endif
+            FillInfo();
         }
 
         public void Show(object data)
@@ -131,11 +150,62 @@ namespace Loom.ZombieBattleground
         private void FillInfo()
         {
             _initialInit = true;
+            
+#if !UNITY_ANDROID && !UNITY_IOS
+            _resolutionDropdown.ClearOptions();
+            _screenModeDropdown.ClearOptions();
+
+            List<string> data = new List<string>();
+
+            int length = Enum.GetNames(typeof(Enumerators.ScreenMode)).Length;
+
+            for (int i = 0; i < length; i++)
+            {
+                data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
+            }
+            _screenModeDropdown.AddOptions(data);
+
+            data.Clear();
+            length = _applicationSettingsManager.Resolutions.Count;            
+
+            for (int i = 0; i < length; i++)
+            {
+                data.Add(_applicationSettingsManager.Resolutions[i].Name);
+            }
+            _resolutionDropdown.AddOptions(data);
+
+
+            _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
+            _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
+#endif
+
             _sfxVolumeSlider.value = _soundManager.SoundVolume;
             _musicVolumeSlider.value = _soundManager.MusicVolume;
 
             _initialInit = false;
         }
+        
+#if !UNITY_ANDROID && !UNITY_IOS
+        private void ResolutionChangedHandler(int index)
+        {
+            if (!_initialInit)
+            {
+                PlayClickSound();
+
+                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+            }
+        }
+
+        private void ScreenModeChangedHandler(int index)
+        {
+            if (!_initialInit)
+            {
+                PlayClickSound();
+                
+                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+            }
+        }
+#endif
         
         private void ButtonQuitHandler()
         {
