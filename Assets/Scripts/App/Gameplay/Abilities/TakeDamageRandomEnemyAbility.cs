@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
-            foreach (object target in _targets)
+            foreach (BoardObject target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 

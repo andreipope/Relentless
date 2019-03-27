@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
 
         public Player OpponentPlayer => _gameplayManager.GetOpponentByPlayer(Player);
 
-        public UniquePositionedList<BoardItem> BoardItemsInUse => _boardItemsInUse;
+        public IReadOnlyList<BoardUnitModel> BoardItemsInUse => _boardItemsInUse;
 
         public IReadOnlyList<BoardUnitModel> CardsInDeck => _cardsInDeck;
 
@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         private readonly CardsController _cardsController;
 
-        private readonly UniquePositionedList<BoardItem> _boardItemsInUse = new UniquePositionedList<BoardItem>(new PositionedList<BoardItem>());
+        private readonly UniqueList<BoardUnitModel> _boardItemsInUse = new UniqueList<BoardUnitModel>(new List<BoardUnitModel>());
         private readonly UniquePositionedList<BoardUnitModel> _cardsInDeck = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
         private readonly UniquePositionedList<BoardUnitModel> _cardsInGraveyard = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
         private readonly UniquePositionedList<BoardUnitModel> _cardsInHand = new UniquePositionedList<BoardUnitModel>(new PositionedList<BoardUnitModel>());
@@ -783,6 +783,27 @@ namespace Loom.ZombieBattleground
         private void InvokeGraveyardChanged()
         {
             GraveyardChanged?.Invoke(CardsInGraveyard.Count);
+        }
+
+        #endregion
+
+        #region Items In Use
+
+        public void AddBoardItemInUse(BoardUnitModel boardUnitModel)
+        {
+            CallLog($"{nameof(AddBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
+            _boardItemsInUse.Add(boardUnitModel);
+        }
+
+
+        public void RemoveBoardItemInUse(BoardUnitModel boardUnitModel)
+        {
+            CallLog($"{nameof(RemoveBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
+            bool removed = _boardItemsInUse.Remove(boardUnitModel);
+            if (!removed)
+            {
+                Log.Warn($"{nameof(RemoveBoardItemInUse)}: attempted to remove model '{boardUnitModel}' which wasn't on the list");
+            }
         }
 
         #endregion

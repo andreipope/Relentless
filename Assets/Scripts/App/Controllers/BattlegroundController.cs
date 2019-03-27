@@ -1105,27 +1105,28 @@ namespace Loom.ZombieBattleground
                 boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
-
-                    //.Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse)
                     .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck);
-
-                //.Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse);
             }
             else
             {
                 boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
-
-                    //.Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse.Select(item => item.Model))
-                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard);
-
-                //.Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse.Select(item => item.Model));
+                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse)
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse);
             }
 
             BoardUnitModel boardUnitModel =
                 boardUnitModels
                     .FirstOrDefault(model => model != null && model.Card.InstanceId == id);
+
+            if (boardUnitModel == null)
+            {
+                Log.Warn($"GetBoardUnitModelByInstanceId returned null (InstanceId id = {id.Id}, bool onlyCardsInPlay = {onlyCardsInPlay})");
+            }
 
             return boardUnitModel;
         }
@@ -1141,21 +1142,22 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.CurrentPlayer,
                 _gameplayManager.OpponentPlayer,
             };
-            //boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardItemsInUse);
-            //boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardItemsInUse);
 
             BoardObject foundObject = boardObjects.Find(boardObject =>
             {
                 switch (boardObject)
                 {
-                    case BoardItem boardItem:
-                        return boardItem.Model.InstanceId == id;
                     case IInstanceIdOwner instanceIdOwner:
                         return instanceIdOwner.InstanceId == id;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
                 }
             });
+
+            if (foundObject == null)
+            {
+                Log.Warn($"GetBoardObjectByInstanceId returned null (InstanceId id = {id.Id})");
+            }
 
             return foundObject;
         }

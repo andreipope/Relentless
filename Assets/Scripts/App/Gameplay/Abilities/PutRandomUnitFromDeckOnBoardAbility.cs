@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCardView,
+                Target = boardCardView.Model,
             });
         }
     }

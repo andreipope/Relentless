@@ -462,7 +462,8 @@ namespace Loom.ZombieBattleground
                                 break;
                             case Enumerators.CardKind.ITEM:
                                 BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
-                                //_gameplayManager.OpponentPlayer.BoardItemsInUse.Insert(ItemPosition.End, item);
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddBoardItemInUse(boardUnitModel);
+
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
@@ -471,8 +472,6 @@ namespace Loom.ZombieBattleground
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
 
-                                // TODO: make sure this works later
-                                //_gameplayManager.OpponentPlayer.BoardItemsInUse.Remove(item);
                                 break;
                         }
 
@@ -505,7 +504,7 @@ namespace Loom.ZombieBattleground
                 BoardUnitModel attackerUnit = _battlegroundController.GetBoardUnitModelByInstanceId(model.CardId);
                 BoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId, false);
 
-                if (attackerUnit == null || target == null || attackerUnit is default(BoardUnitModel) || attackerUnit is default(BoardUnitModel))
+                if (attackerUnit == null || target == null)
                 {
                     ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}"));
                     return;
@@ -571,15 +570,17 @@ namespace Loom.ZombieBattleground
                 BoardUnitModel boardUnitModel;
                 switch (boardObjectCaller)
                 {
-                    case BoardItem boardItem:
-                        boardUnitModel = boardItem.Model;
-                        break;
                     case BoardUnitModel tempBoardUnitModel:
                         boardUnitModel = tempBoardUnitModel;
                         break;
                     default:
                         Log.Warn(new ArgumentOutOfRangeException($"{nameof(boardObjectCaller)} has type: {boardObjectCaller?.GetType().ToString()}"));
                         return;
+                }
+
+                if (boardUnitModel.Prototype.Kind == Enumerators.CardKind.ITEM)
+                {
+                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveBoardItemInUse(boardUnitModel);
                 }
 
                 _abilitiesController.PlayAbilityFromEvent(

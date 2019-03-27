@@ -1389,7 +1389,7 @@ namespace Loom.ZombieBattleground
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                            Target = unit,
+                            Target = boardUnitModel,
                         });
                     });
                 unit.ChangeModelVisibility(false);
@@ -1526,7 +1526,7 @@ namespace Loom.ZombieBattleground
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Reanimate,
-                    Target = reanimatedUnit
+                    Target = card
                 });
             }
 

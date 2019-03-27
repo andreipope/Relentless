@@ -35,5 +35,10 @@ namespace Loom.ZombieBattleground
         {
             Used?.Invoke();
         }
+
+        public override string ToString()
+        {
+            return $"([{GetType().Name}] {nameof(Model)}: {Model})";
+        }
     }
 }
