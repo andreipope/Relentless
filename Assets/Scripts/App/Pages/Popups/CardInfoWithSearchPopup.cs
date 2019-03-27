@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoWithSearchPopup"));
-            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>
             (
@@ -348,7 +348,7 @@ namespace Loom.ZombieBattleground
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI3;
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI2;
             
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
