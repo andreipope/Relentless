@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const string VaultEmptyErrorCode = "NotFound";
 
-        public static readonly bool DevModeEnabled = true;
+        public static readonly bool DevModeEnabled = false;
 
         public const bool UsingCardTooltips = false;
 
