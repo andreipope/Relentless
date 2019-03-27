@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -13,6 +14,8 @@ public class HandBoardCard : OwnableBoardObject
     public BoardUnitModel BoardUnitModel { get; protected set; }
 
     public BoardCardView BoardCardView { get; protected set; }
+
+    public bool IsReturnToHand { get; private set; }
 
     protected bool StartedDrag;
 
@@ -34,11 +37,15 @@ public class HandBoardCard : OwnableBoardObject
 
     private bool _isHandCard = true;
 
-    private bool _isReturnToHand;
-
     private bool _alreadySelected;
 
     private bool _canceledPlay;
+
+    private bool _isHovering;
+
+    private float _timePreview = 0.15f;
+
+    private int _oldSortingOrder;
 
     public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
@@ -100,7 +107,7 @@ public class HandBoardCard : OwnableBoardObject
         if (!Enabled)
             return;
 
-        if (_playerController.IsActive && BoardUnitModel.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
+        if (_playerController.IsActive && BoardUnitModel.CanBePlayed(OwnerPlayer) && !IsReturnToHand && !_alreadySelected &&
             Enabled)
         {
 
@@ -122,8 +129,8 @@ public class HandBoardCard : OwnableBoardObject
             }
 
             StartedDrag = true;
-            InitialPos = Transform.position;
-            InitialRotation = Transform.eulerAngles;
+            InitialPos = BoardCardView.PositionOnHand;
+            InitialRotation = BoardCardView.RotationOnHand;
 
             Transform.eulerAngles = Vector3.zero;
 
@@ -200,8 +207,7 @@ public class HandBoardCard : OwnableBoardObject
 
     private void ReturnToHandAnim()
     {
-        _isReturnToHand = true;
-        _gameplayManager.CanDoDragActions = true;
+        IsReturnToHand = true;
 
         _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
@@ -210,7 +216,7 @@ public class HandBoardCard : OwnableBoardObject
             {
                 Transform.position = InitialPos;
                 Transform.eulerAngles = InitialRotation;
-                _isReturnToHand = false;
+                IsReturnToHand = false;
 
                 _gameplayManager.CanDoDragActions = true;
             });
@@ -231,7 +237,7 @@ public class HandBoardCard : OwnableBoardObject
         _canceledPlay = false;
         _alreadySelected = false;
         StartedDrag = false;
-        _isReturnToHand = true;
+        IsReturnToHand = true;
         _isHandCard = true;
         Enabled = true;
         GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
@@ -243,7 +249,7 @@ public class HandBoardCard : OwnableBoardObject
             () =>
             {
                 Transform.position = InitialPos;
-                _isReturnToHand = false;
+                IsReturnToHand = false;
             });
     }
 
@@ -254,10 +260,23 @@ public class HandBoardCard : OwnableBoardObject
         Transform.DORotate(Vector3.zero, 0.15f);
         _oldSortingOrder = Transform.GetComponent<SortingGroup>().sortingOrder;
         Transform.GetComponent<SortingGroup>().sortingOrder = 100;
+        _isHovering = true;
     }
 
-    public void OnUnhovering()
+    public void OnUnhovering(bool isMove = true, Action onComplete = null)
     {
+        if (isMove)
+        {
+            Transform.DOMove(BoardCardView.PositionOnHand, _timePreview);
+        }
+        Transform.DOScale(BoardCardView.ScaleOnHand, _timePreview);
+        Transform.DORotate(BoardCardView.RotationOnHand, _timePreview).OnComplete(() =>
+        {
+            onComplete?.Invoke();
+            _isHovering = false;
+        });
+
+        Transform.GetComponent<SortingGroup>().sortingOrder = _oldSortingOrder;
 
     }
 }
