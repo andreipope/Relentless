@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DeckSelectionPopup));
 
+        public Action<Deck> SelectDeckEvent;
+
         public GameObject Self { get; private set; }
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -213,6 +215,8 @@ namespace Loom.ZombieBattleground
 
             UpdateSelectedDeckData(selectedDeck);
             UpdateSelectedDeckDisplay(selectedDeck);
+
+            SelectDeckEvent?.Invoke(selectedDeck);
         }
 
         private void SwitchSelectedDeckIndex(int direction)

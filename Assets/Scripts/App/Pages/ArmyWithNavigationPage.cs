@@ -231,16 +231,7 @@ namespace Loom.ZombieBattleground
                 CardPositions.Add(placeholder);
             }
 
-            ResetPageState();
-            UpdateCardCounterText();
-        }
-        
-        private void UpdateCardCounterText()
-        {
-            //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
-            //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
-                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
+            ResetPageState();            
         }
 
         public void LoadCards()
@@ -381,47 +372,102 @@ namespace Loom.ZombieBattleground
             _currentPage = 0;
             UpdateAvailableSetTypeCards();
             LoadCards();
+            UpdateCardCounterText();
         }
 
         private void UpdateAvailableSetTypeCards()
         {
             string keyword = _inputFieldSearchName.text.Trim();
+            Faction set;
+            List<Card> cards;
+            List<Card> resultList = new List<Card>();
             if (string.IsNullOrEmpty(keyword))
             {
                 Enumerators.Faction faction = _availableSetType[_currentSetTypeIndex];
-                Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
-                List<Card> cards = set.Cards.ToList();
-                List<Card> resultList = new List<Card>();
+                set = SetTypeUtility.GetCardFaction(_dataManager, faction);
+                cards = set.Cards.ToList();
+                
                 foreach(Card card in cards)
                 {
                     if
-                    ( 
+                    (
                         CheckIfSatisfyGooCostFilter(card) &&
                         CheckIfSatisfyRankFilter(card) &&
                         CheckIfSatisfyTypeFilter(card)
                     )
+                    {
                         resultList.Add(card);
+                    }
                 }
-                UpdateCacheFilteredCardList(resultList);
             }
             else
             {   
                 keyword = keyword.ToLower();
-                List<Card> resultList = new List<Card>();
                 List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableFactionList;
                 foreach (Enumerators.Faction item in allAvailableSetTypeList)
                 {
-                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    List<Card> cards = set.Cards.ToList();
+                    set = SetTypeUtility.GetCardFaction(_dataManager, item);
+                    cards = set.Cards.ToList();
                     foreach (Card card in cards)
+                    {
                         if (card.Name.ToLower().Contains(keyword))
+                        {
                             resultList.Add(card);
+                        }
+                    }
                 }
-
-                UpdateCacheFilteredCardList(resultList);
             }
+            UpdateCacheFilteredCardList(resultList);
         }
         
+        private void UpdateCardCounterText()
+        {
+            int amount = 0;
+            string keyword = _inputFieldSearchName.text.Trim();
+            Faction set;
+            List<Card> cards;
+            if (string.IsNullOrEmpty(keyword))
+            {
+                foreach (Enumerators.Faction item in _availableSetType)
+                {
+                    set = SetTypeUtility.GetCardFaction(_dataManager, item);
+                    cards = set.Cards.ToList();
+                    foreach(Card card in cards)
+                    {
+                        if
+                        (
+                            CheckIfSatisfyGooCostFilter(card) &&
+                            CheckIfSatisfyRankFilter(card) &&
+                            CheckIfSatisfyTypeFilter(card)
+                        )
+                        {
+                            ++amount;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                keyword = keyword.ToLower();
+                List<Enumerators.Faction> allAvailableSetTypeList = _uiManager.GetPopup<CardFilterPopup>().AllAvailableFactionList;
+                foreach (Enumerators.Faction item in allAvailableSetTypeList)
+                {
+                    set = SetTypeUtility.GetCardFaction(_dataManager, item);
+                    cards = set.Cards.ToList();
+                    foreach (Card card in cards)
+                    {
+                        if (card.Name.ToLower().Contains(keyword))
+                        {
+                            ++amount;
+                        }
+                    }
+                }
+            }
+            
+            _cardCounter.text = amount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
+        }
+
         private bool CheckIfSatisfyGooCostFilter(Card card)
         {
             if (card.Cost < 0)
