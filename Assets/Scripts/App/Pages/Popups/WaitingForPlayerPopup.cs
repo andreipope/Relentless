@@ -102,10 +102,5 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-
-        private void SendMulliganEvent () 
-        {
-            _uiManager.GetPopup<MulliganPopup>().InvokeMulliganCardsEvent(_gameplayManager.CurrentPlayer.CardsPreparingToHand.ToList());
-        }
     }
 }

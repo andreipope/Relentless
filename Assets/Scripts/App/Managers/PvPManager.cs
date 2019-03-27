@@ -378,6 +378,8 @@ namespace Loom.ZombieBattleground
                                _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
 
                                GameClient.Get<IUIManager>().GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
+
+                               return;
                             } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
                             {
                                 OnReceivePlayerActionType(playerActionEvent);
