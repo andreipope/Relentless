@@ -407,15 +407,20 @@ namespace Loom.ZombieBattleground
                                    }
                                }
 
+                               BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
                                foreach (BoardUnitModel card in cardsToRemove) 
                                {
                                     _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
+                                    OpponentHandCard opponentHandCard = battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == card.InstanceId);
+                                    battlegroundController.OpponentHandCards.Remove(opponentHandCard);
+                                    opponentHandCard.Dispose();
                                     _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
                                }
 
                                for (int i = 0; i < cardsToRemove.Count; i++)
                                {
-                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[i];
+                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[0];
                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
                                }
                             }
