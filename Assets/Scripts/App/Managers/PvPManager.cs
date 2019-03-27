@@ -13,6 +13,8 @@ using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Loom.ZombieBattleground
 {
@@ -346,18 +348,41 @@ namespace Loom.ZombieBattleground
                         {
                             if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
-                                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+                               List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
+                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand) 
+                               {
+                                   bool found = false;
+                                   foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
+                                   {
+                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
+                                       {
+                                           finalCardsInHand.Add(cardInHand);
+                                           found = true;
+                                           break;
+                                       }
+                                   }
+                                   if (!found) 
+                                   {
+                                       _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                   }
+                               }
 
-                                PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
-                                state.Id == _backendDataControlMediator.UserDataModel.UserId);
+                               int index = 0;
+                               int count = 0;
+                               while (count < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count)
+                               {
+                                   BoardUnitModel card = _gameplayManager.CurrentPlayer.CardsInDeck[index];
+                                   if (!_gameplayManager.CurrentPlayer.CardsPreparingToHand.Contains(card))
+                                   {
+                                       finalCardsInHand.Add(card);
+                                       count++;
+                                   }
+                                   index++;
+                               }
 
-                                for (int i = 0; i < 3; i++) {
-                                    playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
-                                }
+                               _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
 
-                                SetCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
-
-                                _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
+                               _gameplayManager.GetController<CardsController>().EndCardDistribution();
                             } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
                             {
                                 OnReceivePlayerActionType(playerActionEvent);
@@ -369,14 +394,36 @@ namespace Loom.ZombieBattleground
                         } else {
                             if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
-                                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
+                               foreach (BoardUnitModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand) 
+                               {
+                                   bool found = false;
+                                   foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
+                                   {
+                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
+                                       {
+                                           found = true;
+                                           break;
+                                       }
+                                   }
+                                   if (!found) 
+                                   {
+                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                       _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(cardInHand);
+                                   }
+                               }
 
-                                PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
-                                state.Id != _backendDataControlMediator.UserDataModel.UserId);
-
-                                SetCardsInDeck(_gameplayManager.OpponentPlayer, playerState.CardsInDeck);
-
-                                SetCardsInHand(_gameplayManager.OpponentPlayer, playerState.CardsInHand);
+                               int index = 0;
+                               int count = 0;
+                               while (count < playerActionEvent.PlayerAction.Mulligan.MulliganedCards.Count)
+                               {
+                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[index];
+                                   if (!_gameplayManager.OpponentPlayer.CardsInHand.Contains(card))
+                                   {
+                                       _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
+                                       count++;
+                                   }
+                                   index++;
+                               }
                             }
                         }
 
@@ -401,16 +448,6 @@ namespace Loom.ZombieBattleground
             };
 
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
-        }
-
-        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
-        {
-            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
-        }
-
-        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
-        {
-            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
         }
 
         private async Task LoadInitialGameState()
