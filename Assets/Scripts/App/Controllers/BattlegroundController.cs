@@ -366,6 +366,8 @@ namespace Loom.ZombieBattleground
 
             PlayerGraveyardCards.Clear();
             OpponentGraveyardCards.Clear();
+
+            BoardUnitViews.Clear();
         }
 
         public void InitializeBattleground()
