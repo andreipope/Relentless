@@ -10,7 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(MatchManager));
 
-        public event Action MatchFinished;
+        public event Action MatchFinished,
+                            AppStateWasLoaded;
 
         private IUIManager _uiManager;
 
@@ -222,6 +223,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
             }
+            AppStateWasLoaded?.Invoke();
         }
 
         private void ForceStartGameplay(bool force = false)

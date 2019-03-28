@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DeckSelectionPopup));
 
+        public Action<Deck> SelectDeckEvent;
+
         public GameObject Self { get; private set; }
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -168,6 +170,12 @@ namespace Loom.ZombieBattleground
 
         private void UpdateSelectedDeckData(Deck deck)
         {
+            if (deck == null || _dataManager.CachedDecksData.Decks == null)
+            {
+                Log.Warn($"deck: {deck} or CachedDecksData.Decks: {_dataManager.CachedDecksData.Decks} is null! Data was loaded incorrectly!");
+                return;
+            }
+
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
             _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);            
@@ -207,6 +215,8 @@ namespace Loom.ZombieBattleground
 
             UpdateSelectedDeckData(selectedDeck);
             UpdateSelectedDeckDisplay(selectedDeck);
+
+            SelectDeckEvent?.Invoke(selectedDeck);
         }
 
         private void SwitchSelectedDeckIndex(int direction)
@@ -261,10 +271,16 @@ namespace Loom.ZombieBattleground
                 MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     SetSelectedDeckIndex(index);
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
                     hordeSelection.SelectDeckIndex = index;

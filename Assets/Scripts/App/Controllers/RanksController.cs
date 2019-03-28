@@ -56,10 +56,12 @@ namespace Loom.ZombieBattleground
 
                        List<BoardUnitModel> filter = units.Where(unit =>
                                     unit.Card.Prototype.Faction == boardUnitModel.Prototype.Faction &&
-                                    (int) unit.Card.Prototype.Rank < (int) boardUnitModel.Prototype.Rank &&
+                                    (int)unit.Card.Prototype.Rank < (int)boardUnitModel.Prototype.Rank &&
                                     !_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).WasDestroyed &&
                                     !unit.IsDead &&
-                                    !_unitsForIgnoreRankBuff.Contains(unit))
+                                    !_unitsForIgnoreRankBuff.Contains(unit) &&
+                                      unit.Card.Prototype.Faction != Enumerators.Faction.ITEM &&
+                                      unit.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
                                     .ToList();
 
                        _unitsForIgnoreRankBuff.Clear();
@@ -106,7 +108,8 @@ namespace Loom.ZombieBattleground
                     LifeRankBuff(targetUnits, originUnit.Prototype.Rank, originUnit, randomly);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(originUnit.Prototype.Faction), originUnit.Prototype.Faction, null);
+                    Log.Warn($"Error occured. Tried to buff unit with faction: {originUnit.Prototype.Faction}. card id: {originUnit.InstanceId}");
+                    break;
             }
         }
 

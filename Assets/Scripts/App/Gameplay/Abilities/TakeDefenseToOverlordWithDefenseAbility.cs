@@ -6,20 +6,20 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDefenseToOverlordWithDefenseAbility : AbilityBase
     {
-        public int Value { get; }
+        public int AddedDefenseAboveThreshold { get; }
 
-        public int Defense { get; }
+        public int AddedDefenseBelowThreshold { get; }
 
-        public int Defense2 { get; }
+        public int DefenseThreshold { get; }
 
         public List<Enumerators.Target> TargetTypes { get; }
 
         public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = AbilityData.Value;
-            Defense = AbilityData.Defense;
-            Defense2 = AbilityData.Defense2;
+            AddedDefenseAboveThreshold = AbilityData.Value;
+            AddedDefenseBelowThreshold = AbilityData.Defense;
+            DefenseThreshold = AbilityData.Defense2;
             TargetTypes = AbilityData.Targets;
         }
 
@@ -40,11 +40,11 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
-                int defenseToBuff = Value;
+                int defenseToBuff = AddedDefenseAboveThreshold;
 
-                if(PlayerCallerOfAbility.Defense <= Defense2)
+                if(PlayerCallerOfAbility.Defense <= DefenseThreshold)
                 {
-                    defenseToBuff = Defense2;
+                    defenseToBuff = AddedDefenseBelowThreshold;
                 }
 
                 PlayerCallerOfAbility.BuffedDefense += defenseToBuff;

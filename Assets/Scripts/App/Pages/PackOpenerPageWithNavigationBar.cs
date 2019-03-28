@@ -128,9 +128,9 @@ namespace Loom.ZombieBattleground
         private const int MaxRequestRetryAttempt = 2;
 
         private bool _isCollectedTutorialCards = false;
-        
+
         #region IUIElement
-        
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -254,7 +254,7 @@ namespace Loom.ZombieBattleground
             InitPackTypeButtons();          
             SetPackTypeButtonsAmount(); 
             
-            if(_tutorialManager.IsTutorial)
+            if (_tutorialManager.IsTutorial)
             {
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
@@ -929,6 +929,8 @@ namespace Loom.ZombieBattleground
                     if (newState == STATE.TRAY_INSERTED)
                     {
                         SetButtonInteractable(false);
+                        _panelCollect.gameObject.SetActive(true);
+                        _buttonCollect.gameObject.SetActive(false);
                         _isTransitioningState = true;
         
                         Sequence sequence = DOTween.Sequence();
@@ -1045,7 +1047,6 @@ namespace Loom.ZombieBattleground
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = worldPos;
             boardCard.Transform.localScale = Vector3.one * 0.16f;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
             return boardCard;        

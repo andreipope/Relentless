@@ -294,6 +294,7 @@ namespace Loom.ZombieBattleground
         public float AppearDelay;
         public float MinimumShowTime = Constants.DescriptionTooltipMinimumShowTime;
         public Enumerators.TutorialObjectLayer TutorialTooltipLayer;
+        public string TutorialUIElementOwnerName;
 
         public TutorialDescriptionTooltip()
         {
