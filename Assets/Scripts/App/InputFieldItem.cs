@@ -9,32 +9,19 @@ namespace Loom.ZombieBattleground
     {
         private IMobileKeyboardManager _mobileKeyboardManager;
 
-        public override void OnPointerDown(PointerEventData eventData)
-        {
-            base.OnPointerDown(eventData);
-        }
-
-        public override void OnPointerUp(PointerEventData eventData)
-        {
-            base.OnPointerUp(eventData);
-        }
-
-        public override void OnPointerEnter(PointerEventData eventData)
-        {
-            base.OnPointerEnter(eventData);
-        }
-
-        public override void OnPointerExit(PointerEventData eventData)
-        {
-            base.OnPointerExit(eventData);
-        }
-
         public override void OnSelect(BaseEventData eventData)
         {
 #if !UNITY_EDITOR
             _mobileKeyboardManager.DrawKeyboard(text, true, keyboardType, multiline: multiLine);
 #endif
-            base.OnSelect(eventData);
+
+        }
+
+        public override void OnPointerClick(PointerEventData eventData)
+        {
+#if !UNITY_EDITOR
+            _mobileKeyboardManager.DrawKeyboard(text, true, keyboardType, multiline: multiLine);
+#endif
         }
 
         public override void OnDeselect(BaseEventData eventData)
@@ -42,7 +29,6 @@ namespace Loom.ZombieBattleground
 #if !UNITY_EDITOR
             _mobileKeyboardManager.HideKeyboard(false, false);
 #endif
-            base.OnDeselect(eventData);
         }
 
         public override void Select()
