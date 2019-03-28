@@ -7263,7 +7263,7 @@ MonoBehaviour:
   m_AsteriskChar: 42
   m_KeyboardType: 7
   m_LineType: 0
-  m_HideMobileInput: 0
+  m_HideMobileInput: 1
   m_CharacterValidation: 5
   m_CharacterLimit: 0
   m_EndEdit:
@@ -7276,7 +7276,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.SourceInputField+OnChangeEvent, ZombieBattleground.Main,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0.7529412}
+  m_SelectionColor: {r: 0.65882355, g: 0.80784315, b: 1, a: 0}
   m_Text: 
   m_CaretBlinkRate: 0.85
 --- !u!114 &114882827823830808
