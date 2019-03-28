@@ -39,6 +39,9 @@ namespace Loom.ZombieBattleground
 
         public override void OnDeselect(BaseEventData eventData)
         {
+#if !UNITY_EDITOR
+            _mobileKeyboardManager.HideKeyboard(false, false);
+#endif
             base.OnDeselect(eventData);
         }
 

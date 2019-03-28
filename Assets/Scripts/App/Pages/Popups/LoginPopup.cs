@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
 
         private Button _sendOTPButton;
 
-        private InputField _emailFieldLogin;
+        private InputFieldItem _emailFieldLogin;
         private InputField _passwordFieldLogin;
 
         private InputField _emailFieldRegister;
@@ -165,7 +165,7 @@ namespace Loom.ZombieBattleground
 
             _loginGroup = Self.transform.Find("Login_Group");
             _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
-            _emailFieldLogin = _loginGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
+            _emailFieldLogin = _loginGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputFieldItem>();
             _passwordFieldLogin = _loginGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
             _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
             _toRegisterButton = _loginGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
