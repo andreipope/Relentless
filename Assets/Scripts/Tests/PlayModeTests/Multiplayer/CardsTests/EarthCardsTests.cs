@@ -835,6 +835,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DELAYED_LOSE_HEAVY_GAIN_ATTACK, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {},
+                       opponent => {},
+                       player => {},
                        opponent => {}
                 };
 

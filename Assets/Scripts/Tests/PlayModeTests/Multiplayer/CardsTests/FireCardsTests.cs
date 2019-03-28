@@ -935,12 +935,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Alpha", 1);
-                InstanceId playerCard1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
-                InstanceId playerCard2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
-                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Alpha", 1);
-                InstanceId opponentCard1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
-                InstanceId opponentCard2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
+                InstanceId playerAlphaId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Alpha", 1);
+                InstanceId playerPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
+                InstanceId playerPyromaz2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
+                InstanceId opponentAlphaId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Alpha", 1);
+                InstanceId opponentPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
+                InstanceId opponentPyromaz2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -950,47 +950,47 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent => {},
                     player =>
                     {
-                        player.CardPlay(playerCard1Id, ItemPosition.Start);
-                        player.CardPlay(playerCard2Id, ItemPosition.Start);
+                        player.CardPlay(playerPyromaz1Id, ItemPosition.Start);
+                        player.CardPlay(playerPyromaz2Id, ItemPosition.Start);
                     },
                     opponent =>
                     {
-                        opponent.CardPlay(opponentCard1Id, ItemPosition.Start);
-                        opponent.CardPlay(opponentCard2Id, ItemPosition.Start);
+                        opponent.CardPlay(opponentPyromaz1Id, ItemPosition.Start);
+                        opponent.CardPlay(opponentPyromaz2Id, ItemPosition.Start);
                     },
-                    player => 
+                    player =>
                     {
-                        player.CardPlay(playerCardId, ItemPosition.Start);
-                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
+                        player.CardPlay(playerAlphaId, ItemPosition.Start);
+                        player.CardAbilityUsed(playerAlphaId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
                         {
-                            new ParametrizedAbilityInstanceId(playerCard1Id),
-                            new ParametrizedAbilityInstanceId(playerCard2Id)
+                            new ParametrizedAbilityInstanceId(playerPyromaz1Id),
+                            new ParametrizedAbilityInstanceId(playerPyromaz2Id)
                         });
                         player.LetsThink(4, true);
                         player.AssertInQueue(() =>
                         {
-                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard1Id)).
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz1Id)).
                                 GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
 
-                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCard2Id)).
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerPyromaz2Id)).
                                 GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
                         });
                     },
-                    opponent => 
+                    opponent =>
                     {
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
+                        opponent.CardPlay(opponentAlphaId, ItemPosition.Start);
+                        opponent.CardAbilityUsed(opponentAlphaId, Enumerators.AbilityType.BLITZ, new List<ParametrizedAbilityInstanceId>()
                         {
-                            new ParametrizedAbilityInstanceId(opponentCard1Id),
-                            new ParametrizedAbilityInstanceId(opponentCard2Id)
+                            new ParametrizedAbilityInstanceId(opponentPyromaz1Id),
+                            new ParametrizedAbilityInstanceId(opponentPyromaz2Id)
                         });
                         opponent.LetsThink(4, true);
                         opponent.AssertInQueue(() =>
                         {
-                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard1Id)).
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentPyromaz1Id)).
                                 GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
 
-                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCard2Id)).
+                            Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentPyromaz2Id)).
                                 GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Blitz));
                         });
                     },
@@ -999,8 +999,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasFeral);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasFeral);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerAlphaId)).HasFeral);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentAlphaId)).HasFeral);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
