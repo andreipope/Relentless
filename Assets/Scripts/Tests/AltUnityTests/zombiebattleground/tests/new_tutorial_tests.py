@@ -12,52 +12,52 @@ class CZBTutorialTests(CZBTests):
     def setUp(self):
         super(CZBTutorialTests, self).setUp()
     
-    def test_first_gameplay_tutorial(self):
-        questionPopUp=self.altdriver.wait_for_element('QuestionPopup(Clone)')
-        self.altdriver.find_element(questionPopUp.name+'/Button_Yes').mobile_tap()
+    # def test_first_gameplay_tutorial(self):
+    #     questionPopUp=self.altdriver.wait_for_element('QuestionPopup(Clone)')
+    #     self.altdriver.find_element(questionPopUp.name+'/Button_Yes').mobile_tap()
 
-        gameplay_page=Gameplay_Page(self.altdriver,self.driver)
+    #     gameplay_page=Gameplay_Page(self.altdriver,self.driver)
 
 
-        self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
-        self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
-        self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
+    #     self.altdriver.wait_for_current_scene_to_be('GAMEPLAY')
+    #     self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
+    #     self.altdriver.wait_for_element('Description/Button_Ok').mobile_tap()
 
-        self.altdriver.wait_for_element('TutorialDescriptionTooltip(Clone)')
-        self.driver.save_screenshot('./screenshots/ToolTipShow.png')
-        time.sleep(2)
+    #     self.altdriver.wait_for_element('TutorialDescriptionTooltip(Clone)')
+    #     self.driver.save_screenshot('./screenshots/ToolTipShow.png')
+    #     time.sleep(2)
 
-        board = self.altdriver.wait_for_element('PlayerBoard')
-        board.mobile_tap()
+    #     board = self.altdriver.wait_for_element('PlayerBoard')
+    #     board.mobile_tap()
 
-        self.altdriver.wait_for_element('CreatureCard(Clone)')
-        time.sleep(4)
-        self.driver.save_screenshot('./screenshots/ZombiesOnBoard.png')
+    #     self.altdriver.wait_for_element('CreatureCard(Clone)')
+    #     time.sleep(4)
+    #     self.driver.save_screenshot('./screenshots/ZombiesOnBoard.png')
 
-        gameplay_page.swipe_card_from_hand_to_board(0)
-        gameplay_page.end_turn_and_wait_for_your_turn()
+    #     gameplay_page.swipe_card_from_hand_to_board(0)
+    #     gameplay_page.end_turn_and_wait_for_your_turn()
 
-        gameplay_page.swipe_board_card_to_opponent_creature(0,0)
+    #     gameplay_page.swipe_board_card_to_opponent_creature(0,0)
        
-        gameplay_page.swipe_card_from_hand_to_board(0)
+    #     gameplay_page.swipe_card_from_hand_to_board(0)
 
-        board.mobile_tap()
+    #     board.mobile_tap()
 
-        gameplay_page.end_turn_and_wait_for_your_turn()
-        self.driver.save_screenshot('./screenshots/EndTurn')
+    #     gameplay_page.end_turn_and_wait_for_your_turn()
+    #     self.driver.save_screenshot('./screenshots/EndTurn')
 
-        gameplay_page.swipe_board_card_to_opponent_face(1)
-        gameplay_page.swipe_board_card_to_opponent_face(0)
+    #     gameplay_page.swipe_board_card_to_opponent_face(1)
+    #     gameplay_page.swipe_board_card_to_opponent_face(0)
         
-        gameplay_page.swipe_card_from_hand_to_board(0)
+    #     gameplay_page.swipe_card_from_hand_to_board(0)
 
-        gameplay_page.end_turn_and_wait_for_your_turn()
-        gameplay_page.swipe_card_from_hand_to_board(0)
+    #     gameplay_page.end_turn_and_wait_for_your_turn()
+    #     gameplay_page.swipe_card_from_hand_to_board(0)
 
-        time.sleep(1)
-        gameplay_page.opponent_face.mobile_tap()
-        self.driver.save_screenshot('./screenshots/FirstTutorialCompleted.png')
-        self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
+    #     time.sleep(1)
+    #     gameplay_page.opponent_face.mobile_tap()
+    #     self.driver.save_screenshot('./screenshots/FirstTutorialCompleted.png')
+    #     self.altdriver.wait_for_element('YouWonYouLostPopupEdited(Clone)/Scaler/Button_Continue').mobile_tap()
 
     
 
