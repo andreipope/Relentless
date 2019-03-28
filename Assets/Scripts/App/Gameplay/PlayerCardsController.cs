@@ -298,7 +298,7 @@ namespace Loom.ZombieBattleground
             OpponentHandCard opponentHandCard = CreateOpponentHandCard(boardUnitModel);
 
             _battlegroundController.OpponentHandCards.Insert(ItemPosition.End, opponentHandCard);
-            _abilitiesController.CallAbilitiesInHand(null, boardUnitModel);
+           //_abilitiesController.CallAbilitiesInHand(null, boardUnitModel);
 
             CallLog($"{nameof(CreateAndAddPlayerHandCard)} returned {opponentHandCard}");
             return opponentHandCard;
@@ -571,10 +571,10 @@ namespace Loom.ZombieBattleground
 
             OpponentHandCard opponentHandCard = null;
 
-            if (activateAbility)
-            {
-                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.Model, Player);
-            }
+            //if (activateAbility)
+            //{
+            //    _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.Model, Player);
+            //}
 
             if (Player.IsLocalPlayer)
             {
@@ -606,8 +606,6 @@ namespace Loom.ZombieBattleground
                 Caller = boardUnitView.Model,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
             });
-
-            _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, true, true);
 
             if (!Player.IsLocalPlayer)
             {
@@ -737,8 +735,6 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.RegisterBoardUnitView(Player, unit);
             }
 
-            _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
-
             _boardController.UpdateCurrentBoardOfPlayer(Player, onComplete);
 
             CallLog($"{nameof(SpawnUnitOnBoard)}: created and returned unit view {unit}");
@@ -829,7 +825,7 @@ namespace Loom.ZombieBattleground
             handCard.CheckStatusOfHighlight();
             boardCardView.Transform.localScale = Vector3.one * .3f;
 
-            _abilitiesController.CallAbilitiesInHand(boardCardView, boardUnitModel);
+            //_abilitiesController.CallAbilitiesInHand(boardCardView, boardUnitModel);
 
             return boardCardView;
         }

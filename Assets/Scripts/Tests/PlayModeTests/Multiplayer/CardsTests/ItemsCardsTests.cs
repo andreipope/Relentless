@@ -46,8 +46,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => opponent.CardPlay(opponentTinyId, ItemPosition.Start),
                        player =>
                        {
-                            TestHelper.AbilitiesController.HasPredefinedChoosableAbility = true;
-                            TestHelper.AbilitiesController.PredefinedChoosableAbilityId = 0;
+                           // TestHelper.AbilitiesController.HasPredefinedChoosableAbility = true;
+                           // TestHelper.AbilitiesController.PredefinedChoosableAbilityId = 0;
                             player.CardPlay(playerShovelId, ItemPosition.Start, pvpTestContext.GetOpponentPlayer().InstanceId);
                        },
                        opponent =>
@@ -61,8 +61,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                            TestHelper.AbilitiesController.HasPredefinedChoosableAbility = true;
-                            TestHelper.AbilitiesController.PredefinedChoosableAbilityId = 1;
+                          //  TestHelper.AbilitiesController.HasPredefinedChoosableAbility = true;
+                           // TestHelper.AbilitiesController.PredefinedChoosableAbilityId = 1;
                             player.CardPlay(playerShovel1Id, ItemPosition.Start, playerTinyId);
                        },
                        opponent =>

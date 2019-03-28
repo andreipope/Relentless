@@ -1379,10 +1379,10 @@ namespace Loom.ZombieBattleground
                                     unit.Model.IsPlayable = true;
                                 }
 
-                                if (unit.Model.OwnerPlayer.IsLocalPlayer)
-                                {
-                                    _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.OwnerPlayer);
-                                }
+                                //if (unit.Model.OwnerPlayer.IsLocalPlayer)
+                                //{
+                                //    _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.OwnerPlayer);
+                                //}
                             },
                             3f);
 
@@ -1562,10 +1562,10 @@ namespace Loom.ZombieBattleground
 
             owner.PlayerCardsController.AddCardToBoard(boardUnitView.Model, ItemPosition.End);
 
-            if (owner.IsLocalPlayer)
-            {
-                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, boardUnitModel, owner);
-            }
+            //if (owner.IsLocalPlayer)
+            //{
+            //    _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, boardUnitModel, owner);
+            //}
             _battlegroundController.RegisterBoardUnitView(owner, boardUnitView);
 
             return boardUnitView;

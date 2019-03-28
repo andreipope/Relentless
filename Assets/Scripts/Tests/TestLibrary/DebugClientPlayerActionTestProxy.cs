@@ -58,40 +58,40 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
 
-                AbilityData entryAbility =
-                    boardUnitModel.InstanceCard.Abilities
-                    .FirstOrDefault(x =>
-                        _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
+                //AbilityData entryAbility =
+                //    boardUnitModel.InstanceCard.Abilities
+                //    .FirstOrDefault(x =>
+                //        _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
 
-                if (entryAbility == null)
-                    throw new Exception($"No entry ability found for target {entryAbilityTarget}");
+                //if (entryAbility == null)
+                //    throw new Exception($"No entry ability found for target {entryAbilityTarget}");
 
-                Enumerators.AbilityType abilityType = entryAbility.Ability;
-                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
-                    card,
-                    abilityType,
-                    new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
-                    ));
+                //Enumerators.AbilityType abilityType = entryAbility.Ability;
+                //await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                //    card,
+                //    abilityType,
+                //    new []{new ParametrizedAbilityInstanceId(entryAbilityTarget.Value) }
+                //    ));
             }
 
             if (!skipEntryAbilities)
             {
                 // Second, fire non-targetable entry abilities
-                AbilityData[] entryAbilities =
-                    boardUnitModel.InstanceCard.Abilities
-                        .Where(x =>
-                            _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
-                            !_testHelper.AbilitiesController.IsAbilityActive(x))
-                        .ToArray();
+                //AbilityData[] entryAbilities =
+                //    boardUnitModel.InstanceCard.Abilities
+                //        .Where(x =>
+                //            _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
+                //            !_testHelper.AbilitiesController.IsAbilityActive(x))
+                //        .ToArray();
 
-                foreach (AbilityData entryAbility in entryAbilities)
-                {
-                    await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
-                        card,
-                        entryAbility.Ability,
-                        new ParametrizedAbilityInstanceId[] { }
-                    ));
-                }
+                //foreach (AbilityData entryAbility in entryAbilities)
+                //{
+                //    await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                //        card,
+                //        entryAbility.Ability,
+                //        new ParametrizedAbilityInstanceId[] { }
+                //    ));
+                //}
             }
         }
 

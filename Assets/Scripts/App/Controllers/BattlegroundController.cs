@@ -103,6 +103,8 @@ namespace Loom.ZombieBattleground
 
         public event Action TurnEnded;
 
+        public event Action<BoardUnitModel> UnitDied;
+
         public float TurnTimer { get; private set; }
 
         public bool TurnWaitingForEnd { get; private set; }
@@ -298,6 +300,8 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
                     boardUnitView.Model.InvokeUnitDied();
+
+                    UnitDied?.Invoke(boardUnitView.Model);
 
                     if (_tutorialManager.IsTutorial)
                     {
@@ -959,10 +963,10 @@ namespace Loom.ZombieBattleground
                 RegisterBoardUnitView(_gameplayManager.CurrentPlayer, view);
             }
 
-            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
-            {
-                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
-            }
+            //foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            //{
+            //    ability.ChangePlayerCallerOfAbility(newPlayerOwner);
+            //}
 
 
             UnregisterBoardUnitView(unit.OwnerPlayer, view);
@@ -973,10 +977,10 @@ namespace Loom.ZombieBattleground
 
             _boardController.UpdateWholeBoard(null);
 
-            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
-            {
-                ability.PlayerCallerOfAbility = newPlayerOwner;
-            }
+            //foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
+            //{
+            //    ability.PlayerCallerOfAbility = newPlayerOwner;
+            //}
         }
 
         public void DistractUnit(BoardUnitModel boardUnit)
@@ -1009,13 +1013,13 @@ namespace Loom.ZombieBattleground
 
             boardUnit.ClearEffectsOnUnit();
 
-            List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit);
+            //List<AbilityBase> abilities = _abilitiesController.GetAbilitiesConnectedToUnit(boardUnit);
 
-            foreach (AbilityBase ability in abilities)
-            {
-                ability.Deactivate();
-                ability.Dispose();
-            }
+            //foreach (AbilityBase ability in abilities)
+            //{
+            //    ability.Deactivate();
+            //    ability.Dispose();
+            //}
         }
 
         public BoardUnitView CreateBoardUnit(Player owner, BoardUnitModel boardUnitModel, bool playArrivalImmediately = true)

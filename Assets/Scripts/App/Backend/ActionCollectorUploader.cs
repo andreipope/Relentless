@@ -145,9 +145,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     _battlegroundController.TurnEnded += TurnEndedHandler;
 
-                    _abilitiesController.AbilityUsed += AbilityUsedHandler;
-
-                    Player.DrawCard += DrawCardHandler;
                     Player.CardPlayed += CardPlayedHandler;
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
@@ -167,28 +164,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void DrawCardHandler(BoardUnitModel boardUnitModel)
-            {
-                /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.DrawCard,
-                    PlayerId = playerId,
-                    DrawCard = new PlayerActionDrawCard
-                    {
-                        CardInstance = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                            Defense = card.Health,
-                            Attack = card.Damage
-                        }
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);*/
-            }
-
             public Player Player { get; }
 
             public bool IsOpponent { get; }
@@ -204,9 +179,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     _battlegroundController.TurnEnded -= TurnEndedHandler;
 
-                    _abilitiesController.AbilityUsed -= AbilityUsedHandler;
-
-                    Player.DrawCard -= DrawCardHandler;
                     Player.CardPlayed -= CardPlayedHandler;
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;

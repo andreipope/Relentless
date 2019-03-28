@@ -158,6 +158,7 @@ namespace Loom.ZombieBattleground
 
                 Card.InstanceCard.Damage = value;
                 UnitDamageChanged?.Invoke(oldValue, value);
+                _abilitiesController.UnitStatChanged(Enumerators.Stat.DAMAGE, this, oldValue, value);
             }
         }
 
@@ -177,6 +178,7 @@ namespace Loom.ZombieBattleground
 
                 Card.InstanceCard.Defense = value;
                 UnitDefenseChanged?.Invoke(oldValue, value);
+                _abilitiesController.UnitStatChanged(Enumerators.Stat.DEFENSE, this, oldValue, value);
             }
         }
 
@@ -316,25 +318,25 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.REANIMATE:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Reanimate))
                     {
-                        _abilitiesController.BuffUnitByAbility(
-                            Enumerators.AbilityType.REANIMATE_UNIT,
-                            this,
-                            Card.Prototype.Kind,
-                            this,
-                            OwnerPlayer
-                            );
+                        //_abilitiesController.BuffUnitByAbility(
+                        //    Enumerators.AbilityType.REANIMATE_UNIT,
+                        //    this,
+                        //    Card.Prototype.Kind,
+                        //    this,
+                        //    OwnerPlayer
+                        //    );
                     }
                     break;
                 case Enumerators.BuffType.DESTROY:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Destroy))
                     {
-                        _abilitiesController.BuffUnitByAbility(
-                        Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
-                        this,
-                        Card.Prototype.Kind,
-                        this,
-                        OwnerPlayer
-                        );
+                        //_abilitiesController.BuffUnitByAbility(
+                        //Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
+                        //this,
+                        //Card.Prototype.Kind,
+                        //this,
+                        //OwnerPlayer
+                        //);
                     }
                     break;
             }

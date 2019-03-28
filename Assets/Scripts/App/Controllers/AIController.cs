@@ -967,47 +967,45 @@ namespace Loom.ZombieBattleground
 
                         _gameplayManager.GetController<RanksController>().UpdateRanksByElements(boardUnitModel.Owner.CardsOnBoard, boardUnitModel, ranksBuffAction);
 
-                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
-
                         _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer,
                             () =>
                             {
-                                bool createTargetArrow = false;
+                        //        bool createTargetArrow = false;
 
-                                if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0)
-                                {
-                                    createTargetArrow =
-                                        _abilitiesController.IsAbilityCanActivateTargetAtStart(
-                                            boardUnitModel.InstanceCard.Abilities[0]);
-                                }
+                        //        if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0)
+                        //        {
+                        //            createTargetArrow =
+                        //                _abilitiesController.IsAbilityCanActivateTargetAtStart(
+                        //                    boardUnitModel.InstanceCard.Abilities[0]);
+                        //        }
 
-                                if (target != null)
-                                {
-                                    Action callback = () =>
-                                    {
-                                        _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
-                                        null, false, (status) =>
-                                        {
-                                            if (!status)
-                                            {
-                                                ranksBuffAction.Action = null;
-                                                ranksBuffAction.ForceActionDone();
-                                            }
+                        //        if (target != null)
+                        //        {
+                        //            Action callback = () =>
+                        //            {
+                        //                _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                        //                null, false, (status) =>
+                        //                {
+                        //                    if (!status)
+                        //                    {
+                        //                        ranksBuffAction.Action = null;
+                        //                        ranksBuffAction.ForceActionDone();
+                        //                    }
 
-                                        }, callAbilityAction, target);
+                        //                }, callAbilityAction, target);
 
                                         _actionsQueueController.ForceContinueAction(callAbilityAction);
-                                    };
+                        //            };
 
-                                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
-                                }
-                                else
-                                {
-                                    _abilitiesController.CallAbility(null, boardUnitModel,
-                                        Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
+                        //            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
+                        //        }
+                        //        else
+                        //        {
+                        //            _abilitiesController.CallAbility(null, boardUnitModel,
+                        //                Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
 
-                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
-                                }
+                        //            _actionsQueueController.ForceContinueAction(callAbilityAction);
+                        //        }
                             });
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                     }
@@ -1032,31 +1030,31 @@ namespace Loom.ZombieBattleground
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
 
-                        bool createTargetArrow = false;
+                        //bool createTargetArrow = false;
 
-                        if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0)
-                        {
-                            createTargetArrow =
-                                _abilitiesController.IsAbilityCanActivateTargetAtStart(boardUnitModel.InstanceCard.Abilities[0]);
-                        }
+                        //if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0)
+                        //{
+                        //    createTargetArrow =
+                        //        _abilitiesController.IsAbilityCanActivateTargetAtStart(boardUnitModel.InstanceCard.Abilities[0]);
+                        //}
 
-                        if (target != null)
-                        {
-                            Action callback = () =>
-                            {
-                                _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
-                                _actionsQueueController.ForceContinueAction(callAbilityAction);
-                            };
+                        //if (target != null)
+                        //{
+                        //    Action callback = () =>
+                        //    {
+                        //        _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
+                        //        _actionsQueueController.ForceContinueAction(callAbilityAction);
+                        //    };
 
-                            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
-                        }
-                        else
-                        {
-                            _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction);
+                        //    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
+                        //}
+                        //else
+                        //{
+                        //    _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();
-                        }
+                        //}
                     }
                     break;
             }

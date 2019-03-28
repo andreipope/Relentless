@@ -91,10 +91,10 @@ namespace Loom.ZombieBattleground
 
             if (attackingUnitModel != null && attackedUnitModel != null)
             {
-                int additionalDamageAttacker =
-                    _abilitiesController.GetStatModificatorByAbility(attackingUnitModel, attackedUnitModel, true);
-                int additionalDamageAttacked =
-                    _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
+                int additionalDamageAttacker = 0;
+                //    _abilitiesController.GetStatModificatorByAbility(attackingUnitModel, attackedUnitModel, true);
+                int additionalDamageAttacked = 0;
+                //    _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
                 damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker;
 
