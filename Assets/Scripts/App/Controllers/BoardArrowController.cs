@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections.Generic;
@@ -86,5 +87,96 @@ namespace Loom.ZombieBattleground
 
             return arrow;
         }
+
+
+
+        public void ActivateBoardArrow(Transform from, BoardUnitModel Owner, List<Enumerators.SkillTarget> TargetsType, IReadOnlyList<BoardUnitModel> boardCards)
+        {
+            BattleBoardArrow fightTargetingArrow = BeginTargetingArrowFrom<BattleBoardArrow>(from);
+            fightTargetingArrow.TargetsType = TargetsType;
+            fightTargetingArrow.BoardCards = boardCards;
+            fightTargetingArrow.Owner = Owner;
+        }
+
+
+        #region AbilityArrow
+
+        protected Action OnObjectSelectedByTargettingArrowCallback;
+
+        protected Action OnObjectSelectFailedByTargettingArrowCallback;
+
+        public void ActivateAbilityArrow(Transform ownerTransform,
+            List<Enumerators.SkillTarget> targetsType = null, Action callback = null, Action failedCallback = null)
+        {
+            OnObjectSelectedByTargettingArrowCallback = callback;
+            OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
+
+            AbilityBoardArrow abilityTargettingArrow = BeginTargetingArrowFrom<AbilityBoardArrow>(ownerTransform);
+            //_fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
+            //_fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
+            //_fightTargetingArrow.Owner = this.Model;
+
+
+            //TargettingArrow.PossibleTargets = AbilityTargets;
+            //TargettingArrow.TargetUnitType = TargetCardType;
+            //TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
+            //TargettingArrow.UnitDefense = AbilityData.Defense2;
+            //TargettingArrow.UnitCost = AbilityData.Cost;
+
+            // switch (CardKind)
+            // {
+            //     case Enumerators.CardKind.CREATURE:
+
+            //         BoardUnitView abilityUnitOwnerView = GetAbilityUnitOwnerView();
+            //         TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
+            //         TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
+            //         break;
+            //     case Enumerators.CardKind.ITEM:
+            //         TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position);
+            //         break;
+            //     default:
+            //         TargettingArrow.Begin(PlayerCallerOfAbility.AvatarObject.transform.position);
+            //         break;
+            // }
+
+            //TargettingArrow.CardSelected += CardSelectedHandler;
+            //TargettingArrow.CardUnselected += CardUnselectedHandler;
+            //TargettingArrow.PlayerSelected += PlayerSelectedHandler;
+            //TargettingArrow.PlayerUnselected += PlayerUnselectedHandler;
+            abilityTargettingArrow.InputEnded += InputEndedHandler;
+            abilityTargettingArrow.InputCanceled += InputCanceledHandler;
+
+             //AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);*/
+        }
+
+        protected virtual void InputEndedHandler()
+        {
+            //SelectedTargetAction();
+            DeactivateSelectTarget();
+        }
+
+        protected virtual void InputCanceledHandler()
+        {
+            OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
+            OnObjectSelectFailedByTargettingArrowCallback = null;
+
+            DeactivateSelectTarget();
+        }
+
+        public void DeactivateSelectTarget()
+        {
+            if (CurrentBoardArrow != null)
+            {
+                //TargettingArrow.CardSelected -= CardSelectedHandler;
+                //TargettingArrow.CardUnselected -= CardUnselectedHandler;
+                //TargettingArrow.PlayerSelected -= PlayerSelectedHandler;
+                //TargettingArrow.PlayerUnselected -= PlayerUnselectedHandler;
+                (CurrentBoardArrow as AbilityBoardArrow).InputEnded -= InputEndedHandler;
+                (CurrentBoardArrow as AbilityBoardArrow).InputCanceled -= InputCanceledHandler;
+
+                ResetCurrentBoardArrow();
+            }
+        }
+        #endregion
     }
 }

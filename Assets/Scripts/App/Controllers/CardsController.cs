@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
         private BoardController _boardController;
 
+        private BoardArrowController _boardArrowController;
+
         public GameObject PlayerBoard { get; private set; }
 
         public GameObject OpponentBoard { get; private set; }
@@ -98,6 +100,7 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _boardController = _gameplayManager.GetController<BoardController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             CreatureCardViewPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -504,7 +507,10 @@ namespace Loom.ZombieBattleground
                                 () =>
                                 {
                                     card.HandBoardCard.GameObject.SetActive(false);
-
+                                    bool requireTarget = true;
+                                    //_abilitiesController.GetAbilitiesOnUnit(card.Model).Where(ability => ability)
+                                    if (requireTarget)
+                                        _boardArrowController.ActivateAbilityArrow(card.Transform);
                                     //_abilitiesController.CallAbility(card, card.Model,
                                     //    Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                     //    {
@@ -572,7 +578,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-
+        
 
         public void PlayOpponentCard(
             Player player,

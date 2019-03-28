@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController.TurnEnded += TurnEndedHandler;
             _battlegroundController.UnitDied += UnitDiedHandler;
 
-            _gameplayManager.CurrentPlayer.CardPlayed += CardPlayedHandler;
+            /*_gameplayManager.CurrentPlayer.CardPlayed += CardPlayedHandler;
             _gameplayManager.CurrentPlayer.PlayerCardsController.HandChanged += (count) =>
             {
                 HandChangedHandler(_gameplayManager.CurrentPlayer);
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager.OpponentPlayer.PlayerCardsController.BoardChanged += (count) =>
             {
                 BoardChangedHandler(_gameplayManager.OpponentPlayer);
-            };
+            };*/
         }
 
         private void UnsubscribeEvents()
@@ -118,18 +118,18 @@ namespace Loom.ZombieBattleground
 
         private void TurnEndedHandler()
         {
-            foreach(IAbility ability in _activeAbilities[Enumerators.AbilityTrigger.END])
-            {
-                ability.DoAction();
-            }
+            //foreach(IAbility ability in _activeAbilities[Enumerators.AbilityTrigger.END])
+            //{
+            //    ability.DoAction();
+            //}
         }
 
         private void TurnStartedHandler()
         {
-            foreach (IAbility ability in _activeAbilities[Enumerators.AbilityTrigger.TURN])
-            {
-                ability.DoAction();
-            }
+            //foreach (IAbility ability in _activeAbilities[Enumerators.AbilityTrigger.TURN])
+            //{
+            //    ability.DoAction();
+            //}
         }
 
         private void HandChangedHandler(Player handOwner)

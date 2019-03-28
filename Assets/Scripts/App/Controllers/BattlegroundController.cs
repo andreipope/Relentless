@@ -69,6 +69,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private BoardArrowController _boardArrowController;
+
         private BoardController _boardController;
 
         private IPlayerManager _playerManager;
@@ -187,6 +189,7 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _boardController = _gameplayManager.GetController<BoardController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             _gameplayManager.GameEnded += GameEndedHandler;
 
@@ -557,6 +560,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CurrentTurnPlayer = _gameplayManager.IsLocalPlayerTurn() ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
+
+            _boardArrowController.ResetAll();
         }
 
         public void StopTurn(GameState pvpControlGameState = null)
