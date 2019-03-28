@@ -74,6 +74,7 @@ namespace Loom.ZombieBattleground.Test
             IEnumerator enumerator =
                 RunAsyncTestInternal(async () =>
                     {
+                        Exception capturedException = null;
                         try
                         {
                             await GameSetUp();
@@ -81,6 +82,8 @@ namespace Loom.ZombieBattleground.Test
                         }
                         catch (Exception e)
                         {
+                            capturedException = UnwrapException(e);
+                            capturedException = capturedException is OperationCanceledException ? _cancellationReason : capturedException ;
                             HandleError(e.ToString(), e, false);
                             _shouldPauseOnErrorInsteadOfFailing = _cancellationReason != null && ShouldPauseOnErrorInsteadOfFailing();
                             throw;
@@ -94,7 +97,7 @@ namespace Loom.ZombieBattleground.Test
                             else
                             {
 #if UNITY_EDITOR
-                                Log.Error("Error Pause is enabled, test execution paused due to an error");
+                                Log.Error("Error Pause is enabled, test execution paused due to an error: " + capturedException);
                                 UnityEditor.EditorApplication.isPaused = true;
 #endif
                             }
@@ -197,11 +200,7 @@ namespace Loom.ZombieBattleground.Test
             }
             catch (Exception e)
             {
-                if (e is AggregateException aggregateException)
-                {
-                    Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
-                    e = aggregateException.InnerException;
-                }
+                e = UnwrapException(e);
 
                 Exception flappyException = null;
                 if (IsFlappyException(e))
@@ -291,6 +290,17 @@ namespace Loom.ZombieBattleground.Test
             {
                 CancelTestWithReason(e);
             }
+        }
+
+        private static Exception UnwrapException(Exception e)
+        {
+            if (e is AggregateException aggregateException)
+            {
+                Assert.AreEqual(1, aggregateException.InnerExceptions.Count);
+                e = aggregateException.InnerException;
+            }
+
+            return e;
         }
 
         private static bool IsFlappyException(Exception e)
