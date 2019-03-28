@@ -1,4 +1,5 @@
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialDescriptionTooltipItem
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialDescriptionTooltipItem));
+
         private readonly ITutorialManager _tutorialManager;
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
@@ -334,8 +337,9 @@ namespace Loom.ZombieBattleground
                         {
                             UpdatePossibilityForClose();
                             Hide();
+                            return;
                         }
-
+                         
                         _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }
@@ -425,7 +429,10 @@ namespace Loom.ZombieBattleground
                     _currentBackground.gameObject.SetActive(true);
                     break;
                 default:
-                    throw new NotImplementedException(nameof(align) + " doesn't implemented");
+                    Log.Warn($"Align {align} didnt implmented! Will use  default 'CenterLeft'");
+                    SetBackgroundType(Enumerators.TooltipAlign.CenterLeft);
+                    return;
+
             }
 
             _currentBackground.transform.localScale = size;

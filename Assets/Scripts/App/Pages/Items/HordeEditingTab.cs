@@ -141,8 +141,8 @@ namespace Loom.ZombieBattleground
 
                 _inputFieldSearchName.text = "";
                 FillCollectionData();
-                ResetCollectionPageState();
                 SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
+                ResetCollectionPageState();
                 ResetDeckPageState();
 
                 UpdateOverlordAbilitiesButton();
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
                 return;
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
+            
 
             PlayClickSound();
             ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -527,7 +527,7 @@ namespace Loom.ZombieBattleground
         {
             foreach(DeckCardData card in deck.Cards)
             {
-                _collectionData.GetCardData(card.CardName).Amount -= card.Amount; 
+                _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
             }
         }
 
@@ -1326,6 +1326,10 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                if(nextTab == HordeSelectionWithNavigationPage.Tab.SelectDeck)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
+                }
                 _myDeckPage.ChangeTab(nextTab);
             }
 

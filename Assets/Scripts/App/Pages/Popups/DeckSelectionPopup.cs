@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(DeckSelectionPopup));
 
+        public Action<Deck> SelectDeckEvent;
+
         public GameObject Self { get; private set; }
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -213,6 +215,8 @@ namespace Loom.ZombieBattleground
 
             UpdateSelectedDeckData(selectedDeck);
             UpdateSelectedDeckDisplay(selectedDeck);
+
+            SelectDeckEvent?.Invoke(selectedDeck);
         }
 
         private void SwitchSelectedDeckIndex(int direction)
@@ -267,10 +271,16 @@ namespace Loom.ZombieBattleground
                 MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     SetSelectedDeckIndex(index);
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
                     hordeSelection.SelectDeckIndex = index;
