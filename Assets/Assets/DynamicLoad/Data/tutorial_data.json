@@ -774,11 +774,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 1,
@@ -786,11 +787,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": -2.2,
-            "Y": 2.6,
+            "X": 4.05,
+            "Y": 4.7,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 2,
@@ -798,11 +800,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 3,
@@ -814,7 +817,7 @@
             "Y": -1.9,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AboveUI"
         },
         {
           "Id": 4,
@@ -834,10 +837,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
-            "X": 11.15,
-            "Y": -2.42,
+            "X": 0,
+            "Y": 0,
             "Z": 0
           },
+          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipLayer": "AbovePages"
         },
         {
@@ -1123,17 +1127,19 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.2,
+                "Y": 1,
                 "Z": 0
               },
               "EndPosition": {
-                "X": -3.8,
-                "Y": 3.8,
+                "X": 2.2,
+                "Y": 6.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1173,12 +1179,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": 4,
+                "X": 2.6,
+                "Y": 6,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1218,12 +1226,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.25,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1335,7 +1345,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -1343,11 +1354,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AboveUI"
             }
           ]
@@ -2017,11 +2030,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
           "TutorialTooltipLayer": "AboveUI"
         }
       ],
@@ -2168,7 +2182,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -2288,7 +2303,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -2296,13 +2312,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -2923,12 +2940,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -3073,7 +3091,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -3193,7 +3212,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -3201,13 +3221,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -3375,6 +3396,10 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
+          "ActionToEndThisStep": "StartTurn",
           "TutorialStepType": "GameplayStep"
         },
         {
@@ -3861,12 +3886,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -4011,7 +4037,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -4131,7 +4158,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -4139,13 +4167,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }

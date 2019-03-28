@@ -60,7 +60,8 @@ namespace Loom.ZombieBattleground.Test
 
                 AbilityData entryAbility =
                     boardUnitModel.InstanceCard.Abilities
-                    .FirstOrDefault(x => _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
+                    .FirstOrDefault(x =>
+                        _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
 
                 if (entryAbility == null)
                     throw new Exception($"No entry ability found for target {entryAbilityTarget}");
@@ -73,24 +74,24 @@ namespace Loom.ZombieBattleground.Test
                     ));
             }
 
-            if (skipEntryAbilities)
-                return;
-
-            // Second, fire non-targetable entry abilities
-            AbilityData[] entryAbilities =
-                boardUnitModel.InstanceCard.Abilities
-                    .Where(x =>
-                        _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
-                        !(_testHelper.AbilitiesController.HasTargets(x) && _testHelper.AbilitiesController.IsAbilityCallsAtStart(x)))
-                    .ToArray();
-
-            foreach (AbilityData entryAbility in entryAbilities)
+            if (!skipEntryAbilities)
             {
-                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
-                    card,
-                    entryAbility.Ability,
-                    new ParametrizedAbilityInstanceId[]{ }
-                ));
+                // Second, fire non-targetable entry abilities
+                AbilityData[] entryAbilities =
+                    boardUnitModel.InstanceCard.Abilities
+                        .Where(x =>
+                            _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
+                            !_testHelper.AbilitiesController.IsAbilityActive(x))
+                        .ToArray();
+
+                foreach (AbilityData entryAbility in entryAbilities)
+                {
+                    await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                        card,
+                        entryAbility.Ability,
+                        new ParametrizedAbilityInstanceId[] { }
+                    ));
+                }
             }
         }
 

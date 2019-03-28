@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.14";
+        internal const string CurrentVersionBase = "0.1.15";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -216,7 +216,7 @@ namespace Loom.ZombieBattleground.Common
         
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 
-        internal const string SupportLink = "https://loom.games/en/";
+        internal const string SupportLink = "https://loom.freshdesk.com/support/home";
 
         internal const string PathToCardsIllustrations = "Images/Cards/Illustrations/";
 
