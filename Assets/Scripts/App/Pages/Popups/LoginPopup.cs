@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
 
         private Button _sendOTPButton;
 
-        private InputFieldItem _emailFieldLogin;
+        private InputField _emailFieldLogin;
         private InputField _passwordFieldLogin;
 
         private InputField _emailFieldRegister;
@@ -165,14 +165,12 @@ namespace Loom.ZombieBattleground
 
             _loginGroup = Self.transform.Find("Login_Group");
             _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
-            //_emailFieldLogin = _loginGroup.transform.Find("Email_BG/Email_InputField").GetComponent<SourceInputField>();
+            _emailFieldLogin = _loginGroup.transform.Find("Email_BG/Email_InputField").GetComponent<InputField>();
             _passwordFieldLogin = _loginGroup.transform.Find("Password_BG/Password_InputField").GetComponent<InputField>();
             _loginButton = _loginGroup.transform.Find("Button_Login_BG/Button_Login").GetComponent<Button>();
             _toRegisterButton = _loginGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
             _forgotPasswordLoginButton = _loginGroup.transform.Find("Button_ForgotPassword").GetComponent<Button>();
             _closeLoginButton = _loginGroup.transform.Find("Button_Close_BG/Button_Close").GetComponent<Button>();
-
-            _emailFieldLogin = new InputFieldItem(_loginGroup.transform.Find("Email_BG/Email_InputField").gameObject);
 
             _registerGroup = Self.transform.Find("Register_Group");
             _registerButton = _registerGroup.transform.Find("Button_Register_BG/Button_Register").GetComponent<Button>();
@@ -254,7 +252,7 @@ namespace Loom.ZombieBattleground
 
         public void SetLoginFieldsData(string _email, string _password)
         {
-            //_emailFieldLogin.text = _email;
+            _emailFieldLogin.text = _email;
             _passwordFieldLogin.text = _password;
             SetUIState(LoginState.InitiateLogin);
         }
@@ -274,7 +272,7 @@ namespace Loom.ZombieBattleground
 
         private void OnInputDownEnterButton()
         {
-            if (_currentEventSystem.currentSelectedGameObject == (_passwordFieldLogin.gameObject || _emailFieldLogin.selfObject))
+            if (_currentEventSystem.currentSelectedGameObject == (_passwordFieldLogin.gameObject || _emailFieldLogin.gameObject))
             {
                 PressedLoginHandler();
             }
@@ -371,19 +369,19 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            if (string.IsNullOrEmpty(_emailFieldLogin.GetContent()) || string.IsNullOrEmpty(_passwordFieldLogin.text))
+            if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
             {
                 _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
                 return;
             }
 
-            if (!Utilites.ValidateEmail(_emailFieldLogin.GetContent()))
+            if (!Utilites.ValidateEmail(_emailFieldLogin.text))
             {
                 _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
                 return;
             }
 
-            if (_emailFieldLogin.GetContent().Length > 0 && _passwordFieldLogin.text.Length > 0)
+            if (_emailFieldLogin.text.Length > 0 && _passwordFieldLogin.text.Length > 0)
             {
                 _loginButton.enabled = false;
                 LoginProcess(false);
@@ -539,7 +537,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.GetContent(), _passwordFieldLogin.text);
+                    loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
                     string payload = loginData.accessToken.Split('.')[1];
 
@@ -562,7 +560,7 @@ namespace Loom.ZombieBattleground
                 {
                     IsValid = false,
                     IsRegistered = !isGuest,
-                    Email = _emailFieldLogin.GetContent(),
+                    Email = _emailFieldLogin.text,
                     Password = _passwordFieldLogin.text,
                     GUID = GUID,
                     AccessToken = accessToken

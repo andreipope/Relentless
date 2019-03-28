@@ -3086,6 +3086,7 @@ GameObject:
   - component: {fileID: 1216548032}
   - component: {fileID: 1216548031}
   - component: {fileID: 1216548033}
+  - component: {fileID: 1216548034}
   m_Layer: 0
   m_Name: MainApp
   m_TagString: Untagged
@@ -3143,6 +3144,17 @@ MonoBehaviour:
   - {fileID: 1027686445}
   _squareFactorCanvasMatch: 0.6
   _squareFactorCameraSize: 9.6
+--- !u!114 &1216548034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1216548030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af391257446ba4bc6b9124b683ceb46a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1231786307
 GameObject:
   m_ObjectHideFlags: 0
