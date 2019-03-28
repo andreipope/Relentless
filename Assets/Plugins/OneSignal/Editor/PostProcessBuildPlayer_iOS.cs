@@ -126,6 +126,7 @@
         var bmgroups = rootInfoPlist.root.CreateArray("UIBackgroundModes");
         bmgroups.AddString("remote-notification");
         rootInfoPlist.root.SetString("NSLocationAlwaysUsageDescription", "Used to confirm the location of the player.");
+        rootInfoPlist.root.SetString("NSLocationWhenInUseUsageDescription", "Used to confirm the location of the player.");
         rootInfoPlist.WriteToFile(pathToRootInfoPlist);
 
         // Copy the entitlement file to the xcode project
