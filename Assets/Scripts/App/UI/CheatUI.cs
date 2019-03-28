@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -146,12 +146,12 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.OverlordSkill.NONE, Enumerators.OverlordSkill.NONE);
+                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
                 {
-                    _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
+                    _cardNameToDescription[card.Name] = $"{card.Name} (faction: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 
@@ -216,7 +216,7 @@ namespace Loom.ZombieBattleground
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
-                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                                 {
                                     if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
                                         continue;
@@ -258,11 +258,11 @@ namespace Loom.ZombieBattleground
                         GUILayout.Label("Secondary Skill");
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
-                        GUILayout.Label("Hero Id");
-                        string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
-                        if (int.TryParse(heroIdString, out int newHeroId))
+                        GUILayout.Label("Overlord Id");
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.HeroId = newHeroId;
+                            customDeck.OverlordId = newOverlordId;
                         }
                     }
                     GUILayout.EndVertical();
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
 
             private static T DrawEnumPopup<T>(T value, IMGUIPopup popup)
             {
-                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.OverlordSkill));
+                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.Skill));
                 for (int i = 0; i < values.Length; i++)
                 {
                     if (value.Equals(values[i]))

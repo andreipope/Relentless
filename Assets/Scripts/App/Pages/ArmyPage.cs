@@ -32,11 +32,11 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _gooValueText;
 
-        private GameObject _cardSetsIcons;
+        private GameObject _factionIcons;
 
         private int _currentElementPage, _numElementPages;
 
-        private Enumerators.SetType _currentSet = Enumerators.SetType.FIRE;
+        private Enumerators.Faction _currentSet = Enumerators.Faction.FIRE;
 
         private Toggle _airToggle, _earthToggle, _fireToggle, _waterToggle, _toxicTogggle, _lifeToggle, _itemsToggle;
 
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         private CardInfoPopupHandler _cardInfoPopupHandler;
 
-        private List<BoardCard> _createdBoardCards;
+        private List<BoardCardView> _createdBoardCards;
 
         private CardHighlightingVFXItem _highlightingVFXItem;
 
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
             CardItemPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard");
             CardPlaceholdersPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/CardPlaceholders");
 
-            _createdBoardCards = new List<BoardCard>();
+            _createdBoardCards = new List<BoardCardView>();
         }
 
         public void Update()
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
 
             _cardCounter = _selfPage.transform.Find("CardsCounter").GetChild(0).GetComponent<TextMeshProUGUI>();
 
-            _cardSetsIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
+            _factionIcons = _selfPage.transform.Find("ElementsToggles").gameObject;
 
             _highlightingVFXItem = new CardHighlightingVFXItem(Object.Instantiate(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UI/ArmyCardSelection"), _selfPage.transform, true));
@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.AIR);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.AIR);
                     }
                 });
             _lifeToggle.onValueChanged.AddListener(
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.LIFE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.LIFE);
                     }
                 });
             _waterToggle.onValueChanged.AddListener(
@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.WATER);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.WATER);
                     }
                 });
             _toxicTogggle.onValueChanged.AddListener(
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.TOXIC);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.TOXIC);
                     }
                 });
             _fireToggle.onValueChanged.AddListener(
@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.FIRE);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.FIRE);
                     }
                 });
             _earthToggle.onValueChanged.AddListener(
@@ -183,7 +183,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.EARTH);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.EARTH);
                     }
                 });
             _itemsToggle.onValueChanged.AddListener(
@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (state)
                     {
-                        ToggleChooseOnValueChangedHandler(Enumerators.SetType.ITEM);
+                        ToggleChooseOnValueChangedHandler(Enumerators.Faction.ITEM);
                     }
                 });
 
@@ -237,9 +237,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet < Enumerators.SetType.FIRE)
+                if (_currentSet < Enumerators.Faction.FIRE)
                 {
-                    _currentSet = Enumerators.SetType.ITEM;
+                    _currentSet = Enumerators.Faction.ITEM;
                     CalculateNumberOfPages();
                     _currentElementPage = _numElementPages - 1;
                 }
@@ -256,9 +256,9 @@ namespace Loom.ZombieBattleground
             {
                 _currentSet += direction;
 
-                if (_currentSet > Enumerators.SetType.ITEM)
+                if (_currentSet > Enumerators.Faction.ITEM)
                 {
-                    _currentSet = Enumerators.SetType.FIRE;
+                    _currentSet = Enumerators.Faction.FIRE;
                     _currentElementPage = 0;
                 }
                 else
@@ -270,11 +270,11 @@ namespace Loom.ZombieBattleground
             LoadCards(_currentElementPage, _currentSet);
         }
 
-        public void LoadCards(int page, Enumerators.SetType setType)
+        public void LoadCards(int page, Enumerators.Faction faction)
         {
-            _toggleGroup.transform.GetChild(setType - Enumerators.SetType.FIRE).GetComponent<Toggle>().isOn = true;
+            _toggleGroup.transform.GetChild(faction - Enumerators.Faction.FIRE).GetComponent<Toggle>().isOn = true;
 
-            CardSet set = SetTypeUtility.GetCardSet(_dataManager, setType);
+            Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
 
             List<Card> cards = set.Cards;
 
@@ -298,31 +298,31 @@ namespace Loom.ZombieBattleground
                     continue;
 
                 GameObject go;
-                BoardCard boardCard;
-                switch (card.CardKind)
+                BoardCardView boardCardView;
+                BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+                switch (card.Kind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         go = Object.Instantiate(CardCreaturePrefab);
-                        boardCard = new UnitBoardCard(go);
+                        boardCardView = new UnitBoardCard(go, boardUnitModel);
                         break;
-                    case Enumerators.CardKind.SPELL:
+                    case Enumerators.CardKind.ITEM:
                         go = Object.Instantiate(CardItemPrefab);
-                        boardCard = new SpellBoardCard(go);
+                        boardCardView = new ItemBoardCard(go, boardUnitModel);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                        throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
                 }
 
-                int amount = cardData.Amount;
-                boardCard.Init(card, amount);
-                boardCard.SetHighlightingEnabled(false);
-                boardCard.Transform.position = CardPositions[i % CardPositions.Count].position;
-                boardCard.Transform.localScale = Vector3.one * 0.32f;
-                boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
+                boardCardView.SetAmount(BoardCardView.AmountTrayType.Counter, cardData.Amount);
+                boardCardView.SetHighlightingEnabled(false);
+                boardCardView.Transform.position = CardPositions[i % CardPositions.Count].position;
+                boardCardView.Transform.localScale = Vector3.one * 0.32f;
+                boardCardView.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
 
-                _createdBoardCards.Add(boardCard);
+                _createdBoardCards.Add(boardCardView);
 
-                if (boardCard.LibraryCard.MouldId == _highlightingVFXItem.MouldId)
+                if (boardCardView.Model.Card.Prototype.MouldId == _highlightingVFXItem.MouldId)
                 {
                     _highlightingVFXItem.ChangeState(true);
                 }
@@ -333,7 +333,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetBoardCards()
         {
-            foreach (BoardCard item in _createdBoardCards)
+            foreach (BoardCardView item in _createdBoardCards)
             {
                 item.Dispose();
             }
@@ -356,28 +356,28 @@ namespace Loom.ZombieBattleground
 
             //TODO first number should be cards in collection. Collection for now equals ALL cards, once it won't,
             //we'll have to change this.
-            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount + "/" +
-                _dataManager.CachedCardsLibraryData.CardsInActiveSetsCount;
+            _cardCounter.text = _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount + "/" +
+                _dataManager.CachedCardsLibraryData.CardsInActiveFactionsCount;
         }
 
         private void HighlightCorrectIcon()
         {
-            for (int i = 0; i < _cardSetsIcons.transform.childCount; i++)
+            for (int i = 0; i < _factionIcons.transform.childCount; i++)
             {
-                GameObject c = _cardSetsIcons.transform.GetChild(i).GetChild(0).gameObject;
-                c.SetActive(i == _currentSet - Enumerators.SetType.FIRE);
+                GameObject c = _factionIcons.transform.GetChild(i).GetChild(0).gameObject;
+                c.SetActive(i == _currentSet - Enumerators.Faction.FIRE);
             }
         }
 
         private void CalculateNumberOfPages()
         {
-            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardSet(_dataManager, _currentSet).Cards.Count /
+            _numElementPages = Mathf.CeilToInt(SetTypeUtility.GetCardFaction(_dataManager, _currentSet).Cards.Count /
                 (float) CardPositions.Count);
         }
 
         #region Buttons Handlers
 
-        private void ToggleChooseOnValueChangedHandler(Enumerators.SetType type)
+        private void ToggleChooseOnValueChangedHandler(Enumerators.Faction type)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);

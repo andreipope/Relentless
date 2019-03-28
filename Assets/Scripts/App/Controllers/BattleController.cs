@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
         private VfxController _vfxController;
 
-        private Dictionary<Enumerators.SetType, Enumerators.SetType> _strongerElemental, _weakerElemental;
+        private Dictionary<Enumerators.Faction, Enumerators.Faction> _strongerElemental, _weakerElemental;
 
         public void Dispose()
         {
@@ -104,24 +104,24 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.LibraryCard.CardSetType;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.CurrentHp -= damageAttacking;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.CurrentDefense -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                if (attackedUnitModel.CurrentHp <= 0)
+                if (attackedUnitModel.CurrentDefense <= 0)
                 {
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
                 }
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damageAttacking);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
 
                 if (hasCounterAttack)
                 {
-                    if (attackedUnitModel.CurrentHp > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
+                    if (attackedUnitModel.CurrentDefense > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                     {
                         damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
 
@@ -131,15 +131,15 @@ namespace Loom.ZombieBattleground
                             attackingUnitModel.HasUsedBuffShield = true;
                         }
 
-                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.LibraryCard.CardSetType;
-                        attackingUnitModel.CurrentHp -= damageAttacked;
+                        attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
+                        attackingUnitModel.CurrentDefense -= damageAttacked;
 
-                        if (attackingUnitModel.CurrentHp <= 0)
+                        if (attackingUnitModel.CurrentDefense <= 0)
                         {
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
                         }
 
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackingUnitModel), -damageAttacked);
+                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
@@ -186,12 +186,12 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfHero.HeroElement;
-                attackedUnitModel.CurrentHp -= damage;
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
+                attackedUnitModel.CurrentDefense -= damage;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel(attackedUnitModel), -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damage);
             }
         }
 
@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground
             if (healingPlayer != null)
             {
                 healedPlayer.Defense += skill.Skill.Value;
-                if (skill.Skill.OverlordSkill != Enumerators.OverlordSkill.HARDEN &&
-                    skill.Skill.OverlordSkill != Enumerators.OverlordSkill.ICE_WALL)
+                if (skill.Skill.Skill != Enumerators.Skill.HARDEN &&
+                    skill.Skill.Skill != Enumerators.Skill.ICE_WALL)
                 {
                     if (healingPlayer.Defense > Constants.DefaultPlayerHp)
                     {
@@ -227,10 +227,10 @@ namespace Loom.ZombieBattleground
         {
             if (healedCreature != null)
             {
-                healedCreature.CurrentHp += skill.Skill.Value;
-                if (healedCreature.CurrentHp > healedCreature.MaxCurrentHp)
+                healedCreature.CurrentDefense += skill.Skill.Value;
+                if (healedCreature.CurrentDefense > healedCreature.MaxCurrentDefense)
                 {
-                    healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
+                    healedCreature.CurrentDefense = healedCreature.MaxCurrentDefense;
                 }
             }
         }
@@ -251,16 +251,16 @@ namespace Loom.ZombieBattleground
                 switch (attacker)
                 {
                     case BoardUnitModel model:
-                        attackedUnitModel.LastAttackingSetType = model.Card.LibraryCard.CardSetType;
+                        attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
-                    case BoardSpell spell:
-                        attackedUnitModel.LastAttackingSetType = spell.Card.LibraryCard.CardSetType;
+                    case BoardItem item:
+                        attackedUnitModel.LastAttackingSetType = item.Model.Prototype.Faction;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.CurrentHp -= damage;
+                attackedUnitModel.CurrentDefense -= damage;
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
@@ -308,65 +308,65 @@ namespace Loom.ZombieBattleground
 
             if (healedCreature != null)
             {
-                healedCreature.CurrentHp += healValue;
-                if (healedCreature.CurrentHp > healedCreature.MaxCurrentHp)
+                healedCreature.CurrentDefense += healValue;
+                if (healedCreature.CurrentDefense > healedCreature.MaxCurrentDefense)
                 {
-                    healedCreature.CurrentHp = healedCreature.MaxCurrentHp;
+                    healedCreature.CurrentDefense = healedCreature.MaxCurrentDefense;
                 }
             }
         }
 
         public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
         {
-            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentHp == 0)
+            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentDefense == 0)
             {
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfHero, Common.Enumerators.ExperienceActionType.KillMinion);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillMinion);
             }
         }
 
         private void FillStrongersAndWeakers()
         {
-            _strongerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
+            _strongerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.FIRE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.LIFE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.EARTH
+                    Enumerators.Faction.LIFE, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.AIR
+                    Enumerators.Faction.EARTH, Enumerators.Faction.AIR
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.WATER
+                    Enumerators.Faction.AIR, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.FIRE
+                    Enumerators.Faction.WATER, Enumerators.Faction.FIRE
                 }
             };
 
-            _weakerElemental = new Dictionary<Enumerators.SetType, Enumerators.SetType>
+            _weakerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
                 {
-                    Enumerators.SetType.FIRE, Enumerators.SetType.WATER
+                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
                 },
                 {
-                    Enumerators.SetType.TOXIC, Enumerators.SetType.FIRE
+                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
                 },
                 {
-                    Enumerators.SetType.LIFE, Enumerators.SetType.TOXIC
+                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
                 },
                 {
-                    Enumerators.SetType.EARTH, Enumerators.SetType.LIFE
+                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
                 },
                 {
-                    Enumerators.SetType.AIR, Enumerators.SetType.EARTH
+                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
                 },
                 {
-                    Enumerators.SetType.WATER, Enumerators.SetType.AIR
+                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
                 }
             };
         }

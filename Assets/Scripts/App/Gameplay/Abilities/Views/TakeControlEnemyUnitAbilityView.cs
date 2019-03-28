@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                         effectType = Enumerators.VisualEffectType.Impact;
                     }
 
-                    Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+                    Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
 
                     Vector3 targetPosition = unitTransform.position;
 

@@ -1,20 +1,21 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class CostsLessIfCardTypeInPlayAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public int Value;
 
         public CostsLessIfCardTypeInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Value = ability.Value;
         }
 
@@ -24,10 +25,10 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.IN_HAND)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             Action();
@@ -36,33 +37,33 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(MainWorkingCard))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
                 return;
 
             int gooCost = 0;
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay)
             {
-                if (PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count > 0)
+                if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction).Count > 0)
                 {
                     gooCost = -Mathf.Abs(Value);
                 }
             }
             else
             {
-                gooCost = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count * Value;
+                gooCost = PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction).Count * Value;
             }
 
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, MainWorkingCard,
-                MainWorkingCard.LibraryCard.Cost + gooCost, BoardCard);
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
+                BoardUnitModel.Prototype.Cost + gooCost, BoardCardView);
         }
 
-        private void CardPlayedHandler(WorkingCard card, int position)
+        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
         {
-            if (!card.Equals(MainWorkingCard))
+            if (!boardUnitModel.Equals(BoardUnitModel))
                 return;
 
-            PlayerCallerOfAbility.BoardChanged -= BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 

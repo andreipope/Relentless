@@ -1,10 +1,12 @@
 using System.Collections;
+using System.Runtime.CompilerServices;
 using Loom.ZombieBattleground.Common;
 using NUnit.Framework;
 using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Ignore("not verified")]
     public class HordeManipulationTests : BaseIntegrationTest
     {
         [UnityTest]
@@ -19,7 +21,7 @@ namespace Loom.ZombieBattleground.Test
                 await TestHelper.ClickGenericButton("Button_SoloMode");
                 await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
                 await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
                 await TestHelper.PickOverlord("Razu", true);
 
                 await TestHelper.LetsThink();
@@ -51,7 +53,7 @@ namespace Loom.ZombieBattleground.Test
                 }
 
                 await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
                 await TestHelper.PickOverlord("Razu", true);
                 await TestHelper.LetsThink();
                 await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");
@@ -83,7 +85,7 @@ namespace Loom.ZombieBattleground.Test
                 }
 
                 await TestHelper.ClickGenericButton("Image_BaackgroundGeneral");
-                await TestHelper.AssertCurrentPageName(Enumerators.AppState.HERO_SELECTION);
+                await TestHelper.AssertCurrentPageName(Enumerators.AppState.OVERLORD_SELECTION);
                 await TestHelper.PickOverlord("Razu", true);
                 await TestHelper.LetsThink();
                 await TestHelper.ClickGenericButton("Canvas_BackLayer/Button_Continue");

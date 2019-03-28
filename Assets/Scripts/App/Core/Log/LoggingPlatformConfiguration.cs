@@ -1,9 +1,9 @@
+using System.Linq;
 using log4net.Core;
 using log4net.Filter;
 using Loom.ZombieBattleground.BackendCommunication;
 using UnityEngine;
 using Logger = log4net.Repository.Hierarchy.Logger;
-
 #if UNITY_EDITOR
 using UnityEditor.Callbacks;
 #endif
@@ -25,26 +25,33 @@ namespace Loom.ZombieBattleground
                 Logger backendFacadeRpc = Logging.GetLogger(nameof(BackendFacade) + "Rpc");
                 backendFacadeRpc.Level = Level.Warn;
 
-                Logger timeMetricsContractCallProxy = Logging.GetLogger(nameof(TimeMetricsContractCallProxy));
-                timeMetricsContractCallProxy.Level = Level.Warn;
+                Logger customContractCallProxy = Logging.GetLogger(nameof(CustomContractCallProxy));
+                customContractCallProxy.Level = Level.Warn;
+
+                Logger callExecutionTrace = Logging.GetLogger("CallExecutionTrace");
+                callExecutionTrace.Level = Level.Warn;
             }
         }
 
         public static IFilter[] CreateSpammyLogsFilters()
         {
-            return new IFilter[]
+            string[] strings =
             {
-                new StringMatchFilter
-                {
-                    StringToMatch = "A ping was received.",
-                    AcceptOnMatch = false
-                },
-                new StringMatchFilter
-                {
-                    StringToMatch = "A pong to this ping has been sent.",
-                    AcceptOnMatch = false
-                }
+                "A ping was received.",
+                "A pong to this ping has been sent.",
+                "The current output action has been changed",
+                "Not a WebSocket handshake response"
             };
+
+            return
+                strings
+                    .Select(s => new StringMatchFilter
+                    {
+                        StringToMatch = s,
+                        AcceptOnMatch = false
+                    })
+                    .Cast<IFilter>()
+                    .ToArray();
         }
     }
 }

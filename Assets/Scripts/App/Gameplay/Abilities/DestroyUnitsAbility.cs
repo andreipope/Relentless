@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -41,24 +41,21 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             _units = new List<BoardUnitModel>();
-            List<BoardUnitView> unitsViews = new List<BoardUnitView>();
 
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        unitsViews.AddRange(GetOpponentOverlord().BoardCards);
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        unitsViews.AddRange(PlayerCallerOfAbility.BoardCards);
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                        _units.AddRange(PlayerCallerOfAbility.CardsOnBoard);
                         break;
                 }
             }
 
-            _units = unitsViews.Select(x => x.Model).ToList();
-
-            InvokeActionTriggered(unitsViews);
+            InvokeActionTriggered(_units);
         }
 
         public void DestroyUnit(BoardUnitView unit)
@@ -78,11 +75,11 @@ namespace Loom.ZombieBattleground
 
             if (_units.Count > 0)
             {
-                List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
                 foreach (BoardUnitModel unit in _units)
                 {
-                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    targetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
@@ -103,7 +100,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = actionType,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

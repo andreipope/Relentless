@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (Client.DebugCheats.CustomDeck == null)
             {
                 Client.DebugCheats.CustomDeck =
-                    new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.OverlordSkill.NONE, Enumerators.OverlordSkill.NONE);
+                    new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
             }
 
             if (_cardNameToDescription == null)
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 foreach (Card card in cardLibrary)
                 {
                     _cardNameToDescription[card.Name] =
-                        $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
+                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     {
                         _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
                         {
-                            foreach (Card card in cardLibrary.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                            foreach (Card card in cardLibrary.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                             {
                                 EditorGUILayout.BeginHorizontal();
                                 {
@@ -143,16 +143,16 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     GUILayout.Space(10);
 
                     GUILayout.Label("Primary Skill");
-                    customDeck.PrimarySkill = (Enumerators.OverlordSkill) EditorGUILayout.EnumPopup(customDeck.PrimarySkill);
+                    customDeck.PrimarySkill = (Enumerators.Skill) EditorGUILayout.EnumPopup(customDeck.PrimarySkill);
 
                     GUILayout.Label("Secondary Skill");
-                    customDeck.SecondarySkill = (Enumerators.OverlordSkill) EditorGUILayout.EnumPopup(customDeck.SecondarySkill);
+                    customDeck.SecondarySkill = (Enumerators.Skill) EditorGUILayout.EnumPopup(customDeck.SecondarySkill);
 
-                    GUILayout.Label("Hero Id");
-                    string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
-                    if (int.TryParse(heroIdString, out int newHeroId))
+                    GUILayout.Label("Overlord Id");
+                    string overlordIString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                    if (int.TryParse(overlordIString, out int newOverlordId))
                     {
-                        customDeck.HeroId = newHeroId;
+                        customDeck.OverlordId = newOverlordId;
                     }
                 }
                 EditorGUILayout.EndVertical();

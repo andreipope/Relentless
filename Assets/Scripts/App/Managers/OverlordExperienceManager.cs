@@ -47,38 +47,38 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void InitializeExperienceInfoInMatch(Hero hero)
+        public void InitializeExperienceInfoInMatch(OverlordModel overlord)
         {
             MatchExperienceInfo = new ExperienceInfo();
-            MatchExperienceInfo.LevelAtBegin = hero.Level;
-            MatchExperienceInfo.ExperienceAtBegin = hero.Experience;
+            MatchExperienceInfo.LevelAtBegin = overlord.Level;
+            MatchExperienceInfo.ExperienceAtBegin = overlord.Experience;
             MatchExperienceInfo.ExperienceReceived = 0;
         }
 
-        public void ApplyExperienceFromMatch(Hero hero)
+        public void ApplyExperienceFromMatch(OverlordModel overlord)
         {
-            hero.Experience += MatchExperienceInfo.ExperienceReceived;
-            CheckLevel(hero);
+            overlord.Experience += MatchExperienceInfo.ExperienceReceived;
+            CheckLevel(overlord);
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
-        public void ApplyExperience(Hero hero, int experience)
+        public void ApplyExperience(OverlordModel overlord, int experience)
         {
-            hero.Experience += experience;
-            CheckLevel(hero);
+            overlord.Experience += experience;
+            CheckLevel(overlord);
 
-            _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+            _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
-        public int GetRequiredExperienceForNewLevel(Hero hero)
+        public int GetRequiredExperienceForNewLevel(OverlordModel overlord)
         {
-            return _overlordXPInfo.Fixed + _overlordXPInfo.ExperienceStep * (hero.Level + 1);
+            return _overlordXPInfo.Fixed + _overlordXPInfo.ExperienceStep * (overlord.Level + 1);
         }
 
-        public void ChangeExperience(Hero hero, int value)
+        public void ChangeExperience(OverlordModel overlord, int value)
         {
             if (_gameplayManager.IsTutorial)
                 return;
@@ -86,43 +86,43 @@ namespace Loom.ZombieBattleground
             MatchExperienceInfo.ExperienceReceived += value;
         }
 
-        public void ReportExperienceAction(Hero hero, Enumerators.ExperienceActionType actionType)
+        public void ReportExperienceAction(OverlordModel overlord, Enumerators.ExperienceActionType actionType)
         {
             ExperienceAction action = _overlordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
 
-            ChangeExperience(hero, action.Experience);
+            ChangeExperience(overlord, action.Experience);
         }
 
-        public LevelReward GetLevelReward(Hero hero)
+        public LevelReward GetLevelReward(OverlordModel overlord)
         {
-            return _overlordXPInfo.Rewards.Find(x => x.Level == hero.Level);
+            return _overlordXPInfo.Rewards.Find(x => x.Level == overlord.Level);
         }
 
-        private void CheckLevel(Hero hero)
+        private void CheckLevel(OverlordModel overlord)
         {
-            while (hero.Experience >= GetRequiredExperienceForNewLevel(hero) &&
-                   hero.Level < _overlordXPInfo.MaxLevel)
+            while (overlord.Experience >= GetRequiredExperienceForNewLevel(overlord) &&
+                   overlord.Level < _overlordXPInfo.MaxLevel)
             {
-                LevelUp(hero);
+                LevelUp(overlord);
             }
         }
 
-        private void LevelUp(Hero hero)
+        private void LevelUp(OverlordModel overlord)
         {
-            hero.Level++;
+            overlord.Level++;
 
-            ApplyReward(hero);
+            ApplyReward(overlord);
         }
 
-        private void ApplyReward(Hero hero)
+        private void ApplyReward(OverlordModel overlord)
         {
-            LevelReward levelReward = GetLevelReward(hero);
+            LevelReward levelReward = GetLevelReward(overlord);
             if (levelReward != null)
             {
                 if (levelReward.UnitReward != null)
                 {
                     List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
-                        .Where(x => x.CardRank.ToString() == levelReward.UnitReward.Rank)
+                        .Where(x => x.Rank.ToString() == levelReward.UnitReward.Rank)
                         .ToList();
                     Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
                     CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
@@ -141,34 +141,34 @@ namespace Loom.ZombieBattleground
                 }
                 else if (levelReward.SkillReward != null)
                 {
-                    HeroSkill unlockedSkill = hero.GetSkill(levelReward.SkillReward.SkillIndex);
+                    OverlordSkill unlockedSkill = overlord.GetSkill(levelReward.SkillReward.SkillIndex);
                     unlockedSkill.Unlocked = true;
 
-                    SaveSkillInDecks(hero.HeroId, unlockedSkill);
+                    SaveSkillInDecks(overlord.OverlordId, unlockedSkill);
                 }
 
                 MatchExperienceInfo.GotRewards.Add(levelReward);
             }
         }
 
-        private void SaveSkillInDecks(int heroId, HeroSkill skill)
+        private void SaveSkillInDecks(int overlordId, OverlordSkill skill)
         {
             List<Deck> decks = _dataManager.CachedDecksData.Decks.FindAll((x) =>
-                x.HeroId == heroId &&
-                (x.PrimarySkill == Enumerators.OverlordSkill.NONE || x.SecondarySkill == Enumerators.OverlordSkill.NONE));
+                x.OverlordId == overlordId &&
+                (x.PrimarySkill == Enumerators.Skill.NONE || x.SecondarySkill == Enumerators.Skill.NONE));
 
             foreach (Deck deck in decks)
             {
-                if (deck.HeroId == heroId)
+                if (deck.OverlordId == overlordId)
                 {
-                    if (deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+                    if (deck.PrimarySkill == Enumerators.Skill.NONE)
                     {
-                        deck.PrimarySkill = skill.OverlordSkill;
+                        deck.PrimarySkill = skill.Skill;
                         SaveDeck(deck);
                     }
-                    else if (deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+                    else if (deck.SecondarySkill == Enumerators.Skill.NONE)
                     {
-                        deck.SecondarySkill = skill.OverlordSkill;
+                        deck.SecondarySkill = skill.Skill;
                         SaveDeck(deck);
                     }                   
                 }
@@ -183,9 +183,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Warn($"got exception: {e.Message} ->> {e.StackTrace}");
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
                 OpenAlertDialog("Not able to Save Deck: \n" + e.Message);
             }

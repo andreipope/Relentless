@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
 
         public AttackOverlordAbility() : base()
         {
@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTargetTypes;
+            TargetTypes = ability.Targets;
             Value = ability.Value;
         }
 
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
@@ -44,14 +44,14 @@ namespace Loom.ZombieBattleground
 
             Player targetObject = null; 
 
-            foreach (Enumerators.AbilityTargetType target in TargetTypes)
+            foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         targetObject = GetOpponentOverlord();
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         targetObject = PlayerCallerOfAbility;
                         break;
                     default:

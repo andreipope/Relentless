@@ -17,11 +17,11 @@ namespace Loom.ZombieBattleground
 
         public class SpecificBattlegroundOverlordInfo
         {
-            public int Health;
-            public int MaximumHealth;
+            public int Defense;
+            public int MaximumDefense;
             public int CurrentGoo;
             public int MaximumGoo;
-            public int HeroId;
+            public int OverlordId;
 
             public Enumerators.AIType AIType;
 
@@ -42,13 +42,13 @@ namespace Loom.ZombieBattleground
 
                 AIType = Enumerators.AIType.BLITZ_AI;
 
-                MaximumHealth = Constants.DefaultPlayerHp;
-                Health = MaximumHealth;
+                MaximumDefense = Constants.DefaultPlayerHp;
+                Defense = MaximumDefense;
 
                 MaximumGoo = Constants.DefaultPlayerGoo;
                 CurrentGoo = MaximumGoo;
 
-                HeroId = 0;
+                OverlordId = 0;
             }
         }
 

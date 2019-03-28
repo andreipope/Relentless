@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
             {
                 float delayBeforeDestroy = 3f;
 
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position;
+                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 

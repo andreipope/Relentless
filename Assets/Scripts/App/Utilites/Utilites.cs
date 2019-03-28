@@ -12,6 +12,8 @@ using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
@@ -37,30 +39,6 @@ namespace Loom.ZombieBattleground
             {
                 SetLayerRecursively(child.gameObject, layer);
             }
-        }
-
-        public static T CastStringTuEnum<T>(string data, bool isManual = false)
-        {
-            if (isManual)
-            {
-                return (T)Enum.Parse(typeof(T), data);
-            }
-            else
-            {
-                return (T)Enum.Parse(typeof(T), data.ToUpperInvariant());
-            }
-        }
-
-        public static List<T> CastList<T>(string data, char separator = '|')
-        {
-            List<T> list = new List<T>();
-            string[] targets = data.Split(separator);
-            foreach (string target in targets)
-            {
-                list.Add(CastStringTuEnum<T>(target));
-            }
-
-            return list;
         }
 
         public static Vector3 CastVfxPosition(Vector3 position)
@@ -104,6 +82,11 @@ namespace Loom.ZombieBattleground
                     .Distinct()
                     .SelectMany(scene => scene.GetRootGameObjects())
                     .ToArray();
+        }
+
+        public static string JsonPrettyPrint(string json)
+        {
+            return JToken.Parse(json).ToString(Formatting.Indented);
         }
 
         #region asset bundles and cache

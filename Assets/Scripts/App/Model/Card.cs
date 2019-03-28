@@ -8,67 +8,60 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : ICard
     {
-        [JsonProperty("id")]
+        private readonly List<AbilityData> _abilities;
+
+        [JsonProperty]
         public long MouldId { get; set; }
 
-        [JsonProperty("name")]
+        [JsonProperty]
         public string Name { get; protected set; }
 
-        [JsonProperty("cost")]
+        [JsonProperty]
         public int Cost { get; set; }
 
-        [JsonProperty("description")]
+        [JsonProperty]
         public string Description { get; protected set; }
 
-        [JsonProperty("flavor_text")]
+        [JsonProperty]
         public string FlavorText { get; protected set; }
 
-        [JsonProperty("picture")]
+        [JsonProperty]
         public string Picture { get; protected set; }
 
-        [JsonProperty("damage")]
+        [JsonProperty]
         public int Damage { get; protected set; }
 
-        [JsonProperty("health")]
-        public int Health { get; protected set; }
+        [JsonProperty]
+        public int Defense { get; protected set; }
 
-        [JsonProperty("set")]
-        public Enumerators.SetType CardSetType { get; set; }
+        [JsonProperty]
+        public Enumerators.Faction Faction { get; set; }
 
-        [JsonProperty("frame")]
+        [JsonProperty]
         public string Frame { get; protected set; }
 
-        [JsonProperty("kind")]
-        public Enumerators.CardKind CardKind { get; protected set; }
+        [JsonProperty]
+        public Enumerators.CardKind Kind { get; protected set; }
 
-        [JsonProperty("rank")]
-        public Enumerators.CardRank CardRank { get; protected set; }
+        [JsonProperty]
+        public Enumerators.CardRank Rank { get; protected set; }
 
-        [JsonProperty("type")]
-        public Enumerators.CardType CardType { get; protected set; }
+        [JsonProperty]
+        public Enumerators.CardType Type { get; protected set; }
 
-        [JsonIgnore]
-        public List<AbilityData> InitialAbilities { get; private set; }
+        [JsonProperty]
+        public IList<AbilityData> Abilities => _abilities;
 
-        [JsonProperty("abilities")]
-        public List<AbilityData> Abilities { get; private set; }
+        [JsonProperty]
+        public PictureTransform PictureTransform { get; protected set; }
 
-        [JsonProperty("card_view_info")]
-        public CardViewInfo CardViewInfo { get; protected set; }
+        [JsonProperty]
+        public Enumerators.UniqueAnimation UniqueAnimation { get; protected set; }
 
-        [JsonProperty("unique_animation_type")]
-        public Enumerators.UniqueAnimationType UniqueAnimationType { get; protected set; }
+        [JsonProperty]
+        public bool Hidden { get; protected set; }
 
-        [JsonProperty("hidden_set")]
-        public Enumerators.SetType HiddenCardSetType { get; set; }
-
-        IList<AbilityData> IReadOnlyCard.InitialAbilities => InitialAbilities;
-
-        IList<AbilityData> IReadOnlyCard.Abilities => Abilities;
-
-        IList<AbilityData> ICard.Abilities { get; }
-
-        IList<AbilityData> ICard.InitialAbilities { get; }
+        IReadOnlyList<AbilityData> IReadOnlyCard.Abilities => _abilities;
 
         [JsonConstructor]
         public Card(
@@ -79,16 +72,16 @@ namespace Loom.ZombieBattleground.Data
             string flavorText,
             string picture,
             int damage,
-            int health,
-            Enumerators.SetType cardSetType,
+            int defense,
+            Enumerators.Faction faction,
             string frame,
-            Enumerators.CardKind cardKind,
-            Enumerators.CardRank cardRank,
-            Enumerators.CardType cardType,
+            Enumerators.CardKind kind,
+            Enumerators.CardRank rank,
+            Enumerators.CardType type,
             List<AbilityData> abilities,
-            CardViewInfo cardViewInfo,
-            Enumerators.UniqueAnimationType uniqueAnimationType,
-            Enumerators.SetType hiddenCardSetType
+            PictureTransform pictureTransform,
+            Enumerators.UniqueAnimation uniqueAnimation,
+            bool hidden
             )
         {
             MouldId = mouldId;
@@ -98,23 +91,16 @@ namespace Loom.ZombieBattleground.Data
             FlavorText = flavorText;
             Picture = picture;
             Damage = damage;
-            Health = health;
-            CardSetType = cardSetType;
+            Defense = defense;
+            Faction = faction;
             Frame = frame;
-            CardKind = cardKind;
-            CardRank = cardRank;
-            CardType = cardType;
-            Abilities = abilities ?? new List<AbilityData>();
-            CardViewInfo = cardViewInfo;
-            UniqueAnimationType = uniqueAnimationType;
-            HiddenCardSetType = HiddenCardSetType;
-            CloneAbilitiesToInitialAbilities();
-
-            if(CardSetType == Enumerators.SetType.OTHERS &&
-               HiddenCardSetType != Enumerators.SetType.NONE)
-            {
-                CardSetType = HiddenCardSetType;
-            }
+            Kind = kind;
+            Rank = rank;
+            Type = type;
+            _abilities = abilities ?? new List<AbilityData>();
+            PictureTransform = pictureTransform;
+            UniqueAnimation = uniqueAnimation;
+            Hidden = hidden;
         }
 
         public Card(IReadOnlyCard sourceCard)
@@ -126,60 +112,45 @@ namespace Loom.ZombieBattleground.Data
             FlavorText = sourceCard.FlavorText;
             Picture = sourceCard.Picture;
             Damage = sourceCard.Damage;
-            Health = sourceCard.Health;
-            CardSetType = sourceCard.CardSetType;
+            Defense = sourceCard.Defense;
+            Faction = sourceCard.Faction;
             Frame = sourceCard.Frame;
-            CardKind = sourceCard.CardKind;
-            CardRank = sourceCard.CardRank;
-            CardType = sourceCard.CardType;
-            Abilities =
+            Kind = sourceCard.Kind;
+            Rank = sourceCard.Rank;
+            Type = sourceCard.Type;
+            _abilities =
                 sourceCard.Abilities
                     .Select(a => new AbilityData(a))
                     .ToList();
-            CardViewInfo = new CardViewInfo(sourceCard.CardViewInfo);
-            UniqueAnimationType = sourceCard.UniqueAnimationType;
-            HiddenCardSetType = sourceCard.HiddenCardSetType;
-            CloneAbilitiesToInitialAbilities();
+            PictureTransform = new PictureTransform(sourceCard.PictureTransform);
+            UniqueAnimation = sourceCard.UniqueAnimation;
+            Hidden = sourceCard.Hidden;
         }
 
         public override string ToString()
         {
-            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(CardSetType)}: {CardSetType})";
-        }
-
-        public void ForceUpdateAbilities(IList<AbilityData> abilities)
-        {
-            if (abilities != null)
-            {
-                Abilities = abilities.ToList();
-                CloneAbilitiesToInitialAbilities();
-            }
-        }
-
-        private void CloneAbilitiesToInitialAbilities()
-        {
-            InitialAbilities = JsonConvert.DeserializeObject<List<AbilityData>>(JsonConvert.SerializeObject(Abilities));
+            return $"({nameof(Name)}: {Name}, {nameof(MouldId)}: {MouldId}, {nameof(Faction)}: {Faction})";
         }
     }
 
-    public class CardViewInfo
+    public class PictureTransform
     {
-        [JsonProperty("position")]
+        [JsonProperty]
         public FloatVector3 Position { get; protected set; } = FloatVector3.Zero;
-        [JsonProperty("scale")]
+        [JsonProperty]
         public FloatVector3 Scale { get; protected set; } = new FloatVector3(0.38f);
 
-        public CardViewInfo()
+        public PictureTransform()
         {
         }
 
-        public CardViewInfo(FloatVector3 position, FloatVector3 scale)
+        public PictureTransform(FloatVector3 position, FloatVector3 scale)
         {
             Position = position;
             Scale = scale;
         }
 
-        public CardViewInfo(CardViewInfo source)
+        public PictureTransform(PictureTransform source)
         {
             Position = source.Position;
             Scale = source.Scale;

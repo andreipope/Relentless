@@ -64,6 +64,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Welcome, zombie slayer!\n\nSince you're new around here, I'll let you borrow my deck while you learn the ropes.",
@@ -73,6 +74,7 @@
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Destroy the enemy overlord to win!",
@@ -82,6 +84,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -92,6 +95,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -102,6 +106,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -111,6 +116,7 @@
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2,
             3
@@ -118,10 +124,16 @@
           "TutorialObjectIdStepOwner": 51
         },
         {
-          "ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
+          "ActionToEndThisStep": "StartTurn",
+          "TutorialStepType": "GameplayStep"
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -134,11 +146,6 @@
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -152,6 +159,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -174,12 +182,14 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true,
           "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -190,6 +200,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -219,22 +230,18 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 1,
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 1
             }
           ]
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 2.4,
                 "Y": -0.4,
@@ -248,6 +255,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -271,6 +279,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
           "LaunchAIBrain": true,
           "UnitsCanAttack": true,
@@ -280,6 +289,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -295,6 +305,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -325,13 +336,14 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 2,
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 2
             }
           ]
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "TutorialObjectIdStepOwner": 1,
           "CanInteractWithGameplay": true,
@@ -360,15 +372,18 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "CanInteractWithGameplay": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             2,
             3,
@@ -380,15 +395,18 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 7
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 7,
           "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -406,6 +424,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 8,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -414,13 +433,19 @@
           "UnitsCanAttack": true
         },
         {
-          "ActionToEndThisStep": "OverlordSayPopupHided"
+          "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep"
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "NOICE! \nYou won your first match!",
@@ -430,6 +455,7 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupClosed",
+          "TutorialStepType": "GameplayStep",
           "HandPointers": [
             {
               "StartPosition": {
@@ -444,7 +470,8 @@
           ]
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep"
         }
       ],
       "ActionActivityHandlers": [
@@ -483,8 +510,8 @@
               "TutorialObjectId": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -510,8 +537,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -556,7 +583,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -596,7 +623,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 51
             }
           ]
@@ -651,11 +678,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             },
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         },
@@ -681,19 +708,19 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 3
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 2
             }
           ]
@@ -726,7 +753,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 4,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -747,11 +774,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
-            "X": -6.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 1,
@@ -759,11 +787,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": -6.2,
-            "Y": 2.6,
+            "X": 4.05,
+            "Y": 4.7,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 2,
@@ -771,11 +800,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": -6.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 3,
@@ -783,34 +813,35 @@
           "TutorialTooltipOwner": "UI",
           "Description": "It's time to BATTLE!",
           "Position": {
-            "X": 8,
+            "X": 9,
             "Y": -1.9,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AboveUI"
         },
         {
           "Id": 4,
           "TutorialTooltipAlign": "TopMiddle",
           "TutorialTooltipOwner": "UI",
-          "Description": "Select this text to rename your Deck.",
+          "Description": "Later on, you can select this text to rename your Deck.",
           "Position": {
-            "X": -3.45,
-            "Y": 6.35,
+            "X": -4,
+            "Y": 4.35,
             "Z": 0
           },
           "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 5,
-          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipAlign": "CenterRight",
           "TutorialTooltipOwner": "UI",
-          "Description": "Click on the arrows to browse your cards.",
+          "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
-            "X": 10.15,
-            "Y": -2.42,
+            "X": 0,
+            "Y": 0,
             "Z": 0
           },
+          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipLayer": "AbovePages"
         },
         {
@@ -827,7 +858,6 @@
         },
         {
           "Id": 7,
-          "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "UI",
           "Description": "Open your pack.",
           "Position": {
@@ -841,14 +871,19 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
+            "Panel_Battle_Mode",
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_Play",
-            "Button_Shop"
+            "Button_Left",
+            "Button_Right",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
           ],
           "ConnectedActivities": [
             2
@@ -856,26 +891,36 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -5.95,
-                "Y": -2.7,
+                "X": -0.5,
+                "Y": 1.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_MyPacks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 0.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             6
           ],
-          "OpenScreen": "PackOpenerPage",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_MyPacks",
+            "ButtonPackType",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -888,254 +933,313 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
               "AppearDelay": 2.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
-          "OpenScreen": "PackOpenerPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PackOpenerPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "ButtonMinus",
-            "ButtonPlus",
-            "ButtonMax",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 1,
-                "Y": -1.2,
+                "X": -0.5,
+                "Y": 1.4,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
-              "TutorialUIElementOwnerName": "BackButton",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
               "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
+              "TutorialHandLayer": "AboveUI",
               "AppearDelay": 0.5
             }
           ]
         },
         {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MyDecksPage",
           "BlockedButtons": [
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_OpenPacks",
-            "Button_Shop"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": -2.8,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PlaySelectionPage",
-          "BlockedButtons": [
-            "Button_Tutorial",
-            "Button_PvPMode",
-            "Button_Back"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -4.5,
-                "Y": -2.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "HordeSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
+            "Button_Setting",
             "Button_Battle",
-            "Button_Army",
-            "Pulse",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
             "Button_Edit",
             "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
+            "Button_Rename",
             "Button_LeftArrow",
-            "Button_RightArrow"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 5.5,
-                "Y": 1.75,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "OverlordSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
             "Button_RightArrow",
-            "Button_LeftArrow"
+            "Image_ButtonBackTray"
           ],
           "HandPointers": [
             {
               "StartPosition": {
                 "X": 0,
-                "Y": -5.5,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_BuildNewDeck",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages"
             }
           ]
         },
         {
-          "ActionToEndThisStep": "PopupClosed",
-          "OpenScreen": "OverlordAbilityPopup",
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Cancel"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow",
+            "Button_Auto",
+            "Image_ButtonBackTray",
+            "Button_DeckIcon_0",
+            "Button_DeckIcon_1",
+            "Button_DeckIcon_2",
+            "Button_DeckIcon_3",
+            "Button_DeckIcon_4",
+            "Button_DeckIcon_5"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 2.5,
-                "Y": -5.5,
+                "X": 0,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePopups"
+              "TutorialUIElementOwnerName": "Button_Continue",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_RightArrow",
+            "Button_LeftArrow",
+            "Button_Auto",
+            "Image_ButtonBackTray"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": 0,
+                "Y": 1.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Continue",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardDragged",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_AddToDeck",
+            "Button_Remove"
           ],
           "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
-                "Y": -1.5,
+                "X": 2.2,
+                "Y": 1,
                 "Z": 0
               },
               "EndPosition": {
-                "X": -7.8,
-                "Y": 3.8,
+                "X": 2.2,
+                "Y": 6.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardRemoved",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
           "TutorialDescriptionTooltipsToDeactivate": [
             0
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
-                "Y": 4,
+                "X": 2.6,
+                "Y": 6,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardAdded",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             2
           ],
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
             "Button_Save",
-            "ArrowRightButton",
-            "ArrowLeftButton",
-            "ElementsToggles"
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_Search",
+            "Button_SaveDeck",
+            "Button_UpperLeftArrow",
+            "Button_UpperRightArrow",
+            "Button_LowerLeftArrow",
+            "Button_LowerRightArrow",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -7.8,
-                "Y": -1.5,
+                "X": 2.25,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
         {
           "ActionToEndThisStep": "HordeFilled",
+          "TutorialStepType": "MenuStep",
           "TutorialDescriptionTooltipsToActivate": [
             4,
             5
@@ -1143,12 +1247,20 @@
           "TutorialDescriptionTooltipsToDeactivate": [
             2
           ],
-          "OpenScreen": "HordeEditingPage",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
           ],
           "ConnectedActivities": [
             1
@@ -1157,39 +1269,84 @@
           "CanDoubleTapCards": true
         },
         {
-          "ActionToEndThisStep": "HordeSaved",
-          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
-            "Button_Back"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 9,
-                "Y": 8,
+                "X": 0,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages"
             }
           ]
         },
         {
-          "ActionToEndThisStep": "BattleStarted",
-          "OpenScreen": "HordeSelectionPage",
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
-            "Button_Back",
-            "Button_Army",
-            "Button_Edit",
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login",
             "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "BattleStarted",
+          "TutorialStepType": "MenuStep",
+          "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -1197,12 +1354,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -1331,8 +1490,8 @@
           "TutorialTooltipOwnerId": 1,
           "Description": "This is how much goo your card costs.",
           "Position": {
-            "X": 7.45,
-            "Y": -6,
+            "X": 5.65,
+            "Y": 5.7,
             "Z": 0
           },
           "AppearDelay": 2.3,
@@ -1405,6 +1564,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Zombies aren't all just claws and flesh.\n\nThey have abilities too. Let's learn how to use them.",
@@ -1414,6 +1574,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1424,6 +1585,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -1434,17 +1596,20 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "TutorialObjectIdStepOwner": 51
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -1458,6 +1623,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2,
             3
@@ -1466,6 +1632,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "UnitsCanAttack": true,
@@ -1488,6 +1655,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1505,6 +1673,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1518,6 +1687,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             4,
             7
@@ -1527,6 +1697,7 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1560,6 +1731,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             5
           ],
@@ -1568,6 +1740,7 @@
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             6
           ],
@@ -1576,6 +1749,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             6,
             7
@@ -1601,14 +1775,15 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 2,
-              "TargetTutorialObjectId": 52,
-              "AppearDelay": 5
+              "TargetTutorialObjectId": 52
             }
           ]
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             5
           ],
@@ -1633,13 +1808,14 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialObjectIdStepOwner": 1,
-              "AppearDelay": 5
+              "AppearDelay": 5,
+              "TutorialObjectIdStepOwner": 1
             }
           ]
         },
         {
           "ActionToEndThisStep": "PlayerOverlordAbilityUsed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1671,6 +1847,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -1681,10 +1858,15 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep"
         }
       ],
       "ActionActivityHandlers": [
@@ -1706,8 +1888,8 @@
               "TutorialObjectId": 2
             }
           ],
-          "PrimaryOverlordAbility": "POISON_DART",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "POISON_DART",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 4,
@@ -1725,8 +1907,8 @@
               "TutorialObjectId": 52
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -1747,7 +1929,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1776,7 +1958,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1816,18 +1998,18 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 52
             },
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ],
           "UseOverlordSkillsSequence": [
             {
               "SkillType": "PRIMARY",
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -1844,25 +2026,78 @@
       "TutorialDescriptionTooltips": [
         {
           "Id": 6,
-          "TutorialTooltipAlign": "BottomMiddle",
+          "TutorialTooltipAlign": "CenterLeft",
           "TutorialTooltipOwner": "UI",
-          "Description": "Don't you want to open your new cards first?",
+          "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": 0,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
         {
-          "ActionToEndThisStep": "CardPackOpened",
-          "OpenScreen": "PackOpenerPage",
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
+          ],
+          "ConnectedActivities": [
+            2
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyPacks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToDeactivate": [
+            6
+          ],
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_MyPacks",
+            "ButtonPackType",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
+          ],
+          "ConnectedActivities": [
+            3
           ],
           "HandPointers": [
             {
@@ -1872,127 +2107,116 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
-              "AppearDelay": 5.5
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 9.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
-          "OpenScreen": "PackOpenerPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
-            "Button_BuyPacks",
-            "ButtonPackType"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PackOpenerPage",
-          "BlockedButtons": [
-            "ButtonMinus",
-            "ButtonPlus",
-            "ButtonMax",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 1,
-                "Y": -1.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
-              "TutorialUIElementOwnerName": "BackButton",
-              "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "AppearDelay": 7.5
-            }
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login",
+            "PackContent"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_OpenPacks",
-            "Button_Shop"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": -2.8,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PlaySelectionPage",
-          "BlockedButtons": [
-            "Button_Tutorial",
-            "Button_PvPMode",
-            "Button_Back"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -4.25,
-                "Y": -2.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "HordeSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
+            "Button_Setting",
             "Button_Battle",
-            "Button_Army",
-            "Pulse",
-            "Image_BaackgroundGeneral",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
             "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
+            "Button_Rename",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -2.7,
-                "Y": 1.6,
+                "X": -0.5,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_Edit",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "HordeFilled",
-          "OpenScreen": "HordeEditingPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
           ],
           "ConnectedActivities": [
             1
@@ -2001,39 +2225,86 @@
           "CanDoubleTapCards": true
         },
         {
-          "ActionToEndThisStep": "HordeSaved",
-          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
-            "Button_Back"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 9,
-                "Y": 8,
+                "X": 0,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
+          "BlockedButtons": [
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 2.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "BattleStarted",
-          "OpenScreen": "HordeSelectionPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -2041,19 +2312,21 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
       ],
       "ActionActivityHandlers": [
         {
-          "Id": 2,
+          "Id": 0,
           "TutorialActivityAction": "TriedToPressPlayButton",
           "TutorialActivityActionHandler": "DrawDescriptionTooltips",
           "HasSpecificConnection": true,
@@ -2183,6 +2456,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Zombies also have ranks, which give buffs to other zombies.\n\nCome, I'll show you how it works.",
@@ -2192,6 +2466,7 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -2201,15 +2476,11 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -2223,15 +2494,11 @@
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -2245,17 +2512,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2275,6 +2545,7 @@
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1,
             2
@@ -2283,6 +2554,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyBattleframeDied",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             3
           ],
@@ -2311,9 +2583,9 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 5,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -2325,6 +2597,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyBattleframeDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -2346,9 +2619,9 @@
               },
               "TutorialHandPointerOwner": "PlayerBattleframe",
               "TutorialHandPointerType": "Animated",
+              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 1,
               "TargetTutorialObjectId": 52,
-              "AppearDelay": 5,
               "AdditionalObjectIdOwners": [
                 20
               ],
@@ -2360,17 +2633,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2389,6 +2665,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             4
           ],
@@ -2403,6 +2680,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "TutorialObjectIdStepOwner": 21,
           "CanInteractWithGameplay": true,
@@ -2413,6 +2691,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -2423,10 +2702,15 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep"
         }
       ],
       "ActionActivityHandlers": [
@@ -2460,8 +2744,8 @@
           ],
           "CardsOnBoard": [
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -2485,8 +2769,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -2534,11 +2818,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -2567,6 +2851,15 @@
                 "TutorialTooltipOwner": "PlayerOverlord",
                 "Description": "That will be suicide."
               }
+            },
+            {
+              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
+              "TutorialActivityActionHandler": "OverlordSayTooltip",
+              "TutorialActivityActionHandlerData": {
+                "TutorialTooltipAlign": "CenterLeft",
+                "TutorialTooltipOwner": "PlayerOverlord",
+                "Description": "Best to play GooZilla first. You'll see."
+              }
             }
           ],
           "PlayCardsSequence": [
@@ -2577,11 +2870,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -2622,11 +2915,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 22,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 21,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -2642,16 +2935,79 @@
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
         {
+          "Id": 6,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Let's check out your new cards first.",
+          "Position": {
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
+          },
+          "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
         {
-          "ActionToEndThisStep": "CardPackOpened",
-          "OpenScreen": "PackOpenerPage",
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
+          ],
+          "ConnectedActivities": [
+            2
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyPacks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToDeactivate": [
+            6
+          ],
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_MyPacks",
+            "ButtonPackType",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
+          ],
+          "ConnectedActivities": [
+            3
           ],
           "HandPointers": [
             {
@@ -2661,127 +3017,115 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
-              "AppearDelay": 7.5
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 9.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
-          "OpenScreen": "PackOpenerPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
-            "Button_BuyPacks",
-            "ButtonPackType"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PackOpenerPage",
-          "BlockedButtons": [
-            "ButtonMinus",
-            "ButtonPlus",
-            "ButtonMax",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 1,
-                "Y": -1.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "BackButton",
-              "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 7.5
-            }
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_OpenPacks",
-            "Button_Shop"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": -2.8,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PlaySelectionPage",
-          "BlockedButtons": [
-            "Button_Tutorial",
-            "Button_PvPMode",
-            "Button_Back"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -4.25,
-                "Y": -2.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "HordeSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
+            "Button_Setting",
             "Button_Battle",
-            "Button_Army",
-            "Pulse",
-            "Image_BaackgroundGeneral",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
             "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
+            "Button_Rename",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -2.7,
-                "Y": 1.6,
+                "X": -0.5,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_Edit",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "HordeFilled",
-          "OpenScreen": "HordeEditingPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
           ],
           "ConnectedActivities": [
             1
@@ -2790,39 +3134,86 @@
           "CanDoubleTapCards": true
         },
         {
-          "ActionToEndThisStep": "HordeSaved",
-          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
-            "Button_Back"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 9,
-                "Y": 8,
+                "X": 0,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
+          "BlockedButtons": [
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 2.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "BattleStarted",
-          "OpenScreen": "HordeSelectionPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -2830,19 +3221,21 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
       ],
       "ActionActivityHandlers": [
         {
-          "Id": 2,
+          "Id": 0,
           "TutorialActivityAction": "TriedToPressPlayButton",
           "TutorialActivityActionHandler": "DrawDescriptionTooltips",
           "HasSpecificConnection": true,
@@ -2968,6 +3361,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "Let's learn about Goo-Carriers.\n\nThese special cards give you extra goo to spend in the same turn. This effect is called \"Overflow\".",
@@ -2977,6 +3371,7 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 1,
           "LaunchGameplayManually": true,
           "LaunchAIBrain": true,
@@ -2986,31 +3381,34 @@
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "RequiredActivitiesToDoneDuringStep": [
             "EnemyOverlordCardPlayed"
           ]
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
           "TutorialObjectIdStepOwner": 52
         },
         {
-          "ActionToEndThisStep": "EndTurn"
+          "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
+          "ActionToEndThisStep": "StartTurn",
+          "TutorialStepType": "GameplayStep"
         },
         {
           "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 0,
                 "Y": -0.25,
@@ -3018,12 +3416,14 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 2.5
+              "AppearDelay": 2.5,
+              "TutorialObjectIdStepOwner": 10
             }
           ]
         },
         {
           "ActionToEndThisStep": "TapOnScreen",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             2
           ],
@@ -3031,6 +3431,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "TutorialObjectIdStepOwner": 20,
           "CanInteractWithGameplay": true,
@@ -3041,17 +3442,20 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 2,
           "CanInteractWithGameplay": true,
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 3,
           "LaunchAIBrain": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3067,11 +3471,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 7.1,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": 4,
                 "Y": -0.25,
@@ -3079,12 +3478,14 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 10
+              "AppearDelay": 10,
+              "TutorialObjectIdStepOwner": -1
             }
           ]
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3100,6 +3501,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3109,6 +3511,7 @@
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 4,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3118,27 +3521,39 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
           "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
           "ConnectedTurnIndex": 5,
-          "LaunchAIBrain": true
+          "LaunchAIBrain": true,
+          "RequiredActivitiesToDoneDuringStep": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed"
+          ]
         },
         {
           "ActionToEndThisStep": "DeathAbilityCompleted",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
           "AIShouldBePaused": true
         },
         {
           "ActionToEndThisStep": "EndTurn",
-          "ConnectedTurnIndex": 5
+          "TutorialStepType": "GameplayStep",
+          "ConnectedTurnIndex": 5,
+          "RequiredActivitiesToDoneDuringStep": [
+            "EnemyOverlordCardPlayed"
+          ]
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterRight",
@@ -3154,11 +3569,6 @@
           ],
           "HandPointers": [
             {
-              "StartPosition": {
-                "X": 5.9,
-                "Y": -5.4,
-                "Z": 0
-              },
               "EndPosition": {
                 "X": -1.55,
                 "Y": 3,
@@ -3166,12 +3576,13 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 1
+              "AppearDelay": 3
             }
           ]
         },
         {
           "ActionToEndThisStep": "EnemyOverlordDied",
+          "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 6,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
@@ -3181,6 +3592,7 @@
         },
         {
           "ActionToEndThisStep": "OverlordSayPopupHided",
+          "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
@@ -3191,10 +3603,15 @@
           ]
         },
         {
-          "ActionToEndThisStep": "YouWonPopupOpened"
+          "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "GameplayStep",
+          "BlockedButtons": [
+            "Button_PlayAgain"
+          ]
         },
         {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed"
+          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
+          "TutorialStepType": "GameplayStep"
         }
       ],
       "ActionActivityHandlers": [
@@ -3242,12 +3659,12 @@
               "Name": "GooZilla",
               "TutorialObjectId": 20,
               "IsManuallyPlayable": true,
-              "BuffedHealth": 4,
+              "BuffedDefense": 4,
               "BuffedDamage": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -3287,8 +3704,8 @@
               "TutorialObjectId": 57
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -3335,7 +3752,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3357,11 +3774,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -3384,11 +3801,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 10,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3402,7 +3819,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 55,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
@@ -3412,22 +3829,22 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             }
           ]
@@ -3441,14 +3858,14 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 12,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 55
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -3464,16 +3881,79 @@
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
         {
+          "Id": 6,
+          "TutorialTooltipAlign": "CenterLeft",
+          "TutorialTooltipOwner": "UI",
+          "Description": "Let's check out your new cards first.",
+          "Position": {
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
+          },
+          "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
         {
-          "ActionToEndThisStep": "CardPackOpened",
-          "OpenScreen": "PackOpenerPage",
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToActivate": [
+            6
+          ],
+          "OpenScreen": "MainMenuPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login"
+          ],
+          "ConnectedActivities": [
+            2
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.2,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyPacks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "CardPackOpened",
+          "TutorialStepType": "MenuStep",
+          "TutorialDescriptionTooltipsToDeactivate": [
+            6
+          ],
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_MyPacks",
+            "ButtonPackType",
             "Button_BuyPacks",
-            "ButtonPackType"
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
+          ],
+          "ConnectedActivities": [
+            3
           ],
           "HandPointers": [
             {
@@ -3486,124 +3966,112 @@
               "TutorialUIElementOwnerName": "ButtonOpenPacks",
               "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 7.5
+              "AppearDelay": 9.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "CardPackCollected",
-          "OpenScreen": "PackOpenerPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
           "BlockedButtons": [
-            "BackButton",
-            "Button_BuyPacks",
-            "ButtonPackType"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PackOpenerPage",
-          "BlockedButtons": [
-            "ButtonMinus",
-            "ButtonPlus",
-            "ButtonMax",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "ButtonPackType",
             "ButtonOpenPacks",
             "Button_BuyPacks",
-            "ButtonPackType"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 1,
-                "Y": -1.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
-              "TutorialUIElementOwnerName": "BackButton",
-              "TutorialHandPointerOwner": "UI",
-              "Rotation": 180,
-              "AppearDelay": 7.5
-            }
+            "Button_Setting",
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
           "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "MainMenuPage",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "PackOpenerPageWithNavigationBar",
+          "BlockedButtons": [
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyCards",
+            "ButtonPackType",
+            "ButtonOpenPacks",
+            "Button_BuyPacks",
+            "Button_MyPacks",
+            "Button_Setting",
+            "Button_MyPacks",
+            "Button_Login"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_MyDecks",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "HordeTabChanged",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
             "Button_Login",
-            "Button_Army",
-            "Button_Settings",
-            "Button_Credits",
-            "Button_OpenPacks",
-            "Button_Shop"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": -2.8,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "PlaySelectionPage",
-          "BlockedButtons": [
-            "Button_Tutorial",
-            "Button_PvPMode",
-            "Button_Back"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -4.25,
-                "Y": -2.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "OpenScreen": "HordeSelectionPage",
-          "BlockedButtons": [
-            "Button_Back",
+            "Button_Setting",
             "Button_Battle",
-            "Button_Army",
-            "Pulse",
-            "Image_BaackgroundGeneral",
+            "Button_Shop",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Auto",
+            "Button_Filter",
+            "InputText_SearchDeckName",
             "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
+            "Button_Rename",
             "Button_LeftArrow",
-            "Button_RightArrow"
+            "Button_RightArrow",
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -2.7,
-                "Y": 1.6,
+                "X": -0.5,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_Edit",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 0.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "HordeFilled",
-          "OpenScreen": "HordeEditingPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Save"
+            "Button_Save",
+            "Button_Auto",
+            "Button_SaveDeck",
+            "Text_DeckName",
+            "Button_OverlordAbilities"
           ],
           "ConnectedActivities": [
             1
@@ -3612,39 +4080,86 @@
           "CanDoubleTapCards": true
         },
         {
-          "ActionToEndThisStep": "HordeSaved",
-          "OpenScreen": "HordeEditingPage",
+          "ActionToEndThisStep": "HordeSaveButtonPressed",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
-            "Button_Buy",
-            "Button_Army",
-            "Button_Back"
+            "Button_Login",
+            "Button_Setting",
+            "Button_Battle",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
+            "Button_Back",
+            "Button_Save",
+            "Button_Auto",
+            "Text_DeckName",
+            "Button_OverlordAbilities",
+            "Button_Filter"
           ],
           "CardsInteractingLocked": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 9,
-                "Y": 8,
+                "X": 0,
+                "Y": 1.5,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Button_SaveDeck",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages",
+              "AppearDelay": 3.5
+            }
+          ]
+        },
+        {
+          "ActionToEndThisStep": "ScreenChanged",
+          "TutorialStepType": "MenuStep",
+          "OpenScreen": "MainMenuPageWithNavigationBar",
+          "BlockedButtons": [
+            "Panel_Battle_Mode",
+            "Button_Login",
+            "Button_Left",
+            "Button_Right",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyCards",
+            "Button_Setting",
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
+          ],
+          "HandPointers": [
+            {
+              "StartPosition": {
+                "X": -0.5,
+                "Y": 1.4,
+                "Z": 0
+              },
+              "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Button_Battle",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI",
+              "AppearDelay": 2.5
             }
           ]
         },
         {
           "ActionToEndThisStep": "BattleStarted",
-          "OpenScreen": "HordeSelectionPage",
+          "TutorialStepType": "MenuStep",
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Army",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -3652,19 +4167,21 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 8.3,
-                "Y": -4.4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
       ],
       "ActionActivityHandlers": [
         {
-          "Id": 2,
+          "Id": 0,
           "TutorialActivityAction": "TriedToPressPlayButton",
           "TutorialActivityActionHandler": "DrawDescriptionTooltips",
           "HasSpecificConnection": true,
@@ -3684,7 +4201,7 @@
             "CardName": "Gloop"
           },
           {
-            "Amount": 4,
+            "Amount": 2,
             "CardName": "Zky"
           },
           {
@@ -3692,7 +4209,7 @@
             "CardName": "Harpoon"
           },
           {
-            "Amount": 3,
+            "Amount": 2,
             "CardName": "Rubble"
           },
           {
@@ -3732,8 +4249,16 @@
             "CardName": "Goo Beaker"
           },
           {
-            "Amount": 1,
+            "Amount": 2,
             "CardName": "Slab"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Trunk"
+          },
+          {
+            "Amount": 1,
+            "CardName": "Blizzard"
           },
           {
             "Amount": 1,
@@ -3741,11 +4266,7 @@
           },
           {
             "Amount": 1,
-            "CardName": "Blizzard"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Shale"
+            "CardName": "Vindrom"
           }
         ]
       },
@@ -3768,22 +4289,19 @@
             "Name": "Slab"
           },
           {
-            "Name": "Burrrnn"
+            "Name": "Slab"
           },
           {
-            "Name": "Rubble"
+            "Name": "Trunk"
           },
           {
             "Name": "Pushhh"
           },
           {
-            "Name": "Rubble"
+            "Name": "Blizzard"
           },
           {
-            "Name": "Shale"
-          },
-          {
-            "Name": "Shale"
+            "Name": "Vindrom"
           }
         ]
       },
@@ -3805,7 +4323,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 0,
+          "AppearDelay": 0.5,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
@@ -3836,6 +4354,7 @@
       "TutorialSteps": [
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "This time it's all up to you...\n\nUse everything you've learned and make me proud!",
@@ -3845,21 +4364,25 @@
         },
         {
           "ActionToEndThisStep": "EndCardFlipPlayerOrderPopup",
-          "BeginGameplayFlowManually": true,
+          "TutorialStepType": "GameplayStep",
           "PlayerOrderScreenCloseManually": true,
+          "BeginGameplayFlowManually": true
         },
         {
           "ActionToEndThisStep": "DescriptionTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             0
           ],
-          "PlayerOrderScreenCloseManually": true,
-        },
-        {
-          "ActionToEndThisStep": "PopupClosed"
+          "PlayerOrderScreenCloseManually": true
         },
         {
           "ActionToEndThisStep": "PopupClosed",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
+          "ActionToEndThisStep": "PopupClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
             1
           ],
@@ -3869,6 +4392,7 @@
         },
         {
           "ActionToEndThisStep": "EndMatchPopupAppear",
+          "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToDeactivate": [
             1
           ],
@@ -3882,6 +4406,7 @@
         },
         {
           "ActionToEndThisStep": "YouWonPopupOpened",
+          "TutorialStepType": "MenuStep",
           "BattleShouldBeWonBlocker": true,
           "BlockedButtons": [
             "Button_Back",
@@ -3897,6 +4422,7 @@
         },
         {
           "ActionToEndThisStep": "AvatarTooltipClosed",
+          "TutorialStepType": "GameplayStep",
           "TutorialAvatar": {
             "Pose": "NORMAL",
             "Description": "There's nothing more I can teach you. Congratulations!\n\nNow you can take your skills online by challenging other players in VS mode.",
@@ -4001,8 +4527,8 @@
               "Name": "Pit"
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "AISpecificOrderEnabled": false,
         "DisabledInitialization": true,

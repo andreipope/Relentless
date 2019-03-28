@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -30,24 +30,27 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = null;
+            BoardUnitModel boardUnitModel = null;
 
             if (PredefinedTargets != null && PredefinedTargets.Count > 0)
             {
-                card = PlayerCallerOfAbility.CardsInHand.FirstOrDefault(cardInHand => cardInHand.InstanceId.Id.ToString() == PredefinedTargets[0].Parameters.CardName);
+                boardUnitModel = PlayerCallerOfAbility.CardsInHand.FirstOrDefault(cardInHand => cardInHand.InstanceId.Id.ToString() == PredefinedTargets[0].Parameters.CardName);
             }
 
-            card = CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, card, Value);
+            boardUnitModel = CardsController.LowGooCostOfCardInHand(PlayerCallerOfAbility, boardUnitModel, Value);
 
-            InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+            if (boardUnitModel != null)
+            {
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
                     new ParametrizedAbilityBoardObject(PlayerCallerOfAbility,
                         new ParametrizedAbilityParameters()
                         {
-                            CardName = card.InstanceId.Id.ToString()
+                            CardName = boardUnitModel.InstanceId.Id.ToString()
                         })
                 }
-            );
+                );
+            }
         }
     }
 }

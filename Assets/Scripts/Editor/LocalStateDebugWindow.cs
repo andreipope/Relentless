@@ -1,10 +1,14 @@
+using System;
+using System.Collections.Generic;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Editor.Tools;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
 using UnityEngine;
+using Player = Loom.ZombieBattleground.Player;
 
 namespace Editor
 {
@@ -75,6 +79,8 @@ namespace Editor
                 return;
             }
 
+            BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
+
             GUILayout.Label("Match Type: " + matchManager.MatchType);
 
             using (EditorGUILayout.ScrollViewScope scrollView = new EditorGUILayout.ScrollViewScope(_scrollPosition, false, false))
@@ -82,12 +88,89 @@ namespace Editor
                 _scrollPosition = scrollView.scrollPosition;
                 EditorGUILayout.BeginVertical();
                 {
+                    void DrawViewList<T>(string title, IReadOnlyList<T> items, bool drawType = false)
+                    {
+                        GUILayout.Label($"<b>{title} ({typeof(T).Name})</b>", GameStateGUI.Styles.RichLabel);
+                        if (items.Count == 0)
+                        {
+                            GUILayout.Label("<i>None</i>",GameStateGUI.Styles.RichLabel);
+                            return;
+                        }
+
+                        foreach (T item in items)
+                        {
+                            EditorGUILayout.BeginHorizontal();
+                            {
+                                BoardUnitModel model;
+                                IBoardUnitView view = item as IBoardUnitView;
+                                if (view != null)
+                                {
+                                    model = view.Model;
+                                }
+                                else
+                                {
+                                    model = item as BoardUnitModel;
+                                }
+
+                                if (model == null)
+                                    throw new Exception("model == null");
+
+                                string description = GameStateGUI.FormatCardInstance(model.Card.ToProtobuf());
+                                if (drawType)
+                                {
+                                    description = $"<b>Type: </b>{((object) view ?? model).GetType().Name}, {description}";
+                                }
+
+                                GUILayout.Label(
+                                    description,
+                                    GameStateGUI.Styles.RichLabel,
+                                    GUILayout.ExpandWidth(false)
+                                );
+
+                                if (view != null)
+                                {
+                                    GameObject viewGameObject = view.Transform != null ? view.Transform.gameObject : null;
+                                    EditorGUILayout.ObjectField(viewGameObject, typeof(GameObject), true, GUILayout.Width(150));
+                                }
+                            }
+                            EditorGUILayout.EndHorizontal();
+                        }
+                    }
+
+                    void AfterPlayerDrawnHandlerCallback(bool isCurrentPlayer, PlayerState playerState)
+                    {
+                        EditorGUILayout.Space();
+
+                        Player player = isCurrentPlayer ? gameplayManager.CurrentPlayer : gameplayManager.OpponentPlayer;
+
+                        DrawViewList("BoardItemsInUse", player.BoardItemsInUse);
+                        EditorGUILayout.Space();
+
+                        DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
+                        EditorGUILayout.Space();
+
+                        if (isCurrentPlayer)
+                        {
+                            DrawViewList("BattlegroundController.PlayerHandCards", battlegroundController.PlayerHandCards);
+                            EditorGUILayout.Space();
+                            DrawViewList("BattlegroundController.PlayerGraveyardCards", battlegroundController.PlayerGraveyardCards);
+                        }
+                        else
+                        {
+                            DrawViewList("BattlegroundController.OpponentHandCards", battlegroundController.OpponentHandCards);
+                            EditorGUILayout.Space();
+                            DrawViewList("BattlegroundController.OpponentGraveyardCards", battlegroundController.OpponentGraveyardCards);
+                        }
+                    }
+
                     bool isExpanded = true;
                     GameState currentGameState =
                         matchManager.MatchType == Enumerators.MatchType.PVP ?
                         GameStateConstructor.Create().CreateCurrentGameStateFromOnlineGame(false) :
                         GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
-                    GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, ref isExpanded);
+                    GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, AfterPlayerDrawnHandlerCallback, ref isExpanded);
+
+                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.BoardUnitViews, true);
                 }
                 EditorGUILayout.EndVertical();
             }

@@ -49,11 +49,11 @@ namespace Loom.ZombieBattleground
 
         public static string GetLogFilePath()
         {
-            string logFilePath = GetLogFilePathFromEnvVar();
-            if (logFilePath != null)
-                return logFilePath;
+            string path =
+                GetLogFilePathFromEnvVar() ??
+                Path.Combine(Application.persistentDataPath, DefaultLogFileName);
 
-            return Path.Combine(Application.persistentDataPath, DefaultLogFileName);
+            return Path.GetFullPath(path);
         }
 
         public static bool FileLogEnabled
@@ -71,7 +71,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static bool NonEssentialLogsDisabled => Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
+        public static bool NonEssentialLogsDisabled =>
+#if FORCE_ENABLE_ALL_LOGS
+            false;
+#else
+            Application.isEditor && !Application.isBatchMode && !UnitTestDetector.IsRunningUnitTests;
+#endif
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
 #if UNITY_EDITOR

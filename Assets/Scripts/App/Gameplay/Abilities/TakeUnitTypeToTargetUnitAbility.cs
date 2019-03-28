@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -45,9 +45,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-               .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
-               .ToList();
+                allies = PlayerCallerOfAbility.CardsOnBoard
+                    .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+                    .ToList();
 
                 if (allies.Count > 0)
                 {

@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             try
             {
-                await _backendFacade.CreateContract(UserDataModel.PrivateKey);
+                await CreateContract();
                 await _backendFacade.SignUp(UserDataModel.UserId);
             }
             catch (TxCommitException e) when (e.Message.Contains("user already exists"))
@@ -100,12 +100,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
             catch (RpcClientException exception)
             {
-                Helpers.ExceptionReporter.LogException(Log, exception);
-                Debug.LogWarning(" RpcException == " + exception);
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn("RpcException ==", exception);
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
             }
 
             await _dataManager.StartLoadCache();      
+        }
+
+        private async Task CreateContract()
+        {
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
+            {
+                CallTimeout = Constants.BackendCallTimeout,
+                StaticCallTimeout = Constants.BackendCallTimeout
+            };
+            IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
+            await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
         }
     }
 }

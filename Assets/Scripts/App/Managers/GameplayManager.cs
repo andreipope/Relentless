@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private List<IController> _controllers;
+        private List<IController> _controllers = new List<IController>();
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
 
@@ -126,10 +126,16 @@ namespace Loom.ZombieBattleground
                             switch (endGameType)
                             {
                                 case Enumerators.EndGameType.WIN:
-                                    _uiManager.DrawPopup<YouWonPopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { true });
+                                    else
+                                        _uiManager.DrawPopup<YouWonPopup>();
                                     break;
                                 case Enumerators.EndGameType.LOSE:
-                                    _uiManager.DrawPopup<YouLosePopup>();
+                                    if (Constants.EnableNewUI)
+                                        _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { false });
+                                    else
+                                        _uiManager.DrawPopup<YouLosePopup>();
                                     break;
                                 case Enumerators.EndGameType.CANCEL:
                                     break;
@@ -158,28 +164,39 @@ namespace Loom.ZombieBattleground
 
         public void StartGameplay()
         {
-            _uiManager.DrawPopup<PreparingForBattlePopup>();
+            if (IsTutorial)
+            {
+                StartPreparingToInitializeGame();
+            }
+            else
+            {
+                _uiManager.DrawPopup<PreparingForBattlePopup>();
 
-            MatchDuration.StartTimer();
+                MatchDuration.StartTimer();
 
-            _timerManager.AddTimer(
-                x =>
-                {
-                    _uiManager.HidePopup<PreparingForBattlePopup>();
+                _timerManager.AddTimer(
+                    x =>
+                    {
+                        _uiManager.HidePopup<PreparingForBattlePopup>();
+                        StartPreparingToInitializeGame();
+                    },
+                    null,
+                    2f);
+            }
+        }
 
-                    IsGameStarted = true;
-                    IsGameEnded = false;
-                    IsPreparingEnded = false;
-                    IsDesyncDetected = false;
+        private void StartPreparingToInitializeGame()
+        {
+            IsGameStarted = true;
+            IsGameEnded = false;
+            IsPreparingEnded = false;
+            IsDesyncDetected = false;
 
-                    CanDoDragActions = true;
+            CanDoDragActions = true;
 
-                    GameStarted?.Invoke();
+            GameStarted?.Invoke();
 
-                    StartInitializeGame();
-                },
-                null,
-                2f);
+            StartInitializeGame();
         }
 
         public void StopGameplay()
@@ -291,7 +308,8 @@ namespace Loom.ZombieBattleground
                 new UniqueAnimationsController(),
                 new BoardController(),
                 new OverlordsTalkingController(),
-                new HandPointerController()
+                new HandPointerController(),
+                new DeckGeneratorController()
             };
 
             foreach (IController controller in _controllers)
@@ -359,7 +377,7 @@ namespace Loom.ZombieBattleground
                     if (_tutorialManager.CurrentTutorial.IsGameplayTutorial() &&
                         _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                     {
-                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForLocalMatch(false);
                     }
                 };
 
@@ -369,7 +387,7 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                         {
-                            CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                            CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                         });
                     }
                     else
@@ -417,7 +435,7 @@ namespace Loom.ZombieBattleground
                                 throw new ArgumentOutOfRangeException();
                         }
 
-                        OpponentPlayer.SetFirstHandForLocalMatch(false);
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForLocalMatch(false);
                         break;
                     case Enumerators.MatchType.PVP:
                         CurrentTurnPlayer = GameClient.Get<IPvPManager>().IsFirstPlayer() ? CurrentPlayer : OpponentPlayer;
@@ -436,7 +454,8 @@ namespace Loom.ZombieBattleground
                             )
                         );
 
-                        OpponentPlayer.SetFirstHandForPvPMatch(opponentCardsInHand, false);
+                        BoardUnitModel[] boardUnitModels = opponentCardsInHand.Select(card => new BoardUnitModel(card)).ToArray();
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -444,7 +463,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
-                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                    CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                 });
             }
 

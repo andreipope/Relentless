@@ -17,9 +17,9 @@ namespace Loom.ZombieBattleground
 
         public GameObject SelfObject;
 
-        public HeroSkill Skill;
+        public OverlordSkill Skill;
 
-        public List<Enumerators.UnitStatusType> BlockedUnitStatusTypes;
+        public List<Enumerators.UnitSpecialStatus> BlockedUnitStatusTypes;
 
         private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -63,7 +63,9 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
-        public BoardSkill(GameObject obj, Player player, HeroSkill skillInfo, bool isPrimary)
+        public override Player OwnerPlayer { get; }
+
+        public BoardSkill(GameObject obj, Player player, OverlordSkill skillInfo, bool isPrimary)
         {
             SelfObject = obj;
             Skill = skillInfo;
@@ -74,11 +76,11 @@ namespace Loom.ZombieBattleground
             _cooldown = skillInfo.Cooldown;
             _singleUse = skillInfo.SingleUse;
 
-            BlockedUnitStatusTypes = new List<Enumerators.UnitStatusType>();
+            BlockedUnitStatusTypes = new List<Enumerators.UnitSpecialStatus>();
 
-            if(Skill.OverlordSkill == Enumerators.OverlordSkill.FREEZE)
+            if(Skill.Skill == Enumerators.Skill.FREEZE)
             {
-                BlockedUnitStatusTypes.Add(Enumerators.UnitStatusType.FROZEN);
+                BlockedUnitStatusTypes.Add(Enumerators.UnitSpecialStatus.FROZEN);
             }
 
             _coolDownTimer = new SkillCoolDownTimer(SelfObject, _cooldown);
@@ -180,7 +182,7 @@ namespace Loom.ZombieBattleground
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
                             case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardUnitModel);
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -226,11 +228,11 @@ namespace Loom.ZombieBattleground
                     FightTargetingArrow =
                         Object.Instantiate(_fightTargetingArrowPrefab).AddComponent<BattleBoardArrow>();
                     FightTargetingArrow.BoardCards = _gameplayManager.CurrentPlayer == OwnerPlayer ?
-                        _gameplayManager.OpponentPlayer.BoardCards :
-                        _gameplayManager.CurrentPlayer.BoardCards;
-                    FightTargetingArrow.TargetsType = Skill.SkillTargetTypes;
-                    FightTargetingArrow.ElementType = Skill.ElementTargetTypes;
-                    FightTargetingArrow.TargetUnitStatusType = Skill.TargetUnitStatusType;
+                        _gameplayManager.OpponentPlayer.CardsOnBoard :
+                        _gameplayManager.CurrentPlayer.CardsOnBoard;
+                    FightTargetingArrow.TargetsType = Skill.SkillTargets;
+                    FightTargetingArrow.ElementType = Skill.TargetFactions;
+                    FightTargetingArrow._targetUnitSpecialStatusType = Skill.TargetUnitSpecialStatus;
                     FightTargetingArrow.BlockedUnitStatusTypes = BlockedUnitStatusTypes;
                     FightTargetingArrow.IgnoreHeavy = true;
 
@@ -266,7 +268,7 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
-            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfHero, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
             if (OwnerPlayer.IsLocalPlayer)
             {
@@ -466,8 +468,8 @@ namespace Loom.ZombieBattleground
                             if (FightTargetingArrow.SelectedPlayer != null)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info =>
-                                    (info.TargetType == Enumerators.SkillTargetType.PLAYER && FightTargetingArrow.SelectedPlayer.IsLocalPlayer) ||
-                                    (info.TargetType == Enumerators.SkillTargetType.OPPONENT && !FightTargetingArrow.SelectedPlayer.IsLocalPlayer)))
+                                    (info.Target == Enumerators.SkillTarget.PLAYER && FightTargetingArrow.SelectedPlayer.IsLocalPlayer) ||
+                                    (info.Target == Enumerators.SkillTarget.OPPONENT && !FightTargetingArrow.SelectedPlayer.IsLocalPlayer)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     CancelTargetingArrows();
@@ -478,7 +480,7 @@ namespace Loom.ZombieBattleground
                             else if (FightTargetingArrow.SelectedCard != null)
                             {
                                 if (!_tutorialManager.GetCurrentTurnInfo().UseOverlordSkillsSequence.Exists(info => info.TargetTutorialObjectId == FightTargetingArrow.SelectedCard.Model.TutorialObjectId &&
-                                    (info.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD || info.TargetType == Enumerators.SkillTargetType.PLAYER_CARD)))
+                                    (info.Target == Enumerators.SkillTarget.OPPONENT_CARD || info.Target == Enumerators.SkillTarget.PLAYER_CARD)))
                                 {
                                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToUseUnsequentionalBattleframe);
                                     CancelTargetingArrows();
@@ -559,11 +561,11 @@ namespace Loom.ZombieBattleground
 
             private readonly SpriteRenderer _buffIconPicture;
 
-            private readonly TextMeshPro _callTypeText;
+            private readonly TextMeshPro _triggerText;
 
             private readonly TextMeshPro _descriptionText;
 
-            public OverlordAbilityInfoObject(HeroSkill skill, Transform parent, Vector3 position)
+            public OverlordAbilityInfoObject(OverlordSkill skill, Transform parent, Vector3 position)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
@@ -574,13 +576,13 @@ namespace Loom.ZombieBattleground
 
                 Transform.localPosition = position;
 
-                _callTypeText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
+                _triggerText = _selfObject.transform.Find("Text_Title").GetComponent<TextMeshPro>();
                 _descriptionText = _selfObject.transform.Find("Text_Description").GetComponent<TextMeshPro>();
 
                 _buffIconPicture = _selfObject.transform.Find("Image_IconBackground/Image_Icon")
                     .GetComponent<SpriteRenderer>();
 
-                _callTypeText.text = skill.Title.ToUpperInvariant();
+                _triggerText.text = skill.Title.ToUpperInvariant();
                 _descriptionText.text = "    " + skill.Description;
 
                 _buffIconPicture.sprite =

@@ -13,12 +13,14 @@ using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
 using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
     public class FiatPlasmaManager : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(FiatPlasmaManager));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(FiatPlasmaManager) + "Rpc");
 
         #region Contract
         private TextAsset _abiFiatPurchase;
@@ -72,7 +74,7 @@ namespace Loom.ZombieBattleground
          public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
         {
             ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);
-            _fiatPurchaseContract = await GetContract
+            _fiatPurchaseContract = GetContract
             (
                 PrivateKey,
                 PublicKey,
@@ -138,7 +140,6 @@ namespace Loom.ZombieBattleground
                     throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
                 }
             }
-            return "";
         }
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
@@ -149,17 +150,19 @@ namespace Loom.ZombieBattleground
             _eventResponse = e.EventName;
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {        
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        {
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
@@ -226,7 +229,7 @@ namespace Loom.ZombieBattleground
             log += "v: " + v + "\n";
             log += "hash: " + hash + "\n";
             string amountStr = "[";
-            for(int i=0; i<amountList.Count;++i)
+            for (int i = 0; i < amountList.Count;++i)
             {
                 amountStr += amountList[i] + " ";
             }

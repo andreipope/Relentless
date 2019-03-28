@@ -1,4 +1,5 @@
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialDescriptionTooltipItem
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialDescriptionTooltipItem));
+
         private readonly ITutorialManager _tutorialManager;
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
@@ -38,6 +41,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.TooltipAlign Align => _align;
 
+        public int OwnerId => _ownerId;
+
         public float Width;
 
         public Enumerators.TutorialObjectOwner OwnerType;
@@ -47,6 +52,8 @@ namespace Loom.ZombieBattleground
         private Vector3 _currentPosition;
 
         private BoardUnitView _ownerUnit;
+
+        private BoardCardView _ownerCardInHand;
 
         private bool _dynamicPosition;
 
@@ -62,6 +69,8 @@ namespace Loom.ZombieBattleground
 
         private Sequence _showingSequence;
 
+        private string _tutorialUIElementOwnerName;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
@@ -72,7 +81,8 @@ namespace Loom.ZombieBattleground
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
                                                 BoardObject boardObjectOwner = null,
-                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
+                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
+                                                string tutorialUIElementOwnerName = Constants.Empty)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -86,6 +96,7 @@ namespace Loom.ZombieBattleground
             _currentPosition = position;
             _layer = layer;
             _minimumShowTime = minimumShowTime;
+            _tutorialUIElementOwnerName = tutorialUIElementOwnerName;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -118,17 +129,34 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
+                BoardUnitModel boardUnitModel = null;
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.CurrentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                        boardUnitModel = _gameplayManager.CurrentPlayer.CardsOnBoard.First((x) =>
+                            x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        _ownerUnit = _gameplayManager.OpponentPlayer.BoardCards.First((x) =>
-                            x.Model.TutorialObjectId == ownerId);
+                        boardUnitModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
+                            x.TutorialObjectId == ownerId);
                         break;
-                    default: break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerId != 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.Model.Card.TutorialObjectId == ownerId);
+                        }
+                        else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                        {
+                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                if (boardUnitModel != null)
+                {
+                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                 }
             }
             else if(boardObjectOwner != null)
@@ -138,7 +166,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel(boardObjectOwner as BoardUnitModel);
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardObjectOwner as BoardUnitModel);
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;
@@ -298,6 +326,16 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;
+                    case Enumerators.TutorialObjectOwner.PlayerCardInHand:
+                        if (_ownerCardInHand == null || !_ownerCardInHand.GameObject || _ownerCardInHand.GameObject == null)
+                        {
+                            UpdatePossibilityForClose();
+                            Hide();
+                            return;
+                        }
+                         
+                        _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
+                        break;
                 }
             }
         }
@@ -353,6 +391,15 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                if (OwnerType == Enumerators.TutorialObjectOwner.UI)
+                {
+                    GameObject ownerObject = GameObject.Find(_tutorialUIElementOwnerName);
+                    if (ownerObject && ownerObject != null)
+                    {
+                        _currentPosition = ownerObject.transform.position + _currentPosition;
+                    }
+                }
+
                 _selfObject.transform.position = _currentPosition;
             }           
         }
@@ -376,7 +423,10 @@ namespace Loom.ZombieBattleground
                     _currentBackground.gameObject.SetActive(true);
                     break;
                 default:
-                    throw new NotImplementedException(nameof(align) + " doesn't implemented");
+                    Log.Warn($"Align {align} didnt implmented! Will use  default 'CenterLeft'");
+                    SetBackgroundType(Enumerators.TooltipAlign.CenterLeft);
+                    return;
+
             }
 
             _currentBackground.transform.localScale = size;

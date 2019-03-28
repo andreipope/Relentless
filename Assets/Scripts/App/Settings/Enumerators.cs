@@ -4,14 +4,14 @@ namespace Loom.ZombieBattleground.Common
 {
     public class Enumerators
     {
-        public enum AbilityActivityType
+        public enum AbilityActivity
         {
             UNDEFINED,
             PASSIVE,
             ACTIVE
         }
 
-        public enum AbilityCallType
+        public enum AbilityTrigger
         {
             UNDEFINED,
             TURN,
@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground.Common
             KILL_UNIT
         }
 
-        public enum AbilityEffectType
+        public enum AbilityEffect
         {
             NONE,
             MASSIVE_WATER_WAVE,
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_FRESH_MEAT
         }
 
-        public enum AbilityTargetType
+        public enum Target
         {
             NONE,
             PLAYER,
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.Common
             APP_INIT,
             LOGIN,
             MAIN_MENU,
-            HERO_SELECTION,
+            OVERLORD_SELECTION,
             HordeSelection,
             ARMY,
             SHOP,
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground.Common
             ONLY_DIFFERENT
         }
 
-        public enum GameMechanicDescriptionType
+        public enum GameMechanicDescription
         {
             [EnumMember(Value = "UNDEFINED")]
             Undefined,
@@ -331,7 +331,7 @@ namespace Loom.ZombieBattleground.Common
         public enum CacheDataType
         {
             CARDS_LIBRARY_DATA,
-            HEROES_DATA,
+            OVERLORDS_DATA,
             COLLECTION_DATA,
             DECKS_DATA,
             DECKS_OPPONENT_DATA,
@@ -344,7 +344,7 @@ namespace Loom.ZombieBattleground.Common
         {
             UNDEFINED,
             CREATURE,
-            SPELL
+            ITEM
         }
 
         public enum CardPackType
@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground.Common
             PVE
         }
 
-        public enum OverlordSkill
+        public enum Skill
         {
             NONE,
 
@@ -459,9 +459,9 @@ namespace Loom.ZombieBattleground.Common
             BLIZZARD
         }
 
-        public enum SetType
+        public enum Faction
         {
-            NONE,
+            Undefined,
             FIRE,
             WATER,
             EARTH,
@@ -469,10 +469,9 @@ namespace Loom.ZombieBattleground.Common
             LIFE,
             TOXIC,
             ITEM,
-            OTHERS,
         }
 
-        public enum SkillTargetType
+        public enum SkillTarget
         {
             NONE,
             PLAYER,
@@ -541,13 +540,18 @@ namespace Loom.ZombieBattleground.Common
             DISTRACT_LOOP,
             RAGE_LOOP,
             UNIQUE_ARRIVALS,
-            ZOMBIE_DEATH_ANIMATIONS
+            ZOMBIE_DEATH_ANIMATIONS,
+            OPEN_PACK,
+            CARD_REVEAL_MINION,
+            CARD_REVEAL_OFFICER,
+            CARD_REVEAL_GENERAL,
+            CARD_REVEAL_COMMANDER
         }
 
-        public enum StatType
+        public enum Stat
         {
             UNDEFINED,
-            HEALTH,
+            DEFENSE,
             DAMAGE
         }
 
@@ -566,7 +570,7 @@ namespace Loom.ZombieBattleground.Common
             BUFF
         }
 
-        public enum UnitStatusType
+        public enum UnitSpecialStatus
         {
             NONE,
             FROZEN
@@ -603,7 +607,8 @@ namespace Loom.ZombieBattleground.Common
             Distract,
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
-            Swing
+            Swing,
+            Devour
         }
         public enum ScreenMode
         {
@@ -674,7 +679,7 @@ namespace Loom.ZombieBattleground.Common
             YourOverlord
         }
 
-        public enum UniqueAnimationType
+        public enum UniqueAnimation
         {
             None,
             ShammannArrival,
@@ -841,7 +846,11 @@ namespace Loom.ZombieBattleground.Common
 
             CardWithAbilityPlayed,
 
-            EndCardFlipPlayerOrderPopup
+            EndCardFlipPlayerOrderPopup,
+
+            HordeTabChanged,
+
+            HordeSaveButtonPressed
         }
 
         public enum TutorialActivityActionHandler
@@ -894,6 +903,12 @@ namespace Loom.ZombieBattleground.Common
             Water = 7,
             Small = 8,
             Minion = 9            
+        }
+
+        public enum TutorialStepType
+        {
+            MenuStep,
+            GameplayStep
         }
     }
 }

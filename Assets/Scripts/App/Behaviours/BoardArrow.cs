@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
 {
-    public List<Enumerators.SkillTargetType> TargetsType = new List<Enumerators.SkillTargetType>();
+    public List<Enumerators.SkillTarget> TargetsType = new List<Enumerators.SkillTarget>();
 
-    public List<Enumerators.SetType> ElementType = new List<Enumerators.SetType>();
+    public List<Enumerators.Faction> ElementType = new List<Enumerators.Faction>();
 
     protected IGameplayManager GameplayManager;
     protected ITutorialManager TutorialManager;

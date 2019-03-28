@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             // FIXME: why are we hardcoding card names??
-            if (CardOwnerOfAbility.CardSetType == PlayerCallerOfAbility.SelfHero.HeroElement ||
+            if (CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Faction ||
                 CardOwnerOfAbility.Name.Equals("Corrupted Goo") || CardOwnerOfAbility.Name.Equals("Tainted Goo"))
             {
                 string clipTitle = CardOwnerOfAbility.Name.Replace(" ", "_");

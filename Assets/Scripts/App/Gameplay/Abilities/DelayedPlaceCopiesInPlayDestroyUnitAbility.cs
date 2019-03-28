@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardObject> targets = new List<BoardObject>();
 
@@ -29,31 +29,22 @@ namespace Loom.ZombieBattleground
             BoardUnitView boardUnitView;
             for (int i = 0; i < Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                boardUnitView = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End);
+                boardUnitView = PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
                 boardUnitModel = boardUnitView.Model;
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
                     Target = boardUnitModel,
                 });
 
-                if (AbilityUnitOwner.OwnerPlayer.IsLocalPlayer)
-                {
-                    BattlegroundController.PlayerBoardCards.Insert(ItemPosition.End, boardUnitView);
-                }
-                else
-                {
-                    BattlegroundController.OpponentBoardCards.Insert(ItemPosition.End, boardUnitView);
-                }
-
                 targets.Add(boardUnitModel);
             }
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                 Target = AbilityUnitOwner,
@@ -65,7 +56,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
 
             InvokeUseAbilityEvent(

@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
         public Enumerators.CardType UnitType;
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         public int Cost { get; }
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
             Cost = ability.Cost;
         }
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -60,15 +60,15 @@ namespace Loom.ZombieBattleground
                 effectType = Enumerators.ActionEffectType.Heavy;
             }
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            switch (AbilityData.AbilitySubTrigger)
+            switch (AbilityData.SubTrigger)
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
                     {
                         List<BoardUnitModel> allies;
 
-                        allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                        allies = PlayerCallerOfAbility.CardsOnBoard
                         .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead)
                         .ToList();
 
@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
 
                             TakeTypeToUnit(allies[random]);
 
-                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                             {
                                 ActionEffectType = effectType,
                                 Target = allies[random]
@@ -87,11 +87,13 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.BoardCards.Where(unit => unit.Model != AbilityUnitOwner &&
-                                                               !unit.Model.IsDead &&
-                                                               unit.Model.CurrentHp > 0).Count() == 0)
+                    if (PlayerCallerOfAbility.CardsOnBoard.Where(
+                            unit => unit != AbilityUnitOwner &&
+                                !unit.IsDead &&
+                                unit.CurrentDefense > 0)
+                        .Count() == 0)
                     {
-                        TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = effectType,
                             Target = AbilityUnitOwner
@@ -102,9 +104,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.LibraryCard.CardSetType == SetType &&
+                                   unit.Card.Prototype.Faction == Faction &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -112,7 +114,7 @@ namespace Loom.ZombieBattleground
                         {
                             TakeTypeToUnit(unit);
 
-                            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                             {
                                 ActionEffectType = effectType,
                                 Target = unit
@@ -122,8 +124,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
-                               .Where(unit => unit != AbilityUnitOwner && unit.Card.LibraryCard.CardSetType == SetType &&
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                               .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 
@@ -136,11 +138,11 @@ namespace Loom.ZombieBattleground
             }
 
 
-            if (TargetEffects.Count > 0)
+            if (targetEffects.Count > 0)
             {
                 Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingMultipleCards;
 
-                if (TargetEffects.Count == 1)
+                if (targetEffects.Count == 1)
                 {
                     actionType = Enumerators.ActionType.CardAffectingCard;
                 }
@@ -149,7 +151,7 @@ namespace Loom.ZombieBattleground
                 {
                     ActionType = actionType,
                     Caller = GetCaller(),
-                    TargetEffects = TargetEffects
+                    TargetEffects = targetEffects
                 });
             }
         }

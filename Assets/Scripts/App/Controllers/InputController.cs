@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private BattlegroundController _battlegroundController;
+
         private Camera _raysCamera;
 
         private List<BoardUnitView> _selectedUnitsList;
@@ -57,6 +59,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _selectedUnitsList = new List<BoardUnitView>();
 
@@ -191,8 +194,10 @@ namespace Loom.ZombieBattleground
 
             hasPointerTarget = ProcessTutorialActions(ref hasPointerTarget, collider, isHovering);
 
-            ProcessUnits(ref hasTarget, ref hasPointerTarget, _gameplayManager.CurrentPlayer.BoardCards, collider, permanent, isHovering);
-            ProcessUnits(ref hasTarget, ref hasPointerTarget, _gameplayManager.OpponentPlayer.BoardCards, collider, permanent, isHovering);
+            IReadOnlyList<BoardUnitView> playerCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.CurrentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> opponentCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, playerCardsOnBoardUnitViews, collider, permanent, isHovering);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, opponentCardsOnBoardUnitViews, collider, permanent, isHovering);
 
             ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.CurrentPlayer, collider, permanent, isHovering);
             ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.OpponentPlayer, collider, permanent, isHovering);
@@ -207,7 +212,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCard boardCard = null, bool isManaBar = false)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCardView boardCardView = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {
@@ -228,7 +233,7 @@ namespace Loom.ZombieBattleground
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
                     }
-                    else if (boardCard != null)
+                    else if (boardCardView != null)
                     {
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
                     }
@@ -251,12 +256,12 @@ namespace Loom.ZombieBattleground
         private (bool, bool) ProcessUnits(
                 ref bool hasTarget,
                 ref bool hasPoinerTarget,
-                UniquePositionedList<BoardUnitView> BoardCards,
+                IReadOnlyList<BoardUnitView> boardCards,
                 Collider2D collider,
                 bool permanent = false,
                 bool isHovering = false)
         {
-            foreach (BoardUnitView unit in BoardCards)
+            foreach (BoardUnitView unit in boardCards)
             {
                 if (unit.GameObject.GetInstanceID() == collider.gameObject.GetInstanceID())
                 {
@@ -312,15 +317,15 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+                    BoardCardView boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
 
-                    if (boardCard != null)
+                    if (boardCardView != null)
                     {
                         hasPoinerTarget = true;
 
                         if (isHovering)
                         {
-                            UpdateHovering(collider.gameObject, boardCard: boardCard);
+                            UpdateHovering(collider.gameObject, boardCardView: boardCardView);
                         }
                     }
                 }

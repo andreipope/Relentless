@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         CardsLibraryData CachedCardsLibraryData { get; set; }
 
-        HeroesData CachedHeroesData { get; set; }
+        OverlordData CachedOverlordData { get; set; }
 
         CollectionData CachedCollectionData { get; set; }
 
@@ -28,13 +28,15 @@ namespace Loom.ZombieBattleground
 
         GetVersionsResponse CachedVersions { get; set; }
 
+        ZbVersion ZbVersion { get; }
+
         Task StartLoadCache();
 
         Task SaveCache(Enumerators.CacheDataType type);
 
         TooltipContentData.CardTypeInfo GetCardTypeInfo(Enumerators.CardType cardType);
 
-        TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescriptionType gameMechanic);
+        TooltipContentData.GameMechanicInfo GetGameMechanicInfo(Enumerators.GameMechanicDescription gameMechanic);
 
         TooltipContentData.RankInfo GetCardRankInfo(Enumerators.CardRank rank);
 
@@ -49,5 +51,7 @@ namespace Loom.ZombieBattleground
         string GetPersistentDataPath(string fileName);
 
         Task LoadRemoteConfig();
+
+        Task LoadZbVersionData();
     }
 }

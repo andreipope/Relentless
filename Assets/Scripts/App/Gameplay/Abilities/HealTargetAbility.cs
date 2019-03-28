@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
             Count = ability.Count;
-            SubTrigger = ability.AbilitySubTrigger;
+            SubTrigger = ability.SubTrigger;
 
             _targets = new List<BoardObject>();
         }
@@ -41,9 +41,9 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
             }
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
-                if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+                if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
                 {
                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
                    {
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_CARD))
+                if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER_CARD))
                 {
-                    _targets.AddRange(PlayerCallerOfAbility.BoardCards.Where(x => x.Model != AbilityUnitOwner && x.Model.CurrentHp < x.Model.MaxCurrentHp).Select(x => x.Model));
+                    _targets.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x != AbilityUnitOwner && x.CurrentDefense < x.MaxCurrentDefense));
                 }
 
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER) && (BoardSpell == null || BoardSpell.Card.LibraryCard.MouldId != ZedKitId))
+                if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }
@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
 
         private void HealRandomCountOfAlliesCompleted()
         {
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = Value;
             foreach (BoardObject boardObject in _targets)
@@ -176,17 +176,17 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case BoardUnitModel unit:
-                        value = unit.MaxCurrentHp - unit.CurrentHp;
+                        value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
-                        value = player.MaxCurrentHp - player.Defense;
+                        value = player.MaxCurrentDefense - player.Defense;
                         break;
                 }
 
                 if (value > Value)
                     value = Value;
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
                     Target = boardObject,
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 
