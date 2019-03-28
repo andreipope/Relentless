@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/AreaBarPopup"));
-            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas.transform, false);
             
             _buttonLogin = Self.transform.Find("Button_Login").GetComponent<Button>();
             _buttonLogin.onClick.AddListener(ButtonLoginHandler);

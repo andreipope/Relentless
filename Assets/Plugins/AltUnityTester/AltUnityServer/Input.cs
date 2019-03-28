@@ -174,25 +174,26 @@ public class Input : MonoBehaviour
 
     public static bool GetMouseButton(int button)
     {
-        return false;
-        //        return touches.Length > button;
+        //method not tested
+        return touches.Length > button;
     }
 
     public static bool GetMouseButtonDown(int button)
     {
-        return false;
-        //        return touches.Length> button && touches[button].phase != TouchPhase.Began;
+        //method not tested
+        return touches.Length > button && touches[button].phase != TouchPhase.Began;
     }
 
     public static bool GetMouseButtonUp(int button)
     {
-        return false;
-        //    return touches.Length > button &&  touches[button].phase == TouchPhase.Ended;
+        //method not tested
+        return touches.Length > button && touches[button].phase == TouchPhase.Ended;
     }
 
     public static Touch GetTouch(int index)
     {
-        return new Touch();
+         return UseCustomInput ? _touches[index] : UnityEngine.Input.GetTouch(index);
+
     }
 
     public static void ResetInputAxes()
@@ -221,7 +222,7 @@ public class Input : MonoBehaviour
         touchListCopy[Input.touchCount - 1] = touch;
         Input.touches = touchListCopy;
         mousePosition = new Vector3(touches[0].position.x, touches[0].position.y, 0);
-        var pointerEventData = mockUpPointerInputModule.GetPointerEventData(touch);
+        var pointerEventData = mockUpPointerInputModule.ExecuteTouchEvent(touch);
         yield return null;
         float time = 0;
         do
@@ -256,7 +257,7 @@ public class Input : MonoBehaviour
             //index = touches.IndexOf(touch);
             //touches[index] = touch;
 
-            pointerEventData = mockUpPointerInputModule.GetPointerEventData(touch, pointerEventData);
+            pointerEventData = mockUpPointerInputModule.ExecuteTouchEvent(touch, pointerEventData);
             Debug.Log(time + "  " + duration);
 
             yield return null;
@@ -272,7 +273,7 @@ public class Input : MonoBehaviour
             }
         }
         //touches[index] = touch;
-        mockUpPointerInputModule.GetPointerEventData(touch, pointerEventData);
+        mockUpPointerInputModule.ExecuteTouchEvent(touch, pointerEventData);
         yield return null;
         var touches2 = new Touch[touchCount - 1];
         int contor = 0;

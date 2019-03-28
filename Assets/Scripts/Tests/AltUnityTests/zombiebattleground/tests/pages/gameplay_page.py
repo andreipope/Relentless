@@ -66,3 +66,153 @@ class Gameplay_Page(CZBTests):
         enemy_board_creature=self.get_opponent_board_creatures()
         player_board_creature[player_card_position].mobile_dragToElement(enemy_board_creature[opponent_card_position],2)
         time.sleep(6)
+
+    def play_player_turn():
+
+        ##play buff cards/ utility
+        ##action phase
+        ##play if goo permits more cards
+        ##end turn
+
+    
+    def action_phase():
+        
+        
+        while self.attack_taunt_card():
+            pass
+
+        damaging_cards=self.get_every_possible_thing_that_can_cause_damage_this_turn()
+        if len(damaging_cards)!=0:
+            if self.is_lethal_available(damaging_cards) or len(self.get_opponent_board_creatures())==0:
+                for damaging_card in damaging_cards:
+                    self.attack_opponent_face
+            else:
+                while(self.trade_cards())
+                    pass
+
+
+
+    def calculate_card_score(player_card_attack,player_card_health,opponent_card_attack,opponent_card_health):
+        if player_card_attack==opponent_card_health and player_card_health>opponent_card_attack:
+            score=100-(player_card_health-opponent_card_attack)
+            if score<90:
+                score=90
+            return score
+        if player_card_attack>opponent_card_health and player_card_health>opponent_card_attack:
+            score= 90-(player_card_attack-opponent_card_health)-(player_card_health-opponent_card_attack)
+            if score<70:
+                score=70
+            return score
+        if player_card_attack>=opponent_card_health and player_card_health<=opponent_card_attack:
+            score=69+(opponent_card_health-player_card_attack)+(player_card_health-opponent_card_attack)
+            if score<60:
+                score=60
+            return score
+        if player_card_attack<opponent_card_health and player_card_health>opponent_card_attack:
+            score=59-(opponent_card_health-player_card_attack)-(player_card_health-opponent_card_attack)
+            if score<30:
+                score=30
+            return score
+        if player_card_attack<opponent_card_attack and player_card_health<=opponent_card_attack:
+            score=29-(opponent_card_health-player_card_attack)-(opponent_card_attack-player_card_health)
+            if(score<0):
+                score=0
+            return score
+        print("Error: situation not covered ",player_card_attack,player_card_health,opponent_card_attack,opponent_card_health)
+        return -1
+    
+    def get_every_possible_thing_that_can_cause_damage_this_turn():
+        ##Create list of tuple(altunityobject,type,name,attack,health,attacked)
+        ##Add all active zombies from the board
+        ##Add all zombies,spell than can do damage
+        ##return the list
+    def get_all_active_zombies_from_board():
+        ##return every zombie that is not frozen or that attacked yet
+
+    def get_all_damaging_cards_from_hand():
+        ##return every card from hand that could do damage
+
+
+    def get_all_opponent_heavy_cards():
+        #TODO change name function
+        ##Create list of tuple(altunityObject,name,attack,health,score)
+        ##return all opponent taunts
+
+    def is_lethal_available(available_damage):
+        total_damage_available=0
+        for element in available_damage:
+            total_damage_available=total_damage_available+element[3]
+        opponent_health=self.get_opponent_health()
+        return total_damage_available>opponent_health
+    
+    def is_card_from_hand_able_to_damage_and_playable_this_turn(card):
+        ##check card
+
+
+    def attack_heavy_zombies():
+        ##TODO change name function
+        cards_able_to_do_damage=self.get_every_possible_thing_that_can_cause_damage_this_turn()
+        taunts=self.get_all_opponent_heavy_cards()
+
+        if len(cards_able_to_do_damage)==0 or len(taunts)==0:
+            return False
+        for damage_card in cards_able_to_do_damage:
+            for taunt_card in taunts:
+                score=self.calculate_card_score(damage_card[3],damage_card[4],taunt_card[2],taunt_card[3])
+                if score<taunt_card[4]:
+                    taunt_card[4]=score
+
+        for taunt_card in taunts:
+            for damage_card in cards_able_to_do_damage:
+                score=self.calculate_card_score(damage_card[3],damage_card[4],taunt_card[2],taunt_card[3])
+                if score==taunt_card[4]:
+                    self.attack_taunt_card(damage_card,taunt_card)
+                    return True
+        print("Error no how I got here")
+    
+    def trade_cards():
+
+        cards_able_to_do_damage=self.get_every_possible_thing_that_can_cause_damage_this_turn()
+        opponent_creatures=self.get_opponent_board_creatures()
+
+        if len(cards_able_to_do_damage)==0 :
+            return False
+        if len(opponent_creatures)==0:
+            for damaging_card in cards_able_to_do_damage:
+                self.attack_opponent_face(damaging_card)
+            return False
+
+
+        for damage_card in cards_able_to_do_damage:
+            for opponent_creature in opponent_creatures:
+                score=self.calculate_card_score(damage_card[3],damage_card[4],opponent_creature[2],opponent_creature[3])
+                if score<taunt_card[4]:
+                    taunt_card[4]=score
+        opponent_creatures=sorted(opponent_creatures,key=lambda creature: creature[4])
+        if opponent_creatures[0][4]>score_limit:
+            for opponent_creature in opponent_creatures:
+                for damage_card in cards_able_to_do_damage:
+                    score=self.calculate_card_score(damage_card[3],damage_card[4],opponent_creature[2],opponent_creature[3])
+                    if score==taunt_card[4]:
+                        self.attack_heavy_card(damage_card,taunt_card)
+                    return True
+        else:
+            for damage_card in cards_able_to_do_damage:
+                self.attack_opponent_face(damage_card)
+            return False
+    
+    def mulligan_high_cost_cards():
+        self.altdriver.wait_for_element('MulliganPopup(Clone)')
+        mulligan_cards=self.altdriver.find_elements('MulliganCard_Unit(Clone)')
+        replace_panel=self.altdriver.find_element('Replace_Panel')
+        button_keep=self.altdriver.find_element('Button_Keep')
+        for mulligan_card in mulligan_cards:
+            card_cost_object=self.altdriver.find_element('id('+mulligan_card.id+')/Text_Goo')
+            card_cost=read_tmp_UGUI_text(self,card_cost_object)
+            if(int(card_cost)>3):
+                mulligan_card.mobile_dragToElement(replace_panel,2)
+        button_keep.mobile_tap()
+
+
+
+

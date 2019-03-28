@@ -322,6 +322,7 @@ namespace Loom.ZombieBattleground
             if (Owner == Enumerators.TutorialObjectOwner.UI)
             {
                 _ownerObject = GameObject.Find(_tutorialUIElementOwnerName);
+                _targetObject = _ownerObject;
             }
 
             _selfObject.SetActive(true);

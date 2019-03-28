@@ -8,9 +8,9 @@ class Open_Packs_Page(CZBTests):
     def __init__(self,altdriver,driver):
         self.altdriver=altdriver
         self.driver=driver
-        self.back_button=self.altdriver.wait_for_element('PackOpenerPage(Clone)/Header/BackButton')
-        self.buy_packs_button=self.altdriver.wait_for_element('PackOpenerPage(Clone)/Header/Button_BuyPacks')
-        self.open_pack_button=self.altdriver.wait_for_element('PackOpenerPage(Clone)/Pack_Panel/RightPanel/ButtonOpenPacks')
+        # self.back_button=self.altdriver.wait_for_element('PackOpenerPageWithNavigationBar(Clone)/Header/BackButton')
+        self.buy_packs_button=self.altdriver.wait_for_element('PackOpenerPageWithNavigationBar(Clone)/Pack_Panel/Button_BuyPacks')
+        self.open_pack_button=self.altdriver.wait_for_element('PackOpenerPageWithNavigationBar(Clone)/Pack_Panel/RightPanel/ButtonOpenPacks')
 
     def get_card_from_pack(self):
         cards=[]
