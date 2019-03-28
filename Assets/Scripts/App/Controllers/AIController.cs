@@ -721,7 +721,7 @@ namespace Loom.ZombieBattleground
                 if (cards[i].InstanceCard.Abilities != null)
                 {
                     AbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities
-                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.ATTACK_OVERLORD);
+                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.Damage);
                     if (attackOverlordAbility != null)
                     {
                         if (attackOverlordAbility.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
@@ -729,7 +729,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     overflowGooAbility = cards[i].InstanceCard.Abilities
-                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OVERFLOW_GOO);
+                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OverflowGoo);
                     if (overflowGooAbility != null)
                     {
                         if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
@@ -780,11 +780,11 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.Clear();
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalUnitCardInHand.RemoveAll(x =>
-                    x.Prototype.Abilities.Any(z => z.Ability == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.Prototype.Abilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
                 _normalItemCardInHand.Clear();
                 _normalItemCardInHand.AddRange(GetItemCardsInHand());
                 _normalItemCardInHand.RemoveAll(x =>
-                    x.InstanceCard.Abilities.Any(z => z.Ability == Enumerators.AbilityType.OVERFLOW_GOO));
+                    x.InstanceCard.Abilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
             }
 
             await LetsThink(cancellationToken);
@@ -828,7 +828,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (AbilityData ability in boardUnitModel.InstanceCard.Abilities)
                 {
-                    if (ability.Ability == Enumerators.AbilityType.ATTACK_OVERLORD)
+                    if (ability.Ability == Enumerators.AbilityType.Damage)
                     {
                         // smart enough HP to use goo carriers
                         if (ability.Value * 2 >= _gameplayManager.OpponentPlayer.Defense)
@@ -862,8 +862,7 @@ namespace Loom.ZombieBattleground
                     {
                         foreach(AbilityData data in abilitiesWithTargets)
                         {
-                            if (data.Trigger == Enumerators.AbilityTrigger.ENTRY &&
-                                data.Activity == Enumerators.AbilityActivity.ACTIVE)
+                            if (data.Trigger == Enumerators.AbilityTrigger.EntryWithSelection)
                             {
                                 needTargetForAbility = true;
                             }
@@ -1076,9 +1075,9 @@ namespace Loom.ZombieBattleground
                 {
                     switch (item)
                     {
-                        case Enumerators.Target.OPPONENT_CARD:
+                        case Enumerators.Target.OpponentCard:
                             if (_gameplayManager.CurrentPlayer.CardsOnBoard.Count > 1 ||
-                                ability.Ability == Enumerators.AbilityType.CARD_RETURN &&
+                                ability.Ability == Enumerators.AbilityType.CardReturn &&
                                 _gameplayManager.CurrentPlayer.CardsOnBoard.Count > 0)
                             {
                                 needsToSelectTarget = true;
@@ -1086,10 +1085,10 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.Target.PLAYER_CARD:
+                        case Enumerators.Target.PlayerCard:
                             if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 1 ||
                                 prototype.Kind == Enumerators.CardKind.ITEM ||
-                                ability.Ability == Enumerators.AbilityType.CARD_RETURN &&
+                                ability.Ability == Enumerators.AbilityType.CardReturn &&
                                 _gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
                             {
                                 needsToSelectTarget = true;
@@ -1097,9 +1096,9 @@ namespace Loom.ZombieBattleground
                             }
 
                             break;
-                        case Enumerators.Target.PLAYER:
-                        case Enumerators.Target.OPPONENT:
-                        case Enumerators.Target.ALL:
+                        case Enumerators.Target.Player:
+                        case Enumerators.Target.Opponent:
+                        case Enumerators.Target.All:
                             needsToSelectTarget = true;
                             abilitiesWithTarget.Add(ability);
                             break;
@@ -1114,26 +1113,20 @@ namespace Loom.ZombieBattleground
             {
                 switch (ability.Ability)
                 {
-                    case Enumerators.AbilityType.ADD_GOO_VIAL:
+                    case Enumerators.AbilityType.GainGoo:
                         target = _gameplayManager.OpponentPlayer;
                         break;
-                    case Enumerators.AbilityType.CARD_RETURN:
+                    case Enumerators.AbilityType.CardReturn:
                         if (!AddRandomTargetUnit(true, ref target, false, true))
                         {
                             AddRandomTargetUnit(false, ref target, true, true);
                         }
 
                         break;
-                    case Enumerators.AbilityType.DAMAGE_TARGET:
+                    case Enumerators.AbilityType.Damage:
                         CheckAndAddTargets(ability, ref target);
                         break;
-                    case Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS:
-                        AddRandomTargetUnit(true, ref target);
-                        break;
-                    case Enumerators.AbilityType.MASSIVE_DAMAGE:
-                        AddRandomTargetUnit(true, ref target);
-                        break;
-                    case Enumerators.AbilityType.MODIFICATOR_STATS:
+                    case Enumerators.AbilityType.ChangeStat:
                         if (ability.Value > 0)
                         {
                             AddRandomTargetUnit(false, ref target);
@@ -1144,35 +1137,12 @@ namespace Loom.ZombieBattleground
                         }
 
                         break;
-                    case Enumerators.AbilityType.STUN:
+                    case Enumerators.AbilityType.Stun:
                         CheckAndAddTargets(ability, ref target);
                         break;
-                    case Enumerators.AbilityType.STUN_OR_DAMAGE_ADJUSTMENTS:
-                        CheckAndAddTargets(ability, ref target);
+                    case Enumerators.AbilityType.Summon:
                         break;
-                    case Enumerators.AbilityType.CHANGE_STAT:
-                        if (ability.Value > 0)
-                        {
-                            AddRandomTargetUnit(false, ref target);
-                        }
-                        else
-                        {
-                            AddRandomTargetUnit(true, ref target);
-                        }
-
-                        break;
-                    case Enumerators.AbilityType.SUMMON:
-                        break;
-                    case Enumerators.AbilityType.WEAPON:
-                        target = _gameplayManager.CurrentPlayer;
-                        break;
-                    case Enumerators.AbilityType.SPURT:
-                        AddRandomTargetUnit(true, ref target);
-                        break;
-                    case Enumerators.AbilityType.SPELL_ATTACK:
-                        CheckAndAddTargets(ability, ref target);
-                        break;
-                    case Enumerators.AbilityType.HEAL:
+                    case Enumerators.AbilityType.Heal:
                         List<BoardUnitModel> units = GetUnitsWithLowHp();
 
                         if (units.Count > 0)
@@ -1183,12 +1153,8 @@ namespace Loom.ZombieBattleground
                         {
                             target = _gameplayManager.OpponentPlayer;
                         }
-
                         break;
-                    case Enumerators.AbilityType.DOT:
-                        CheckAndAddTargets(ability, ref target);
-                        break;
-                    case Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE:
+                    case Enumerators.AbilityType.Destroy:
                         GetTargetByType(ability, ref target, false);
                         break;
                 }
@@ -1201,11 +1167,11 @@ namespace Loom.ZombieBattleground
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)
         {
-            if (ability.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
+            if (ability.Targets.Contains(Enumerators.Target.OpponentCard))
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.Targets.Contains(Enumerators.Target.OPPONENT))
+            else if (ability.Targets.Contains(Enumerators.Target.Opponent))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -1213,7 +1179,7 @@ namespace Loom.ZombieBattleground
 
         private void GetTargetByType(AbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
-            if (ability.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
+            if (ability.Targets.Contains(Enumerators.Target.OpponentCard))
             {
                 IReadOnlyList<BoardUnitModel> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -1223,7 +1189,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (checkPlayerAlso && target == null &&
-                    ability.Targets.Contains(Enumerators.Target.PLAYER_CARD))
+                    ability.Targets.Contains(Enumerators.Target.PlayerCard))
                 {
                     target = _gameplayManager.CurrentPlayer;
 

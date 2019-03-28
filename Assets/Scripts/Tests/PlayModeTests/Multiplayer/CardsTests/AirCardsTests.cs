@@ -433,12 +433,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => {
                            player.CardPlay(playerWhizparId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerWhizparId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerWhizparId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerIglooId, ItemPosition.Start);
                        },
                        opponent => {
                            opponent.CardPlay(opponentWhizparId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentWhizparId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentWhizparId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                            opponent.CardPlay(opponentIglooId, ItemPosition.Start);
                        },
                        player => {
@@ -494,13 +494,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerBansheeId, ItemPosition.Start);
                            player.CardPlay(playerBufferId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerBufferId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerBufferId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentBansheeId, ItemPosition.Start);
                            opponent.CardPlay(opponentBufferId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentBufferId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentBufferId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {
                            player.CardAttack(playerBufferId, opponentBufferId);

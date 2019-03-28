@@ -903,7 +903,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.CardPlay(opponentZnowyId, ItemPosition.Start);
                         opponent.CardPlay(opponentIzicleId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentIzicleId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
+                        opponent.CardAbilityUsed(opponentIzicleId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>()
                         {
                             new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
                         });
@@ -1180,7 +1180,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentZubZeroId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentZubZeroId, Enumerators.AbilityType.DAMAGE_TARGET_FREEZE_IT_IF_SURVIVES, new List<ParametrizedAbilityInstanceId>()
+                           opponent.CardAbilityUsed(opponentZubZeroId, Enumerators.AbilityType.Damage_FREEZE_IT_IF_SURVIVES, new List<ParametrizedAbilityInstanceId>()
                            {
                                new ParametrizedAbilityInstanceId(playerSlabId)
                            });

@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentBolderr1Id, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentBolderr1Id, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
+                        opponent.CardAbilityUsed(opponentBolderr1Id, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>()
                         {
                             new ParametrizedAbilityInstanceId(playerBolderrId)
                         });
@@ -270,13 +270,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         player.CardPlay(playerPyromazId, ItemPosition.Start);
                         player.CardPlay(playerProtectorId, ItemPosition.Start);
-                        player.CardAbilityUsed(playerProtectorId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
+                        player.CardAbilityUsed(playerProtectorId, Enumerators.AbilityType.ChangeType, new List<ParametrizedAbilityInstanceId>());
                     },
                     opponent =>
                     {
                         opponent.CardPlay(opponentPyromazId, ItemPosition.Start);
                         opponent.CardPlay(opponentProtectorId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentProtectorId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentProtectorId, Enumerators.AbilityType.ChangeType, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => player.CardAttack(playerProtectorId, opponentProtectorId),
                     opponent => opponent.CardAttack(opponentProtectorId, playerProtectorId),
@@ -704,7 +704,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ChangeType, new List<ParametrizedAbilityInstanceId>());
                            opponent.LetsThink(2);
                        },
                 };

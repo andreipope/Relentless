@@ -180,8 +180,8 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.AbilityTrigger.IN_HAND,
                     new List<Enumerators.Target>
                     {
-                        Enumerators.Target.ITSELF,
-                        Enumerators.Target.PLAYER
+                        Enumerators.Target.ItSelf,
+                        Enumerators.Target.Player
                     },
                     Enumerators.Stat.DAMAGE,
                     Enumerators.Faction.TOXIC,

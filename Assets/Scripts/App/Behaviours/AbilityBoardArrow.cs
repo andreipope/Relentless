@@ -54,11 +54,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.Target.PLAYER_CARD) &&
+            if (PossibleTargets.Contains(Enumerators.Target.PlayerCard) &&
                 unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.Target.OPPONENT_CARD) &&
+                PossibleTargets.Contains(Enumerators.Target.OpponentCard) &&
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.Target.ALL))
+                PossibleTargets.Contains(Enumerators.Target.All))
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
@@ -113,11 +113,11 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.Target.PLAYER) &&
+            if (PossibleTargets.Contains(Enumerators.Target.Player) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.Target.OPPONENT) &&
+                PossibleTargets.Contains(Enumerators.Target.Opponent) &&
                 player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.Target.ALL))
+                PossibleTargets.Contains(Enumerators.Target.All))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);

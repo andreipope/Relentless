@@ -34,7 +34,6 @@ namespace Loom.ZombieBattleground.Data
         public static Protobuf.AbilityData ToProtobuf(this AbilityData ability) {
             Protobuf.AbilityData abilityData = new Protobuf.AbilityData {
                 Ability = (Protobuf.AbilityType.Types.Enum) ability.Ability,
-                Activity = (Protobuf.AbilityActivity.Types.Enum) ability.Activity,
                 Trigger = (Protobuf.AbilityTrigger.Types.Enum) ability.Trigger,
                 Targets =
                 {
@@ -42,7 +41,6 @@ namespace Loom.ZombieBattleground.Data
                 },
                 Stat = (Stat.Types.Enum) ability.Stat,
                 Faction = (Protobuf.Faction.Types.Enum) ability.Faction,
-                Effect = (AbilityEffect.Types.Enum) ability.Effect,
                 AttackRestriction = (AttackRestriction.Types.Enum) ability.AttackRestriction,
                 TargetCardType = (Protobuf.CardType.Types.Enum) ability.TargetCardType,
                 TargetUnitSpecialStatus = (UnitSpecialStatus.Types.Enum) ability.TargetUnitSpecialStatus,

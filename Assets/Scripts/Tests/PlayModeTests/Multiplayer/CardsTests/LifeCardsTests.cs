@@ -286,12 +286,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardPlay(playerPufferId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerPufferId, Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerPufferId, Enumerators.AbilityType.ChangeStat_OF_CREATURES_BY_TYPE, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentPufferId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentPufferId, Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentPufferId, Enumerators.AbilityType.ChangeStat_OF_CREATURES_BY_TYPE, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {},
                        opponent => {},
@@ -346,13 +346,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardPlay(playerAzurazId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerAzurazId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerAzurazId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerTinyId, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentAzurazId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentAzurazId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentAzurazId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>());
                            opponent.CardPlay(opponentTinyId, ItemPosition.Start);
                        },
                        player =>

@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                             opponent.CardAttack(opponentTinyId, playerTinyId);
                             opponent.CardPlay(opponentShovelId, ItemPosition.Start, null, true);
-                            opponent.CardAbilityUsed(opponentShovelId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
+                            opponent.CardAbilityUsed(opponentShovelId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>()
                             {
                                 new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
                             });
@@ -638,7 +638,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.LetsThink(2);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_GOO_VIAL, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
                             Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().GooVials);
@@ -687,7 +687,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.LetsThink(2);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_GOO_VIAL, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
                             Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().GooVials);
@@ -801,7 +801,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>(){
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
                         });
                     },
@@ -843,7 +843,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>(){
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
                         });
                     },
@@ -919,7 +919,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentFreshMeatId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentFreshMeatId, Enumerators.AbilityType.CHANGE_STAT_UNTILL_END_OF_TURN, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentFreshMeatId, Enumerators.AbilityType.ChangeStat_UNTILL_END_OF_TURN, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(4);
                            opponent.AssertInQueue(() => {
                                 Assert.AreEqual(pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count,
@@ -992,7 +992,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentLawnmowerId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentLawnmowerId, Enumerators.AbilityType.MASSIVE_DAMAGE, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentLawnmowerId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){});
                        }
                    };
 
@@ -1240,7 +1240,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentNailBombId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentNailBombId, Enumerators.AbilityType.DAMAGE_TARGET_ADJUSTMENTS, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentNailBombId, Enumerators.AbilityType.Damage_ADJUSTMENTS, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerSlab3Id)
                            });
                        }

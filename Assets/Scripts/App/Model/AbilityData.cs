@@ -11,9 +11,6 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.AbilityType Ability { get; private set; }
 
         [JsonProperty]
-        public Enumerators.AbilityActivity Activity { get; private set; }
-
-        [JsonProperty]
         public Enumerators.AbilityTrigger Trigger { get; private set; }
 
         [JsonProperty]
@@ -24,9 +21,6 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonProperty]
         public Enumerators.Faction Faction { get; private set; }
-
-        [JsonProperty]
-        public Enumerators.AbilityEffect Effect { get; private set; }
 
         [JsonProperty]
         public Enumerators.AttackRestriction AttackRestriction { get; private set; }
@@ -85,12 +79,10 @@ namespace Loom.ZombieBattleground.Data
         [JsonConstructor]
         public AbilityData(
             Enumerators.AbilityType ability,
-            Enumerators.AbilityActivity activity,
             Enumerators.AbilityTrigger trigger,
             List<Enumerators.Target> abilityTarget,
             Enumerators.Stat stat,
             Enumerators.Faction faction,
-            Enumerators.AbilityEffect effect,
             Enumerators.AttackRestriction attackRestriction,
             Enumerators.CardType targetCardType,
             Enumerators.UnitSpecialStatus targetUnitSpecialStatus,
@@ -111,12 +103,10 @@ namespace Loom.ZombieBattleground.Data
             int cost)
         {
             Ability = ability;
-            Activity = activity;
             Trigger = trigger;
             Targets = abilityTarget ?? new List<Enumerators.Target>();
             Stat = stat;
             Faction = faction;
-            Effect = effect;
             AttackRestriction = attackRestriction;
             TargetCardType = targetCardType;
             TargetUnitSpecialStatus = targetUnitSpecialStatus;
@@ -139,12 +129,10 @@ namespace Loom.ZombieBattleground.Data
 
         public AbilityData(AbilityData source) : this (
             source.Ability,
-            source.Activity,
             source.Trigger,
             source.Targets.ToList(),
             source.Stat,
             source.Faction,
-            source.Effect,
             source.AttackRestriction,
             source.TargetCardType,
             source.TargetUnitSpecialStatus,

@@ -56,12 +56,10 @@ namespace Loom.ZombieBattleground.Data
         {
             return new AbilityData(
                 (Enumerators.AbilityType) ability.Ability,
-                (Enumerators.AbilityActivity) ability.Activity,
                 (Enumerators.AbilityTrigger) ability.Trigger,
                 ability.Targets.Select(t => (Enumerators.Target) t).ToList(),
                 (Enumerators.Stat) ability.Stat,
                 (Enumerators.Faction) ability.Faction,
-                (Enumerators.AbilityEffect) ability.Effect,
                 (Enumerators.AttackRestriction) ability.AttackRestriction,
                 (Enumerators.CardType) ability.TargetCardType,
                 (Enumerators.UnitSpecialStatus) ability.TargetUnitSpecialStatus,
