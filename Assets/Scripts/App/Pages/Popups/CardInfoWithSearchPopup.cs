@@ -177,7 +177,8 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
-                _filteredCardList[_currentCardIndex]
+                _filteredCardList[_currentCardIndex],
+                true
             );
             Hide();
         }
@@ -190,7 +191,8 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (
-                _filteredCardList[_currentCardIndex]
+                _filteredCardList[_currentCardIndex],
+                true
             ); 
             Hide();
         }
