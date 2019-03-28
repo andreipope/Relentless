@@ -80,6 +80,7 @@ namespace Editor
             }
 
             BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
+            OpponentController opponentController = GameClient.Get<IGameplayManager>().GetController<OpponentController>();
 
             GUILayout.Label("Match Type: " + matchManager.MatchType);
 
@@ -142,8 +143,11 @@ namespace Editor
 
                         Player player = isCurrentPlayer ? gameplayManager.CurrentPlayer : gameplayManager.OpponentPlayer;
 
-                        //DrawViewList("BoardItemsInUse", player.BoardItemsInUse);
-                        //EditorGUILayout.Space();
+                        if (!isCurrentPlayer)
+                        {
+                            DrawViewList("BoardItemsInUse", opponentController.BoardItemsInUse);
+                            EditorGUILayout.Space();
+                        }
 
                         DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
                         EditorGUILayout.Space();

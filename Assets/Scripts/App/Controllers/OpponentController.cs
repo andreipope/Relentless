@@ -34,7 +34,9 @@ namespace Loom.ZombieBattleground
         private ActionsQueueController _actionsQueueController;
         private RanksController _ranksController;
 
-        private UniqueList<BoardUnitModel> _opponentBoardItemsInUse;
+        public IReadOnlyList<BoardUnitModel> BoardItemsInUse => _boardItemsInUse;
+
+        private UniqueList<BoardUnitModel> _boardItemsInUse;
 
         public void Dispose()
         {
@@ -75,7 +77,7 @@ namespace Loom.ZombieBattleground
         {
             Player player = new Player(instanceId, GameObject.Find("Opponent"), true);
             _gameplayManager.OpponentPlayer = player;
-            _opponentBoardItemsInUse = new UniqueList<BoardUnitModel>();
+            _boardItemsInUse = new UniqueList<BoardUnitModel>();
 
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&
@@ -544,7 +546,7 @@ namespace Loom.ZombieBattleground
             if (boardObjectCaller == null)
             {
                 boardObjectCaller =
-                    _opponentBoardItemsInUse
+                    _boardItemsInUse
                         .FirstOrDefault(x => x.Card.InstanceId == model.Card);
             }
 
@@ -679,14 +681,14 @@ namespace Loom.ZombieBattleground
         private void AddBoardItemInUse(BoardUnitModel boardUnitModel)
         {
             Log.Info($"{nameof(AddBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
-            _opponentBoardItemsInUse.Add(boardUnitModel);
+            _boardItemsInUse.Add(boardUnitModel);
         }
 
 
         private void RemoveBoardItemInUse(BoardUnitModel boardUnitModel)
         {
             Log.Info($"{nameof(RemoveBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
-            bool removed = _opponentBoardItemsInUse.Remove(boardUnitModel);
+            bool removed = _boardItemsInUse.Remove(boardUnitModel);
             if (!removed)
             {
                 Log.Warn($"{nameof(RemoveBoardItemInUse)}: attempted to remove model '{boardUnitModel}' which wasn't on the list");

@@ -581,7 +581,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 opponentHandCard = _battlegroundController.GetBoardUnitViewByModel<OpponentHandCard>(card.Model);
-                _battlegroundController.UnregisterBoardUnitView(opponentHandCard, opponentHandCard.Model.OwnerPlayer);
+                if (opponentHandCard != null)
+                {
+                    _battlegroundController.UnregisterBoardUnitView(opponentHandCard, opponentHandCard.Model.OwnerPlayer);
+                }
+
                 _battlegroundController.RegisterBoardUnitView(boardUnitView, _gameplayManager.OpponentPlayer);
             }
 
