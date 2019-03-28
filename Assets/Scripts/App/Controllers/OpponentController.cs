@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
         private ActionsQueueController _actionsQueueController;
         private RanksController _ranksController;
 
+        private UniqueList<BoardUnitModel> _opponentBoardItemsInUse;
+
         public void Dispose()
         {
         }
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
         {
             Player player = new Player(instanceId, GameObject.Find("Opponent"), true);
             _gameplayManager.OpponentPlayer = player;
+            _opponentBoardItemsInUse = new UniqueList<BoardUnitModel>();
 
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&
@@ -401,7 +404,6 @@ namespace Loom.ZombieBattleground
 
         #endregion
 
-
         #region Actions
 
         private void GotActionEndTurn(EndTurnModel model)
@@ -462,7 +464,7 @@ namespace Loom.ZombieBattleground
                                 break;
                             case Enumerators.CardKind.ITEM:
                                 BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
-                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddBoardItemInUse(boardUnitModel);
+                                AddBoardItemInUse(boardUnitModel);
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
@@ -538,6 +540,14 @@ namespace Loom.ZombieBattleground
 
             BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
 
+            // HACK for items in use
+            if (boardObjectCaller == null)
+            {
+                boardObjectCaller =
+                    _opponentBoardItemsInUse
+                        .FirstOrDefault(x => x.Card.InstanceId == model.Card);
+            }
+
             if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
                 // FIXME: why do we have recursion here??
@@ -580,7 +590,7 @@ namespace Loom.ZombieBattleground
 
                 if (boardUnitModel.Prototype.Kind == Enumerators.CardKind.ITEM)
                 {
-                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveBoardItemInUse(boardUnitModel);
+                    RemoveBoardItemInUse(boardUnitModel);
                 }
 
                 _abilitiesController.PlayAbilityFromEvent(
@@ -663,6 +673,28 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+
+        #region Items in Use
+
+        private void AddBoardItemInUse(BoardUnitModel boardUnitModel)
+        {
+            Log.Info($"{nameof(AddBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
+            _opponentBoardItemsInUse.Add(boardUnitModel);
+        }
+
+
+        private void RemoveBoardItemInUse(BoardUnitModel boardUnitModel)
+        {
+            Log.Info($"{nameof(RemoveBoardItemInUse)}(BoardUnitModel boardUnitModel = {boardUnitModel})");
+            bool removed = _opponentBoardItemsInUse.Remove(boardUnitModel);
+            if (!removed)
+            {
+                Log.Warn($"{nameof(RemoveBoardItemInUse)}: attempted to remove model '{boardUnitModel}' which wasn't on the list");
+            }
+        }
+
+        #endregion
+
     }
 
     #region models

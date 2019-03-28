@@ -1104,21 +1104,19 @@ namespace Loom.ZombieBattleground
             IEnumerable<BoardUnitModel> boardUnitModels;
             if (!onlyCardsInPlay)
             {
-                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
+                boardUnitModels =
+                    _gameplayManager.CurrentPlayer.CardsOnBoard
                     .Concat(_gameplayManager.CurrentPlayer.CardsInHand)
                     .Concat(_gameplayManager.CurrentPlayer.CardsInDeck)
-                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse)
                     .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
                     .Concat(_gameplayManager.OpponentPlayer.CardsInHand)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck)
-                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse);
+                    .Concat(_gameplayManager.OpponentPlayer.CardsInDeck);
             }
             else
             {
-                boardUnitModels = _gameplayManager.CurrentPlayer.CardsOnBoard
-                    .Concat(_gameplayManager.CurrentPlayer.BoardItemsInUse)
-                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
-                    .Concat(_gameplayManager.OpponentPlayer.BoardItemsInUse);
+                boardUnitModels =
+                    _gameplayManager.CurrentPlayer.CardsOnBoard
+                    .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard);
             }
 
             BoardUnitModel boardUnitModel =
