@@ -13,7 +13,7 @@ public class OneSignalSystem : MonoBehaviour
 
 		// Enable line below to enable logging if you are having issues setting up OneSignal. (logLevel, visualLogLevel)
         //OneSignal.SetLogLevel(OneSignal.LOG_LEVEL.INFO, OneSignal.LOG_LEVEL.INFO);
-
+        OneSignal.SetLocationShared(false);
 		OneSignal.StartInit(AppId).HandleNotificationOpened(HandleNotificationOpened).EndInit();
 		OneSignal.inFocusDisplayType = OneSignal.OSInFocusDisplayOption.Notification;
 	}
