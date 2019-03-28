@@ -366,8 +366,6 @@ namespace Loom.ZombieBattleground
             _gameplayManager.OpponentPlayer?.PlayerCardsController.ClearCardsOnBoard();
 
             _boardUnitViews.Clear();
-
-            BoardUnitViews.Clear();
         }
 
         public void InitializeBattleground()
