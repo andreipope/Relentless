@@ -48,6 +48,8 @@ namespace Loom.ZombieBattleground
 
         private List<string> _names;
 
+        private const string STORAGE_PERMISSION = "android.permission.READ_EXTERNAL_STORAGE";
+
         public DataManager(ConfigData configData)
         {
             FillCacheDataPaths();
@@ -202,11 +204,30 @@ namespace Loom.ZombieBattleground
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
-            LoadLocalCachedData();
+            AndroidPermissionsManager.RequestPermission(new[] { STORAGE_PERMISSION }, new AndroidPermissionCallback(
+            grantedPermission =>
+            {
+                // The permission was successfully granted, restart the change avatar routine
+                if (AndroidPermissionsManager.IsPermissionGranted(STORAGE_PERMISSION))
+                {
+                    LoadLocalCachedData();
 
-            GameClient.Get<ISoundManager>().ApplySoundData();
+                    GameClient.Get<ISoundManager>().ApplySoundData();
 
-            CheckVersion();
+                    CheckVersion();
+                }
+            },
+            deniedPermission =>
+            {
+                Debug.LogError("denied");
+                Application.Quit();
+            },
+            deniedPermissionAndDontAskAgain =>
+            {
+                Debug.LogError("denied, Don't ask again");
+                Application.Quit();
+            }));
+
         }
 
         public void Update()
