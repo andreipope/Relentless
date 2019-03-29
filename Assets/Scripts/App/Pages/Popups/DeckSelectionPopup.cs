@@ -271,10 +271,16 @@ namespace Loom.ZombieBattleground
                 MultiPointerClickHandler multiPointerClickHandler = deckIcon.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.SingleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     SetSelectedDeckIndex(index);
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
+                    if (_tutorialManager.IsTutorial)
+                        return;
+
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                     HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
                     hordeSelection.SelectDeckIndex = index;

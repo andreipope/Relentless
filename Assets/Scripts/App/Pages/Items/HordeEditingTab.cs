@@ -119,6 +119,8 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
+        private HordeSelectionWithNavigationPage.Tab _nextTab;
+
         private const float BoardCardScale = 0.2756f;
 
         public void Init()
@@ -286,7 +288,7 @@ namespace Loom.ZombieBattleground
             
             if (status)
             {                
-                ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.Rename);
+                SaveDeck(HordeSelectionWithNavigationPage.Tab.Rename);
             }
             else
             {                
@@ -353,10 +355,26 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
                 return;
 
-            
+            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
 
             PlayClickSound();
-            ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SelectDeck);
+
+            SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
+        }
+        
+        private void FinishAddDeck(bool success, Deck deck)
+        {
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
+            _myDeckPage.IsEditingNewDeck = false;
+            _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
+            _myDeckPage.AssignCurrentDeck();
+            _myDeckPage.ChangeTab(_nextTab);
+        }
+        
+        private void FinishEditDeck(bool success, Deck deck)
+        {
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+            _myDeckPage.ChangeTab(_nextTab);
         }
 
         private void ButtonOverlordAbilitiesHandler()
@@ -1251,118 +1269,47 @@ namespace Loom.ZombieBattleground
 
             return maxCopies;
         }
-
-        public async void ProcessEditDeck(Deck deckToSave, HordeSelectionWithNavigationPage.Tab nextTab)
+        
+        public void SaveDeck(HordeSelectionWithNavigationPage.Tab nextTab)
         {
-            _myDeckPage.ButtonSaveRenameDeck.interactable = false;
-            _buttonSaveDeck.interactable = false;
-
-            if (!VerifyDeckName(deckToSave.Name))
+            _nextTab = nextTab;
+            
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            if(_myDeckPage.IsEditingNewDeck)
             {
-                _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-                _buttonSaveDeck.interactable = true;
-                return;
+                deckGeneratorController.FinishAddDeck += FinishAddDeck;
+                deckGeneratorController.ProcessAddDeck
+                (
+                    _myDeckPage.CurrentEditDeck,
+                    _myDeckPage.CurrentEditOverlord
+                );
             }
-
-            List<Deck> deckList = _myDeckPage.GetDeckList();
-            foreach (Deck deck in deckList)
-            {
-                if (deckToSave.Id != deck.Id &&
-                    deck.Name.Trim().Equals(deckToSave.Name.Trim(), StringComparison.InvariantCultureIgnoreCase))
-                {
-                    _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-                    _buttonSaveDeck.interactable = true;
-                    _myDeckPage.OpenAlertDialog("Not able to Edit Deck: \n Deck Name already exists.");
-                    return;
-                }
+            else
+            {                                
+                deckGeneratorController.FinishEditDeck += FinishEditDeck;
+                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
             }
-
-            bool success = true;
-            try
-            {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deckToSave);
-
-                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
-                {
-                    if (_dataManager.CachedDecksData.Decks[i].Id == deckToSave.Id)
-                    {
-                        _dataManager.CachedDecksData.Decks[i] = deckToSave;
-                        break;
-                    }
-                }
-
-                _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
-                Log.Info(" ====== Edit Deck Successfully ==== ");
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                success = false;
-
-                if (e is Client.RpcClientException || e is TimeoutException)
-                {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                else
-                {
-                    string message = e.Message;
-
-                    string[] description = e.Message.Split('=');
-                    if (description.Length > 0)
-                    {
-                        message = description[description.Length - 1].TrimStart(' ');
-                        message = char.ToUpper(message[0]) + message.Substring(1);
-                    }
-                    if (_tutorialManager.IsTutorial)
-                    {
-                        message = Constants.ErrorMessageForConnectionFailed;
-                    }
-                    _myDeckPage.OpenAlertDialog("Not able to Edit Deck: \n" + message);
-                }
-            }
-
-            if (success)
-            {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                if(nextTab == HordeSelectionWithNavigationPage.Tab.SelectDeck)
-                {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
-                }
-                _myDeckPage.ChangeTab(nextTab);
-            }
-
-            _myDeckPage.ButtonSaveRenameDeck.interactable = true;
-            _buttonSaveDeck.interactable = true;
         }
 
-        private bool VerifyDeckName(string deckName)
+        public void RenameDeck(string newName)
         {
-            if (string.IsNullOrWhiteSpace(deckName))
-            {
-                _myDeckPage.OpenAlertDialog("Saving Deck with an empty name is not allowed.");
-                return false;
-            }
-            return true;
-        }
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
 
-        public void ProcessRenameDeck(Deck deckToSave, string newName)
-        {
-            _myDeckPage.ButtonSaveRenameDeck.interactable = false;
-
-            if (!VerifyDeckName(newName))
-            {
-                _myDeckPage.ButtonSaveRenameDeck.interactable = true;
+            string previousDeckName = _myDeckPage.IsEditingNewDeck ? "" : _myDeckPage.CurrentEditDeck.Name;
+            
+            if (!deckGeneratorController.VerifyDeckName(newName,previousDeckName))
                 return;
+
+            _myDeckPage.CurrentEditDeck.Name = newName;
+            
+            if(_myDeckPage.IsEditingNewDeck)
+            {
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
             }
-
-            deckToSave.Name = newName;
-            HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                HordeSelectionWithNavigationPage.Tab.Editing :
-                HordeSelectionWithNavigationPage.Tab.SelectDeck;
-
-            ProcessEditDeck(deckToSave,tab);
+            else
+            {
+                SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);            
+            }
         }
 
         private void PlayAddCardSound()

@@ -52,8 +52,6 @@ namespace Loom.ZombieBattleground
 
         private const int MaxSelectedAbilities = 2;
 
-        public event Action PopupHiding;
-
         private ISoundManager _soundManager;
 
         private Button _continueButton;
@@ -93,8 +91,6 @@ namespace Loom.ZombieBattleground
                     Dispose();
                 }
             };
-
-            PopupHiding += ProcessEditOverlordSkills;
         }
         
         public void Show(GameObject selfPage)
@@ -127,36 +123,6 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
             ResetItems();
-        }
-        
-        private async void ProcessEditOverlordSkills()
-        { 
-            bool success = true;
-
-            Deck deckToSave = _dataManager.CachedDecksData.Decks.ToList()[_myDeckPage.SelectDeckIndex];
-            deckToSave.PrimarySkill = _myDeckPage.CurrentEditDeck.PrimarySkill;
-            deckToSave.SecondarySkill = _myDeckPage.CurrentEditDeck.SecondarySkill;
-
-            try
-            {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deckToSave);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-            }
-
-            if (success)
-            {
-                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                    HordeSelectionWithNavigationPage.Tab.Rename :
-                    HordeSelectionWithNavigationPage.Tab.Editing;
-
-                _myDeckPage.ChangeTab(tab);
-            }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
@@ -246,7 +212,32 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditOverlord.SecondarySkill;
             }
 
-            PopupHiding?.Invoke();
+            if (_myDeckPage.IsEditingNewDeck)
+            {
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+                }
+                else
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+                }
+            }
+            else
+            {
+                DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+                deckGeneratorController.FinishEditDeck += FinishEditDeck;
+                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            }
+        }
+        
+        private void FinishEditDeck(bool success, Deck deck)
+        {
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+            if(success)
+            {
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+            }
         }
 
         #endregion
