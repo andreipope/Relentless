@@ -7,14 +7,14 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace Mopsicus.Plugins {
-
+namespace Loom.ZombieBattleground
+{
     /// <summary>
     /// Custom editor for MobileInput
     /// </summary>
     [CustomEditor (typeof (MobileInputField))]
     public class MobileInputEditor : Editor {
-
+#if UNITY_EDITOR
         /// <summary>
         /// Offset size
         /// </summary>
@@ -87,6 +87,6 @@ namespace Mopsicus.Plugins {
                 _object.ApplyModifiedProperties ();
             }
         }
-
+#endif
     }
 }

@@ -11,7 +11,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Mopsicus.Plugins {
+namespace Loom.ZombieBattleground {
 
     /// <summary>
     /// Wrapper for Unity InputField
@@ -390,7 +390,7 @@ namespace Mopsicus.Plugins {
         /// </summary>
         /// <param name="data">JSON</param>
         public override void Send (JsonObject data) {
-            MobileInput.Plugin.StartCoroutine (PluginsMessageRoutine (data));
+            MainApp.Instance.StartCoroutine (PluginsMessageRoutine (data));
         }
 
         /// <summary>
