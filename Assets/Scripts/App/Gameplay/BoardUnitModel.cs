@@ -961,10 +961,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetToInitial()
         {
-            Card.InstanceCard.Abilities = new List<AbilityData>(Card.Prototype.Abilities);
-            Card.InstanceCard.Cost = Card.Prototype.Cost;
-            Card.InstanceCard.Damage = Card.Prototype.Damage;
-            Card.InstanceCard.Defense = Card.Prototype.Defense;
+            Card.InstanceCard.CopyFrom(Card.Prototype);
             InitialUnitType = Card.Prototype.Type;
             BuffedDefense = 0;
             BuffedDamage = 0;

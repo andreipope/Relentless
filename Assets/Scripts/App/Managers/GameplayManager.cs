@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>)opponentCardsInHand
-                                    .OrderBy(card => card.InstanceId)
+                                    .OrderBy(card => card.InstanceId.Id)
                                     .ToArray()
                             )
                         );

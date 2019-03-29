@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>)deck
-                                    .OrderBy(card => card.InstanceId)
+                                    .OrderBy(card => card.InstanceId.Id)
                                     .ToArray()
                                 )
                         );

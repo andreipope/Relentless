@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCard Prototype { get; }
 
-        public CardInstanceSpecificData InstanceCard { get; }
+        public CardInstanceSpecificData InstanceCard { get; set; }
 
         public InstanceId InstanceId { get; }
 
