@@ -119,13 +119,9 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
-<<<<<<< HEAD
         private HordeSelectionWithNavigationPage.Tab _nextTab;
 
-        private const float BoardCardScale = 0.265f;
-=======
         private const float BoardCardScale = 0.2756f;
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
 
         public void Init()
         {
@@ -359,12 +355,8 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
                 return;
 
-<<<<<<< HEAD
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
-=======
-            
 
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
             PlayClickSound();
 
             SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -1289,26 +1281,13 @@ namespace Loom.ZombieBattleground
                 deckGeneratorController.ProcessAddDeck
                 (
                     _myDeckPage.CurrentEditDeck,
-                    _myDeckPage.CurrentEditHero
+                    _myDeckPage.CurrentEditOverlord
                 );
             }
-<<<<<<< HEAD
             else
             {                                
                 deckGeneratorController.FinishEditDeck += FinishEditDeck;
                 deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
-=======
-
-            if (success)
-            {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                if(nextTab == HordeSelectionWithNavigationPage.Tab.SelectDeck)
-                {
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
-                }
-                _myDeckPage.ChangeTab(nextTab);
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
             }
         }
 

@@ -50,12 +50,12 @@ namespace Loom.ZombieBattleground
 
         }
         
-        public async void ProcessAddDeck(Deck deck, Hero hero)
+        public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
         {
             bool success = false;
-            deck.HeroId = hero.HeroId;
-            deck.PrimarySkill = hero.PrimarySkill;
-            deck.SecondarySkill = hero.SecondarySkill;
+            deck.OverlordId = overlord.OverlordId;
+            deck.PrimarySkill = overlord.PrimarySkill;
+            deck.SecondarySkill = overlord.SecondarySkill;
 
             try
             {
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedDecksData.Decks.Remove(deck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                 await _backendFacade.DeleteDeck(
                     _backendDataControlMediator.UserDataModel.UserId,
@@ -225,14 +225,9 @@ namespace Loom.ZombieBattleground
             OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
             Enumerators.Faction faction = overlord.Faction;
             
-<<<<<<< HEAD
-            Faction heroElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> creatureCards = heroElementSet.Cards.ToList();
-            List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
-=======
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
-            List<Card> cards = overlordElementSet.Cards.ToList();
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
+            List<Card> creatureCards = overlordElementSet.Cards.ToList();
+            List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
             
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)
@@ -323,7 +318,7 @@ namespace Loom.ZombieBattleground
             }
             foreach(Card card in creatureCardList)
             {
-                if (card.CardKind == Enumerators.CardKind.ITEM)
+                if (card.Kind == Enumerators.CardKind.ITEM)
                      continue;
                      
                 int index = Mathf.Clamp(card.Cost, 0, 10);

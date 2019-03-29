@@ -431,11 +431,10 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
-<<<<<<< HEAD
         public void AssignCurrentDeck()
         { 
             CurrentEditDeck = GetSelectedDeck().Clone();
-            CurrentEditHero = _dataManager.CachedHeroesData.Heroes[CurrentEditDeck.HeroId];
+            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
             IsEditingNewDeck = false;
         }
         
@@ -443,39 +442,14 @@ namespace Loom.ZombieBattleground
         {
             CurrentEditDeck = CreateNewDeckData();
             IsEditingNewDeck = true;
-=======
-        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
-        {   
-            IsEditingNewDeck = isNewDeck;
-            if(IsEditingNewDeck)
-            {
-                CurrentEditDeck = CreateNewDeckData();
-            }
-            else
-            {
-                CurrentEditDeck = GetSelectedDeck().Clone();
-                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
-            }
-            if(_tutorialManager.IsTutorial)
-            {
-                isDisplayRenameDeck = false;
-            }
-
-            IsDisplayRenameDeck = isDisplayRenameDeck;
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
         }
 
         private Deck CreateNewDeckData()
         {
             Deck deck = new Deck(
                 -1,
-<<<<<<< HEAD
-                CurrentEditHero.HeroId,
-                GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
-=======
                 CurrentEditOverlord.OverlordId,
-                GenerateDeckName(),                
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
+                GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
                 new List<DeckCardData>(),
                 0,
                 0
@@ -567,48 +541,6 @@ namespace Loom.ZombieBattleground
         {
             _trayButtonAuto.gameObject.SetActive(isShow);
         }
-<<<<<<< HEAD
-=======
-
-        private async void ProcessDeleteDeck(Deck currentDeck)
-        {
-            try
-            {
-                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    currentDeck.Id
-                );
-
-                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-            }
-            catch (TimeoutException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("Time out ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Client.RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("RpcException ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Result ===", e);
-                OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
-                return;
-            }
-
-            ChangeTab(Tab.SelectDeck);
-        }
->>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
         
         private void MoveDeckPageIndex(int direction)
         {
