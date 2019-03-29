@@ -1,4 +1,5 @@
 using DG.Tweening;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System;
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
 {
     public class TutorialDescriptionTooltipItem
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(TutorialDescriptionTooltipItem));
+
         private readonly ITutorialManager _tutorialManager;
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
@@ -66,6 +69,8 @@ namespace Loom.ZombieBattleground
 
         private Sequence _showingSequence;
 
+        private string _tutorialUIElementOwnerName;
+
         public TutorialDescriptionTooltipItem(int id,
                                                 string description,
                                                 Enumerators.TooltipAlign align,
@@ -76,7 +81,8 @@ namespace Loom.ZombieBattleground
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
                                                 BoardObject boardObjectOwner = null,
-                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
+                                                float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
+                                                string tutorialUIElementOwnerName = Constants.Empty)
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -90,6 +96,7 @@ namespace Loom.ZombieBattleground
             _currentPosition = position;
             _layer = layer;
             _minimumShowTime = minimumShowTime;
+            _tutorialUIElementOwnerName = tutorialUIElementOwnerName;
 
             _selfObject = MonoBehaviour.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Tutorials/TutorialDescriptionTooltip"));
@@ -324,8 +331,9 @@ namespace Loom.ZombieBattleground
                         {
                             UpdatePossibilityForClose();
                             Hide();
+                            return;
                         }
-
+                         
                         _selfObject.transform.position = _ownerCardInHand.Transform.TransformPoint(_currentPosition);
                         break;
                 }
@@ -383,6 +391,15 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                if (OwnerType == Enumerators.TutorialObjectOwner.UI)
+                {
+                    GameObject ownerObject = GameObject.Find(_tutorialUIElementOwnerName);
+                    if (ownerObject && ownerObject != null)
+                    {
+                        _currentPosition = ownerObject.transform.position + _currentPosition;
+                    }
+                }
+
                 _selfObject.transform.position = _currentPosition;
             }           
         }
@@ -406,7 +423,10 @@ namespace Loom.ZombieBattleground
                     _currentBackground.gameObject.SetActive(true);
                     break;
                 default:
-                    throw new NotImplementedException(nameof(align) + " doesn't implemented");
+                    Log.Warn($"Align {align} didnt implmented! Will use  default 'CenterLeft'");
+                    SetBackgroundType(Enumerators.TooltipAlign.CenterLeft);
+                    return;
+
             }
 
             _currentBackground.transform.localScale = size;

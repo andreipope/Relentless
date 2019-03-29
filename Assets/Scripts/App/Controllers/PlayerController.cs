@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -45,6 +46,10 @@ namespace Loom.ZombieBattleground
         private bool _isHovering;
 
         private float _timeHovering;
+
+        private bool _isMoveHoveringCard = false;
+
+        private BoardCardView _hoveringHandCard;
 
         private BoardCardView _hoveringBoardCard;
 
@@ -118,7 +123,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer = player;
 
-            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfHero);
+            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfOverlord);
 
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&
@@ -346,7 +351,7 @@ namespace Loom.ZombieBattleground
                         _timerManager.StopTimer(SetStatusZoomingFalse);
                         _cardsZooming = true;
                         _timerManager.AddTimer(SetStatusZoomingFalse);
-
+                        
                         _battlegroundController.CardsZoomed = false;
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand();
                     }
@@ -363,7 +368,7 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.DestroyCardPreview();
             }
 
-            if(_tutorialManager.IsTutorial && !Application.isMobilePlatform && _boardArrowController.CurrentBoardArrow == null)
+            if(!Application.isMobilePlatform && _boardArrowController.CurrentBoardArrow == null)
             {
                 CastRay(mousePos);
             }
@@ -376,25 +381,84 @@ namespace Loom.ZombieBattleground
 
             if (hits.Length > 0 && !IsCardSelected)
             {
-                foreach (RaycastHit2D hit in hits)
+                if (_tutorialManager.IsTutorial)
                 {
-                    CheckColliders(hit.collider);
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        CheckColliders(hit.collider);
+                    }
+                }
+                else if(!_isMoveHoveringCard && _gameplayManager.CanDoDragActions && !_battlegroundController.IsPreviewActive && !_cardsZooming && !_startedOnClickDelay)
+                {
+                    List<BoardCardView> boardCardViews = new List<BoardCardView>();
+                    BoardCardView boardCardView = null;
+                    foreach (RaycastHit2D hit in hits)
+                    {
+                        boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(hit.collider.gameObject);
+                        if(boardCardView != null && boardCardView.HandBoardCard != null && !boardCardView.HandBoardCard.IsReturnToHand)
+                        {
+                            boardCardViews.Add(boardCardView);
+                        }
+                        boardCardView = null;
+                    }
+
+                    if (boardCardViews.Count > 0)
+                    {
+                        boardCardView = boardCardViews.Find(view => Vector3.Distance(view.PositionOnHand, point) == boardCardViews.Min(card => Vector3.Distance(card.PositionOnHand, point)));
+                    }
+
+                    if (boardCardView != null)
+                    {
+                        if (_hoveringHandCard != boardCardView)
+                        {
+                            if (_hoveringHandCard != null)
+                            {
+                                HideHoveringAndZoom();
+                            }
+
+                            _hoveringHandCard = boardCardView;
+                            ShowHoveringAndZoom();
+                        }
+                    }
+                    else if (_hoveringHandCard != null)
+                    {
+                        HideHoveringAndZoom();
+                    }
                 }
             }
             else
             {
                 ClearHovering();
+                if(_hoveringHandCard != null)
+                {
+                    HideHoveringAndZoom(!_cardsZooming);
+                }
             }
         }
 
         private void CheckColliders(Collider2D collider)
         {
             BoardCardView boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
-
             if (boardCardView != null)
             {
                 UpdateHovering(boardCardView);
             }
+        }
+
+        private void ShowHoveringAndZoom()
+        {
+            _hoveringHandCard.HandBoardCard?.HoveringAndZoom();
+        }
+
+        private void HideHoveringAndZoom(bool isMove = true)
+        {
+            _isMoveHoveringCard = true;
+            Action onComplete = () =>
+            {
+                _isMoveHoveringCard = false;
+            };
+            _hoveringHandCard.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
+            _hoveringHandCard = null;
         }
 
         private void UpdateHovering(BoardCardView boardCardView)
@@ -426,12 +490,19 @@ namespace Loom.ZombieBattleground
 
         private void PointerSolverDragStartedHandler()
         {
+            if (_hoveringHandCard != null)
+            {
+                HideHoveringAndZoom(false);
+            }
+
             _topmostBoardCard?.HandBoardCard?.OnSelected();
 
             if (_boardArrowController.CurrentBoardArrow == null)
             {
                 HideCardPreview();
             }
+
+            
         }
 
         private void PointerEventSolverClickedHandler()
@@ -461,6 +532,11 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(SetStatusZoomingFalse);
             _cardsZooming = true;
             _timerManager.AddTimer(SetStatusZoomingFalse, null, .8f);
+
+            if (_hoveringHandCard != null)
+            {
+                HideHoveringAndZoom(false);
+            }
 
             _battlegroundController.CardsZoomed = true;
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();

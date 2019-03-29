@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         private const string InGameTutorialDataPath = "Data/ingame_tutorial";
 
+        private const int FirstDeckBuildTutorialIndex = 1;
+
         private IUIManager _uiManager;
 
         private ISoundManager _soundManager;
@@ -269,6 +271,11 @@ namespace Loom.ZombieBattleground
 
             ClearToolTips();
             EnableStepContent(CurrentTutorialStep);
+
+            if(CurrentTutorial.Id == FirstDeckBuildTutorialIndex)
+            {
+                RemoveTutorialDeck();
+            }
 
             StartTutorialEvent(CurrentTutorial.Id);
         }
@@ -757,7 +764,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
                                            tooltip.TutorialTooltipLayer,
-                                           tooltip.MinimumShowTime);
+                                           tooltip.MinimumShowTime,
+                                           tooltip.TutorialUIElementOwnerName);
                 }
             }
 
@@ -815,7 +823,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (!CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization &&
                             CurrentTutorial.TutorialContent.ToGameplayContent().
-                            SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility != Enumerators.OverlordSkill.NONE)
+                            SpecificBattlegroundInfo.PlayerInfo.PrimarySkill != Enumerators.Skill.NONE)
                         {
                             _gameplayManager.GetController<SkillsController>().PlayerPrimarySkill.SetCoolDown(0);
                         }
@@ -1002,14 +1010,14 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CurrentPlayerDeck =
                          new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId,
                          "TutorialDeck", new List<DeckCardData>(),
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimaryOverlordAbility,
-                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondaryOverlordAbility);
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimarySkill,
+                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondarySkill);
 
             _gameplayManager.OpponentPlayerDeck =
                         new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId,
                         "TutorialDeckOpponent", new List<DeckCardData>(),
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility,
-                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility);
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimarySkill,
+                        CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondarySkill);
         }
 
         public void PlayTutorialSound(string sound, float delay = 0f)
@@ -1072,7 +1080,8 @@ namespace Loom.ZombieBattleground
                                            float appearDelay,
                                            bool dynamicPosition,
                                            Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
+                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
+                                           string tutorialUIElementOwnerName = Constants.Empty)
         {
             if (appearDelay > 0)
             {
@@ -1087,7 +1096,8 @@ namespace Loom.ZombieBattleground
                                                                                                     dynamicPosition,
                                                                                                     ownerId,
                                                                                                     layer,
-                                                                                                    minimumShowTime: minimumShowTime);
+                                                                                                    minimumShowTime: minimumShowTime,
+                                                                                                    tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
@@ -1103,7 +1113,8 @@ namespace Loom.ZombieBattleground
                                                                                                 dynamicPosition,
                                                                                                 ownerId,
                                                                                                 layer,
-                                                                                                minimumShowTime: minimumShowTime);
+                                                                                                minimumShowTime: minimumShowTime,
+                                                                                                tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -1127,7 +1138,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
@@ -1156,7 +1168,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
@@ -1392,8 +1405,9 @@ namespace Loom.ZombieBattleground
                 {
                     _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                     _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
                     await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                     await _backendFacade.DeleteDeck(
                         _backendDataControlMediator.UserDataModel.UserId,

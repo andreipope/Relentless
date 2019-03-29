@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
                 GameObject go;
                 BoardCardView boardCardView;
                 BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-                switch (card.CardKind)
+                switch (card.Kind)
                 {
                     case Enumerators.CardKind.CREATURE:
                         go = Object.Instantiate(CardCreaturePrefab);
@@ -311,11 +311,10 @@ namespace Loom.ZombieBattleground
                         boardCardView = new ItemBoardCard(go, boardUnitModel);
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                        throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
                 }
 
-                boardCardView.SetAmount(cardData.Amount);
-                boardCardView.SetShowAmountEnabled(true);
+                boardCardView.SetAmount(BoardCardView.AmountTrayType.Counter, cardData.Amount);
                 boardCardView.SetHighlightingEnabled(false);
                 boardCardView.Transform.position = CardPositions[i % CardPositions.Count].position;
                 boardCardView.Transform.localScale = Vector3.one * 0.32f;

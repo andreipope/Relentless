@@ -62,6 +62,9 @@ namespace Loom.ZombieBattleground
             else
             {
                 BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
+                if (_gameplayManager.IsLocalPlayerTurn()) {
+                    _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+                }
             }
 
             AbilityUnitOwner.Owner.PlayerCardsController.AddCardToBoard(AbilityUnitOwner, ItemPosition.End);

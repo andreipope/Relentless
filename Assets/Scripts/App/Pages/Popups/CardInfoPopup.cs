@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
             _card = (IReadOnlyCard) data;
             _description.text = _card.FlavorText;
 
-            _amountAward.text = (5 * ((int) _card.CardRank + 1)).ToString();
+            _amountAward.text = (5 * ((int) _card.Rank + 1)).ToString();
 
             CardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.Name);
             UpdateCardAmount();

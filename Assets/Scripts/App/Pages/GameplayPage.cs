@@ -7,7 +7,6 @@ using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Hero = Loom.ZombieBattleground.Data.Hero;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 
@@ -100,8 +99,8 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
-        private Hero _playerHero,
-                     _opponentHero;
+        private OverlordModel _playerOverlord,
+                     _opponentOverlord;
 
         public void Init()
         {
@@ -159,8 +158,8 @@ namespace Loom.ZombieBattleground
             Object.Destroy(_selfPage);
             _selfPage = null;
 
-            _playerHero = null;
-            _opponentHero = null;
+            _playerOverlord = null;
+            _opponentOverlord = null;
         }
 
         public void Dispose()
@@ -234,27 +233,27 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            int heroId = -1;
-            int opponentHeroId = -1;
+            int overlordId = -1;
+            int overlordHeroId = -1;
 
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
                     if (_gameplayManager.IsTutorial && !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                     {
-                        heroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
-                        opponentHeroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
+                        overlordId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId;
+                        overlordHeroId = _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId;
                     }
                     else
                     {
-                        heroId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).HeroId;
+                        overlordId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).OverlordId;
 
                         List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
 
                         Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
 
 
-                        opponentHeroId = opponentDeck.Deck.HeroId;
+                        overlordHeroId = opponentDeck.Deck.OverlordId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
                         _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
 
@@ -263,9 +262,9 @@ namespace Loom.ZombieBattleground
                         if(_gameplayManager.IsTutorial && _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
                         {
                             _gameplayManager.OpponentPlayerDeck.PrimarySkill =
-                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimaryOverlordAbility;
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimarySkill;
                             _gameplayManager.OpponentPlayerDeck.SecondarySkill =
-                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondaryOverlordAbility;
+                                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondarySkill;
 
                         }
                     }
@@ -275,11 +274,11 @@ namespace Loom.ZombieBattleground
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            heroId = (int)playerState.Deck.HeroId;
+                            overlordId = (int)playerState.Deck.OverlordId;
                         }
                         else
                         {
-                            opponentHeroId = (int)playerState.Deck.HeroId;
+                            overlordHeroId = (int)playerState.Deck.OverlordId;
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
                             _gameplayManager.OpponentDeckId = -1;
                         }
@@ -289,14 +288,14 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (heroId == -1)
-                throw new Exception($"{nameof(heroId)} == -1");
+            if (overlordId == -1)
+                throw new Exception($"{nameof(overlordId)} == -1");
 
-            if (opponentHeroId == -1)
-                throw new Exception($"{nameof(opponentHeroId)} == -1");
+            if (overlordHeroId == -1)
+                throw new Exception($"{nameof(overlordHeroId)} == -1");
 
-            _playerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            _opponentHero = _dataManager.CachedHeroesData.Heroes[opponentHeroId];
+            _playerOverlord = _dataManager.CachedOverlordData.Overlords[overlordId];
+            _opponentOverlord = _dataManager.CachedOverlordData.Overlords[overlordHeroId];
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =
@@ -328,10 +327,10 @@ namespace Loom.ZombieBattleground
             OpponentSecondarySkillHandler =
                 GameObject.Find(Constants.Opponent).transform.Find("Object_SpellSecondary").GetComponent<OnBehaviourHandler>();
 
-            if (_playerHero != null)
+            if (_playerOverlord != null)
             {
-                SetHeroInfo(_playerHero, Constants.Player);
-                string playerNameText = _playerHero.FullName;
+                SetOverlordInfo(_playerOverlord, Constants.Player);
+                string playerNameText = _playerOverlord.FullName;
                 if (_backendDataControlMediator.LoadUserDataModel())
                 {
                     playerNameText = _backendDataControlMediator.UserDataModel.UserId;
@@ -340,12 +339,12 @@ namespace Loom.ZombieBattleground
                 _playerNameText.text = playerNameText;
             }
 
-            if (_opponentHero != null)
+            if (_opponentOverlord != null)
             {
-                SetHeroInfo(_opponentHero, Constants.Opponent);
+                SetOverlordInfo(_opponentOverlord, Constants.Opponent);
 
                 _opponentNameText.text = _matchManager.MatchType == Enumerators.MatchType.PVP ?
-                                                        _pvpManager.GetOpponentUserId() : _opponentHero.FullName;
+                                                        _pvpManager.GetOpponentUserId() : _opponentOverlord.FullName;
             }
 
             _playerManaBar = new PlayerManaBarItem(GameObject.Find("PlayerManaBar"), "GooOverflowPlayer",
@@ -356,28 +355,28 @@ namespace Loom.ZombieBattleground
             _isPlayerInited = true;
         }
 
-        public void SetHeroInfo(Hero hero, string objectName)
+        public void SetOverlordInfo(OverlordModel overlord, string objectName)
         {
-            Texture2D heroTexture =
-                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + hero.HeroElement + "_EXP");
-            Transform transfHeroObject = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
+            Texture2D overlordTexture =
+                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Faction + "_EXP");
+            Transform overlordObjectTransform = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
-            Material heroAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
-            heroAvatarMaterial.mainTexture = heroTexture;
+            Material overlordAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
+            overlordAvatarMaterial.mainTexture = overlordTexture;
 
             MeshRenderer renderer;
-            for (int i = 0; i < transfHeroObject.childCount; i++)
+            for (int i = 0; i < overlordObjectTransform.childCount; i++)
             {
-                renderer = transfHeroObject.GetChild(i).GetComponent<MeshRenderer>();
+                renderer = overlordObjectTransform.GetChild(i).GetComponent<MeshRenderer>();
 
                 if (renderer != null)
                 {
-                    renderer.material = heroAvatarMaterial;
+                    renderer.material = overlordAvatarMaterial;
                 }
             }
         }
 
-        public void SetupSkills(HeroSkill primary, HeroSkill secondary, bool isOpponent)
+        public void SetupSkills(OverlordSkill primary, OverlordSkill secondary, bool isOpponent)
         {
             if (isOpponent)
             {
@@ -395,7 +394,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupSkills(HeroSkill skillPrim, HeroSkill skillSecond, GameObject skillPrimary, GameObject skillSecondary)
+        private void SetupSkills(OverlordSkill skillPrim, OverlordSkill skillSecond, GameObject skillPrimary, GameObject skillSecondary)
         {
             if (skillPrim != null)
             {

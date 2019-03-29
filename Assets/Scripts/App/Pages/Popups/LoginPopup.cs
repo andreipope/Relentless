@@ -272,7 +272,7 @@ namespace Loom.ZombieBattleground
 
         private void OnInputDownEnterButton()
         {
-            if (_currentEventSystem.currentSelectedGameObject == _passwordFieldLogin.gameObject)
+            if (_currentEventSystem.currentSelectedGameObject == (_passwordFieldLogin.gameObject || _emailFieldLogin.gameObject))
             {
                 PressedLoginHandler();
             }

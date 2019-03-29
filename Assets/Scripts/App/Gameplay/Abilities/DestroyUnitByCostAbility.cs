@@ -80,12 +80,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
+                if (AbilityData.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
                 {
                     units.AddRange(GetOpponentOverlord().CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }
 
-                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
+                if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER_CARD))
                 {
                     units.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
                 }

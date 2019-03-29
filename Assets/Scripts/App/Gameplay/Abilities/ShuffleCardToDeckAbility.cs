@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
         public ShuffleCardToDeckAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTarget;
+            TargetTypes = ability.Targets;
         }
 
         public override void Activate()

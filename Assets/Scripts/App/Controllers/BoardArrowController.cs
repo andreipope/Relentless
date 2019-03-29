@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
+            ResetCurrentBoardArrow();
         }
 
         public void SetStatusOfBoardArrowOnBoard(bool status)

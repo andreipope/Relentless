@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class HeroWeaponAbility : AbilityBase
+    public class OverlordWeaponAbility : AbilityBase
     {
         public int Defense { get; }
 
         public int Damage { get; }
 
-        public HeroWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public OverlordWeaponAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Defense = ability.Defense;

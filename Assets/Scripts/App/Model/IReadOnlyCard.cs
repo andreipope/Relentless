@@ -25,14 +25,14 @@ namespace Loom.ZombieBattleground.Data
 
         string Frame { get; }
 
-        Enumerators.CardKind CardKind { get; }
+        Enumerators.CardKind Kind { get; }
 
-        Enumerators.CardRank CardRank { get; }
+        Enumerators.CardRank Rank { get; }
 
-        Enumerators.CardType CardType { get; }
+        Enumerators.CardType Type { get; }
 
         // FIXME: should be readonly 
-        IList<AbilityData> Abilities { get; }
+        IReadOnlyList<AbilityData> Abilities { get; }
 
         PictureTransform PictureTransform { get; }
 

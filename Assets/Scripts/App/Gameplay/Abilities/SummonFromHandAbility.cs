@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
 
             IReadOnlyList<BoardUnitModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
                 x => x.Card.InstanceCard.Cost <= Value &&
-                    x.Card.Prototype.CardKind == Enumerators.CardKind.CREATURE
+                    x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
             );
 
             if (Faction != Enumerators.Faction.Undefined)

@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
-            foreach (Enumerators.Target target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {

@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            switch (AbilityEffectType)
+            switch (AbilityEffect)
             {
                 case Enumerators.AbilityEffect.TARGET_ADJUSTMENTS_AIR:
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/WhirlwindVFX");

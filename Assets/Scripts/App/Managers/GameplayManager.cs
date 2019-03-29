@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private List<IController> _controllers;
+        private List<IController> _controllers = new List<IController>();
 
         private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
 
@@ -387,7 +387,7 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                         {
-                            CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                            CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                         });
                     }
                     else
@@ -463,7 +463,7 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.DrawPopup<PlayerOrderPopup>(new object[]
                 {
-                    CurrentPlayer.SelfHero, OpponentPlayer.SelfHero
+                    CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord
                 });
             }
 

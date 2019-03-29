@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
             {
                 InstanceId = id.Value;
 
-                if (InstanceId.Id > _cardsController.GetCardInstanceId().Id)
+                if (_cardsController != null && InstanceId.Id > _cardsController.GetCardInstanceId().Id)
                 {
                     _cardsController.SetNewCardInstanceId(InstanceId.Id);
                 }

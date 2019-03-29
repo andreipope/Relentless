@@ -16,6 +16,10 @@ using UnityEngine.Rendering;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using System.IO;
+using Loom.ZombieBattleground.Protobuf;
+using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using Faction = Loom.ZombieBattleground.Data.Faction;
 
 namespace Loom.ZombieBattleground
 {
@@ -115,7 +119,7 @@ namespace Loom.ZombieBattleground
                     _currentCollectionPagesAmount,
                     _currentCollectionFactionIndex;
 
-        private const float BoardCardScale = 0.265f;
+        private const float BoardCardScale = 0.2756f;
 
         public void Init()
         {
@@ -137,6 +141,7 @@ namespace Loom.ZombieBattleground
 
                 _inputFieldSearchName.text = "";
                 FillCollectionData();
+                SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
                 ResetCollectionPageState();
                 ResetDeckPageState();
 
@@ -279,7 +284,6 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
             
-            _myDeckPage.AssignCurrentDeck(false, true);
             if (status)
             {                
                 ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.Rename);
@@ -349,7 +353,7 @@ namespace Loom.ZombieBattleground
             if (_tutorialManager.BlockAndReport(_buttonSaveDeck.name))
                 return;
 
-            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
+            
 
             PlayClickSound();
             ProcessEditDeck(_myDeckPage.CurrentEditDeck, HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -512,65 +516,72 @@ namespace Loom.ZombieBattleground
                         init,
                         GetMaxCopiesValue(card.Model.Card.Prototype),
                         amount,
-                        true
+                        BoardCardView.AmountTrayType.Counter                        
                     );
                     break;
                 }
+            }
+        }
+        
+        private void SubtractInitialDeckCardsAmountFromCollections(Deck deck)
+        {
+            foreach(DeckCardData card in deck.Cards)
+            {
+                _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
             }
         }
 
         public void LoadDeckCards(Deck deck)
         {
             ResetDeckBoardCards();
+            
+
+            int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
+            int endIndex = Mathf.Min
+            (
+                (_deckPageIndex + 1) * GetDeckCardAmountPerPage(),
+                deck.Cards.Count
+            );
 
             RectTransform rectContainer = _myDeckPage.LocatorDeckCards.GetComponent<RectTransform>();
-            foreach (DeckCardData card in deck.Cards)
+            for (int i = startIndex; i < endIndex; ++i)
             {
+                DeckCardData card = deck.Cards[i];
                 Card prototype = _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName);
 
-                bool itemFound = false;
-                foreach (BoardCardView item in _createdDeckBoardCards)
-                {
-                    if (item.Model.Card.Prototype.Name == card.CardName)
-                    {
-                        itemFound = true;
-                        break;
-                    }
-                }
+                BoardCardView boardCard = CreateBoardCard
+                (
+                    prototype,
+                    rectContainer,
+                    Vector3.zero,
+                    BoardCardScale
+                );
 
-                if (!itemFound)
-                {
-                    BoardCardView boardCard = CreateBoardCard
-                    (
-                        prototype,
-                        rectContainer,
-                        Vector3.zero,
-                        BoardCardScale
-                    );
-                    boardCard.Transform.Find("Amount").gameObject.SetActive(false);
+                _createdDeckBoardCards.Add(boardCard);
 
-                    _createdDeckBoardCards.Add(boardCard);
+                boardCard.Transform.position = DeckCardPositions[_createdDeckBoardCards.Count - 1].position;
 
-                    boardCard.SetAmountOfCardsInEditingPage(true, GetMaxCopiesValue(prototype), card.Amount, true);                    
+                boardCard.SetAmountOfCardsInEditingPage
+                (
+                    true,
+                    GetMaxCopiesValue(prototype),
+                    card.Amount, 
+                    BoardCardView.AmountTrayType.Radio
+                );
+                    
+                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
-                    OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+                eventHandler.DragBegan += BoardCardDragBeganHandler;
+                eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
+                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
 
-                    eventHandler.DragBegan += BoardCardDragBeganHandler;
-                    eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
-                    eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
-
-                    DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                    deckBuilderCard.Page = this;
-                    deckBuilderCard.Card = boardCard.Model.Card.Prototype;
-                    deckBuilderCard.IsHordeItem = true;
-
-                    _collectionData.GetCardData(card.CardName).Amount -= card.Amount;
-
-                    UpdateEditDeckCardsAmount();
-                }
+                DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
+                deckBuilderCard.Page = this;
+                deckBuilderCard.Card = boardCard.Model.Card.Prototype;
+                deckBuilderCard.IsHordeItem = true;                
             }
-
-            UpdateDeckCardPage();
+            
+            UpdateEditDeckCardsAmount();
         }
 
         public void AddCardToDeck(IReadOnlyCard card)
@@ -578,8 +589,8 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck == null)
                 return;
 
-
-            if (FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement] == card.Faction)
+            OverlordModel overlordData = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            if (FactionAgainstDictionary[overlordData.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
@@ -601,7 +612,7 @@ namespace Loom.ZombieBattleground
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
                 _myDeckPage.OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.CardRank.ToString().ToLowerInvariant() + " card in your deck.");
+                    card.Rank.ToString().ToLowerInvariant() + " card in your deck.");
                 return;
             }
 
@@ -611,59 +622,31 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            bool itemFound = false;
-            BoardCardView foundItem = null;
-            foreach (BoardCardView item in _createdDeckBoardCards)
-            {
-                if (item.Model.Card.Prototype.MouldId == card.MouldId)
-                {
-                    foundItem = item;
-                    itemFound = true;
-
-                    break;
-                }
-            }
-
             collectionCardData.Amount--;
             UpdateBoardCardAmount(false, card.Name, collectionCardData.Amount);
-
-
-            if (!itemFound)
-            {
-                RectTransform rectContainer = _myDeckPage.LocatorDeckCards.GetComponent<RectTransform>();
-                BoardCardView boardCard = CreateBoardCard
-                (
-                    card,
-                    rectContainer,
-                    Vector3.zero,
-                    BoardCardScale
-                );
-                boardCard.Transform.Find("Amount").gameObject.SetActive(false);
-                foundItem = boardCard;
-
-                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
-
-                eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardDeckDragEndedHandler;
-                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
-
-                DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
-                deckBuilderCard.Page = this;
-                deckBuilderCard.Card = card;
-                deckBuilderCard.IsHordeItem = true;
-
-                _createdDeckBoardCards.Add(boardCard);
-            }
-
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
 
-            foundItem.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(card),
-                _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,true);
+            if (_createdDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
+            {
+                BoardCardView foundItem = _createdDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
+                foundItem.SetAmountOfCardsInEditingPage
+                (
+                    false,
+                    GetMaxCopiesValue(card),
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,
+                    BoardCardView.AmountTrayType.Radio
+                );
+            }
+            else
+            {
+                int deckPagesAmount = GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1;
+                _deckPageIndex = Mathf.Max(_deckPageIndex, deckPagesAmount);
+                UpdateDeckCardPage();
+            }
 
-            UpdateDeckCardPage();
             UpdateEditDeckCardsAmount();
 
-            if(_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
+            if (_tutorialManager.IsTutorial && _myDeckPage.CurrentEditDeck.GetNumCards() >= _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeFilled);
             }
@@ -692,7 +675,7 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-
+        
         public void RemoveCardFromDeck(IReadOnlyCard card)
         {
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
@@ -703,32 +686,34 @@ namespace Loom.ZombieBattleground
                 card.Name,
                 collectionCardData.Amount
             );
-
-            BoardCardView boardCard = _createdDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
-            boardCard.CardsAmountDeckEditing--;
+            
             _myDeckPage.CurrentEditDeck.RemoveCard(card.Name);
-
-            if (boardCard.CardsAmountDeckEditing == 0)
+            
+            if(_createdDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
             {
-                _createdDeckBoardCards.Remove(boardCard);
-
-                Object.DestroyImmediate(boardCard.GameObject);
-
-                int currentDeckPage = _deckPageIndex;
-                int deckPagesAmount = GetDeckPageAmount();
-                if (currentDeckPage >= deckPagesAmount)
+                BoardCardView boardCard = _createdDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
+                boardCard.CardsAmountDeckEditing--;
+                if (boardCard.CardsAmountDeckEditing == 0)
                 {
-                    _deckPageIndex = Mathf.Clamp(deckPagesAmount - 1, 0, deckPagesAmount);
+                    int deckPagesAmount = GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1;
+                    _deckPageIndex = deckPagesAmount < 0 ? 0 : Mathf.Min(_deckPageIndex, deckPagesAmount);
+        
+                    UpdateDeckCardPage();
+                }
+                else
+                {
+                    boardCard.SetAmountOfCardsInEditingPage
+                    (
+                        false, 
+                        GetMaxCopiesValue(boardCard.Model.Card.Prototype), 
+                        boardCard.CardsAmountDeckEditing, 
+                        BoardCardView.AmountTrayType.Radio
+                    );
                 }
             }
-            else
-            {
-                boardCard.SetAmountOfCardsInEditingPage(false, GetMaxCopiesValue(boardCard.Model.Card.Prototype), boardCard.CardsAmountDeckEditing, true);
-            }
-
-            UpdateDeckCardPage();
+            
             UpdateEditDeckCardsAmount();
-        }
+        } 
 
         private BoardCardView CreateBoardCard(IReadOnlyCard card, RectTransform root, Vector3 position, float scale)
         {
@@ -737,7 +722,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
             int amount = _collectionData.GetCardData(card.Name).Amount;
 
-            switch (card.CardKind)
+            switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
@@ -748,16 +733,14 @@ namespace Loom.ZombieBattleground
                     boardCard = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(card.CardKind), card.CardKind, null);
+                    throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
-            boardCard.SetShowAmountEnabled(true);
-            boardCard.SetAmount(amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.None,amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
-            boardCard.Transform.Find("Amount").gameObject.SetActive(false);
 
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();
@@ -813,8 +796,6 @@ namespace Loom.ZombieBattleground
 
             _draggingObject = Object.Instantiate(onOnject);
             _draggingObject.transform.localScale = Vector3.one * 0.3f;
-            _draggingObject.transform.Find("Amount").gameObject.SetActive(false);
-            _draggingObject.transform.Find("AmountForArmy").gameObject.SetActive(false);
             _draggingObject.transform.Find("DeckEditingGroupUI").gameObject.SetActive(false);
             _draggingObject.name = onOnject.GetInstanceID().ToString();
             _draggingObject.GetComponent<SortingGroup>().sortingOrder = 2;
@@ -902,27 +883,27 @@ namespace Loom.ZombieBattleground
         private void UpdateOverlordAbilitiesButton()
         {
             Deck deck = _myDeckPage.CurrentEditDeck;
-            Hero hero = _dataManager.CachedHeroesData.Heroes[_myDeckPage.CurrentEditDeck.HeroId];
-            if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            if(deck.PrimarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
-            if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+            if(deck.SecondarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
 
-            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+hero.HeroElement.ToString().ToLower());
+            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+overlord.Faction.ToString().ToLower());
         }
 
         private void UpdateEditDeckCardsAmount()
@@ -943,38 +924,23 @@ namespace Loom.ZombieBattleground
 
         private void UpdateDeckCardPage()
         {
-            int startIndex = _deckPageIndex * GetDeckCardAmountPerPage();
-            int endIndex = (_deckPageIndex + 1) * GetDeckCardAmountPerPage();
-            List<BoardCardView> displayCardList = new List<BoardCardView>();
-
-            for ( int i = 0; i < _createdDeckBoardCards.Count; ++i)
-            {
-                if(i >= startIndex && i < endIndex)
-                {
-                    _createdDeckBoardCards[i].GameObject.SetActive(true);
-                    displayCardList.Add(_createdDeckBoardCards[i]);
-                }
-                else
-                {
-                    _createdDeckBoardCards[i].GameObject.SetActive(false);
-                }
-            }
-            for (int i = 0; i < displayCardList.Count; ++i)
-            {
-                displayCardList[i].Transform.position = DeckCardPositions[i].position;
-            }
+            LoadDeckCards(_myDeckPage.CurrentEditDeck);
         }
 
         private void MoveDeckPageIndex(int direction)
         {
-            _deckPageIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount() - 1);
+            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1);
+            if (newIndex == _deckPageIndex)
+                return;
+                
+            _deckPageIndex = newIndex;
             UpdateDeckCardPage();
         }
 
         private void ResetDeckPageState()
         {
             _deckPageIndex = 0;
-            LoadDeckCards(_myDeckPage.CurrentEditDeck);
+            UpdateDeckCardPage();
         }
 
         public void MoveCollectionPageIndex(int direction)
@@ -1006,8 +972,21 @@ namespace Loom.ZombieBattleground
 
         private void ResetCollectionPageState()
         {
-            ExcludeFilterDataWithAgainstFaction();
-            _availableFaction = _cardFilterPopup.FilterData.GetFilterFactionList();
+            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
+
+            _availableFaction = _cardFilterPopup.FilterData.GetFilteredFactionList();
+            _availableFaction = ExcludeFactionFromList
+            (
+                _availableFaction,
+                againstFaction
+            );
+            _availableFaction = SortFactionList
+            (
+                _availableFaction,
+                overlordModel.Faction
+            );
+            
             if (_tutorialManager.IsTutorial)
             {
                 _currentCollectionFactionIndex = _availableFaction.FindIndex(set => set == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
@@ -1017,8 +996,42 @@ namespace Loom.ZombieBattleground
                 _currentCollectionFactionIndex = 0;
             }
             _currentCollectionPage = 0;
+            
             UpdateAvailableCollectionCards();
             LoadCollectionsCards();
+        }
+        
+        private List<Enumerators.Faction> SortFactionList(List<Enumerators.Faction> factions, Enumerators.Faction firstFaction)
+        {
+            if (!factions.Contains(firstFaction))
+            {
+                return factions.ToList();
+            }
+
+            int index = factions.IndexOf(firstFaction);
+            if(index == 0)
+            {
+                return factions.ToList();
+            }
+            
+            List<Enumerators.Faction> resultList = factions.ToList();
+            Enumerators.Faction tmpFaction = resultList[0];
+            resultList[0] = firstFaction;
+            resultList[index] = tmpFaction;           
+
+            return resultList;
+        }
+        
+        private List<Enumerators.Faction> ExcludeFactionFromList(List<Enumerators.Faction> factions, Enumerators.Faction excludeFaction)
+        {
+            if (!factions.Contains(excludeFaction))
+            {
+                return factions.ToList();
+            }
+            
+            List<Enumerators.Faction> resultList = factions.ToList();
+            resultList.Remove(excludeFaction);
+            return resultList;
         }
 
         private void UpdateAvailableCollectionCards()
@@ -1042,7 +1055,8 @@ namespace Loom.ZombieBattleground
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
             List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
+            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
             allAvailableFactionList.Remove(againstFaction);
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
@@ -1127,23 +1141,17 @@ namespace Loom.ZombieBattleground
 
         private bool CheckIfSatisfyRankFilter(Card card)
         {
-            return _cardFilterPopup.FilterData.RankDictionary[card.CardRank];
+            return _cardFilterPopup.FilterData.RankDictionary[card.Rank];
         }
 
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
-            return _cardFilterPopup.FilterData.TypeDictionary[card.CardType];
+            return _cardFilterPopup.FilterData.TypeDictionary[card.Type];
         }
 
         private bool CheckIfAnyCacheCollectionCardsExist()
         {
             return _cacheCollectionCardsList.Count > 0;
-        }
-
-        private void ExcludeFilterDataWithAgainstFaction()
-        {
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[_myDeckPage.CurrentEditHero.HeroElement];
-            _cardFilterPopup.FilterData.FactionDictionary[againstFaction] = false;
         }
 
         private void ResetSearchAndFilterResult()
@@ -1155,7 +1163,7 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCacheFilteredCardList(List<Card> cardList)
         {
-            _cacheCollectionCardsList = cardList.ToList();
+            _cacheCollectionCardsList = cardList.FindAll(card => !card.Hidden).ToList();
             _currentCollectionPagesAmount = Mathf.CeilToInt
             (
                 _cacheCollectionCardsList.Count / (float)CollectionsCardPositions.Count
@@ -1172,9 +1180,9 @@ namespace Loom.ZombieBattleground
             _createdCollectionsBoardCards.Clear();
         }
 
-        private int GetDeckPageAmount()
+        private int GetDeckPageAmount(Deck deck)
         {
-            return Mathf.CeilToInt((float) _createdDeckBoardCards.Count / GetDeckCardAmountPerPage());
+            return Mathf.CeilToInt((float) deck.Cards.Count / GetDeckCardAmountPerPage());
         }
 
         private int GetCollectionPageAmount()
@@ -1212,7 +1220,7 @@ namespace Loom.ZombieBattleground
 
         public uint GetMaxCopiesValue(IReadOnlyCard card)
         {
-            Enumerators.CardRank rank = card.CardRank;
+            Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
             Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
@@ -1318,6 +1326,10 @@ namespace Loom.ZombieBattleground
             {
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deckToSave.Id;
                 await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                if(nextTab == HordeSelectionWithNavigationPage.Tab.SelectDeck)
+                {
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
+                }
                 _myDeckPage.ChangeTab(nextTab);
             }
 

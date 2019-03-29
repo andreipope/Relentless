@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
-                if (AbilityActivityType == Enumerators.AbilityActivity.PASSIVE)
+                if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
                 {
                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
                    {
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
+                if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER_CARD))
                 {
                     _targets.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x != AbilityUnitOwner && x.CurrentDefense < x.MaxCurrentDefense));
                 }
 
-                if (AbilityData.AbilityTarget.Contains(Enumerators.Target.PLAYER))
+                if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER))
                 {
                     _targets.Add(PlayerCallerOfAbility);
                 }
