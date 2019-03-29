@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Add(type);
         }
 
-        public void ApplyBuff(Enumerators.BuffType type, bool ignoreTurnsOnBoard = false)
+        public void ApplyBuff(Enumerators.BuffType type)
         {
             switch (type)
             {
@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if ((ignoreTurnsOnBoard || NumTurnsOnBoard == 0) && !HasFeral)
+                    if (NumTurnsOnBoard == 0 && !HasFeral)
                     {
                         AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
                         HasBuffRush = true;

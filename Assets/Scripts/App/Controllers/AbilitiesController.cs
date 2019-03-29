@@ -422,7 +422,7 @@ namespace Loom.ZombieBattleground
         {
             IReadOnlyCard prototype = boardUnitModel.Card.Prototype;
 
-            IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
+            CardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
 
             GameplayQueueAction<object> abilityHelperAction = null;
 
@@ -572,7 +572,8 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           instance.Abilities = prototype.Abilities.Select(a => new AbilityData(a)).ToList();
+                                           instance.Abilities.Clear();
+                                           instance.Abilities.AddRange(prototype.Abilities.Select(a => new AbilityData(a)));
 
                                            card.Model.Card.Owner.CurrentGoo += card.Model.Card.InstanceCard.Cost;
 

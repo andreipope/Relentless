@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         private void TakeBlitzToUnit(BoardUnitModel unit)
         {
-            unit.ApplyBuff(Enumerators.BuffType.BLITZ, true);
+            unit.ApplyBuff(Enumerators.BuffType.BLITZ);
         }
     }
 }
