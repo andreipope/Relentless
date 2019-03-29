@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
             attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
 
+            _abilitiesController.UnitAttacked(attackingUnitModel, attackedPlayer);
+
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeAttacked, attackingUnitModel.TutorialObjectId);
@@ -119,6 +121,8 @@ namespace Loom.ZombieBattleground
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
 
+                _abilitiesController.UnitAttacked(attackingUnitModel, attackedUnitModel);
+
                 if (hasCounterAttack)
                 {
                     if (attackedUnitModel.CurrentDefense > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
@@ -143,6 +147,8 @@ namespace Loom.ZombieBattleground
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
+
+                        _abilitiesController.UnitAttacked(attackedUnitModel, attackingUnitModel);
                     }
                 }
 

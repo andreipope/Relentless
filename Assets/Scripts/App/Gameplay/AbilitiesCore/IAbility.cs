@@ -9,14 +9,18 @@ namespace Loom.ZombieBattleground
     public interface ICardAbility
     {
         BoardUnitModel UnitModelOwner { get; }
+
         Player PlayerOwner { get; }
+
+        CardAbilityData CardAbilityData { get; }
 
         void Init(
             BoardUnitModel boardUnitModel,
-            IReadOnlyList<GenericParameter> genericParameters,
+            CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null);
         void DoAction();
-        void ChangePlyerOwner(Player player);
+        void ChangePlayerOwner(Player player);
+        void InsertTargets(IReadOnlyList<BoardObject> targets);
         void Dispose();
     }
 
@@ -36,6 +40,8 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerOwner { get; private set; }
 
+        public CardAbilityData CardAbilityData { get; private set; }
+
         public CardAbility()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -47,16 +53,17 @@ namespace Loom.ZombieBattleground
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
-            IReadOnlyList<GenericParameter> genericParameters,
+            CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null)
         {
             UnitModelOwner = boardUnitModel;
             PlayerOwner = boardUnitModel.OwnerPlayer;
-            GenericParameters = genericParameters;
+            CardAbilityData = cardAbilityData;
+            GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
         }
 
-        public void ChangePlyerOwner(Player player)
+        public void ChangePlayerOwner(Player player)
         {
             PlayerOwner = player;
         }
@@ -64,6 +71,11 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
             AbilitiesController.EndAbility(this);
+        }
+
+        public void InsertTargets(IReadOnlyList<BoardObject> targets)
+        {
+            Targets = targets;
         }
     }
 }

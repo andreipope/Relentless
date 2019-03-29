@@ -127,20 +127,20 @@ namespace Loom.ZombieBattleground
         public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null, bool ignoreEntry = false)
         {
             ICardAbility ability;
-            foreach (CardAbilityData abilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityData)
+            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityData)
             {
-                foreach (Enumerators.AbilityTrigger trigger in abilityData.Triggers)
+                if (cardAbilityData.Ability == Enumerators.AbilityType.Undefined)
+                    continue;
+
+                foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
                 {
-                    if (abilityData.Ability == Enumerators.AbilityType.Undefined)
-                        continue;
-
-                    ability = InternalTools.GetInstance<CardAbility>($"{abilityData.Ability.ToString()}Ability");
-                    ability.Init(boardUnitModel, abilityData.GenericParameters, FilterTargets(boardUnitModel, abilityData,
-                                                                                              GetTargets(boardUnitModel, abilityData, targets)));
-
-                    CheckOnEntryAbility(ability, abilityData);
+                    ability = InternalTools.GetInstance<CardAbility>($"{cardAbilityData.Ability.ToString()}Ability");
+                    ability.Init(boardUnitModel, cardAbilityData, FilterTargets(boardUnitModel, cardAbilityData,
+                                                                            GetTargets(boardUnitModel, cardAbilityData, targets)));
 
                     _activeAbilities[trigger].Add(ability);
+
+                    CheckOnEntryAbility(ability, cardAbilityData);
                 }
             }
         }
@@ -156,11 +156,42 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public void TakeAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
+        {
+            ICardAbility ability;
+
+            foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
+            {
+                ability = InternalTools.GetInstance<CardAbility>($"{cardAbilityData.Ability.ToString()}Ability");
+                ability.Init(boardUnitModel, cardAbilityData, new List<BoardObject>() { boardUnitModel });
+
+                _activeAbilities[trigger].Add(ability);
+
+                CheckOnEntryAbility(ability, cardAbilityData);
+            }
+        }
+
         #region event callers
 
         public void UnitStatChanged(Enumerators.Stat stat, BoardUnitModel boardUnit, int from, int to)
         {
 
+        }
+
+        public void UnitAttacked(BoardUnitModel attacker, BoardObject targetAttacked)
+        {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Attack])
+            {
+                if (ability.UnitModelOwner == attacker)
+                {
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                    {
+                        targetAttacked
+                    }, true)));
+                    ability.DoAction();
+                }
+            }
         }
 
         public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
@@ -179,7 +210,13 @@ namespace Loom.ZombieBattleground
 
         private void UnitDiedHandler(BoardUnitModel boardUnit)
         {
-
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Death])
+            {
+                if (ability.UnitModelOwner == boardUnit)
+                {
+                    ability.DoAction();
+                }
+            }
         }
 
         private void TurnEndedHandler()
@@ -209,11 +246,6 @@ namespace Loom.ZombieBattleground
         }
 
         private void CardPlayedHandler(BoardUnitModel boardUnit, int position)
-        {
-
-        }
-
-        private void UnitAttackedHandler(BoardUnitModel attacker, BoardObject targetAttacked)
         {
 
         }
@@ -250,12 +282,12 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        public List<BoardObject> GetTargets(BoardUnitModel modelCaller, CardAbilityData cardAbilityData, List<BoardObject> targets)
+        public List<BoardObject> GetTargets(BoardUnitModel modelCaller, CardAbilityData cardAbilityData, List<BoardObject> targets, bool insert = false)
         {
-            if (targets != null)
+            if (targets != null && !insert)
                 return targets;
 
-            targets = new List<BoardObject>();
+            targets = targets ?? new List<BoardObject>();
 
             foreach(CardAbilityData.TargetInfo targetInfo in cardAbilityData.Targets)
             {

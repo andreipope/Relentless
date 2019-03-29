@@ -191,7 +191,6 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
                 {
-
                 }),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
@@ -209,7 +208,6 @@ namespace Loom.ZombieBattleground.Data
                 card.Cost,
                 new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
                 {
-
                 })
             );
         }

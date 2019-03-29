@@ -318,25 +318,29 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.REANIMATE:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Reanimate))
                     {
-                        //_abilitiesController.BuffUnitByAbility(
-                        //    Enumerators.AbilityType.REANIMATE_UNIT,
-                        //    this,
-                        //    Card.Prototype.Kind,
-                        //    this,
-                        //    OwnerPlayer
-                        //    );
+                        IsReanimated = false;
+
+                        _abilitiesController.TakeAbilityToUnit(this, new CardAbilityData(
+                                Enumerators.AbilityType.Reanimate,
+                                Enumerators.GameMechanicDescription.Reanimate,
+                                new List<Enumerators.AbilityTrigger>() { Enumerators.AbilityTrigger.Death },
+                                new List<CardAbilityData.TargetInfo>() { new CardAbilityData.TargetInfo(
+                                                                                Enumerators.Target.ItSelf,
+                                                                                Enumerators.TargetFilter.Undefined) },
+                                new List<GenericParameter>()));
                     }
                     break;
                 case Enumerators.BuffType.DESTROY:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Destroy))
                     {
-                        //_abilitiesController.BuffUnitByAbility(
-                        //Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK,
-                        //this,
-                        //Card.Prototype.Kind,
-                        //this,
-                        //OwnerPlayer
-                        //);
+                        _abilitiesController.TakeAbilityToUnit(this, new CardAbilityData(
+                                Enumerators.AbilityType.Destroy,
+                                Enumerators.GameMechanicDescription.Destroy,
+                                new List<Enumerators.AbilityTrigger>() { Enumerators.AbilityTrigger.Attack },
+                                new List<CardAbilityData.TargetInfo>() { new CardAbilityData.TargetInfo(
+                                                                                Enumerators.Target.OpponentCard,
+                                                                                Enumerators.TargetFilter.Target) },
+                                new List<GenericParameter>()));
                     }
                     break;
             }
