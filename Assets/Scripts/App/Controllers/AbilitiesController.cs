@@ -1063,6 +1063,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES:
                     ability = new ReplaceUnitsWithTypeOnStrongerOnesAbility(cardKind, abilityData);
+                    abilityView = new ReplaceUnitsWithTypeOnStrongerOnesAbilityView((ReplaceUnitsWithTypeOnStrongerOnesAbility)ability);
                     break;
                 case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);

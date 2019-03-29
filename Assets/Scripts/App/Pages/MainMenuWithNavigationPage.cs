@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
 
         private void ButtonPlayHandler()
         {
-            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonPlay.transform.parent.name))
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonPlay.name))
                 return;
 
             if (_isReturnToTutorial)

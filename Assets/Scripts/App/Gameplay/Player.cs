@@ -200,7 +200,8 @@ namespace Loom.ZombieBattleground
 
             if (!isOpponent)
             {
-                if (!_gameplayManager.IsTutorial)
+                if (!_gameplayManager.IsTutorial || _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
+                            SpecificBattlegroundInfo.DisabledInitialization)
                 {
                     if(_matchManager.MatchType == Enumerators.MatchType.PVP)
                     {

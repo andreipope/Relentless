@@ -43,7 +43,8 @@ namespace Loom.ZombieBattleground
                            _groupYouLost;
 
         private Image _imageOverlordPortrait,
-                      _imageExperienceBar; 
+                      _imageExperienceBar,
+                      _imageLock;
 
         private TextMeshProUGUI _textDeckName,
                                 _textPlayerName,
@@ -113,7 +114,6 @@ namespace Loom.ZombieBattleground
             
             _buttonContinue = Self.transform.Find("Scaler/Group_Buttons/Button_Continue").GetComponent<Button>();
             _buttonContinue.onClick.AddListener(ButtonContinueHandler);
-            _buttonContinue.gameObject.SetActive(false);
             
             _groupYouWin.SetActive(_isWin);
             _groupYouLost.SetActive(!_isWin);
@@ -126,6 +126,8 @@ namespace Loom.ZombieBattleground
             _currentPlayerOverlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
             _imageExperienceBar = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar").GetComponent<Image>();
+
+            _imageLock = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar/Image_Lock").GetComponent<Image>();
 
             _imageOverlordPortrait = Self.transform.Find("Scaler/Image_OverlordPortrait").GetComponent<Image>();
             _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
@@ -145,18 +147,23 @@ namespace Loom.ZombieBattleground
             _textDeckName.text = deck.Name;
             _textLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin).ToString();
 
+            _imageLock.gameObject.SetActive(_tutorialManager.IsTutorial);
+            _buttonContinue.gameObject.SetActive(_tutorialManager.IsTutorial);
+            _buttonPlayAgain.gameObject.SetActive(false);
 
-            float currentExperiencePercentage = (float)_overlordManager.MatchExperienceInfo.ExperienceAtBegin /
+            if (_tutorialManager.IsTutorial)
+            {
+                _imageExperienceBar.fillAmount = 0;
+            }
+            else
+            {
+                float currentExperiencePercentage = (float)_overlordManager.MatchExperienceInfo.ExperienceAtBegin /
                                                 _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
 
-            _imageExperienceBar.fillAmount = currentExperiencePercentage;
+                _imageExperienceBar.fillAmount = currentExperiencePercentage;
 
-            FillingExperienceBar();
-
-            _buttonPlayAgain.gameObject.SetActive
-            (
-                !_tutorialManager.IsTutorial
-            );
+                FillingExperienceBar();                
+            }
         }
         
         public void Show(object data)

@@ -22,7 +22,8 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         private Button _buttonClose,
-                       _buttonQuit,
+                       _buttonLogin,
+                       _buttonLogout,
                        _buttonLeaveMatch,
                        _buttonHelp,
                        _buttonSupport,
@@ -32,6 +33,8 @@ namespace Loom.ZombieBattleground
                        _musicVolumeSlider;
 
         private bool _initialInit = true;
+
+        private GameObject _groupLogin;
 
         public GameObject Self { get; private set; }
 
@@ -76,9 +79,14 @@ namespace Loom.ZombieBattleground
 
             _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
+
+            _groupLogin = Self.transform.Find("Group_Login").gameObject;
             
-            _buttonQuit = Self.transform.Find("Button_Quit").GetComponent<Button>();
-            _buttonQuit.onClick.AddListener(ButtonQuitHandler);
+            _buttonLogin = Self.transform.Find("Group_Login/Button_Login").GetComponent<Button>();
+            _buttonLogin.onClick.AddListener(ButtonLoginHandler);
+            
+            _buttonLogout = Self.transform.Find("Group_Login/Button_Logout").GetComponent<Button>();
+            _buttonLogout.onClick.AddListener(ButtonLogoutHandler);
             
             _buttonLeaveMatch = Self.transform.Find("Button_LeaveMatch").GetComponent<Button>();
             _buttonLeaveMatch.onClick.AddListener(ButtonLeaveMatchHandler);
@@ -107,7 +115,7 @@ namespace Loom.ZombieBattleground
             }
             
             _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
-            _buttonQuit.gameObject.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
+            _groupLogin.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
         }
 
         public void Show(object data)
@@ -116,7 +124,31 @@ namespace Loom.ZombieBattleground
         }
 
         public void Update()
-        {           
+        {
+            if (Self == null)
+                return;
+
+            if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+                return;
+            
+            if (!Constants.AlwaysGuestLogin && 
+                _backendDataControlMediator.UserDataModel != null && 
+                (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
+            {
+                if (!_buttonLogin.gameObject.activeSelf)
+                {
+                    _buttonLogin.gameObject.SetActive(true);
+                    _buttonLogout.gameObject.SetActive(false);
+                }
+            }
+            else
+            {
+                if (_buttonLogin.gameObject.activeSelf)
+                {
+                    _buttonLogin.gameObject.SetActive(false);
+                    _buttonLogout.gameObject.SetActive(true);    
+                }
+            }               
         }
 
 
@@ -129,6 +161,32 @@ namespace Loom.ZombieBattleground
             _initialInit = false;
         }
         
+        private void ButtonLoginHandler()
+        {
+            PlayClickSound();
+            Hide();
+            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+            popup.Show();
+        }
+        
+        private void ButtonLogoutHandler()
+        {
+            PlayClickSound();
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmLogout;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to logout?"); 
+        }
+        
+        private void ConfirmLogout(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmLogout;
+            if(status)
+            {
+                Hide();
+                LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                popup.Logout();
+            }
+        }
+
         private void ButtonQuitHandler()
         {
             PlayClickSound();
