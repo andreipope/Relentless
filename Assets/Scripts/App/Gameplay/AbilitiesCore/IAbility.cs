@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -12,11 +13,11 @@ namespace Loom.ZombieBattleground
 
         void Init(
             BoardUnitModel boardUnitModel,
-            Player playerOwner,
-            List<GenericParameter> genericParameters,
-            List<BoardObject> targets = null);
+            IReadOnlyList<GenericParameter> genericParameters,
+            IReadOnlyList<BoardObject> targets = null);
         void DoAction();
         void ChangePlyerOwner(Player player);
+        void Dispose();
     }
 
     public abstract class CardAbility : ICardAbility
@@ -25,18 +26,19 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerOwner { get; private set; }
 
-        protected List<BoardObject> Targets { get; private set; }
+        protected IReadOnlyList<BoardObject> Targets { get; private set; }
 
-        protected List<GenericParameter> GenericParameters { get; private set; }
+        protected IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
 
         public abstract void DoAction();
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
-            Player playerOwner,
-            List<GenericParameter> genericParameters,
-            List<BoardObject> targets = null)
+            IReadOnlyList<GenericParameter> genericParameters,
+            IReadOnlyList<BoardObject> targets = null)
         {
+            UnitModelOwner = boardUnitModel;
+            PlayerOwner = boardUnitModel.OwnerPlayer;
             GenericParameters = genericParameters;
             Targets = targets;
         }
@@ -46,14 +48,8 @@ namespace Loom.ZombieBattleground
             PlayerOwner = player;
         }
 
-        protected object GetParameterValue(Enumerators.AbilityParameter abilityParameter)
+        public void Dispose()
         {
-            return GenericParameters.Find(param => param.AbilityParameter == abilityParameter);
-        }
-
-        protected bool HasParameter(Enumerators.AbilityParameter abilityParameter)
-        {
-            return GenericParameters.Exists(param => param.AbilityParameter == abilityParameter);
         }
     }
 }

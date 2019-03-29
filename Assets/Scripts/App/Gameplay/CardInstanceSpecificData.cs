@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
 
         public int Cost { get; set; }
 
-        public IList<AbilityData> Abilities { get; set; }
+        public CardAbilities Abilities { get; set; }
 
         public CardInstanceSpecificData(IReadOnlyCard card)
             : this(
@@ -40,18 +40,18 @@ namespace Loom.ZombieBattleground
                 source.Faction,
                 source.CardType,
                 source.Cost,
-                new List<AbilityData>(source.Abilities))
+                source.Abilities)
         {
         }
 
-        public CardInstanceSpecificData(int damage, int defense, Enumerators.Faction faction, Enumerators.CardType cardType, int cost, IReadOnlyList<AbilityData> abilities)
+        public CardInstanceSpecificData(int damage, int defense, Enumerators.Faction faction, Enumerators.CardType cardType, int cost, CardAbilities abilities)
         {
             Damage = damage;
             Defense = defense;
             Faction = faction;
             CardType = cardType;
             Cost = cost;
-            Abilities = abilities.Select(a => new AbilityData(a)).ToList();
+            Abilities = abilities;
         }
     }
 }

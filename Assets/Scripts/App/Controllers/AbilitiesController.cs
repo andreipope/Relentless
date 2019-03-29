@@ -35,6 +35,16 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
+            _gameplayManager.GameInitialized += GameInitializedHandler;
+            _gameplayManager.GameEnded += GameEndedHandler;
+        }
+
+        public void Update()
+        {
+        }
+
+        private void GameInitializedHandler()
+        {
             _activeAbilities = new Dictionary<Enumerators.AbilityTrigger, List<ICardAbility>>();
 
             for (int i = 1; i < Enum.GetNames(typeof(Enumerators.AbilityTrigger)).Length; i++)
@@ -45,8 +55,19 @@ namespace Loom.ZombieBattleground
             SubscribeEvents();
         }
 
-        public void Update()
+        private void GameEndedHandler(Enumerators.EndGameType obj)
         {
+            foreach(KeyValuePair<Enumerators.AbilityTrigger, List<ICardAbility>> element in _activeAbilities)
+            {
+                foreach (ICardAbility ability in element.Value)
+                {
+                    ability.Dispose();
+                }
+            }
+
+            _activeAbilities.Clear();
+
+            UnsubscribeEvents();
         }
 
         private void SubscribeEvents()
@@ -103,22 +124,20 @@ namespace Loom.ZombieBattleground
             };
         }
 
-        public void InitializeAbility(
-            BoardUnitModel boardUnitModelOwner,
-            Player playerOwner,
-            CardAbilityData abilityData,
-            List<BoardObject> targets = null)
+        public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null)
         {
             ICardAbility ability;
-            foreach (Enumerators.AbilityTrigger trigger in abilityData.AbilityTriggers)
+            foreach (CardAbilityData abilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityData)
             {
-                ability = (ICardAbility)Activator.CreateInstance(typeof(ICardAbility).Assembly.FullName,
-                                                                              $"Loom.ZombieBattleground.{abilityData.AbilityType.ToString()}Ability");
-                ability.Init(boardUnitModelOwner, playerOwner, abilityData.GenericParameters, targets);
+                foreach (Enumerators.AbilityTrigger trigger in abilityData.Triggers)
+                {
+                    ability = GetInstance<CardAbility>($"{abilityData.Ability.ToString()}Ability");
+                    ability.Init(boardUnitModel, abilityData.GenericParameters, targets);
 
-                CheckOnEntryAbility(ability, abilityData);
+                    CheckOnEntryAbility(ability, abilityData);
 
-                _activeAbilities[trigger].Add(ability);
+                    _activeAbilities[trigger].Add(ability);
+                }
             }
         }
 
@@ -132,7 +151,8 @@ namespace Loom.ZombieBattleground
 
         public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
         {
-            if(abilityData.AbilityTriggers.Contains(Enumerators.AbilityTrigger.Entry))
+            if(abilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry) ||
+               abilityData.Triggers.Contains(Enumerators.AbilityTrigger.EntryWithSelection))
             {
                 cardAbility.DoAction();
             }
@@ -202,7 +222,36 @@ namespace Loom.ZombieBattleground
             return filteredAbilities;
         }
 
+        public bool HasEntryWithSelection(BoardUnitModel unitModel)
+        {
+            foreach (CardAbilityData data in unitModel.Card.Prototype.Abilities.CardAbilityData)
+            {
+                foreach (Enumerators.AbilityTrigger trigger in data.Triggers)
+                {
+                    if (trigger == Enumerators.AbilityTrigger.EntryWithSelection)
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        public T GetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
+        {
+            return (T)genericParameters.FirstOrDefault(param => param.AbilityParameter == abilityParameter).Value;
+        }
+
+        public bool HasParameter(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
+        {
+            return genericParameters.FindAll(param => param.AbilityParameter == abilityParameter).Count > 0;
+        }
+
         #endregion
+
+        private T GetInstance<T>(string className)
+        {
+            return (T)Activator.CreateInstance(Type.GetType($"{typeof(T).Namespace}.{className}"));
+        }
     }
 
     public class GenericParameter
@@ -215,12 +264,64 @@ namespace Loom.ZombieBattleground
             AbilityParameter = abilityParameter;
             Value = value;
         }
+
+        public GenericParameter(GenericParameter source)
+        {
+            AbilityParameter = source.AbilityParameter;
+            Value = source.Value;
+        }
+    }
+
+    public class CardAbilities
+    {
+        public IReadOnlyList<GenericParameter> DefaultParameters { get; set; }
+        public IReadOnlyList<CardAbilityData> CardAbilityData { get; set; }
+
+        public CardAbilities(
+            IReadOnlyList<GenericParameter> defaultParameters,
+            IReadOnlyList<CardAbilityData> cardAbilityData)
+        {
+            DefaultParameters = defaultParameters;
+            CardAbilityData = cardAbilityData;
+        }
+
+        public CardAbilities(CardAbilities source)
+        {
+            DefaultParameters = source.DefaultParameters;
+            CardAbilityData = source.CardAbilityData;
+        }
     }
 
     public class CardAbilityData
     {
-        public Enumerators.AbilityType AbilityType;
-        public List<Enumerators.AbilityTrigger> AbilityTriggers;
-        public List<GenericParameter> GenericParameters;
+        public Enumerators.AbilityType Ability;
+        public Enumerators.GameMechanicDescription GameMechanicDescription;
+
+        public IReadOnlyList<Enumerators.AbilityTrigger> Triggers;
+        public IReadOnlyList<Enumerators.Target> Targets;
+        public IReadOnlyList<GenericParameter> GenericParameters;
+
+        public CardAbilityData(
+            Enumerators.AbilityType ability,
+            Enumerators.GameMechanicDescription gameMechanicDescription,
+            IReadOnlyList<Enumerators.AbilityTrigger> triggers,
+            IReadOnlyList<Enumerators.Target> targets,
+            IReadOnlyList<GenericParameter> genericParameters)
+        {
+            Ability = ability;
+            GameMechanicDescription = gameMechanicDescription;
+            Triggers = triggers;
+            Targets = targets;
+            GenericParameters = genericParameters;
+        }
+
+        public CardAbilityData(CardAbilityData source)
+        {
+            Ability = source.Ability;
+            GameMechanicDescription = source.GameMechanicDescription;
+            Triggers = source.Triggers;
+            Targets = source.Targets;
+            GenericParameters = source.GenericParameters;
+        }
     }
 }

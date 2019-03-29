@@ -109,22 +109,22 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             {
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
-                foreach (Data.AbilityData abilityInfo in _selectedCard.Abilities)
+                foreach (CardAbilityData abilityInfo in _selectedCard.Abilities.CardAbilityData)
                 {
                     DrawAbilityConfigurtion(abilityInfo);
 
-                    if (abilityInfo.ChoosableAbilities != null)
-                    {
-                        foreach (Data.AbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
-                        {
-                            DrawAbilityConfigurtion(choosableAbilityInfo, true);
-                        }
-                    }
+                    //if (abilityInfo.ChoosableAbilities != null)
+                    //{
+                    //    foreach (CardAbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
+                    //    {
+                    //        DrawAbilityConfigurtion(choosableAbilityInfo, true);
+                    //    }
+                    //}
                 }
             }
         }
 
-        private void DrawAbilityConfigurtion(Data.AbilityData abilityInfo, bool itsAbilityFromChoosable = false)
+        private void DrawAbilityConfigurtion(CardAbilityData abilityInfo, bool itsAbilityFromChoosable = false)
         {
             if (itsAbilityFromChoosable)
             {
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
 
             GUILayout.Label("VisualEffectsToPlay", EditorStyles.label);
 
-
+/*
             Data.AbilityData.VisualEffectInfo vfxInfo;
             List<Data.AbilityData.VisualEffectInfo> vfxesToDelete = new List<Data.AbilityData.VisualEffectInfo>();
             for (int i = 0; i < abilityInfo.VisualEffectsToPlay.Count; i++)
@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             if (EditorGUILayout.DropdownButton(new GUIContent("Add New", "add new vfx"), FocusType.Passive))
             {
                 abilityInfo.VisualEffectsToPlay.Add(new Data.AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, string.Empty));
-            }
+            } */
         }
 
         private void DrawExportFunctions()

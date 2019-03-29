@@ -31,8 +31,7 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType Type { get; }
 
-        // FIXME: should be readonly 
-        IReadOnlyList<AbilityData> Abilities { get; }
+        CardAbilities Abilities { get; }
 
         PictureTransform PictureTransform { get; }
 

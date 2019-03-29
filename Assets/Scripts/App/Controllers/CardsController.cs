@@ -503,32 +503,23 @@ namespace Loom.ZombieBattleground
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
                                 {
-                                    card.HandBoardCard.GameObject.SetActive(false);
+                                    player.ThrowPlayCardEvent(card.Model, card.FuturePositionOnBoard);
+                                    OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.Card.InstanceCard.Cost));
 
-                                    //_abilitiesController.CallAbility(card, card.Model,
-                                    //    Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
-                                    //    {
-                                    //        UpdateCardsStatusEvent?.Invoke(player);
+                                    _abilitiesController.InitializeAbilities(card.Model, null);
 
-                                    //        if (status)
-                                    //        {
-                                                player.ThrowPlayCardEvent(card.Model, card.FuturePositionOnBoard);
-                                                OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.Card.InstanceCard.Cost));
-                                    //        }
-                                    //        else
-                                    //        {
-                                    //            rankBuffAction.Action = null;
-                                    //            rankBuffAction.ForceActionDone();
+                                    RemoveCard(card);
 
-                                    //            boardUnitView.DisposeGameObject();
-                                    //            boardUnitView.Model.Die(true);
-
-                                    //            _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
-                                    //        }
-
-                                    //    }, callAbilityAction, target, handCard, skipEntryAbilities);
-
-                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                                    {
+                                        ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                        Caller = card,
+                                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
+                                        CheckForCardOwner = false,
+                                        Model = card.Model
+                                    });
+                                 
+                                    callAbilityAction.ForceActionDone();
                                 });
                             break;
                         }
@@ -547,18 +538,24 @@ namespace Loom.ZombieBattleground
 
                             InternalTools.DoActionDelayed(() =>
                             {
-                                //_abilitiesController.CallAbility(card, card.Model,
-                                //    Enumerators.CardKind.ITEM, boardItem, CallItemCardPlay, true, (status) =>
-                                //    {
-                                //        if (status)
-                                //        {
-                                            player.ThrowPlayCardEvent(card.Model, 0);
-                                        //}
+                                player.ThrowPlayCardEvent(card.Model, 0);
 
-                                        rankBuffAction.ForceActionDone();
-                                 //  }, callAbilityAction, target, handCard, skipEntryAbilities);
+                                card.Model.Owner.PlayerCardsController.AddCardToGraveyard(card.Model);
+                                RemoveCard(card);
+                                card.Model.Owner.PlayerCardsController.RemoveCardFromBoard(card.Model);
+                                card.Model.Card.Owner.GraveyardCardsCount++;
 
-                                _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                                {
+                                    ActionType = Enumerators.ActionType.PlayCardFromHand,
+                                    Caller = card,
+                                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
+                                    CheckForCardOwner = false,
+                                    Model = card.Model
+                                });
+
+                                rankBuffAction.ForceActionDone();
+                                callAbilityAction.ForceActionDone();
                             }, 0.75f);
                             break;
                         }
@@ -743,9 +740,7 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.Prototype.Kind,
                     boardUnitModel.Prototype.Rank,
                     boardUnitModel.Prototype.Type,
-                    boardUnitModel.Prototype.Abilities
-                        .Select(a => new AbilityData(a))
-                        .ToList(),
+                    boardUnitModel.Prototype.Abilities,
                     new PictureTransform(boardUnitModel.Prototype.PictureTransform),
                     boardUnitModel.Prototype.UniqueAnimation,
                     boardUnitModel.Prototype.Hidden

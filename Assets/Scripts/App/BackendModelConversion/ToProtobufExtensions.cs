@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground.Data
                 Type = (CardType.Types.Enum) data.CardType,
                 Abilities =
                 {
-                    data.Abilities.Select(abilityData => abilityData.ToProtobuf())
+                    
                 }
             };
 
@@ -136,7 +136,7 @@ namespace Loom.ZombieBattleground.Data
                 PictureTransform = card.PictureTransform.ToProtobuf(),
                 Abilities =
                 {
-                    card.Abilities.Select(a => a.ToProtobuf())
+                    
                 },
                 UniqueAnimation = (Protobuf.UniqueAnimation.Types.Enum) card.UniqueAnimation,
                 Hidden = card.Hidden

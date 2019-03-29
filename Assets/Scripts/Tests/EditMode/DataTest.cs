@@ -53,15 +53,7 @@ namespace Loom.ZombieBattleground.Test
                 Enumerators.CardKind.CREATURE,
                 Enumerators.CardRank.GENERAL,
                 Enumerators.CardType.WALKER,
-                new List<AbilityData>
-                {
-                    CreateAbilityData(true,
-                        () => new List<AbilityData.ChoosableAbility>
-                        {
-                            new AbilityData.ChoosableAbility("choosable ability 1", CreateAbilityData(false, null), ""),
-                            new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
-                        })
-                },
+                new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()),
                 new PictureTransform(
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
@@ -175,9 +167,8 @@ namespace Loom.ZombieBattleground.Test
 
             return
                 new AbilityData(
-                    Enumerators.AbilityType.RAGE,
-                    Enumerators.AbilityActivity.ACTIVE,
-                    Enumerators.AbilityTrigger.IN_HAND,
+                    Enumerators.AbilityType.Rage,
+                    Enumerators.AbilityTrigger.InHand,
                     new List<Enumerators.Target>
                     {
                         Enumerators.Target.ItSelf,
@@ -185,7 +176,6 @@ namespace Loom.ZombieBattleground.Test
                     },
                     Enumerators.Stat.DAMAGE,
                     Enumerators.Faction.TOXIC,
-                    Enumerators.AbilityEffect.TARGET_ROCK,
                     Enumerators.AttackRestriction.ONLY_DIFFERENT,
                     Enumerators.CardType.WALKER,
                     Enumerators.UnitSpecialStatus.FROZEN,

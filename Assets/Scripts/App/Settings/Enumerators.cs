@@ -33,6 +33,14 @@ namespace Loom.ZombieBattleground.Common
             All 
         }
 
+        public enum TargetFilter
+        {
+            Undefined,
+
+            Target,
+            TargetAdjustments
+        }
+
         public enum AbilityType
         {
             Undefined,
@@ -60,12 +68,21 @@ namespace Loom.ZombieBattleground.Common
             Devour,
             Destroy,
             Summon,
-            Flash
+            Flash,
+            AddCard,
+            PlaceCopies,
+            ShuffleCard,
+            ReplaceOnStrongerOnes
         }
 
         public enum AbilityParameter
         {
+            Undefined,
 
+            Defense,
+            Attack,
+            Delay,
+            Damage,
         }
 
         public enum ActionType

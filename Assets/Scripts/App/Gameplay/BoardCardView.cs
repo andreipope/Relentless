@@ -428,7 +428,7 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (AbilityData abil in unit.Model.Card.InstanceCard.Abilities)
+                foreach (CardAbilityData abil in unit.Model.Card.InstanceCard.Abilities.CardAbilityData)
                 {
                     if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
                         continue;
@@ -577,7 +577,7 @@ namespace Loom.ZombieBattleground
 
             if (boardCardView.Model.Card.InstanceCard.Abilities != null)
             {
-                foreach (AbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities)
+                foreach (CardAbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities.CardAbilityData)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)
@@ -692,14 +692,14 @@ namespace Loom.ZombieBattleground
             DistibuteCardObject.SetActive(CardShouldBeChanged);
         }
 
-        private int GetValueOfAbilityByType(AbilityData ability)
+        private int GetValueOfAbilityByType(CardAbilityData ability)
         {
             switch (ability.GameMechanicDescription)
             {
                 case Enumerators.GameMechanicDescription.DelayedX:
-                    return ability.Delay;
+                    return AbilitiesController.GetParameterValue<int>(ability.GenericParameters, Enumerators.AbilityParameter.Delay);
                 default:
-                    return ability.Value;
+                    return 0;
             }
         }
 

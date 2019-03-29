@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                             opponent.CardPlay(opponentShovel1Id, ItemPosition.Start, null, true);
-                            opponent.CardAbilityUsed(opponentShovel1Id, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>()
+                            opponent.CardAbilityUsed(opponentShovel1Id, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>()
                             {
                                 new ParametrizedAbilityInstanceId(opponentTinyId)
                             });
@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentBoomstickId, ItemPosition.Start, skipEntryAbilities:true);
-                           opponent.CardAbilityUsed(opponentBoomstickId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentBoomstickId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){});
                        },
                        player => {},
                        opponent => {}
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentStaplerId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentStaplerId, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentStaplerId, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentEarthshakerId)
                            });
                        }
@@ -260,7 +260,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentChainsawId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentChainsawId, Enumerators.AbilityType.UNIT_WEAPON, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentChainsawId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentEarthshakerId)
                            });
                            opponent.CardAttack(opponentEarthshakerId, TestHelper.GetCurrentPlayer().InstanceId);
@@ -335,7 +335,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentTorchId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentTorchId, Enumerators.AbilityType.DESTROY_UNIT_BY_COST, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentTorchId, Enumerators.AbilityType.Destroy, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentPyromazId)
                            });
                        },
@@ -399,7 +399,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentExtinguisherId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentExtinguisherId, Enumerators.AbilityType.FREEZE_UNITS, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentExtinguisherId, Enumerators.AbilityType.Freeze, new List<ParametrizedAbilityInstanceId>(){});
                        }
                    };
 
@@ -461,7 +461,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentSlab2Id, ItemPosition.Start);
                            opponent.LetsThink(2);
                            opponent.CardPlay(opponentBulldozerId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentBulldozerId, Enumerators.AbilityType.DESTROY_UNITS, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentBulldozerId, Enumerators.AbilityType.Destroy, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(4);
                            opponent.CardPlay(opponentSlab3Id, ItemPosition.Start);
                            opponent.CardPlay(opponentSlab4Id, ItemPosition.Start);
@@ -535,7 +535,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentLeashId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentLeashId, Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentLeashId, Enumerators.AbilityType.TakeControl, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerSlab2Id)
                            });
                        },
@@ -591,7 +591,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                     }
                 };
 
@@ -748,7 +748,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentSuperSerumId, Enumerators.AbilityType.UNIT_WEAPON, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentSuperSerumId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentEarthshakerId)
                            });
                            opponent.LetsThink(6);
@@ -919,7 +919,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentFreshMeatId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentFreshMeatId, Enumerators.AbilityType.ChangeStat_UNTILL_END_OF_TURN, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentFreshMeatId, Enumerators.AbilityType.ChangeStat, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(4);
                            opponent.AssertInQueue(() => {
                                 Assert.AreEqual(pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count,
@@ -1056,7 +1056,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentShoppingCartId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentShoppingCartId, Enumerators.AbilityType.TAKE_SWING_TO_UNITS, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentShoppingCartId, Enumerators.AbilityType.Swing, new List<ParametrizedAbilityInstanceId>(){});
                        }
                    };
 
@@ -1143,7 +1143,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentMolotovId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentMolotovId, Enumerators.AbilityType.DEAL_DAMAGE_TO_UNIT_AND_SWING, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentMolotovId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerSlab3Id)
                            });
                        }
@@ -1240,7 +1240,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentNailBombId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentNailBombId, Enumerators.AbilityType.Damage_ADJUSTMENTS, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentNailBombId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerSlab3Id)
                            });
                        }
@@ -1312,7 +1312,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentBatId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentBatId, Enumerators.AbilityType.DAMAGE_AND_DISTRACT_TARGET, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentBatId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerZnowmanId)
                            });
                            opponent.LetsThink(2);
@@ -1378,7 +1378,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.PUT_RANDOM_UNIT_FROM_DECK_ON_BOARD, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Summon, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(playerZnowmanId),
                                new ParametrizedAbilityInstanceId(opponentZnowmanId)
                            });
@@ -1472,13 +1472,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentWhistleId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentWhistleId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentWhistleId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(1);
                            opponent.CardPlay(opponentWhistle2Id, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentWhistle2Id, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentWhistle2Id, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(1);
                            opponent.CardPlay(opponentWhistle3Id, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentWhistle3Id, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardAbilityUsed(opponentWhistle3Id, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>(){});
                            opponent.LetsThink(1);
                        },
                        player =>
@@ -1489,7 +1489,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentJunkSpearId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentJunkSpearId, Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentJunkSpearId, Enumerators.AbilityType.Damage, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId, new ParametrizedAbilityParameters(){ Attack = 3})
                            });
                            opponent.LetsThink(2);
@@ -1584,7 +1584,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentZedKitId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentZedKitId, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentZedKitId, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentBoomerId),
                                new ParametrizedAbilityInstanceId(opponentBoomer2Id),
                            });

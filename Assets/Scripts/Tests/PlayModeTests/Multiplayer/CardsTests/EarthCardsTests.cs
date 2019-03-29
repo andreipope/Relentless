@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => { }
                 };
@@ -507,7 +507,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => player.CardAttack(playerCardId, opponentCardId),
                     opponent => opponent.CardAttack(opponentCardId, playerCardId),
@@ -665,7 +665,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => {},
                     opponent => {}
@@ -750,7 +750,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentEarthshakerId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentEarthshakerId, Enumerators.AbilityType.DESTROY_UNIT_BY_TYPE, new List<ParametrizedAbilityInstanceId>()
+                           opponent.CardAbilityUsed(opponentEarthshakerId, Enumerators.AbilityType.Destroy, new List<ParametrizedAbilityInstanceId>()
                            {
                                new ParametrizedAbilityInstanceId(playerGroundyId)
                            });
@@ -832,7 +832,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DELAYED_LOSE_HEAVY_GAIN_ATTACK, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ChangeType, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {},
                        opponent => {}
@@ -968,13 +968,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentMountainId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentMountainId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentMountainId, Enumerators.AbilityType.Swing, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => player.CardPlay(playerMountain1Id, ItemPosition.Start),
                        opponent =>
                        {
                            opponent.CardPlay(opponentMountain1Id, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentMountain1Id, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentMountain1Id, Enumerators.AbilityType.Swing, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => player.CardAttack(playerMountainId, opponentMountainId),
                        opponent =>

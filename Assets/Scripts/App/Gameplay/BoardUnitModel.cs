@@ -953,7 +953,7 @@ namespace Loom.ZombieBattleground
 
             if (Card.InstanceCard.Abilities != null)
             {
-                foreach (AbilityData ability in Card.InstanceCard.Abilities)
+                foreach (CardAbilityData ability in Card.InstanceCard.Abilities.CardAbilityData)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescription);
 
@@ -967,7 +967,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetToInitial()
         {
-            Card.InstanceCard.Abilities = new List<AbilityData>(Card.Prototype.Abilities);
+            Card.InstanceCard.Abilities = Card.Prototype.Abilities;
             Card.InstanceCard.Cost = Card.Prototype.Cost;
             Card.InstanceCard.Damage = Card.Prototype.Damage;
             Card.InstanceCard.Defense = Card.Prototype.Defense;
