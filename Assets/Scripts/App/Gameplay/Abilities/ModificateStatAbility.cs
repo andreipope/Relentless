@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction Faction;
 
+        public Enumerators.Faction TargetFaction;
+
         public Enumerators.Stat StatType;
 
         public int Value { get; }
@@ -23,6 +25,7 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
+            TargetFaction = ability.TargetFaction;
             StatType = ability.Stat;
             Value = ability.Value;
             Count = ability.Count;
@@ -39,7 +42,7 @@ namespace Loom.ZombieBattleground
                 InvokeUseAbilityEvent();
             }
             else if(AbilityTrigger == Enumerators.AbilityTrigger.ENTRY &&
-                    AbilityActivityType == Enumerators.AbilityActivity.PASSIVE)
+                    AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
@@ -54,7 +57,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction && x != AbilityUnitOwner).Count > 0)
+                    if (PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == TargetFaction && x != AbilityUnitOwner).Count > 0)
                     {
                         ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility);
                     }
@@ -83,7 +86,7 @@ namespace Loom.ZombieBattleground
             {
                 List<BoardUnitModel> targets = new List<BoardUnitModel>();
 
-                foreach (Enumerators.Target targetType in AbilityTargetTypes)
+                foreach (Enumerators.Target targetType in AbilityTargets)
                 {
                     switch (targetType)
                     {

@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayAttackVfx(BoardUnitModel model, Vector3 target)
         {
-            Enumerators.CardType type = model.Card.Prototype.CardType;
+            Enumerators.CardType type = model.Card.Prototype.Type;
             int damage = model.CurrentDamage;
             GameObject effect;
             GameObject vfxPrefab;

@@ -128,6 +128,10 @@
           "TutorialStepType": "GameplayStep"
         },
         {
+          "ActionToEndThisStep": "StartTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
           "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
@@ -506,8 +510,8 @@
               "TutorialObjectId": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -533,8 +537,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -579,7 +583,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -619,7 +623,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 51
             }
           ]
@@ -674,11 +678,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             },
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         },
@@ -704,19 +708,19 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 3
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 2
             }
           ]
@@ -749,7 +753,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 4,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -770,11 +774,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 1,
@@ -782,11 +787,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
-            "X": -2.2,
-            "Y": 2.6,
+            "X": 4.05,
+            "Y": 4.7,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 2,
@@ -794,11 +800,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
-            "X": -2.2,
-            "Y": -2.5,
+            "X": 3.6,
+            "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AbovePages",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
         },
         {
           "Id": 3,
@@ -806,11 +813,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "It's time to BATTLE!",
           "Position": {
-            "X": 8,
+            "X": 9,
             "Y": -1.9,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialTooltipLayer": "AboveUI"
         },
         {
           "Id": 4,
@@ -830,10 +837,11 @@
           "TutorialTooltipOwner": "UI",
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
-            "X": 11.15,
-            "Y": -2.42,
+            "X": 0,
+            "Y": 0,
             "Z": 0
           },
+          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipLayer": "AbovePages"
         },
         {
@@ -850,7 +858,6 @@
         },
         {
           "Id": 7,
-          "TutorialTooltipAlign": "BottomMiddle",
           "TutorialTooltipOwner": "UI",
           "Description": "Open your pack.",
           "Position": {
@@ -912,7 +919,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -946,7 +954,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -963,7 +972,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -1036,7 +1046,8 @@
             "Button_DeckIcon_1",
             "Button_DeckIcon_2",
             "Button_DeckIcon_3",
-            "Button_DeckIcon_4"
+            "Button_DeckIcon_4",
+            "Button_DeckIcon_5"
           ],
           "HandPointers": [
             {
@@ -1108,23 +1119,27 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_AddToDeck",
+            "Button_Remove"
           ],
           "CanDragCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.2,
+                "Y": 1,
                 "Z": 0
               },
               "EndPosition": {
-                "X": -3.8,
-                "Y": 3.8,
+                "X": 2.2,
+                "Y": 6.2,
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1156,18 +1171,22 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": 4,
+                "X": 2.6,
+                "Y": 6,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1199,18 +1218,22 @@
             "Button_LowerLeftArrow",
             "Button_LowerRightArrow",
             "Text_DeckName",
-            "Button_OverlordAbilities"
+            "Button_OverlordAbilities",
+            "Button_Remove",
+            "Button_AddToDeck"
           ],
           "CanDoubleTapCards": true,
           "HandPointers": [
             {
               "StartPosition": {
-                "X": -3.8,
-                "Y": -1.5,
+                "X": 2.25,
+                "Y": 1,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages"
+              "TutorialHandLayer": "AbovePages",
+              "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+              "TutorialHandPointerOwner": "UI",
             }
           ]
         },
@@ -1289,9 +1312,15 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
+            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -1317,7 +1346,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -1325,11 +1355,13 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
               "TutorialHandLayer": "AboveUI"
             }
           ]
@@ -1857,8 +1889,8 @@
               "TutorialObjectId": 2
             }
           ],
-          "PrimaryOverlordAbility": "POISON_DART",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "POISON_DART",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 4,
@@ -1876,8 +1908,8 @@
               "TutorialObjectId": 52
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -1898,7 +1930,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1927,7 +1959,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -1967,18 +1999,18 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 2,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 52
             },
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ],
           "UseOverlordSkillsSequence": [
             {
               "SkillType": "PRIMARY",
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -1999,11 +2031,12 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
+          "TutorialUIElementOwnerName": "Button_MyPacks",
           "TutorialTooltipLayer": "AboveUI"
         }
       ],
@@ -2061,7 +2094,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -2095,7 +2129,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -2112,7 +2147,8 @@
             "Button_MyPacks",
             "Button_Setting",
             "Button_MyPacks",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "HandPointers": [
             {
@@ -2147,7 +2183,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -2167,13 +2204,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -2240,9 +2270,15 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
+            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -2269,7 +2305,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -2277,13 +2314,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -2708,8 +2746,8 @@
           ],
           "CardsOnBoard": [
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -2733,8 +2771,8 @@
               "TutorialObjectId": 54
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -2782,11 +2820,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -2834,11 +2872,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 1,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -2879,11 +2917,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 22,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 21,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -2904,12 +2942,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -2966,7 +3005,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3000,7 +3040,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -3052,7 +3093,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -3072,13 +3114,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -3145,9 +3180,15 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
+            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -3174,7 +3215,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -3182,13 +3224,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -3356,6 +3399,10 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep"
+        },
+        {
+          "ActionToEndThisStep": "StartTurn",
           "TutorialStepType": "GameplayStep"
         },
         {
@@ -3532,7 +3579,7 @@
               },
               "TutorialHandPointerOwner": "PlayerCardInHand",
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 1
+              "AppearDelay": 3
             }
           ]
         },
@@ -3619,8 +3666,8 @@
               "BuffedDamage": 4
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
           "OverlordId": 0,
@@ -3660,8 +3707,8 @@
               "TutorialObjectId": 57
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "GameplayBeginManually": true,
         "AISpecificOrderEnabled": true,
@@ -3708,7 +3755,7 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3730,11 +3777,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 51,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             },
             {
               "TutorialObjectId": 52,
-              "TargetType": "PLAYER"
+              "Target": "PLAYER"
             }
           ]
         },
@@ -3757,11 +3804,11 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             },
             {
               "TutorialObjectId": 10,
-              "TargetType": "OPPONENT_CARD"
+              "Target": "OPPONENT_CARD"
             }
           ]
         },
@@ -3775,7 +3822,7 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 55,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
@@ -3785,22 +3832,22 @@
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 52,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 51,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 53,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             },
             {
               "TutorialObjectId": 54,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 1
             }
           ]
@@ -3814,14 +3861,14 @@
           "PlayCardsSequence": [
             {
               "TutorialObjectId": 12,
-              "TargetType": "OPPONENT_CARD",
+              "Target": "OPPONENT_CARD",
               "TargetTutorialObjectId": 55
             }
           ],
           "UseBattleframesSequence": [
             {
               "TutorialObjectId": 20,
-              "TargetType": "OPPONENT"
+              "Target": "OPPONENT"
             }
           ]
         }
@@ -3842,12 +3889,13 @@
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-            "X": -10.5,
-            "Y": -3.25,
-            "Z": 0
+                "X": 1,
+                "Y": -0.5,
+                "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialTooltipLayer": "AbovePages"
+          "TutorialUIElementOwnerName": "Button_MyPacks",
+          "TutorialTooltipLayer": "AboveUI"
         }
       ],
       "TutorialSteps": [
@@ -3904,7 +3952,8 @@
             "ButtonPackType",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ],
           "ConnectedActivities": [
             3
@@ -3938,7 +3987,8 @@
             "ButtonOpenPacks",
             "Button_BuyPacks",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "PackContent"
           ]
         },
         {
@@ -3990,7 +4040,8 @@
             "Button_Rename",
             "Button_LeftArrow",
             "Button_RightArrow",
-            "Image_ButtonBackTray"
+            "Image_ButtonBackTray",
+            "Button_BuildNewDeck"
           ],
           "HandPointers": [
             {
@@ -4010,13 +4061,6 @@
         {
           "ActionToEndThisStep": "HordeFilled",
           "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4,
-            5
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            2
-          ],
           "BlockedButtons": [
             "Button_Login",
             "Button_Setting",
@@ -4083,9 +4127,15 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
+            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
-            "Button_Login"
+            "Button_Login",
+            "Button_Delete",
+            "Button_Rename",
+            "Button_Edit",
+            "Button_BuildNewDeck",
+            "Button_Filter"
           ],
           "HandPointers": [
             {
@@ -4112,7 +4162,8 @@
             "Button_MyDecks",
             "Button_MyPacks",
             "Button_MyCards",
-            "Button_Back"
+            "Button_Back",
+            "Panel_Battle_Mode"
           ],
           "ConnectedActivities": [
             0
@@ -4120,13 +4171,14 @@
           "HandPointers": [
             {
               "StartPosition": {
-                "X": 10.5,
-                "Y": -4,
+                "X": 0,
+                "Y": 0,
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
+              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
+              "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AboveUI"
             }
           ]
         }
@@ -4275,7 +4327,7 @@
             "Y": -4.5,
             "Z": 0
           },
-          "AppearDelay": 2,
+          "AppearDelay": 0.5,
           "TutorialTooltipLayer": "AbovePopups"
         },
         {
@@ -4479,8 +4531,8 @@
               "Name": "Pit"
             }
           ],
-          "PrimaryOverlordAbility": "NONE",
-          "SecondaryOverlordAbility": "NONE"
+          "PrimarySkill": "NONE",
+          "SecondarySkill": "NONE"
         },
         "AISpecificOrderEnabled": false,
         "DisabledInitialization": true,

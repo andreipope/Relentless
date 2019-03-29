@@ -302,7 +302,7 @@ namespace Loom.ZombieBattleground
 
             await LetsWaitForQueue(cancellationToken);
 
-            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.Faction.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfOverlord.Faction == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -362,7 +362,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (_gameplayManager.OpponentPlayer.SelfHero.HeroElement == Enumerators.Faction.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfOverlord.Faction == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -505,7 +505,7 @@ namespace Loom.ZombieBattleground
                                                                        UnitCanBeUsable(unitOnBoard));
                     BoardObject target;
 
-                    if (frame.TargetType == Enumerators.SkillTargetType.OPPONENT_CARD)
+                    if (frame.Target == Enumerators.SkillTarget.OPPONENT_CARD)
                     {
                         target = GetOpponentUnitsOnBoard().Find(targetUnit => targetUnit.Card.Prototype.Name.ToLowerInvariant() ==
                                                                      _tutorialManager.GetCardNameByTutorialObjectId(frame.TargetTutorialObjectId).
@@ -542,7 +542,7 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitModel unit in unitsOnBoard)
                 {
                     if (unit.AttackTargetsAvailability.Count == 0 ||
-                        !unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
+                        !unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT_CARD))
                         continue;
 
                     await LetsWaitForQueue(cancellationToken);
@@ -581,7 +581,7 @@ namespace Loom.ZombieBattleground
                     if (unit.HasBuffRush || unit.AttackTargetsAvailability.Count == 0)
                         continue;
 
-                    if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                    if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT))
                         continue;
 
                     if (!_tutorialManager.IsTutorial)
@@ -612,7 +612,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (GetPlayerAttackingValue() > GetOpponentAttackingValue() &&
                             !unit.HasBuffRush &&
-                            unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                            unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT))
                         { 
                             unit.DoCombat(_gameplayManager.CurrentPlayer);
                             await LetsThink(cancellationToken);
@@ -621,7 +621,7 @@ namespace Loom.ZombieBattleground
                         {
                             BoardUnitModel attackedCreature = GetRandomOpponentUnit();
 
-                            if (attackedCreature != null && unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT_CARD))
+                            if (attackedCreature != null && unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT_CARD))
                             {
                                 unit.DoCombat(attackedCreature);
                                 await LetsThink(cancellationToken);
@@ -631,7 +631,7 @@ namespace Loom.ZombieBattleground
                                 if (unit.HasBuffRush)
                                     break;
 
-                                if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTargetType.OPPONENT))
+                                if (!unit.AttackTargetsAvailability.Contains(Enumerators.SkillTarget.OPPONENT))
                                     break;
 
                                 unit.DoCombat(_gameplayManager.CurrentPlayer);
@@ -856,7 +856,7 @@ namespace Loom.ZombieBattleground
 
                 if (boardUnitModel.Card.InstanceCard.Abilities != null && boardUnitModel.Card.InstanceCard.Abilities.Count > 0)
                 {
-                    List<AbilityData> abilitiesWithTargets = boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.AbilityTarget.Count > 0);
+                    List<AbilityData> abilitiesWithTargets = boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Targets.Count > 0);
 
                     if (abilitiesWithTargets.Count > 0)
                     {
@@ -879,12 +879,12 @@ namespace Loom.ZombieBattleground
                     {
                         if (!string.IsNullOrEmpty(_tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)))
                         {
-                            switch (playCardActionInfo.TargetType)
+                            switch (playCardActionInfo.Target)
                             {
-                                case Enumerators.SkillTargetType.OPPONENT:
+                                case Enumerators.SkillTarget.OPPONENT:
                                     target = _gameplayManager.CurrentPlayer;
                                     break;
-                                case Enumerators.SkillTargetType.OPPONENT_CARD:
+                                case Enumerators.SkillTarget.OPPONENT_CARD:
                                     target = GetOpponentUnitsOnBoard().Find(x => x.Card.Prototype.Name.ToLowerInvariant() ==
                                                                             _tutorialManager.GetCardNameByTutorialObjectId(playCardActionInfo.TargetTutorialObjectId)
                                                                             .ToLowerInvariant());
@@ -897,7 +897,7 @@ namespace Loom.ZombieBattleground
                         target = GetAbilityTarget(boardUnitModel);
                     }
                 }
-                switch (boardUnitModel.Card.Prototype.CardKind)
+                switch (boardUnitModel.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.CardsOnBoard.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                         _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
@@ -948,7 +948,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
 
-            switch (boardUnitModel.Prototype.CardKind)
+            switch (boardUnitModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     {
@@ -1074,7 +1074,7 @@ namespace Loom.ZombieBattleground
             bool needsToSelectTarget = false;
             foreach (AbilityData ability in instance.Abilities)
             {
-                foreach (Enumerators.Target item in ability.AbilityTarget)
+                foreach (Enumerators.Target item in ability.Targets)
                 {
                     switch (item)
                     {
@@ -1090,7 +1090,7 @@ namespace Loom.ZombieBattleground
                             break;
                         case Enumerators.Target.PLAYER_CARD:
                             if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count > 1 ||
-                                prototype.CardKind == Enumerators.CardKind.ITEM ||
+                                prototype.Kind == Enumerators.CardKind.ITEM ||
                                 ability.Ability == Enumerators.AbilityType.CARD_RETURN &&
                                 _gameplayManager.OpponentPlayer.CardsOnBoard.Count > 0)
                             {
@@ -1203,11 +1203,11 @@ namespace Loom.ZombieBattleground
 
         private void CheckAndAddTargets(AbilityData ability, ref BoardObject target)
         {
-            if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
+            if (ability.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT))
+            else if (ability.Targets.Contains(Enumerators.Target.OPPONENT))
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -1215,7 +1215,7 @@ namespace Loom.ZombieBattleground
 
         private void GetTargetByType(AbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
-            if (ability.AbilityTarget.Contains(Enumerators.Target.OPPONENT_CARD))
+            if (ability.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
             {
                 IReadOnlyList<BoardUnitModel> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -1225,7 +1225,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (checkPlayerAlso && target == null &&
-                    ability.AbilityTarget.Contains(Enumerators.Target.PLAYER_CARD))
+                    ability.Targets.Contains(Enumerators.Target.PLAYER_CARD))
                 {
                     target = _gameplayManager.CurrentPlayer;
 
@@ -1314,7 +1314,7 @@ namespace Loom.ZombieBattleground
         {
             IReadOnlyList<BoardUnitModel> list =
                 _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
-                    x.Prototype.CardKind == Enumerators.CardKind.CREATURE);
+                    x.Prototype.Kind == Enumerators.CardKind.CREATURE);
 
             List<Card> cards = new List<Card>();
 
@@ -1340,7 +1340,7 @@ namespace Loom.ZombieBattleground
         private IReadOnlyList<BoardUnitModel> GetItemCardsInHand()
         {
             return _gameplayManager.OpponentPlayer.CardsInHand.FindAll(x =>
-                x.Prototype.CardKind == Enumerators.CardKind.ITEM);
+                x.Prototype.Kind == Enumerators.CardKind.ITEM);
         }
 
         private List<BoardUnitModel> GetUnitsOnBoard()
@@ -1449,20 +1449,20 @@ namespace Loom.ZombieBattleground
 
             Enumerators.AffectObjectType selectedObjectType = Enumerators.AffectObjectType.None;
 
-            switch (skill.Skill.OverlordSkill)
+            switch (skill.Skill.Skill)
             {
-                case Enumerators.OverlordSkill.HARDEN:
-                case Enumerators.OverlordSkill.DRAW:
+                case Enumerators.Skill.HARDEN:
+                case Enumerators.Skill.DRAW:
                     target = _gameplayManager.OpponentPlayer;
                     break;
-                case Enumerators.OverlordSkill.STONE_SKIN:
-                case Enumerators.OverlordSkill.FORTIFY:
-                case Enumerators.OverlordSkill.WIND_SHIELD:
-                case Enumerators.OverlordSkill.INFECT:
-                case Enumerators.OverlordSkill.TOXIC_POWER:
+                case Enumerators.Skill.STONE_SKIN:
+                case Enumerators.Skill.FORTIFY:
+                case Enumerators.Skill.WIND_SHIELD:
+                case Enumerators.Skill.INFECT:
+                case Enumerators.Skill.TOXIC_POWER:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.Prototype.Faction ==
-                                                                        _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
+                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Faction);
                         if (units.Count > 0)
                         {
                             target = units[UnityEngine.Random.Range(0, units.Count)];
@@ -1472,7 +1472,7 @@ namespace Loom.ZombieBattleground
                             return;
                     }
                     break;
-                case Enumerators.OverlordSkill.HEALING_TOUCH:
+                case Enumerators.Skill.HEALING_TOUCH:
                     {
                         List<BoardUnitModel> units = GetUnitsWithLowHp();
 
@@ -1485,11 +1485,11 @@ namespace Loom.ZombieBattleground
                             return;
                     }
                     break;
-                case Enumerators.OverlordSkill.ICE_WALL:
-                case Enumerators.OverlordSkill.ENHANCE:
+                case Enumerators.Skill.ICE_WALL:
+                case Enumerators.Skill.ENHANCE:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.Prototype.Faction ==
-                                                                        _gameplayManager.OpponentPlayer.SelfHero.HeroElement);
+                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Faction);
 
                         if (units.Count > 0)
                         {
@@ -1503,18 +1503,18 @@ namespace Loom.ZombieBattleground
                         }
                     }
                     break;
-                case Enumerators.OverlordSkill.MEND:
+                case Enumerators.Skill.MEND:
                     {
                         target = _gameplayManager.OpponentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
                         if (_gameplayManager.OpponentPlayer.Defense > 13)
                         {
-                            if (skill.Skill.ElementTargetTypes.Count > 0)
+                            if (skill.Skill.TargetFactions.Count > 0)
                             {
                                 _unitsToIgnoreThisTurn =
                                     _gameplayManager.OpponentPlayer.CardsOnBoard
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Card.Prototype.Faction) && !x.IsDead)
+                                    .FindAll(x => !skill.Skill.TargetFactions.Contains(x.Card.Prototype.Faction) && !x.IsDead)
                                     .ToList();
                             }
 
@@ -1533,13 +1533,13 @@ namespace Loom.ZombieBattleground
                     }
 
                     break;
-                case Enumerators.OverlordSkill.RABIES:
+                case Enumerators.Skill.RABIES:
                     {
                         _unitsToIgnoreThisTurn =
                             _gameplayManager.OpponentPlayer.CardsOnBoard.FindAll(x =>
-                                    skill.Skill.ElementTargetTypes.Count > 0 &&
+                                    skill.Skill.TargetFactions.Count > 0 &&
                                     !x.IsDead &&
-                                    !skill.Skill.ElementTargetTypes.Contains(x.Card.Prototype.Faction) ||
+                                    !skill.Skill.TargetFactions.Contains(x.Card.Prototype.Faction) ||
                                     x.NumTurnsOnBoard > 0 ||
                                     x.HasFeral)
                                 .ToList();
@@ -1555,16 +1555,16 @@ namespace Loom.ZombieBattleground
                     }
 
                     break;
-                case Enumerators.OverlordSkill.POISON_DART:
-                case Enumerators.OverlordSkill.ICE_BOLT:
-                case Enumerators.OverlordSkill.FREEZE:
-                case Enumerators.OverlordSkill.FIRE_BOLT:
-                case Enumerators.OverlordSkill.FIREBALL:
+                case Enumerators.Skill.POISON_DART:
+                case Enumerators.Skill.ICE_BOLT:
+                case Enumerators.Skill.FREEZE:
+                case Enumerators.Skill.FIRE_BOLT:
+                case Enumerators.Skill.FIREBALL:
                     {
                         target = _gameplayManager.CurrentPlayer;
                         selectedObjectType = Enumerators.AffectObjectType.Player;
 
-                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitStatus)
+                        BoardUnitModel unit = GetRandomOpponentUnit(GetOpponentUnitsOnBoard().FindAll(model => skill.BlockedUnitStatusTypes.Contains(model.UnitSpecialStatus)
                         && !model.IsDead));
 
                         if (unit != null)
@@ -1577,13 +1577,13 @@ namespace Loom.ZombieBattleground
                     }
 
                     break;
-                case Enumerators.OverlordSkill.PUSH:
+                case Enumerators.Skill.PUSH:
                     {
-                        if (skill.Skill.ElementTargetTypes.Count > 0)
+                        if (skill.Skill.TargetFactions.Count > 0)
                         {
                             _unitsToIgnoreThisTurn =
                                 _gameplayManager.OpponentPlayer.CardsOnBoard
-                                    .FindAll(x => !skill.Skill.ElementTargetTypes.Contains(x.Card.Prototype.Faction) && !x.IsDead)
+                                    .FindAll(x => !skill.Skill.TargetFactions.Contains(x.Card.Prototype.Faction) && !x.IsDead)
                                     .ToList();
                         }
 
@@ -1616,7 +1616,7 @@ namespace Loom.ZombieBattleground
 
                     break;
 
-                case Enumerators.OverlordSkill.SHATTER:
+                case Enumerators.Skill.SHATTER:
                     {
                         List<BoardUnitModel> units = _gameplayManager.CurrentPlayer.CardsOnBoard.FindAll(x => x.IsStun && !x.IsDead).ToList();
 
@@ -1629,20 +1629,20 @@ namespace Loom.ZombieBattleground
                             return;
                     }
                     break;
-                case Enumerators.OverlordSkill.PHALANX:
-                case Enumerators.OverlordSkill.FORTRESS:
-                case Enumerators.OverlordSkill.MASS_RABIES:
-                case Enumerators.OverlordSkill.METEOR_SHOWER:
-                case Enumerators.OverlordSkill.BLIZZARD:
-                case Enumerators.OverlordSkill.LEVITATE:
-                case Enumerators.OverlordSkill.RETREAT:
-                case Enumerators.OverlordSkill.BREAKOUT:
-                case Enumerators.OverlordSkill.EPIDEMIC:
-                case Enumerators.OverlordSkill.RESSURECT:
-                case Enumerators.OverlordSkill.REANIMATE:
+                case Enumerators.Skill.PHALANX:
+                case Enumerators.Skill.FORTRESS:
+                case Enumerators.Skill.MASS_RABIES:
+                case Enumerators.Skill.METEOR_SHOWER:
+                case Enumerators.Skill.BLIZZARD:
+                case Enumerators.Skill.LEVITATE:
+                case Enumerators.Skill.RETREAT:
+                case Enumerators.Skill.BREAKOUT:
+                case Enumerators.Skill.EPIDEMIC:
+                case Enumerators.Skill.RESSURECT:
+                case Enumerators.Skill.REANIMATE:
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(skill.Skill.OverlordSkill), skill.Skill.OverlordSkill, null);
+                    throw new ArgumentOutOfRangeException(nameof(skill.Skill.Skill), skill.Skill.Skill, null);
             }
 
             skill.StartDoSkill();

@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
         }
 
         private GameMode _gameMode;
+
+        private const GameMode DefaultGameMode = GameMode.SOLO;
         
         #region IUIElement
 
@@ -52,7 +54,9 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
-            _playerManager = GameClient.Get<IPlayerManager>();                   
+            _playerManager = GameClient.Get<IPlayerManager>();
+
+            _gameMode = DefaultGameMode;
         }
         
         public void Update()
@@ -76,13 +80,18 @@ namespace Loom.ZombieBattleground
             
             _isReturnToTutorial = GameClient.Get<ITutorialManager>().UnfinishedTutorial;
 
-            SetGameMode(GameMode.SOLO);
+            SetGameMode(_gameMode);
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.BATTLE);
             _uiManager.DrawPopup<AreaBarPopup>();       
             _uiManager.DrawPopup<DeckSelectionPopup>();
 
-            AnimateOverlordPortrait();         
+            AnimateOverlordPortrait(); 
+            
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
+
+            _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent += OnSelectDeckEvent;
         }
         
         public void Hide()
@@ -93,6 +102,8 @@ namespace Loom.ZombieBattleground
             _selfPage.SetActive(false);
             Object.Destroy(_selfPage);
             _selfPage = null;
+            
+            _uiManager.GetPopup<DeckSelectionPopup>().SelectDeckEvent -= OnSelectDeckEvent;
 
             OnHide();
         }
@@ -108,6 +119,11 @@ namespace Loom.ZombieBattleground
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
             _uiManager.HidePopup<DeckSelectionPopup>();
+        }
+        
+        private void OnSelectDeckEvent(Deck deck)
+        {
+            _buttonPlay.interactable = CheckIfSelectDeckContainEnoughCards(deck);
         }
 
         #region Buttons Handlers
@@ -159,6 +175,14 @@ namespace Loom.ZombieBattleground
             {
                 startMatch?.Invoke();
             }  
+        }
+        
+        private bool CheckIfSelectDeckContainEnoughCards(Deck deck)
+        {
+            if (GameClient.Get<ITutorialManager>().IsTutorial)
+                return true;
+                
+            return deck.GetNumCards() == Constants.MinDeckSize;
         }
 
         public void SetOverlordPortrait(Enumerators.Faction faction)

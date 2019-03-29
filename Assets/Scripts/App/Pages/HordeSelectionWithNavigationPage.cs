@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground
 
         public Deck CurrentEditDeck;
 
-        public Hero CurrentEditHero;
+        public OverlordModel CurrentEditOverlord;
 
         public bool IsEditingNewDeck;        
         
@@ -431,6 +431,7 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
+<<<<<<< HEAD
         public void AssignCurrentDeck()
         { 
             CurrentEditDeck = GetSelectedDeck().Clone();
@@ -442,14 +443,39 @@ namespace Loom.ZombieBattleground
         {
             CurrentEditDeck = CreateNewDeckData();
             IsEditingNewDeck = true;
+=======
+        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
+        {   
+            IsEditingNewDeck = isNewDeck;
+            if(IsEditingNewDeck)
+            {
+                CurrentEditDeck = CreateNewDeckData();
+            }
+            else
+            {
+                CurrentEditDeck = GetSelectedDeck().Clone();
+                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
+            }
+            if(_tutorialManager.IsTutorial)
+            {
+                isDisplayRenameDeck = false;
+            }
+
+            IsDisplayRenameDeck = isDisplayRenameDeck;
+>>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
         }
 
         private Deck CreateNewDeckData()
         {
             Deck deck = new Deck(
                 -1,
+<<<<<<< HEAD
                 CurrentEditHero.HeroId,
                 GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
+=======
+                CurrentEditOverlord.OverlordId,
+                GenerateDeckName(),                
+>>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
                 new List<DeckCardData>(),
                 0,
                 0
@@ -459,10 +485,7 @@ namespace Loom.ZombieBattleground
 
         public void ChangeTab(Tab newTab)
         {
-            if (_tab != Tab.None && _tab != newTab)
-            {
-                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
-            }
+            Tab oldTabl = _tab;
 
             _tab = newTab;            
             
@@ -508,6 +531,11 @@ namespace Loom.ZombieBattleground
             }
 
             EventChangeTab?.Invoke(_tab);
+
+            if (oldTabl != Tab.None && oldTabl != newTab)
+            {
+                _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeTabChanged);
+            }
         }
         
         private void ChangeSelectDeckIndex(int newIndexInPage)
@@ -539,6 +567,48 @@ namespace Loom.ZombieBattleground
         {
             _trayButtonAuto.gameObject.SetActive(isShow);
         }
+<<<<<<< HEAD
+=======
+
+        private async void ProcessDeleteDeck(Deck currentDeck)
+        {
+            try
+            {
+                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    currentDeck.Id
+                );
+
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+            }
+            catch (TimeoutException e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+            }
+            catch (Client.RpcClientException e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
+                OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
+                return;
+            }
+
+            ChangeTab(Tab.SelectDeck);
+        }
+>>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
         
         private void MoveDeckPageIndex(int direction)
         {
@@ -564,8 +634,8 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
             {
-                Hero hero = _dataManager.CachedHeroesData.Heroes[deckList[i].HeroId];
-                if( faction == hero.HeroElement )
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deckList[i].OverlordId];
+                if( faction == overlord.Faction )
                         deckListToDisplay.Add(deckList[i]);                
             }
 
@@ -666,12 +736,14 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < 4; ++i)
             {
                 DeckInfoObject deckInfoObject = new DeckInfoObject();
-                string path = $"Tab_SelectDeck/Panel_Content/Image_DeckThumbnailNormal_{i}";
-                deckInfoObject._button = _selfPage.transform.Find(path).GetComponent<Button>();
-                deckInfoObject._textDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._textCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
-                deckInfoObject._imageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
-                deckInfoObject._imageAbilityIcons = new Image[]
+                
+                string path = $"Tab_SelectDeck/Panel_Content/Button_DeckSelect_{i}";
+                deckInfoObject.Button = _selfPage.transform.Find(path).GetComponent<Button>();
+                deckInfoObject.TextDeckName = _selfPage.transform.Find(path+"/Text_DeckName").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.TextCardsAmount = _selfPage.transform.Find(path+"/Text_CardsAmount").GetComponent<TextMeshProUGUI>();
+                deckInfoObject.ImagePanel = _selfPage.transform.Find(path+"/Image_DeckThumbnailNormal").GetComponent<Image>();                
+                deckInfoObject.ImageOverlordThumbnail = _selfPage.transform.Find(path+"/Image_DeckThumbnail").GetComponent<Image>();
+                deckInfoObject.ImageAbilityIcons = new Image[]
                 {
                     _selfPage.transform.Find(path+"/Image_SkillIcon_1").GetComponent<Image>(),
                     _selfPage.transform.Find(path+"/Image_SkillIcon_2").GetComponent<Image>()
@@ -693,7 +765,7 @@ namespace Loom.ZombieBattleground
         {
             bool displayNewDeckButton = (_deckPageIndex == 0);
             _buttonNewDeck.gameObject.SetActive(displayNewDeckButton);
-            _deckInfoObjectList[0]._button.gameObject.SetActive(!displayNewDeckButton);
+            _deckInfoObjectList[0].Button.gameObject.SetActive(!displayNewDeckButton);
             
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
@@ -706,15 +778,15 @@ namespace Loom.ZombieBattleground
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 if(deckDataIndex >= deckListToDisplay.Count)
                 {
-                    deckInfoObject._button.gameObject.SetActive(false);
+                    deckInfoObject.Button.gameObject.SetActive(false);
                     continue;
                 }
 
                 int index = i;
-                deckInfoObject._button.gameObject.SetActive(true);
+                deckInfoObject.Button.gameObject.SetActive(true);
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
-                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject._button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();                
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {                    
                     ChangeSelectDeckIndex(index);
@@ -727,41 +799,41 @@ namespace Loom.ZombieBattleground
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
-                Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
-                deckInfoObject._textDeckName.text = deckName;
+                deckInfoObject.TextDeckName.text = deckName;
                 if (_tutorialManager.IsTutorial)
                 {
-                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
                 }
                 else
                 {
-                    deckInfoObject._textCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
                 }
-                deckInfoObject._imageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(hero.HeroElement);
+                deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(overlord.Faction);
 
-                if(deck.PrimarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.PrimarySkill == Enumerators.Skill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(deck.PrimarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
+                    string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
+                    deckInfoObject.ImageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
                 }
                 
-                if(deck.SecondarySkill == Enumerators.OverlordSkill.NONE)
+                if(deck.SecondarySkill == Enumerators.Skill.NONE)
                 {
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
                 }
                 else
                 {
-                    string iconPath = hero.GetSkill(deck.SecondarySkill).IconPath;
-                    deckInfoObject._imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
+                    string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
+                    deckInfoObject.ImageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);                
                 }
                 
-                deckInfoObject._button.onClick.RemoveAllListeners();                
-                deckInfoObject._button.onClick.AddListener(() =>
+                deckInfoObject.Button.onClick.RemoveAllListeners();                
+                deckInfoObject.Button.onClick.AddListener(() =>
                 {
                     ChangeSelectDeckIndex(index);
                     PlayClickSound();
@@ -880,14 +952,14 @@ namespace Loom.ZombieBattleground
             {
                 DeckInfoObject deckInfoObject = _deckInfoObjectList[i];
                 Sprite sprite = (i == selectedDeckIndex ? _spriteDeckThumbnailSelected : _spriteDeckThumbnailNormal);
-                deckInfoObject._button.GetComponent<Image>().sprite = sprite;
+                deckInfoObject.ImagePanel.sprite = sprite;
             }
         }
 
-        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction heroElement)
+        private Sprite GetOverlordThumbnailSprite(Enumerators.Faction overlordFaction)
         {
             string path = "Images/UI/MyDecks/OverlordDeckThumbnail";
-            switch(heroElement)
+            switch(overlordFaction)
             {
                 case Enumerators.Faction.AIR:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_air"); 
@@ -902,19 +974,19 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Faction.LIFE:
                     return _loadObjectsManager.GetObjectByPath<Sprite>(path+"/deck_thumbnail_life"); 
                 default:
-                    Log.Info($"No Overlord thumbnail found for faction {heroElement}");
+                    Log.Info($"No Overlord thumbnail found for faction {overlordFaction}");
                     return null;
             }        
         }
 
-        //TODO Constructor
         private class DeckInfoObject
         {
-            public Button _button;
-            public TextMeshProUGUI _textDeckName;
-            public Image _imageOverlordThumbnail;
-            public Image[] _imageAbilityIcons;
-            public TextMeshProUGUI _textCardsAmount;
+            public Button Button;
+            public TextMeshProUGUI TextDeckName;
+            public Image ImagePanel;
+            public Image ImageOverlordThumbnail;
+            public Image[] ImageAbilityIcons;
+            public TextMeshProUGUI TextCardsAmount;
         }
 
 #endregion

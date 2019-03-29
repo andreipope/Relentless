@@ -222,12 +222,17 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            Hero hero = _dataManager.CachedHeroesData.Heroes[deck.HeroId];
-            Enumerators.Faction faction = hero.HeroElement;
+            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            Enumerators.Faction faction = overlord.Faction;
             
+<<<<<<< HEAD
             Faction heroElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> creatureCards = heroElementSet.Cards.ToList();
             List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
+=======
+            Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
+            List<Card> cards = overlordElementSet.Cards.ToList();
+>>>>>>> 325d4ce33eb1607e42e7b12cc1b68793186ddd32
             
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)

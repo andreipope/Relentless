@@ -146,7 +146,7 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.OverlordSkill.NONE, Enumerators.OverlordSkill.NONE);
+                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
@@ -258,11 +258,11 @@ namespace Loom.ZombieBattleground
                         GUILayout.Label("Secondary Skill");
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
-                        GUILayout.Label("Hero Id");
-                        string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
-                        if (int.TryParse(heroIdString, out int newHeroId))
+                        GUILayout.Label("Overlord Id");
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.HeroId = newHeroId;
+                            customDeck.OverlordId = newOverlordId;
                         }
                     }
                     GUILayout.EndVertical();
@@ -339,7 +339,7 @@ namespace Loom.ZombieBattleground
 
             private static T DrawEnumPopup<T>(T value, IMGUIPopup popup)
             {
-                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.OverlordSkill));
+                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.Skill));
                 for (int i = 0; i < values.Length; i++)
                 {
                     if (value.Equals(values[i]))

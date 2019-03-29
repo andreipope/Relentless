@@ -148,7 +148,7 @@ namespace Loom.ZombieBattleground
         {
             _imageSelectOverlordSkillPortrait.sprite = _myDeckPage.SelectOverlordTab.GetOverlordPortraitSprite
             (
-                _myDeckPage.CurrentEditHero.HeroElement
+                _myDeckPage.CurrentEditOverlord.Faction
             );
         }
 
@@ -160,21 +160,21 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedSkills()
         {
-            List<HeroSkill> selectedSkills = new List<HeroSkill>();
-            if(_myDeckPage.CurrentEditDeck.PrimarySkill != Enumerators.OverlordSkill.NONE)
+            List<OverlordSkill> selectedSkills = new List<OverlordSkill>();
+            if(_myDeckPage.CurrentEditDeck.PrimarySkill != Enumerators.Skill.NONE)
             {
-                HeroSkill heroSkil = _myDeckPage.CurrentEditHero.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
-                selectedSkills.Add(heroSkil);
+                OverlordSkill overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
+                selectedSkills.Add(overlordSkil);
             }
-             if(_myDeckPage.CurrentEditDeck.SecondarySkill != Enumerators.OverlordSkill.NONE)
+             if(_myDeckPage.CurrentEditDeck.SecondarySkill != Enumerators.Skill.NONE)
             {
-                HeroSkill heroSkil = _myDeckPage.CurrentEditHero.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
-                selectedSkills.Add(heroSkil);
+                OverlordSkill overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
+                selectedSkills.Add(overlordSkil);
             }
             
-            foreach (HeroSkill skill in selectedSkills)
+            foreach (OverlordSkill skill in selectedSkills)
             {
-                OverlordAbilityItem item = _overlordAbilityItems.Find(x => x.Skill.OverlordSkill == skill.OverlordSkill);
+                OverlordAbilityItem item = _overlordAbilityItems.Find(x => x.Skill.Skill == skill.Skill);
                 OverlordAbilitySelectedHandler(item);
             }
         }
@@ -191,25 +191,25 @@ namespace Loom.ZombieBattleground
 
             if (items.Count > 1)
             {
-                _myDeckPage.CurrentEditHero.PrimarySkill = items[0].Skill.OverlordSkill;
-                _myDeckPage.CurrentEditHero.SecondarySkill = items[1].Skill.OverlordSkill;
+                _myDeckPage.CurrentEditOverlord.PrimarySkill = items[0].Skill.Skill;
+                _myDeckPage.CurrentEditOverlord.SecondarySkill = items[1].Skill.Skill;
             }
             else if(items.Count == 1)
             {
-                _myDeckPage.CurrentEditHero.PrimarySkill = items[0].Skill.OverlordSkill;
-                _myDeckPage.CurrentEditHero.SecondarySkill = Enumerators.OverlordSkill.NONE;
+                _myDeckPage.CurrentEditOverlord.PrimarySkill = items[0].Skill.Skill;
+                _myDeckPage.CurrentEditOverlord.SecondarySkill = Enumerators.Skill.NONE;
             }
             else
             {
-                _myDeckPage.CurrentEditHero.PrimarySkill = Enumerators.OverlordSkill.NONE;
-                _myDeckPage.CurrentEditHero.SecondarySkill = Enumerators.OverlordSkill.NONE;
+                _myDeckPage.CurrentEditOverlord.PrimarySkill = Enumerators.Skill.NONE;
+                _myDeckPage.CurrentEditOverlord.SecondarySkill = Enumerators.Skill.NONE;
             }
             
 
             if (_myDeckPage.CurrentEditDeck != null)
             {
-                _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditHero.PrimarySkill;
-                _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditHero.SecondarySkill;
+                _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditOverlord.PrimarySkill;
+                _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditOverlord.SecondarySkill;
             }
 
             if (_myDeckPage.IsEditingNewDeck)
@@ -259,15 +259,15 @@ namespace Loom.ZombieBattleground
             ResetItems();
 
             OverlordAbilityItem itemInstance;
-            HeroSkill ability = null;
+            OverlordSkill ability = null;
 
             for (int i = 0; i < AbilityListSize; i++)
             {
                 ability = null;
 
-                if (i < _myDeckPage.CurrentEditHero.Skills.Count)
+                if (i < _myDeckPage.CurrentEditOverlord.Skills.Count)
                 {
-                    ability = _myDeckPage.CurrentEditHero.Skills[i];
+                    ability = _myDeckPage.CurrentEditOverlord.Skills[i];
                 }
 
                 itemInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability);
@@ -321,13 +321,13 @@ namespace Loom.ZombieBattleground
 
             private readonly Image _abilityIconImage;
 
-            public readonly HeroSkill Skill;
+            public readonly OverlordSkill Skill;
 
             public bool IsSelected { get; private set; }
 
             public bool IsUnlocked { get; }
 
-            public OverlordAbilityItem(Transform root, HeroSkill skill)
+            public OverlordAbilityItem(Transform root, OverlordSkill skill)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

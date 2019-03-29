@@ -28,20 +28,20 @@ namespace Loom.ZombieBattleground
             if (boardUnit == null)
                 return;
 
-            if (AbilityTargetTypes.Count > 0)
+            if (AbilityTargets.Count > 0)
             {
                 boardUnit.AttackTargetsAvailability.Clear();
 
-                foreach(Enumerators.Target targetType in AbilityTargetTypes)
+                foreach(Enumerators.Target targetType in AbilityTargets)
                 {
                     switch(targetType)
                     {
                         case Enumerators.Target.OPPONENT:
-                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT);
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTarget.OPPONENT);
                             break;
                         case Enumerators.Target.OPPONENT_CARD:
                         case Enumerators.Target.OPPONENT_ALL_CARDS:
-                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTarget.OPPONENT_CARD);
                             break;
                     }
                 }
