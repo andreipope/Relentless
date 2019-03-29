@@ -29,6 +29,9 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _textPlayerName;
 
+        private GameObject _groupLogin,
+                           _groupPlayerInfo;
+
         #region IUIPopup
 
         public void Init()
@@ -66,14 +69,17 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/AreaBarPopup"));
             Self.transform.SetParent(_uiManager.Canvas.transform, false);
+
+            _groupLogin = Self.transform.Find("Group_Login").gameObject;
+            _groupPlayerInfo = Self.transform.Find("Group_PlayerInfo").gameObject;
             
-            _buttonLogin = Self.transform.Find("Button_Login").GetComponent<Button>();
+            _buttonLogin = _groupLogin.transform.Find("Button_Login").GetComponent<Button>();
             _buttonLogin.onClick.AddListener(ButtonLoginHandler);
             
             _buttonSettings = Self.transform.Find("Button_Setting").GetComponent<Button>();
             _buttonSettings.onClick.AddListener(ButtonSettingHandler);
             
-            _textPlayerName = Self.transform.Find("Text_PlayerName").GetComponent<TextMeshProUGUI>();
+            _textPlayerName = _groupPlayerInfo.transform.Find("Text_PlayerName").GetComponent<TextMeshProUGUI>();
         }
         
         public void Show(object data)
@@ -89,17 +95,19 @@ namespace Loom.ZombieBattleground
                     _backendDataControlMediator.UserDataModel != null && 
                     (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
                 {
-                    if (!_buttonLogin.gameObject.activeSelf)
+                    if (!_groupLogin.activeSelf)
                     {
-                        _buttonLogin.gameObject.SetActive(true);
+                        _groupLogin.SetActive(true);
+                        _groupPlayerInfo.SetActive(false);
                         _textPlayerName.text = "Guest Player";
                     }
                 }
                 else
                 {
-                    if (_buttonLogin.gameObject.activeSelf)
+                    if (_groupLogin.activeSelf)
                     {
-                        _buttonLogin.gameObject.SetActive(false);
+                        _groupLogin.SetActive(false);
+                        _groupPlayerInfo.SetActive(true);
                         _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
                     }
                 }
