@@ -116,15 +116,8 @@ namespace Loom.ZombieBattleground
 
         private List<Card> _cacheCollectionCardsList;
 
-<<<<<<< HEAD
-=======
-        private int _currentCollectionPage,
-                    _currentCollectionPagesAmount,
-                    _currentCollectionFactionIndex;
-
         private HordeSelectionWithNavigationPage.Tab _nextTab;
 
->>>>>>> e11f88d6d13f12f691889f5f004c6ae6309f12ab
         private const float BoardCardScale = 0.2756f;
 
         private Dictionary<string, int> _cacheDeckPageIndexDictionary;
