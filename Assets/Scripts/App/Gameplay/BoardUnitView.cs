@@ -174,6 +174,8 @@ namespace Loom.ZombieBattleground
 
         public bool ArrivalDone => _arrivalDone;
 
+        public GameObject UnitContentObject => _unitContentObject;
+
         public void Update()
         {
             CheckOnDie();
