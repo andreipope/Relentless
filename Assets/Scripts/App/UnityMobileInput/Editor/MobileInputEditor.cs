@@ -88,6 +88,6 @@ namespace Loom.ZombieBattleground
                 _object.ApplyModifiedProperties ();
             }
         }
-#endif
     }
+#endif
 }
