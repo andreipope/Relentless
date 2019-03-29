@@ -12,9 +12,10 @@ namespace Loom.ZombieBattleground
     /// <summary>
     /// Custom editor for MobileInput
     /// </summary>
+    ///
+#if UNITY_EDITOR
     [CustomEditor (typeof (MobileInputField))]
     public class MobileInputEditor : Editor {
-#if UNITY_EDITOR
         /// <summary>
         /// Offset size
         /// </summary>

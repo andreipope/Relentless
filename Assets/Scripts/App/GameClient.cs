@@ -77,6 +77,7 @@ namespace Loom.ZombieBattleground
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IInAppPurchaseManager>(new InAppPurchaseManager());
             AddService<TutorialRewardManager>(new TutorialRewardManager());
+            AddService<IMobileKeyboardManager>(new MobileKeyboardManager());
         }
 
         public override void InitServices() {
