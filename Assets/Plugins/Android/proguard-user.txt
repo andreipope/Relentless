@@ -8,4 +8,5 @@
 -keepclassmembers class com.facebook.unity.** {
     public <methods>;
     public <fields>;
+-keep class ru.mopsicus.mobileinput.**
 }
