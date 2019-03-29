@@ -374,7 +374,7 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyList<BoardUnitModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
 
-        public IReadOnlyList<BoardUnitModel> CardsPreparingToHand => PlayerCardsController.CardsPreparingToHand;
+        public IReadOnlyList<BoardUnitModel> MulliganCards => PlayerCardsController.MulliganCards;
 
         public bool IsStunned { get; private set; }
 
@@ -393,7 +393,7 @@ namespace Loom.ZombieBattleground
 
         public void InvokeTurnStarted()
         {
-            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer == this)
             {
                 GooVials++;
                 CurrentGoo = GooVials + CurrentGooModificator + ExtraGoo;
@@ -530,7 +530,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer != this)
                 turnsCount++;
 
             _freezedHighlightObject.SetActive(true);
@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
 
         private BoardUnitModel GetCardThatNotInDistribution()
         {
-            List<BoardUnitModel> cards = CardsInDeck.FindAll(x => !CardsPreparingToHand.Contains(x)).ToList();
+            List<BoardUnitModel> cards = CardsInDeck.FindAll(x => !MulliganCards.Contains(x)).ToList();
 
             return cards[0];
         }

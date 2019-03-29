@@ -4,17 +4,15 @@ namespace Loom.ZombieBattleground
 {
     public class WorkingCard
     {
-        private CardsController _cardsController;
+        public Player Owner { get; set; }
 
-        public Player Owner;
-
-        public IReadOnlyCard Prototype { get; set; }
+        public IReadOnlyCard Prototype { get; }
 
         public CardInstanceSpecificData InstanceCard { get; }
 
         public InstanceId InstanceId { get; }
 
-        public int TutorialObjectId;
+        public int TutorialObjectId { get; set; }
 
         public WorkingCard(IReadOnlyCard cardPrototype, IReadOnlyCard card, Player player, InstanceId? id = null)
             : this(cardPrototype, new CardInstanceSpecificData(card), player, id)
@@ -27,19 +25,19 @@ namespace Loom.ZombieBattleground
             Prototype = new Card(cardPrototype);
             InstanceCard = cardInstanceData;
 
-            _cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
+            CardsController cardsController = GameClient.Get<IGameplayManager>().GetController<CardsController>();
 
             if (id == null)
             {
-                InstanceId = _cardsController.GetNewCardInstanceId();
+                InstanceId = cardsController.GetNewCardInstanceId();
             }
             else
             {
                 InstanceId = id.Value;
 
-                if (_cardsController != null && InstanceId.Id > _cardsController.GetCardInstanceId().Id)
+                if (cardsController != null && InstanceId.Id > cardsController.GetCardInstanceId().Id)
                 {
-                    _cardsController.SetNewCardInstanceId(InstanceId.Id);
+                    cardsController.SetNewCardInstanceId(InstanceId.Id);
                 }
             }
         }
@@ -49,5 +47,4 @@ namespace Loom.ZombieBattleground
             return $"{{InstanceId: {InstanceId}, Name: {Prototype.Name}}}";
         }
     }
-
 }

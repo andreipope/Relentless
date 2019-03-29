@@ -194,19 +194,19 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedSkills()
         {
-            List<OverlordSkill> selectedSkills = new List<OverlordSkill>();
+            List<OverlordSkillData> selectedSkills = new List<OverlordSkillData>();
             if(_myDeckPage.CurrentEditDeck.PrimarySkill != Enumerators.Skill.NONE)
             {
-                OverlordSkill overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
+                OverlordSkillData overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
                 selectedSkills.Add(overlordSkil);
             }
              if(_myDeckPage.CurrentEditDeck.SecondarySkill != Enumerators.Skill.NONE)
             {
-                OverlordSkill overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
+                OverlordSkillData overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
                 selectedSkills.Add(overlordSkil);
             }
             
-            foreach (OverlordSkill skill in selectedSkills)
+            foreach (OverlordSkillData skill in selectedSkills)
             {
                 OverlordAbilityItem item = _overlordAbilityItems.Find(x => x.Skill.Skill == skill.Skill);
                 OverlordAbilitySelectedHandler(item);
@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
             ResetItems();
 
             OverlordAbilityItem itemInstance;
-            OverlordSkill ability = null;
+            OverlordSkillData ability = null;
 
             for (int i = 0; i < AbilityListSize; i++)
             {
@@ -330,13 +330,13 @@ namespace Loom.ZombieBattleground
 
             private readonly Image _abilityIconImage;
 
-            public readonly OverlordSkill Skill;
+            public readonly OverlordSkillData Skill;
 
             public bool IsSelected { get; private set; }
 
             public bool IsUnlocked { get; }
 
-            public OverlordAbilityItem(Transform root, OverlordSkill skill)
+            public OverlordAbilityItem(Transform root, OverlordSkillData skill)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

@@ -332,9 +332,8 @@ namespace Loom.ZombieBattleground
             boardUnitView.Transform.parent = playerBoard.transform;
             boardUnitView.Transform.position = new Vector2(2f * owner.CardsOnBoard.Count, owner.IsLocalPlayer ? -1.66f : 1.66f);
             boardUnitView.Model.Card.Owner = owner;
-            boardUnitView.Model.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
 
-            if (!owner.Equals(_gameplayManager.CurrentTurnPlayer))
+            if (owner != _gameplayManager.CurrentTurnPlayer)
             {
                 boardUnitView.Model.IsPlayable = true;
             }
@@ -440,8 +439,6 @@ namespace Loom.ZombieBattleground
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement = new BoardUnitView(boardUnitModel, _battlegroundController.OpponentBoardObject.transform);
                                 GameObject boardUnit = boardUnitViewElement.GameObject;
-                                boardUnitViewElement.Model.Card.Owner = boardUnitModel.Owner;
-                                boardUnitViewElement.Model.Card.TutorialObjectId = boardUnitModel.TutorialObjectId;
 
                                 boardUnit.tag = SRTags.OpponentOwned;
                                 boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board

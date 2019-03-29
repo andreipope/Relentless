@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
 
         private bool _isPrimarySkillSelected = true;
 
-        private List<OverlordSkill> _selectedSkills;
+        private List<OverlordSkillData> _selectedSkills;
 
         public void Init()
         {
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _selectedSkills = (List<OverlordSkill>)param[2];
+                    _selectedSkills = (List<OverlordSkillData>)param[2];
                 }
 
                 if(param[3] != null)
@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 OverlordAbilityItem ability;
-                foreach (OverlordSkill skill in _selectedSkills)
+                foreach (OverlordSkillData skill in _selectedSkills)
                 {
                     ability = _overlordAbilities.Find(x => x.Skill.Skill == skill.Skill);
                     OverlordAbilitySelectedHandler(ability);
@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
             ResetOverlordAbilities();
 
             OverlordAbilityItem abilityInstance;
-            OverlordSkill ability = null;
+            OverlordSkillData ability = null;
 
             bool overrideLock; 
 
@@ -400,13 +400,13 @@ namespace Loom.ZombieBattleground
 
             private readonly Image _abilityIconImage;
 
-            public readonly OverlordSkill Skill;
+            public readonly OverlordSkillData Skill;
 
             public bool IsSelected { get; private set; }
 
             public bool IsUnlocked { get; }
 
-            public OverlordAbilityItem(Transform root, OverlordSkill skill, bool overrideLock = false)
+            public OverlordAbilityItem(Transform root, OverlordSkillData skill, bool overrideLock = false)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

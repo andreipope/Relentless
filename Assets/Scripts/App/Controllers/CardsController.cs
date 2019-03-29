@@ -72,8 +72,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isHoveringCardOfBoard;
 
-        public List<BoardUnitModel> MulliganCards;
-
         private List<ChoosableCardForAbility> _currentListOfChoosableCards;
 
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
@@ -175,7 +173,7 @@ namespace Loom.ZombieBattleground
             _timerManager.StopTimer(DirectlyEndCardDistribution);
 
             // for local player
-            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.MulliganCards)
             {
                 _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
             }
@@ -228,7 +226,7 @@ namespace Loom.ZombieBattleground
             int count = 0;
             while (randomCards.Count < mulliganCards.Count)
             {
-                if (!player.CardsPreparingToHand.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
+                if (!player.MulliganCards.Contains(player.CardsInDeck[count]) && !mulliganCards.Contains(player.CardsInDeck[count]))
                 {
                     randomCards.Add(player.CardsInDeck[count]);
                 }
@@ -236,7 +234,7 @@ namespace Loom.ZombieBattleground
             }
 
             UniquePositionedList<BoardUnitModel> finalCards =
-                player.CardsPreparingToHand
+                player.MulliganCards
                     .Except(mulliganCards)
                     .Concat(randomCards)
                     .ToUniquePositionedList();
@@ -478,8 +476,6 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Transform.tag = SRTags.PlayerOwned;
                             boardUnitView.Transform.parent = PlayerBoard.transform;
                             boardUnitView.Transform.position = new Vector2(1.9f * player.CardsOnBoard.Count, 0);
-                            boardUnitView.Model.Card.Owner = card.Model.Card.Owner;
-                            boardUnitView.Model.Card.TutorialObjectId = card.Model.Card.TutorialObjectId;
 
                             player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.RegisterBoardUnitView(boardUnitView, player, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
@@ -728,36 +724,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 boardUnitModel.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
-                boardUnitModel.Prototype = new Card(
-                    boardUnitModel.Prototype.MouldId,
-                    boardUnitModel.Prototype.Name,
-                    boardUnitModel.Prototype.Cost,
-                    boardUnitModel.Prototype.Description,
-                    boardUnitModel.Prototype.FlavorText,
-                    boardUnitModel.Prototype.Picture,
-                    boardUnitModel.Prototype.Damage,
-                    boardUnitModel.Prototype.Defense,
-                    boardUnitModel.Prototype.Faction,
-                    boardUnitModel.Prototype.Frame,
-                    boardUnitModel.Prototype.Kind,
-                    boardUnitModel.Prototype.Rank,
-                    boardUnitModel.Prototype.Type,
-                    boardUnitModel.Prototype.Abilities
-                        .Select(a => new AbilityData(a))
-                        .ToList(),
-                    new PictureTransform(boardUnitModel.Prototype.PictureTransform),
-                    boardUnitModel.Prototype.UniqueAnimation,
-                    boardUnitModel.Prototype.Hidden
-                );
             }
-        }
-
-        public Enumerators.Faction GetSetOfCard(IReadOnlyCard card)
-        {
-            Faction set =
-                _dataManager.CachedCardsLibraryData.Factions.Find(x => x.Cards.Find(y => y.Name.Equals(card.Name)) != null);
-
-            return set.Name;
         }
 
         public WorkingCard CreateWorkingCardFromCardName(string cardName, Player owner)

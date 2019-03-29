@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
                 }
                 else if (levelReward.SkillReward != null)
                 {
-                    OverlordSkill unlockedSkill = overlord.GetSkill(levelReward.SkillReward.SkillIndex);
+                    OverlordSkillData unlockedSkill = overlord.GetSkill(levelReward.SkillReward.SkillIndex);
                     unlockedSkill.Unlocked = true;
 
                     SaveSkillInDecks(overlord.OverlordId, unlockedSkill);
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SaveSkillInDecks(int overlordId, OverlordSkill skill)
+        private void SaveSkillInDecks(int overlordId, OverlordSkillData skill)
         {
             List<Deck> decks = _dataManager.CachedDecksData.Decks.FindAll((x) =>
                 x.OverlordId == overlordId &&

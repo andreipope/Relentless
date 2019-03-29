@@ -376,7 +376,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetupSkills(OverlordSkill primary, OverlordSkill secondary, bool isOpponent)
+        public void SetupSkills(OverlordSkillData primary, OverlordSkillData secondary, bool isOpponent)
         {
             if (isOpponent)
             {
@@ -394,7 +394,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void SetupSkills(OverlordSkill skillPrim, OverlordSkill skillSecond, GameObject skillPrimary, GameObject skillSecondary)
+        private void SetupSkills(OverlordSkillData skillPrim, OverlordSkillData skillSecond, GameObject skillPrimary, GameObject skillSecondary)
         {
             if (skillPrim != null)
             {

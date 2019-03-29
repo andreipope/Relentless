@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject SelfObject;
 
-        public OverlordSkill Skill;
+        public OverlordSkillData Skill;
 
         public List<Enumerators.UnitSpecialStatus> BlockedUnitStatusTypes;
 
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
 
         public override Player OwnerPlayer { get; }
 
-        public BoardSkill(GameObject obj, Player player, OverlordSkill skillInfo, bool isPrimary)
+        public BoardSkill(GameObject obj, Player player, OverlordSkillData skillInfo, bool isPrimary)
         {
             SelfObject = obj;
             Skill = skillInfo;
@@ -565,7 +565,7 @@ namespace Loom.ZombieBattleground
 
             private readonly TextMeshPro _descriptionText;
 
-            public OverlordAbilityInfoObject(OverlordSkill skill, Transform parent, Vector3 position)
+            public OverlordAbilityInfoObject(OverlordSkillData skill, Transform parent, Vector3 position)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

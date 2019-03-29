@@ -100,9 +100,9 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static OverlordSkill FromProtobuf(this Protobuf.Skill skill)
+        public static OverlordSkillData FromProtobuf(this Protobuf.Skill skill)
         {
-            return new OverlordSkill(
+            return new OverlordSkillData(
                 (int)skill.Id,
                 skill.Title,
                 skill.IconPath,

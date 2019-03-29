@@ -237,11 +237,7 @@ namespace Loom.ZombieBattleground
 
         public CardInstanceSpecificData InstanceCard => Card.InstanceCard;
 
-        public IReadOnlyCard Prototype
-        {
-            get => Card.Prototype   ;
-            set => Card.Prototype    = value;
-        }
+        public IReadOnlyCard Prototype => Card.Prototype;
 
         public string Name => Card.Prototype.Name;
 
@@ -545,7 +541,7 @@ namespace Loom.ZombieBattleground
                 UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             }
 
-            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer == OwnerPlayer)
             {
                 if (IsPlayable)
                 {
@@ -586,7 +582,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            if (AttackedThisTurn || NumTurnsOnBoard == 0 || !_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (AttackedThisTurn || NumTurnsOnBoard == 0 || _gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 turns++;
 
             if (turns > _stunTurns)

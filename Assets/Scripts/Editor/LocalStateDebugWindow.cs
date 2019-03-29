@@ -143,13 +143,13 @@ namespace Editor
 
                         Player player = isCurrentPlayer ? gameplayManager.CurrentPlayer : gameplayManager.OpponentPlayer;
 
-                        if (!isCurrentPlayer)
+                        if (matchManager.MatchType == Enumerators.MatchType.PVP && !isCurrentPlayer)
                         {
                             DrawViewList("BoardItemsInUse", opponentController.BoardItemsInUse);
                             EditorGUILayout.Space();
                         }
 
-                        DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
+                        DrawViewList("MulliganCards", player.MulliganCards);
                         EditorGUILayout.Space();
                     }
 

@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
         private async void TurnStartedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer) ||
+            if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.OpponentPlayer ||
                 !_gameplayManager.IsGameStarted)
             {
                 _aiBrainCancellationTokenSource?.Cancel();
@@ -263,7 +263,7 @@ namespace Loom.ZombieBattleground
 
         private void TurnEndedHandler()
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.OpponentPlayer))
+            if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.OpponentPlayer)
                 return;
 
             _aiBrainCancellationTokenSource.Cancel();
@@ -900,13 +900,12 @@ namespace Loom.ZombieBattleground
                 switch (boardUnitModel.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.CardsOnBoard.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
-                        _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-                        
-
                         _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, boardUnitModel.InstanceId, target, null, (x, y) =>
                         {
                             PlayCardCompleteHandler(x, y, completeCallback);
                         });
+
+                        _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
 
                         _cardsController.DrawCardInfo(boardUnitModel);
                         break;
