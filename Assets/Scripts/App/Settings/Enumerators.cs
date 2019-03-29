@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground.Common
             PlayerCard,
             Opponent,
             OpponentCard,
-            All 
+            All
         }
 
         public enum TargetFilter

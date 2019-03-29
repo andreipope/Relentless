@@ -1076,9 +1076,9 @@ namespace Loom.ZombieBattleground
             bool needsToSelectTarget = false;
             foreach (CardAbilityData ability in instance.Abilities.CardAbilityData)
             {
-                foreach (Enumerators.Target item in ability.Targets)
+                foreach (CardAbilityData.TargetInfo item in ability.Targets)
                 {
-                    switch (item)
+                    switch (item.Target)
                     {
                         case Enumerators.Target.OpponentCard:
                             if (_gameplayManager.CurrentPlayer.CardsOnBoard.Count > 1 ||
@@ -1164,11 +1164,11 @@ namespace Loom.ZombieBattleground
 
         private void CheckAndAddTargets(CardAbilityData ability, ref BoardObject target)
         {
-            if (ability.Targets.Contains(Enumerators.Target.OpponentCard))
+            if (ability.Targets.FindAll(x => x.Target == Enumerators.Target.OpponentCard).Count > 0)
             {
                 AddRandomTargetUnit(true, ref target);
             }
-            else if (ability.Targets.Contains(Enumerators.Target.Opponent))
+            else if (ability.Targets.FindAll(x => x.Target == Enumerators.Target.Opponent).Count > 0)
             {
                 target = _gameplayManager.CurrentPlayer;
             }
@@ -1176,7 +1176,7 @@ namespace Loom.ZombieBattleground
 
         private void GetTargetByType(CardAbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
-            if (ability.Targets.Contains(Enumerators.Target.OpponentCard))
+            if (ability.Targets.FindAll(x => x.Target == Enumerators.Target.OpponentCard).Count > 0)
             {
                 IReadOnlyList<BoardUnitModel> targets = GetHeavyUnitsOnBoard(_gameplayManager.CurrentPlayer);
 
@@ -1186,7 +1186,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 if (checkPlayerAlso && target == null &&
-                    ability.Targets.Contains(Enumerators.Target.PlayerCard))
+                    ability.Targets.FindAll(x => x.Target == Enumerators.Target.PlayerCard).Count > 0)
                 {
                     target = _gameplayManager.CurrentPlayer;
 

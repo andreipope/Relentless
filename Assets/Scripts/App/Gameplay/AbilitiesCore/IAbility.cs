@@ -22,13 +22,26 @@ namespace Loom.ZombieBattleground
 
     public abstract class CardAbility : ICardAbility
     {
+        protected IReadOnlyList<BoardObject> Targets { get; private set; }
+
+        protected IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
+
+        protected readonly IGameplayManager GameplayManager;
+
+        protected readonly AbilitiesController AbilitiesController;
+
+        protected readonly BattlegroundController BattlegroundController;
+        
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
 
-        protected IReadOnlyList<BoardObject> Targets { get; private set; }
-
-        protected IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
+        public CardAbility()
+        {
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            AbilitiesController = GameplayManager.GetController<AbilitiesController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+        }
 
         public abstract void DoAction();
 
@@ -50,6 +63,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
+            AbilitiesController.EndAbility(this);
         }
     }
 }

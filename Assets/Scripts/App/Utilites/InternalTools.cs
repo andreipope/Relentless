@@ -173,5 +173,21 @@ namespace Loom.ZombieBattleground.Helpers
 
             return result;
         }
+
+
+        public static T GetInstance<T>(string className)
+        {
+            return (T)Activator.CreateInstance(Type.GetType($"{typeof(T).Namespace}.{className}"));
+        }
+    }
+
+    public static class Extensions
+    {
+        public static bool IsDefault<T>(this T value) where T : struct
+        {
+            bool isDefault = value.Equals(default(T));
+
+            return isDefault;
+        }
     }
 }

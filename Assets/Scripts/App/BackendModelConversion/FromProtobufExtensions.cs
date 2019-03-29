@@ -191,13 +191,7 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardType) card.Type,
                 new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
                 {
-                    new CardAbilityData(Enumerators.AbilityType.Blitz, Enumerators.GameMechanicDescription.Blitz, new List<Enumerators.AbilityTrigger>()
-                    {
-                        Enumerators.AbilityTrigger.Entry
-                    }, new List<Enumerators.Target>()
-                    {
-                        Enumerators.Target.ItSelf
-                    }, new List<GenericParameter>())
+
                 }),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
@@ -215,13 +209,7 @@ namespace Loom.ZombieBattleground.Data
                 card.Cost,
                 new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
                 {
-                    new CardAbilityData(Enumerators.AbilityType.Blitz, Enumerators.GameMechanicDescription.Blitz, new List<Enumerators.AbilityTrigger>()
-                    {
-                        Enumerators.AbilityTrigger.Entry
-                    }, new List<Enumerators.Target>()
-                    {
-                        Enumerators.Target.ItSelf
-                    }, new List<GenericParameter>())
+
                 })
             );
         }
