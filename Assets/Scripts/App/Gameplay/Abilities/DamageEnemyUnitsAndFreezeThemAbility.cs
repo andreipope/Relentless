@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
 

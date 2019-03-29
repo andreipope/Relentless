@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
 
-            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
+            if (owner != GameplayManager.CurrentTurnPlayer)
             {
                 boardUnitView.Model.IsPlayable = true;
             }

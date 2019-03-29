@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
         {
             string cardDeathSoundName = BoardUnitView.Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
 
-            if (!BoardUnitView.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
+            if (BoardUnitView.Model.OwnerPlayer != _gameplayManager.CurrentTurnPlayer)
             {
                 _deathSoundDuration = _soundManager.GetSoundLength(Enumerators.SoundType.CARDS, cardDeathSoundName);
 

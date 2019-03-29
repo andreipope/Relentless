@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
 
         private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
         {
-            if (!boardUnitModel.Equals(BoardUnitModel))
+            if (boardUnitModel == BoardUnitModel)
                 return;
 
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;

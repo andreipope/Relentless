@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             if (CheckActionEnded())
                 return;
 
-            if (GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility)
             {
                 CountDelay();
             }

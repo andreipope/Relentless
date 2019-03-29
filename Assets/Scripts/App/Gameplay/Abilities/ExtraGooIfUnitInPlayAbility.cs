@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             player.ExtraGoo = Mathf.Clamp(player.ExtraGoo + (Value * revertSymbol), MinExtraGooValue, MaxExtraGooValue);
 
-            if (GameplayManager.CurrentTurnPlayer.Equals(player))
+            if (GameplayManager.CurrentTurnPlayer == player)
             {
                 player.CurrentGoo += (Value * revertSymbol);
             }

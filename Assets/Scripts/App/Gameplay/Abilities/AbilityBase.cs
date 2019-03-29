@@ -479,7 +479,7 @@ namespace Loom.ZombieBattleground
 
         public Player GetOpponentOverlord()
         {
-            return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            return PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }

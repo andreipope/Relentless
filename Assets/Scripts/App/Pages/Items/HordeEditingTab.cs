@@ -1223,9 +1223,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
-            Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
-
-            if (faction == Enumerators.Faction.ITEM)
+            if (card.Faction == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

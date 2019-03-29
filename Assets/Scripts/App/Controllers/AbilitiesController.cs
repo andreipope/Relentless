@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
         {
             bool available = false;
 
-            Player opponent = localPlayer.Equals(_gameplayManager.CurrentPlayer) ?
+            Player opponent = localPlayer == _gameplayManager.CurrentPlayer ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
 
@@ -759,7 +759,7 @@ namespace Loom.ZombieBattleground
         public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
-                boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Trigger.Equals(Enumerators.AbilityTrigger.IN_HAND));
+                boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Trigger == Enumerators.AbilityTrigger.IN_HAND);
             foreach (AbilityData ability in handAbilities)
             {
                 CreateActiveAbility(ability, boardUnitModel.Card.Prototype.Kind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)

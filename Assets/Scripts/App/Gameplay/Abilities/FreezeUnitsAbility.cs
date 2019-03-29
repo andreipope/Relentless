@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            _opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
             GameplayManager.OpponentPlayer :
             GameplayManager.CurrentPlayer;
 
