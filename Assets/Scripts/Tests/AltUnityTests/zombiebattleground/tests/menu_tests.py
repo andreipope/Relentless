@@ -2,10 +2,10 @@ import unittest
 from appium import webdriver
 from altunityrunner import AltrunUnityDriver, AltElement
 import xmlrunner
-from .pages.base import CZBTests
-from .pages.main_menu_page import Main_Menu_Page
-from .pages.credits_page import Credits_Page
-from .pages.tutorial_popup_page import Tutorial_Popup_Page
+from pages.base import CZBTests
+from pages.main_menu_page import Main_Menu_Page
+from pages.credits_page import Credits_Page
+from pages.tutorial_popup_page import Tutorial_Popup_Page
 import time
 import subprocess
 
@@ -66,9 +66,4 @@ class CZBMenuTests(CZBTests):
 
 
 if __name__ == '__main__':
-    
-    
-    
-
-
-    # unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))

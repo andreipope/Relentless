@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ public class AltUnityTestRunner {
     public static void RunTests(TestRunMode testMode) {
         Debug.Log("Started running test");
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        Assembly assembly = assemblies.FirstOrDefault(assemblyName => assemblyName.GetName().Name.Equals("Assembly-CSharp-Editor"));
+        Assembly assembly = assemblies.FirstOrDefault(assemblyName => assemblyName.GetName().Name.Equals("Assembly-CSharp-Editor-firstpass"));
 
         var filters = AddTestToBeRun(testMode);
         ITestListener listener = new TestRunListener(CallRunDelegate);
@@ -263,7 +263,7 @@ public class AltUnityTestRunner {
     public static void SetUpListTest() {
         var myTests = new List<MyTest>();
         Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
-        Assembly assembly = assemblies.FirstOrDefault(assemblyName => assemblyName.GetName().Name.Equals("Assembly-CSharp-Editor"));
+        Assembly assembly = assemblies.FirstOrDefault(assemblyName => assemblyName.GetName().Name.Equals("Assembly-CSharp-Editor-firstpass"));
         var testSuite2 = (TestSuite)new DefaultTestAssemblyBuilder().Build(assembly, new Dictionary<string, object>());
         addTestSuiteToMyTest(testSuite2, myTests);
         AltUnityTesterEditor.EditorConfiguration.MyTests = myTests;
