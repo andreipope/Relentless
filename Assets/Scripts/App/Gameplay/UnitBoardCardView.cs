@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class UnitBoardCard : BoardCardView
+    public class UnitBoardCardView : BoardCardView
     {
         protected TextMeshPro AttackText;
 
@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         protected TextMeshPro DefenseText;
 
-        public UnitBoardCard(GameObject selfObject, BoardUnitModel boardUnitModel)
+        public UnitBoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
             : base(selfObject, boardUnitModel)
         {
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();

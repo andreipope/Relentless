@@ -1017,17 +1017,14 @@ namespace Loom.ZombieBattleground
                         GameObject itemCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                         itemCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
-                        CurrentItemCard = new ItemBoardCard(itemCard, boardUnitModel);
+                        CurrentItemCard = new ItemBoardCardView(itemCard, boardUnitModel);
                         CurrentItemCard.SetHighlightingEnabled(false);
-
-                        BoardItem boardItem = new BoardItem(itemCard, boardUnitModel);
-
                         itemCard.gameObject.SetActive(false);
 
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
-                            Caller = boardItem,
+                            Caller = boardUnitModel,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
 
@@ -1043,7 +1040,7 @@ namespace Loom.ZombieBattleground
                         {
                             Action callback = () =>
                             {
-                                _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
+                                _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardUnitModel, null, false, null, callAbilityAction, target);
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             };
 
@@ -1051,7 +1048,7 @@ namespace Loom.ZombieBattleground
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction);
+                            _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardUnitModel, null, false, null, callAbilityAction);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
                             ranksBuffAction.ForceActionDone();

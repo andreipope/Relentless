@@ -55,10 +55,8 @@ namespace Loom.ZombieBattleground
 
         private void DamageTarget(BoardObject boardObject)
         {
-            object caller = GetCaller();
-
-            BoardObject target = null;
-
+            BoardObject caller = AbilityUnitOwner;
+            BoardObject target;
             Enumerators.ActionType actionType;
 
             bool isFreezed = false;
@@ -119,7 +117,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }

@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
             OpponentHandCard opponentHandCard = CreateOpponentHandCard(boardUnitModel);
 
             _battlegroundController.RegisterBoardUnitView(opponentHandCard, boardUnitModel.OwnerPlayer);
-            _abilitiesController.CallAbilitiesInHand(null, boardUnitModel);
+            _abilitiesController.CallAbilitiesInHand(boardUnitModel);
 
             CallLog($"{nameof(CreateAndAddPlayerHandCard)} returned {opponentHandCard}");
             return opponentHandCard;
@@ -813,11 +813,11 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(go, boardUnitModel);
+                    boardCardView = new UnitBoardCardView(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new ItemBoardCard(go, boardUnitModel);
+                    boardCardView = new ItemBoardCardView(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -829,7 +829,8 @@ namespace Loom.ZombieBattleground
             handCard.CheckStatusOfHighlight();
             boardCardView.Transform.localScale = Vector3.one * .3f;
 
-            _abilitiesController.CallAbilitiesInHand(boardCardView, boardUnitModel);
+            _battlegroundController.RegisterBoardUnitView(boardCardView);
+            _abilitiesController.CallAbilitiesInHand(boardUnitModel);
 
             return boardCardView;
         }

@@ -334,7 +334,7 @@ namespace Loom.ZombieBattleground
 
             _actionsQueueController.ForceContinueAction(boardUnitView.Model.ActionForDying);
         }
-    
+
         public void CheckGameDynamic()
         {
             if (!_battleDynamic)
@@ -395,7 +395,7 @@ namespace Loom.ZombieBattleground
 
         public void StartGameplayTurns()
         {
-            if (_gameplayManager.IsTutorial && 
+            if (_gameplayManager.IsTutorial &&
                _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.GameplayBeginManually &&
                !_tutorialManager.CurrentTutorialStep.ToGameplayStep().LaunchGameplayManually)
                 return;
@@ -488,7 +488,7 @@ namespace Loom.ZombieBattleground
             }
 
             _gameplayManager.CurrentPlayer.InvokeTurnStarted();
-            if (_gameplayManager.CurrentPlayer == null) 
+            if (_gameplayManager.CurrentPlayer == null)
             {
                 return;
             }
@@ -656,18 +656,17 @@ namespace Loom.ZombieBattleground
         }
 
         // rewrite
-        public void CreateCardPreview(object target, Vector3 pos, bool highlight = true)
+        public void CreateCardPreview(IBoardUnitView target, Vector3 pos, bool highlight = true)
         {
             IsPreviewActive = true;
+            CurrentPreviewedCardId = target.Model.Card.InstanceId;
 
             switch (target)
             {
-                case BoardCardView card:
-                    CurrentPreviewedCardId = card.Model.Card.InstanceId;
+                case BoardCardView _:
                     break;
                 case BoardUnitView unit:
                     _lastBoardUntilOnPreview = unit;
-                    CurrentPreviewedCardId = unit.Model.Card.InstanceId;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -677,38 +676,21 @@ namespace Loom.ZombieBattleground
         }
 
         // rewrite
-        public IEnumerator CreateCardPreviewAsync(object target, Vector3 pos, bool highlight)
+        public IEnumerator CreateCardPreviewAsync(IBoardUnitView target, Vector3 pos, bool highlight)
         {
             yield return new WaitForSeconds(0.3f);
 
-            WorkingCard card = null;
-            BoardUnitModel boardUnitModel = null;
-
-            switch (target)
-            {
-                case BoardCardView card1:
-                    card = card1.Model.Card;
-                    boardUnitModel = card1.Model;
-                    break;
-                case BoardUnitView unit:
-                    card = unit.Model.Card;
-                    boardUnitModel = unit.Model;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(target), target, null);
-            }
-
             BoardCardView boardCardView;
-            switch (card.Prototype.Kind)
+            switch (target.Model.Card.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(CurrentBoardCard, boardUnitModel);
-                    (boardCardView as UnitBoardCard).DrawOriginalStats();
+                    boardCardView = new UnitBoardCardView(CurrentBoardCard, target.Model);
+                    (boardCardView as UnitBoardCardView).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new ItemBoardCard(CurrentBoardCard, boardUnitModel);
+                    boardCardView = new ItemBoardCardView(CurrentBoardCard, target.Model);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -716,7 +698,7 @@ namespace Loom.ZombieBattleground
 
             if (highlight)
             {
-                highlight = boardCardView.Model.CanBePlayed(card.Owner) && boardCardView.Model.CanBeBuyed(card.Owner);
+                highlight = boardCardView.Model.CanBePlayed(target.Model.OwnerPlayer) && boardCardView.Model.CanBeBuyed(target.Model.OwnerPlayer);
             }
 
             boardCardView.SetHighlightingEnabled(highlight);
@@ -1179,7 +1161,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)
         {
-            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);
+            BoardCardView boardCardView = new UnitBoardCardView(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);
             boardCardView.GameObject.transform.position = boardUnitModel.OwnerPlayer.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
             boardCardView.GameObject.transform.localScale = Vector3.one * .3f;

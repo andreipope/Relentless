@@ -70,8 +70,6 @@ namespace Loom.ZombieBattleground
         {
             _targets = new List<BoardObject>();
 
-            BoardObject caller = (BoardObject) AbilityUnitOwner ?? BoardItem;
-
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
@@ -104,10 +102,10 @@ namespace Loom.ZombieBattleground
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

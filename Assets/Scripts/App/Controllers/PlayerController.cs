@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((IBoardUnitView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()

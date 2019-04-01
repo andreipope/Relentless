@@ -538,14 +538,20 @@ namespace Loom.ZombieBattleground
                             card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                             card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                            BoardItem boardItem = new BoardItem(card.GameObject, card.Model);
+                            ItemBoardCardView itemBoardCardView = new ItemBoardCardView(card.GameObject, card.Model);
 
                             card.RemoveCardParticle.Play();
 
                             InternalTools.DoActionDelayed(() =>
                             {
-                                _abilitiesController.CallAbility(card, card.Model,
-                                    Enumerators.CardKind.ITEM, boardItem, CallItemCardPlay, true, (status) =>
+                                _abilitiesController.CallAbility(
+                                    card,
+                                    card.Model,
+                                    Enumerators.CardKind.ITEM,
+                                    card.Model,
+                                    CallItemCardPlay,
+                                    true,
+                                    (status) =>
                                     {
                                         if (status)
                                         {
@@ -591,11 +597,7 @@ namespace Loom.ZombieBattleground
             }
 
             if (opponentHandCard == null)
-            {
-                Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
-                return;
-            }
+                throw new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
 
             BoardUnitModel card = opponentHandCard.Model;
 
@@ -660,12 +662,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
-                    boardCardView = new UnitBoardCard(go, boardUnitModel);
+                    boardCardView = new UnitBoardCardView(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
-                    boardCardView = new ItemBoardCard(go, boardUnitModel);
+                    boardCardView = new ItemBoardCardView(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

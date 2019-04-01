@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }

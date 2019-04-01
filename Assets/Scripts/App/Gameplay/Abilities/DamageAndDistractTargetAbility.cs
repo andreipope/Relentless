@@ -44,16 +44,14 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            object caller = AbilityUnitOwner != null ? AbilityUnitOwner : (object)BoardItem;
-
-            BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit, Damage);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, TargetUnit, Damage);
 
             BattlegroundController.DistractUnit(TargetUnit);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()

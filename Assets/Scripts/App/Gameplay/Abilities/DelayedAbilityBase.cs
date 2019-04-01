@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
         private bool CheckActionEnded()
         {
-            if (GetCaller() == null)
+            if (AbilityUnitOwner == null)
             {
                 ActionDone = true;
             }

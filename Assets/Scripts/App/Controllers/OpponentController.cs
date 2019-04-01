@@ -11,6 +11,7 @@ using UnityEngine;
 using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
+using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
@@ -462,14 +463,15 @@ namespace Loom.ZombieBattleground
 
                                 break;
                             case Enumerators.CardKind.ITEM:
-                                BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
+                                GameObject itemGo = Object.Instantiate(_cardsController.ItemCardViewPrefab);
+                                ItemBoardCardView item = new ItemBoardCardView(itemGo, boardUnitModel);
                                 AddBoardItemInUse(boardUnitModel);
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
-                                    Caller = item,
+                                    Caller = boardUnitModel,
                                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                                 });
 

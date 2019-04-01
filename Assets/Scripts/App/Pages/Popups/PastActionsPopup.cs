@@ -165,9 +165,6 @@ namespace Loom.ZombieBattleground
                             break;
                     }
                     break;
-                case BoardItem item:
-                    _leftBlockCardItemElement.Init(item.Model.Card, cardPicture: item.Model.CardPicture);
-                    break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card, cardPicture: card.BoardUnitModel.CardPicture);
                     break;
@@ -220,7 +217,7 @@ namespace Loom.ZombieBattleground
                             }
                             break;
                         case HandBoardCard card:
-                            if(card.BoardCardView is ItemBoardCard)
+                            if(card.BoardCardView is ItemBoardCardView)
                             {
                                 actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             }

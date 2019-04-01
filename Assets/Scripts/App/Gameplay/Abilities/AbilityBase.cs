@@ -44,10 +44,6 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerCallerOfAbility;
 
-        public BoardItem BoardItem;
-
-        public BoardCardView BoardCardView;
-
         public BoardUnitModel TargetUnit;
 
         public Player TargetPlayer;
@@ -237,10 +233,6 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.CardKind.ITEM:
-                    if (BoardItem != null)
-                    {
-                        BoardItem.Used += UsedHandler;
-                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
@@ -458,11 +450,6 @@ namespace Loom.ZombieBattleground
         {
             AbilitiesController.DeactivateAbility(ActivityId);
         }
-        
-        protected void UsedHandler()
-        {
-            BoardItem.Used -= UsedHandler;
-        }
 
         protected void ClearParticles()
         {
@@ -470,11 +457,6 @@ namespace Loom.ZombieBattleground
             {
                 ParticlesController.DestroyParticle(id);
             }
-        }
-
-        public BoardObject GetCaller()
-        {
-            return AbilityUnitOwner ?? (BoardObject) BoardItem;
         }
 
         public Player GetOpponentOverlord()

@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
         public ActiveAbility CreateActiveAbility(
             AbilityData abilityData,
             Enumerators.CardKind kind,
-            object boardObject,
+            BoardObject boardObject,
             Player caller,
             BoardUnitModel boardUnitModel)
         {
@@ -148,17 +148,8 @@ namespace Loom.ZombieBattleground
 
                 switch(boardObject)
                 {
-                    case BoardCardView card:
-                        activeAbility.Ability.BoardCardView = card;
-                        break;
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;
-                        break;
-                    case BoardItem item:
-                        activeAbility.Ability.BoardItem = item;
-                        break;
-                    case BoardUnitView view:
-                        activeAbility.Ability.AbilityUnitOwner = view.Model;
                         break;
                     case Player player:
                         break;
@@ -737,7 +728,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability,
-                                    object target,
+                                    BoardObject target,
                                     Enumerators.CardKind cardKind,
                                     BoardUnitModel boardUnitModel,
                                     Player owner,
@@ -757,13 +748,13 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
+        public void CallAbilitiesInHand(BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
                 boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Trigger == Enumerators.AbilityTrigger.IN_HAND);
             foreach (AbilityData ability in handAbilities)
             {
-                CreateActiveAbility(ability, boardUnitModel.Card.Prototype.Kind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)
+                CreateActiveAbility(ability, boardUnitModel.Card.Prototype.Kind, boardUnitModel, boardUnitModel.Card.Owner, boardUnitModel)
                     .Ability
                     .Activate();
             }

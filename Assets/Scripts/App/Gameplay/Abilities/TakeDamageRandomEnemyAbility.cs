@@ -126,7 +126,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
@@ -149,10 +149,10 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, damageOverride);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

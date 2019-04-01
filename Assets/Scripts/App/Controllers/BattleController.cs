@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void AttackUnitByAbility(
-            object attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
+            BoardObject attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
@@ -253,9 +253,6 @@ namespace Loom.ZombieBattleground
                     case BoardUnitModel model:
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
-                    case BoardItem item:
-                        attackedUnitModel.LastAttackingSetType = item.Model.Prototype.Faction;
-                        break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
@@ -265,7 +262,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
+        public void AttackPlayerByAbility(BoardObject attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
@@ -282,7 +279,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer, int value = -1)
+        public void HealPlayerByAbility(BoardObject healer, AbilityData ability, Player healedPlayer, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -299,7 +296,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
+        public void HealUnitByAbility(BoardObject healer, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
         {
             int healValue = ability.Value;
 

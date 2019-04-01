@@ -78,12 +78,12 @@ namespace Loom.ZombieBattleground
                 }
             );
 
-            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
+            BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, _damage);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()

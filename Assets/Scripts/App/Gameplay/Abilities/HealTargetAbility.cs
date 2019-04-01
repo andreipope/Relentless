@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -206,7 +206,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
@@ -216,10 +216,10 @@ namespace Loom.ZombieBattleground
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.HealPlayerByAbility(GetCaller(), AbilityData, player, value);
+                    BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, value);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.HealUnitByAbility(GetCaller(), AbilityData, unit, value);
+                    BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
