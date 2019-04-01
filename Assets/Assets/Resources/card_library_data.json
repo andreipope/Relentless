@@ -16,6 +16,7 @@
           "defense": 1,
           "type": "WALKER",
           "rank": "MINION",
+          "faction": "Fire",
           "pictureTransform": {
             "position": {
               "x": -0.05,
@@ -37,7 +38,8 @@
                     "Ability": "AdditionalStat",
                     "GameMechanicDescription": "Attack",
                     "Triggers": [
-                      "Attack"
+                      "Attack",
+                      "AtDefense"
                     ],
                     "Targets": [
                       {

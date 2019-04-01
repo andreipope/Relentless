@@ -1,9 +1,4 @@
-using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,12 +8,15 @@ namespace Loom.ZombieBattleground
 
         Player PlayerOwner { get; }
 
+        CardAbilitiesCombination Combination { get; }
+
         CardAbilityData CardAbilityData { get; }
 
         ICardAbilityView AbilityView { get; }
 
         void Init(
             BoardUnitModel boardUnitModel,
+            CardAbilitiesCombination combination,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
@@ -53,6 +51,8 @@ namespace Loom.ZombieBattleground
 
         public CardAbilityData CardAbilityData { get; private set; }
 
+        public CardAbilitiesCombination Combination { get; private set; }
+
         public ICardAbilityView AbilityView { get; private set; }
 
         public CardAbility()
@@ -71,6 +71,7 @@ namespace Loom.ZombieBattleground
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
+            CardAbilitiesCombination combination,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null)
@@ -81,6 +82,7 @@ namespace Loom.ZombieBattleground
             GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
             AbilityView = abilityView;
+            Combination = combination;
 
             AbilityView?.Init(this);
         }

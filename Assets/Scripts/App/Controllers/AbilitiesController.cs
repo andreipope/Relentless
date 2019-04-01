@@ -126,20 +126,23 @@ namespace Loom.ZombieBattleground
 
         public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null)
         {
+            List<BoardObject> selectedTargets;
             foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
             {
+                selectedTargets = targets;
+
                 foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                 {
                     if (cardAbilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry))
                     {
-                        targets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
+                        selectedTargets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
                     }
-                    else if (targets == null)
+                    else if (selectedTargets == null)
                     {
-                        targets = new List<BoardObject>();
+                        selectedTargets = new List<BoardObject>();
                     }
 
-                    InitializeAbility(boardUnitModel, cardAbilityData, targets);
+                    InitializeAbility(boardUnitModel, combination, cardAbilityData, selectedTargets);
                 }
             }
         }
@@ -157,7 +160,7 @@ namespace Loom.ZombieBattleground
 
         public void TakeAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
         {
-            InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>() { boardUnitModel });
+            InitializeAbility(boardUnitModel, null, cardAbilityData, new List<BoardObject>() { boardUnitModel });
         }
 
         public void ReactivateAbilitiesOnUnit(BoardUnitModel boardUnitModel)
@@ -166,12 +169,13 @@ namespace Loom.ZombieBattleground
             {
                 foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                 {
-                    InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>(), true);
+                    InitializeAbility(boardUnitModel, combination, cardAbilityData, new List<BoardObject>(), true);
                 }
             }
         }
 
         private void InitializeAbility(BoardUnitModel boardUnitModel,
+                                       CardAbilitiesCombination combination,
                                        CardAbilityData cardAbilityData,
                                        List<BoardObject> targets,
                                        bool ignoreEntry = false)
@@ -204,7 +208,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
-                ability.Init(boardUnitModel, cardAbilityData, targets, abilityView);
+                ability.Init(boardUnitModel, combination, cardAbilityData, targets, abilityView);
 
                 _activeAbilities[trigger].Add(ability);
 
@@ -272,6 +276,21 @@ namespace Loom.ZombieBattleground
                      {
                         targetKilled
                      }, true)));
+                    ability.DoAction();
+                }
+            }
+        }
+
+        public void UnitBeingBeAttacked(BoardObject unitAttacked)
+        {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.AtDefense])
+            {
+                if (ability.UnitModelOwner == unitAttacked)
+                {
+                    ability.InsertTargets(new List<BoardObject>()
+                    {
+                        unitAttacked
+                    });
                     ability.DoAction();
                 }
             }

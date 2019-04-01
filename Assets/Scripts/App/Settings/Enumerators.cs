@@ -69,7 +69,6 @@ namespace Loom.ZombieBattleground.Common
             Flash,
             AddCard,
             PlaceCopies,
-            ShuffleCard,
             ReplaceOnStrongerOnes,
             AdditionalStat
         }
@@ -91,7 +90,10 @@ namespace Loom.ZombieBattleground.Common
             Cost,
             Type,
             TargetType,
-            TargetStatus
+            TargetStatus,
+
+            TargetDeck,
+            TargetHand
         }
 
         public enum ActionType
