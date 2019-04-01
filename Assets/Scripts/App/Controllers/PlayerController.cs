@@ -136,11 +136,11 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        int deckId = _gameplayManager.PlayerDeckId;
-                        Deck deck = _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId);
-                        foreach (DeckCardData card in deck.Cards)
+                      //  int deckId = _gameplayManager.PlayerDeckId;
+                      //  Deck deck = _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId);
+                      //  foreach (DeckCardData card in deck.Cards)
                         {
-                            for (int i = 0; i < card.Amount; i++)
+                            for (int i = 0; i < 30; i++)
                             {
                                 workingDeck.Add(_cardsController.CreateWorkingCardFromCardName("Pyromaz"/*card.CardName*/, player));
                             }
