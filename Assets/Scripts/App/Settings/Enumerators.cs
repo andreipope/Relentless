@@ -47,7 +47,6 @@ namespace Loom.ZombieBattleground.Common
 
             Blitz,
             Damage,
-            Stun,
             Freeze,
             ChangeStat,
             Draw,
