@@ -43,6 +43,10 @@ namespace Loom.ZombieBattleground
 
         protected readonly BattleController BattleController;
 
+        protected readonly CardsController CardsController;
+
+        protected readonly BoardController BoardController;
+
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
@@ -57,6 +61,8 @@ namespace Loom.ZombieBattleground
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             BattleController = GameplayManager.GetController<BattleController>();
+            CardsController = GameplayManager.GetController<CardsController>();
+            BoardController = GameplayManager.GetController<BoardController>();
         }
 
         public virtual void DoAction() { }
