@@ -13,7 +13,7 @@ def PATH(p): return os.path.abspath(
 )
 
 
-class CZBTests():
+class CZBTests(unittest.TestCase):
     platform = "android"  # set to `ios` or `android` to change platform
     tester_key = "c0ca1ecde904"
 
@@ -62,7 +62,7 @@ class CZBTests():
         self.desired_caps['automationName'] = 'XCUITest'
         self.desired_caps['app'] = PATH('../application.ipa')
         self.desired_caps['orientation']='LANDSCAPE'
-    
+
     def get_appium_device_screen_size(self):
         size=self.driver.get_window_size()
         print(size)

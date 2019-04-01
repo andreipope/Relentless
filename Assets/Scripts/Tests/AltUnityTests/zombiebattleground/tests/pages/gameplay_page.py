@@ -7,50 +7,54 @@ OPPONENT_HEALTH = 'Opponent/OverlordArea/RegularModel/RegularPosition/Avatar/Def
 PLAYER_HEALTH = 'Player/OverlordArea/RegularModel/RegularPosition/Avatar/Deffence/DefenceText'
 
 
-class BoardCard:
+class BoardCard(object):
     def __init__(self, altunityobject, altdriver):
         self.altdriver = altdriver
-        self.driver = altunityobject.driver
+        self.driver = altunityobject.appium_driver
         self.alt_object = altunityobject
         self.name = ""
         self.attack = 0
         self.defense = 0
         self.type = []
-        self.get_card_information()
         self.frozen = self.is_frozen(self.alt_object)
+        self.get_card_information()
+
 
     def get_card_information(self):
         self.alt_object.mobile_tap()
+        time.sleep(2)
         creature_cards = self.altdriver.find_elements('CreatureCard(Clone)')
         card_object = creature_cards[-1]
         self.name = self.get_card_name(card_object)
-        self.attack = self.get_card_attack(card_object)
-        self.defense = self.get_card_defense(card_object)
+        self.attack = int(self.get_card_attack(card_object))
+        self.defense = int(self.get_card_defense(card_object))
         self.type = self.get_card_type(card_object)
+        self.driver.tap([[float(100), float(100)]],1000)
+        time.sleep(2)
 
     def get_card_name(self, card_object):
-        name_object = self.altdriver.find_element('id(' + str(card_object.id) + '/TitleText')
-        return name_object.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro')
+        name_object = self.altdriver.find_element('id(' + str(card_object.id) + ')/TitleText')
+        return name_object.get_component_property('TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
 
     def get_card_attack(self, card_object):
-        attack_object = self.altdriver.find_element('id(' + str(card_object.id) + '/AttackText')
-        return attack_object.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro')
+        attack_object = self.altdriver.find_element('id(' + str(card_object.id) + ')/AttackText')
+        return attack_object.get_component_property('TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
 
     def get_card_defense(self, card_object):
-        defense_object = self.altdriver.find_element('id(' + str(card_object.id) + '/DeffensText')
-        return defense_object.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro')
+        defense_object = self.altdriver.find_element('id(' + str(card_object.id) + ')/DeffensText')
+        return defense_object.get_component_property('TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro')
 
     def get_card_type(self, card_object):
         type = []
         type_objects = self.altdriver.find_elements(
-            'id(' + str(card_object.id) + '/Group_LeftBlockInfo/Tooltip_BuffOnCardInfo(Clone)/Text_CallType')
+            'id(' + str(card_object.id) + ')/Group_LeftBlockInfo/Tooltip_BuffOnCardInfo(Clone)/Text_CallType')
         for type_object in type_objects:
-            type.append(type_object.get_component_property('TMPro.TextMeshProGUI', 'text', 'Unity.TextMeshPro'))
+            type.append(type_object.get_component_property('TMPro.TextMeshPro', 'text', 'Unity.TextMeshPro'))
         return type
 
     def is_frozen(self, board_creature):
-        frozen_component = self.altdriver.find_element('id(' + str(board_creature.id) + '/Other/Frozen')
-        frozen_component_color = frozen_component.get_component("UnityEngine.SpriteRenderer", "color",
+        frozen_component = self.altdriver.find_element('id(' + str(board_creature.id) + ')/Other/Frozen')
+        frozen_component_color = frozen_component.get_component_property("UnityEngine.SpriteRenderer", "color",
                                                                 "UnityEngine.CoreModule")
         color_alpha = frozen_component_color.split(',')[3].split(')')[0]
         if color_alpha == "0.000":
@@ -60,18 +64,19 @@ class BoardCard:
 
 class PlayerCard(BoardCard):
     def __init__(self, altunityobject, altdriver):
-        super(PlayerCard).__init__(altunityobject, altdriver)
+        super(PlayerCard,self).__init__(altunityobject, altdriver)
         self.active = self.is_active(self.alt_object)
 
     def is_active(self, board_creature):
+        #TODO change to search for animated green frame
         sleeping_particles = self.altdriver.find_element('id(' + str(board_creature.id) + ')/Other/SleepingParticles',
                                                          enabled=False)
-        return not sleeping_particles.enabled
+        return not sleeping_particles.enabled =='True'
 
 
 class OpponentCard(BoardCard):
     def __init__(self, altunityobject, altdriver):
-        super(PlayerCard).__init__(altunityobject, altdriver)
+        super(OpponentCard,self).__init__(altunityobject, altdriver)
         self.score = -1
 
 
@@ -126,11 +131,12 @@ class PlayerHand:
         self.playable = self.isPlayable(self.alt_object)
         self.type = Type.OTHER
         self.value = 0
+        self.get_card_effect()
 
-    def get_card_effect(self, card):
+    def get_card_effect(self):
         # TODO change name
-        text = self.altdriver.find_element('id(' + str(card.id) + ')/BodyText').get_component_property(
-            'TMPro.TextMeshProGUI', 'text',
+        text = self.altdriver.find_element('id(' + str(self.alt_object.id) + ')/BodyText').get_component_property(
+            'TMPro.TextMeshPro', 'text',
             'Unity.TextMeshPro')
         for entry in list_text_entry:
             if text in entry[0]:
@@ -141,10 +147,11 @@ class PlayerHand:
 
     def isPlayable(self, card):
         glow = self.altdriver.find_element('id(' + str(card.id) + ')/GlowContainer/Glow', enabled=False)
-        return glow.enabled
+        return glow.enabled == 'True'
 
     def swipe_object_position(self):
         return self.altdriver.find_element('id(' + str(self.alt_object.id) + ')/GooText')
+
 
 class Gameplay_Page(CZBTests):
     def __init__(self, altdriver, driver):
@@ -160,26 +167,24 @@ class Gameplay_Page(CZBTests):
         self.player_secondary_spell = self.altdriver.wait_for_element('Player/Object_SpellSecondary')
 
     def get_cards_that_are_in_hand(self):
-        cards = []
         cards = self.altdriver.find_elements('CreatureCard(Clone)')
         cards.extend(self.altdriver.find_elements('ItemCard(Clone)'))
         cards.sort(key=lambda element: float(element.x))
         return cards
 
-    def swipe_card_from_hand_to_board(self, cardPosition):
-        cards = self.get_cards_that_are_in_hand()
+    def swipe_card_from_hand_to_board(self, card):
         cardGoo = self.altdriver.wait_for_element(
-            'id(' + str(cards[cardPosition].id) + ')/GooText')
+            'id(' + str(card.id) + ')/GooText')
         self.driver.swipe(int(cardGoo.x), int(cardGoo.mobileY),
                           int(self.player_board.x), int(self.player_board.mobileY), 2000)
         time.sleep(4)
 
     def get_player_health(self):
-        return int(self.altdriver.find_element(PLAYER_HEALTH).get_component_property('TMPro.TextMeshProGUI', 'text',
+        return int(self.altdriver.find_element(PLAYER_HEALTH).get_component_property('TMPro.TextMeshPro', 'text',
                                                                                      'Unity.TextMeshPro'))
 
     def get_opponent_health(self):
-        return int(self.altdriver.find_element(OPPONENT_HEALTH).get_component_property('TMPro.TextMeshProGUI', 'text',
+        return int(self.altdriver.find_element(OPPONENT_HEALTH).get_component_property('TMPro.TextMeshPro', 'text',
                                                                                        'Unity.TextMeshPro'))
 
     def get_player_hand(self):
@@ -204,43 +209,43 @@ class Gameplay_Page(CZBTests):
         while True:
             playable_cards = self.get_playable_cards()
             if len(playable_cards) != 0:
-                random_number = randint(0, len(playable_cards)-1)
-                player_card=playable_cards[random_number]
-                self.swipe_card_from_hand_to_board(player_card.swipe_object_position())
-                if player_card.extraMoves!=ExtraMoves.NORMAL:
-                    if player_card.extraMoves==ExtraMoves.FROZEN:
-                        frozen_zombies=self.get_all_frozen_zombies()
-                        if len(frozen_zombies)!=0:
+                random_number = randint(0, len(playable_cards) - 1)
+                player_card = playable_cards[random_number]
+                self.swipe_card_from_hand_to_board(player_card.alt_object)
+                if player_card.extraMoves != ExtraMoves.NORMAL:
+                    if player_card.extraMoves == ExtraMoves.FROZEN:
+                        frozen_zombies = self.get_all_frozen_zombies()
+                        if len(frozen_zombies) != 0:
                             frozen_zombies[0].alt_object.mobile_tap()
-                    elif player_card.extraMoves==ExtraMoves.HEAVY:
-                        heavy_zombies=self.get_all_zombies_on_board()
-                        if len(heavy_zombies)!=0:
+                    elif player_card.extraMoves == ExtraMoves.HEAVY:
+                        heavy_zombies = self.get_all_zombies_on_board()
+                        if len(heavy_zombies) != 0:
                             heavy_zombies[0].alt_object.mobile_tap()
-                    elif player_card.extraMoves==ExtraMoves.ENEMYZOMBIE:
-                        enemy_zombies=self.get_all_enemy_board_creatures()
-                        if len(enemy_zombies)!=0:
+                    elif player_card.extraMoves == ExtraMoves.ENEMYZOMBIE:
+                        enemy_zombies = self.get_all_enemy_board_creatures()
+                        if len(enemy_zombies) != 0:
                             enemy_zombies[0].alt_object.mobile_tap()
-                    elif player_card.extraMoves==ExtraMoves.ENEMY or  player_card.extraMoves==ExtraMoves.ALL:
+                    elif player_card.extraMoves == ExtraMoves.ENEMY or player_card.extraMoves == ExtraMoves.ALL:
                         enemy_zombies = self.get_all_enemy_board_creatures()
                         if len(enemy_zombies) != 0:
                             enemy_zombies[0].alt_object.mobile_tap()
                         else:
                             self.opponent_face.mobile_tap()
-                    elif player_card.extraMoves==ExtraMoves.ALLYZOMBIE:
-                        ally_zombies=self.get_player_board_creatures()
-                        if len(ally_zombies)!=0:
+                    elif player_card.extraMoves == ExtraMoves.ALLYZOMBIE:
+                        ally_zombies = self.get_player_board_creatures()
+                        if len(ally_zombies) != 0:
                             ally_zombies[0].alt_object.mobile_tap()
-                    elif player_card.extraMoves==ExtraMoves.ENEMYWATERPLAY:
+                    elif player_card.extraMoves == ExtraMoves.ENEMYWATERPLAY:
                         enemy_zombies = self.get_all_enemy_board_creatures()
                         if len(enemy_zombies) != 0:
                             enemy_zombies[0].alt_object.mobile_tap()
                         else:
                             self.opponent_face.mobile_tap()
+                    elif player_card.extraMoves == ExtraMoves.ZOMBIE:
+                        zombies=self.get_all_zombies_on_board()
+                        zombies[0].alt_object.mobile_tap()
             else:
                 break
-
-
-
 
     def get_player_board_creatures(self):
         cards = self.altdriver.find_elements('PlayerBoard/BoardCreature(Clone)')
@@ -268,16 +273,15 @@ class Gameplay_Page(CZBTests):
         self.player_primary_spell.mobile_dragToElement(self.opponent_face, 2)
         time.sleep(4)
 
-    def swipe_primary_spell_to_opponent_creature(self, cardPosition):
+    def swipe_primary_spell_to_opponent_creature(self, card):
         enemy_board_creature = self.get_opponent_board_creatures()
-        self.player_primary_spell.mobile_dragToElement(enemy_board_creature[cardPosition], 2)
+        self.player_primary_spell.mobile_dragToElement(card, 2)
         time.sleep(4)
 
-    def swipe_board_card_to_opponent_creature(self, player_card_position, opponent_card_position):
+    def swipe_board_card_to_opponent_creature(self, player_card, opponent_card):
         player_board_creature = self.get_player_board_creatures()
         enemy_board_creature = self.get_opponent_board_creatures()
-        player_board_creature[player_card_position].mobile_dragToElement(enemy_board_creature[opponent_card_position],
-                                                                         2)
+        player_card.mobile_dragToElement(opponent_card,2)
         time.sleep(6)
 
     def play_player_turn(self):
@@ -289,17 +293,19 @@ class Gameplay_Page(CZBTests):
 
     def action_phase(self):
 
-        while self.attack_heavy_zombies():
-            pass
-
         damaging_cards = self.get_every_possible_thing_that_can_cause_damage_this_turn()
         if len(damaging_cards) != 0:
-            if self.is_lethal_available(damaging_cards) or len(self.get_opponent_board_creatures()) == 0:
-                for damaging_card in damaging_cards:
-                    self.attack_opponent_face
-            else:
-                while self.trade_cards():
-                    pass
+            while self.attack_heavy_zombies():
+                pass
+
+            damaging_cards = self.get_every_possible_thing_that_can_cause_damage_this_turn()
+            if len(damaging_cards) != 0:
+                if self.is_lethal_available(damaging_cards) or len(self.get_opponent_board_creatures()) == 0:
+                    for damaging_card in damaging_cards:
+                        self.attack_opponent_face(damaging_card)
+                else:
+                    while self.trade_cards():
+                        pass
 
     def calculate_card_score(self, player_card_attack, player_card_health, opponent_card_attack, opponent_card_health):
         if player_card_attack == opponent_card_health and player_card_health > opponent_card_attack:
@@ -376,7 +382,7 @@ class Gameplay_Page(CZBTests):
     def is_lethal_available(self, available_damage):
         total_damage_available = 0
         for element in available_damage:
-            total_damage_available = total_damage_available + element[3]
+            total_damage_available = total_damage_available + int(element.attack)
         opponent_health = self.get_opponent_health()
         return total_damage_available > opponent_health
 
@@ -393,7 +399,6 @@ class Gameplay_Page(CZBTests):
         return False
 
     def attack_heavy_zombies(self):
-        ##TODO change name function
         cards_able_to_do_damage = self.get_every_possible_thing_that_can_cause_damage_this_turn()
         taunts = self.get_all_opponent_heavy_cards()
 
@@ -418,7 +423,7 @@ class Gameplay_Page(CZBTests):
     def trade_cards(self, score_limit=50):
 
         cards_able_to_do_damage = self.get_every_possible_thing_that_can_cause_damage_this_turn()
-        opponent_creatures = self.get_opponent_board_creatures()
+        opponent_creatures = self.get_all_enemy_board_creatures()
 
         if len(cards_able_to_do_damage) == 0:
             return False
@@ -431,9 +436,10 @@ class Gameplay_Page(CZBTests):
             for opponent_creature in opponent_creatures:
                 score = self.calculate_card_score(damage_card.attack, damage_card.defense, opponent_creature.attack,
                                                   opponent_creature.defense)
-                if score < opponent_creature[4]:
-                    opponent_creature[4] = score
-        opponent_creatures = sorted(opponent_creatures, key=lambda creature: creature[4])
+                if score < opponent_creature.score:
+                    opponent_creature.score = score
+        opponent_creatures = sorted(opponent_creatures, key=lambda creature: creature.score)
+        print("Score = ",opponent_creatures[0].score)
         if opponent_creatures[0].score > score_limit:
             for opponent_creature in opponent_creatures:
                 for damage_card in cards_able_to_do_damage:
@@ -444,7 +450,7 @@ class Gameplay_Page(CZBTests):
                     return True
         else:
             for damage_card in cards_able_to_do_damage:
-                self.attack_opponent_face(damage_card)
+                self.attack_opponent_face(damage_card.alt_object)
             return False
 
     def mulligan_high_cost_cards(self):
@@ -464,12 +470,13 @@ class Gameplay_Page(CZBTests):
         self.swipe_board_card_to_opponent_face(damage_card)
 
     def get_all_zombies_on_board(self):
-        zombies=self.get_all_enemy_board_creatures()
-        zombies=zombies+self.get_all_player_board_creature()
+        zombies = self.get_all_enemy_board_creatures()
+        zombies = zombies + self.get_all_player_board_creature()
         return zombies
+
     def get_all_frozen_zombies(self):
         frozen_zombies = []
-        all_zombies=self.get_all_zombies_on_board()
+        all_zombies = self.get_all_zombies_on_board()
         for zombie in all_zombies:
             if zombie.frozen:
                 frozen_zombies.append(zombie)
@@ -477,14 +484,11 @@ class Gameplay_Page(CZBTests):
 
     def get_all_heavy_zombies(self):
         heavy_zombies = []
-        all_zombies=self.get_all_zombies_on_board()
+        all_zombies = self.get_all_zombies_on_board()
         for zombie in all_zombies:
             if 'HEAVY' in zombie.type:
                 heavy_zombies.append(zombie)
         return heavy_zombies
-
-
-
 
     def play_a_match(self):
         self.mulligan_high_cost_cards()
