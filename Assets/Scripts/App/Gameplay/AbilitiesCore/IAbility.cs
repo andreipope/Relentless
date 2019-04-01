@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
@@ -45,6 +46,8 @@ namespace Loom.ZombieBattleground
 
         protected readonly BoardController BoardController;
 
+        protected readonly ActionsQueueController ActionsQueueController;
+
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
@@ -63,6 +66,7 @@ namespace Loom.ZombieBattleground
             BattleController = GameplayManager.GetController<BattleController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
         }
 
         public virtual void DoAction() { }
@@ -100,6 +104,16 @@ namespace Loom.ZombieBattleground
         public void InsertTargets(IReadOnlyList<BoardObject> targets)
         {
             Targets = targets;
+        }
+
+        protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)
+        {
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = actionType,
+                Caller = UnitModelOwner,
+                TargetEffects = targetEffectParams
+            });
         }
     }
 }

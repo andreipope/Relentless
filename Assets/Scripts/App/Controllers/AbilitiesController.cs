@@ -408,6 +408,8 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        #region targets filtering
+
         public List<BoardObject> GetTargets(BoardUnitModel modelCaller, CardAbilityData cardAbilityData, List<BoardObject> targets, bool insert = false)
         {
             if (targets != null && !insert)
@@ -526,6 +528,8 @@ namespace Loom.ZombieBattleground
             return targets;
         }
 
+        #endregion
+
         public Player GetOpponentPlayer(BoardUnitModel model)
         {
             if (model.OwnerPlayer.IsLocalPlayer)
@@ -533,6 +537,8 @@ namespace Loom.ZombieBattleground
             else
                 return _gameplayManager.CurrentPlayer;
         }
+
+        #region parameter tools
 
         public T GetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
         {
@@ -563,6 +569,8 @@ namespace Loom.ZombieBattleground
 
             return true;
         }
+
+        #endregion
 
         #endregion
 
