@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -720,6 +721,8 @@ namespace Loom.ZombieBattleground
                                 AttackedBoardObjectsThisTurn.Add(targetPlayer);
                             }
 
+                            _abilitiesController.UnitBeganAttack(this);
+
                             FightSequenceHandler.HandleAttackPlayer(
                                 completeCallback,
                                 targetPlayer,
@@ -742,7 +745,7 @@ namespace Loom.ZombieBattleground
                     AttackedThisTurn = true;
 
                     _actionsQueueController.AddNewActionInToQueue(
-                        (parameter, completeCallback) =>
+                        async (parameter, completeCallback) =>
                         {
                             if(targetCardModel.CurrentDefense <= 0 || targetCardModel.IsDead)
                             {
@@ -778,6 +781,10 @@ namespace Loom.ZombieBattleground
                             {
                                 AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             }
+
+                            _abilitiesController.UnitBeganAttack(this);
+
+                            await Task.Delay(TimeSpan.FromSeconds(0.5));
 
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,

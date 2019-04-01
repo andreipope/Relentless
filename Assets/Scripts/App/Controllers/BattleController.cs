@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -19,8 +20,6 @@ namespace Loom.ZombieBattleground
 
         private VfxController _vfxController;
 
-        private Dictionary<Enumerators.Faction, Enumerators.Faction> _strongerElemental, _weakerElemental;
-
         public void Dispose()
         {
         }
@@ -34,8 +33,6 @@ namespace Loom.ZombieBattleground
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-            FillStrongersAndWeakers();
         }
 
         public void Update()
@@ -101,7 +98,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
                 attackedUnitModel.CurrentDefense -= damageAttacking;
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
@@ -109,6 +106,7 @@ namespace Loom.ZombieBattleground
                 if (attackedUnitModel.CurrentDefense <= 0)
                 {
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
+                    _abilitiesController.UnitKilled(attackingUnitModel, attackedUnitModel);
                 }
 
                 _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
@@ -136,17 +134,20 @@ namespace Loom.ZombieBattleground
                         if (attackingUnitModel.CurrentDefense <= 0)
                         {
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
+                            _abilitiesController.UnitKilled(attackedUnitModel, attackingUnitModel);
                         }
 
                         _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
+
+                        _abilitiesController.UnitWasAttacked(attackingUnitModel, attackedUnitModel, damageAttacking);
                     }
                 }
 
                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-                    {
+                {
                     ActionType = Enumerators.ActionType.CardAttackCard,
                     Caller = attackingUnitModel,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
@@ -234,11 +235,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByAbility(
-            object attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
+        public void AttackUnitByAbility(BoardObject attacker, BoardUnitModel attackedUnitModel, int damage)
         {
-            int damage = damageOverride != -1 ? damageOverride : ability.Value;
-
             if (attackedUnitModel != null)
             {
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
@@ -264,10 +262,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackPlayerByAbility(object attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
+        public void AttackPlayerByAbility(BoardObject attacker, Player attackedPlayer, int damage)
         {
-            int damage = damageOverride != -1 ? damageOverride : ability.Value;
-
             AttackPlayer(attackedPlayer, damage);
         }
 
@@ -281,13 +277,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealPlayerByAbility(object healler, AbilityData ability, Player healedPlayer, int value = -1)
+        public void HealPlayerByAbility(BoardObject healler, Player healedPlayer, int healValue)
         {
-            int healValue = ability.Value;
-
-            if (value > 0)
-                healValue = value;
-
             if (healedPlayer != null)
             {
                 healedPlayer.Defense += healValue;
@@ -298,13 +289,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitByAbility(object healler, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
+        public void HealUnitByAbility(BoardObject healler, BoardUnitModel healedCreature, int healValue)
         {
-            int healValue = ability.Value;
-
-            if (value > 0)
-                healValue = value;
-
             if (healedCreature != null)
             {
                 healedCreature.CurrentDefense += healValue;
@@ -321,53 +307,6 @@ namespace Loom.ZombieBattleground
             {
                 GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillMinion);
             }
-        }
-
-        private void FillStrongersAndWeakers()
-        {
-            _strongerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.AIR
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.FIRE
-                }
-            };
-
-            _weakerElemental = new Dictionary<Enumerators.Faction, Enumerators.Faction>
-            {
-                {
-                    Enumerators.Faction.FIRE, Enumerators.Faction.WATER
-                },
-                {
-                    Enumerators.Faction.TOXIC, Enumerators.Faction.FIRE
-                },
-                {
-                    Enumerators.Faction.LIFE, Enumerators.Faction.TOXIC
-                },
-                {
-                    Enumerators.Faction.EARTH, Enumerators.Faction.LIFE
-                },
-                {
-                    Enumerators.Faction.AIR, Enumerators.Faction.EARTH
-                },
-                {
-                    Enumerators.Faction.WATER, Enumerators.Faction.AIR
-                }
-            };
         }
     }
 }
