@@ -109,17 +109,21 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             {
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
-                foreach (CardAbilityData abilityInfo in _selectedCard.Abilities.CardAbilityDatas)
+                foreach (CardAbilitiesCombination combination in _selectedCard.Abilities.Combinations)
                 {
-                    DrawAbilityConfigurtion(abilityInfo);
+                    GUILayout.Label($"Combination {(_selectedCard.Abilities.Combinations.IndexOf(combination)+1)}: ", EditorStyles.boldLabel);
+                    foreach (CardAbilityData abilityInfo in combination.CardAbilities)
+                    {
+                        DrawAbilityConfigurtion(abilityInfo);
 
-                    //if (abilityInfo.ChoosableAbilities != null)
-                    //{
-                    //    foreach (CardAbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
-                    //    {
-                    //        DrawAbilityConfigurtion(choosableAbilityInfo, true);
-                    //    }
-                    //}
+                        //if (abilityInfo.ChoosableAbilities != null)
+                        //{
+                        //    foreach (CardAbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
+                        //    {
+                        //        DrawAbilityConfigurtion(choosableAbilityInfo, true);
+                        //    }
+                        //}
+                    }
                 }
             }
         }

@@ -428,22 +428,25 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (CardAbilityData abil in unit.Model.Card.InstanceCard.Abilities.CardAbilityDatas)
+                foreach (CardAbilitiesCombination combination in unit.Model.Card.InstanceCard.Abilities.Combinations)
                 {
-                    if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
-                        continue;
-
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
-                    if (gameMechanicInfo != null)
+                    foreach (CardAbilityData abil in combination.CardAbilities)
                     {
-                        buffs.Add(
-                            new BuffTooltipInfo
-                            {
-                                Title = gameMechanicInfo.Name,
-                                Description = gameMechanicInfo.Tooltip,
-                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                                Value = GetValueOfAbilityByType(abil)
-                            });
+                        if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
+                            continue;
+
+                        TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
+                        if (gameMechanicInfo != null)
+                        {
+                            buffs.Add(
+                                new BuffTooltipInfo
+                                {
+                                    Title = gameMechanicInfo.Name,
+                                    Description = gameMechanicInfo.Tooltip,
+                                    TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                    Value = GetValueOfAbilityByType(abil)
+                                });
+                        }
                     }
                 }
             }
@@ -577,19 +580,22 @@ namespace Loom.ZombieBattleground
 
             if (boardCardView.Model.Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities.CardAbilityDatas)
+                foreach (CardAbilitiesCombination combination in boardCardView.Model.Card.InstanceCard.Abilities.Combinations)
                 {
-                    TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
-                    if (gameMechanicInfo != null)
+                    foreach (CardAbilityData abil in combination.CardAbilities)
                     {
-                        buffs.Add(
-                            new BuffTooltipInfo
-                            {
-                                Title = gameMechanicInfo.Name,
-                                Description = gameMechanicInfo.Tooltip,
-                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                                Value = GetValueOfAbilityByType(abil)
-                            });
+                        TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
+                        if (gameMechanicInfo != null)
+                        {
+                            buffs.Add(
+                                new BuffTooltipInfo
+                                {
+                                    Title = gameMechanicInfo.Name,
+                                    Description = gameMechanicInfo.Tooltip,
+                                    TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                    Value = GetValueOfAbilityByType(abil)
+                                });
+                        }
                     }
                 }
             }

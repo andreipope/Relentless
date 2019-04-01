@@ -126,24 +126,27 @@ namespace Loom.ZombieBattleground
 
         public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null)
         {
-            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityDatas)
+            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
             {
-                if(cardAbilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry))
+                foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                 {
-                    targets = FilterTargets(boardUnitModel, cardAbilityData, GetTargets(boardUnitModel, cardAbilityData, targets));
-                }
-                else if(targets == null)
-                {
-                    targets = new List<BoardObject>();
-                }
+                    if (cardAbilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry))
+                    {
+                        targets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
+                    }
+                    else if (targets == null)
+                    {
+                        targets = new List<BoardObject>();
+                    }
 
-                InitializeAbility(boardUnitModel, cardAbilityData, targets);
+                    InitializeAbility(boardUnitModel, cardAbilityData, targets);
+                }
             }
         }
 
         public void EndAbility(ICardAbility cardAbility)
         {
-          KeyValuePair<Enumerators.AbilityTrigger, List<ICardAbility>> keyValuePair =
+            KeyValuePair<Enumerators.AbilityTrigger, List<ICardAbility>> keyValuePair =
                 _activeAbilities.FirstOrDefault(element => element.Value.Contains(cardAbility));
 
             if(!keyValuePair.IsDefault())
@@ -159,9 +162,12 @@ namespace Loom.ZombieBattleground
 
         public void ReactivateAbilitiesOnUnit(BoardUnitModel boardUnitModel)
         {
-            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityDatas)
+            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
             {
-                InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>(), true);
+                foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
+                {
+                    InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>(), true);
+                }
             }
         }
 
@@ -187,17 +193,17 @@ namespace Loom.ZombieBattleground
 
                 abilityClassName = $"{cardAbilityData.Ability.ToString()}Ability";
 
-                if (!InternalTools.IsTypeExists<CardAbility>(abilityClassName))
+                if (!InternalTools.IsTypeExists<ICardAbility>(abilityClassName))
                     continue;
 
                 abilityViewClassName = $"{abilityClassName}View";
 
-                if (InternalTools.IsTypeExists<CardAbilityView>(abilityViewClassName))
+                if (InternalTools.IsTypeExists<ICardAbilityView>(abilityViewClassName))
                 {
-                    abilityView = InternalTools.GetInstance<CardAbilityView>(abilityViewClassName);
+                    abilityView = InternalTools.GetInstance<ICardAbilityView>(abilityViewClassName);
                 }
 
-                ability = InternalTools.GetInstance<CardAbility>(abilityClassName);
+                ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
                 ability.Init(boardUnitModel, cardAbilityData, targets, abilityView);
 
                 _activeAbilities[trigger].Add(ability);
@@ -214,7 +220,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == boardUnit)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         boardUnit
@@ -230,11 +236,10 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
-                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                    ability.InsertTargets(new List<BoardObject>()
                     {
                         attacker
-                    }, true)));
+                    });
                     ability.DoAction();
                 }
             }
@@ -246,7 +251,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         targetAttacked
@@ -262,7 +267,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
                                                          GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                      {
                         targetKilled
@@ -278,7 +283,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         attacker
@@ -310,6 +315,11 @@ namespace Loom.ZombieBattleground
                 {
                     ability.DoAction();
                 }
+            }
+
+            foreach(ICardAbility ability in GetAbilitiesOnUnit(boardUnit))
+            {
+                EndAbility(ability);
             }
         }
 
@@ -364,12 +374,15 @@ namespace Loom.ZombieBattleground
 
         public bool HasEntryWithSelection(BoardUnitModel unitModel)
         {
-            foreach (CardAbilityData data in unitModel.Card.Prototype.Abilities.CardAbilityDatas)
+            foreach (CardAbilitiesCombination combination in unitModel.Card.Prototype.Abilities.Combinations)
             {
-                foreach (Enumerators.AbilityTrigger trigger in data.Triggers)
+                foreach (CardAbilityData data in combination.CardAbilities)
                 {
-                    if (trigger == Enumerators.AbilityTrigger.EntryWithSelection)
-                        return true;
+                    foreach (Enumerators.AbilityTrigger trigger in data.Triggers)
+                    {
+                        if (trigger == Enumerators.AbilityTrigger.EntryWithSelection)
+                            return true;
+                    }
                 }
             }
 
@@ -402,6 +415,10 @@ namespace Loom.ZombieBattleground
                             case Enumerators.TargetFilter.Target:
                                 break;
                             case Enumerators.TargetFilter.TargetAdjustments:
+                                if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
+                                {
+                                    targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
+                                }
                                 break;
                             case Enumerators.TargetFilter.Undefined:
                                 break;
@@ -413,14 +430,18 @@ namespace Loom.ZombieBattleground
                             case Enumerators.TargetFilter.Target:
                                 break;
                             case Enumerators.TargetFilter.TargetAdjustments:
+                                if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
+                                {
+                                    targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
+                                }
                                 break;
                             case Enumerators.TargetFilter.Undefined:
                                 break;
                         }
                         break;
                     case Enumerators.Target.All:
-                        targets.Add(GetOpponentPlayer(modelCaller));
-                        targets.Add(modelCaller.OwnerPlayer);
+                        targets.Add(_gameplayManager.CurrentPlayer);
+                        targets.Add(_gameplayManager.OpponentPlayer);
                         targets.AddRange(_gameplayManager.CurrentPlayer.PlayerCardsController.CardsOnBoard);
                         targets.AddRange(_gameplayManager.OpponentPlayer.PlayerCardsController.CardsOnBoard);
                         break;
@@ -429,31 +450,61 @@ namespace Loom.ZombieBattleground
 
             return targets;
         }
-        public List<BoardObject> FilterTargets(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData, List<BoardObject> targets)
+
+        public List<BoardObject> FilterTargets(
+            BoardUnitModel boardUnitModel,
+            List<GenericParameter> genericParameters,
+            List<BoardObject> targets)
         {
             List<BoardObject> filteredTargets = new List<BoardObject>();
-            if (TryGetParameterValue(cardAbilityData.GenericParameters,
+
+            if (TryGetParameterValue(genericParameters,
                                      Enumerators.AbilityParameter.TargetFaction,
-                                     out Enumerators.Faction value))
+                                     out Enumerators.Faction targetFaction))
             {
                 foreach (BoardObject target in targets)
                 {
                     switch (target)
                     {
                         case BoardUnitModel unitModel:
-                            if (unitModel.Faction == value)
+                            if (unitModel.Faction != targetFaction)
                             {
                                 filteredTargets.Add(target);
                             }
                             break;
                         case Player player:
-                            filteredTargets.Add(target);
+                            if (player.SelfOverlord.Faction != targetFaction)
+                            {
+                                filteredTargets.Add(target);
+                            }
                             break;
                     }
                 }
             }
 
-            return filteredTargets;
+
+            if (TryGetParameterValue(genericParameters,
+                                     Enumerators.AbilityParameter.TargetStatus,
+                                     out Enumerators.UnitSpecialStatus targetStatus))
+            {
+                foreach (BoardObject target in targets)
+                {
+                    switch (target)
+                    {
+                        case BoardUnitModel unitModel:
+                            if (unitModel.UnitSpecialStatus != targetStatus)
+                            {
+                                filteredTargets.Add(target);
+                            }
+                            break;
+                    }
+                }
+            }
+
+            filteredTargets.ForEach((target) => { targets.Remove(target); });
+            filteredTargets.Clear();
+
+            return targets;
         }
 
         public Player GetOpponentPlayer(BoardUnitModel model)

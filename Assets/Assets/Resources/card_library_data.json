@@ -29,28 +29,32 @@
             }
           },
           "abilities": {
-            "DefaultParameters": [],
-            "CardAbilityDatas": [
+            "Combinations": [
               {
-                "Ability": "AdditionalStat",
-                "GameMechanicDescription": "Attack",
-                "Triggers": [
-                  "Attack"
-                ],
-                "Targets": [
+                "DefaultParameters": [],
+                "CardAbilities": [
                   {
-                    "Target": "ItSelf",
-                    "TargetFilter": "Target"
-                  }
-                ],
-                "GenericParameters": [
-                  {
-                    "AbilityParameter": "Attack",
-                    "Value": 1
-                  },
-                  {
-                    "AbilityParameter": "TargetFaction",
-                    "Value": "Toxic"
+                    "Ability": "AdditionalStat",
+                    "GameMechanicDescription": "Attack",
+                    "Triggers": [
+                      "Attack"
+                    ],
+                    "Targets": [
+                      {
+                        "Target": "ItSelf",
+                        "TargetFilter": "Target"
+                      }
+                    ],
+                    "GenericParameters": [
+                      {
+                        "AbilityParameter": "Attack",
+                        "Value": 1
+                      },
+                      {
+                        "AbilityParameter": "TargetFaction",
+                        "Value": "Fire"
+                      }
+                    ]
                   }
                 ]
               }

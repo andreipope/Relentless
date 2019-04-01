@@ -189,8 +189,10 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardKind) card.Kind,
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
-                new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
+                new CardAbilities(new List<CardAbilitiesCombination>()
                 {
+                   new CardAbilitiesCombination(new List<GenericParameter>(),
+                                                new List<CardAbilityData>())
                 }),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
@@ -206,8 +208,10 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.Faction) card.Faction,
                 (Enumerators.CardType) card.Type,
                 card.Cost,
-                new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>()
+                new CardAbilities(new List<CardAbilitiesCombination>()
                 {
+                   new CardAbilitiesCombination(new List<GenericParameter>(),
+                                                new List<CardAbilityData>())
                 })
             );
         }

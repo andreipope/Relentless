@@ -93,7 +93,11 @@ namespace Loom.ZombieBattleground.Data
             Kind = kind;
             Rank = rank;
             Type = type;
-            Abilities = abilities ?? new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>());
+            Abilities = abilities ?? new CardAbilities(new List<CardAbilitiesCombination>()
+            {
+                new CardAbilitiesCombination(new List<GenericParameter>(),
+                                             new List<CardAbilityData>())
+            });
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;

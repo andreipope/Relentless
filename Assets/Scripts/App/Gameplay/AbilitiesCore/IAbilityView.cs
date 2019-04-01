@@ -18,11 +18,27 @@ namespace Loom.ZombieBattleground
 
     public class CardAbilityView : ICardAbilityView
     {
+        protected readonly IGameplayManager GameplayManager;
+
+        protected readonly VfxController VfxController;
+
+        protected readonly BoardController BoardController;
+
+        protected readonly BattlegroundController BattlegroundController;
+
         public event Action VFXBegan;
 
         public event Action VFXEnded;
 
         public ICardAbility CardAbility { get; protected set; }
+
+        public CardAbilityView()
+        {
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            VfxController = GameplayManager.GetController<VfxController>();
+            BoardController = GameplayManager.GetController<BoardController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+        }
 
         public void Init(ICardAbility cardAbility)
         {
