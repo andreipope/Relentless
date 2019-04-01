@@ -304,11 +304,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.CardKind.CREATURE:
                         go = Object.Instantiate(CardCreaturePrefab);
-                        boardCardView = new UnitBoardCardView(go, boardUnitModel);
+                        boardCardView = new UnitBoardCard(go, boardUnitModel);
                         break;
                     case Enumerators.CardKind.ITEM:
                         go = Object.Instantiate(CardItemPrefab);
-                        boardCardView = new ItemBoardCardView(go, boardUnitModel);
+                        boardCardView = new ItemBoardCard(go, boardUnitModel);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);

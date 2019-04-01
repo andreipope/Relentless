@@ -1017,7 +1017,7 @@ namespace Loom.ZombieBattleground
                         GameObject itemCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
                         itemCard.transform.position = GameObject.Find("OpponentSpellsPivot").transform.position;
 
-                        CurrentItemCard = new ItemBoardCardView(itemCard, boardUnitModel);
+                        CurrentItemCard = new ItemBoardCard(itemCard, boardUnitModel);
                         CurrentItemCard.SetHighlightingEnabled(false);
                         itemCard.gameObject.SetActive(false);
 

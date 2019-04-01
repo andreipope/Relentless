@@ -685,12 +685,12 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCardView(CurrentBoardCard, target.Model);
-                    (boardCardView as UnitBoardCardView).DrawOriginalStats();
+                    boardCardView = new UnitBoardCard(CurrentBoardCard, target.Model);
+                    (boardCardView as UnitBoardCard).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new ItemBoardCardView(CurrentBoardCard, target.Model);
+                    boardCardView = new ItemBoardCard(CurrentBoardCard, target.Model);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -1161,7 +1161,7 @@ namespace Loom.ZombieBattleground
 
         public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)
         {
-            BoardCardView boardCardView = new UnitBoardCardView(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);
+            BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);
             boardCardView.GameObject.transform.position = boardUnitModel.OwnerPlayer.IsLocalPlayer ? Constants.DefaultPositionOfPlayerBoardCard :
                                                                                  Constants.DefaultPositionOfOpponentBoardCard;
             boardCardView.GameObject.transform.localScale = Vector3.one * .3f;

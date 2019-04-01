@@ -464,7 +464,7 @@ namespace Loom.ZombieBattleground
                                 break;
                             case Enumerators.CardKind.ITEM:
                                 GameObject itemGo = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                                ItemBoardCardView item = new ItemBoardCardView(itemGo, boardUnitModel);
+                                ItemBoardCard item = new ItemBoardCard(itemGo, boardUnitModel);
                                 AddBoardItemInUse(boardUnitModel);
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;

@@ -538,7 +538,7 @@ namespace Loom.ZombieBattleground
                             card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                             card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
 
-                            ItemBoardCardView itemBoardCardView = new ItemBoardCardView(card.GameObject, card.Model);
+                            ItemBoardCard itemBoardCard = new ItemBoardCard(card.GameObject, card.Model);
 
                             card.RemoveCardParticle.Play();
 
@@ -662,12 +662,12 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard"));
-                    boardCardView = new UnitBoardCardView(go, boardUnitModel);
+                    boardCardView = new UnitBoardCard(go, boardUnitModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/ItemCard"));
-                    boardCardView = new ItemBoardCardView(go, boardUnitModel);
+                    boardCardView = new ItemBoardCard(go, boardUnitModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

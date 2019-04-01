@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
                             }
                             break;
                         case HandBoardCard card:
-                            if(card.BoardCardView is ItemBoardCardView)
+                            if(card.BoardCardView is ItemBoardCard)
                             {
                                 actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             }
