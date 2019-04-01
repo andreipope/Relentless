@@ -84,8 +84,6 @@ namespace Loom.ZombieBattleground
 
         private bool _arrivalDone;
 
-        private BattleBoardArrow _fightTargetingArrow;
-
         private const string _orangeGlow = "Orange";
 
         private const string _greenGlow = "Green";
@@ -107,8 +105,6 @@ namespace Loom.ZombieBattleground
         public Vector3 PositionOfBoard { get; set; }
 
         public Animator battleframeAnimator { get; private set; }
-
-        public BattleBoardArrow FightTargetingArrow => _fightTargetingArrow;
 
         public BoardUnitView(BoardUnitModel model, Transform parent)
         {
@@ -436,7 +432,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnTurnEnded()
         {
-            CancelTargetingArrows();
+            _boardArrowController.ResetCurrentBoardArrow();
             SetNormalGlowFromUnitType();
         }
 
@@ -635,14 +631,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CancelTargetingArrows()
-        {
-            if (_fightTargetingArrow != null)
-            {
-                _fightTargetingArrow.Dispose();
-            }
-        }
-
         public void SetHighlightingEnabled(bool enabled)
         {
             if (!Model.UnitCanBeUsable())
@@ -806,14 +794,11 @@ namespace Loom.ZombieBattleground
 
             if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
             {
-                _fightTargetingArrow = _boardArrowController.BeginTargetingArrowFrom<BattleBoardArrow>(Transform);
-                _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
-                _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
-                _fightTargetingArrow.Owner = this.Model;
+                _boardArrowController.ShowBattleBoardArrow(this.Model, Transform, Model.AttackTargetsAvailability, _gameplayManager.OpponentPlayer.CardsOnBoard);
 
                 if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
-                    _fightTargetingArrow.IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
+                    (_boardArrowController.CurrentBoardArrow as BattleBoardArrow).IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
                 }
 
                 if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
@@ -836,11 +821,11 @@ namespace Loom.ZombieBattleground
 
         public void FinishAttackTargeting()
         {
-            if (_fightTargetingArrow != null)
+            if (_boardArrowController.CurrentBoardArrow != null)
             {
                 if (Model.OwnerPlayer != null && Model.OwnerPlayer.IsLocalPlayer && _playerController.IsActive && Model.UnitCanBeUsable())
                 {
-                    _fightTargetingArrow.End(this);
+                    (_boardArrowController.CurrentBoardArrow as BattleBoardArrow).End(this);
 
                     if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
                     {
@@ -849,8 +834,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    _fightTargetingArrow.Dispose();
-                    _fightTargetingArrow = null;
+                    _boardArrowController.ResetCurrentBoardArrow();
                 }
             }
         }
@@ -886,7 +870,6 @@ namespace Loom.ZombieBattleground
 
                     hitCallback();
 
-                    _fightTargetingArrow = null;
                     SetHighlightingEnabled(true);
                 },
                 () =>
@@ -924,7 +907,6 @@ namespace Loom.ZombieBattleground
 
                     hitCallback();
 
-                    _fightTargetingArrow = null;
                     SetHighlightingEnabled(true);
                 },
                 () =>

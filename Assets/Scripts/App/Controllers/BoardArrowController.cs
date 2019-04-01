@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using System;
 using System.Collections.Generic;
@@ -85,6 +86,16 @@ namespace Loom.ZombieBattleground
             arrow.Begin(from.position);
 
             return arrow;
+        }
+
+        public void ShowBattleBoardArrow(BoardUnitModel owner, Transform from, List<Enumerators.SkillTarget> TargetsType, IReadOnlyList<BoardUnitModel> CardsOnBoard)
+        {
+            BattleBoardArrow battleArrow = BeginTargetingArrowFrom<BattleBoardArrow>(from);
+            battleArrow.TargetsType = TargetsType;
+            battleArrow.BoardCards = CardsOnBoard;
+            battleArrow.Owner = owner;
+
+            CurrentBoardArrow = battleArrow;
         }
     }
 }

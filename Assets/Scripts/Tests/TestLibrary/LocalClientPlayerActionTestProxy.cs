@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground.Test
         private readonly IQueueManager _queueManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
+        private readonly BoardArrowController _boardArrowController;
+
         private readonly Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
 
         public LocalClientPlayerActionTestProxy(TestHelper testHelper)
@@ -36,6 +38,7 @@ namespace Loom.ZombieBattleground.Test
             _pvpManager = GameClient.Get<IPvPManager>();
             _queueManager = GameClient.Get<IQueueManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _boardArrowController = GameClient.Get<IGameplayManager>().GetController<BoardArrowController>();
         }
 
         public async Task EndTurn()
@@ -121,8 +124,8 @@ namespace Loom.ZombieBattleground.Test
             });
 
             boardUnitView.StartAttackTargeting();
-            Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");
-            await _testHelper.SelectTargetOnFightTargetArrow(boardUnitView.FightTargetingArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            Assert.NotNull(_boardArrowController.CurrentBoardArrow, "boardUnitView.FightTargetingArrow != null");
+            await _testHelper.SelectTargetOnFightTargetArrow(_boardArrowController.CurrentBoardArrow as BattleBoardArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
             CheckAttacker();
             boardUnitView.FinishAttackTargeting();
 
