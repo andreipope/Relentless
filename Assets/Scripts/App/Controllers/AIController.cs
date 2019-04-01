@@ -119,7 +119,7 @@ namespace Loom.ZombieBattleground
                 {
                     for (int i = 0; i < card.Amount; i++)
                     {
-                        workingDeck.Add(_cardsController.CreateWorkingCardFromCardName(card.CardName, _gameplayManager.OpponentPlayer));
+                        workingDeck.Add(_cardsController.CreateWorkingCardFromCardName("Pyromaz"/*card.CardName*/, _gameplayManager.OpponentPlayer));
                     }
                 }
 
@@ -720,7 +720,7 @@ namespace Loom.ZombieBattleground
             {
                 if (cards[i].InstanceCard.Abilities != null)
                 {
-                    CardAbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.CardAbilityData
+                    CardAbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.CardAbilityDatas
                         .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.Damage);
                     if (attackOverlordAbility != null)
                     {
@@ -729,7 +729,7 @@ namespace Loom.ZombieBattleground
                             break;
                     }
 
-                    overflowGooAbility = cards[i].InstanceCard.Abilities.CardAbilityData
+                    overflowGooAbility = cards[i].InstanceCard.Abilities.CardAbilityDatas
                         .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OverflowGoo);
                     if (overflowGooAbility != null)
                     {
@@ -782,11 +782,11 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.Clear();
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalUnitCardInHand.RemoveAll(x =>
-                    x.Prototype.Abilities.CardAbilityData.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
+                    x.Prototype.Abilities.CardAbilityDatas.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
                 _normalItemCardInHand.Clear();
                 _normalItemCardInHand.AddRange(GetItemCardsInHand());
                 _normalItemCardInHand.RemoveAll(x =>
-                    x.InstanceCard.Abilities.CardAbilityData.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
+                    x.InstanceCard.Abilities.CardAbilityDatas.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
             }
 
             await LetsThink(cancellationToken);
@@ -828,7 +828,7 @@ namespace Loom.ZombieBattleground
         {
             if (boardUnitModel.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilityData ability in boardUnitModel.InstanceCard.Abilities.CardAbilityData)
+                foreach (CardAbilityData ability in boardUnitModel.InstanceCard.Abilities.CardAbilityDatas)
                 {
                     if (ability.Ability == Enumerators.AbilityType.Damage)
                     {
@@ -858,9 +858,9 @@ namespace Loom.ZombieBattleground
 
                 bool needTargetForAbility = false;
 
-                if (boardUnitModel.Card.InstanceCard.Abilities != null && boardUnitModel.Card.InstanceCard.Abilities.CardAbilityData.Count > 0)
+                if (boardUnitModel.Card.InstanceCard.Abilities != null && boardUnitModel.Card.InstanceCard.Abilities.CardAbilityDatas.Count > 0)
                 {
-                    List<CardAbilityData> abilitiesWithTargets = boardUnitModel.Card.InstanceCard.Abilities.CardAbilityData.FindAll(x => x.Targets.Count > 0);
+                    List<CardAbilityData> abilitiesWithTargets = boardUnitModel.Card.InstanceCard.Abilities.CardAbilityDatas.FindAll(x => x.Targets.Count > 0);
 
                     if (abilitiesWithTargets.Count > 0)
                     {
@@ -1074,7 +1074,7 @@ namespace Loom.ZombieBattleground
             List<CardAbilityData> abilitiesWithTarget = new List<CardAbilityData>();
 
             bool needsToSelectTarget = false;
-            foreach (CardAbilityData ability in instance.Abilities.CardAbilityData)
+            foreach (CardAbilityData ability in instance.Abilities.CardAbilityDatas)
             {
                 foreach (CardAbilityData.TargetInfo item in ability.Targets)
                 {

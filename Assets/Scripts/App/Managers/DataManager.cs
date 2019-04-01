@@ -299,34 +299,63 @@ namespace Loom.ZombieBattleground
             _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
         }
 
+        public class CardLib
+        {
+            [JsonProperty]
+            public List<Data.Faction> Factions { get; set; }
+
+
+            public List<Card> GetCards()
+            {
+                List<Card> cards = new List<Card>();
+
+                foreach (var faction in Factions)
+                {
+                    foreach (var card in faction.Cards)
+                    {
+                        cards.Add(card);
+                    }
+                }
+
+                return cards;
+            }
+        }
+
         private async Task LoadCachedData(Enumerators.CacheDataType type)
         {
             switch (type)
             {
                 case Enumerators.CacheDataType.CARDS_LIBRARY_DATA:
-                    string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
 
-                    List<Card> cardList;
-                    if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
-                    {
-                        Log.Warn("===== Loading Card Library from persistent data ===== ");
-                        cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
-                            cardList = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
-                        }
-                        catch(Exception)
-                        {
-                            ShowLoadDataFailMessage("Issue with Loading Card Library Data");
-                            throw;
-                        }
-                    }
-                    CachedCardsLibraryData = new CardsLibraryData(cardList);
+                    string data = Resources.Load<TextAsset>("card_library_data").text;
 
+                    CachedCardsLibraryData = new CardsLibraryData(DeserializeFromJson<CardLib>(data).GetCards());
+
+                    /*
+                        string cardsLibraryFilePath = GetPersistentDataPath(_cacheDataFileNames[type]);
+
+                        List<Card> cardList;
+                        if (ConfigData.SkipBackendCardData && File.Exists(cardsLibraryFilePath))
+                        {
+                            Log.Warn("===== Loading Card Library from persistent data ===== ");
+                            cardList = DeserializeObjectFromPersistentData<CardList>(cardsLibraryFilePath).Cards;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                ListCardLibraryResponse listCardLibraryResponse = await _backendFacade.GetCardLibrary();
+                                cardList = listCardLibraryResponse.Cards.Select(card => card.FromProtobuf()).ToList();
+                            }
+                            catch(Exception)
+                            {
+                                ShowLoadDataFailMessage("Issue with Loading Card Library Data");
+                                throw;
+                            }
+                        }
+                        CachedCardsLibraryData = new CardsLibraryData(cardList);
+
+                         */
                     break;
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
@@ -380,7 +409,7 @@ namespace Loom.ZombieBattleground
                                     new List<Deck>()
                             );
 
-                       await ProcessCardsInDeckValidation();
+                        await ProcessCardsInDeckValidation();
                     }
                     catch (Exception e)
                     {

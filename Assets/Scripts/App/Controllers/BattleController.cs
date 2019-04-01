@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
 
             attackingUnitModel.InvokeUnitAttacked(attackedPlayer, damageAttacking, true);
 
-            _abilitiesController.UnitAttacked(attackingUnitModel, attackedPlayer);
+            _abilitiesController.UnitAttacked(attackingUnitModel, attackedPlayer, damageAttacking);
 
             _vfxController.SpawnGotDamageEffect(attackedPlayer, -damageAttacking);
 
@@ -93,12 +93,7 @@ namespace Loom.ZombieBattleground
 
             if (attackingUnitModel != null && attackedUnitModel != null)
             {
-                int additionalDamageAttacker = 0;
-                //    _abilitiesController.GetStatModificatorByAbility(attackingUnitModel, attackedUnitModel, true);
-                int additionalDamageAttacked = 0;
-                //    _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
-
-                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker;
+                damageAttacking = attackingUnitModel.CurrentDamage;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
@@ -121,13 +116,13 @@ namespace Loom.ZombieBattleground
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
 
-                _abilitiesController.UnitAttacked(attackingUnitModel, attackedUnitModel);
+                _abilitiesController.UnitAttacked(attackingUnitModel, attackedUnitModel, damageAttacking);
 
                 if (hasCounterAttack)
                 {
                     if (attackedUnitModel.CurrentDefense > 0 && attackingUnitModel.AttackAsFirst || !attackingUnitModel.AttackAsFirst)
                     {
-                        damageAttacked = attackedUnitModel.CurrentDamage + additionalDamageAttacked;
+                        damageAttacked = attackedUnitModel.CurrentDamage;
 
                         if (damageAttacked > 0 && attackingUnitModel.HasBuffShield)
                         {
@@ -148,7 +143,7 @@ namespace Loom.ZombieBattleground
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
 
-                        _abilitiesController.UnitAttacked(attackedUnitModel, attackingUnitModel);
+                        _abilitiesController.UnitAttacked(attackedUnitModel, attackingUnitModel, damageAttacked);
                     }
                 }
 

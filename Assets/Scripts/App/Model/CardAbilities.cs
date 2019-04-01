@@ -1,24 +1,29 @@
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
     public class CardAbilities
     {
-        public IReadOnlyList<GenericParameter> DefaultParameters { get; set; }
-        public IReadOnlyList<CardAbilityData> CardAbilityData { get; set; }
+        [JsonProperty]
+        public List<GenericParameter> DefaultParameters { get; protected set; }
 
+        [JsonProperty]
+        public List<CardAbilityData> CardAbilityDatas { get; protected set; }
+
+        [JsonConstructor]
         public CardAbilities(
-            IReadOnlyList<GenericParameter> defaultParameters,
-            IReadOnlyList<CardAbilityData> cardAbilityData)
+            List<GenericParameter> defaultParameters,
+            List<CardAbilityData> cardAbilityData)
         {
             DefaultParameters = defaultParameters;
-            CardAbilityData = cardAbilityData;
+            CardAbilityDatas = cardAbilityData;
         }
 
         public CardAbilities(CardAbilities source)
         {
             DefaultParameters = source.DefaultParameters;
-            CardAbilityData = source.CardAbilityData;
+            CardAbilityDatas = source.CardAbilityDatas;
         }
     }
 }

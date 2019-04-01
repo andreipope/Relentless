@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             {
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
-                foreach (CardAbilityData abilityInfo in _selectedCard.Abilities.CardAbilityData)
+                foreach (CardAbilityData abilityInfo in _selectedCard.Abilities.CardAbilityDatas)
                 {
                     DrawAbilityConfigurtion(abilityInfo);
 

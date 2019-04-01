@@ -124,24 +124,20 @@ namespace Loom.ZombieBattleground
             };
         }
 
-        public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null, bool ignoreEntry = false)
+        public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null)
         {
-            ICardAbility ability;
-            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityData)
+            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityDatas)
             {
-                if (cardAbilityData.Ability == Enumerators.AbilityType.Undefined)
-                    continue;
-
-                foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
+                if(cardAbilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry))
                 {
-                    ability = InternalTools.GetInstance<CardAbility>($"{cardAbilityData.Ability.ToString()}Ability");
-                    ability.Init(boardUnitModel, cardAbilityData, FilterTargets(boardUnitModel, cardAbilityData,
-                                                                            GetTargets(boardUnitModel, cardAbilityData, targets)));
-
-                    _activeAbilities[trigger].Add(ability);
-
-                    CheckOnEntryAbility(ability, cardAbilityData);
+                    targets = FilterTargets(boardUnitModel, cardAbilityData, GetTargets(boardUnitModel, cardAbilityData, targets));
                 }
+                else if(targets == null)
+                {
+                    targets = new List<BoardObject>();
+                }
+
+                InitializeAbility(boardUnitModel, cardAbilityData, targets);
             }
         }
 
@@ -158,12 +154,51 @@ namespace Loom.ZombieBattleground
 
         public void TakeAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
         {
+            InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>() { boardUnitModel });
+        }
+
+        public void ReactivateAbilitiesOnUnit(BoardUnitModel boardUnitModel)
+        {
+            foreach (CardAbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilityDatas)
+            {
+                InitializeAbility(boardUnitModel, cardAbilityData, new List<BoardObject>(), true);
+            }
+        }
+
+        private void InitializeAbility(BoardUnitModel boardUnitModel,
+                                       CardAbilityData cardAbilityData,
+                                       List<BoardObject> targets,
+                                       bool ignoreEntry = false)
+        {
+            if (cardAbilityData.Ability == Enumerators.AbilityType.Undefined)
+                return;
+
             ICardAbility ability;
+            ICardAbilityView abilityView = null;
+
+            string abilityViewClassName, abilityClassName;
 
             foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
             {
-                ability = InternalTools.GetInstance<CardAbility>($"{cardAbilityData.Ability.ToString()}Ability");
-                ability.Init(boardUnitModel, cardAbilityData, new List<BoardObject>() { boardUnitModel });
+                if (ignoreEntry &&
+                    (trigger == Enumerators.AbilityTrigger.Entry ||
+                    trigger == Enumerators.AbilityTrigger.EntryWithSelection))
+                    continue;
+
+                abilityClassName = $"{cardAbilityData.Ability.ToString()}Ability";
+
+                if (!InternalTools.IsTypeExists<CardAbility>(abilityClassName))
+                    continue;
+
+                abilityViewClassName = $"{abilityClassName}View";
+
+                if (InternalTools.IsTypeExists<CardAbilityView>(abilityViewClassName))
+                {
+                    abilityView = InternalTools.GetInstance<CardAbilityView>(abilityViewClassName);
+                }
+
+                ability = InternalTools.GetInstance<CardAbility>(abilityClassName);
+                ability.Init(boardUnitModel, cardAbilityData, targets, abilityView);
 
                 _activeAbilities[trigger].Add(ability);
 
@@ -178,7 +213,7 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public void UnitAttacked(BoardUnitModel attacker, BoardObject targetAttacked)
+        public void UnitAttacked(BoardUnitModel attacker, BoardObject targetAttacked, int damage)
         {
             foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Attack])
             {
@@ -189,7 +224,7 @@ namespace Loom.ZombieBattleground
                     {
                         targetAttacked
                     }, true)));
-                    ability.DoAction();
+                    ability.DoAction(new List<GenericParameter>() { new GenericParameter(Enumerators.AbilityParameter.Damage, damage) });
                 }
             }
         }
@@ -270,7 +305,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasEntryWithSelection(BoardUnitModel unitModel)
         {
-            foreach (CardAbilityData data in unitModel.Card.Prototype.Abilities.CardAbilityData)
+            foreach (CardAbilityData data in unitModel.Card.Prototype.Abilities.CardAbilityDatas)
             {
                 foreach (Enumerators.AbilityTrigger trigger in data.Triggers)
                 {
@@ -335,8 +370,29 @@ namespace Loom.ZombieBattleground
 
             return targets;
         }
-        public List<BoardObject> FilterTargets(BoardUnitModel modelCaller, CardAbilityData cardAbilityData, List<BoardObject> targets)
+        public List<BoardObject> FilterTargets(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData, List<BoardObject> targets)
         {
+            List<BoardObject> filteredTargets = new List<BoardObject>();
+            if (HasParameter(cardAbilityData.GenericParameters, Enumerators.AbilityParameter.TargetFaction))
+            {
+                foreach (BoardObject target in targets)
+                {
+                    switch (target)
+                    {
+                        case BoardUnitModel unitModel:
+                            if (unitModel.Faction == GetParameterValue<Enumerators.Faction>(cardAbilityData.GenericParameters,
+                                                        Enumerators.AbilityParameter.TargetFaction))
+                            {
+                                filteredTargets.Add(target);
+                            }
+                            break;
+                        case Player player:
+                            filteredTargets.Add(target);
+                            break;
+                    }
+                }
+            }
+
             return targets;
         }
 

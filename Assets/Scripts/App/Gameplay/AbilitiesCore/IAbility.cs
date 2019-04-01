@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Helpers;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,17 +15,21 @@ namespace Loom.ZombieBattleground
 
         CardAbilityData CardAbilityData { get; }
 
+        ICardAbilityView AbilityView { get; }
+
         void Init(
             BoardUnitModel boardUnitModel,
             CardAbilityData cardAbilityData,
-            IReadOnlyList<BoardObject> targets = null);
+            IReadOnlyList<BoardObject> targets = null,
+            ICardAbilityView abilityView = null);
         void DoAction();
+        void DoAction(IReadOnlyList<GenericParameter> genericParameters);
         void ChangePlayerOwner(Player player);
         void InsertTargets(IReadOnlyList<BoardObject> targets);
         void Dispose();
     }
 
-    public abstract class CardAbility : ICardAbility
+    public class CardAbility : ICardAbility
     {
         protected IReadOnlyList<BoardObject> Targets { get; private set; }
 
@@ -35,32 +40,41 @@ namespace Loom.ZombieBattleground
         protected readonly AbilitiesController AbilitiesController;
 
         protected readonly BattlegroundController BattlegroundController;
-        
+
+        protected readonly BattleController BattleController;
+
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
 
         public CardAbilityData CardAbilityData { get; private set; }
 
+        public ICardAbilityView AbilityView { get; private set; }
+
         public CardAbility()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            BattleController = GameplayManager.GetController<BattleController>();
         }
 
-        public abstract void DoAction();
+        public virtual void DoAction() { }
+
+        public virtual void DoAction(IReadOnlyList<GenericParameter> genericParameters) { }
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
             CardAbilityData cardAbilityData,
-            IReadOnlyList<BoardObject> targets = null)
+            IReadOnlyList<BoardObject> targets = null,
+            ICardAbilityView abilityView = null)
         {
             UnitModelOwner = boardUnitModel;
             PlayerOwner = boardUnitModel.OwnerPlayer;
             CardAbilityData = cardAbilityData;
             GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
+            AbilityView = abilityView;
         }
 
         public void ChangePlayerOwner(Player player)

@@ -8,8 +8,6 @@ namespace Loom.ZombieBattleground.Data
 {
     public class Card : ICard
     {
-        private readonly CardAbilities _abilities;
-
         [JsonProperty]
         public long MouldId { get; set; }
 
@@ -50,7 +48,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.CardType Type { get; protected set; }
 
         [JsonProperty]
-        public CardAbilities Abilities => _abilities;
+        public CardAbilities Abilities { get; protected set; }
 
         [JsonProperty]
         public PictureTransform PictureTransform { get; protected set; }
@@ -60,8 +58,6 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonProperty]
         public bool Hidden { get; protected set; }
-
-        CardAbilities IReadOnlyCard.Abilities => _abilities;
 
         [JsonConstructor]
         public Card(
@@ -97,7 +93,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = kind;
             Rank = rank;
             Type = type;
-            _abilities = abilities ?? new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>());
+            Abilities = abilities ?? new CardAbilities(new List<GenericParameter>(), new List<CardAbilityData>());
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
@@ -118,7 +114,7 @@ namespace Loom.ZombieBattleground.Data
             Kind = sourceCard.Kind;
             Rank = sourceCard.Rank;
             Type = sourceCard.Type;
-            _abilities = sourceCard.Abilities;
+            Abilities = sourceCard.Abilities;
             PictureTransform = new PictureTransform(sourceCard.PictureTransform);
             UniqueAnimation = sourceCard.UniqueAnimation;
             Hidden = sourceCard.Hidden;

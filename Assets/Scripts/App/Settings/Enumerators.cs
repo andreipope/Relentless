@@ -72,7 +72,8 @@ namespace Loom.ZombieBattleground.Common
             AddCard,
             PlaceCopies,
             ShuffleCard,
-            ReplaceOnStrongerOnes
+            ReplaceOnStrongerOnes,
+            AdditionalDamage
         }
 
         public enum AbilityParameter
@@ -83,6 +84,12 @@ namespace Loom.ZombieBattleground.Common
             Attack,
             Delay,
             Damage,
+
+            Stat,
+            TargetStat,
+
+            Faction,
+            TargetFaction,
         }
 
         public enum ActionType

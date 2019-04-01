@@ -428,7 +428,7 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (CardAbilityData abil in unit.Model.Card.InstanceCard.Abilities.CardAbilityData)
+                foreach (CardAbilityData abil in unit.Model.Card.InstanceCard.Abilities.CardAbilityDatas)
                 {
                     if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
                         continue;
@@ -577,7 +577,7 @@ namespace Loom.ZombieBattleground
 
             if (boardCardView.Model.Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities.CardAbilityData)
+                foreach (CardAbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities.CardAbilityDatas)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
                     if (gameMechanicInfo != null)

@@ -1,0 +1,63 @@
+{
+  "factions": [
+    {
+      "name": "Fire",
+      "cards": [
+        {
+          "MouldId": 10,
+          "kind": "CREATURE",
+          "name": "Pyromaz",
+          "cost": 1,
+          "description": "<b>Attack:</b> +1 damage to Toxic zombies",
+          "flavorText": "Really into that old Prodigy song... Firestarter...",
+          "picture": "010",
+          "frame": "frame_fire_minion",
+          "damage": 1,
+          "defense": 1,
+          "type": "WALKER",
+          "rank": "MINION",
+          "pictureTransform": {
+            "position": {
+              "x": -0.05,
+              "y": 0,
+              "z": 0
+            },
+            "scale": {
+              "x": 0.6,
+              "y": 0.6,
+              "z": 0.6
+            }
+          },
+          "abilities": {
+            "DefaultParameters": [],
+            "CardAbilityDatas": [
+              {
+                "Ability": "AdditionalDamage",
+                "GameMechanicDescription": "Attack",
+                "Triggers": [
+                  "Attack"
+                ],
+                "Targets": [
+                  {
+                    "Target": "OpponentCard",
+                    "TargetFilter": "Target"
+                  }
+                ],
+                "GenericParameters": [
+                  {
+                    "AbilityParameter": "Damage",
+                    "Value": 1
+                  },
+                  {
+                    "AbilityParameter": "TargetFaction",
+                    "Value": "Toxic"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

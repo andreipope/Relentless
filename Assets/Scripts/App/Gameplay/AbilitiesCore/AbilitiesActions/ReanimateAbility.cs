@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
                         if (GameplayManager.IsLocalPlayerTurn())
                         {
-                         //   AbilitiesController.InitializeAbilities(reanimatedUnit.Model, null, true);
+                            AbilitiesController.ReactivateAbilitiesOnUnit(reanimatedUnit.Model);
                         }
                         break;
                 }

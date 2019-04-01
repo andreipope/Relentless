@@ -957,7 +957,7 @@ namespace Loom.ZombieBattleground
 
             if (Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilityData ability in Card.InstanceCard.Abilities.CardAbilityData)
+                foreach (CardAbilityData ability in Card.InstanceCard.Abilities.CardAbilityDatas)
                 {
                     TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(ability.GameMechanicDescription);
 

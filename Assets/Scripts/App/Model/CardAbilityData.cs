@@ -1,24 +1,33 @@
 using Loom.ZombieBattleground.Common;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground
 {
     public class CardAbilityData
     {
-        public Enumerators.AbilityType Ability;
-        public Enumerators.GameMechanicDescription GameMechanicDescription;
+        [JsonProperty]
+        public Enumerators.AbilityType Ability { get; protected set; }
 
+        [JsonProperty]
+        public Enumerators.GameMechanicDescription GameMechanicDescription { get; protected set; }
 
-        public IReadOnlyList<Enumerators.AbilityTrigger> Triggers;
-        public IReadOnlyList<TargetInfo> Targets;
-        public IReadOnlyList<GenericParameter> GenericParameters;
+        [JsonProperty]
+        public List<Enumerators.AbilityTrigger> Triggers { get; protected set; }
 
+        [JsonProperty]
+        public List<TargetInfo> Targets { get; protected set; }
+
+        [JsonProperty]
+        public List<GenericParameter> GenericParameters { get; protected set; }
+
+        [JsonConstructor]
         public CardAbilityData(
             Enumerators.AbilityType ability,
             Enumerators.GameMechanicDescription gameMechanicDescription,
-            IReadOnlyList<Enumerators.AbilityTrigger> triggers,
-            IReadOnlyList<TargetInfo> targets,
-            IReadOnlyList<GenericParameter> genericParameters)
+            List<Enumerators.AbilityTrigger> triggers,
+            List<TargetInfo> targets,
+            List<GenericParameter> genericParameters)
         {
             Ability = ability;
             GameMechanicDescription = gameMechanicDescription;
@@ -38,9 +47,13 @@ namespace Loom.ZombieBattleground
 
         public class TargetInfo
         {
-            public Enumerators.Target Target;
-            public Enumerators.TargetFilter TargetFilter;
+            [JsonProperty]
+            public Enumerators.Target Target { get; protected set; }
 
+            [JsonProperty]
+            public Enumerators.TargetFilter TargetFilter { get; protected set; }
+
+            [JsonConstructor]
             public TargetInfo(
                 Enumerators.Target target,
                 Enumerators.TargetFilter targetFilter)

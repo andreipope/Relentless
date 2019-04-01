@@ -179,6 +179,11 @@ namespace Loom.ZombieBattleground.Helpers
         {
             return (T)Activator.CreateInstance(Type.GetType($"{typeof(T).Namespace}.{className}"));
         }
+
+        public static bool IsTypeExists<T>(string className)
+        {
+            return (typeof(T).Assembly.GetTypes().Where(type => type.Name == className).Count() > 0);
+        }
     }
 
     public static class Extensions
