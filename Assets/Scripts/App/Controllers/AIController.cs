@@ -1134,7 +1134,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.AbilityType.ChangeStat:
                         AddRandomTargetUnit(true, ref target);
                         break;
-                    case Enumerators.AbilityType.Stun:
+                    case Enumerators.AbilityType.Freeze:
                         CheckAndAddTargets(ability, ref target);
                         break;
                     case Enumerators.AbilityType.Summon:

@@ -1509,13 +1509,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerSlabId, ItemPosition.Start);
                            player.CardPlay(playerVindromId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerVindromId, Enumerators.AbilityType.Stun, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerVindromId, Enumerators.AbilityType.Freeze, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentSlabId, ItemPosition.Start);
                            opponent.CardPlay(opponentVindromId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentVindromId, Enumerators.AbilityType.Stun, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentVindromId, Enumerators.AbilityType.Freeze, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => 
                        {
