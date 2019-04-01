@@ -1,9 +1,5 @@
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,12 +9,15 @@ namespace Loom.ZombieBattleground
 
         Player PlayerOwner { get; }
 
+        CardAbilitiesCombination Combination { get; }
+
         CardAbilityData CardAbilityData { get; }
 
         ICardAbilityView AbilityView { get; }
 
         void Init(
             BoardUnitModel boardUnitModel,
+            CardAbilitiesCombination combination,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
@@ -47,11 +46,15 @@ namespace Loom.ZombieBattleground
 
         protected readonly BoardController BoardController;
 
+        protected readonly ActionsQueueController ActionsQueueController;
+
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
 
         public CardAbilityData CardAbilityData { get; private set; }
+
+        public CardAbilitiesCombination Combination { get; private set; }
 
         public ICardAbilityView AbilityView { get; private set; }
 
@@ -63,6 +66,7 @@ namespace Loom.ZombieBattleground
             BattleController = GameplayManager.GetController<BattleController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
         }
 
         public virtual void DoAction() { }
@@ -71,6 +75,7 @@ namespace Loom.ZombieBattleground
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
+            CardAbilitiesCombination combination,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null)
@@ -81,6 +86,7 @@ namespace Loom.ZombieBattleground
             GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
             AbilityView = abilityView;
+            Combination = combination;
 
             AbilityView?.Init(this);
         }
@@ -98,6 +104,16 @@ namespace Loom.ZombieBattleground
         public void InsertTargets(IReadOnlyList<BoardObject> targets)
         {
             Targets = targets;
+        }
+
+        protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)
+        {
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = actionType,
+                Caller = UnitModelOwner,
+                TargetEffects = targetEffectParams
+            });
         }
     }
 }

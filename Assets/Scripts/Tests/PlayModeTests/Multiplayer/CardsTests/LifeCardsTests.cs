@@ -960,13 +960,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardPlay(opponentIglooId, ItemPosition.Start);
                            opponent.CardPlay(opponentEverlaztingId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentEverlaztingId, Enumerators.AbilityType.ShuffleCard, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentEverlaztingId, Enumerators.AbilityType.CardReturn, new List<ParametrizedAbilityInstanceId>());
                        },
                        player =>
                        {
                            player.CardPlay(playerIglooId, ItemPosition.Start);
                            player.CardPlay(playerEverlaztingId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerEverlaztingId, Enumerators.AbilityType.ShuffleCard, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerEverlaztingId, Enumerators.AbilityType.CardReturn, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {

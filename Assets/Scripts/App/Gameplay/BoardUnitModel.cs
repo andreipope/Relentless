@@ -783,6 +783,7 @@ namespace Loom.ZombieBattleground
                             }
 
                             _abilitiesController.UnitBeganAttack(this);
+                            _abilitiesController.UnitBeingBeAttacked(targetCardModel);
 
                             await Task.Delay(TimeSpan.FromSeconds(0.5));
 
