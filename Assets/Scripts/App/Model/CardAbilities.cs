@@ -6,24 +6,41 @@ namespace Loom.ZombieBattleground
     public class CardAbilities
     {
         [JsonProperty]
-        public List<GenericParameter> DefaultParameters { get; protected set; }
-
-        [JsonProperty]
-        public List<CardAbilityData> CardAbilityDatas { get; protected set; }
+        public List<CardAbilitiesCombination> Combinations { get; protected set; }
 
         [JsonConstructor]
-        public CardAbilities(
-            List<GenericParameter> defaultParameters,
-            List<CardAbilityData> cardAbilityData)
+        public CardAbilities(List<CardAbilitiesCombination> cardAbilitiesCombinations)
         {
-            DefaultParameters = defaultParameters;
-            CardAbilityDatas = cardAbilityData;
+            Combinations = cardAbilitiesCombinations;
         }
 
         public CardAbilities(CardAbilities source)
         {
+            Combinations = source.Combinations;
+        }
+    }
+
+    public class CardAbilitiesCombination
+    {
+        [JsonProperty]
+        public List<GenericParameter> DefaultParameters { get; protected set; }
+
+        [JsonProperty]
+        public List<CardAbilityData> CardAbilities { get; protected set; }
+
+        [JsonConstructor]
+        public CardAbilitiesCombination(
+            List<GenericParameter> defaultParameters,
+            List<CardAbilityData> cardAbilityData)
+        {
+            DefaultParameters = defaultParameters;
+            CardAbilities = cardAbilityData;
+        }
+
+        public CardAbilitiesCombination(CardAbilitiesCombination source)
+        {
             DefaultParameters = source.DefaultParameters;
-            CardAbilityDatas = source.CardAbilityDatas;
+            CardAbilities = source.CardAbilities;
         }
     }
 }
