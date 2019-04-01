@@ -570,7 +570,6 @@ namespace Loom.ZombieBattleground
 
             if (Player.IsLocalPlayer)
             {
-                //_battlegroundController.PlayerHandCards.Remove(card);
                 _battlegroundController.RegisterBoardUnitView(boardUnitView, _gameplayManager.CurrentPlayer);
             }
             else
