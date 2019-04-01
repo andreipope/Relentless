@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.15";
+        internal const string CurrentVersionBase = "0.1.16";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage = true;
+        internal static readonly bool EnableShopPage = false;
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
