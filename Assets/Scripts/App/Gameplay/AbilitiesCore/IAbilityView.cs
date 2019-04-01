@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         protected readonly BoardController BoardController;
 
+        protected readonly BattlegroundController BattlegroundController;
+
         public event Action VFXBegan;
 
         public event Action VFXEnded;
@@ -35,6 +37,7 @@ namespace Loom.ZombieBattleground
             GameplayManager = GameClient.Get<IGameplayManager>();
             VfxController = GameplayManager.GetController<VfxController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
         }
 
         public void Init(ICardAbility cardAbility)
