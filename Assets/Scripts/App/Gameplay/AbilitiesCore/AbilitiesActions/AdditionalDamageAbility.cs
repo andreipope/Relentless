@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
                             int value = AbilitiesController.GetParameterValue<int>(GenericParameters,
                                                                           Common.Enumerators.AbilityParameter.Damage);
 
-                            boardUnitModel.CurrentDamage -= value;
+                            boardUnitModel.CurrentDefense -= value;
                         }
                         break;
                 }

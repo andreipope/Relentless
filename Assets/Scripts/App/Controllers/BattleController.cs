@@ -142,8 +142,6 @@ namespace Loom.ZombieBattleground
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
-
-                        _abilitiesController.UnitAttacked(attackedUnitModel, attackingUnitModel, damageAttacked);
                     }
                 }
 

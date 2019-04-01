@@ -406,7 +406,14 @@ namespace Loom.ZombieBattleground
 
         public T GetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
         {
-            return (T)genericParameters.FirstOrDefault(param => param.AbilityParameter == abilityParameter).Value;
+            GenericParameter parameter = genericParameters.FirstOrDefault(param => param.AbilityParameter == abilityParameter);
+
+            if(typeof(T).IsEnum && parameter.Value != null && parameter.Value is string value)
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+
+            return (T)Convert.ChangeType(parameter.Value, typeof(T));
         }
 
         public bool HasParameter(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
