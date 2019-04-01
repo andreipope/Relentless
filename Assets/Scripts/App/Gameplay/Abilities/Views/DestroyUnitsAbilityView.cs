@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private ICameraManager _cameraManager;
 
-        private List<BoardUnitModel> _unitsViews;
+        private List<CardModel> _unitsViews;
 
         #region BulldozerFields
 
@@ -29,12 +29,12 @@ namespace Loom.ZombieBattleground
 
             _cameraManager = GameClient.Get<ICameraManager>();
 
-            _unitsViews = new List<BoardUnitModel>();
+            _unitsViews = new List<CardModel>();
         }
 
         protected override void OnAbilityAction(object info = null)
         {
-            _unitsViews = (List<BoardUnitModel>)info;
+            _unitsViews = (List<CardModel>)info;
 
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;

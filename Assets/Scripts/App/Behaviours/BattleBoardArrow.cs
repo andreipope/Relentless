@@ -6,11 +6,11 @@ namespace Loom.ZombieBattleground
 {
     public class BattleBoardArrow : BoardArrow
     {
-        public UniqueList<BoardObject> IgnoreBoardObjectsList;
+        public UniqueList<IBoardObject> IgnoreBoardObjectsList;
 
-        public IReadOnlyList<BoardUnitModel> BoardCards;
+        public IReadOnlyList<CardModel> BoardCards;
 
-        public BoardUnitModel Owner;
+        public CardModel Owner;
 
         public bool IgnoreHeavy;
 
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
             StartedDrag = false;
 
-            BoardObject target = null;
+            IBoardObject target = null;
 
             if (SelectedCard != null)
             {

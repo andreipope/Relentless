@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
             _unitDeathAnimations.Clear();
         }
 
-        public void PlayAttackVfx(BoardUnitModel model, Vector3 target)
+        public void PlayAttackVfx(CardModel model, Vector3 target)
         {
             Enumerators.CardType type = model.Card.Prototype.Type;
             int damage = model.CurrentDamage;
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case Player player:
@@ -251,7 +251,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     castVfxPosition = unit.Transform.position;
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 default:
@@ -299,7 +299,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     castVfxPosition = unit.Transform.position;
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case HandBoardCard cardInHand:
@@ -345,7 +345,7 @@ namespace Loom.ZombieBattleground
                 case BoardUnitView unit:
                     target = unit.Transform;
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     target = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
                     break;
                 case Player _:

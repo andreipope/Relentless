@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void AttackPlayerByUnit(BoardUnitModel attackingUnitModel, Player attackedPlayer)
+        public void AttackPlayerByUnit(CardModel attackingUnitModel, Player attackedPlayer)
         {
             int damageAttacking = attackingUnitModel.CurrentDamage;
 
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(CardModel attackingUnitModel, CardModel attackedUnitModel, bool hasCounterAttack = true)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, BoardUnitModel attackedUnitModel, int modifier, int damageOverride = -1)
+        public void AttackUnitBySkill(Player attackingPlayer, BoardSkill skill, CardModel attackedUnitModel, int modifier, int damageOverride = -1)
         {
             if (attackedUnitModel != null)
             {
@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, BoardUnitModel healedCreature)
+        public void HealUnitBySkill(Player healingPlayer, BoardSkill skill, CardModel healedCreature)
         {
             if (healedCreature != null)
             {
@@ -236,7 +236,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void AttackUnitByAbility(
-            BoardObject attacker, AbilityData ability, BoardUnitModel attackedUnitModel, int damageOverride = -1)
+            IBoardObject attacker, AbilityData ability, CardModel attackedUnitModel, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
@@ -250,7 +250,7 @@ namespace Loom.ZombieBattleground
 
                 switch (attacker)
                 {
-                    case BoardUnitModel model:
+                    case CardModel model:
                         attackedUnitModel.LastAttackingSetType = model.Card.Prototype.Faction;
                         break;
                     default:
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackPlayerByAbility(BoardObject attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
+        public void AttackPlayerByAbility(IBoardObject attacker, AbilityData ability, Player attackedPlayer, int damageOverride = -1)
         {
             int damage = damageOverride != -1 ? damageOverride : ability.Value;
 
@@ -279,7 +279,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealPlayerByAbility(BoardObject healer, AbilityData ability, Player healedPlayer, int value = -1)
+        public void HealPlayerByAbility(IBoardObject healer, AbilityData ability, Player healedPlayer, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -296,7 +296,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HealUnitByAbility(BoardObject healer, AbilityData ability, BoardUnitModel healedCreature, int value = -1)
+        public void HealUnitByAbility(IBoardObject healer, AbilityData ability, CardModel healedCreature, int value = -1)
         {
             int healValue = ability.Value;
 
@@ -313,7 +313,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
+        public void CheckOnKillEnemyZombie(CardModel attackedUnit)
         {
             if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentDefense == 0)
             {

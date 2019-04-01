@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction Faction { get; set; }
 
-        public Enumerators.CardType CardType { get; protected set; }
+        public Enumerators.CardType CardType { get; set; }
 
         public int Cost { get; set; }
 

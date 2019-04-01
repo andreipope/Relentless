@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel unit in GetOpponentOverlord().CardsOnBoard)
+                foreach (CardModel unit in GetOpponentOverlord().CardsOnBoard)
                 {
                     StunUnit(unit);
 
@@ -63,13 +63,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            if (info is BoardUnitModel unit)
+            if (info is CardModel unit)
             {
                 StunUnit(unit);
 
@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void StunUnit(BoardUnitModel unit)
+        private void StunUnit(CardModel unit)
         {
             unit.Stun(Enumerators.StunType.FREEZE, 1);
 

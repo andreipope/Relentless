@@ -1,4 +1,3 @@
-using Loom.ZombieBattleground.View;
 using UnityEngine;
 
 #if UNITY_EDITOR
@@ -7,15 +6,15 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class OpponentHandCard : IBoardUnitView
+    public class OpponentHandCardView : ICardView
     {
         public Transform Transform => GameObject.transform;
 
         public GameObject GameObject { get; }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
-        public OpponentHandCard(GameObject selfObject, BoardUnitModel model)
+        public OpponentHandCardView(GameObject selfObject, CardModel model)
         {
             GameObject = selfObject;
             Model = model;
@@ -32,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"([{nameof(OpponentHandCard)}] {nameof(Model)}: {Model})";
+            return $"([{nameof(OpponentHandCardView)}] {nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         public int Cost { get; }
 
-        private BoardUnitModel _unit;
+        private CardModel _unit;
 
         private bool _isRandom;
 
@@ -70,13 +70,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private BoardUnitModel GetRandomUnit()
+        private CardModel GetRandomUnit()
         {
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            List<CardModel> units = new List<CardModel>();
 
             if (PredefinedTargets != null)
             {
-                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>().ToList();
             }
             else
             {
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
             return null;
         }
 
-        private void DestroyUnit(BoardUnitModel unit)
+        private void DestroyUnit(CardModel unit)
         {
             if (unit != null && unit.Card.InstanceCard.Cost <= Cost)
             {

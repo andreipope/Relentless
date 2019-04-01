@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class ShammannArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
             PlaySound("Shammann");
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as BoardUnitModel);
+            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as CardModel);
 
             const float yOffsetOfCard = -0.75f;
 

@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
             if (info == null)
                 return;
 
-            BoardUnitModel unit = info as BoardUnitModel;
+            CardModel unit = info as CardModel;
 
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;

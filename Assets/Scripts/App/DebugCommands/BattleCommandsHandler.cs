@@ -113,10 +113,10 @@ static class BattleCommandsHandler
             return;
         }
 
-        BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (boardUnitModel != null)
+        CardModel cardModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModel != null)
         {
-            player.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
+            player.PlayerCardsController.AddCardFromDeckToHand(cardModel);
         }
         else
         {
@@ -315,8 +315,8 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
-        _aiController.PlayCardOnBoard(boardUnitModel, true);
+        CardModel cardModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        _aiController.PlayCardOnBoard(cardModel, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -329,12 +329,12 @@ static class BattleCommandsHandler
             return;
         }
 
-        BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
-        if (boardUnitModel != null)
+        CardModel cardModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (cardModel != null)
         {
-            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
-            boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
-            _aiController.PlayCardOnBoard(boardUnitModel, true);
+            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(cardModel);
+            cardModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+            _aiController.PlayCardOnBoard(cardModel, true);
         }
         else
         {
@@ -415,11 +415,11 @@ static class BattleCommandsHandler
     {
         Card prototype = new Card(unit.Model.Card.Prototype);
         WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
-        BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
-        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
+        CardModel cardModel = new CardModel(workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, cardModel);
 
         player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
-        player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+        player.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
         _battlegroundController.RegisterBoardUnitView(newUnit, player);
 
         _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
@@ -517,7 +517,7 @@ static class BattleCommandsHandler
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
             unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
@@ -532,7 +532,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -555,7 +555,7 @@ static class BattleCommandsHandler
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertHealUnityBySkill(unit, playOverlordSkill.Skill);
         }
@@ -565,7 +565,7 @@ static class BattleCommandsHandler
 
     private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
             unit.RevertStun();
@@ -579,7 +579,7 @@ static class BattleCommandsHandler
         {
             player.RevertStun();
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.RevertStun();
         }
@@ -589,7 +589,7 @@ static class BattleCommandsHandler
 
     private static void RevertRabies(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.SetInitialUnitType();
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -602,7 +602,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -612,7 +612,7 @@ static class BattleCommandsHandler
 
     private static void RevertStoneSkin(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
             unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
@@ -632,7 +632,7 @@ static class BattleCommandsHandler
     private static void RevertPush(PlayOverlordSkill playOverlordSkill)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
+        CardModel targetUnit = (CardModel)playOverlordSkill.Targets[0].BoardObject;
 
         BoardCardView card =
             _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
@@ -649,7 +649,7 @@ static class BattleCommandsHandler
 
     private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
@@ -666,7 +666,7 @@ static class BattleCommandsHandler
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is CardModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -679,9 +679,9 @@ static class BattleCommandsHandler
         player.Defense += boardSkill.Skill.Value;
     }
 
-    private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    private static void RevertAttackOnUnitBySkill(CardModel unitModel, BoardSkill boardSkill)
     {
-        BoardUnitModel creature = unitModel;
+        CardModel creature = unitModel;
         creature.CurrentDefense += boardSkill.Skill.Value;
     }
 
@@ -693,7 +693,7 @@ static class BattleCommandsHandler
         player.Defense -= boardSkill.Skill.Value;
     }
 
-    private static void RevertHealUnityBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
+    private static void RevertHealUnityBySkill(CardModel unitModel, BoardSkill boardSkill)
     {
         if (unitModel == null)
             return;

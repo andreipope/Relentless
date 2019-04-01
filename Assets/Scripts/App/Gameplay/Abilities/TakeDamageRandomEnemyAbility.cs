@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction Faction;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             Faction = ability.Faction;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardObject> possibleTargets = new List<BoardObject>();
+            List<IBoardObject> possibleTargets = new List<IBoardObject>();
 
             foreach (Enumerators.Target abilityTarget in AbilityData.Targets)
             {
@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
             int count = Mathf.Max(1, Count);
             while (count > 0 && possibleTargets.Count > 0)
             {   
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
-            foreach (BoardObject target in _targets)
+            foreach (IBoardObject target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 
@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 case Player player:
                     BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, damageOverride);
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, damageOverride);
                     break;
                 default:

@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void DrawCardHandler(BoardUnitModel boardUnitModel)
+            private void DrawCardHandler(CardModel cardModel)
             {
                 /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -225,9 +225,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
+            private void CardPlayedHandler(CardModel cardModel, int position)
             {
-                AddAction(_playerActionFactory.CardPlay(boardUnitModel.InstanceId, position));
+                AddAction(_playerActionFactory.CardPlay(cardModel.InstanceId, position));
             }
 
             private void TurnEndedHandler()
@@ -248,20 +248,20 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(BoardUnitModel attacker, Data.InstanceId instanceId)
+            private void CardAttackedHandler(CardModel attacker, Data.InstanceId instanceId)
             {
                 AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }
 
             private void AbilityUsedHandler(
-                BoardUnitModel boardUnitModel,
+                CardModel cardModel,
                 Enumerators.AbilityType abilityType,
                 List<ParametrizedAbilityBoardObject> targets = null)
             {
-                AddAction(_playerActionFactory.CardAbilityUsed(boardUnitModel.InstanceId, abilityType, targets));
+                AddAction(_playerActionFactory.CardAbilityUsed(cardModel.InstanceId, abilityType, targets));
             }
 
-            private void MulliganHandler(List<BoardUnitModel> cards)
+            private void MulliganHandler(List<CardModel> cards)
             {
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
@@ -271,7 +271,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targets));
             }
 
-            private void RanksUpdatedHandler(BoardUnitModel card, IReadOnlyList<BoardUnitModel> targetUnits)
+            private void RanksUpdatedHandler(CardModel card, IReadOnlyList<CardModel> targetUnits)
             {
                 AddAction(_playerActionFactory.RankBuff(card.InstanceId, targetUnits.Select(unit => unit.Card.InstanceId).ToList()));
             }

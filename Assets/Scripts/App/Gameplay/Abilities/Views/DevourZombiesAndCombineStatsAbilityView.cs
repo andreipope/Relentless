@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
     {
         private BattlegroundController _battlegroundController;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         private string _cardName;
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
         {
             _battlegroundController = GameplayManager.GetController<BattlegroundController>();
 
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
         }
 
         protected override void OnAbilityAction(object info = null)
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                _units = info as List<BoardUnitModel>;
+                _units = info as List<CardModel>;
 
                 Transform container = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path).transform;
 
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                 int random;
                 Transform unitTransform = null;
 
-                foreach (BoardUnitModel unit in _units)
+                foreach (CardModel unit in _units)
                 {
                     if (unit == Ability.AbilityUnitOwner)
                         continue;

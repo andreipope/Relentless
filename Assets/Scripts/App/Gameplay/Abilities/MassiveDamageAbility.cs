@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         public event Action OnUpdateEvent;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
 
         public override void Action(object info = null)
         {
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
 
             Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
@@ -97,14 +97,14 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(_targets);
         }
 
-        public void OneActionCompleted(BoardObject boardObject)
+        public void OneActionCompleted(IBoardObject boardObject)
         {
             switch (boardObject)
             {
                 case Player player:
                     BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
                     break;
                 default:

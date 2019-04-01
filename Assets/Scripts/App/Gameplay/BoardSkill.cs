@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill : OwnableBoardObject, ISkillIdOwner
+    public class BoardSkill : IOwnableBoardObject, ISkillIdOwner
     {
         public event Action<BoardSkill, List<ParametrizedAbilityBoardObject>> SkillUsed;
 
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
-        public override Player OwnerPlayer { get; }
+        public Player OwnerPlayer { get; }
 
         public BoardSkill(GameObject obj, Player player, OverlordSkillData skillInfo, bool isPrimary)
         {
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
-                    BoardObject target = parametrizedAbilityObjects[0].BoardObject;
+                    IBoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
                     Action callback = () =>
                     {
@@ -181,8 +181,8 @@ namespace Loom.ZombieBattleground
                             case Player player:
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
-                            case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                            case CardModel cardModel:
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(cardModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);

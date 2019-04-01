@@ -102,15 +102,15 @@ namespace Editor
                         {
                             EditorGUILayout.BeginHorizontal();
                             {
-                                BoardUnitModel model;
-                                IBoardUnitView view = item as IBoardUnitView;
+                                CardModel model;
+                                ICardView view = item as ICardView;
                                 if (view != null)
                                 {
                                     model = view.Model;
                                 }
                                 else
                                 {
-                                    model = item as BoardUnitModel;
+                                    model = item as CardModel;
                                 }
 
                                 if (model == null)

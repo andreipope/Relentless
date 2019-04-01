@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                BoardUnitModel unit = (BoardUnitModel)info;
+                CardModel unit = (CardModel)info;
 
                 Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
 

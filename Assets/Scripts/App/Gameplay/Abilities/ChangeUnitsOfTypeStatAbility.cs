@@ -46,10 +46,10 @@ namespace Loom.ZombieBattleground
 
         private void Action()
         {
-            IReadOnlyList<BoardUnitModel> unitsOnBoard =
+            IReadOnlyList<CardModel> unitsOnBoard =
                 PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction);
 
-            foreach (BoardUnitModel unit in unitsOnBoard)
+            foreach (CardModel unit in unitsOnBoard)
             {
                 if (unit == AbilityUnitOwner)
                     continue;

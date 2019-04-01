@@ -10,16 +10,13 @@ using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using UnityEngine.Assertions;
-using Random = UnityEngine.Random;
-
 #if UNITY_EDITOR
 using ZombieBattleground.Editor.Runtime;
 #endif
 
 namespace Loom.ZombieBattleground
 {
-    public class Player : BoardObject, IView, IInstanceIdOwner
+    public class Player : IBoardObject, IView, IInstanceIdOwner
     {
         private static readonly ILog Log = Logging.GetLog(nameof(Player));
 
@@ -302,11 +299,11 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> PlayerGooVialsChanged;
 
-        public event Action<BoardUnitModel> DrawCard;
+        public event Action<CardModel> DrawCard;
 
-        public event Action<BoardUnitModel, int> CardPlayed;
+        public event Action<CardModel, int> CardPlayed;
 
-        public event Action<BoardUnitModel, Data.InstanceId> CardAttacked;
+        public event Action<CardModel, Data.InstanceId> CardAttacked;
 
         public event Action LeaveMatch;
 
@@ -366,15 +363,15 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         // TODO: refactor-state: these list are here temporarily and will be removed
-        public IReadOnlyList<BoardUnitModel> CardsInDeck => PlayerCardsController.CardsInDeck;
+        public IReadOnlyList<CardModel> CardsInDeck => PlayerCardsController.CardsInDeck;
 
-        public IReadOnlyList<BoardUnitModel> CardsInGraveyard => PlayerCardsController.CardsInGraveyard;
+        public IReadOnlyList<CardModel> CardsInGraveyard => PlayerCardsController.CardsInGraveyard;
 
-        public IReadOnlyList<BoardUnitModel> CardsInHand => PlayerCardsController.CardsInHand;
+        public IReadOnlyList<CardModel> CardsInHand => PlayerCardsController.CardsInHand;
 
-        public IReadOnlyList<BoardUnitModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
+        public IReadOnlyList<CardModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
 
-        public IReadOnlyList<BoardUnitModel> MulliganCards => PlayerCardsController.MulliganCards;
+        public IReadOnlyList<CardModel> MulliganCards => PlayerCardsController.MulliganCards;
 
         public bool IsStunned { get; private set; }
 
@@ -551,19 +548,19 @@ namespace Loom.ZombieBattleground
             _skillsController.UnBlockSkill(this);
         }
 
-        public void ThrowDrawCardEvent(BoardUnitModel boardUnitModel)
+        public void ThrowDrawCardEvent(CardModel cardModel)
         {
-            DrawCard?.Invoke(boardUnitModel);
+            DrawCard?.Invoke(cardModel);
         }
 
-        public void ThrowPlayCardEvent(BoardUnitModel boardUnitModel, int position)
+        public void ThrowPlayCardEvent(CardModel cardModel, int position)
         {
-            CardPlayed?.Invoke(boardUnitModel, position);
+            CardPlayed?.Invoke(cardModel, position);
         }
 
-        public void ThrowCardAttacked(BoardUnitModel boardUnitModel, Data.InstanceId instanceId)
+        public void ThrowCardAttacked(CardModel cardModel, Data.InstanceId instanceId)
         {
-            CardAttacked?.Invoke(boardUnitModel, instanceId);
+            CardAttacked?.Invoke(cardModel, instanceId);
         }
 
         public void ThrowLeaveMatch()
@@ -578,9 +575,9 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.LeaveMatch);
         }
 
-        private BoardUnitModel GetCardThatNotInDistribution()
+        private CardModel GetCardThatNotInDistribution()
         {
-            List<BoardUnitModel> cards = CardsInDeck.FindAll(x => !MulliganCards.Contains(x)).ToList();
+            List<CardModel> cards = CardsInDeck.FindAll(x => !MulliganCards.Contains(x)).ToList();
 
             return cards[0];
         }

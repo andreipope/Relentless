@@ -1,11 +1,9 @@
-using System;
-using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class UnitBoardCard : BoardCardView
+    public class UnitBoardCardView : BoardCardView
     {
         protected TextMeshPro AttackText;
 
@@ -13,8 +11,8 @@ namespace Loom.ZombieBattleground
 
         protected TextMeshPro DefenseText;
 
-        public UnitBoardCard(GameObject selfObject, BoardUnitModel boardUnitModel)
-            : base(selfObject, boardUnitModel)
+        public UnitBoardCardView(GameObject selfObject, CardModel cardModel)
+            : base(selfObject, cardModel)
         {
             AttackText = selfObject.transform.Find("AttackText").GetComponent<TextMeshPro>();
             DefenseText = selfObject.transform.Find("DeffensText").GetComponent<TextMeshPro>();
@@ -23,7 +21,7 @@ namespace Loom.ZombieBattleground
             DrawStats();
 
             TypeSprite.sprite =
-                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", boardUnitModel.Card.InstanceCard.CardType + "_icon"));
+                LoadObjectsManager.GetObjectByPath<Sprite>(string.Format("Images/IconsSmallUnitTypes/{0}", cardModel.Card.InstanceCard.CardType + "_icon"));
 
             // TODO: refactor-state: unsubscribe
             Model.UnitDamageChanged += InstanceCardOnStatChanged;

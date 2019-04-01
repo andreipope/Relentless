@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public List<BoardUnitModel> Units { get; private set; }
+        public List<CardModel> Units { get; private set; }
 
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            Units = new List<BoardUnitModel>();
+            Units = new List<CardModel>();
             Units.AddRange(GameplayManager.CurrentPlayer.CardsOnBoard);
             Units.AddRange(GameplayManager.OpponentPlayer.CardsOnBoard);
             Units =
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(Units);
         }
 
-        private void ReturnBoardUnitToHand(BoardUnitModel unit)
+        private void ReturnBoardUnitToHand(CardModel unit)
         {
             CardsController.ReturnCardToHand(unit);
         }
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardUnitModel unit in Units)
+            foreach (CardModel unit in Units)
             {
                 ReturnBoardUnitToHand(unit);
             }

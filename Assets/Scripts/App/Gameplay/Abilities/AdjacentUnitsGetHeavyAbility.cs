@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static void TakeHeavyToUnit(BoardUnitModel unit)
+        private static void TakeHeavyToUnit(CardModel unit)
         {
             unit?.SetAsHeavyUnit();
         }

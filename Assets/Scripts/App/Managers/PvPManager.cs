@@ -405,12 +405,12 @@ namespace Loom.ZombieBattleground
 
         private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
         {
-            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
+            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new CardModel(card.FromProtobuf(player))).ToArray());
         }
 
         private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
         {
-            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new BoardUnitModel(card.FromProtobuf(player))).ToArray());
+            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new CardModel(card.FromProtobuf(player))).ToArray());
         }
 
         private async Task LoadInitialGameState()

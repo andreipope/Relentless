@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<BoardUnitModel> _targetUnits;
+        private List<CardModel> _targetUnits;
 
         public DamageTargetAdjustmentsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -54,16 +54,16 @@ namespace Loom.ZombieBattleground
 
             base.Action(info);
 
-            _targetUnits = new List<BoardUnitModel>();
+            _targetUnits = new List<CardModel>();
 
-            BoardUnitModel unit = (BoardUnitModel) info;
+            CardModel unit = (CardModel) info;
 
             Player playerOwner = unit.OwnerPlayer;
 
-            BoardUnitModel leftAdjustment = null, rightAdjustment = null;
+            CardModel leftAdjustment = null, rightAdjustment = null;
 
             int targetIndex = -1;
-            IReadOnlyList<BoardUnitModel> list = null;
+            IReadOnlyList<CardModel> list = null;
             for (int i = 0; i < playerOwner.CardsOnBoard.Count; i++)
             {
                 if (playerOwner.CardsOnBoard[i] == unit)
@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
 
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            foreach (BoardUnitModel unit in _targetUnits)
+            foreach (CardModel unit in _targetUnits)
             {
                 BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
             }

@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private const int CountOfStun = 1;
 
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
         {
             Value = ability.Value;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardObject boardObject in _targets)
+            foreach (IBoardObject boardObject in _targets)
             {
                 switch (boardObject)
                 {
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
                         BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
                         player.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
                         unit.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;

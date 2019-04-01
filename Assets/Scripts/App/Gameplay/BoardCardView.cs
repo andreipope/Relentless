@@ -15,7 +15,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardCardView : IBoardUnitView
+    public abstract class BoardCardView : ICardView
     {
         public int CardsAmountDeckEditing;
 
@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
 
         private bool _hasDestroyed = false;
 
-        public BoardCardView(GameObject selfObject, BoardUnitModel boardUnitModel)
+        public BoardCardView(GameObject selfObject, CardModel cardModel)
         {
             LoadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             SoundManager = GameClient.Get<ISoundManager>();
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
 
             BehaviourHandler.Destroying += DestroyingHandler;
 
-            Model = boardUnitModel;
+            Model = cardModel;
 
             NameText.text = Model.Card.Prototype.Name;
             BodyText.text = Model.Card.Prototype.Description;
@@ -196,7 +196,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject costHighlightObject { get; protected set; }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
         public HandBoardCard HandBoardCard { get; set; }
         

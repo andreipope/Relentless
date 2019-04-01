@@ -45,11 +45,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
+            List<CardModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in adjacent)
+            foreach (CardModel unit in adjacent)
             {
                 if (StatType == Enumerators.Stat.DEFENSE)
                 {

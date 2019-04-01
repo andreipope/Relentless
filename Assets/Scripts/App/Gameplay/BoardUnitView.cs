@@ -14,7 +14,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitView : IFightSequenceHandler, IView, IBoardUnitView
+    public class BoardUnitView : IFightSequenceHandler, ICardView
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitView));
 
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
 
         public BattleBoardArrow FightTargetingArrow => _fightTargetingArrow;
 
-        public BoardUnitView(BoardUnitModel model, Transform parent)
+        public BoardUnitView(CardModel model, Transform parent)
         {
             Model = model;
 
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 #endif
         }
 
-        public BoardUnitModel Model { get; }
+        public CardModel Model { get; }
 
         public Transform Transform => GameObject != null ? GameObject.transform : null;
 
@@ -587,14 +587,14 @@ namespace Loom.ZombieBattleground
                 // FIXME: WTF we have logic based on card name?
                 if (Model.Card.Prototype.Name.Equals("Freezzee"))
                 {
-                    IReadOnlyList<BoardUnitModel> freezzees =
+                    IReadOnlyList<CardModel> freezzees =
                         Model
                             .GetEnemyUnitsList(Model)
                             .FindAll(x => x.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
 
                     if (freezzees.Count > 0)
                     {
-                        foreach (BoardUnitModel unitModel in freezzees)
+                        foreach (CardModel unitModel in freezzees)
                         {
                             unitModel.Stun(Enumerators.StunType.FREEZE, 1);
 
@@ -765,7 +765,7 @@ namespace Loom.ZombieBattleground
             sequence.Play();
         }
 
-        private void UnitSelectedEventHandler(BoardObject boardObject)
+        private void UnitSelectedEventHandler(IBoardObject boardObject)
         {
             if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
                 return;
@@ -895,7 +895,7 @@ namespace Loom.ZombieBattleground
                 );
         }
 
-        public void HandleAttackCard(Action completeCallback, BoardUnitModel targetCard, Action hitCallback, Action attackCompleteCallback)
+        public void HandleAttackCard(Action completeCallback, CardModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
             BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
 

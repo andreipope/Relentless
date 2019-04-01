@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 {
     public class ZVirusArrivalUniqueAnimation : UniqueAnimation
     {
-        public override void Play(BoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public override void Play(IBoardObject boardObject, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             startGeneralArrivalCallback?.Invoke();
 
@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
             const float delayBeforeSpawn = 0.7f;
             const float delayBeforeDestroyVFX = 5f;
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as BoardUnitModel);
+            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as CardModel);
 
             unitView.GameObject.SetActive(false);
 

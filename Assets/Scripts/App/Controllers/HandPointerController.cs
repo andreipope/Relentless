@@ -198,7 +198,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.TutorialObjectOwner.PlayerBattleframe:
                     if (tutorialObjectIdStepOwner != 0)
                     {
-                        BoardUnitModel ownerObjectModel =
+                        CardModel ownerObjectModel =
                             _gameplayManager.CurrentPlayer.CardsOnBoard
                                 .FirstOrDefault(x => String.Equals(x.Card.Prototype.Name, _tutorialManager.GetCardNameByTutorialObjectId(tutorialObjectIdStepOwner), (StringComparison) StringComparison.InvariantCultureIgnoreCase));
                         if (ownerObjectModel == null && additionalObjectIdOwners != null)
@@ -222,7 +222,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                     BoardCardView boardCard = null;
-                    BoardUnitModel boardCardModel = null;
+                    CardModel boardCardModel = null;
                     if (tutorialObjectIdStepOwner != 0)
                     {
                         boardCardModel =
@@ -254,7 +254,7 @@ namespace Loom.ZombieBattleground
             
             if(targetTutorialObjectId != 0)
             {
-                BoardUnitModel targetObjectModel =
+                CardModel targetObjectModel =
                     _gameplayManager.OpponentPlayer.CardsOnBoard
                         .FirstOrDefault(x => String.Equals(x.Card.Prototype.Name, _tutorialManager.GetCardNameByTutorialObjectId(targetTutorialObjectId), StringComparison.InvariantCultureIgnoreCase));
                 if (targetObjectModel == null && additionalObjectIdTargets != null)

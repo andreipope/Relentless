@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground
                 case BoardSkill skill:
                     _leftBlockOverlordSkillElement.Init(skill);
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     switch (unit.Card.Prototype.Kind)
                     {
                         case Enumerators.CardKind.CREATURE:
@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case HandBoardCard card:
-                    _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card, cardPicture: card.BoardUnitModel.CardPicture);
+                    _leftBlockCardUnitElement.Init(card.CardModel.Card, cardPicture: card.CardModel.CardPicture);
                     break;
                 case null:
                     break;
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
                     ActionElement actionElement;
                     switch (targetEffect.Target)
                     {
-                        case BoardUnitModel unit:
+                        case CardModel unit:
                             switch (unit.Card.Prototype.Kind)
                             {
                                 case Enumerators.CardKind.CREATURE:
@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
                             }
                             break;
                         case HandBoardCard card:
-                            if(card.BoardCardView is ItemBoardCard)
+                            if(card.BoardCardView is ItemBoardCardView)
                             {
                                 actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
                             }
@@ -226,8 +226,8 @@ namespace Loom.ZombieBattleground
                                 actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
                             }
 
-                            actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
-                                card.BoardUnitModel.CardPicture);
+                            actionElement.Init(card.CardModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
+                                card.CardModel.CardPicture);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -255,9 +255,9 @@ namespace Loom.ZombieBattleground
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
                     case HandBoardCard card:
-                        _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.BoardUnitModel.CardPicture);
+                        _rightBlockCardUnitElement.Init(card.CardModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.CardModel.CardPicture);
                         break;
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         switch (unit.Card.Prototype.Kind)
                         {
                             case Enumerators.CardKind.CREATURE:
@@ -285,15 +285,15 @@ namespace Loom.ZombieBattleground
         public class PastActionParam
         {
             public Enumerators.ActionType ActionType;
-            public BoardObject Caller;
+            public IBoardObject Caller;
             public List<TargetEffectParam> TargetEffects;
             public bool CheckForCardOwner;
-            public BoardUnitModel Model;
+            public CardModel Model;
         }
 
         public class TargetEffectParam
         {
-            public BoardObject Target;
+            public IBoardObject Target;
             public Enumerators.ActionEffectType ActionEffectType;
             public int Value;
             public bool HasValue;

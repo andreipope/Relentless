@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
 
         public void ActivateAbility(AttackOverlordOutcome outcome)
         {
-            BoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
+            IBoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
             if (boardObject is Player targetOverlord)
             {
                 BattleController.AttackPlayer(targetOverlord, outcome.Damage);

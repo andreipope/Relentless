@@ -165,8 +165,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
-                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
+                CardModel[] cardModels = workingDeck.Select(card => new CardModel(card)).ToArray();
+                player.PlayerCardsController.SetCardsInDeck(cardModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -201,8 +201,8 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    BoardUnitModel[] boardUnitModels = workingCards.Select(card => new BoardUnitModel(card)).ToArray();
-                    player.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels);
+                    CardModel[] cardModels = workingCards.Select(card => new CardModel(card)).ToArray();
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(cardModels);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview((IBoardUnitView) param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((ICardView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()
@@ -543,11 +543,11 @@ namespace Loom.ZombieBattleground
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
-        private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
+        private void ClickedOnBoardObjectEventHandler(IBoardObject boardObject)
         {
             switch (boardObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     if (!unit.IsAttacking)
                     {
                         StopHandTimer();

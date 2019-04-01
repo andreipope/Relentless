@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
-        private List<BoardUnitModel> _targetUnits;
+        private List<CardModel> _targetUnits;
 
         private string _cardName;
 
@@ -24,15 +24,15 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targetUnits = new List<BoardUnitModel>();
+            _targetUnits = new List<CardModel>();
             if(info != null)
             {
-                _targetUnits = (List<BoardUnitModel>)info;
+                _targetUnits = (List<CardModel>)info;
             }
 
             ulong id;
 
-            BoardUnitModel unit = null;
+            CardModel unit = null;
 
             bool isLastUnit = false;
 

@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitKilledUnitHandler(BoardUnitModel unit)
+        protected override void UnitKilledUnitHandler(CardModel unit)
         {
             if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;

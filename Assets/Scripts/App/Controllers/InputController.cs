@@ -29,9 +29,9 @@ namespace Loom.ZombieBattleground
 
         public event Action NoObjectsSelectedEvent;
 
-        public event Action<BoardObject> ClickedOnBoardObjectEvent;
+        public event Action<IBoardObject> ClickedOnBoardObjectEvent;
 
-        public event Action<BoardObject> DragOnBoardObjectEvent;
+        public event Action<IBoardObject> DragOnBoardObjectEvent;
 
         private IGameplayManager _gameplayManager;
 
@@ -369,7 +369,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerClickedHandler()
         {
-            BoardObject boardObject = null;
+            IBoardObject boardObject = null;
 
             if (_selectedUnitsList.Count > 0)
             {
@@ -391,7 +391,7 @@ namespace Loom.ZombieBattleground
 
         private void PointerDragStartedHandler()
         {
-            BoardObject boardObject = null;
+            IBoardObject boardObject = null;
 
             if (_selectedUnitsList.Count > 0)
             {

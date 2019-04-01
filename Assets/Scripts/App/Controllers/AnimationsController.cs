@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
                 2f);
         }
 
-        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCard boardCardView)
+        public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCardView boardCardView)
         {
             _battlegroundController.RegisterBoardUnitView(boardCardView);
 

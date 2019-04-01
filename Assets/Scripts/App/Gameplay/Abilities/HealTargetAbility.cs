@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private Action _vfxAnimationEndedCallback;
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             SubTrigger = ability.SubTrigger;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
 
         private void HealSelectedTarget()
         {
-            BoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit;
+            IBoardObject boardObject = AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit;
 
             Enumerators.ActionType actionType = AffectObjectType == Enumerators.AffectObjectType.Player ?
                                 Enumerators.ActionType.CardAffectingOverlord : Enumerators.ActionType.CardAffectingCard;
@@ -171,11 +171,11 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int value = Value;
-            foreach (BoardObject boardObject in _targets)
+            foreach (IBoardObject boardObject in _targets)
             {
                 switch (boardObject)
                 {
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         value = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
@@ -211,14 +211,14 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void HealTarget(BoardObject boardObject, int value)
+        private void HealTarget(IBoardObject boardObject, int value)
         {
             switch (boardObject)
             {
                 case Player player:
                     BattleController.HealPlayerByAbility(AbilityUnitOwner, AbilityData, player, value);
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
                     break;
                 default:

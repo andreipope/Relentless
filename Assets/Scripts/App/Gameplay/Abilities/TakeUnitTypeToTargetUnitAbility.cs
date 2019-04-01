@@ -31,12 +31,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardUnitModel> allies;
+            List<CardModel> allies;
 
-            BoardUnitModel target = null;
+            CardModel target = null;
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
+                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>().ToList();
 
                 if (allies.Count > 0)
                 {
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnit(CardModel unit)
         {
             switch (UnitType)
             {

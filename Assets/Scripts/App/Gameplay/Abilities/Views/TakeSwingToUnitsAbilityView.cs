@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                foreach (BoardUnitModel unit in Ability.PlayerCallerOfAbility.CardsOnBoard)
+                foreach (CardModel unit in Ability.PlayerCallerOfAbility.CardsOnBoard)
                 {
                     BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
                     Vector3 targetPosition = unitView.Transform.position;
