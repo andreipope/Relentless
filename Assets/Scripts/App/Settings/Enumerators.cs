@@ -17,8 +17,7 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
             AtDefense,
             StatChanged,
-            InHand,
-            Static
+            InHand
         }
 
         public enum Target
@@ -72,7 +71,7 @@ namespace Loom.ZombieBattleground.Common
             PlaceCopies,
             ShuffleCard,
             ReplaceOnStrongerOnes,
-            AdditionalDamage
+            AdditionalStat
         }
 
         public enum AbilityParameter
@@ -83,14 +82,15 @@ namespace Loom.ZombieBattleground.Common
             Attack,
             Delay,
             Damage,
-
             Stat,
             TargetStat,
-
             Faction,
             TargetFaction,
-
-            Turns
+            Turns,
+            Goo,
+            Cost,
+            Type,
+            TargetType
         }
 
         public enum ActionType

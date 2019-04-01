@@ -9,15 +9,34 @@ namespace Loom.ZombieBattleground
 
         event Action VFXEnded;
 
-        void BeginVFX(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null);
+        ICardAbility CardAbility { get; }
+
+        void Init(ICardAbility cardAbility);
+
+        void DoVFXAction(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null);
     }
 
-    public abstract class CardAbilityView : ICardAbilityView
+    public class CardAbilityView : ICardAbilityView
     {
-        public abstract event Action VFXBegan;
+        public event Action VFXBegan;
 
-        public abstract event Action VFXEnded;
+        public event Action VFXEnded;
 
-        public abstract void BeginVFX(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null);
+        public ICardAbility CardAbility { get; protected set; }
+
+        public void Init(ICardAbility cardAbility)
+        {
+            CardAbility = cardAbility;
+        }
+
+        public virtual void DoVFXAction(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null)
+        {
+            VFXBegan?.Invoke();
+        }
+
+        public virtual void EndVFXAction()
+        {
+            VFXEnded?.Invoke();
+        }
     }
 }

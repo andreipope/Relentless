@@ -210,7 +210,34 @@ namespace Loom.ZombieBattleground
 
         public void UnitStatChanged(Enumerators.Stat stat, BoardUnitModel boardUnit, int from, int to)
         {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.StatChanged])
+            {
+                if (ability.UnitModelOwner == boardUnit)
+                {
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                    {
+                        boardUnit
+                    }, true)));
+                    ability.DoAction();
+                }
+            }
+        }
 
+        public void UnitBeganAttack(BoardUnitModel attacker)
+        {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Attack])
+            {
+                if (ability.UnitModelOwner == attacker)
+                {
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                    {
+                        attacker
+                    }, true)));
+                    ability.DoAction();
+                }
+            }
         }
 
         public void UnitAttacked(BoardUnitModel attacker, BoardObject targetAttacked, int damage)
@@ -223,6 +250,38 @@ namespace Loom.ZombieBattleground
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         targetAttacked
+                    }, true)));
+                    ability.DoAction(new List<GenericParameter>() { new GenericParameter(Enumerators.AbilityParameter.Damage, damage) });
+                }
+            }
+        }
+
+        public void UnitKilled(BoardUnitModel attacker, BoardObject targetKilled)
+        {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.KillUnit])
+            {
+                if (ability.UnitModelOwner == attacker)
+                {
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                     {
+                        targetKilled
+                     }, true)));
+                    ability.DoAction();
+                }
+            }
+        }
+
+        public void UnitWasAttacked(BoardUnitModel attacker, BoardObject targetAttacked, int damage)
+        {
+            foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.AtDefense])
+            {
+                if (ability.UnitModelOwner == attacker)
+                {
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData,
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                    {
+                        attacker
                     }, true)));
                     ability.DoAction(new List<GenericParameter>() { new GenericParameter(Enumerators.AbilityParameter.Damage, damage) });
                 }
@@ -373,15 +432,16 @@ namespace Loom.ZombieBattleground
         public List<BoardObject> FilterTargets(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData, List<BoardObject> targets)
         {
             List<BoardObject> filteredTargets = new List<BoardObject>();
-            if (HasParameter(cardAbilityData.GenericParameters, Enumerators.AbilityParameter.TargetFaction))
+            if (TryGetParameterValue(cardAbilityData.GenericParameters,
+                                     Enumerators.AbilityParameter.TargetFaction,
+                                     out Enumerators.Faction value))
             {
                 foreach (BoardObject target in targets)
                 {
                     switch (target)
                     {
                         case BoardUnitModel unitModel:
-                            if (unitModel.Faction == GetParameterValue<Enumerators.Faction>(cardAbilityData.GenericParameters,
-                                                        Enumerators.AbilityParameter.TargetFaction))
+                            if (unitModel.Faction == value)
                             {
                                 filteredTargets.Add(target);
                             }
@@ -393,7 +453,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            return targets;
+            return filteredTargets;
         }
 
         public Player GetOpponentPlayer(BoardUnitModel model)
@@ -419,6 +479,19 @@ namespace Loom.ZombieBattleground
         public bool HasParameter(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
         {
             return genericParameters.FindAll(param => param.AbilityParameter == abilityParameter).Count > 0;
+        }
+
+        public bool TryGetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter, out T result)
+        {
+            if (!HasParameter(genericParameters, abilityParameter))
+            {
+                result = default(T);
+                return false;
+            }
+
+            result = GetParameterValue<T>(genericParameters, abilityParameter);
+
+            return true;
         }
 
         #endregion

@@ -32,20 +32,20 @@
             "DefaultParameters": [],
             "CardAbilityDatas": [
               {
-                "Ability": "AdditionalDamage",
+                "Ability": "AdditionalStat",
                 "GameMechanicDescription": "Attack",
                 "Triggers": [
                   "Attack"
                 ],
                 "Targets": [
                   {
-                    "Target": "OpponentCard",
+                    "Target": "ItSelf",
                     "TargetFilter": "Target"
                   }
                 ],
                 "GenericParameters": [
                   {
-                    "AbilityParameter": "Damage",
+                    "AbilityParameter": "Attack",
                     "Value": 1
                   },
                   {

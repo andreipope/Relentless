@@ -75,6 +75,8 @@ namespace Loom.ZombieBattleground
             GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
             AbilityView = abilityView;
+
+            AbilityView?.Init(this);
         }
 
         public void ChangePlayerOwner(Player player)
