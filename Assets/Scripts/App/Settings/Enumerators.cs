@@ -89,7 +89,8 @@ namespace Loom.ZombieBattleground.Common
             Turns,
             Goo,
             Cost,
-            Type
+            Type,
+            TargetType
         }
 
         public enum ActionType
