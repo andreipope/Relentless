@@ -1330,6 +1330,10 @@ namespace Loom.ZombieBattleground
                 {
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
                 }
+
+                if (!_myDeckPage.SelfPage)
+                    return;
+                    
                 _myDeckPage.ChangeTab(nextTab);
             }
 

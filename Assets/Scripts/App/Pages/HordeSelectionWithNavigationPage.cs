@@ -43,6 +43,11 @@ namespace Loom.ZombieBattleground
         public OverlordSkillSelectionTab SelectOverlordSkillTab;
         
         private GameObject _selfPage;
+        public GameObject SelfPage {
+            get {
+                return _selfPage;
+            }
+        }
 
         private GameObject[] _tabObjects;
 
@@ -463,7 +468,6 @@ namespace Loom.ZombieBattleground
         public void ChangeTab(Tab newTab)
         {
             Tab oldTabl = _tab;
-
             _tab = newTab;            
             
             for (int i = 0; i < _tabObjects.Length;++i)
