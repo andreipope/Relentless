@@ -245,7 +245,7 @@ PlayerSettings:
   clonedFromGUID: a8599356c9bbe634f93b94fe78f10654
   templatePackageId: 
   templateDefaultScene: 
-  AndroidTargetArchitectures: 5
+  AndroidTargetArchitectures: 7
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 2800000, guid: f9d0b426c53724dc0bc1189640db3427, type: 3}
   AndroidKeystoreName: 
@@ -653,7 +653,8 @@ PlayerSettings:
     1: 
     7: USE_STAGING_BACKEND
   platformArchitecture: {}
-  scriptingBackend: {}
+  scriptingBackend:
+    Android: 1
   il2cppCompilerConfiguration: {}
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
