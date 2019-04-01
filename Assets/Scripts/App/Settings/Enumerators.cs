@@ -89,6 +89,8 @@ namespace Loom.ZombieBattleground.Common
 
             Faction,
             TargetFaction,
+
+            Turns
         }
 
         public enum ActionType
