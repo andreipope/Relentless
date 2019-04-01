@@ -105,13 +105,13 @@ namespace Loom.ZombieBattleground
             _inputFieldSearchName.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearchName.text = "";
 
-            _uiManager.GetPopup<CardFilterPopup>().FilterData.Reset();   
+            _uiManager.GetPopup<CardFilterPopup>().FilterData.Reset();  
+            
+            UpdatePageScaleToMatchResolution(); 
             
             UpdateAllCardsCount();         
             
-            LoadObjects();
-
-            UpdatePageScaleToMatchResolution();            
+            LoadObjects();                        
         }
         
         public void Hide()
@@ -229,6 +229,8 @@ namespace Loom.ZombieBattleground
         private void LoadObjects()
         {
             CardPlaceholders = Object.Instantiate(CardPlaceholdersPrefab);
+            CardPlaceholders.transform.position = _selfPage.transform.Find("Panel_Content/Locator_CardPosition").position;
+            
             _createdBoardCardContainer = new GameObject("BoardCardContainer");
             
             CardPositions = new List<Transform>();
