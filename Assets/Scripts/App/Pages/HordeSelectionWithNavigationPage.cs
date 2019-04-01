@@ -43,11 +43,6 @@ namespace Loom.ZombieBattleground
         public OverlordSkillSelectionTab SelectOverlordSkillTab;
         
         private GameObject _selfPage;
-        public GameObject SelfPage {
-            get {
-                return _selfPage;
-            }
-        }
 
         private GameObject[] _tabObjects;
 
