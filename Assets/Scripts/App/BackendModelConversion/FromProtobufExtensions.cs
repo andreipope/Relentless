@@ -192,7 +192,8 @@ namespace Loom.ZombieBattleground.Data
                 new CardAbilities(new List<CardAbilitiesCombination>()
                 {
                    new CardAbilitiesCombination(new List<GenericParameter>(),
-                                                new List<CardAbilityData>())
+                                                new List<CardAbilityData>(),
+                                                Enumerators.GameMechanicDescription.Undefined)
                 }),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
@@ -211,7 +212,8 @@ namespace Loom.ZombieBattleground.Data
                 new CardAbilities(new List<CardAbilitiesCombination>()
                 {
                    new CardAbilitiesCombination(new List<GenericParameter>(),
-                                                new List<CardAbilityData>())
+                                                new List<CardAbilityData>(),
+                                                Enumerators.GameMechanicDescription.Undefined)
                 })
             );
         }

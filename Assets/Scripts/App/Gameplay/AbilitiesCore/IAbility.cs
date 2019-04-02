@@ -7,7 +7,9 @@ namespace Loom.ZombieBattleground
 {
     public interface ICardAbility
     {
-        event Action AbilityInitialized; 
+        event Action AbilityInitialized;
+
+        IReadOnlyList<GenericParameter> GenericParameters { get; }
 
         BoardUnitModel UnitModelOwner { get; }
 
@@ -19,12 +21,14 @@ namespace Loom.ZombieBattleground
 
         ICardAbilityView AbilityView { get; }
 
-        Enumerators.AbilityTrigger MainTrigger { get; }
+        CardAbilityData.TriggerInfo MainTrigger { get; }
+
+        int TurnsOnBoard { get; }
 
         void Init(
             BoardUnitModel boardUnitModel,
             CardAbilitiesCombination combination,
-            Enumerators.AbilityTrigger trigger,
+            CardAbilityData.TriggerInfo trigger,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
@@ -32,6 +36,7 @@ namespace Loom.ZombieBattleground
         void DoAction(IReadOnlyList<GenericParameter> genericParameters);
         void ChangePlayerOwner(Player player);
         void InsertTargets(IReadOnlyList<BoardObject> targets);
+        void IncreaseTurnsOnBoard();
         void Dispose();
     }
 
@@ -42,8 +47,6 @@ namespace Loom.ZombieBattleground
         public event Action AbilityInitialized;
 
         protected IReadOnlyList<BoardObject> Targets { get; private set; }
-
-        protected IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
 
         protected readonly IGameplayManager GameplayManager;
 
@@ -63,6 +66,8 @@ namespace Loom.ZombieBattleground
 
         protected readonly RanksController RanksController;
 
+        public IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
+
         public BoardUnitModel UnitModelOwner { get; private set; }
 
         public Player PlayerOwner { get; private set; }
@@ -73,7 +78,9 @@ namespace Loom.ZombieBattleground
 
         public ICardAbilityView AbilityView { get; private set; }
 
-        public Enumerators.AbilityTrigger MainTrigger { get; private set; }
+        public CardAbilityData.TriggerInfo MainTrigger { get; private set; }
+
+        public int TurnsOnBoard { get; private set; }
 
         public CardAbility()
         {
@@ -95,7 +102,7 @@ namespace Loom.ZombieBattleground
         public virtual void Init(
             BoardUnitModel boardUnitModel,
             CardAbilitiesCombination combination,
-            Enumerators.AbilityTrigger trigger,
+            CardAbilityData.TriggerInfo trigger,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null)
@@ -132,6 +139,11 @@ namespace Loom.ZombieBattleground
         public virtual void AbilityInitializedAction()
         {
             AbilityInitialized?.Invoke();
+        }
+
+        public void IncreaseTurnsOnBoard()
+        {
+            TurnsOnBoard++;
         }
 
         protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)

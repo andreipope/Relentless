@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                             opponent.CardPlay(opponentShovel1Id, ItemPosition.Start, null, true);
-                            opponent.CardAbilityUsed(opponentShovel1Id, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>()
+                            opponent.CardAbilityUsed(opponentShovel1Id, Enumerators.AbilityType.Restore, new List<ParametrizedAbilityInstanceId>()
                             {
                                 new ParametrizedAbilityInstanceId(opponentTinyId)
                             });
@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentStaplerId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentStaplerId, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentStaplerId, Enumerators.AbilityType.Restore, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentEarthshakerId)
                            });
                        }
@@ -1584,7 +1584,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardPlay(opponentZedKitId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentZedKitId, Enumerators.AbilityType.Heal, new List<ParametrizedAbilityInstanceId>(){
+                           opponent.CardAbilityUsed(opponentZedKitId, Enumerators.AbilityType.Restore, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentBoomerId),
                                new ParametrizedAbilityInstanceId(opponentBoomer2Id),
                            });

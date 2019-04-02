@@ -55,7 +55,9 @@ namespace Loom.ZombieBattleground.Test
                 Enumerators.CardType.WALKER,
                 new CardAbilities(new List<CardAbilitiesCombination>()
                 {
-                    new CardAbilitiesCombination(new List<GenericParameter>(), new List<CardAbilityData>())
+                    new CardAbilitiesCombination(new List<GenericParameter>(),
+                                                 new List<CardAbilityData>(),
+                                                 Enumerators.GameMechanicDescription.Undefined)
                 }),
                 new PictureTransform(
                     new FloatVector3(0.3f, 0.4f, 0.5f),

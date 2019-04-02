@@ -96,7 +96,8 @@ namespace Loom.ZombieBattleground.Data
             Abilities = abilities ?? new CardAbilities(new List<CardAbilitiesCombination>()
             {
                 new CardAbilitiesCombination(new List<GenericParameter>(),
-                                             new List<CardAbilityData>())
+                                             new List<CardAbilityData>(),
+                                             Enumerators.GameMechanicDescription.Undefined)
             });
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
