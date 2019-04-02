@@ -1174,6 +1174,15 @@ namespace Loom.ZombieBattleground
                 .ToList();
         }
 
+
+        public Player GetOpponentPlayerForUnit(BoardUnitModel model)
+        {
+            if (model.OwnerPlayer.IsLocalPlayer)
+                return _gameplayManager.OpponentPlayer;
+            else
+                return _gameplayManager.CurrentPlayer;
+        }
+
         public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)
         {
             BoardCardView boardCardView = new UnitBoardCard(Object.Instantiate(_cardsController.CreatureCardViewPrefab), boardUnitModel);

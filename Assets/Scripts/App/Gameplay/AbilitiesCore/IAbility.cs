@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         Enumerators.AbilityTrigger MainTrigger { get; }
 
+        int TurnsOnBoard { get; }
+
         void Init(
             BoardUnitModel boardUnitModel,
             CardAbilitiesCombination combination,
@@ -74,6 +76,8 @@ namespace Loom.ZombieBattleground
         public ICardAbilityView AbilityView { get; private set; }
 
         public Enumerators.AbilityTrigger MainTrigger { get; private set; }
+
+        public int TurnsOnBoard { get; private set; }
 
         public CardAbility()
         {
@@ -132,6 +136,11 @@ namespace Loom.ZombieBattleground
         public virtual void AbilityInitializedAction()
         {
             AbilityInitialized?.Invoke();
+        }
+
+        public void IncreaseTurnsOnBoard()
+        {
+            TurnsOnBoard++;
         }
 
         protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)

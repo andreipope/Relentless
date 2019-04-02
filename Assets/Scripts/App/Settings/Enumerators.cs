@@ -34,14 +34,15 @@ namespace Loom.ZombieBattleground.Common
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,
             YourOverlord,
-
             Delay,
             FromHand,
             FromDeck,
             ByName,
-
             TargetDeck,
             TargetHand,
+            Aura,
+            IfHasUnitsWithGuardInPlay,
+            OverlordDefenseLessThan
         }
 
         public enum AbilityType
@@ -49,7 +50,7 @@ namespace Loom.ZombieBattleground.Common
             Undefined,
 
             Damage,
-            Heal,
+            Restore,
             Draw,
             Reanimate,
             CardReturn,
@@ -96,6 +97,8 @@ namespace Loom.ZombieBattleground.Common
             TargetFaction,
             TargetType,
             TargetStatus,
+            TargetCost,
+            Duration
         }
 
         public enum AbilityEffectParameter
@@ -122,6 +125,12 @@ namespace Loom.ZombieBattleground.Common
             Impact_Feral
         }
 
+        public enum AbilityDurationType
+        {
+            UntilEndOfTurn,
+            Permanent
+        }
+
         public enum Target
         {
             Undefined,
@@ -139,7 +148,8 @@ namespace Loom.ZombieBattleground.Common
             Undefined,
 
             Target,
-            TargetAdjustments
+            TargetAdjustments,
+            All
         }
 
         public enum ActionType

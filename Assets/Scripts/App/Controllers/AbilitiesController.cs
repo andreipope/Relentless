@@ -470,7 +470,7 @@ namespace Loom.ZombieBattleground
                         targets.Add(modelCaller);
                         break;
                     case Enumerators.Target.Opponent:
-                        targets.Add(GetOpponentPlayer(modelCaller));
+                        targets.Add(_battlegroundController.GetOpponentPlayerForUnit(modelCaller));
                         break;
                     case Enumerators.Target.Player:
                         targets.Add(modelCaller.OwnerPlayer);
@@ -478,30 +478,28 @@ namespace Loom.ZombieBattleground
                     case Enumerators.Target.PlayerCard:
                         switch(targetInfo.TargetFilter)
                         {
-                            case Enumerators.TargetFilter.Target:
-                                break;
                             case Enumerators.TargetFilter.TargetAdjustments:
                                 if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
                                 {
                                     targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
                                 }
                                 break;
-                            case Enumerators.TargetFilter.Undefined:
+                            case Enumerators.TargetFilter.All:
+                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsOnBoard);
                                 break;
                         }
                         break;
                     case Enumerators.Target.OpponentCard:
                         switch (targetInfo.TargetFilter)
                         {
-                            case Enumerators.TargetFilter.Target:
-                                break;
                             case Enumerators.TargetFilter.TargetAdjustments:
                                 if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
                                 {
                                     targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
                                 }
                                 break;
-                            case Enumerators.TargetFilter.Undefined:
+                            case Enumerators.TargetFilter.All:
+                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsOnBoard);
                                 break;
                         }
                         break;
@@ -567,6 +565,24 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            if (TryGetParameterValue(genericParameters,
+                         Enumerators.AbilityParameter.TargetType,
+                         out Enumerators.CardType targetType))
+            {
+                foreach (BoardObject target in targets)
+                {
+                    switch (target)
+                    {
+                        case BoardUnitModel unitModel:
+                            if (unitModel.InitialUnitType != targetType)
+                            {
+                                filteredTargets.Add(target);
+                            }
+                            break;
+                    }
+                }
+            }
+
             filteredTargets.ForEach((target) => { targets.Remove(target); });
             filteredTargets.Clear();
 
@@ -574,14 +590,6 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
-        public Player GetOpponentPlayer(BoardUnitModel model)
-        {
-            if (model.OwnerPlayer.IsLocalPlayer)
-                return _gameplayManager.OpponentPlayer;
-            else
-                return _gameplayManager.CurrentPlayer;
-        }
 
         #region parameter tools
 
