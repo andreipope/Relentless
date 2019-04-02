@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
         private BoardController _boardController;
 
+        private BoardArrowController _boardArrowController;
+
         public GameObject PlayerBoard { get; private set; }
 
         public GameObject OpponentBoard { get; private set; }
@@ -98,6 +100,7 @@ namespace Loom.ZombieBattleground
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _boardController = _gameplayManager.GetController<BoardController>();
+            _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
 
             CreatureCardViewPrefab =
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Cards/CreatureCard");
@@ -510,6 +513,9 @@ namespace Loom.ZombieBattleground
 
                                     RemoveCard(card);
 
+                                    if (_abilitiesController.HasEntryWithSelection(card.Model))
+                                        _boardArrowController.ShowAbilityBoardArrow(card.Model, card.Model.OwnerPlayer.Transform, card.Model.Prototype.Kind);
+
                                     _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                                     {
                                         ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -544,6 +550,9 @@ namespace Loom.ZombieBattleground
                                 RemoveCard(card);
                                 card.Model.Owner.PlayerCardsController.RemoveCardFromBoard(card.Model);
                                 card.Model.Card.Owner.GraveyardCardsCount++;
+
+                                if (_abilitiesController.HasEntryWithSelection(card.Model))
+                                    _boardArrowController.ShowAbilityBoardArrow(card.Model, card.Model.OwnerPlayer.Transform, card.Model.Prototype.Kind);
 
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                                 {
