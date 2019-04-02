@@ -186,7 +186,7 @@ namespace Loom.ZombieBattleground
             ICardAbility ability;
             ICardAbilityView abilityView = null;
 
-            string abilityViewClassName, abilityClassName;
+            string abilityViewClassName, abilitySubViewClassName, abilityClassName;
 
             foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
             {
@@ -201,8 +201,13 @@ namespace Loom.ZombieBattleground
                     continue;
 
                 abilityViewClassName = $"{abilityClassName}View";
+                abilitySubViewClassName = abilityViewClassName + boardUnitModel.Card.Prototype.MouldId;
 
-                if (InternalTools.IsTypeExists<ICardAbilityView>(abilityViewClassName))
+                if (InternalTools.IsTypeExists<ICardAbilityView>(abilitySubViewClassName))
+                {
+                    abilityView = InternalTools.GetInstance<ICardAbilityView>(abilitySubViewClassName);
+                }
+                else if (InternalTools.IsTypeExists<ICardAbilityView>(abilityViewClassName))
                 {
                     abilityView = InternalTools.GetInstance<ICardAbilityView>(abilityViewClassName);
                 }

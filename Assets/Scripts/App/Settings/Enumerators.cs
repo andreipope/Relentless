@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground.Common
             PriorityAttack,
             OverflowGoo,
             Distract,
-            DisableGoo,
+            LoseGoo,
             Devour,
             Destroy,
             Summon,
