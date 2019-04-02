@@ -223,7 +223,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
-                ability.Init(boardUnitModel, combination, cardAbilityData, targets, abilityView);
+                ability.Init(boardUnitModel, combination, trigger.Trigger, cardAbilityData, targets, abilityView);
 
                 _activeAbilities[trigger.Trigger].Add(ability);
 
@@ -244,7 +244,10 @@ namespace Loom.ZombieBattleground
                     {
                         boardUnit
                     }, true)));
-                    ability.DoAction();
+                    ability.DoAction(new List<GenericParameter>()
+                    {
+                        new GenericParameter(Enumerators.AbilityParameter.Stat, stat)
+                    });
                 }
             }
         }
@@ -422,6 +425,33 @@ namespace Loom.ZombieBattleground
 
             return false;
         }
+
+        public bool HasSubTrigger(ICardAbility cardAbility, Enumerators.AbilitySubTrigger subTrigger)
+        {
+            return cardAbility.CardAbilityData.Triggers.
+                    FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger).
+                        SubTriggers.Contains(subTrigger);
+        }
+
+        #region Sub triggers handling
+
+        private bool CheckSubTriggersToProceed(CardAbilityData cardAbilityData)
+        {
+            foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
+            {
+                foreach (Enumerators.AbilitySubTrigger subTrigger in trigger.SubTriggers)
+                {
+                    switch (subTrigger)
+                    {
+                        default: return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
 
         #region targets filtering
 

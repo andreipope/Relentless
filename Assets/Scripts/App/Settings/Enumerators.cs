@@ -53,6 +53,7 @@ namespace Loom.ZombieBattleground.Common
             Draw,
             Reanimate,
             CardReturn,
+            CardDiscard,
             Summon,
             ReplaceOnStrongerOnes,
             GainGoo,
@@ -72,7 +73,8 @@ namespace Loom.ZombieBattleground.Common
             Destroy,
             Freeze,
             PriorityAttack,
-            Flash
+            Flash,
+            Agile
         }
 
         public enum AbilityParameter
