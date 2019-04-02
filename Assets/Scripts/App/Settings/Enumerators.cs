@@ -42,7 +42,9 @@ namespace Loom.ZombieBattleground.Common
             TargetHand,
             Aura,
             IfHasUnitsWithGuardInPlay,
-            OverlordDefenseLessThan
+            OverlordDefenseLessThan,
+            RandomlySplit,
+            CountItemsPlayed
         }
 
         public enum AbilityType
@@ -92,13 +94,17 @@ namespace Loom.ZombieBattleground.Common
             Goo,
             Cost,
             Type,
+            Count,
             AttackRestriction,
             TargetStat,
             TargetFaction,
             TargetType,
             TargetStatus,
             TargetCost,
-            Duration
+            TargetCount,
+            Duration,
+            Name,
+            Target
         }
 
         public enum AbilityEffectParameter
@@ -149,7 +155,10 @@ namespace Loom.ZombieBattleground.Common
 
             Target,
             TargetAdjustments,
-            All
+            FromBoard,
+            FromHand,
+            FromDeck,
+            FromGraveyard
         }
 
         public enum ActionType

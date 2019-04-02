@@ -33,6 +33,7 @@
             "Combinations": [
               {
                 "DefaultParameters": [],
+                "GameMechanicDescription": "Undefined",
                 "CardAbilities": [
                   {
                     "Ability": "AdditionalStat",
@@ -58,17 +59,7 @@
                         "Value": "Toxic"
                       }
                     ],
-                    "VfxParameters": [
-                      {
-                        "EffectType": "Impact",
-                        "Parameters": [
-                          {
-                            "EffectParameter": "VfxPath",
-                            "Value": "/path/to/my/vfx"
-                          }
-                        ]
-                      }
-                    ]
+                    "VfxParameters": []
                   }
                 ]
               }

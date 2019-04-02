@@ -138,9 +138,10 @@ namespace Loom.ZombieBattleground
                 {
                     if (triggerFilter == Enumerators.AbilityTrigger.Undefined)
                     {
-                        if (cardAbilityData.HasTrigger(Enumerators.AbilityTrigger.Entry))
+                        if (cardAbilityData.TryGetTrigger(Enumerators.AbilityTrigger.Entry, out CardAbilityData.TriggerInfo triggerInfo))
                         {
-                            selectedTargets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
+                            selectedTargets = FilterTargets(boardUnitModel, triggerInfo, cardAbilityData.GenericParameters,
+                                                    GetTargets(boardUnitModel, cardAbilityData, targets));
                         }
                         else if (selectedTargets == null)
                         {
@@ -223,7 +224,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
-                ability.Init(boardUnitModel, combination, trigger.Trigger, cardAbilityData, targets, abilityView);
+                ability.Init(boardUnitModel, combination, trigger, cardAbilityData, targets, abilityView);
 
                 _activeAbilities[trigger.Trigger].Add(ability);
 
@@ -239,7 +240,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == boardUnit)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         boardUnit
@@ -258,10 +259,14 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(new List<BoardObject>()
-                    {
-                        attacker
-                    });
+                    ability.InsertTargets(FilterTargets(
+                        ability.UnitModelOwner,
+                        ability.MainTrigger,
+                        ability.CardAbilityData.GenericParameters,
+                        new List<BoardObject>()
+                        {
+                            attacker
+                        }));
                     ability.DoAction();
                 }
             }
@@ -273,7 +278,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         targetAttacked
@@ -289,7 +294,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
                                                          GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                      {
                         targetKilled
@@ -320,7 +325,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == attacker)
                 {
-                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.CardAbilityData.GenericParameters,
+                    ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
                     {
                         attacker
@@ -332,10 +337,36 @@ namespace Loom.ZombieBattleground
 
         public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
         {
-            if(abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
+            if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
                abilityData.HasTrigger(Enumerators.AbilityTrigger.EntryWithSelection))
             {
-                cardAbility.DoAction();
+                if (!HasSubTrigger(cardAbility, Enumerators.AbilitySubTrigger.Delay) &&
+                    CheckSubTriggersToProceed(abilityData))
+                {
+                    cardAbility.DoAction();
+                }
+            }
+        }
+
+        private void HandleAbilitiesWithDelaySubTrigger()
+        {
+            IEnumerable<ICardAbility> list = _activeAbilities[Enumerators.AbilityTrigger.Entry].
+                                                Concat(_activeAbilities[Enumerators.AbilityTrigger.EntryWithSelection]);
+
+            foreach (ICardAbility ability in list)
+            {
+                if (HasSubTrigger(ability, Enumerators.AbilitySubTrigger.Delay))
+                {
+                    ability.IncreaseTurnsOnBoard();
+
+                    if (TryGetParameterValue(ability.GenericParameters, Enumerators.AbilityParameter.Delay, out int delay))
+                    {
+                        if (ability.TurnsOnBoard == delay)
+                        {
+                            ability.DoAction();
+                        }
+                    }
+                }
             }
         }
 
@@ -374,6 +405,8 @@ namespace Loom.ZombieBattleground
             {
                 ability.DoAction();
             }
+
+            HandleAbilitiesWithDelaySubTrigger();
         }
 
         private void HandChangedHandler(Player handOwner)
@@ -429,7 +462,7 @@ namespace Loom.ZombieBattleground
         public bool HasSubTrigger(ICardAbility cardAbility, Enumerators.AbilitySubTrigger subTrigger)
         {
             return cardAbility.CardAbilityData.Triggers.
-                    FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger).
+                    FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger.Trigger).
                         SubTriggers.Contains(subTrigger);
         }
 
@@ -484,8 +517,17 @@ namespace Loom.ZombieBattleground
                                     targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
                                 }
                                 break;
-                            case Enumerators.TargetFilter.All:
+                            case Enumerators.TargetFilter.FromBoard:
                                 targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsOnBoard);
+                                break;
+                            case Enumerators.TargetFilter.FromHand:
+                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInHand);
+                                break;
+                            case Enumerators.TargetFilter.FromDeck:
+                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInDeck);
+                                break;
+                            case Enumerators.TargetFilter.FromGraveyard:
+                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInGraveyard);
                                 break;
                         }
                         break;
@@ -498,8 +540,17 @@ namespace Loom.ZombieBattleground
                                     targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
                                 }
                                 break;
-                            case Enumerators.TargetFilter.All:
+                            case Enumerators.TargetFilter.FromBoard:
                                 targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsOnBoard);
+                                break;
+                            case Enumerators.TargetFilter.FromHand:
+                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInHand);
+                                break;
+                            case Enumerators.TargetFilter.FromDeck:
+                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInDeck);
+                                break;
+                            case Enumerators.TargetFilter.FromGraveyard:
+                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInGraveyard);
                                 break;
                         }
                         break;
@@ -517,6 +568,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> FilterTargets(
             BoardUnitModel boardUnitModel,
+            CardAbilityData.TriggerInfo trigger,
             List<GenericParameter> genericParameters,
             List<BoardObject> targets)
         {
@@ -577,6 +629,33 @@ namespace Loom.ZombieBattleground
                             if (unitModel.InitialUnitType != targetType)
                             {
                                 filteredTargets.Add(target);
+                            }
+                            break;
+                    }
+                }
+            }
+
+            filteredTargets.ForEach((target) => { targets.Remove(target); });
+            filteredTargets.Clear();
+
+            if (trigger.SubTriggers != null)
+            {
+                foreach (Enumerators.AbilitySubTrigger subTrigger in trigger.SubTriggers)
+                {
+                    switch (subTrigger)
+                    {
+                        case Enumerators.AbilitySubTrigger.RandomUnit:
+                            if (TryGetParameterValue(genericParameters, Enumerators.AbilityParameter.Count, out int countParameter))
+                            {
+                                filteredTargets.AddRange(targets);
+
+                                for (int i = 0; i < countParameter; i++)
+                                {
+                                    if (i < filteredTargets.Count)
+                                    {
+                                        filteredTargets.RemoveAt(MTwister.IRandom(0, filteredTargets.Count));
+                                    }
+                                }
                             }
                             break;
                     }

@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
@@ -28,13 +29,18 @@ namespace Loom.ZombieBattleground
         [JsonProperty]
         public List<CardAbilityData> CardAbilities { get; protected set; }
 
+        [JsonProperty]
+        public Enumerators.GameMechanicDescription GeneralGameMechanicDescription { get; protected set; }
+
         [JsonConstructor]
         public CardAbilitiesCombination(
             List<GenericParameter> defaultParameters,
-            List<CardAbilityData> cardAbilityData)
+            List<CardAbilityData> cardAbilityData,
+            Enumerators.GameMechanicDescription gameMechanicDescription)
         {
             DefaultParameters = defaultParameters;
             CardAbilities = cardAbilityData;
+            GeneralGameMechanicDescription = gameMechanicDescription;
         }
 
         public CardAbilitiesCombination(CardAbilitiesCombination source)
