@@ -953,7 +953,7 @@ namespace Loom.ZombieBattleground
 
             if (Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilitiesCombination combination in Card.InstanceCard.Abilities.Combinations)
+                foreach (CardAbilitiesCombination combination in Card.InstanceCard.Abilities)
                 {
                     foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                     {

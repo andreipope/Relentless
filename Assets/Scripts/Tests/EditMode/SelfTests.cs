@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground.Test
                     foreach (Card card in client.CardLibrary)
                     {
                         // Ignore simple cards, no point in making tests for each of them
-                        if (card.Abilities.Combinations.Count == 0)
+                        if (card.Abilities.Count == 0)
                         {
                             numberOfCardsWithoutAbilities++;
                             continue;

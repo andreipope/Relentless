@@ -9,6 +9,8 @@ namespace Loom.ZombieBattleground
     {
         event Action AbilityInitialized;
 
+        event Action<Player, Player> PlayerOwnerChanged;
+
         IReadOnlyList<GenericParameter> GenericParameters { get; }
 
         BoardUnitModel UnitModelOwner { get; }
@@ -45,6 +47,8 @@ namespace Loom.ZombieBattleground
         protected static readonly ILog Log = Logging.GetLog(nameof(CardAbility));
 
         public event Action AbilityInitialized;
+
+        public event Action<Player, Player> PlayerOwnerChanged;
 
         protected IReadOnlyList<BoardObject> Targets { get; private set; }
 
@@ -123,7 +127,11 @@ namespace Loom.ZombieBattleground
 
         public void ChangePlayerOwner(Player player)
         {
+            Player oldPlayer = PlayerOwner;
+
             PlayerOwner = player;
+
+            PlayerOwnerChangedAction(oldPlayer, player);
         }
 
         public virtual void Dispose()
@@ -139,6 +147,11 @@ namespace Loom.ZombieBattleground
         public virtual void AbilityInitializedAction()
         {
             AbilityInitialized?.Invoke();
+        }
+
+        public virtual void PlayerOwnerChangedAction(Player oldPlayer, Player newPlayer)
+        {
+            PlayerOwnerChanged?.Invoke(oldPlayer, newPlayer);
         }
 
         public void IncreaseTurnsOnBoard()

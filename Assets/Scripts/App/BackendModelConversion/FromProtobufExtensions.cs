@@ -189,12 +189,14 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardKind) card.Kind,
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
-                new CardAbilities(new List<CardAbilitiesCombination>()
+                new List<CardAbilitiesCombination>()
                 {
                    new CardAbilitiesCombination(new List<GenericParameter>(),
                                                 new List<CardAbilityData>(),
-                                                Enumerators.GameMechanicDescription.Undefined)
-                }),
+                                                Enumerators.GameMechanicDescription.Undefined,
+                                                new List<CardAbilityData.TriggerInfo>(),
+                                                new List<CardAbilityData.TargetInfo>())
+                },
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
                 card.Hidden
@@ -209,12 +211,14 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.Faction) card.Faction,
                 (Enumerators.CardType) card.Type,
                 card.Cost,
-                new CardAbilities(new List<CardAbilitiesCombination>()
+                new List<CardAbilitiesCombination>()
                 {
                    new CardAbilitiesCombination(new List<GenericParameter>(),
                                                 new List<CardAbilityData>(),
-                                                Enumerators.GameMechanicDescription.Undefined)
-                })
+                                                Enumerators.GameMechanicDescription.Undefined,
+                                                new List<CardAbilityData.TriggerInfo>(),
+                                                new List<CardAbilityData.TargetInfo>())
+                }
             );
         }
 

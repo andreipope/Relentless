@@ -130,7 +130,7 @@ namespace Loom.ZombieBattleground
             Enumerators.AbilityTrigger triggerFilter = Enumerators.AbilityTrigger.Undefined)
         {
             List<BoardObject> selectedTargets;
-            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
+            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities)
             {
                 selectedTargets = targets;
 
@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground
 
         public void ReactivateAbilitiesOnUnit(BoardUnitModel boardUnitModel)
         {
-            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
+            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities)
             {
                 foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                 {
@@ -199,40 +199,54 @@ namespace Loom.ZombieBattleground
 
             string abilityViewClassName, abilitySubViewClassName, abilityClassName;
 
-            foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
+            if (cardAbilityData.Triggers != null)
             {
-                if (ignoreEntry &&
-                    (trigger.Trigger == Enumerators.AbilityTrigger.Entry ||
-                    trigger.Trigger == Enumerators.AbilityTrigger.EntryWithSelection))
-                    continue;
-
-                abilityClassName = $"{cardAbilityData.Ability.ToString()}Ability";
-
-                if (!InternalTools.IsTypeExists<ICardAbility>(abilityClassName))
-                    continue;
-
-                abilityViewClassName = $"{abilityClassName}View";
-                abilitySubViewClassName = abilityViewClassName + boardUnitModel.Card.Prototype.MouldId;
-
-                if (InternalTools.IsTypeExists<ICardAbilityView>(abilitySubViewClassName))
+                foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
                 {
-                    abilityView = InternalTools.GetInstance<ICardAbilityView>(abilitySubViewClassName);
+                    if (ignoreEntry &&
+                        (trigger.Trigger == Enumerators.AbilityTrigger.Entry ||
+                        trigger.Trigger == Enumerators.AbilityTrigger.EntryWithSelection))
+                        continue;
+
+                    abilityClassName = $"{cardAbilityData.Ability.ToString()}Ability";
+
+                    if (!InternalTools.IsTypeExists<ICardAbility>(abilityClassName))
+                        continue;
+
+                    abilityViewClassName = $"{abilityClassName}View";
+                    abilitySubViewClassName = abilityViewClassName + boardUnitModel.Card.Prototype.MouldId;
+
+                    if (InternalTools.IsTypeExists<ICardAbilityView>(abilitySubViewClassName))
+                    {
+                        abilityView = InternalTools.GetInstance<ICardAbilityView>(abilitySubViewClassName);
+                    }
+                    else if (InternalTools.IsTypeExists<ICardAbilityView>(abilityViewClassName))
+                    {
+                        abilityView = InternalTools.GetInstance<ICardAbilityView>(abilityViewClassName);
+                    }
+
+                    ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
+                    ability.Init(boardUnitModel, combination, trigger, cardAbilityData, targets, abilityView);
+
+                    _activeAbilities[trigger.Trigger].Add(ability);
+
+                    CheckOnEntryAbility(ability, cardAbilityData);
                 }
-                else if (InternalTools.IsTypeExists<ICardAbilityView>(abilityViewClassName))
-                {
-                    abilityView = InternalTools.GetInstance<ICardAbilityView>(abilityViewClassName);
-                }
-
-                ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
-                ability.Init(boardUnitModel, combination, trigger, cardAbilityData, targets, abilityView);
-
-                _activeAbilities[trigger.Trigger].Add(ability);
-
-                CheckOnEntryAbility(ability, cardAbilityData);
             }
         }
 
         #region event callers
+
+        public void ChangeCardOwner(BoardUnitModel boardUnitModel, Player newOwner)
+        {
+            foreach(List<ICardAbility> abilities in _activeAbilities.Values)
+            {
+                foreach (ICardAbility ability in abilities)
+                {
+                    ability.ChangePlayerOwner(newOwner);
+                }
+            }
+        }
 
         public void UnitStatChanged(Enumerators.Stat stat, BoardUnitModel boardUnit, int from, int to)
         {
@@ -444,7 +458,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasEntryWithSelection(BoardUnitModel unitModel)
         {
-            foreach (CardAbilitiesCombination combination in unitModel.Card.Prototype.Abilities.Combinations)
+            foreach (CardAbilitiesCombination combination in unitModel.Card.Prototype.Abilities)
             {
                 foreach (CardAbilityData data in combination.CardAbilities)
                 {
@@ -461,9 +475,13 @@ namespace Loom.ZombieBattleground
 
         public bool HasSubTrigger(ICardAbility cardAbility, Enumerators.AbilitySubTrigger subTrigger)
         {
-            return cardAbility.CardAbilityData.Triggers.
-                    FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger.Trigger).
-                        SubTriggers.Contains(subTrigger);
+            CardAbilityData.TriggerInfo triggerInfo = cardAbility.CardAbilityData.Triggers.
+                        FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger.Trigger);
+
+            if (triggerInfo.SubTriggers == null)
+                return false;
+
+            return triggerInfo.SubTriggers.Contains(subTrigger);
         }
 
         #region Sub triggers handling
@@ -472,11 +490,14 @@ namespace Loom.ZombieBattleground
         {
             foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
             {
-                foreach (Enumerators.AbilitySubTrigger subTrigger in trigger.SubTriggers)
+                if (trigger.SubTriggers != null)
                 {
-                    switch (subTrigger)
+                    foreach (Enumerators.AbilitySubTrigger subTrigger in trigger.SubTriggers)
                     {
-                        default: return true;
+                        switch (subTrigger)
+                        {
+                            default: return true;
+                        }
                     }
                 }
             }

@@ -726,7 +726,7 @@ namespace Loom.ZombieBattleground
             {
                 if (cards[i].InstanceCard.Abilities != null)
                 {
-                    CardAbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.Combinations.FirstOrDefault().CardAbilities
+                    CardAbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.FirstOrDefault().CardAbilities
                         .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.Damage);
                     if (attackOverlordAbility != null)
                     {
@@ -735,7 +735,7 @@ namespace Loom.ZombieBattleground
                             break;
                     }
 
-                    overflowGooAbility = cards[i].InstanceCard.Abilities.Combinations.FirstOrDefault().CardAbilities
+                    overflowGooAbility = cards[i].InstanceCard.Abilities.FirstOrDefault().CardAbilities
                         .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OverflowGoo);
                     if (overflowGooAbility != null)
                     {
@@ -789,7 +789,7 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalItemCardInHand.AddRange(GetItemCardsInHand());
                 _normalItemCardInHand.RemoveAll(x =>
-                    x.InstanceCard.Abilities.Combinations.FirstOrDefault().CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
+                    x.InstanceCard.Abilities.FirstOrDefault().CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
             }
 
             await LetsThink(cancellationToken);

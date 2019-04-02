@@ -76,6 +76,7 @@ namespace Loom.ZombieBattleground.Common
             Destroy,
             Freeze,
             PriorityAttack,
+            AttackAvailability,
             Flash,
             Agile
         }
