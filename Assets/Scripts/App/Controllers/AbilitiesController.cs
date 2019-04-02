@@ -124,7 +124,10 @@ namespace Loom.ZombieBattleground
             };
         }
 
-        public void InitializeAbilities(BoardUnitModel boardUnitModel, List<BoardObject> targets = null)
+        public void InitializeAbilities(
+            BoardUnitModel boardUnitModel,
+            List<BoardObject> targets = null,
+            Enumerators.AbilityTrigger triggerFilter = Enumerators.AbilityTrigger.Undefined)
         {
             List<BoardObject> selectedTargets;
             foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities.Combinations)
@@ -133,14 +136,19 @@ namespace Loom.ZombieBattleground
 
                 foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                 {
-                    if (cardAbilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry))
+                    if (triggerFilter == Enumerators.AbilityTrigger.Undefined)
                     {
-                        selectedTargets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
+                        if (cardAbilityData.HasTrigger(Enumerators.AbilityTrigger.Entry))
+                        {
+                            selectedTargets = FilterTargets(boardUnitModel, cardAbilityData.GenericParameters, GetTargets(boardUnitModel, cardAbilityData, targets));
+                        }
+                        else if (selectedTargets == null)
+                        {
+                            selectedTargets = new List<BoardObject>();
+                        }
                     }
-                    else if (selectedTargets == null)
-                    {
-                        selectedTargets = new List<BoardObject>();
-                    }
+                    else if (!cardAbilityData.HasTrigger(triggerFilter))
+                        continue;
 
                     InitializeAbility(boardUnitModel, combination, cardAbilityData, selectedTargets);
                 }
@@ -152,13 +160,15 @@ namespace Loom.ZombieBattleground
             KeyValuePair<Enumerators.AbilityTrigger, List<ICardAbility>> keyValuePair =
                 _activeAbilities.FirstOrDefault(element => element.Value.Contains(cardAbility));
 
-            if(!keyValuePair.IsDefault())
+            if(!keyValuePair.IsDefault() &&
+                keyValuePair.Value != null &&
+                keyValuePair.Value.Contains(cardAbility))
             {
                 keyValuePair.Value.Remove(cardAbility);
             }
         }
 
-        public void TakeAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
+        public void GiveAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
         {
             InitializeAbility(boardUnitModel, null, cardAbilityData, new List<BoardObject>() { boardUnitModel });
         }
@@ -188,11 +198,11 @@ namespace Loom.ZombieBattleground
 
             string abilityViewClassName, abilitySubViewClassName, abilityClassName;
 
-            foreach (Enumerators.AbilityTrigger trigger in cardAbilityData.Triggers)
+            foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
             {
                 if (ignoreEntry &&
-                    (trigger == Enumerators.AbilityTrigger.Entry ||
-                    trigger == Enumerators.AbilityTrigger.EntryWithSelection))
+                    (trigger.Trigger == Enumerators.AbilityTrigger.Entry ||
+                    trigger.Trigger == Enumerators.AbilityTrigger.EntryWithSelection))
                     continue;
 
                 abilityClassName = $"{cardAbilityData.Ability.ToString()}Ability";
@@ -215,7 +225,7 @@ namespace Loom.ZombieBattleground
                 ability = InternalTools.GetInstance<ICardAbility>(abilityClassName);
                 ability.Init(boardUnitModel, combination, cardAbilityData, targets, abilityView);
 
-                _activeAbilities[trigger].Add(ability);
+                _activeAbilities[trigger.Trigger].Add(ability);
 
                 CheckOnEntryAbility(ability, cardAbilityData);
             }
@@ -319,8 +329,8 @@ namespace Loom.ZombieBattleground
 
         public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
         {
-            if(abilityData.Triggers.Contains(Enumerators.AbilityTrigger.Entry) ||
-               abilityData.Triggers.Contains(Enumerators.AbilityTrigger.EntryWithSelection))
+            if(abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
+               abilityData.HasTrigger(Enumerators.AbilityTrigger.EntryWithSelection))
             {
                 cardAbility.DoAction();
             }
@@ -343,7 +353,7 @@ namespace Loom.ZombieBattleground
 
             foreach(ICardAbility ability in GetAbilitiesOnUnit(boardUnit))
             {
-                EndAbility(ability);
+                ability.Dispose();
             }
         }
 
@@ -402,9 +412,9 @@ namespace Loom.ZombieBattleground
             {
                 foreach (CardAbilityData data in combination.CardAbilities)
                 {
-                    foreach (Enumerators.AbilityTrigger trigger in data.Triggers)
+                    foreach (CardAbilityData.TriggerInfo trigger in data.Triggers)
                     {
-                        if (trigger == Enumerators.AbilityTrigger.EntryWithSelection)
+                        if (trigger.Trigger == Enumerators.AbilityTrigger.EntryWithSelection)
                             return true;
                     }
                 }
@@ -545,7 +555,9 @@ namespace Loom.ZombieBattleground
 
         #region parameter tools
 
-        public T GetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
+        public T GetParameterValue<T>(
+            IReadOnlyList<GenericParameter> genericParameters,
+            Enumerators.AbilityParameter abilityParameter)
         {
             GenericParameter parameter = genericParameters.FirstOrDefault(param => param.AbilityParameter == abilityParameter);
 
@@ -557,12 +569,17 @@ namespace Loom.ZombieBattleground
             return (T)Convert.ChangeType(parameter.Value, typeof(T));
         }
 
-        public bool HasParameter(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter)
+        public bool HasParameter(
+            IReadOnlyList<GenericParameter> genericParameters,
+            Enumerators.AbilityParameter abilityParameter)
         {
             return genericParameters.FindAll(param => param.AbilityParameter == abilityParameter).Count > 0;
         }
 
-        public bool TryGetParameterValue<T>(IReadOnlyList<GenericParameter> genericParameters, Enumerators.AbilityParameter abilityParameter, out T result)
+        public bool TryGetParameterValue<T>(
+            IReadOnlyList<GenericParameter> genericParameters,
+            Enumerators.AbilityParameter abilityParameter,
+            out T result)
         {
             if (!HasParameter(genericParameters, abilityParameter))
             {
@@ -571,6 +588,48 @@ namespace Loom.ZombieBattleground
             }
 
             result = GetParameterValue<T>(genericParameters, abilityParameter);
+
+            return true;
+        }
+
+        public T GetParameterValue<T>(
+            IReadOnlyList<VfxParameter> vfxParameters,
+            Enumerators.AbilityEffectType effectType,
+            Enumerators.AbilityEffectParameter effectParameter)
+        {
+            VfxParameter.VfxParameterInfo parameter = vfxParameters.FirstOrDefault(item => item.EffectType == effectType).
+                Parameters.FirstOrDefault(param => param.EffectParameter == effectParameter);
+
+            if (typeof(T).IsEnum && parameter.Value != null && parameter.Value is string value)
+            {
+                return (T)Enum.Parse(typeof(T), value, true);
+            }
+
+            return (T)Convert.ChangeType(parameter.Value, typeof(T));
+        }
+
+        public bool HasParameter(
+            IReadOnlyList<VfxParameter> vfxParameters,
+            Enumerators.AbilityEffectType effectType,
+            Enumerators.AbilityEffectParameter effectParameter)
+        {
+            return vfxParameters.FirstOrDefault(item => item.EffectType == effectType).
+                Parameters.FindAll(param => param.EffectParameter == effectParameter).Count > 0;
+        }
+
+        public bool TryGetParameterValue<T>(
+            IReadOnlyList<VfxParameter> vfxParameters,
+            Enumerators.AbilityEffectType effectType,
+            Enumerators.AbilityEffectParameter effectParameter,
+            out T result)
+        {
+            if (!HasParameter(vfxParameters, effectType, effectParameter))
+            {
+                result = default(T);
+                return false;
+            }
+
+            result = GetParameterValue<T>(vfxParameters, effectType, effectParameter);
 
             return true;
         }

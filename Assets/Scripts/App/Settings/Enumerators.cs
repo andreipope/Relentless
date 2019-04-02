@@ -20,6 +20,106 @@ namespace Loom.ZombieBattleground.Common
             InHand
         }
 
+        public enum AbilitySubTrigger
+        {
+            Undefined,
+
+            OnlyThisUnitInPlay,
+            AllOtherAllyUnitsInPlay,
+            AllAllyUnitsInPlay,
+            RandomUnit,
+            AllEnemyUnitsInPlay,
+            AllAllyUnitsByFactionInPlay,
+            ForEachFactionOfUnitInHand,
+            IfHasUnitsWithFactionInPlay,
+            AllyUnitsByFactionThatCost,
+            YourOverlord,
+
+            Delay,
+            FromHand,
+            FromDeck,
+            ByName,
+
+            TargetDeck,
+            TargetHand,
+        }
+
+        public enum AbilityType
+        {
+            Undefined,
+
+            Damage,
+            Heal,
+            Draw,
+            Reanimate,
+            CardReturn,
+            Summon,
+            ReplaceOnStrongerOnes,
+            GainGoo,
+            LoseGoo,
+            OverflowGoo,
+            AdditionalStat,
+            ChangeStat,
+            ChangeCost,
+            ChangeType,
+            TakeControl,
+            Swing,
+            Rage,
+            Shield,
+            Blitz,
+            Distract,
+            Devour,
+            Destroy,
+            Freeze,
+            PriorityAttack,
+            Flash
+        }
+
+        public enum AbilityParameter
+        {
+            Undefined,
+
+            Defense,
+            Attack,
+            Delay,
+            Damage,
+            Stat,
+            Faction,
+            Turns,
+            Goo,
+            Cost,
+            Type,
+            AttackRestriction,
+            TargetStat,
+            TargetFaction,
+            TargetType,
+            TargetStatus,
+        }
+
+        public enum AbilityEffectParameter
+        {
+            VfxPath,
+            DelayBefore,
+            DelayAfter,
+            DelayForChangeState,
+            Sound,
+            SoundDelay,
+            Offset,
+            LocalOffset,
+            IsRotation,
+            Position
+        }
+
+        public enum AbilityEffectType
+        {
+            Undefined,
+
+            Impact,
+            Moving,
+            Impact_Heavy,
+            Impact_Feral
+        }
+
         public enum Target
         {
             Undefined,
@@ -38,62 +138,6 @@ namespace Loom.ZombieBattleground.Common
 
             Target,
             TargetAdjustments
-        }
-
-        public enum AbilityType
-        {
-            Undefined,
-
-            Blitz,
-            Damage,
-            Freeze,
-            ChangeStat,
-            Draw,
-            GainGoo,
-            ChangeCost,
-            Heal,
-            ChangeType,
-            TakeControl,
-            Swing,
-            Rage,
-            Shield,
-            Reanimate,
-            CardReturn,
-            PriorityAttack,
-            OverflowGoo,
-            Distract,
-            LoseGoo,
-            Devour,
-            Destroy,
-            Summon,
-            Flash,
-            AddCard,
-            PlaceCopies,
-            ReplaceOnStrongerOnes,
-            AdditionalStat
-        }
-
-        public enum AbilityParameter
-        {
-            Undefined,
-
-            Defense,
-            Attack,
-            Delay,
-            Damage,
-            Stat,
-            TargetStat,
-            Faction,
-            TargetFaction,
-            Turns,
-            Goo,
-            Cost,
-            Type,
-            TargetType,
-            TargetStatus,
-
-            TargetDeck,
-            TargetHand
         }
 
         public enum ActionType
@@ -256,17 +300,15 @@ namespace Loom.ZombieBattleground.Common
         public enum BuffType
         {
             NONE,
-            GUARD,
-            DEFENCE,
-            HEAVY,
-            WEAPON,
-            BLITZ,
-            ATTACK,
-            FREEZE,
-            DAMAGE,
-            HEAL_ALLY,
-            DESTROY,
-            REANIMATE
+
+            Guard,
+            Defense,
+            Heavy,
+            Blitz,
+            Attack,
+            Freeze,
+            Destroy,
+            Reanimate
         }
 
         public enum CacheDataType
@@ -567,15 +609,6 @@ namespace Loom.ZombieBattleground.Common
             UseOverlordAbility
         }
 
-        public enum VisualEffectType
-        {
-            Undefined,
-            Impact,
-            Moving,
-            Impact_Heavy,
-            Impact_Feral
-        }
-
         public enum ShutterState
         {
             Open,
@@ -605,21 +638,6 @@ namespace Loom.ZombieBattleground.Common
             PlayOverlordSkill
         }
 
-        public enum AbilitySubTrigger
-        {
-            None,
-            OnlyThisUnitInPlay,
-            AllOtherAllyUnitsInPlay,
-            AllAllyUnitsInPlay,
-            RandomUnit,
-            AllEnemyUnitsInPlay,
-            AllAllyUnitsByFactionInPlay,
-            ForEachFactionOfUnitInHand,
-            IfHasUnitsWithFactionInPlay,
-            AllyUnitsByFactionThatCost,
-            YourOverlord
-        }
-
         public enum UniqueAnimation
         {
             None,
@@ -629,19 +647,6 @@ namespace Loom.ZombieBattleground.Common
             CerberusArrival,
             TzunamyArrival,
             ChernoBillArrival
-        }
-
-        public enum CardNameOfAbility
-        {
-            None,
-            Bulldozer,
-            Lawnmover
-        }
-
-        public enum AbilityEffectInfoPositionType
-        {
-            Target,
-            Overlord
         }
 
         public enum ShakeType

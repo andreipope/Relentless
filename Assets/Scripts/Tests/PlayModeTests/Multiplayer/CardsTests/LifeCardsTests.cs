@@ -43,13 +43,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerCardId, ItemPosition.Start);
                            player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.Reanimate, new List<ParametrizedAbilityInstanceId>());
-                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Reanimate, new List<ParametrizedAbilityInstanceId>());
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => player.CardAttack(playerCardId, opponentCardId),
                        opponent => {},
@@ -1362,12 +1362,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardPlay(playerBlightId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerBlightId, Enumerators.AbilityType.PlaceCopies, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerBlightId, Enumerators.AbilityType.Summon, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentBlightId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentBlightId, Enumerators.AbilityType.PlaceCopies, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentBlightId, Enumerators.AbilityType.Summon, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => {},
                        opponent => {}

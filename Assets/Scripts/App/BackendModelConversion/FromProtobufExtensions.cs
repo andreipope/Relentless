@@ -151,7 +151,7 @@ namespace Loom.ZombieBattleground.Data
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
         {
             return new AbilityData.VisualEffectInfo(
-                (Enumerators.VisualEffectType) visualEffectInfo.Type,
+                (Enumerators.AbilityEffectType) visualEffectInfo.Type,
                 visualEffectInfo.Path
             );
         }

@@ -1,0 +1,42 @@
+{
+  "RankBuffs": [
+    {
+      "BuffType": "Reanimate",
+      "AbilityData": {
+        "Ability": "Reanimate",
+        "GameMechanicDescription": "Reanimate",
+        "Triggers": [
+          {
+            "Trigger": "Death",
+            "SubTriggers": []
+          }
+        ],
+        "Targets": [
+          {
+            "Target": "ItSelf"
+          }
+        ],
+        "GenericParameters": []
+      }
+    },
+    {
+      "BuffType": "Destroy",
+      "AbilityData": {
+        "Ability": "Destroy",
+        "GameMechanicDescription": "Destroy",
+        "Triggers": [
+          {
+            "Trigger": "Attack"
+          }
+        ],
+        "Targets": [
+          {
+            "Target": "OpponentCard",
+            "TargetFilter": "Target"
+          }
+        ],
+        "GenericParameters": []
+      }
+    }
+  ]
+}

@@ -32,6 +32,8 @@ namespace Loom.ZombieBattleground
 
         public ICardAbility CardAbility { get; protected set; }
 
+        protected IReadOnlyList<VfxParameter> VfxParameters { get; private set; }
+
         public CardAbilityView()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -43,6 +45,7 @@ namespace Loom.ZombieBattleground
         public void Init(ICardAbility cardAbility)
         {
             CardAbility = cardAbility;
+            VfxParameters = CardAbility.CardAbilityData.VfxParameters;
         }
 
         public virtual void DoVFXAction(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null)

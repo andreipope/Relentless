@@ -38,8 +38,9 @@
                     "Ability": "AdditionalStat",
                     "GameMechanicDescription": "Attack",
                     "Triggers": [
-                      "Attack",
-                      "AtDefense"
+                      {
+                        "Trigger": "Attack"
+                      }
                     ],
                     "Targets": [
                       {
@@ -54,7 +55,18 @@
                       },
                       {
                         "AbilityParameter": "TargetFaction",
-                        "Value": "Fire"
+                        "Value": "Toxic"
+                      }
+                    ],
+                    "VfxParameters": [
+                      {
+                        "EffectType": "Impact",
+                        "Parameters": [
+                          {
+                            "EffectParameter": "VfxPath",
+                            "Value": "/path/to/my/vfx"
+                          }
+                        ]
                       }
                     ]
                   }

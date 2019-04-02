@@ -48,6 +48,9 @@ namespace Loom.ZombieBattleground
 
         private readonly PlayerController _playerController;
 
+        private readonly RanksController _ranksController;
+
+
         private readonly IPvPManager _pvpManager;
 
         private int _stunTurns;
@@ -75,6 +78,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
+            _ranksController = _gameplayManager.GetController<RanksController>();
             _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
@@ -288,60 +292,44 @@ namespace Loom.ZombieBattleground
         {
             switch (type)
             {
-                case Enumerators.BuffType.ATTACK:
+                case Enumerators.BuffType.Attack:
                     CurrentDamage++;
                     BuffedDamage++;
-                    AddBuff(Enumerators.BuffType.ATTACK);
+                    AddBuff(Enumerators.BuffType.Attack);
                     break;
-                case Enumerators.BuffType.DAMAGE:
-                    break;
-                case Enumerators.BuffType.DEFENCE:
+                case Enumerators.BuffType.Defense:
                     CurrentDefense++;
                     BuffedDefense++;
                     break;
-                case Enumerators.BuffType.FREEZE:
+                case Enumerators.BuffType.Freeze:
                     TakeFreezeToAttacked = true;
                     AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Freeze);
                     break;
-                case Enumerators.BuffType.HEAVY:
+                case Enumerators.BuffType.Heavy:
                     HasBuffHeavy = true;
                     break;
-                case Enumerators.BuffType.BLITZ:
+                case Enumerators.BuffType.Blitz:
                     if ((ignoreTurnsOnBoard || NumTurnsOnBoard == 0) && !HasFeral)
                     {
                         AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
                         HasBuffRush = true;
                     }
                     break;
-                case Enumerators.BuffType.GUARD:
+                case Enumerators.BuffType.Guard:
                     HasBuffShield = true;
                     break;
-                case Enumerators.BuffType.REANIMATE:
+                case Enumerators.BuffType.Reanimate:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Reanimate))
                     {
                         IsReanimated = false;
 
-                        _abilitiesController.TakeAbilityToUnit(this, new CardAbilityData(
-                                Enumerators.AbilityType.Reanimate,
-                                Enumerators.GameMechanicDescription.Reanimate,
-                                new List<Enumerators.AbilityTrigger>() { Enumerators.AbilityTrigger.Death },
-                                new List<CardAbilityData.TargetInfo>() { new CardAbilityData.TargetInfo(
-                                                                                Enumerators.Target.ItSelf,
-                                                                                Enumerators.TargetFilter.Undefined) },
-                                new List<GenericParameter>()));
+                        _abilitiesController.GiveAbilityToUnit(this, _ranksController.RankBuffsData.GetDataByType(Enumerators.BuffType.Reanimate));
                     }
                     break;
-                case Enumerators.BuffType.DESTROY:
+                case Enumerators.BuffType.Destroy:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Destroy))
                     {
-                        _abilitiesController.TakeAbilityToUnit(this, new CardAbilityData(
-                                Enumerators.AbilityType.Destroy,
-                                Enumerators.GameMechanicDescription.Destroy,
-                                new List<Enumerators.AbilityTrigger>() { Enumerators.AbilityTrigger.Attack },
-                                new List<CardAbilityData.TargetInfo>() { new CardAbilityData.TargetInfo(
-                                                                                Enumerators.Target.OpponentCard,
-                                                                                Enumerators.TargetFilter.Target) },
-                                new List<GenericParameter>()));
+                        _abilitiesController.GiveAbilityToUnit(this, _ranksController.RankBuffsData.GetDataByType(Enumerators.BuffType.Destroy));
                     }
                     break;
             }
@@ -357,7 +345,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             HasBuffShield = false;
-            BuffsOnUnit.Remove(Enumerators.BuffType.GUARD);
+            BuffsOnUnit.Remove(Enumerators.BuffType.Guard);
             BuffShieldStateChanged?.Invoke(false);
 
             RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Guard);
@@ -365,7 +353,7 @@ namespace Loom.ZombieBattleground
 
         public void AddBuffShield()
         {
-            AddBuff(Enumerators.BuffType.GUARD);
+            AddBuff(Enumerators.BuffType.Guard);
             HasBuffShield = true;
             BuffShieldStateChanged?.Invoke(true);
 
@@ -564,11 +552,11 @@ namespace Loom.ZombieBattleground
                 // RANK buff attack should be removed at next player turn
                 if (BuffsOnUnit != null)
                 {
-                    int attackToRemove = BuffsOnUnit.FindAll(x => x == Enumerators.BuffType.ATTACK).Count;
+                    int attackToRemove = BuffsOnUnit.FindAll(x => x == Enumerators.BuffType.Attack).Count;
 
                     if (attackToRemove > 0)
                     {
-                        BuffsOnUnit.RemoveAll(x => x == Enumerators.BuffType.ATTACK);
+                        BuffsOnUnit.RemoveAll(x => x == Enumerators.BuffType.Attack);
 
                         BuffedDamage -= attackToRemove;
                         CurrentDamage -= attackToRemove;
