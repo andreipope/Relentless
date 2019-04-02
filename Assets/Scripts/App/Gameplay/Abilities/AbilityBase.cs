@@ -468,7 +468,7 @@ namespace Loom.ZombieBattleground
 
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
-            return BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(AbilityUnitOwner);
+            return BattlegroundController.GetCardViewByModel<BoardUnitView>(AbilityUnitOwner);
         }
 
         protected List<CardModel> GetRandomEnemyUnits(int count)

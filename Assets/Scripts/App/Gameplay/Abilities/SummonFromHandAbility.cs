@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                     break;
 
-                BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(cards[i]);
                 PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
             }
 

@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            CardModel cardModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+            CardModel cardModel = _testHelper.BattlegroundController.GetCardModelByInstanceId(card);
 
             if (!forceSkipForPlayerToo)
             {
@@ -101,8 +101,8 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            CardModel cardModel = _testHelper.GetBoardUnitModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
-            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardModel);
+            CardModel cardModel = _testHelper.GetCardModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
 
             void CheckAttacker()
             {

@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
                 }
 
-                BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                 CreateVfx(unitView.Transform.position, true);
             }
         }

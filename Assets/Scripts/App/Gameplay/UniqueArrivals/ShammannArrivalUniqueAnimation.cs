@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
             PlaySound("Shammann");
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as CardModel);
+            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
             const float yOffsetOfCard = -0.75f;
 

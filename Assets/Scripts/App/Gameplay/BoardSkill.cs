@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
                             case CardModel cardModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(cardModel);
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(cardModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);

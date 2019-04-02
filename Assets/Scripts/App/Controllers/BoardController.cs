@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)

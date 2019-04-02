@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                 boardCardView.SetDefaultAnimation();
             }
 
-            _battlegroundController.RegisterBoardUnitView(boardCardView, boardCardView.Model.OwnerPlayer);
+            _battlegroundController.RegisterCardView(boardCardView, boardCardView.Model.OwnerPlayer);
 
             if (silent)
             {
@@ -291,7 +291,7 @@ namespace Loom.ZombieBattleground
 
             OpponentHandCardView opponentHandCard = CreateOpponentHandCard(cardModel);
 
-            _battlegroundController.RegisterBoardUnitView(opponentHandCard, cardModel.OwnerPlayer);
+            _battlegroundController.RegisterCardView(opponentHandCard, cardModel.OwnerPlayer);
             _abilitiesController.CallAbilitiesInHand(cardModel);
 
             CallLog($"{nameof(CreateAndAddPlayerHandCard)} returned {opponentHandCard}");
@@ -491,7 +491,7 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                     {
-                        _battlegroundController.RegisterBoardUnitView(boardCardView, boardCardView.Model.OwnerPlayer);
+                        _battlegroundController.RegisterCardView(boardCardView, boardCardView.Model.OwnerPlayer);
                         _cardsInHand.Insert(ItemPosition.End, cardModel);
 
                         _battlegroundController.UpdatePositionOfCardsInPlayerHand(true);
@@ -570,17 +570,17 @@ namespace Loom.ZombieBattleground
 
             if (Player.IsLocalPlayer)
             {
-                _battlegroundController.RegisterBoardUnitView(boardUnitView, _gameplayManager.CurrentPlayer);
+                _battlegroundController.RegisterCardView(boardUnitView, _gameplayManager.CurrentPlayer);
             }
             else
             {
-                opponentHandCard = _battlegroundController.GetBoardUnitViewByModel<OpponentHandCardView>(card.Model);
+                opponentHandCard = _battlegroundController.GetCardViewByModel<OpponentHandCardView>(card.Model);
                 if (opponentHandCard != null)
                 {
-                    _battlegroundController.UnregisterBoardUnitView(opponentHandCard, opponentHandCard.Model.OwnerPlayer);
+                    _battlegroundController.UnregisterCardView(opponentHandCard, opponentHandCard.Model.OwnerPlayer);
                 }
 
-                _battlegroundController.RegisterBoardUnitView(boardUnitView, _gameplayManager.OpponentPlayer);
+                _battlegroundController.RegisterCardView(boardUnitView, _gameplayManager.OpponentPlayer);
             }
 
             AddCardToBoard(card.Model, ItemPosition.End);
@@ -730,12 +730,12 @@ namespace Loom.ZombieBattleground
 
             if (isPVPNetwork)
             {
-                _battlegroundController.RegisterBoardUnitView(unit, Player);
+                _battlegroundController.RegisterCardView(unit, Player);
             }
             else
             {
                 //Player.BoardCards.Insert(position, unit);
-                _battlegroundController.RegisterBoardUnitView(unit, Player);
+                _battlegroundController.RegisterCardView(unit, Player);
             }
 
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
@@ -828,7 +828,7 @@ namespace Loom.ZombieBattleground
             handCard.CheckStatusOfHighlight();
             boardCardView.Transform.localScale = Vector3.one * .3f;
 
-            _battlegroundController.RegisterBoardUnitView(boardCardView);
+            _battlegroundController.RegisterCardView(boardCardView);
             _abilitiesController.CallAbilitiesInHand(cardModel);
 
             return boardCardView;

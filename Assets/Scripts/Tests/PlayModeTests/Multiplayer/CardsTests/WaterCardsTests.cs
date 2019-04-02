@@ -1120,7 +1120,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerSlabId));
+                    Assert.IsNull(TestHelper.BattlegroundController.GetCardModelByInstanceId(playerSlabId));
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - 4, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 

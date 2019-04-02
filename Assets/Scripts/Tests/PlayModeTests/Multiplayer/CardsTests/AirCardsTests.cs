@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(7, TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerMonzoon2Id).Card.InstanceCard.Cost);
+                    Assert.AreEqual(7, TestHelper.BattlegroundController.GetCardModelByInstanceId(playerMonzoon2Id).Card.InstanceCard.Cost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
@@ -395,7 +395,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(3, TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerZephyrId).Card.InstanceCard.Cost);
+                    Assert.AreEqual(3, TestHelper.BattlegroundController.GetCardModelByInstanceId(playerZephyrId).Card.InstanceCard.Cost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

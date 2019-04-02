@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground
                     position = unit.Transform.position;
                     break;
                 case CardModel unit:
-                    position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    position = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case Player player:
                     position = player.AvatarObject.transform.position;
@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case CardModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case CardModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case HandBoardCard cardInHand:
                     break;
@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
                     target = unit.Transform;
                     break;
                 case CardModel unit:
-                    target = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
+                    target = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform;
                     break;
                 case Player _:
                     target = ((Player)onObject).AvatarObject.transform;

@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
                     attackingUnitModel.InvokeKilledUnit(attackedUnitModel);
                 }
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -damageAttacking);
 
                 attackedUnitModel.InvokeUnitDamaged(attackingUnitModel);
                 attackingUnitModel.InvokeUnitAttacked(attackedUnitModel, damageAttacking, true);
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
                             attackedUnitModel.InvokeKilledUnit(attackingUnitModel);
                         }
 
-                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
+                        _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackingUnitModel), -damageAttacked);
 
                         attackingUnitModel.InvokeUnitDamaged(attackedUnitModel);
                         attackedUnitModel.InvokeUnitAttacked(attackingUnitModel, damageAttacked, false);
@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
-                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackedUnitModel), -damage);
+                _vfxController.SpawnGotDamageEffect(_battlegroundController.GetCardViewByModel<BoardUnitView>(attackedUnitModel), -damage);
             }
         }
 

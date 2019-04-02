@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position;
+            Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(TargetUnit).Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 

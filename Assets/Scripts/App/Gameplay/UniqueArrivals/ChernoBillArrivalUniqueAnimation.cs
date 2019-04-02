@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
             const float delayBeforeSpawn = 5f;
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as CardModel);
+            BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(boardObject as CardModel);
 
             unitView.GameObject.SetActive(false);
 

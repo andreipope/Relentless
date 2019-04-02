@@ -146,14 +146,14 @@ namespace Loom.ZombieBattleground
                         if (_ownerId != 0)
                         {
                             _ownerCardInHand =
-                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
+                                _battlegroundController.GetCardViewByModel<BoardCardView>(
                                     _gameplayManager.CurrentPlayer.CardsInHand.FirstOrDefault(card => card.Card.TutorialObjectId == ownerId)
                                 );
                         }
                         else if(_gameplayManager.CurrentPlayer.CardsInHand.Count > 0)
                         {
                             _ownerCardInHand =
-                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand[0]);
+                                _battlegroundController.GetCardViewByModel<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand[0]);
                         }
                         break;
                     default:
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 
                 if (cardModel != null)
                 {
-                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(cardModel);
+                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(cardModel);
                 }
             }
             else if(boardObjectOwner != null)
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardObjectOwner as CardModel);
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(boardObjectOwner as CardModel);
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;

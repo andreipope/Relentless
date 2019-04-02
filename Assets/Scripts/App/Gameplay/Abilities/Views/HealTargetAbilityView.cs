@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
                     switch (boardObject)
                     {
                         case CardModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                            targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = player.AvatarObject.transform.position;
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position);
+                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position);
                     targetPosition = Utilites.CastVfxPosition(targetPosition);
                     VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
                     switch (boardObject)
                     {
                         case CardModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                            targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                             isUnit = true;
                             break;
                         case Player player:

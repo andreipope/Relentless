@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                         switch (boardObject)
                         {
                             case CardModel unit:
-                                _unitsViews.Add(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit));
+                                _unitsViews.Add(_battlegroundController.GetCardViewByModel<BoardUnitView>(unit));
                                 break;
                             default:
                                 break;
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
                             case Enumerators.Target.PLAYER_ALL_CARDS:
                                 foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                                 {
-                                    BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                    BoardUnitView cardPlayerView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardPlayer);
                                     CreateVfx(cardPlayerView.Transform.position, true);
                                 }
                                 break;

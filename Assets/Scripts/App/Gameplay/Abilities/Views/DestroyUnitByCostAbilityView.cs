@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
-                Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
 
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
 
                 InternalTools.DoActionDelayed(() =>
                 {
-                    _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).ChangeModelVisibility(false);
+                    _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).ChangeModelVisibility(false);
                 }, delayChangeState);
 
                 CreateVfx(targetPosition, true, delayBeforeDestroy, true);

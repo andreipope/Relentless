@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         public void MoveCardFromPlayerDeckToPlayerHandAnimation(Player fromDeck, Player toHand, BoardCardView boardCardView)
         {
-            _battlegroundController.RegisterBoardUnitView(boardCardView);
+            _battlegroundController.RegisterCardView(boardCardView);
 
             Animator animator = boardCardView.GameObject.GetComponent<Animator>();
             boardCardView.Transform.localScale = Vector3.zero;
@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
 
         public void MoveCardFromPlayerDeckToOpponentHandAnimation(Player fromDeck, Player toHand, OpponentHandCardView boardCardView)
         {
-            _battlegroundController.RegisterBoardUnitView(boardCardView);
+            _battlegroundController.RegisterCardView(boardCardView);
 
             Animator animator = boardCardView.GameObject.GetComponent<Animator>();
             boardCardView.Transform.localScale = Vector3.zero;

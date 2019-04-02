@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             RanksController.AddUnitForIgnoreRankBuff(unit);
 
             unit.IsReanimated = true;
-            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+            BoardUnitView view = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
             view.StopSleepingParticles();
 
             unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);

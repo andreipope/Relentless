@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
                     player.SetGlowStatus(true);
                     break;
                 case CardModel unit:
-                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                     TargetPosition = unitView.Transform.position;
                     unitView.SetSelectedUnit(true);
                     break;
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
                         player.SetGlowStatus(false);
                         break;
                     case CardModel unit:
-                        BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                        BoardUnitView unitView = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                         unitView.SetSelectedUnit(false);
                         break;
                     default:

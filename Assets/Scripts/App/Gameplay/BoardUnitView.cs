@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
             Transform.DOKill();
             Object.Destroy(GameObject);
 
-            _battlegroundController.UnregisterBoardUnitView(this, Model.OwnerPlayer);
+            _battlegroundController.UnregisterCardView(this, Model.OwnerPlayer);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)
@@ -598,7 +598,7 @@ namespace Loom.ZombieBattleground
                         {
                             unitModel.Stun(Enumerators.StunType.FREEZE, 1);
 
-                            BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
+                            BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unitModel);
                             CreateFrozenVfx(unitView.Transform.position);
                         }
                     }
@@ -897,7 +897,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleAttackCard(Action completeCallback, CardModel targetCard, Action hitCallback, Action attackCompleteCallback)
         {
-            BoardUnitView targetCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(targetCard);
+            BoardUnitView targetCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>(targetCard);
 
             if (targetCardView == null || targetCardView.GameObject == null)
             {

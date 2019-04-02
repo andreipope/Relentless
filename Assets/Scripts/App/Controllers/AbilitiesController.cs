@@ -576,10 +576,10 @@ namespace Loom.ZombieBattleground
 
                                            cardModel.Owner.PlayerCardsController.AddCardFromBoardToHand(card.Model);
 
-                                           BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardModel);
+                                           BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
                                            if (boardUnitView != null)
                                            {
-                                               _battlegroundController.UnregisterBoardUnitView(boardUnitView);
+                                               _battlegroundController.UnregisterCardView(boardUnitView);
                                            }
 
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -819,7 +819,7 @@ namespace Loom.ZombieBattleground
 
                 if (abilityCaller is CardModel unitModel)
                 {
-                    BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
+                    BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unitModel);
                     if (boardUnitView != null)
                         from = boardUnitView.Transform;
                 }

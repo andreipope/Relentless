@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
 
             CardModel creature = (CardModel)TargetUnit;
 
-            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(creature).Transform.position);
+            CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(creature).Transform.position);
 
             CardModel leftAdjustment = null, rightAdjustment = null;
 

@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
                        List<CardModel> filter = units.Where(unit =>
                                     unit.Card.Prototype.Faction == cardModel.Prototype.Faction &&
                                     (int)unit.Card.Prototype.Rank < (int)cardModel.Prototype.Rank &&
-                                    !_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).WasDestroyed &&
+                                    !_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).WasDestroyed &&
                                     !unit.IsDead &&
                                     !_unitsForIgnoreRankBuff.Contains(unit) &&
                                       unit.Card.Prototype.Faction != Enumerators.Faction.ITEM &&

@@ -1125,7 +1125,7 @@ namespace Loom.ZombieBattleground.Test
             }
 
             Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-            BoardCardView boardCardView = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(cardModel);
+            BoardCardView boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
             switch (cardModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE
@@ -1236,7 +1236,7 @@ namespace Loom.ZombieBattleground.Test
                     arrow.OnPlayerSelected(player);
                     break;
                 case CardModel cardModel:
-                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardModel));
+                    arrow.OnCardSelected(_battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -1253,9 +1253,9 @@ namespace Loom.ZombieBattleground.Test
             return _testBroker.GetPlayer(_opponent);
         }
 
-        public CardModel GetBoardUnitModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
+        public CardModel GetCardModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
         {
-            CardModel cardModel = BattlegroundController.GetBoardUnitModelByInstanceId(instanceId);
+            CardModel cardModel = BattlegroundController.GetCardModelByInstanceId(instanceId);
             if (cardModel == null)
                 throw new Exception($"Card {instanceId} not found on board");
 

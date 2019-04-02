@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 
                             _canBeReverted = !revert;
 
-                            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnit).Transform.position);
+                            CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(boardUnit).Transform.position);
 
                             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
                             {

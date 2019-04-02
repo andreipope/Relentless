@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                         {
                             foreach (CardModel unit in _opponent.CardsOnBoard)
                             {
-                                BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                                BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                                 position = unitView.Transform.position;
                                 CreateVfx(position, true, delayBeforeDestroy, true);
                             }

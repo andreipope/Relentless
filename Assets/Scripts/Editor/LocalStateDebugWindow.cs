@@ -160,7 +160,7 @@ namespace Editor
                         GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, AfterPlayerDrawnHandlerCallback, ref isExpanded);
 
-                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.BoardUnitViews, true);
+                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.CardViews, true);
                 }
                 EditorGUILayout.EndVertical();
             }

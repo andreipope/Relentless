@@ -355,7 +355,7 @@ namespace Loom.ZombieBattleground
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
-                IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard);
+                IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard);
 
                 // set correct position on board depends from card view position
                 for (int i = 0; i < player.CardsOnBoard.Count; i++)
@@ -375,7 +375,7 @@ namespace Loom.ZombieBattleground
                     _indexOfCard = newIndexOfCard;
 
                     IReadOnlyList<BoardUnitView> playerCards =
-                        _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.CurrentPlayer.CardsOnBoard);
+                        _battlegroundController.GetCardViewsFromModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
                     List<BoardUnitView> toArrangeList = new List<BoardUnitView>();
 
                     for (int i = 0; i < playerCards.Count; i++)
@@ -392,7 +392,7 @@ namespace Loom.ZombieBattleground
         public void ReturnCardToHand(CardModel cardModel)
         {
             Player unitOwner = cardModel.OwnerPlayer;
-            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardModel);
+            BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
 
             cardModel.Card.InstanceCard.Cost = cardModel.Card.Prototype.Cost;
 
@@ -457,7 +457,7 @@ namespace Loom.ZombieBattleground
                             card.FuturePositionOnBoard = 0;
                             float newCreatureCardPosition = card.Transform.position.x;
 
-                            IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard);
+                            IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard);
 
                             // set correct position on board depends from card view position
                             for (int i = 0; i < player.CardsOnBoard.Count; i++)
@@ -478,10 +478,10 @@ namespace Loom.ZombieBattleground
                             boardUnitView.Transform.position = new Vector2(1.9f * player.CardsOnBoard.Count, 0);
 
                             player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
-                            _battlegroundController.RegisterBoardUnitView(boardUnitView, player, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
+                            _battlegroundController.RegisterCardView(boardUnitView, player, InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.CardsOnBoard));
                             //player.BoardCards.Insert(InternalTools.GetSafePositionToInsert(card.FuturePositionOnBoard, player.BoardCards), boardUnitView);
                             player.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
-                            _battlegroundController.UnregisterBoardUnitView(card);
+                            _battlegroundController.UnregisterCardView(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             InternalTools.DoActionDelayed(
@@ -532,7 +532,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.CardKind.ITEM:
                         {
                             player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
-                            _battlegroundController.UnregisterBoardUnitView(card);
+                            _battlegroundController.UnregisterCardView(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                             card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
@@ -591,7 +591,7 @@ namespace Loom.ZombieBattleground
                 _gameplayManager.OpponentPlayer.CardsInHand.Count > 0)
             {
                 opponentHandCard =
-                    _battlegroundController.GetBoardUnitViewByModel<OpponentHandCardView>(
+                    _battlegroundController.GetCardViewByModel<OpponentHandCardView>(
                         _gameplayManager.OpponentPlayer.CardsInHand.FirstOrDefault(x => x.InstanceId == cardId)
                     );
             }
@@ -601,7 +601,7 @@ namespace Loom.ZombieBattleground
 
             CardModel card = opponentHandCard.Model;
 
-            _battlegroundController.UnregisterBoardUnitView(opponentHandCard);
+            _battlegroundController.UnregisterCardView(opponentHandCard);
             player.PlayerCardsController.RemoveCardFromHand(card);
             cardFoundCallback?.Invoke(card);
 
@@ -692,7 +692,7 @@ namespace Loom.ZombieBattleground
 
             if (player.IsLocalPlayer)
             {
-                BoardCardView boardCardView = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(cardModel);
+                BoardCardView boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
 
                 boardCardView.Model.Card.InstanceCard.Cost = Math.Max(boardCardView.Model.Card.InstanceCard.Cost + value, 0);
                 boardCardView.UpdateCardCost();
@@ -713,7 +713,7 @@ namespace Loom.ZombieBattleground
             {
                 if (boardCardView == null)
                 {
-                    boardCardView = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(cardModel);
+                    boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
                     Assert.IsNotNull(boardCardView);
                 }
 

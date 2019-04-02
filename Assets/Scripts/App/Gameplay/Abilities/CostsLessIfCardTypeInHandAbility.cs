@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility,
                 CardModel,
                 CardModel.Prototype.Cost + gooCost,
-                BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(CardModel)
+                BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
             );
         }
         

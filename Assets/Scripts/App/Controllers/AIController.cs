@@ -956,7 +956,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.tag = SRTags.OpponentOwned;
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
-                        _battlegroundController.RegisterBoardUnitView(boardUnitViewElement, _gameplayManager.OpponentPlayer, ItemPosition.End);
+                        _battlegroundController.RegisterCardView(boardUnitViewElement, _gameplayManager.OpponentPlayer, ItemPosition.End);
                         _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -1651,7 +1651,7 @@ namespace Loom.ZombieBattleground
                         skill.FightTargetingArrow.SelectedPlayer = (Player) target;
                         break;
                     case Enumerators.AffectObjectType.Character:
-                        BoardUnitView selectedCardView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>((CardModel) target);
+                        BoardUnitView selectedCardView = _battlegroundController.GetCardViewByModel<BoardUnitView>((CardModel) target);
                         skill.FightTargetingArrow.SelectedCard = selectedCardView;
                         break;
                     case Enumerators.AffectObjectType.None:

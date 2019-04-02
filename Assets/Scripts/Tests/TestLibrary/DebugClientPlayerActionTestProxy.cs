@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
-            CardModel cardModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+            CardModel cardModel = _testHelper.BattlegroundController.GetCardModelByInstanceId(card);
             Assert.NotNull(cardModel, $"cardModel != null for instance id {card}");
 
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));

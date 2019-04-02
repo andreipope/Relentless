@@ -2063,8 +2063,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    CardModel playerCardInHand = TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerWhizparId);
-                    CardModel opponentCardInHand = TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(opponentWhizpar2Id);
+                    CardModel playerCardInHand = TestHelper.BattlegroundController.GetCardModelByInstanceId(playerWhizparId);
+                    CardModel opponentCardInHand = TestHelper.BattlegroundController.GetCardModelByInstanceId(opponentWhizpar2Id);
 
                     Assert.AreEqual(playerCardInHand.Card.Prototype.Cost - 1, playerCardInHand.Card.InstanceCard.Cost);
                     Assert.AreEqual(opponentCardInHand.Card.Prototype.Cost - 1, playerCardInHand.Card.InstanceCard.Cost);

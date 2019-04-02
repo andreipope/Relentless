@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
                             CreateVfx(targetPosition, true, 5f, true);
                             break;
                         case CardModel unit:
-                            targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
+                            targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position);
                             CreateVfx(targetPosition, true, 5f);
                             break;
                         default:

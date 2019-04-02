@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
                 foreach (var unit in _units)
                 {
-                    targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position);
+                    targetPosition = Utilites.CastVfxPosition(_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position);
                     CreateVfx(targetPosition, true, 5f, true);
                 }
             }

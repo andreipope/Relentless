@@ -789,7 +789,7 @@ namespace Loom.ZombieBattleground
 
             if (owner.IsLocalPlayer)
             {
-                BoardCardView boardCardView = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(cardModel);
+                BoardCardView boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
                 GameObject particle = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/LevitateVFX"));
                 particle.transform.position = boardCardView.Transform.position;
                 particle.transform.SetParent(boardCardView.Transform, true);
@@ -1058,7 +1058,7 @@ namespace Loom.ZombieBattleground
 
                     _vfxController.CreateSkillVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
-                    _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position,
+                    _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position,
                     targetUnit,
                     (x) =>
                     {
@@ -1222,7 +1222,7 @@ namespace Loom.ZombieBattleground
                 {
                     _vfxController.CreateSkillVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDartVFX"),
-                    _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position,
+                    _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position,
                     target,
                     (x) =>
                     {
@@ -1431,7 +1431,7 @@ namespace Loom.ZombieBattleground
                             _battleController.HealUnitBySkill(owner, boardSkill, unit);
                             _vfxController.CreateVfx(
                             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HealingTouchVFX"),
-                            _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit));
+                            _battlegroundController.GetCardViewByModel<BoardUnitView>(unit));
                             _soundManager.PlaySound(
                                 Enumerators.SoundType.OVERLORD_ABILITIES,
                                 skill.Skill.ToString().ToLowerInvariant(),
@@ -1566,7 +1566,7 @@ namespace Loom.ZombieBattleground
             {
                 _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, cardModel, owner);
             }
-            _battlegroundController.RegisterBoardUnitView(boardUnitView, owner);
+            _battlegroundController.RegisterCardView(boardUnitView, owner);
 
             return boardUnitView;
         }
@@ -1800,7 +1800,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardModel unit in units)
             {
-                BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                 Vector3 targetPosition = unitView.Transform.position + Vector3.up * 0.7f;
 
                 _vfxController.CreateVfx(prefabFreeze, targetPosition, true, 6);
@@ -2037,7 +2037,7 @@ namespace Loom.ZombieBattleground
                 }, 2.5f);
 
                 GameObject vfxObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/MeteorShowerVFX"));
-                vfxObject.transform.position =  _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                vfxObject.transform.position =  _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                 _gameplayManager.GetController<ParticlesController>().RegisterParticleSystem(vfxObject, true, 8);
 
                 string skillTitle = skill.Skill.ToString().ToLowerInvariant();
@@ -2103,7 +2103,7 @@ namespace Loom.ZombieBattleground
                 unit.BuffedDefense += skill.Value;
                 unit.CurrentDefense += skill.Value;
 
-                Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 position = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.6f;
 
                 _vfxController.CreateVfx(
@@ -2214,7 +2214,7 @@ namespace Loom.ZombieBattleground
                 unit.BuffedDefense += skill.Value;
                 unit.CurrentDefense += skill.Value;
 
-                Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 position = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.65f;
 
                 _vfxController.CreateVfx(
@@ -2265,7 +2265,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.SetAsHeavyUnit();
 
-                BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                BoardUnitView unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit);
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FortressVFX"), unitView.Transform.position, true, 6f);
 

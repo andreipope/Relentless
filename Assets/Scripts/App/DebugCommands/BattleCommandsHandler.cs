@@ -420,16 +420,16 @@ static class BattleCommandsHandler
 
         player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
         player.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
-        _battlegroundController.RegisterBoardUnitView(newUnit, player);
+        _battlegroundController.RegisterCardView(newUnit, player);
 
-        _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard), true, null);
     }
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
 
-        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(obj.AttackingUnitModel);
+        BoardUnitView attackingUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(obj.AttackingUnitModel);
         if (attackingUnitView.GameObject == null)
         {
             GetCardFromGraveyard(attackingUnitView, _gameplayManager.CurrentPlayer);
@@ -635,7 +635,7 @@ static class BattleCommandsHandler
         CardModel targetUnit = (CardModel)playOverlordSkill.Targets[0].BoardObject;
 
         BoardCardView card =
-            _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
+            _battlegroundController.GetCardViewByModel<BoardCardView>(
                 _gameplayManager.CurrentPlayer.CardsInHand.First(x => x == targetUnit));
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
