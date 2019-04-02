@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using System;
+using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -7,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         public override void DoAction()
         {
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardObject target in Targets)
             {
                 switch (target)
@@ -18,10 +21,20 @@ namespace Loom.ZombieBattleground
                                                                        Enumerators.AbilityParameter.Type);
 
                             TakeTypeToUnit(boardUnitModel, type);
+
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = (Enumerators.ActionEffectType)Enum.Parse(typeof(Enumerators.ActionEffectType), type.ToString(), true),
+                                Target = boardUnitModel
+                            });
                         }
                         break;
                 }
             }
+
+            Enumerators.ActionType actionType = Targets.Count == 1 ? Enumerators.ActionType.CardAffectingMultipleCards : Enumerators.ActionType.CardAffectingCard;
+
+            PostGameActionReport(actionType, targetEffects);
         }
 
         private void TakeTypeToUnit(BoardUnitModel unit, Enumerators.CardType type)
