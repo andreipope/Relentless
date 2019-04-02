@@ -19,9 +19,12 @@ namespace Loom.ZombieBattleground
 
         ICardAbilityView AbilityView { get; }
 
+        Enumerators.AbilityTrigger MainTrigger { get; }
+
         void Init(
             BoardUnitModel boardUnitModel,
             CardAbilitiesCombination combination,
+            Enumerators.AbilityTrigger trigger,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
@@ -70,6 +73,8 @@ namespace Loom.ZombieBattleground
 
         public ICardAbilityView AbilityView { get; private set; }
 
+        public Enumerators.AbilityTrigger MainTrigger { get; private set; }
+
         public CardAbility()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -90,6 +95,7 @@ namespace Loom.ZombieBattleground
         public virtual void Init(
             BoardUnitModel boardUnitModel,
             CardAbilitiesCombination combination,
+            Enumerators.AbilityTrigger trigger,
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null)
@@ -101,15 +107,7 @@ namespace Loom.ZombieBattleground
             Targets = targets;
             AbilityView = abilityView;
             Combination = combination;
-
-            foreach (var data in cardAbilityData.VfxParameters)
-            {
-                UnityEngine.Debug.LogError(data.EffectType);
-                foreach (var param in data.Parameters)
-                {
-                    UnityEngine.Debug.LogError($"{param.EffectParameter} : {param.Value}");
-                }
-            }
+            MainTrigger = trigger;
 
             AbilityView?.Init(this);
 
