@@ -184,31 +184,31 @@ namespace Loom.ZombieBattleground
             _initialInit = true;
             
 #if !UNITY_ANDROID && !UNITY_IOS
-            //_resolutionDropdown.ClearOptions();
-            //_screenModeDropdown.ClearOptions();
+            _resolutionDropdown.ClearOptions();
+            _screenModeDropdown.ClearOptions();
 
-            //List<string> data = new List<string>();
+            List<string> data = new List<string>();
 
-            //int length = Enum.GetNames(typeof(Enumerators.ScreenMode)).Length;
+            int length = Enum.GetNames(typeof(Enumerators.ScreenMode)).Length;
 
-            //for (int i = 0; i < length; i++)
-            //{
-            //    data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
-            //}
-            //_screenModeDropdown.AddOptions(data);
+            for (int i = 0; i < length; i++)
+            {
+                data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
+            }
+            _screenModeDropdown.AddOptions(data);
 
-            //data.Clear();
-            //length = _applicationSettingsManager.Resolutions.Count;            
+            data.Clear();
+            length = _applicationSettingsManager.Resolutions.Count;            
 
-            //for (int i = 0; i < length; i++)
-            //{
-            //    data.Add(_applicationSettingsManager.Resolutions[i].Name);
-            //}
-            //_resolutionDropdown.AddOptions(data);
+            for (int i = 0; i < length; i++)
+            {
+                data.Add(_applicationSettingsManager.Resolutions[i].Name);
+            }
+            _resolutionDropdown.AddOptions(data);
 
 
-            //_screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
-            //_resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
+            _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
+            _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
 #endif
 
             _sfxVolumeSlider.value = _soundManager.SoundVolume;
