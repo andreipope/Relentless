@@ -155,12 +155,12 @@ namespace Loom.ZombieBattleground.Data
         {
         }
 
-        public bool HasVisualEffectType(Enumerators.VisualEffectType type)
+        public bool HasVisualEffectType(Enumerators.AbilityEffectType type)
         {
             return GetVisualEffectByType(type) != null;
         }
 
-        public VisualEffectInfo GetVisualEffectByType(Enumerators.VisualEffectType type)
+        public VisualEffectInfo GetVisualEffectByType(Enumerators.AbilityEffectType type)
         {
             return VisualEffectsToPlay.Find(vfx => vfx.Type == type);
         }
@@ -177,13 +177,13 @@ namespace Loom.ZombieBattleground.Data
         public class VisualEffectInfo
         {
             [JsonProperty]
-            public Enumerators.VisualEffectType Type { get; private set; }
+            public Enumerators.AbilityEffectType Type { get; private set; }
 
             [JsonProperty]
             public string Path { get; private set; }
 
             [JsonConstructor]
-            public VisualEffectInfo(Enumerators.VisualEffectType type, string path)
+            public VisualEffectInfo(Enumerators.AbilityEffectType type, string path)
             {
                 Type = type;
                 Path = path;
@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground.Data
                 Path = path;
             }
 
-            public void ForceSetType(Enumerators.VisualEffectType type)
+            public void ForceSetType(Enumerators.AbilityEffectType type)
             {
                 Type = type;
             }

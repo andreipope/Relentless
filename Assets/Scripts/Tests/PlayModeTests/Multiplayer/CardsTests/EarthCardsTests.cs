@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => { }
                 };
@@ -665,7 +665,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.AddCard, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.Draw, new List<ParametrizedAbilityInstanceId>());
                     },
                     player => {},
                     opponent => {}

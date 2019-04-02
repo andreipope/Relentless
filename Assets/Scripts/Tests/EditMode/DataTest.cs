@@ -192,8 +192,8 @@ namespace Loom.ZombieBattleground.Test
                     6,
                     new List<AbilityData.VisualEffectInfo>
                     {
-                        new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "path1"),
-                        new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Moving, "path2")
+                        new AbilityData.VisualEffectInfo(Enumerators.AbilityEffectType.Impact, "path1"),
+                        new AbilityData.VisualEffectInfo(Enumerators.AbilityEffectType.Moving, "path2")
                     },
                     Enumerators.GameMechanicDescription.Death,
                     Enumerators.Faction.LIFE,

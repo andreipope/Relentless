@@ -330,33 +330,27 @@ namespace Loom.ZombieBattleground
         {
             switch (type)
             {
-                case Enumerators.BuffType.GUARD:
+                case Enumerators.BuffType.Guard:
                     BoardUnitOnBuffShieldStateChanged(true);
                     break;
-                case Enumerators.BuffType.DEFENCE:
+                case Enumerators.BuffType.Defense:
                     break;
-                case Enumerators.BuffType.HEAVY:
+                case Enumerators.BuffType.Heavy:
                     break;
-                case Enumerators.BuffType.WEAPON:
-                    break;
-                case Enumerators.BuffType.BLITZ:
+                case Enumerators.BuffType.Blitz:
                     _sleepingParticles.gameObject.SetActive(false);
                     if (Model.HasBuffRush && Model.InitialUnitType != Enumerators.CardType.FERAL)
                     {
                         SetNormalGlowFromUnitType();
                     }
                     break;
-                case Enumerators.BuffType.ATTACK:
+                case Enumerators.BuffType.Attack:
                     break;
-                case Enumerators.BuffType.FREEZE:
+                case Enumerators.BuffType.Freeze:
                     break;
-                case Enumerators.BuffType.DAMAGE:
+                case Enumerators.BuffType.Destroy:
                     break;
-                case Enumerators.BuffType.HEAL_ALLY:
-                    break;
-                case Enumerators.BuffType.DESTROY:
-                    break;
-                case Enumerators.BuffType.REANIMATE:
+                case Enumerators.BuffType.Reanimate:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(type), type, null);

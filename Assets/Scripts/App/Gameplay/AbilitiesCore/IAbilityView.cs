@@ -1,3 +1,4 @@
+using log4net;
 using System;
 using System.Collections.Generic;
 
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 
     public class CardAbilityView : ICardAbilityView
     {
+        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbilityView));
+
         protected readonly IGameplayManager GameplayManager;
 
         protected readonly VfxController VfxController;
@@ -32,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         public ICardAbility CardAbility { get; protected set; }
 
+        protected IReadOnlyList<VfxParameter> VfxParameters { get; private set; }
+
         public CardAbilityView()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -43,6 +48,7 @@ namespace Loom.ZombieBattleground
         public void Init(ICardAbility cardAbility)
         {
             CardAbility = cardAbility;
+            VfxParameters = CardAbility.CardAbilityData.VfxParameters;
         }
 
         public virtual void DoVFXAction(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null)

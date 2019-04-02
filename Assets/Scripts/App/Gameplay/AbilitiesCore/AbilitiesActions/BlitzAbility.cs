@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground
     {
         public override void DoAction()
         {
-            UnitModelOwner.ApplyBuff(Common.Enumerators.BuffType.BLITZ);
+            UnitModelOwner.ApplyBuff(Common.Enumerators.BuffType.Blitz);
         }
     }
 }

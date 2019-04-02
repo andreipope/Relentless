@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
         public Enumerators.GameMechanicDescription GameMechanicDescription { get; protected set; }
 
         [JsonProperty]
-        public List<Enumerators.AbilityTrigger> Triggers { get; protected set; }
+        public List<TriggerInfo> Triggers { get; protected set; }
 
         [JsonProperty]
         public List<TargetInfo> Targets { get; protected set; }
@@ -21,19 +21,24 @@ namespace Loom.ZombieBattleground
         [JsonProperty]
         public List<GenericParameter> GenericParameters { get; protected set; }
 
+        [JsonProperty]
+        public List<VfxParameter> VfxParameters { get; protected set; }
+        
         [JsonConstructor]
         public CardAbilityData(
             Enumerators.AbilityType ability,
             Enumerators.GameMechanicDescription gameMechanicDescription,
-            List<Enumerators.AbilityTrigger> triggers,
+            List<TriggerInfo> triggers,
             List<TargetInfo> targets,
-            List<GenericParameter> genericParameters)
+            List<GenericParameter> genericParameters,
+            List<VfxParameter> vfxParameters)
         {
             Ability = ability;
             GameMechanicDescription = gameMechanicDescription;
             Triggers = triggers;
             Targets = targets;
             GenericParameters = genericParameters;
+            VfxParameters = vfxParameters;
         }
 
         public CardAbilityData(CardAbilityData source)
@@ -43,6 +48,12 @@ namespace Loom.ZombieBattleground
             Triggers = source.Triggers;
             Targets = source.Targets;
             GenericParameters = source.GenericParameters;
+            VfxParameters = source.VfxParameters;
+        }
+
+        public bool HasTrigger(Enumerators.AbilityTrigger trigger)
+        {
+            return Triggers.FindAll(trig => trig.Trigger == trigger).Count > 0;
         }
 
         public class TargetInfo
@@ -66,6 +77,30 @@ namespace Loom.ZombieBattleground
             {
                 Target = source.Target;
                 TargetFilter = source.TargetFilter;
+            }
+        }
+
+        public class TriggerInfo
+        {
+            [JsonProperty]
+            public Enumerators.AbilityTrigger Trigger { get; protected set; }
+
+            [JsonProperty]
+            public List<Enumerators.AbilitySubTrigger> SubTriggers { get; protected set; }
+
+            [JsonConstructor]
+            public TriggerInfo(
+                Enumerators.AbilityTrigger trigger,
+                List<Enumerators.AbilitySubTrigger> subTriggers)
+            {
+                Trigger = trigger;
+                SubTriggers = subTriggers;
+            }
+
+            public TriggerInfo(TriggerInfo source)
+            {
+                Trigger = source.Trigger;
+                SubTriggers = source.SubTriggers;
             }
         }
     }

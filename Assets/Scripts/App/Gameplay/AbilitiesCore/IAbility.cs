@@ -1,10 +1,14 @@
+using log4net;
 using Loom.ZombieBattleground.Common;
+using System;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
     public interface ICardAbility
     {
+        event Action AbilityInitialized; 
+
         BoardUnitModel UnitModelOwner { get; }
 
         Player PlayerOwner { get; }
@@ -30,11 +34,17 @@ namespace Loom.ZombieBattleground
 
     public class CardAbility : ICardAbility
     {
+        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbility));
+
+        public event Action AbilityInitialized;
+
         protected IReadOnlyList<BoardObject> Targets { get; private set; }
 
         protected IReadOnlyList<GenericParameter> GenericParameters { get; private set; }
 
         protected readonly IGameplayManager GameplayManager;
+
+        protected readonly IDataManager DataManager;
 
         protected readonly AbilitiesController AbilitiesController;
 
@@ -47,6 +57,8 @@ namespace Loom.ZombieBattleground
         protected readonly BoardController BoardController;
 
         protected readonly ActionsQueueController ActionsQueueController;
+
+        protected readonly RanksController RanksController;
 
         public BoardUnitModel UnitModelOwner { get; private set; }
 
@@ -61,12 +73,14 @@ namespace Loom.ZombieBattleground
         public CardAbility()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
+            DataManager = GameClient.Get<IDataManager>();
             AbilitiesController = GameplayManager.GetController<AbilitiesController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             BattleController = GameplayManager.GetController<BattleController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            RanksController = GameplayManager.GetController<RanksController>();
         }
 
         public virtual void DoAction() { }
@@ -88,7 +102,18 @@ namespace Loom.ZombieBattleground
             AbilityView = abilityView;
             Combination = combination;
 
+            foreach (var data in cardAbilityData.VfxParameters)
+            {
+                UnityEngine.Debug.LogError(data.EffectType);
+                foreach (var param in data.Parameters)
+                {
+                    UnityEngine.Debug.LogError($"{param.EffectParameter} : {param.Value}");
+                }
+            }
+
             AbilityView?.Init(this);
+
+            AbilityInitializedAction();
         }
 
         public void ChangePlayerOwner(Player player)
@@ -96,7 +121,7 @@ namespace Loom.ZombieBattleground
             PlayerOwner = player;
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             AbilitiesController.EndAbility(this);
         }
@@ -104,6 +129,11 @@ namespace Loom.ZombieBattleground
         public void InsertTargets(IReadOnlyList<BoardObject> targets)
         {
             Targets = targets;
+        }
+
+        public virtual void AbilityInitializedAction()
+        {
+            AbilityInitialized?.Invoke();
         }
 
         protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)
