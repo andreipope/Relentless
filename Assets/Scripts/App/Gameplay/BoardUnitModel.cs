@@ -217,6 +217,8 @@ namespace Loom.ZombieBattleground
 
         public bool AttackAsFirst { get; set; }
 
+        public bool AgileEnabled { get; private set; }
+
         public Enumerators.UnitSpecialStatus UnitSpecialStatus { get; set; }
 
         public Enumerators.Faction LastAttackingSetType { get; set; }
@@ -659,6 +661,11 @@ namespace Loom.ZombieBattleground
             {
                 return true;
             }
+        }
+
+        public void SetAgileStatus(bool status)
+        {
+            AgileEnabled = status;
         }
 
         public void DoCombat(BoardObject target)

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    internal class RestoreAbility : CardAbility
+    internal class HealAbility : CardAbility
     {
         public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {

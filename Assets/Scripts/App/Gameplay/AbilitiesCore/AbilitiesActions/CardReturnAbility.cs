@@ -12,11 +12,11 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case BoardUnitModel boardUnitModel:
-                        if (AbilitiesController.HasParameter(GenericParameters, Common.Enumerators.AbilityParameter.TargetHand))
+                        if (AbilitiesController.HasSubTrigger(this, Common.Enumerators.AbilitySubTrigger.TargetHand))
                         {
                             CardsController.ReturnCardToHand(boardUnitModel);
                         }
-                        if (AbilitiesController.HasParameter(GenericParameters, Common.Enumerators.AbilityParameter.TargetDeck))
+                        if (AbilitiesController.HasSubTrigger(this, Common.Enumerators.AbilitySubTrigger.TargetDeck))
                         {
                             boardUnitModel.ResetToInitial();
                             PlayerOwner.PlayerCardsController.AddCardToDeck(boardUnitModel, true);

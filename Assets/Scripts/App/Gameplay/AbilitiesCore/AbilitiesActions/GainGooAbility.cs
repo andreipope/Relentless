@@ -10,7 +10,17 @@ namespace Loom.ZombieBattleground
                 int value = AbilitiesController.GetParameterValue<int>(GenericParameters,
                                                            Common.Enumerators.AbilityParameter.Goo);
 
-                PlayerOwner.GooVials += value;
+                int gooVials = value;
+                for (int i = 0; i < value; i++)
+                {
+                    if(PlayerOwner.GooVials + gooVials >= PlayerOwner.MaxGooVials)
+                    {
+                        PlayerOwner.PlayerCardsController.AddCardFromDeckToHand();
+                        gooVials--;
+                    }
+                }
+
+                PlayerOwner.GooVials += gooVials;
             }
         }
     }

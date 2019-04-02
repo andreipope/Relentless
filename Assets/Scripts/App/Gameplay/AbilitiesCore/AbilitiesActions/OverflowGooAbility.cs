@@ -13,6 +13,18 @@ namespace Loom.ZombieBattleground
                                                            Common.Enumerators.AbilityParameter.Goo);
 
                 PlayerOwner.CurrentGoo += value;
+
+                PostGameActionReport(Enumerators.ActionType.CardAffectingOverlord,
+                new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Overflow,
+                            Target = PlayerOwner,
+                            HasValue = true,
+                            Value = value
+                        }
+                    });
             }
         }
     }

@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardObject target in Targets)
             {
                 if (AbilitiesController.HasParameter(GenericParameters, Common.Enumerators.AbilityParameter.Damage))
@@ -29,8 +31,18 @@ namespace Loom.ZombieBattleground
                             BattleController.AttackPlayerByAbility(UnitModelOwner, player, value);
                             break;
                     }
+
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Common.Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = target,
+                        HasValue = true,
+                        Value = -value
+                    });
                 }
             }
+
+            PostGameActionReport(Common.Enumerators.ActionType.CardAffectingCardsWithOverlord, targetEffects);
         }
     }
 }

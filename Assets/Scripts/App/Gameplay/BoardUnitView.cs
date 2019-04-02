@@ -804,6 +804,7 @@ namespace Loom.ZombieBattleground
                 _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
                 _fightTargetingArrow.Owner = this.Model;
+                _fightTargetingArrow.IgnoreHeavy = Model.AgileEnabled;
 
                 if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {

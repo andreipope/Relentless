@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            Enumerators.ActionType actionType = Targets.Count == 1 ? Enumerators.ActionType.CardAffectingMultipleCards : Enumerators.ActionType.CardAffectingCard;
+            Enumerators.ActionType actionType = Targets.Count > 1 ? Enumerators.ActionType.CardAffectingMultipleCards : Enumerators.ActionType.CardAffectingCard;
 
             PostGameActionReport(actionType, targetEffects);
         }
