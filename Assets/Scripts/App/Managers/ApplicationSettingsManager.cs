@@ -75,20 +75,20 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.ScreenMode.FullScreen:
                     {
-                        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
                         Screen.fullScreen = true;
+                        Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
                     }
                     break;
                 case Enumerators.ScreenMode.Window:
                     {
-                        Screen.fullScreenMode = FullScreenMode.Windowed;
                         Screen.fullScreen = false;
+                        Screen.fullScreenMode = FullScreenMode.Windowed;
                     }
                     break;
                 case Enumerators.ScreenMode.BorderlessWindow:
                     {
-                        Screen.fullScreenMode = FullScreenMode.Windowed;
                         Screen.fullScreen = false;
+                        Screen.fullScreenMode = FullScreenMode.Windowed;
                     }
                     break;
                 default:
