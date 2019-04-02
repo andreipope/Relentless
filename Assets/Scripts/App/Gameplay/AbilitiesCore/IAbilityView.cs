@@ -1,3 +1,4 @@
+using log4net;
 using System;
 using System.Collections.Generic;
 
@@ -18,6 +19,8 @@ namespace Loom.ZombieBattleground
 
     public class CardAbilityView : ICardAbilityView
     {
+        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbilityView));
+
         protected readonly IGameplayManager GameplayManager;
 
         protected readonly VfxController VfxController;

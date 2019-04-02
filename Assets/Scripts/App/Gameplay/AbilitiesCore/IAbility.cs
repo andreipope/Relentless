@@ -1,3 +1,4 @@
+using log4net;
 using Loom.ZombieBattleground.Common;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,8 @@ namespace Loom.ZombieBattleground
 
     public class CardAbility : ICardAbility
     {
+        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbility));
+
         public event Action AbilityInitialized;
 
         protected IReadOnlyList<BoardObject> Targets { get; private set; }
