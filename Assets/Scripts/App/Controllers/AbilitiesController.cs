@@ -138,7 +138,9 @@ namespace Loom.ZombieBattleground
                 {
                     if (triggerFilter == Enumerators.AbilityTrigger.Undefined)
                     {
-                        if (cardAbilityData.TryGetTrigger(Enumerators.AbilityTrigger.Entry, out CardAbilityData.TriggerInfo triggerInfo))
+                        CardAbilityData.TriggerInfo triggerInfo;
+                        if (cardAbilityData.TryGetTrigger(Enumerators.AbilityTrigger.Entry, out triggerInfo) ||
+                            combination.TryGetTrigger(Enumerators.AbilityTrigger.Entry, out triggerInfo))
                         {
                             selectedTargets = FilterTargets(boardUnitModel, triggerInfo, cardAbilityData.GenericParameters,
                                                     GetTargets(boardUnitModel, combination, cardAbilityData, targets));
@@ -148,7 +150,7 @@ namespace Loom.ZombieBattleground
                             selectedTargets = new List<BoardObject>();
                         }
                     }
-                    else if (!cardAbilityData.HasTrigger(triggerFilter))
+                    else if (!cardAbilityData.HasTrigger(triggerFilter) && !combination.HasTrigger(triggerFilter))
                         continue;
 
                     InitializeAbility(boardUnitModel, combination, cardAbilityData, selectedTargets);
@@ -238,8 +240,8 @@ namespace Loom.ZombieBattleground
 
                     _activeAbilities[trigger.Trigger].Add(ability);
 
-                    CheckOnPermanentAbilities(ability, cardAbilityData);
-                    CheckOnEntryAbility(ability, cardAbilityData);
+                    CheckOnPermanentAbilities(ability);
+                    CheckOnEntryAbility(ability);
                 }
             }
             else
@@ -362,22 +364,22 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
+        private void CheckOnEntryAbility(ICardAbility cardAbility)
         {
-            if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
-               abilityData.HasTrigger(Enumerators.AbilityTrigger.EntryWithSelection))
+            if (HasTrigger(cardAbility, Enumerators.AbilityTrigger.Entry) ||
+                HasTrigger(cardAbility, Enumerators.AbilityTrigger.EntryWithSelection))
             {
                 if (!HasSubTrigger(cardAbility, Enumerators.AbilitySubTrigger.Delay) &&
-                    CheckSubTriggersToProceed(abilityData))
+                    CheckSubTriggersToProceed(cardAbility.CardAbilityData))
                 {
                     cardAbility.DoAction(null);
                 }
             }
         }
 
-        private void CheckOnPermanentAbilities(ICardAbility cardAbility, CardAbilityData abilityData)
+        private void CheckOnPermanentAbilities(ICardAbility cardAbility)
         {
-            if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Permanent))
+            if (HasTrigger(cardAbility, Enumerators.AbilityTrigger.Permanent))
             {
                 cardAbility.DoAction(null);
             }
@@ -503,6 +505,15 @@ namespace Loom.ZombieBattleground
                 return false;
 
             return triggerInfo.SubTriggers.Contains(subTrigger);
+        }
+
+        public bool HasTrigger(ICardAbility cardAbility, Enumerators.AbilityTrigger trigger)
+        {
+            if (cardAbility.CardAbilityData.HasTrigger(trigger) ||
+                   cardAbility.Combination.HasTrigger(trigger))
+                return true;
+
+            return false;
         }
 
         #region Sub triggers handling

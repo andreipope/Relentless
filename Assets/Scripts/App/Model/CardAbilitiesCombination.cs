@@ -44,5 +44,23 @@ namespace Loom.ZombieBattleground
             DefaultTriggers = source.DefaultTriggers;
             DefaultTargets = source.DefaultTargets;
         }
+
+        public bool HasTrigger(Enumerators.AbilityTrigger trigger)
+        {
+            return DefaultTriggers?.FindAll(trig => trig.Trigger == trigger).Count > 0;
+        }
+
+        public bool TryGetTrigger(Enumerators.AbilityTrigger trigger, out CardAbilityData.TriggerInfo triggerInfo)
+        {
+            if (!HasTrigger(trigger))
+            {
+                triggerInfo = default(CardAbilityData.TriggerInfo);
+                return false;
+            }
+
+            triggerInfo = DefaultTriggers.Find(trig => trig.Trigger == trigger);
+
+            return true;
+        }
     }
 }
