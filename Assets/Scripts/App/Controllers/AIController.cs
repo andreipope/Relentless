@@ -736,7 +736,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     overflowGooAbility = cards[i].InstanceCard.Abilities.FirstOrDefault().CardAbilities
-                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OverflowGoo);
+                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.ChangeGoo);
                     if (overflowGooAbility != null)
                     {
                         if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
@@ -789,7 +789,7 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalItemCardInHand.AddRange(GetItemCardsInHand());
                 _normalItemCardInHand.RemoveAll(x =>
-                    x.InstanceCard.Abilities.FirstOrDefault().CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
+                    x.InstanceCard.Abilities.FirstOrDefault().CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.ChangeGoo));
             }
 
             await LetsThink(cancellationToken);
