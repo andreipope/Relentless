@@ -230,6 +230,7 @@ namespace Loom.ZombieBattleground
 
                     _activeAbilities[trigger.Trigger].Add(ability);
 
+                    CheckOnPermanentAbilities(ability, cardAbilityData);
                     CheckOnEntryAbility(ability, cardAbilityData);
                 }
             }
@@ -281,7 +282,7 @@ namespace Loom.ZombieBattleground
                         {
                             attacker
                         }));
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -313,7 +314,7 @@ namespace Loom.ZombieBattleground
                      {
                         targetKilled
                      }, true)));
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -328,7 +329,7 @@ namespace Loom.ZombieBattleground
                     {
                         unitAttacked
                     });
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -349,7 +350,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
+        private void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
         {
             if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
                abilityData.HasTrigger(Enumerators.AbilityTrigger.EntryWithSelection))
@@ -357,8 +358,16 @@ namespace Loom.ZombieBattleground
                 if (!HasSubTrigger(cardAbility, Enumerators.AbilitySubTrigger.Delay) &&
                     CheckSubTriggersToProceed(abilityData))
                 {
-                    cardAbility.DoAction();
+                    cardAbility.DoAction(null);
                 }
+            }
+        }
+
+        private void CheckOnPermanentAbilities(ICardAbility cardAbility, CardAbilityData abilityData)
+        {
+            if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Permanent))
+            {
+                cardAbility.DoAction(null);
             }
         }
 
@@ -377,7 +386,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (ability.TurnsOnBoard == delay)
                         {
-                            ability.DoAction();
+                            ability.DoAction(null);
                         }
                     }
                 }
@@ -395,7 +404,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == boardUnit)
                 {
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
 
@@ -409,7 +418,7 @@ namespace Loom.ZombieBattleground
         {
             foreach(ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.End])
             {
-                ability.DoAction();
+                ability.DoAction(null);
             }
         }
 
@@ -417,7 +426,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Turn])
             {
-                ability.DoAction();
+                ability.DoAction(null);
             }
 
             HandleAbilitiesWithDelaySubTrigger();
@@ -502,7 +511,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            return false;
+            return true;
         }
 
         #endregion

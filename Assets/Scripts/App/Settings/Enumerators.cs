@@ -17,7 +17,8 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
             AtDefense,
             StatChanged,
-            InHand
+            InHand,
+            Permanent
         }
 
         public enum AbilitySubTrigger

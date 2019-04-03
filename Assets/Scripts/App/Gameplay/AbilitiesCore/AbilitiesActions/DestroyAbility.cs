@@ -1,8 +1,10 @@
+using System.Collections.Generic;
+
 namespace Loom.ZombieBattleground
 {
     public class DestroyAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             foreach (BoardObject target in Targets)
             {

@@ -34,7 +34,6 @@ namespace Loom.ZombieBattleground
             CardAbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
-        void DoAction();
         void DoAction(IReadOnlyList<GenericParameter> genericParameters);
         void ChangePlayerOwner(Player player);
         void InsertTargets(IReadOnlyList<BoardObject> targets);
@@ -98,8 +97,6 @@ namespace Loom.ZombieBattleground
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             RanksController = GameplayManager.GetController<RanksController>();
         }
-
-        public virtual void DoAction() { }
 
         public virtual void DoAction(IReadOnlyList<GenericParameter> genericParameters) { }
 
