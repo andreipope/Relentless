@@ -96,7 +96,7 @@ class Horde_Editing_Page(CZBTests):
                 if started_card_name==card_name:
                     return None
     def can_card_be_added_to_horde(self,card):
-        card_text_availability=self.altdriver.find_element('id('+card.id+')/AmountForArmy/Text')
+        card_text_availability=self.altdriver.find_element('id('+card.id+')/AmountWithCounterTray/Text')
         if not self.read_tmp_text(card_text_availability)=='0':
             return True
         return False

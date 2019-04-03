@@ -198,7 +198,7 @@ class AltrunUnityDriver(object):
         data = ''
         previousPart=''
         while True:
-            part = self.socket.recv(BUFFER_SIZE)
+            part = self.socket.recv(BUFFER_SIZE).decode('UTF-8')
             data += str(part)
             partToSeeAltEnd=previousPart+str(part)
             if '::altend' in partToSeeAltEnd:
