@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.AbilityData ToProtobuf(this AbilityData ability) {
+        public static Protobuf.AbilityData ToProtobuf(this Protobuf.AbilityData ability) {
             Protobuf.AbilityData abilityData = new Protobuf.AbilityData {
                 Ability = (Protobuf.AbilityType.Types.Enum) ability.Ability,
                 Trigger = (Protobuf.AbilityTrigger.Types.Enum) ability.Trigger,
@@ -54,14 +54,14 @@ namespace Loom.ZombieBattleground.Data
                 Delay = ability.Delay,
                 VisualEffectsToPlay =
                 {
-                    ability.VisualEffectsToPlay.Select(v => v.ToProtobuf())
+                    ability.VisualEffectsToPlay
                 },
                 GameMechanicDescription = (GameMechanicDescription.Types.Enum) ability.GameMechanicDescription,
                 TargetFaction = (Protobuf.Faction.Types.Enum) ability.TargetFaction,
                 SubTrigger = (AbilitySubTrigger.Types.Enum) ability.SubTrigger,
                 ChoosableAbilities =
                 {
-                    ability.ChoosableAbilities.Select(a => a.ToProtobuf())
+                    ability.ChoosableAbilities
                 },
                 Defense2 = ability.Defense2,
                 Cost = ability.Cost
@@ -70,7 +70,8 @@ namespace Loom.ZombieBattleground.Data
             return abilityData;
         }
 
-        public static CardChoosableAbility ToProtobuf(this AbilityData.ChoosableAbility choosableAbility)
+        /*
+        public static CardChoosableAbility ToProtobuf(this Protobuf.AbilityData.ChoosableAbility choosableAbility)
         {
             return new CardChoosableAbility {
                 Description = choosableAbility.Description,
@@ -78,13 +79,13 @@ namespace Loom.ZombieBattleground.Data
             };
         }
 
-        public static Protobuf.AbilityData.Types.VisualEffectInfo ToProtobuf(this AbilityData.VisualEffectInfo visualEffectInfo)
+        public static Protobuf.AbilityData.Types.VisualEffectInfo ToProtobuf(this Protobuf.AbilityData.VisualEffectInfo visualEffectInfo)
         {
             return new Protobuf.AbilityData.Types.VisualEffectInfo {
                 Type = (Protobuf.AbilityData.Types.VisualEffectInfo.Types.VisualEffectType) visualEffectInfo.Type,
                 Path = visualEffectInfo.Path
             };
-        }
+        } */
 
         public static CardInstance ToProtobuf(this WorkingCard workingCard)
         {

@@ -2,32 +2,32 @@ using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Data
 {
-    public class CardAbilitiesCombination
+    public class CardAbilitiesData
     {
         [JsonProperty]
-        public List<CardAbilityData> CardAbilities { get; protected set; }
+        public List<AbilityData> CardAbilities { get; private set; }
 
         [JsonProperty]
-        public Enumerators.GameMechanicDescription DefaultGameMechanicDescription { get; protected set; }
+        public Enumerators.GameMechanicDescription DefaultGameMechanicDescription { get; private set; }
 
         [JsonProperty]
-        public List<GenericParameter> DefaultGenericParameters { get; protected set; }
+        public List<GenericParameter> DefaultGenericParameters { get; private set; }
 
         [JsonProperty]
-        public List<CardAbilityData.TriggerInfo> DefaultTriggers { get; protected set; }
+        public List<AbilityData.TriggerInfo> DefaultTriggers { get; private set; }
 
         [JsonProperty]
-        public List<CardAbilityData.TargetInfo> DefaultTargets { get; protected set; }
+        public List<AbilityData.TargetInfo> DefaultTargets { get; private set; }
 
         [JsonConstructor]
-        public CardAbilitiesCombination(
+        public CardAbilitiesData(
             List<GenericParameter> defaultParameters,
-            List<CardAbilityData> cardAbilityData,
+            List<AbilityData> cardAbilityData,
             Enumerators.GameMechanicDescription gameMechanicDescription,
-            List<CardAbilityData.TriggerInfo> defaultTriggers,
-            List<CardAbilityData.TargetInfo> defaultTargets)
+            List<AbilityData.TriggerInfo> defaultTriggers,
+            List<AbilityData.TargetInfo> defaultTargets)
         {
             DefaultGenericParameters = defaultParameters;
             CardAbilities = cardAbilityData;
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
             DefaultTargets = defaultTargets;
         }
 
-        public CardAbilitiesCombination(CardAbilitiesCombination source)
+        public CardAbilitiesData(CardAbilitiesData source)
         {
             DefaultGenericParameters = source.DefaultGenericParameters;
             CardAbilities = source.CardAbilities;

@@ -1,3 +1,4 @@
+using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground

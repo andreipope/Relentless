@@ -2,15 +2,15 @@
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Data
 {
     public class GenericParameter
     {
         [JsonProperty]
-        public Enumerators.AbilityParameter AbilityParameter { get; protected set; }
+        public Enumerators.AbilityParameter AbilityParameter { get; private set; }
 
         [JsonProperty]
-        public object Value { get; protected set; }
+        public object Value { get; private set; }
 
         [JsonConstructor]
         public GenericParameter(Enumerators.AbilityParameter abilityParameter, object value)

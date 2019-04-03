@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using log4net;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
@@ -126,34 +127,32 @@ namespace Loom.ZombieBattleground
             Enumerators.AbilityTrigger triggerFilter = Enumerators.AbilityTrigger.Undefined)
         {
             List<BoardObject> selectedTargets;
-            List<CardAbilityData.TriggerInfo> triggers;
-            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities)
+            List<AbilityData.TriggerInfo> triggers;
+
+            foreach (AbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilities)
             {
                 selectedTargets = targets;
 
-                foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
+                triggers = GetAllTriggers(boardUnitModel.Card.Prototype.Abilities, cardAbilityData);
+
+                if (triggerFilter == Enumerators.AbilityTrigger.Undefined)
                 {
-                    triggers = GetAllTriggers(combination, cardAbilityData);
-
-                    if (triggerFilter == Enumerators.AbilityTrigger.Undefined)
+                    AbilityData.TriggerInfo triggerInfo;
+                    if (TryGetTrigger(triggers, Enumerators.AbilityTrigger.Entry, out triggerInfo) ||
+                        TryGetTrigger(triggers, Enumerators.AbilityTrigger.Entry, out triggerInfo))
                     {
-                        CardAbilityData.TriggerInfo triggerInfo;
-                        if (TryGetTrigger(triggers, Enumerators.AbilityTrigger.Entry, out triggerInfo) ||
-                            TryGetTrigger(triggers, Enumerators.AbilityTrigger.Entry, out triggerInfo))
-                        {
-                            selectedTargets = FilterTargets(boardUnitModel, triggerInfo, GetAllGenericParameters(combination, cardAbilityData),
-                                                    GetTargets(boardUnitModel, combination, cardAbilityData, targets));
-                        }
-                        else if (selectedTargets == null)
-                        {
-                            selectedTargets = new List<BoardObject>();
-                        }
+                        selectedTargets = FilterTargets(boardUnitModel, triggerInfo, GetAllGenericParameters(boardUnitModel.Card.Prototype.Abilities, cardAbilityData),
+                                                GetTargets(boardUnitModel, boardUnitModel.Card.Prototype.Abilities, cardAbilityData, targets));
                     }
-                    else if (!HasTrigger(triggers, triggerFilter))
-                        continue;
-
-                    InitializeAbility(boardUnitModel, combination, cardAbilityData, selectedTargets);
+                    else if (selectedTargets == null)
+                    {
+                        selectedTargets = new List<BoardObject>();
+                    }
                 }
+                else if (!HasTrigger(triggers, triggerFilter))
+                    continue;
+
+                InitializeAbility(boardUnitModel, boardUnitModel.Card.Prototype.Abilities, cardAbilityData, selectedTargets);
             }
         }
 
@@ -170,25 +169,22 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void GiveAbilityToUnit(BoardUnitModel boardUnitModel, CardAbilityData cardAbilityData)
+        public void GiveAbilityToUnit(BoardUnitModel boardUnitModel, AbilityData cardAbilityData)
         {
             InitializeAbility(boardUnitModel, null, cardAbilityData, new List<BoardObject>() { boardUnitModel });
         }
 
         public void ReactivateAbilitiesOnUnit(BoardUnitModel boardUnitModel)
         {
-            foreach (CardAbilitiesCombination combination in boardUnitModel.Card.Prototype.Abilities)
+            foreach (AbilityData cardAbilityData in boardUnitModel.Card.Prototype.Abilities.CardAbilities)
             {
-                foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
-                {
-                    InitializeAbility(boardUnitModel, combination, cardAbilityData, new List<BoardObject>(), true);
-                }
+                InitializeAbility(boardUnitModel, boardUnitModel.Card.Prototype.Abilities, cardAbilityData, new List<BoardObject>(), true);
             }
         }
 
         private void InitializeAbility(BoardUnitModel boardUnitModel,
-                                       CardAbilitiesCombination combination,
-                                       CardAbilityData cardAbilityData,
+                                       CardAbilitiesData combination,
+                                       AbilityData cardAbilityData,
                                        List<BoardObject> targets,
                                        bool ignoreEntry = false)
         {
@@ -201,7 +197,7 @@ namespace Loom.ZombieBattleground
             string abilityViewClassName, abilitySubViewClassName, abilityClassName;
 
 
-            List<CardAbilityData.TriggerInfo> triggers = cardAbilityData.Triggers;
+            List<AbilityData.TriggerInfo> triggers = cardAbilityData.Triggers;
 
             if (triggers == null)
             {
@@ -210,7 +206,7 @@ namespace Loom.ZombieBattleground
 
             if (triggers != null)
             {
-                foreach (CardAbilityData.TriggerInfo trigger in triggers)
+                foreach (AbilityData.TriggerInfo trigger in triggers)
                 {
                     if (ignoreEntry &&
                         (trigger.Trigger == Enumerators.AbilityTrigger.Entry ||
@@ -269,7 +265,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == boardUnit)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilitiesData, ability.AbilityData, new List<BoardObject>()
                     {
                         boardUnit
                     }, true)));
@@ -290,7 +286,7 @@ namespace Loom.ZombieBattleground
                     ability.InsertTargets(FilterTargets(
                         ability.UnitModelOwner,
                         ability.MainTrigger,
-                        ability.CardAbilityData.GenericParameters,
+                        ability.AbilityData.GenericParameters,
                         new List<BoardObject>()
                         {
                             attacker
@@ -307,7 +303,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilitiesData, ability.AbilityData, new List<BoardObject>()
                     {
                         targetAttacked
                     }, true)));
@@ -323,7 +319,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.GenericParameters,
-                                                         GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
+                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilitiesData, ability.AbilityData, new List<BoardObject>()
                      {
                         targetKilled
                      }, true)));
@@ -354,7 +350,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilitiesData, ability.AbilityData, new List<BoardObject>()
                     {
                         attacker
                     }, true)));
@@ -480,27 +476,24 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialTrigger(BoardUnitModel unitModel, Enumerators.AbilityTrigger abilityTrigger)
         {
-            foreach (CardAbilitiesCombination combination in unitModel.Card.Prototype.Abilities)
+            foreach (AbilityData data in unitModel.Card.Prototype.Abilities.CardAbilities)
             {
-                foreach (CardAbilityData data in combination.CardAbilities)
+                if (data.Triggers != null)
                 {
-                    if (data.Triggers != null)
-                    {
-                        foreach (CardAbilityData.TriggerInfo trigger in data.Triggers)
-                        {
-                            if (trigger.Trigger == abilityTrigger)
-                                return true;
-                        }
-                    }
-                }
-
-                if (combination.DefaultTriggers != null)
-                {
-                    foreach (CardAbilityData.TriggerInfo trigger in combination.DefaultTriggers)
+                    foreach (AbilityData.TriggerInfo trigger in data.Triggers)
                     {
                         if (trigger.Trigger == abilityTrigger)
                             return true;
                     }
+                }
+            }
+
+            if (unitModel.Card.Prototype.Abilities.DefaultTriggers != null)
+            {
+                foreach (AbilityData.TriggerInfo trigger in unitModel.Card.Prototype.Abilities.DefaultTriggers)
+                {
+                    if (trigger.Trigger == abilityTrigger)
+                        return true;
                 }
             }
 
@@ -509,14 +502,14 @@ namespace Loom.ZombieBattleground
 
         public bool HasSubTrigger(ICardAbility cardAbility, Enumerators.AbilitySubTrigger subTrigger)
         {
-            List<CardAbilityData.TriggerInfo> triggerInfos = GetAllTriggers(cardAbility);
+            List<AbilityData.TriggerInfo> triggerInfos = GetAllTriggers(cardAbility);
 
             if(triggerInfos == null)
                 return false;
 
-            CardAbilityData.TriggerInfo triggerInfo = triggerInfos.FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger.Trigger);
+            AbilityData.TriggerInfo triggerInfo = triggerInfos.FirstOrDefault(trig => trig.Trigger == cardAbility.MainTrigger.Trigger);
 
-            if (triggerInfo == default(CardAbilityData.TriggerInfo) || triggerInfo.SubTriggers == null)
+            if (triggerInfo == default(AbilityData.TriggerInfo) || triggerInfo.SubTriggers == null)
                 return false;
 
             return triggerInfo.SubTriggers.Contains(subTrigger);
@@ -524,22 +517,22 @@ namespace Loom.ZombieBattleground
 
         public bool HasTrigger(ICardAbility cardAbility, Enumerators.AbilityTrigger trigger)
         {
-            return HasTrigger(GetAllTriggers(cardAbility.Combination, cardAbility.CardAbilityData), trigger);
+            return HasTrigger(GetAllTriggers(cardAbility.CardAbilitiesData, cardAbility.AbilityData), trigger);
         }
 
-        public bool HasTrigger(List<CardAbilityData.TriggerInfo> triggers, Enumerators.AbilityTrigger trigger)
+        public bool HasTrigger(List<AbilityData.TriggerInfo> triggers, Enumerators.AbilityTrigger trigger)
         {
             return triggers?.FindAll(trig => trig.Trigger == trigger).Count > 0;
         }
 
         public bool TryGetTrigger(
-            List<CardAbilityData.TriggerInfo> triggers,
+            List<AbilityData.TriggerInfo> triggers,
             Enumerators.AbilityTrigger trigger,
-            out CardAbilityData.TriggerInfo triggerInfo)
+            out AbilityData.TriggerInfo triggerInfo)
         {
             if (!HasTrigger(triggers, trigger))
             {
-                triggerInfo = default(CardAbilityData.TriggerInfo);
+                triggerInfo = default(AbilityData.TriggerInfo);
                 return false;
             }
 
@@ -550,7 +543,7 @@ namespace Loom.ZombieBattleground
 
         #region get combination of default and seted data in card abilities
 
-        public List<GenericParameter> GetAllGenericParameters(CardAbilitiesCombination combination, CardAbilityData cardAbilityData)
+        public List<GenericParameter> GetAllGenericParameters(CardAbilitiesData combination, AbilityData cardAbilityData)
         {
             if (cardAbilityData.GenericParameters == null &&
                 combination.DefaultGenericParameters == null)
@@ -571,13 +564,13 @@ namespace Loom.ZombieBattleground
             return genericParameters;
         }
 
-        public List<CardAbilityData.TriggerInfo> GetAllTriggers(CardAbilitiesCombination combination, CardAbilityData cardAbilityData)
+        public List<AbilityData.TriggerInfo> GetAllTriggers(CardAbilitiesData combination, AbilityData cardAbilityData)
         {
             if (cardAbilityData.GenericParameters == null &&
                 combination.DefaultGenericParameters == null)
                 return null;
 
-            List<CardAbilityData.TriggerInfo> triggers = new List<CardAbilityData.TriggerInfo>();
+            List<AbilityData.TriggerInfo> triggers = new List<AbilityData.TriggerInfo>();
 
             if (cardAbilityData.Triggers != null)
             {
@@ -592,13 +585,13 @@ namespace Loom.ZombieBattleground
             return triggers;
         }
 
-        public List<CardAbilityData.TargetInfo> GetAllTargets(CardAbilitiesCombination combination, CardAbilityData cardAbilityData)
+        public List<AbilityData.TargetInfo> GetAllTargets(CardAbilitiesData combination, AbilityData cardAbilityData)
         {
             if (cardAbilityData.Targets == null &&
                 combination.DefaultTargets == null)
                 return null;
 
-            List<CardAbilityData.TargetInfo> targets = new List<CardAbilityData.TargetInfo>();
+            List<AbilityData.TargetInfo> targets = new List<AbilityData.TargetInfo>();
 
             if (cardAbilityData.Targets != null)
             {
@@ -615,18 +608,18 @@ namespace Loom.ZombieBattleground
 
         public List<GenericParameter> GetAllGenericParameters(ICardAbility cardAbility)
         {
-            return GetAllGenericParameters(cardAbility.Combination, cardAbility.CardAbilityData);
+            return GetAllGenericParameters(cardAbility.CardAbilitiesData, cardAbility.AbilityData);
         }
 
-        public List<CardAbilityData.TriggerInfo> GetAllTriggers(ICardAbility cardAbility)
+        public List<AbilityData.TriggerInfo> GetAllTriggers(ICardAbility cardAbility)
         {
-            return GetAllTriggers(cardAbility.Combination, cardAbility.CardAbilityData);
+            return GetAllTriggers(cardAbility.CardAbilitiesData, cardAbility.AbilityData);
 
         }
 
-        public List<CardAbilityData.TargetInfo> GetAllTargets(ICardAbility cardAbility)
+        public List<AbilityData.TargetInfo> GetAllTargets(ICardAbility cardAbility)
         {
-            return GetAllTargets(cardAbility.Combination, cardAbility.CardAbilityData);
+            return GetAllTargets(cardAbility.CardAbilitiesData, cardAbility.AbilityData);
         }
 
         #endregion
@@ -635,11 +628,11 @@ namespace Loom.ZombieBattleground
 
         private bool CheckSubTriggersToProceed(ICardAbility cardAbility)
         {
-            List<CardAbilityData.TriggerInfo> triggersInfos = GetAllTriggers(cardAbility);
+            List<AbilityData.TriggerInfo> triggersInfos = GetAllTriggers(cardAbility);
 
             if (triggersInfos != null)
             {
-                foreach (CardAbilityData.TriggerInfo trigger in triggersInfos)
+                foreach (AbilityData.TriggerInfo trigger in triggersInfos)
                 {
                     if (trigger.SubTriggers != null)
                     {
@@ -663,8 +656,8 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> GetTargets(
         BoardUnitModel modelCaller,
-        CardAbilitiesCombination combination,
-        CardAbilityData cardAbilityData,
+        CardAbilitiesData combination,
+        AbilityData cardAbilityData,
         List<BoardObject> targets,
         bool insert = false)
         {
@@ -673,7 +666,7 @@ namespace Loom.ZombieBattleground
 
             targets = targets ?? new List<BoardObject>();
 
-            List<CardAbilityData.TargetInfo> targetsInfo = cardAbilityData.Targets;
+            List<AbilityData.TargetInfo> targetsInfo = cardAbilityData.Targets;
 
             if (targetsInfo == null)
             {
@@ -682,7 +675,7 @@ namespace Loom.ZombieBattleground
 
             if (targetsInfo != null)
             {
-                foreach (CardAbilityData.TargetInfo targetInfo in targetsInfo)
+                foreach (AbilityData.TargetInfo targetInfo in targetsInfo)
                 {
                     switch (targetInfo.Target)
                     {
@@ -760,7 +753,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardObject> FilterTargets(
             BoardUnitModel boardUnitModel,
-            CardAbilityData.TriggerInfo trigger,
+            AbilityData.TriggerInfo trigger,
             IReadOnlyList<GenericParameter> genericParameters,
             List<BoardObject> targets)
         {

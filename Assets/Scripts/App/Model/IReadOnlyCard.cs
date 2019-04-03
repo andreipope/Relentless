@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Data
 
         Enumerators.CardType Type { get; }
 
-        List<CardAbilitiesCombination> Abilities { get; }
+        CardAbilitiesData Abilities { get; }
 
         PictureTransform PictureTransform { get; }
 

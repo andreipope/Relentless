@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEditor;
@@ -109,26 +110,22 @@ namespace Loom.ZombieBattleground.Helpers.Tools
             {
                 GUILayout.Label("Abilities: ", EditorStyles.boldLabel);
 
-                foreach (CardAbilitiesCombination combination in _selectedCard.Abilities)
+                foreach (AbilityData abilityInfo in _selectedCard.Abilities.CardAbilities)
                 {
-                    GUILayout.Label($"Combination {(_selectedCard.Abilities.IndexOf(combination)+1)}: ", EditorStyles.boldLabel);
-                    foreach (CardAbilityData abilityInfo in combination.CardAbilities)
-                    {
-                        DrawAbilityConfigurtion(abilityInfo);
+                    DrawAbilityConfigurtion(abilityInfo);
 
-                        //if (abilityInfo.ChoosableAbilities != null)
-                        //{
-                        //    foreach (CardAbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
-                        //    {
-                        //        DrawAbilityConfigurtion(choosableAbilityInfo, true);
-                        //    }
-                        //}
-                    }
+                    //if (abilityInfo.ChoosableAbilities != null)
+                    //{
+                    //    foreach (CardAbilityData choosableAbilityInfo in abilityInfo.ChoosableAbilities.Select(x => x.AbilityData))
+                    //    {
+                    //        DrawAbilityConfigurtion(choosableAbilityInfo, true);
+                    //    }
+                    //}
                 }
             }
         }
 
-        private void DrawAbilityConfigurtion(CardAbilityData abilityInfo, bool itsAbilityFromChoosable = false)
+        private void DrawAbilityConfigurtion(AbilityData abilityInfo, bool itsAbilityFromChoosable = false)
         {
             if (itsAbilityFromChoosable)
             {

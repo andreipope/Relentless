@@ -11,6 +11,6 @@ namespace Loom.ZombieBattleground.Data
 
         new Enumerators.Faction Faction { get; set; }
 
-        new List<CardAbilitiesCombination> Abilities { get; }
+        new CardAbilitiesData Abilities { get; }
     }
 }

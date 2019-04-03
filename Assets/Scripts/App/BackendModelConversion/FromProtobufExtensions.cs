@@ -54,7 +54,9 @@ namespace Loom.ZombieBattleground.Data
 
         public static AbilityData FromProtobuf(this Protobuf.AbilityData ability)
         {
-            return new AbilityData(
+            return new AbilityData(Enumerators.AbilityType.Undefined, Enumerators.GameMechanicDescription.Undefined, null, null, null, null);
+
+            /*return new Protobuf.AbilityData(
                 (Enumerators.AbilityType) ability.Ability,
                 (Enumerators.AbilityTrigger) ability.Trigger,
                 ability.Targets.Select(t => (Enumerators.Target) t).ToList(),
@@ -71,14 +73,14 @@ namespace Loom.ZombieBattleground.Data
                 ability.Turns,
                 ability.Count,
                 ability.Delay,
-                ability.VisualEffectsToPlay.Select(v => v.FromProtobuf()).ToList(),
+                ability.VisualEffectsToPlay.ToList(),
                 (Enumerators.GameMechanicDescription) ability.GameMechanicDescription,
                 (Enumerators.Faction) ability.TargetFaction,
                 (Enumerators.AbilitySubTrigger) ability.SubTrigger,
-                ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
+                ability.ChoosableAbilities.ToList(),
                 ability.Defense2,
                 ability.Cost
-            );
+            ); */
         }
 
         public static OverlordModel FromProtobuf(this Protobuf.Overlord overlord)
@@ -148,22 +150,24 @@ namespace Loom.ZombieBattleground.Data
             );
         }
 
-        public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
+        /*
+        public static Protobuf.AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
         {
-            return new AbilityData.VisualEffectInfo(
+            return new Protobuf.AbilityData.VisualEffectInfo(
                 (Enumerators.AbilityEffectType) visualEffectInfo.Type,
                 visualEffectInfo.Path
             );
         }
 
-        public static AbilityData.ChoosableAbility FromProtobuf(this CardChoosableAbility choosableAbility)
+        public static Protobuf.AbilityData.ChoosableAbility FromProtobuf(this CardChoosableAbility choosableAbility)
         {
-            return new AbilityData.ChoosableAbility(
+            return new Protobuf.AbilityData.ChoosableAbility(
                 choosableAbility.Description,
                 choosableAbility.AbilityData.FromProtobuf(),
                 choosableAbility.Attribute
             );
         }
+        */
 
         public static PictureTransform FromProtobuf(this Protobuf.PictureTransform pictureTransform)
         {
@@ -189,14 +193,11 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.CardKind) card.Kind,
                 (Enumerators.CardRank) card.Rank,
                 (Enumerators.CardType) card.Type,
-                new List<CardAbilitiesCombination>()
-                {
-                   new CardAbilitiesCombination(new List<GenericParameter>(),
-                                                new List<CardAbilityData>(),
+                new CardAbilitiesData(new List<GenericParameter>(),
+                                                new List<AbilityData>(),
                                                 Enumerators.GameMechanicDescription.Undefined,
-                                                new List<CardAbilityData.TriggerInfo>(),
-                                                new List<CardAbilityData.TargetInfo>())
-                },
+                                                new List<AbilityData.TriggerInfo>(),
+                                                new List<AbilityData.TargetInfo>()),
                 card.PictureTransform.FromProtobuf(),
                 (Enumerators.UniqueAnimation) card.UniqueAnimation,
                 card.Hidden
@@ -211,14 +212,11 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.Faction) card.Faction,
                 (Enumerators.CardType) card.Type,
                 card.Cost,
-                new List<CardAbilitiesCombination>()
-                {
-                   new CardAbilitiesCombination(new List<GenericParameter>(),
-                                                new List<CardAbilityData>(),
+                new CardAbilitiesData(new List<GenericParameter>(),
+                                                new List<AbilityData>(),
                                                 Enumerators.GameMechanicDescription.Undefined,
-                                                new List<CardAbilityData.TriggerInfo>(),
-                                                new List<CardAbilityData.TargetInfo>())
-                }
+                                                new List<AbilityData.TriggerInfo>(),
+                                                new List<AbilityData.TargetInfo>())
             );
         }
 

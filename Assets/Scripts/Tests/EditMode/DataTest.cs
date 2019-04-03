@@ -53,14 +53,11 @@ namespace Loom.ZombieBattleground.Test
                 Enumerators.CardKind.CREATURE,
                 Enumerators.CardRank.GENERAL,
                 Enumerators.CardType.WALKER,
-                new List<CardAbilitiesCombination>()
-                {
-                    new CardAbilitiesCombination(new List<GenericParameter>(),
-                                                 new List<CardAbilityData>(),
+                new CardAbilitiesData(new List<GenericParameter>(),
+                                                 new List<AbilityData>(),
                                                  Enumerators.GameMechanicDescription.Undefined,
-                                                 new List<CardAbilityData.TriggerInfo>(),
-                                                 new List<CardAbilityData.TargetInfo>())
-                },
+                                                 new List<AbilityData.TriggerInfo>(),
+                                                 new List<AbilityData.TargetInfo>()),
                 new PictureTransform(
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
@@ -164,9 +161,11 @@ namespace Loom.ZombieBattleground.Test
             client.ShouldDeepEqual(protobuf.FromProtobuf());
         }
 
-        private static AbilityData CreateAbilityData(bool includeChoosableAbility, Func<List<AbilityData.ChoosableAbility>> choosableAbilityFunc)
+        private static AbilityData CreateAbilityData(bool includeChoosableAbility, Func<List<AbilityToSelectData>> choosableAbilityFunc)
         {
-            List<AbilityData.ChoosableAbility> choosableAbilities = new List<AbilityData.ChoosableAbility>();
+            return new AbilityData(Enumerators.AbilityType.Undefined, Enumerators.GameMechanicDescription.Undefined, null, null, null, null);
+
+/*            List<AbilityData.ChoosableAbility> choosableAbilities = new List<AbilityData.ChoosableAbility>();
             if (includeChoosableAbility)
             {
                 choosableAbilities = choosableAbilityFunc();
@@ -205,7 +204,7 @@ namespace Loom.ZombieBattleground.Test
                     choosableAbilities,
                     7,
                     8
-                );
+                ); */
         }
     }
 }

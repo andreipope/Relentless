@@ -1,4 +1,5 @@
 using log4net;
+using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
 
@@ -48,7 +49,7 @@ namespace Loom.ZombieBattleground
         public void Init(ICardAbility cardAbility)
         {
             CardAbility = cardAbility;
-            VfxParameters = CardAbility.CardAbilityData.VfxParameters;
+            VfxParameters = CardAbility.AbilityData.VfxParameters;
         }
 
         public virtual void DoVFXAction(IReadOnlyList<BoardObject> targets = null, IReadOnlyList<GenericParameter> genericParameters = null)
