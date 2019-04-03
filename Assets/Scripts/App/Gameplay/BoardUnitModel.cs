@@ -175,10 +175,17 @@ namespace Loom.ZombieBattleground
                 if (oldValue == value)
                     return;
 
+                if (value != DefenseBuffer)
+                {
+                    DefenseBuffer += value - oldValue;
+                }
+
                 Card.InstanceCard.Defense = value;
                 UnitDefenseChanged?.Invoke(oldValue, value);
             }
         }
+
+        public int DefenseBuffer { get; set; }
 
         public bool IsPlayable { get; set; }
 
@@ -226,6 +233,8 @@ namespace Loom.ZombieBattleground
 
         public bool WasDistracted { get; private set; }
 
+        public bool IsUnitActive { get; private set; } = true;
+
 
         // =================== REMOVE HARD
 
@@ -248,6 +257,19 @@ namespace Loom.ZombieBattleground
         public Enumerators.Faction Faction => Card.Prototype.Faction;
 
         // ===================
+
+        public void HandleDefenseBuffer()
+        {
+            if(DefenseBuffer <= 0)
+            {
+                SetUnitActiveStatus(false);
+            }
+        }
+
+        public void SetUnitActiveStatus(bool isActive)
+        {
+            IsUnitActive = isActive;
+        }
 
         public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true)
         {
@@ -792,12 +814,8 @@ namespace Loom.ZombieBattleground
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentDefense > 0)
                                     {
-                                        if (!targetCardModel.HasBuffShield)
-                                        {
-                                            targetCardModel.Stun(Enumerators.StunType.FREEZE, 1);
-                                        } else {
-                                            targetCardModel.HasUsedBuffShield = true;
-                                        }
+                                        targetCardModel.Stun(Enumerators.StunType.FREEZE, 1);
+                                        targetCardModel.UseShieldFromBuff();
                                     }
 
                                     targetCardModel.ResolveBuffShield();
@@ -970,6 +988,7 @@ namespace Loom.ZombieBattleground
             Card.InstanceCard.Damage = Card.Prototype.Damage;
             Card.InstanceCard.Defense = Card.Prototype.Defense;
             InitialUnitType = Card.Prototype.Type;
+            DefenseBuffer = Card.InstanceCard.Defense;
             BuffedDefense = 0;
             BuffedDamage = 0;
             NumTurnsOnBoard = 0;
@@ -989,6 +1008,7 @@ namespace Loom.ZombieBattleground
             IsAttacking = false;
             IsDead = false;
             AttackAsFirst = false;
+            IsUnitActive = true;
             CantAttackInThisTurnBlocker = false;
             UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             AttackRestriction = Enumerators.AttackRestriction.ANY;
