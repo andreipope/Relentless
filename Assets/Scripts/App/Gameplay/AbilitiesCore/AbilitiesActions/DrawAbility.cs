@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using System.Collections.Generic;
 using UnityEngine;
 using static Loom.ZombieBattleground.CardAbilityData;
 
@@ -6,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     internal class DrawAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             bool fromSelf = true;
             int count = 1;

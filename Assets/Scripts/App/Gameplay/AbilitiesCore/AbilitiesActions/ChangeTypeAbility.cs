@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeTypeAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 

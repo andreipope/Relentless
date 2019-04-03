@@ -1,12 +1,14 @@
+using System.Collections.Generic;
+
 namespace Loom.ZombieBattleground
 {
     public class ChangeCostAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
-            if (AbilitiesController.HasParameter(GenericParameters, Common.Enumerators.AbilityParameter.Cost))
+            if (AbilitiesController.HasParameter(genericParameters, Common.Enumerators.AbilityParameter.Cost))
             {
-                int value = AbilitiesController.GetParameterValue<int>(GenericParameters,
+                int value = AbilitiesController.GetParameterValue<int>(genericParameters,
                                                            Common.Enumerators.AbilityParameter.Cost);
                 foreach (BoardObject target in Targets)
                 {

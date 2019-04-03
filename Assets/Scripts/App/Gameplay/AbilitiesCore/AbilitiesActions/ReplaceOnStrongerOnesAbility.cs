@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         private Enumerators.Faction faction;
 
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             _boardUnits = new List<BoardUnitModel>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();

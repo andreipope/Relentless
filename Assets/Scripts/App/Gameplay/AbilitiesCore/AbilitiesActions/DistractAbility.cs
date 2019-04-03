@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground
 {
     internal class DistractAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
