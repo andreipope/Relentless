@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground.Common
             GainGoo,
             GainGooBottle,
             LoseGoo,
-            loseGooBottle,
+            LoseGooBottle,
             OverflowGoo
         }
 
