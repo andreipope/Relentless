@@ -234,7 +234,7 @@ class AltrunUnityDriver(object):
     
     def get_alt_element(self, data):
         print(data)
-        if (data != '' and 'altUnityError:' not in data):
+        if (data != '' and 'error:' not in data):
             alt_el = None
             try:
                 alt_el = AltElement(self, self.appium_driver, data)
@@ -253,7 +253,7 @@ class AltrunUnityDriver(object):
         return None
     
     def get_alt_elements(self, data):
-        if (data != '' and 'altUnityError:' not in data):
+        if (data != '' and 'error:' not in data):
             alt_elements = []
             elements = []
             try:
@@ -522,32 +522,32 @@ class AltrunUnityDriver(object):
 
 
     def handle_errors(self, data):
-        if ('altUnityError' in data):
-            if ('altUnityError:notFound' in data):
+        if ('error' in data):
+            if ('error:notFound' in data):
                 raise  NotFoundException(data)
-            elif ('altUnityError:propertyNotFound' in data): 
+            elif ('error:propertyNotFound' in data): 
                 raise  PropertyNotFoundException(data)
-            elif ('altUnityError:methodNotFound' in data): 
+            elif ('error:methodNotFound' in data): 
                 raise  MethodNotFoundException(data)
-            elif ('altUnityError:componentNotFound' in data): 
+            elif ('error:componentNotFound' in data): 
                 raise  ComponentNotFoundException(data)
-            elif ('altUnityError:couldNotPerformOperation' in data): 
+            elif ('error:couldNotPerformOperation' in data): 
                 raise  CouldNotPerformOperationException(data)
-            elif ('altUnityError:couldNotParseJsonString' in data): 
+            elif ('error:couldNotParseJsonString' in data): 
                 raise  CouldNotParseJsonStringException(data)
-            elif ('altUnityError:incorrectNumberOfParameters' in data): 
+            elif ('error:incorrectNumberOfParameters' in data): 
                 raise  IncorrectNumberOfParametersException(data)
-            elif ('altUnityError:failedToParseMethodArguments' in data): 
+            elif ('error:failedToParseMethodArguments' in data): 
                 raise  FailedToParseArgumentsException(data)
-            elif ('altUnityError:objectNotFound' in data): 
+            elif ('error:objectNotFound' in data): 
                 raise  ObjectWasNotFoundException(data)
-            elif ('altUnityError:propertyCannotBeSet' in data): 
+            elif ('error:propertyCannotBeSet' in data): 
                 raise  PropertyNotFoundException(data)
-            elif ('altUnityError:nullRefferenceException' in data): 
+            elif ('error:nullRefferenceException' in data): 
                 raise  NullRefferenceException(data)
-            elif ('altUnityError:unknownError' in data): 
+            elif ('error:unknownError' in data): 
                 raise  UnknownErrorException(data)
-            elif ('altUnityError:formatException' in data): 
+            elif ('error:formatException' in data): 
                 raise  FormatException(data)
         else:
             return data

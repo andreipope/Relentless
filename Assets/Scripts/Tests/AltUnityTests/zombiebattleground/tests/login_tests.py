@@ -37,7 +37,7 @@ class CZBLoginTests(CZBTests):
         Wait_Page(self.altdriver)
 
         try:
-            self.altdriver.find_element('Button_Login',)
+            self.altdriver.find_element('Button_Login')
             self.assertTrue(False,"Failed to login")
         except NotFoundException:
             self.assertTrue(True)
