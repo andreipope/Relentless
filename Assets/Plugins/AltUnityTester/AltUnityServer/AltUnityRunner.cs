@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Text;
 using System.Collections.Generic;
@@ -235,6 +235,8 @@ public class AltUnityRunner : MonoBehaviour, AltIClientSocketHandlerDelegate
                                                       y: Convert.ToInt32(Mathf.Round(_position.y)),
                                                       z: Convert.ToInt32(Mathf.Round(_position.z)),//if z is negative object is behind the camera
                                                       mobileY: Convert.ToInt32(Mathf.Round(Screen.height - _position.y)),
+                                                      screenHeight:Screen.height,
+                                                      screenWidth: Screen.width,
                                                       type: "",
                                                       enabled: altGameObject.activeSelf,
                                                       worldX: altGameObject.transform.position.x,
