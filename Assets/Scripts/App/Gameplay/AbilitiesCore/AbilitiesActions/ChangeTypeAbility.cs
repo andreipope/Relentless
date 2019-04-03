@@ -1,4 +1,5 @@
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
 
