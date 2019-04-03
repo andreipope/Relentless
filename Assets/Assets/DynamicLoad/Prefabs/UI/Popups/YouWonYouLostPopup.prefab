@@ -490,7 +490,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224307624004752896}
   m_Layer: 0
-  m_Name: YouWonYouLostPopupEdited
+  m_Name: YouWonYouLostPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
