@@ -6,8 +6,6 @@ namespace Loom.ZombieBattleground
     {
         public override void DoAction()
         {
-            UnityEngine.Debug.LogError(3333);
-            Log.Error(11111);
             foreach (BoardObject target in Targets)
             {
                 switch (target)
@@ -23,13 +21,11 @@ namespace Loom.ZombieBattleground
         public override void AbilityInitializedAction()
         {
             base.AbilityInitializedAction();
-            UnityEngine.Debug.LogError(5555);
         }
 
         private void ReviveUnit(BoardUnitModel boardUnitModel)
         {
             Player playerOwner = boardUnitModel.Owner;
-            Log.Error(2222);
 
             if (playerOwner.CardsOnBoard.Count >= playerOwner.MaxCardsInPlay)
                 return;

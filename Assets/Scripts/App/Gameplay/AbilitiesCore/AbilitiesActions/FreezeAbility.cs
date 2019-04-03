@@ -7,6 +7,8 @@ namespace Loom.ZombieBattleground
     {
         public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardObject target in Targets)
             {
                 switch (target)
@@ -18,7 +20,15 @@ namespace Loom.ZombieBattleground
                         player.Stun(Enumerators.StunType.FREEZE, 1);
                         break;
                 }
+
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Common.Enumerators.ActionEffectType.Freeze,
+                    Target = target
+                });
             }
+
+            PostGameActionReport(Common.Enumerators.ActionType.CardAffectingCardsWithOverlord, targetEffects);
         }
     }
 }
