@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
 
         public void Clear()
         {
-            _tasks.Clear();
+            _tasks?.Clear();
         }
 
         public async void Update()
@@ -39,21 +39,33 @@ namespace Loom.ZombieBattleground
             if (!Active)
                 return;
 
-            while (_tasks.Count > 0)
+            while (_tasks?.Count > 0)
             {
-                await _tasks.Dequeue()();
+                await _tasks?.Dequeue()?.Invoke();
             }
         }
 
         public void AddTask(Func<Task> taskFunc)
         {
-            _tasks.Enqueue(taskFunc);
+            if (taskFunc == null)
+            {
+                Log.Warn("Incoming Task is null");
+                return;
+            }
+
+            _tasks?.Enqueue(taskFunc);
         }
 
         public void AddAction(IMessage request)
         {
             AddTask(async () =>
             {
+                if (!_backendFacade.IsConnected)
+                {
+                    Log.Warn($"Tried to send {request} when Connection state is Disconnected.");
+                    return;
+                }
+
                 switch (request)
                 {
                     case PlayerActionRequest playerActionMessage:

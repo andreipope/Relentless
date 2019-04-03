@@ -764,7 +764,8 @@ namespace Loom.ZombieBattleground
                                            tooltip.AppearDelay,
                                            tooltip.DynamicPosition,
                                            tooltip.TutorialTooltipLayer,
-                                           tooltip.MinimumShowTime);
+                                           tooltip.MinimumShowTime,
+                                           tooltip.TutorialUIElementOwnerName);
                 }
             }
 
@@ -1079,7 +1080,8 @@ namespace Loom.ZombieBattleground
                                            float appearDelay,
                                            bool dynamicPosition,
                                            Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime)
+                                           float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
+                                           string tutorialUIElementOwnerName = Constants.Empty)
         {
             if (appearDelay > 0)
             {
@@ -1094,7 +1096,8 @@ namespace Loom.ZombieBattleground
                                                                                                     dynamicPosition,
                                                                                                     ownerId,
                                                                                                     layer,
-                                                                                                    minimumShowTime: minimumShowTime);
+                                                                                                    minimumShowTime: minimumShowTime,
+                                                                                                    tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                     _tutorialDescriptionTooltipItems.Add(tooltipItem);
                 }, appearDelay);
@@ -1110,7 +1113,8 @@ namespace Loom.ZombieBattleground
                                                                                                 dynamicPosition,
                                                                                                 ownerId,
                                                                                                 layer,
-                                                                                                minimumShowTime: minimumShowTime);
+                                                                                                minimumShowTime: minimumShowTime,
+                                                                                                tutorialUIElementOwnerName: tutorialUIElementOwnerName);
 
                 _tutorialDescriptionTooltipItems.Add(tooltipItem);
             }
@@ -1134,7 +1138,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
@@ -1163,7 +1168,8 @@ namespace Loom.ZombieBattleground
                                        tooltipInfo.AppearDelay,
                                        tooltipInfo.DynamicPosition,
                                        tooltipInfo.TutorialTooltipLayer,
-                                       tooltipInfo.MinimumShowTime);
+                                       tooltipInfo.MinimumShowTime,
+                                       tooltipInfo.TutorialUIElementOwnerName);
             }
             else
             {
@@ -1399,6 +1405,7 @@ namespace Loom.ZombieBattleground
                 {
                     _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                     _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
                     await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                     await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
