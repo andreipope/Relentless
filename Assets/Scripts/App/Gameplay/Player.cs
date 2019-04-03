@@ -528,7 +528,7 @@ namespace Loom.ZombieBattleground
             _drawCradParticle.Play();
         }
 
-        public void Stun(Enumerators.StunType stunType, int turnsCount)
+        public void Stun(Enumerators.StunType stunType, int turnsCount = 1)
         {
             if (!_gameplayManager.CurrentTurnPlayer.Equals(this))
                 turnsCount++;

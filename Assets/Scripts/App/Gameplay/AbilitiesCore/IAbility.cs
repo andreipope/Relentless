@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
     public class CardAbility : ICardAbility
     {
-        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbility));
+        protected readonly ILog Log;
 
         public event Action AbilityInitialized;
 
@@ -96,6 +96,8 @@ namespace Loom.ZombieBattleground
             BoardController = GameplayManager.GetController<BoardController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             RanksController = GameplayManager.GetController<RanksController>();
+
+            Log = Logging.GetLog(GetType().Name);
         }
 
         public virtual void DoAction(IReadOnlyList<GenericParameter> genericParameters) { }
@@ -115,12 +117,7 @@ namespace Loom.ZombieBattleground
             AbilityView = abilityView;
             Combination = combination;
             MainTrigger = trigger;
-            GenericParameters = cardAbilityData.GenericParameters;
-
-            if(GenericParameters == null)
-            {
-                GenericParameters = Combination.DefaultGenericParameters;
-            }
+            GenericParameters = AbilitiesController.GetAllGenericParameters(this);
 
             AbilityView?.Init(this);
 
@@ -163,6 +160,9 @@ namespace Loom.ZombieBattleground
 
         protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)
         {
+            if (targetEffectParams == null || targetEffectParams.Count == 0)
+                return;
+
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,

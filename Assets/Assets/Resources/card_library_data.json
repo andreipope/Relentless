@@ -91,13 +91,22 @@
             {
               "DefaultTriggers": [
                 {
-                  "Trigger": "EntryWithSelection"
+                  "Trigger": "Entry",
+                  "SubTriggers": [
+                    "RandomUnit"
+                  ]
                 }
               ],
               "DefaultTargets": [
                 {
                   "Target": "OpponentCard",
                   "TargetFilter": "Target"
+                }
+              ],
+              "DefaultGenericParameters": [
+                {
+                  "AbilityParameter": "Count",
+                  "Value": 1
                 }
               ],
               "DefaultGameMechanicDescription": "Entry",
