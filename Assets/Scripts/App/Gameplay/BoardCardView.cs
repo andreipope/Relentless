@@ -428,7 +428,7 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (CardAbilitiesCombination combination in unit.Model.Card.InstanceCard.Abilities.Combinations)
+                foreach (CardAbilitiesCombination combination in unit.Model.Card.InstanceCard.Abilities)
                 {
                     foreach (CardAbilityData abil in combination.CardAbilities)
                     {
@@ -580,7 +580,7 @@ namespace Loom.ZombieBattleground
 
             if (boardCardView.Model.Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilitiesCombination combination in boardCardView.Model.Card.InstanceCard.Abilities.Combinations)
+                foreach (CardAbilitiesCombination combination in boardCardView.Model.Card.InstanceCard.Abilities)
                 {
                     foreach (CardAbilityData abil in combination.CardAbilities)
                     {

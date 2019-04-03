@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasTrigger(Enumerators.AbilityTrigger trigger)
         {
-            return Triggers.FindAll(trig => trig.Trigger == trigger).Count > 0;
+            return Triggers?.FindAll(trig => trig.Trigger == trigger).Count > 0;
         }
 
         public bool TryGetTrigger(Enumerators.AbilityTrigger trigger, out TriggerInfo triggerInfo)

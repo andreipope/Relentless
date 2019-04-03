@@ -499,7 +499,6 @@ namespace Loom.ZombieBattleground
 
                             _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
 
-                            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
                                 {
@@ -521,6 +520,7 @@ namespace Loom.ZombieBattleground
                                  
                                     callAbilityAction.ForceActionDone();
                                 });
+                            boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                             break;
                         }
                     case Enumerators.CardKind.ITEM:

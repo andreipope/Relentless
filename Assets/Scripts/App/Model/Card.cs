@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Data
         public Enumerators.CardType Type { get; protected set; }
 
         [JsonProperty]
-        public CardAbilities Abilities { get; protected set; }
+        public List<CardAbilitiesCombination> Abilities { get; protected set; }
 
         [JsonProperty]
         public PictureTransform PictureTransform { get; protected set; }
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.CardKind kind,
             Enumerators.CardRank rank,
             Enumerators.CardType type,
-            CardAbilities abilities,
+            List<CardAbilitiesCombination> abilities,
             PictureTransform pictureTransform,
             Enumerators.UniqueAnimation uniqueAnimation,
             bool hidden
@@ -93,12 +93,14 @@ namespace Loom.ZombieBattleground.Data
             Kind = kind;
             Rank = rank;
             Type = type;
-            Abilities = abilities ?? new CardAbilities(new List<CardAbilitiesCombination>()
+            Abilities = abilities ?? new List<CardAbilitiesCombination>()
             {
                 new CardAbilitiesCombination(new List<GenericParameter>(),
                                              new List<CardAbilityData>(),
-                                             Enumerators.GameMechanicDescription.Undefined)
-            });
+                                             Enumerators.GameMechanicDescription.Undefined,
+                                             new List<CardAbilityData.TriggerInfo>(),
+                                             new List<CardAbilityData.TargetInfo>())
+            };
             PictureTransform = pictureTransform;
             UniqueAnimation = uniqueAnimation;
             Hidden = hidden;
