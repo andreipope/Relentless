@@ -2263,6 +2263,9 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in units)
             {
+                if (unit == null)
+                    continue;
+
                 unit.SetAsHeavyUnit();
 
                 BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
