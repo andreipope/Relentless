@@ -42,13 +42,13 @@ namespace Loom.ZombieBattleground
 
             if (!IsHordeItem)
             {
-                Page?.AddCardToDeck(Card);
+                Page?.AddCardToDeck(Card,true);
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardAdded);
             }
             else
             {
-                Page?.RemoveCardFromDeck(Card);
+                Page?.RemoveCardFromDeck(Card,true);
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.CardRemoved);
             }

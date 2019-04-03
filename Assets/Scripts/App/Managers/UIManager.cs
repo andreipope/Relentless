@@ -105,6 +105,8 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new MySettingPopup());
             _uiPopups.Add(new LoadingBarPopup());
             _uiPopups.Add(new CreditPopup());
+            _uiPopups.Add(new SettingsWithCreditsPopup());
+            _uiPopups.Add(new YouWonYouLostWithRewardPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {
