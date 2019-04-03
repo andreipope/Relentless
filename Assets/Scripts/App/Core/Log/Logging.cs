@@ -97,8 +97,9 @@ namespace Loom.ZombieBattleground
             unityConsolePattern.ConversionPattern = "[%logger] %message";
             if (Application.isEditor && !Application.isBatchMode)
             {
-                unityConsolePattern.ConversionPattern = "<i>[%logger]</i> %message";
+                unityConsolePattern.ConversionPattern = "<i>[%logger]</i> %message%exceptionpadding{\n}%exception";
             }
+            unityConsolePattern.AddConverter("exceptionpadding", typeof(ExceptionPaddingPatternLayoutConverter));
             unityConsolePattern.ActivateOptions();
 
             UnityConsoleAppender unityConsoleAppender = new UnityConsoleAppender
