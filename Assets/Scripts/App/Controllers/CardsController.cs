@@ -209,6 +209,7 @@ namespace Loom.ZombieBattleground
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
+                    highestInstanceId = cards.Count();
                 }
                 else
                 {
