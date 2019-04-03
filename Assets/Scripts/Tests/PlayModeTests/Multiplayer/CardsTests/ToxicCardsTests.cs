@@ -908,13 +908,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardPlay(playerPolluterId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerPolluterId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerPolluterId, Enumerators.AbilityType.ChangeGoo, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerSpikerbId, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentPolluterId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentPolluterId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardAbilityUsed(opponentPolluterId, Enumerators.AbilityType.ChangeGoo, new List<ParametrizedAbilityInstanceId>());
                            opponent.CardPlay(opponentSpikerId, ItemPosition.Start);
                        },
                        player =>

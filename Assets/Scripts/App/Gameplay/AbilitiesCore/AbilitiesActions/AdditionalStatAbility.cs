@@ -8,34 +8,36 @@ namespace Loom.ZombieBattleground
 
         private List<BoardObject> _targets = new List<BoardObject>();
 
-        public override void DoAction()
-        {
-            foreach (BoardObject target in Targets)
-            {
-                switch (target)
-                {
-                    case BoardUnitModel boardUnitModel:
-                        ProcessUnit(boardUnitModel, _isActive);
-                        break;
-                }
-
-                _targets.Add(target);
-            }
-        }
-
         public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
-            foreach (BoardObject target in _targets)
+            if (genericParameters != null)
             {
-                switch (target)
+                foreach (BoardObject target in _targets)
                 {
-                    case BoardUnitModel boardUnitModel:
-                        ProcessUnit(boardUnitModel, _isActive);
-                        break;
+                    switch (target)
+                    {
+                        case BoardUnitModel boardUnitModel:
+                            ProcessUnit(boardUnitModel, _isActive);
+                            break;
+                    }
+                }
+
+                _targets.Clear();
+            }
+            else
+            {
+                foreach (BoardObject target in Targets)
+                {
+                    switch (target)
+                    {
+                        case BoardUnitModel boardUnitModel:
+                            ProcessUnit(boardUnitModel, _isActive);
+                            break;
+                    }
+
+                    _targets.Add(target);
                 }
             }
-
-            _targets.Clear();
         }
 
         private void ProcessUnit(BoardUnitModel boardUnitModel, bool revert)

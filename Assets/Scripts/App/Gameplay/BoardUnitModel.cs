@@ -964,14 +964,21 @@ namespace Loom.ZombieBattleground
                 {
                     foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
                     {
-                        TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(cardAbilityData.GameMechanicDescription);
-
-                        if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
-                        {
-                            AddGameMechanicDescriptionOnUnit(cardAbilityData.GameMechanicDescription);
-                        }
+                        LoadGameMechanicDescriptionOnUnit(cardAbilityData.GameMechanicDescription);
                     }
+
+                    LoadGameMechanicDescriptionOnUnit(combination.DefaultGameMechanicDescription);
                 }
+            }
+        }
+
+        private void LoadGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription mechanicDescription)
+        {
+            TooltipContentData.GameMechanicInfo gameMechanicInfo = GameClient.Get<IDataManager>().GetGameMechanicInfo(mechanicDescription);
+
+            if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
+            {
+                AddGameMechanicDescriptionOnUnit(mechanicDescription);
             }
         }
 

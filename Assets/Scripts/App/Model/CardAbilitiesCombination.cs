@@ -7,13 +7,13 @@ namespace Loom.ZombieBattleground
     public class CardAbilitiesCombination
     {
         [JsonProperty]
-        public List<GenericParameter> DefaultGenericParameters { get; protected set; }
-
-        [JsonProperty]
         public List<CardAbilityData> CardAbilities { get; protected set; }
 
         [JsonProperty]
         public Enumerators.GameMechanicDescription DefaultGameMechanicDescription { get; protected set; }
+
+        [JsonProperty]
+        public List<GenericParameter> DefaultGenericParameters { get; protected set; }
 
         [JsonProperty]
         public List<CardAbilityData.TriggerInfo> DefaultTriggers { get; protected set; }

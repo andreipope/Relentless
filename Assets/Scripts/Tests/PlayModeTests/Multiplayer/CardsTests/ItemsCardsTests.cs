@@ -638,7 +638,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.LetsThink(2);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ChangeGoo, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
                             Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().GooVials);
@@ -687,7 +687,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.LetsThink(2);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.GainGoo, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ChangeGoo, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
                             Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().GooVials);

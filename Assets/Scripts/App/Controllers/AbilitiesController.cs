@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
                         if (cardAbilityData.TryGetTrigger(Enumerators.AbilityTrigger.Entry, out CardAbilityData.TriggerInfo triggerInfo))
                         {
                             selectedTargets = FilterTargets(boardUnitModel, triggerInfo, cardAbilityData.GenericParameters,
-                                                    GetTargets(boardUnitModel, cardAbilityData, targets));
+                                                    GetTargets(boardUnitModel, combination, cardAbilityData, targets));
                         }
                         else if (selectedTargets == null)
                         {
@@ -199,9 +199,17 @@ namespace Loom.ZombieBattleground
 
             string abilityViewClassName, abilitySubViewClassName, abilityClassName;
 
-            if (cardAbilityData.Triggers != null)
+
+            List<CardAbilityData.TriggerInfo> triggers = cardAbilityData.Triggers;
+
+            if (triggers == null)
             {
-                foreach (CardAbilityData.TriggerInfo trigger in cardAbilityData.Triggers)
+                triggers = combination.DefaultTriggers;
+            }
+
+            if (triggers != null)
+            {
+                foreach (CardAbilityData.TriggerInfo trigger in triggers)
                 {
                     if (ignoreEntry &&
                         (trigger.Trigger == Enumerators.AbilityTrigger.Entry ||
@@ -230,8 +238,13 @@ namespace Loom.ZombieBattleground
 
                     _activeAbilities[trigger.Trigger].Add(ability);
 
+                    CheckOnPermanentAbilities(ability, cardAbilityData);
                     CheckOnEntryAbility(ability, cardAbilityData);
                 }
+            }
+            else
+            {
+                Log.Warn($"Ability {cardAbilityData.Ability} havent triggers on card {boardUnitModel.InstanceId}");
             }
         }
 
@@ -255,7 +268,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == boardUnit)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
                     {
                         boardUnit
                     }, true)));
@@ -281,7 +294,7 @@ namespace Loom.ZombieBattleground
                         {
                             attacker
                         }));
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -293,7 +306,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
                     {
                         targetAttacked
                     }, true)));
@@ -309,11 +322,11 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
-                                                         GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                                                         GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
                      {
                         targetKilled
                      }, true)));
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -328,7 +341,7 @@ namespace Loom.ZombieBattleground
                     {
                         unitAttacked
                     });
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
         }
@@ -340,7 +353,7 @@ namespace Loom.ZombieBattleground
                 if (ability.UnitModelOwner == attacker)
                 {
                     ability.InsertTargets(FilterTargets(ability.UnitModelOwner, ability.MainTrigger, ability.CardAbilityData.GenericParameters,
-                                                        GetTargets(ability.UnitModelOwner, ability.CardAbilityData, new List<BoardObject>()
+                                                        GetTargets(ability.UnitModelOwner, ability.Combination, ability.CardAbilityData, new List<BoardObject>()
                     {
                         attacker
                     }, true)));
@@ -349,7 +362,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
+        private void CheckOnEntryAbility(ICardAbility cardAbility, CardAbilityData abilityData)
         {
             if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Entry) ||
                abilityData.HasTrigger(Enumerators.AbilityTrigger.EntryWithSelection))
@@ -357,8 +370,16 @@ namespace Loom.ZombieBattleground
                 if (!HasSubTrigger(cardAbility, Enumerators.AbilitySubTrigger.Delay) &&
                     CheckSubTriggersToProceed(abilityData))
                 {
-                    cardAbility.DoAction();
+                    cardAbility.DoAction(null);
                 }
+            }
+        }
+
+        private void CheckOnPermanentAbilities(ICardAbility cardAbility, CardAbilityData abilityData)
+        {
+            if (abilityData.HasTrigger(Enumerators.AbilityTrigger.Permanent))
+            {
+                cardAbility.DoAction(null);
             }
         }
 
@@ -377,7 +398,7 @@ namespace Loom.ZombieBattleground
                     {
                         if (ability.TurnsOnBoard == delay)
                         {
-                            ability.DoAction();
+                            ability.DoAction(null);
                         }
                     }
                 }
@@ -395,7 +416,7 @@ namespace Loom.ZombieBattleground
             {
                 if (ability.UnitModelOwner == boardUnit)
                 {
-                    ability.DoAction();
+                    ability.DoAction(null);
                 }
             }
 
@@ -409,7 +430,7 @@ namespace Loom.ZombieBattleground
         {
             foreach(ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.End])
             {
-                ability.DoAction();
+                ability.DoAction(null);
             }
         }
 
@@ -417,7 +438,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (ICardAbility ability in _activeAbilities[Enumerators.AbilityTrigger.Turn])
             {
-                ability.DoAction();
+                ability.DoAction(null);
             }
 
             HandleAbilitiesWithDelaySubTrigger();
@@ -502,86 +523,105 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            return false;
+            return true;
         }
 
         #endregion
 
         #region targets filtering
 
-        public List<BoardObject> GetTargets(BoardUnitModel modelCaller, CardAbilityData cardAbilityData, List<BoardObject> targets, bool insert = false)
+        public List<BoardObject> GetTargets(
+            BoardUnitModel modelCaller,
+            CardAbilitiesCombination combination,
+            CardAbilityData cardAbilityData,
+            List<BoardObject> targets,
+            bool insert = false)
         {
             if (targets != null && !insert)
                 return targets;
 
             targets = targets ?? new List<BoardObject>();
 
-            foreach(CardAbilityData.TargetInfo targetInfo in cardAbilityData.Targets)
+            List<CardAbilityData.TargetInfo> targetsInfo = cardAbilityData.Targets;
+
+            if(targetsInfo == null)
             {
-                switch (targetInfo.Target)
+                targetsInfo = combination.DefaultTargets;
+            }
+
+            if (targetsInfo != null)
+            {
+                foreach (CardAbilityData.TargetInfo targetInfo in targetsInfo)
                 {
-                    case Enumerators.Target.ItSelf:
-                        targets.Add(modelCaller);
-                        break;
-                    case Enumerators.Target.Opponent:
-                        targets.Add(_battlegroundController.GetOpponentPlayerForUnit(modelCaller));
-                        break;
-                    case Enumerators.Target.Player:
-                        targets.Add(modelCaller.OwnerPlayer);
-                        break;
-                    case Enumerators.Target.PlayerCard:
-                        switch(targetInfo.TargetFilter)
-                        {
-                            case Enumerators.TargetFilter.TargetAdjustments:
-                                if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
-                                {
-                                    targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
-                                }
-                                break;
-                            case Enumerators.TargetFilter.FromBoard:
-                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsOnBoard);
-                                break;
-                            case Enumerators.TargetFilter.FromHand:
-                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInHand);
-                                break;
-                            case Enumerators.TargetFilter.FromDeck:
-                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInDeck);
-                                break;
-                            case Enumerators.TargetFilter.FromGraveyard:
-                                targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInGraveyard);
-                                break;
-                        }
-                        break;
-                    case Enumerators.Target.OpponentCard:
-                        switch (targetInfo.TargetFilter)
-                        {
-                            case Enumerators.TargetFilter.TargetAdjustments:
-                                if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
-                                {
-                                    targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
-                                }
-                                break;
-                            case Enumerators.TargetFilter.FromBoard:
-                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsOnBoard);
-                                break;
-                            case Enumerators.TargetFilter.FromHand:
-                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInHand);
-                                break;
-                            case Enumerators.TargetFilter.FromDeck:
-                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInDeck);
-                                break;
-                            case Enumerators.TargetFilter.FromGraveyard:
-                                targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInGraveyard);
-                                break;
-                        }
-                        break;
-                    case Enumerators.Target.All:
-                        targets.Add(_gameplayManager.CurrentPlayer);
-                        targets.Add(_gameplayManager.OpponentPlayer);
-                        targets.AddRange(_gameplayManager.CurrentPlayer.PlayerCardsController.CardsOnBoard);
-                        targets.AddRange(_gameplayManager.OpponentPlayer.PlayerCardsController.CardsOnBoard);
-                        break;
+                    switch (targetInfo.Target)
+                    {
+                        case Enumerators.Target.ItSelf:
+                            targets.Add(modelCaller);
+                            break;
+                        case Enumerators.Target.Opponent:
+                            targets.Add(_battlegroundController.GetOpponentPlayerForUnit(modelCaller));
+                            break;
+                        case Enumerators.Target.Player:
+                            targets.Add(modelCaller.OwnerPlayer);
+                            break;
+                        case Enumerators.Target.PlayerCard:
+                            switch (targetInfo.TargetFilter)
+                            {
+                                case Enumerators.TargetFilter.TargetAdjustments:
+                                    if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
+                                    {
+                                        targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
+                                    }
+                                    break;
+                                case Enumerators.TargetFilter.FromBoard:
+                                    targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsOnBoard);
+                                    break;
+                                case Enumerators.TargetFilter.FromHand:
+                                    targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInHand);
+                                    break;
+                                case Enumerators.TargetFilter.FromDeck:
+                                    targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInDeck);
+                                    break;
+                                case Enumerators.TargetFilter.FromGraveyard:
+                                    targets.AddRange(modelCaller.OwnerPlayer.PlayerCardsController.CardsInGraveyard);
+                                    break;
+                            }
+                            break;
+                        case Enumerators.Target.OpponentCard:
+                            switch (targetInfo.TargetFilter)
+                            {
+                                case Enumerators.TargetFilter.TargetAdjustments:
+                                    if (targets.Count > 0 && targets[0] is BoardUnitModel unitModel)
+                                    {
+                                        targets.AddRange(_battlegroundController.GetAdjacentUnitsToUnit(unitModel));
+                                    }
+                                    break;
+                                case Enumerators.TargetFilter.FromBoard:
+                                    targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsOnBoard);
+                                    break;
+                                case Enumerators.TargetFilter.FromHand:
+                                    targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInHand);
+                                    break;
+                                case Enumerators.TargetFilter.FromDeck:
+                                    targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInDeck);
+                                    break;
+                                case Enumerators.TargetFilter.FromGraveyard:
+                                    targets.AddRange(_battlegroundController.GetOpponentPlayerForUnit(modelCaller).PlayerCardsController.CardsInGraveyard);
+                                    break;
+                            }
+                            break;
+                        case Enumerators.Target.All:
+                            targets.Add(_gameplayManager.CurrentPlayer);
+                            targets.Add(_gameplayManager.OpponentPlayer);
+                            targets.AddRange(_gameplayManager.CurrentPlayer.PlayerCardsController.CardsOnBoard);
+                            targets.AddRange(_gameplayManager.OpponentPlayer.PlayerCardsController.CardsOnBoard);
+                            break;
+                    }
                 }
+            }
+            else
+            {
+                Log.Warn($"Ability {cardAbilityData.Ability} havent targets on card {modelCaller.InstanceId}");
             }
 
             return targets;

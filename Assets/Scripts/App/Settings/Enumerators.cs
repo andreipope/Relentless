@@ -17,7 +17,8 @@ namespace Loom.ZombieBattleground.Common
             KillUnit,
             AtDefense,
             StatChanged,
-            InHand
+            InHand,
+            Permanent
         }
 
         public enum AbilitySubTrigger
@@ -44,7 +45,12 @@ namespace Loom.ZombieBattleground.Common
             IfHasUnitsWithGuardInPlay,
             OverlordDefenseLessThan,
             RandomlySplit,
-            CountItemsPlayed
+            CountItemsPlayed,
+            GainGoo,
+            GainGooBottle,
+            LoseGoo,
+            LoseGooBottle,
+            OverflowGoo
         }
 
         public enum AbilityType
@@ -59,9 +65,7 @@ namespace Loom.ZombieBattleground.Common
             CardDiscard,
             Summon,
             ReplaceOnStrongerOnes,
-            GainGoo,
-            LoseGoo,
-            OverflowGoo,
+            ChangeGoo,
             AdditionalStat,
             ChangeStat,
             ChangeCost,

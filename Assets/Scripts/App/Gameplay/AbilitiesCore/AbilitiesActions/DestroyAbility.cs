@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyAbility : CardAbility
     {
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
