@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
 
         private Common.Enumerators.AttackRestriction _attackInfo;
 
-        public override void DoAction()
+        public override void DoAction(IReadOnlyList<GenericParameter> genericParameters)
         {
             foreach (BoardObject target in Targets)
             {
