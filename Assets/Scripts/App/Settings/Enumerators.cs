@@ -45,7 +45,12 @@ namespace Loom.ZombieBattleground.Common
             IfHasUnitsWithGuardInPlay,
             OverlordDefenseLessThan,
             RandomlySplit,
-            CountItemsPlayed
+            CountItemsPlayed,
+            GainGoo,
+            GainGooBottle,
+            LoseGoo,
+            loseGooBottle,
+            OverflowGoo
         }
 
         public enum AbilityType
@@ -60,9 +65,7 @@ namespace Loom.ZombieBattleground.Common
             CardDiscard,
             Summon,
             ReplaceOnStrongerOnes,
-            GainGoo,
-            LoseGoo,
-            OverflowGoo,
+            ChangeGoo,
             AdditionalStat,
             ChangeStat,
             ChangeCost,

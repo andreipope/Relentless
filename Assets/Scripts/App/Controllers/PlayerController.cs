@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
                         {
                             for (int i = 0; i < 30; i++)
                             {
-                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardName("Pyromaz"/*card.CardName*/, player));
+                                workingDeck.Add(_cardsController.CreateWorkingCardFromCardName("Electron"/*card.CardName*/, player));
                             }
                         }
 

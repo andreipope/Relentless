@@ -111,11 +111,16 @@ namespace Loom.ZombieBattleground
             UnitModelOwner = boardUnitModel;
             PlayerOwner = boardUnitModel.OwnerPlayer;
             CardAbilityData = cardAbilityData;
-            GenericParameters = cardAbilityData.GenericParameters;
             Targets = targets;
             AbilityView = abilityView;
             Combination = combination;
             MainTrigger = trigger;
+            GenericParameters = cardAbilityData.GenericParameters;
+
+            if(GenericParameters == null)
+            {
+                GenericParameters = Combination.DefaultGenericParameters;
+            }
 
             AbilityView?.Init(this);
 
