@@ -97,7 +97,7 @@
             "DefaultTargets": [
               {
                 "Target": "OpponentCard",
-                "TargetFilter": "Target"
+                "TargetFilter": "FromBoard"
               }
             ],
             "DefaultGenericParameters": [

@@ -56,10 +56,7 @@ namespace Loom.ZombieBattleground
         {
             foreach(KeyValuePair<Enumerators.AbilityTrigger, List<ICardAbility>> element in _activeAbilities)
             {
-                foreach (ICardAbility ability in element.Value)
-                {
-                    ability.Dispose();
-                }
+                element.Value.Clear();
             }
 
             _activeAbilities.Clear();
@@ -99,26 +96,6 @@ namespace Loom.ZombieBattleground
             _battlegroundController.TurnStarted -= TurnStartedHandler;
             _battlegroundController.TurnEnded -= TurnEndedHandler;
             _battlegroundController.UnitDied -= UnitDiedHandler;
-
-            _gameplayManager.CurrentPlayer.CardPlayed -= CardPlayedHandler;
-            _gameplayManager.CurrentPlayer.PlayerCardsController.HandChanged -= (count) =>
-            {
-                HandChangedHandler(_gameplayManager.CurrentPlayer);
-            };
-            _gameplayManager.CurrentPlayer.PlayerCardsController.BoardChanged -= (count) =>
-            {
-                BoardChangedHandler(_gameplayManager.CurrentPlayer);
-            };
-
-            _gameplayManager.OpponentPlayer.CardPlayed -= CardPlayedHandler;
-            _gameplayManager.OpponentPlayer.PlayerCardsController.HandChanged -= (count) =>
-            {
-                HandChangedHandler(_gameplayManager.OpponentPlayer);
-            };
-            _gameplayManager.OpponentPlayer.PlayerCardsController.BoardChanged -= (count) =>
-            {
-                BoardChangedHandler(_gameplayManager.OpponentPlayer);
-            };
         }
 
         public void InitializeAbilities(
@@ -668,7 +645,7 @@ namespace Loom.ZombieBattleground
 
             List<AbilityData.TargetInfo> targetsInfo = cardAbilityData.Targets;
 
-            if (targetsInfo == null)
+            if (targetsInfo == null || targetsInfo.Count == 0)
             {
                 targetsInfo = combination.DefaultTargets;
             }
