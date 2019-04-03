@@ -1,5 +1,6 @@
 using log4net;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
 
@@ -17,21 +18,21 @@ namespace Loom.ZombieBattleground
 
         Player PlayerOwner { get; }
 
-        CardAbilitiesCombination Combination { get; }
+        CardAbilitiesData CardAbilitiesData { get; }
 
-        CardAbilityData CardAbilityData { get; }
+        AbilityData AbilityData { get; }
 
         ICardAbilityView AbilityView { get; }
 
-        CardAbilityData.TriggerInfo MainTrigger { get; }
+        AbilityData.TriggerInfo MainTrigger { get; }
 
         int TurnsOnBoard { get; }
 
         void Init(
             BoardUnitModel boardUnitModel,
-            CardAbilitiesCombination combination,
-            CardAbilityData.TriggerInfo trigger,
-            CardAbilityData cardAbilityData,
+            CardAbilitiesData combination,
+            AbilityData.TriggerInfo trigger,
+            AbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null);
         void DoAction(IReadOnlyList<GenericParameter> genericParameters);
@@ -43,7 +44,7 @@ namespace Loom.ZombieBattleground
 
     public class CardAbility : ICardAbility
     {
-        protected static readonly ILog Log = Logging.GetLog(nameof(CardAbility));
+        protected readonly ILog Log;
 
         public event Action AbilityInitialized;
 
@@ -75,13 +76,13 @@ namespace Loom.ZombieBattleground
 
         public Player PlayerOwner { get; private set; }
 
-        public CardAbilityData CardAbilityData { get; private set; }
+        public AbilityData AbilityData { get; private set; }
 
-        public CardAbilitiesCombination Combination { get; private set; }
+        public CardAbilitiesData CardAbilitiesData { get; private set; }
 
         public ICardAbilityView AbilityView { get; private set; }
 
-        public CardAbilityData.TriggerInfo MainTrigger { get; private set; }
+        public AbilityData.TriggerInfo MainTrigger { get; private set; }
 
         public int TurnsOnBoard { get; private set; }
 
@@ -96,31 +97,28 @@ namespace Loom.ZombieBattleground
             BoardController = GameplayManager.GetController<BoardController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
             RanksController = GameplayManager.GetController<RanksController>();
+
+            Log = Logging.GetLog(GetType().Name);
         }
 
         public virtual void DoAction(IReadOnlyList<GenericParameter> genericParameters) { }
 
         public virtual void Init(
             BoardUnitModel boardUnitModel,
-            CardAbilitiesCombination combination,
-            CardAbilityData.TriggerInfo trigger,
-            CardAbilityData cardAbilityData,
+            CardAbilitiesData combination,
+            AbilityData.TriggerInfo trigger,
+            AbilityData cardAbilityData,
             IReadOnlyList<BoardObject> targets = null,
             ICardAbilityView abilityView = null)
         {
             UnitModelOwner = boardUnitModel;
             PlayerOwner = boardUnitModel.OwnerPlayer;
-            CardAbilityData = cardAbilityData;
+            AbilityData = cardAbilityData;
             Targets = targets;
             AbilityView = abilityView;
-            Combination = combination;
+            CardAbilitiesData = combination;
             MainTrigger = trigger;
-            GenericParameters = cardAbilityData.GenericParameters;
-
-            if(GenericParameters == null)
-            {
-                GenericParameters = Combination.DefaultGenericParameters;
-            }
+            GenericParameters = AbilitiesController.GetAllGenericParameters(this);
 
             AbilityView?.Init(this);
 
@@ -163,6 +161,9 @@ namespace Loom.ZombieBattleground
 
         protected void PostGameActionReport(Enumerators.ActionType actionType, List<PastActionsPopup.TargetEffectParam> targetEffectParams)
         {
+            if (targetEffectParams == null || targetEffectParams.Count == 0)
+                return;
+
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,

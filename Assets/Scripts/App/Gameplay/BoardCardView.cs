@@ -428,29 +428,41 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Card.InstanceCard.Abilities != null && !unit.Model.WasDistracted)
             {
-                foreach (CardAbilitiesCombination combination in unit.Model.Card.InstanceCard.Abilities)
-                {
-                    foreach (CardAbilityData abil in combination.CardAbilities)
-                    {
-                        if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
-                            continue;
+                TooltipContentData.GameMechanicInfo gameMechanicInfo;
 
-                        TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
-                        if (gameMechanicInfo != null)
-                        {
-                            buffs.Add(
-                                new BuffTooltipInfo
-                                {
-                                    Title = gameMechanicInfo.Name,
-                                    Description = gameMechanicInfo.Tooltip,
-                                    TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                                    Value = GetValueOfAbilityByType(abil)
-                                });
-                        }
+                foreach (AbilityData abil in Model.Card.InstanceCard.Abilities.CardAbilities)
+                {
+                    if (abil.GameMechanicDescription == Enumerators.GameMechanicDescription.Reanimate && unit.Model.IsReanimated)
+                        continue;
+
+                    gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
+                    if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
+                    {
+                        buffs.Add(
+                            new BuffTooltipInfo
+                            {
+                                Title = gameMechanicInfo.Name,
+                                Description = gameMechanicInfo.Tooltip,
+                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                Value = GetValueOfAbilityByType(abil)
+                            });
                     }
                 }
-            }
 
+                gameMechanicInfo = DataManager.GetGameMechanicInfo(Model.Card.InstanceCard.Abilities.DefaultGameMechanicDescription);
+                if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
+                {
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = gameMechanicInfo.Name,
+                            Description = gameMechanicInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.ABILITY
+                        });
+                }
+
+            }
+        
             for (int i = 0; i < buffs.Count; i++)
             {
                 if (i >= 3)
@@ -578,27 +590,39 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (boardCardView.Model.Card.InstanceCard.Abilities != null)
+            if (boardCardView.Model.Card.InstanceCard.Abilities != null &&
+                boardCardView.Model.Card.InstanceCard.Abilities.CardAbilities != null)
             {
-                foreach (CardAbilitiesCombination combination in boardCardView.Model.Card.InstanceCard.Abilities)
+                TooltipContentData.GameMechanicInfo gameMechanicInfo;
+                foreach (AbilityData abil in boardCardView.Model.Card.InstanceCard.Abilities.CardAbilities)
                 {
-                    foreach (CardAbilityData abil in combination.CardAbilities)
+                    gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
+                    if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
                     {
-                        TooltipContentData.GameMechanicInfo gameMechanicInfo = DataManager.GetGameMechanicInfo(abil.GameMechanicDescription);
-                        if (gameMechanicInfo != null)
-                        {
-                            buffs.Add(
-                                new BuffTooltipInfo
-                                {
-                                    Title = gameMechanicInfo.Name,
-                                    Description = gameMechanicInfo.Tooltip,
-                                    TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
-                                    Value = GetValueOfAbilityByType(abil)
-                                });
-                        }
+                        buffs.Add(
+                            new BuffTooltipInfo
+                            {
+                                Title = gameMechanicInfo.Name,
+                                Description = gameMechanicInfo.Tooltip,
+                                TooltipObjectType = Enumerators.TooltipObjectType.ABILITY,
+                                Value = GetValueOfAbilityByType(abil)
+                            });
                     }
                 }
+
+                gameMechanicInfo = DataManager.GetGameMechanicInfo(boardCardView.Model.Card.InstanceCard.Abilities.DefaultGameMechanicDescription);
+                if (gameMechanicInfo != null && !string.IsNullOrEmpty(gameMechanicInfo.Name))
+                {
+                    buffs.Add(
+                        new BuffTooltipInfo
+                        {
+                            Title = gameMechanicInfo.Name,
+                            Description = gameMechanicInfo.Tooltip,
+                            TooltipObjectType = Enumerators.TooltipObjectType.ABILITY
+                        });
+                }
             }
+     
 
             for (int i = 0; i < buffs.Count; i++)
             {
@@ -698,7 +722,7 @@ namespace Loom.ZombieBattleground
             DistibuteCardObject.SetActive(CardShouldBeChanged);
         }
 
-        private int GetValueOfAbilityByType(CardAbilityData ability)
+        private int GetValueOfAbilityByType(AbilityData ability)
         {
             switch (ability.GameMechanicDescription)
             {

@@ -3,15 +3,15 @@ using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Loom.ZombieBattleground
+namespace Loom.ZombieBattleground.Data
 {
     public class VfxParameter
     {
         [JsonProperty]
-        public Enumerators.AbilityEffectType EffectType { get; protected set; }
+        public Enumerators.AbilityEffectType EffectType { get; private set; }
 
         [JsonProperty]
-        public List<VfxParameterInfo> Parameters { get; protected set; }
+        public List<VfxParameterInfo> Parameters { get; private set; }
 
         [JsonConstructor]
         public VfxParameter(Enumerators.AbilityEffectType effectType, List<VfxParameterInfo> parameters)
@@ -29,10 +29,10 @@ namespace Loom.ZombieBattleground
         public class VfxParameterInfo
         {
             [JsonProperty]
-            public Enumerators.AbilityEffectParameter EffectParameter { get; protected set; }
+            public Enumerators.AbilityEffectParameter EffectParameter { get; private set; }
 
             [JsonProperty]
-            public object Value { get; protected set; }
+            public object Value { get; private set; }
 
             [JsonConstructor]
             public VfxParameterInfo(Enumerators.AbilityEffectParameter effectParameter, object value)

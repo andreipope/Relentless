@@ -29,37 +29,35 @@
               "z": 0.6
             }
           },
-          "Abilities": [
-            {
-              "CardAbilities": [
-                {
-                  "Ability": "AdditionalStat",
-                  "GameMechanicDescription": "Attack",
-                  "Triggers": [
-                    {
-                      "Trigger": "Attack"
-                    }
-                  ],
-                  "Targets": [
-                    {
-                      "Target": "ItSelf",
-                      "TargetFilter": "Target"
-                    }
-                  ],
-                  "GenericParameters": [
-                    {
-                      "AbilityParameter": "Attack",
-                      "Value": 1
-                    },
-                    {
-                      "AbilityParameter": "TargetFaction",
-                      "Value": "Toxic"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
+          "Abilities": {
+            "CardAbilities": [
+              {
+                "Ability": "AdditionalStat",
+                "GameMechanicDescription": "Attack",
+                "Triggers": [
+                  {
+                    "Trigger": "Attack"
+                  }
+                ],
+                "Targets": [
+                  {
+                    "Target": "ItSelf",
+                    "TargetFilter": "Target"
+                  }
+                ],
+                "GenericParameters": [
+                  {
+                    "AbilityParameter": "Attack",
+                    "Value": 1
+                  },
+                  {
+                    "AbilityParameter": "TargetFaction",
+                    "Value": "Toxic"
+                  }
+                ]
+              }
+            ]
+          }
         },
         {
           "MouldId": 11,
@@ -87,36 +85,43 @@
               "z": 0.6
             }
           },
-          "Abilities": [
-            {
-              "DefaultTriggers": [
-                {
-                  "Trigger": "EntryWithSelection"
-                }
-              ],
-              "DefaultTargets": [
-                {
-                  "Target": "OpponentCard",
-                  "TargetFilter": "Target"
-                }
-              ],
-              "DefaultGameMechanicDescription": "Entry",
-              "CardAbilities": [
-                {
-                  "Ability": "Damage",
-                  "GenericParameters": [
-                    {
-                      "AbilityParameter": "Damage",
-                      "Value": 1
-                    }
-                  ]
-                },
-                {
-                  "Ability": "Freeze"
-                }
-              ]
-            }
-          ]
+          "Abilities": {
+            "DefaultTriggers": [
+              {
+                "Trigger": "Entry",
+                "SubTriggers": [
+                  "RandomUnit"
+                ]
+              }
+            ],
+            "DefaultTargets": [
+              {
+                "Target": "OpponentCard",
+                "TargetFilter": "Target"
+              }
+            ],
+            "DefaultGenericParameters": [
+              {
+                "AbilityParameter": "Count",
+                "Value": 1
+              }
+            ],
+            "DefaultGameMechanicDescription": "Entry",
+            "CardAbilities": [
+              {
+                "Ability": "Damage",
+                "GenericParameters": [
+                  {
+                    "AbilityParameter": "Damage",
+                    "Value": 1
+                  }
+                ]
+              },
+              {
+                "Ability": "Freeze"
+              }
+            ]
+          }
         }
       ]
     }

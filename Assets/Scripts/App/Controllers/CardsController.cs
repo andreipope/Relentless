@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(CardsController));
 
-        public event Action<AbilityData.ChoosableAbility> CardForAbilityChoosed;
+        public event Action<AbilityToSelectData> CardForAbilityChoosed;
 
         public GameObject CreatureCardViewPrefab, OpponentCardPrefab, ItemCardViewPrefab;
 
@@ -788,7 +788,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void CreateChoosableCardsForAbilities(List<AbilityData.ChoosableAbility> choosableAbilities, BoardUnitModel card)
+        public void CreateChoosableCardsForAbilities(List<AbilityToSelectData> choosableAbilities, BoardUnitModel card)
         {
             ResetChoosalbeCardsList();
 
@@ -801,7 +801,7 @@ namespace Loom.ZombieBattleground
             group.sortingOrder = 22;
             group.sortingLayerID = SRSortingLayers.GameUI3;
 
-            foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
+            foreach (AbilityToSelectData ability in choosableAbilities)
             {
                 _currentListOfChoosableCards.Add(new ChoosableCardForAbility(_parentOfSelectableCards, ability, card));
             }
@@ -839,7 +839,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ChooseAbilityOfCard(AbilityData.ChoosableAbility choosableAbility)
+        public void ChooseAbilityOfCard(AbilityToSelectData choosableAbility)
         {
             ResetChoosalbeCardsList();
 
@@ -871,9 +871,9 @@ namespace Loom.ZombieBattleground
         private TextMeshPro _defenseText;
 
         private OnBehaviourHandler _behaviourHandler;
-        private AbilityData.ChoosableAbility _mainChoosableAbility;
+        private AbilityToSelectData _mainChoosableAbility;
 
-        public ChoosableCardForAbility(Transform parent, AbilityData.ChoosableAbility choosableAbility, BoardUnitModel boardUnitModel)
+        public ChoosableCardForAbility(Transform parent, AbilityToSelectData choosableAbility, BoardUnitModel boardUnitModel)
         {
             _mainChoosableAbility = choosableAbility;
 

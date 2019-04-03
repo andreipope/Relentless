@@ -721,12 +721,12 @@ namespace Loom.ZombieBattleground
             cards.AddRange(GetItemCardsInHand());
             cards.RemoveAll(x => x?.Prototype == null);
             cards  = cards.FindAll(x => CardBePlayableForOverflowGoo(x.Prototype.Cost, gooAmount));
-            CardAbilityData overflowGooAbility;
+            AbilityData overflowGooAbility;
             for (int i = 0; i < cards.Count; i++)
             {
                 if (cards[i].InstanceCard.Abilities != null)
                 {
-                    CardAbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.FirstOrDefault().CardAbilities
+                    AbilityData attackOverlordAbility = cards[i].InstanceCard.Abilities.CardAbilities
                         .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.Damage);
                     if (attackOverlordAbility != null)
                     {
@@ -735,8 +735,8 @@ namespace Loom.ZombieBattleground
                             break;
                     }
 
-                    overflowGooAbility = cards[i].InstanceCard.Abilities.FirstOrDefault().CardAbilities
-                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.OverflowGoo);
+                    overflowGooAbility = cards[i].InstanceCard.Abilities.CardAbilities
+                        .FirstOrDefault(x => x.Ability == Enumerators.AbilityType.ChangeGoo);
                     if (overflowGooAbility != null)
                     {
                         if (_gameplayManager.OpponentPlayer.CardsOnBoard.Count + boardCount < _gameplayManager.OpponentPlayer.MaxCardsInPlay - 1)
@@ -789,7 +789,7 @@ namespace Loom.ZombieBattleground
                 _normalUnitCardInHand.AddRange(GetUnitCardsInHand());
                 _normalItemCardInHand.AddRange(GetItemCardsInHand());
                 _normalItemCardInHand.RemoveAll(x =>
-                    x.InstanceCard.Abilities.FirstOrDefault().CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.OverflowGoo));
+                    x.InstanceCard.Abilities.CardAbilities.Any(z => z.Ability == Enumerators.AbilityType.ChangeGoo));
             }
 
             await LetsThink(cancellationToken);
@@ -992,7 +992,7 @@ namespace Loom.ZombieBattleground
         }
 
        
-        private void GetTargetByType(CardAbilityData ability, ref BoardObject target, bool checkPlayerAlso)
+        private void GetTargetByType(AbilityData ability, ref BoardObject target, bool checkPlayerAlso)
         {
             if (ability.Targets.FindAll(x => x.Target == Enumerators.Target.OpponentCard).Count > 0)
             {

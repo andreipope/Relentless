@@ -82,7 +82,8 @@ namespace Loom.ZombieBattleground.Common
             PriorityAttack,
             AttackAvailability,
             Flash,
-            Agile
+            Agile,
+            SelectOneFrom
         }
 
         public enum AbilityParameter
@@ -109,7 +110,8 @@ namespace Loom.ZombieBattleground.Common
             TargetCount,
             Duration,
             Name,
-            Target
+            Target,
+            Data
         }
 
         public enum AbilityEffectParameter

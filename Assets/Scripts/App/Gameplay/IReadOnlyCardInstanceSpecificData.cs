@@ -14,6 +14,6 @@ namespace Loom.ZombieBattleground {
 
         int Cost { get; }
 
-        List<CardAbilitiesCombination> Abilities { get; set; }
+        CardAbilitiesData Abilities { get; set; }
     }
 }

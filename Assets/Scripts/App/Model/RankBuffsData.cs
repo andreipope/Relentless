@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground.Data
             RankBuffs = rankBuffs;
         }
 
-        public CardAbilityData GetDataByType(Enumerators.BuffType type)
+        public AbilityData GetDataByType(Enumerators.BuffType type)
         {
             return RankBuffs.Find(buff => buff.BuffType == type)?.AbilityData;
         }
@@ -26,10 +26,10 @@ namespace Loom.ZombieBattleground.Data
             public Enumerators.BuffType BuffType { get; set; }
 
             [JsonProperty]
-            public CardAbilityData AbilityData { get; set; }
+            public AbilityData AbilityData { get; set; }
 
             [JsonConstructor]
-            public RankBuffInfo(Enumerators.BuffType buffType, CardAbilityData abilityData)
+            public RankBuffInfo(Enumerators.BuffType buffType, AbilityData abilityData)
             {
                 BuffType = buffType;
                 AbilityData = abilityData;

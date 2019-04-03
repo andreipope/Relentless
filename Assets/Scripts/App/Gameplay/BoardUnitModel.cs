@@ -581,7 +581,7 @@ namespace Loom.ZombieBattleground
             TurnEnded?.Invoke();
         }
 
-        public void Stun(Enumerators.StunType stunType, int turns)
+        public void Stun(Enumerators.StunType stunType, int turns = 1)
         {
             if (AttackedThisTurn || NumTurnsOnBoard == 0 || !_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
                 turns++;
@@ -960,15 +960,12 @@ namespace Loom.ZombieBattleground
 
             if (Card.InstanceCard.Abilities != null)
             {
-                foreach (CardAbilitiesCombination combination in Card.InstanceCard.Abilities)
+                foreach (AbilityData cardAbilityData in Card.InstanceCard.Abilities.CardAbilities)
                 {
-                    foreach (CardAbilityData cardAbilityData in combination.CardAbilities)
-                    {
-                        LoadGameMechanicDescriptionOnUnit(cardAbilityData.GameMechanicDescription);
-                    }
-
-                    LoadGameMechanicDescriptionOnUnit(combination.DefaultGameMechanicDescription);
+                    LoadGameMechanicDescriptionOnUnit(cardAbilityData.GameMechanicDescription);
                 }
+
+                LoadGameMechanicDescriptionOnUnit(Card.InstanceCard.Abilities.DefaultGameMechanicDescription);
             }
         }
 
