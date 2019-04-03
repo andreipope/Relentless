@@ -155,6 +155,8 @@ namespace Loom.ZombieBattleground
             _loaderBar.fillAmount = 0.03f;
 
             _progressBar.gameObject.SetActive(false);
+
+            CheckForMinimumSystemRequirement();
         }
 
         public void Hide()
@@ -173,6 +175,15 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
 
+        }
+        
+        private void CheckForMinimumSystemRequirement()
+        {
+            bool meetMinimumSystemRequirement = false;
+            if(!meetMinimumSystemRequirement)
+            {
+                OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");          
+            }
         }
 
         private void LanguageWasChangedEventHandler(Enumerators.Language obj)
