@@ -841,7 +841,7 @@ namespace Loom.ZombieBattleground
                 CurrentDamage <= 0 ||
                 IsStun ||
                 CantAttackInThisTurnBlocker ||
-                !CanAttackByDefault)
+                !CanAttackByDefault || !IsUnitActive)
             {
                 return false;
             }
