@@ -1125,17 +1125,20 @@ namespace Loom.ZombieBattleground
             return boardUnitModel;
         }
 
-        public BoardObject GetBoardObjectByInstanceId(InstanceId id)
+        public BoardObject GetBoardObjectByInstanceId(InstanceId id, bool handlePlayers = true)
         {
             BoardUnitModel boardUnitModel = GetBoardUnitModelByInstanceId(id, true);
             if(boardUnitModel != null)
                 return boardUnitModel;
 
-            List<BoardObject> boardObjects = new List<BoardObject>
+            List<BoardObject> boardObjects = new List<BoardObject>();
+
+            if(handlePlayers)
             {
-                _gameplayManager.CurrentPlayer,
-                _gameplayManager.OpponentPlayer,
-            };
+                boardObjects.Add(_gameplayManager.CurrentPlayer);
+                boardObjects.Add(_gameplayManager.OpponentPlayer);
+            }
+
             boardObjects.AddRange(_gameplayManager.CurrentPlayer.BoardItemsInUse);
             boardObjects.AddRange(_gameplayManager.OpponentPlayer.BoardItemsInUse);
 
