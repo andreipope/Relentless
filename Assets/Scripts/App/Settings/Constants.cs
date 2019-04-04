@@ -227,5 +227,18 @@ namespace Loom.ZombieBattleground.Common
         internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
 
         internal const string EnvironmentPointText = "%environment_point%";
+        
+#if UNITY_ANDROID        
+        internal const int MinimumMemorySize = 2048;
+        internal const int AndroidMinimumAPILevel = 21;        
+#elif UNITY_IOS
+        internal const int IOSMinimumOSVersion = 10;
+#elif UNITY_STANDALONE_WIN
+        internal const int MinimumMemorySize = 3072;
+        internal const int WindowMinimumOSVersion = 7;
+#elif UNITY_STANDALONE_OSX
+        internal const int MinimumMemorySize = 2048;   
+        internal static readonly int[] MacOSMinimumOSVersion = { 10, 12, 0 };     
+#endif
     }
 }

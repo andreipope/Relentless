@@ -179,8 +179,8 @@ namespace Loom.ZombieBattleground
         
         private void CheckForMinimumSystemRequirement()
         {
-            bool meetMinimumSystemRequirement = false;
-            if(!meetMinimumSystemRequirement)
+            if (!GameClient.Get<IGameplayManager>().GetController<SystemRequirementController>()
+                .CheckIfMeetMinimumSystemRequirement())
             {
                 OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");          
             }
