@@ -830,8 +830,16 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardUnitModel> units = new List<BoardUnitModel>();
-            units.AddRange(_gameplayManager.CurrentPlayer.CardsOnBoard);
-            units.AddRange(_gameplayManager.OpponentPlayer.CardsOnBoard);
+
+            units = units
+               .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
+               .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+               .Where(card => !card.IsDead && card.CurrentDefense > 0)
+               .ToList();
+            foreach (BoardUnitModel unit in units)
+            {
+                unit.SetUnitActiveStatus(false);
+            }
 
             Vector3 position = Vector3.left * 2f;
 
