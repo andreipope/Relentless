@@ -175,17 +175,10 @@ namespace Loom.ZombieBattleground
                 if (oldValue == value)
                     return;
 
-                if (value != DefenseBuffer)
-                {
-                    DefenseBuffer += value - oldValue;
-                }
-
                 Card.InstanceCard.Defense = value;
                 UnitDefenseChanged?.Invoke(oldValue, value);
             }
         }
-
-        public int DefenseBuffer { get; set; }
 
         public bool IsPlayable { get; set; }
 
@@ -258,9 +251,9 @@ namespace Loom.ZombieBattleground
 
         // ===================
 
-        public void HandleDefenseBuffer()
+        public void HandleDefenseBuffer(int damage)
         {
-            if(DefenseBuffer <= 0)
+            if(CurrentDefense - damage <= 0)
             {
                 SetUnitActiveStatus(false);
             }
@@ -988,7 +981,6 @@ namespace Loom.ZombieBattleground
             Card.InstanceCard.Damage = Card.Prototype.Damage;
             Card.InstanceCard.Defense = Card.Prototype.Defense;
             InitialUnitType = Card.Prototype.Type;
-            DefenseBuffer = Card.InstanceCard.Defense;
             BuffedDefense = 0;
             BuffedDamage = 0;
             NumTurnsOnBoard = 0;

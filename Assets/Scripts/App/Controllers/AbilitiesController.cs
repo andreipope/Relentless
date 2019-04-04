@@ -858,7 +858,8 @@ namespace Loom.ZombieBattleground
             foreach(AbilityData abilityData in boardUnitModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;
-                if(abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY)
+                if (abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY ||
+                    abilityData.Activity == Enumerators.AbilityActivity.PASSIVE)
                 {
                     activeAbility = CreateActiveAbility(abilityData, boardUnitModel.Prototype.Kind, abilityCaller, owner, boardUnitModel);
                     activeAbility.Ability.Activate();
