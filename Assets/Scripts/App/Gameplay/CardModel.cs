@@ -994,7 +994,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"([{nameof(CardModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
+            return $"([{nameof(CardModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card}, {nameof(Faction)}: {Faction})";
         }
     }
 }
