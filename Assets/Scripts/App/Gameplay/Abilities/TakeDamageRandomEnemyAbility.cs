@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         private List<BoardObject> _targets;
 
+        private int _calculatedDamage;
+
         public TakeDamageRandomEnemyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -74,12 +76,12 @@ namespace Loom.ZombieBattleground
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
                     case Enumerators.Target.OPPONENT_CARD:
                         possibleTargets.AddRange(GetOpponentOverlord().CardsOnBoard
-                            .FindAll(unit => unit.CurrentDefense > 0));
+                            .FindAll(unit => unit.CurrentDefense > 0 && !unit.IsDead && unit.IsUnitActive));
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
                     case Enumerators.Target.PLAYER_CARD:
                         possibleTargets.AddRange(PlayerCallerOfAbility.CardsOnBoard
-                            .FindAll(unit => unit.CurrentDefense > 0));
+                            .FindAll(unit => unit.CurrentDefense > 0 && !unit.IsDead && unit.IsUnitActive));
                         break;
                     case Enumerators.Target.PLAYER:
                         possibleTargets.Add(PlayerCallerOfAbility);
@@ -98,6 +100,23 @@ namespace Loom.ZombieBattleground
                 _targets.Add(possibleTargets[chosenIndex]);
                 possibleTargets.RemoveAt(chosenIndex);
                 count--;
+            }
+
+            _calculatedDamage  = Mathf.Max(1, Damage);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            {
+                _calculatedDamage = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
+            }
+
+            foreach (BoardObject target in _targets)
+            {
+                switch (target)
+                {
+                    case BoardUnitModel unit:
+                        unit.HandleDefenseBuffer(_calculatedDamage);
+                        break;
+                }
             }
 
             InvokeActionTriggered(_targets);      
@@ -137,22 +156,15 @@ namespace Loom.ZombieBattleground
                 base.UnitDiedHandler();
             }
             
-            int damageOverride = Mathf.Max(1, Damage);
-
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
-            {
-                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
-            }
-
-            damageWas = damageOverride;
+            damageWas = _calculatedDamage;
 
             switch (target)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _calculatedDamage);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, _calculatedDamage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
