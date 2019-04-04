@@ -215,9 +215,9 @@ namespace Loom.ZombieBattleground
                 if (skill.Skill.Skill != Enumerators.Skill.HARDEN &&
                     skill.Skill.Skill != Enumerators.Skill.ICE_WALL)
                 {
-                    if (healingPlayer.Defense > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Defense > healingPlayer.MaxCurrentDefense)
                     {
-                        healingPlayer.Defense = Constants.DefaultPlayerHp;
+                        healingPlayer.Defense = healingPlayer.MaxCurrentDefense;
                     }
                 }
             }
@@ -292,9 +292,9 @@ namespace Loom.ZombieBattleground
             if (healedPlayer != null)
             {
                 healedPlayer.Defense += healValue;
-                if (healedPlayer.Defense > Constants.DefaultPlayerHp)
+                if (healedPlayer.Defense > healedPlayer.MaxCurrentDefense)
                 {
-                    healedPlayer.Defense = Constants.DefaultPlayerHp;
+                    healedPlayer.Defense = healedPlayer.MaxCurrentDefense;
                 }
             }
         }

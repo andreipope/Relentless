@@ -510,7 +510,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (BoardUnitView != null && !BoardUnitView.WasDestroyed && SelfObject != null)
+            if (BoardUnitView != null &&
+                !BoardUnitView.WasDestroyed &&
+                SelfObject != null &&
+                BoardUnitView.GameObject != null)
             {
                 if (_withEffect)
                 {
