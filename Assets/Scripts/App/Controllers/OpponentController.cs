@@ -537,7 +537,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card, false);
 
             if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
