@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground
                     CreateVialGooVfx(_gooBottles[i]);
                 }
             }
-
+            _vialGooPrefab = null;
             UpdateGooOVerflow();
         }
 
@@ -153,8 +153,8 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 bootle.Self.SetActive(true);
-            }, 2f);
-            _vialGooPrefab = null;
+                bootle.ChangeStateParticles(false);
+            }, 1.5f);
         }
 
         public void Active(GooBottleItem item)
