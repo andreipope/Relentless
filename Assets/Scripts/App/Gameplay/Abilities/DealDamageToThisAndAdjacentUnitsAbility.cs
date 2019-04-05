@@ -52,6 +52,11 @@ namespace Loom.ZombieBattleground
 
             _units.Add(AbilityUnitOwner);
 
+            foreach (BoardUnitModel target in _units)
+            {
+                target.HandleDefenseBuffer(AbilityData.Value);
+            }
+
             InvokeActionTriggered(_units);
         }
 

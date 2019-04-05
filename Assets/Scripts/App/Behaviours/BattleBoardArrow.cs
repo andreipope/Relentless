@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
             if (IgnoreBoardObjectsList != null && IgnoreBoardObjectsList.Contains(unit.Model))
                 return;
 
-            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead)
+            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead || !unit.Model.IsUnitActive)
                 return;
 
             if (ElementType.Count > 0 && !ElementType.Contains(unit.Model.Card.Prototype.Faction))
