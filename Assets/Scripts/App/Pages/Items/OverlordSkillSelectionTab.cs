@@ -155,6 +155,9 @@ namespace Loom.ZombieBattleground
                     HordeSelectionWithNavigationPage.Tab.Rename :
                     HordeSelectionWithNavigationPage.Tab.Editing;
 
+                if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
+                    return;
+                    
                 _myDeckPage.ChangeTab(tab);
             }
         }
