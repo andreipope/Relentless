@@ -527,6 +527,11 @@ namespace Loom.ZombieBattleground
                                && x.InstanceCard.Cost == skill.Skill.Value
                                && !skill.OwnerPlayer.CardsOnBoard.Any(c => c == x)).Count > 0;
                     break;
+                case Enumerators.Skill.PUSH:
+                    int ownerGoo = skill.OwnerPlayer.CurrentGoo;
+                    int cardCost = skill.FightTargetingArrow.SelectedCard.Model.Prototype.Cost;
+                    state = ownerGoo > 0 && cardCost <= ownerGoo;
+                    break;
                 default:
                     break;
             }
