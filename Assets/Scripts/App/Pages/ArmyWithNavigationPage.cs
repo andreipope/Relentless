@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
         private int _countAllCardsAmount;
 
         private bool _isAllCardsCounted;
+        
+        private const float BoardCardScale = 0.2574f;
 
         #endregion
 
@@ -317,10 +319,10 @@ namespace Loom.ZombieBattleground
             }
 
             int amount = cardData.Amount;
-            boardCard.SetAmount(BoardCardView.AmountTrayType.None, amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.Counter, amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
-            boardCard.Transform.localScale = Vector3.one * 0.3f;
+            boardCard.Transform.localScale = Vector3.one * BoardCardScale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
