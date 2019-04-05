@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleDefenseBuffer(int damage)
         {
-            if(CurrentDefense - damage <= 0)
+            if(CurrentDefense - damage <= 0 && !HasBuffShield)
             {
                 SetUnitActiveStatus(false);
             }
