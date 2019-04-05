@@ -578,6 +578,9 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            _cacheDeckListToDisplay = GetDeckList();
+            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
+
             ChangeTab(Tab.SelectDeck);
         }
         
@@ -860,7 +863,7 @@ namespace Loom.ZombieBattleground
                 _deckPageIndex = (deckIndexAfterSubtractFistPage / _deckInfoAmountPerPage) + 1;
                 indexInPage = deckIndexAfterSubtractFistPage % _deckInfoAmountPerPage;
             }
-            
+
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(indexInPage);
         }
