@@ -947,24 +947,6 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView view = GetBoardUnitViewByModel<BoardUnitView>(unit);
 
-            if (unit.OwnerPlayer.IsLocalPlayer)
-            {
-
-                UnregisterBoardUnitView(_gameplayManager.CurrentPlayer, view);
-                RegisterBoardUnitView(_gameplayManager.OpponentPlayer, view);
-            }
-            else
-            {
-                UnregisterBoardUnitView(_gameplayManager.OpponentPlayer, view);
-                RegisterBoardUnitView(_gameplayManager.CurrentPlayer, view);
-            }
-
-            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
-            {
-                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
-            }
-
-
             UnregisterBoardUnitView(unit.OwnerPlayer, view);
             newPlayerOwner.PlayerCardsController.TakeControlOfUnit(unit);
             RegisterBoardUnitView(newPlayerOwner, view);
@@ -975,7 +957,7 @@ namespace Loom.ZombieBattleground
 
             foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
             {
-                ability.PlayerCallerOfAbility = newPlayerOwner;
+                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
             }
         }
 
