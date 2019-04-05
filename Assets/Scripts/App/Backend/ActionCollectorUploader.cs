@@ -51,6 +51,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
         }
 
+        public PlayerActionRequest GetLeaveMatchRequest()
+        {
+            return _playerEventListener.GetLeaveMatchRequest();
+        }
+
         private void GameplayManagerGameEnded(Enumerators.EndGameType obj)
         {
             _playerEventListener?.Dispose();
@@ -196,6 +201,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public void Dispose()
             {
                 UnsubscribeFromPlayerEvents();
+            }
+
+            public PlayerActionRequest GetLeaveMatchRequest()
+            {
+                var playerAction = _playerActionFactory.LeaveMatch();
+
+                PlayerActionRequest matchAction = _matchRequestFactory.CreateAction(playerAction);
+
+                // Exclude ControlGameState from logs for clarity
+                GameState controlGameState = playerAction.ControlGameState;
+                playerAction.ControlGameState = null;
+                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
+                playerAction.ControlGameState = controlGameState;
+
+                return matchAction;
             }
 
             private void UnsubscribeFromPlayerEvents()

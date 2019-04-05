@@ -247,6 +247,15 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
+
+        public async Task SendLeaveMatchIfInPlay()
+        {
+            if (GameClient.Get<IGameplayManager>().IsGameStarted)
+            {
+                await GameClient.Get<BackendFacade>().SendPlayerAction(
+                 GameClient.Get<ActionCollectorUploader>().GetLeaveMatchRequest());
+            }
+        }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
