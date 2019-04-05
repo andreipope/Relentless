@@ -264,11 +264,11 @@ namespace Loom.ZombieBattleground
             IsUnitActive = isActive;
         }
 
-        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true)
+        public void Die(bool forceUnitDieEvent= false, bool withDeathEffect = true, bool updateBoard = true, bool isDead = true)
         {
             UnitDying?.Invoke();
 
-            IsDead = true;
+            IsDead = isDead;
             if (!forceUnitDieEvent)
             {
                 _battlegroundController.KillBoardCard(this, withDeathEffect, updateBoard);

@@ -522,7 +522,7 @@ namespace Loom.ZombieBattleground
                                                 rankBuffAction.ForceActionDone();
 
                                                 boardUnitView.DisposeGameObject();
-                                                boardUnitView.Model.Die(true);
+                                                boardUnitView.Model.Die(true, isDead: false);
 
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
