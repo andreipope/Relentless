@@ -529,9 +529,6 @@ namespace Loom.ZombieBattleground
             CurrentDamage = card.Prototype.Damage;
             CurrentDefense = card.Prototype.Defense;
 
-            card.InstanceCard.Damage = CurrentDamage;
-            card.InstanceCard.Defense = CurrentDefense;
-
             BuffedDamage = 0;
             BuffedDefense = 0;
 
