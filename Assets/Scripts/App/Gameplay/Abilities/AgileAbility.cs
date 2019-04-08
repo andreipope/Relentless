@@ -14,9 +14,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if(AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if(AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
-                if(AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+                if(AbilityTargets.Contains(Enumerators.Target.ITSELF))
                 {
                     EnableAgileOnUnit(AbilityUnitOwner);
                 }
@@ -37,7 +37,10 @@ namespace Loom.ZombieBattleground
         {
             boardUnit.SetAgileStatus(true);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { boardUnit }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+            {
+                new ParametrizedAbilityBoardObject(boardUnit)
+            });
         }
     }
 }

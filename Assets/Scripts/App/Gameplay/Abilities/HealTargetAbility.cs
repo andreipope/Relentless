@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
                 return;
 
             if (SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
@@ -83,14 +83,14 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.END)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.END)
                 return;
 
             if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
                 _targets.Clear();
 
-                _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
 
                 _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
                 InvokeActionTriggered(_targets);

@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
         {
             base.ChangeRageStatusAction(status);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.RAGE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.RAGE)
                 return;
 
             if (status)

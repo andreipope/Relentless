@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && PlayerCallerOfAbility
-                    .CardsOnBoard.FindAll(x => x.UnitStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
+                    .CardsOnBoard.FindAll(x => x.UnitSpecialStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
             else if (Faction != 0 && PlayerCallerOfAbility.CardsOnBoard

@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatsOfCardsInHandAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public Enumerators.CardKind TargetCardKind { get; }
 
@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY && AbilityActivityType != Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY && AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
             CheckSubTriggers();
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             CheckSubTriggers();
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             CheckSubTriggers();
@@ -66,18 +66,18 @@ namespace Loom.ZombieBattleground
         private void CheckSubTriggers()
         {
 
-            List<WorkingCard> cards = new List<WorkingCard>();
-            List<WorkingCard> targetCards = new List<WorkingCard>();
+            List<BoardUnitModel> cards = new List<BoardUnitModel>();
+            List<BoardUnitModel> targetCards = new List<BoardUnitModel>();
             List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
 
-            foreach (Enumerators.AbilityTargetType type in AbilityData.AbilityTargetTypes)
+            foreach (Enumerators.Target type in AbilityData.Targets)
             {
                 switch (type)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         targetCards.AddRange(GetOpponentOverlord().CardsInHand.ToList());
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         targetCards.AddRange(PlayerCallerOfAbility.CardsInHand.ToList());
                         break;
                 }
@@ -92,12 +92,12 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.LibraryCard.CardKind == TargetCardKind), Count);
+                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind), Count);
             }
 
-            foreach (WorkingCard card in cards)
+            foreach (BoardUnitModel card in cards)
             {
-                SetStatOfTargetCard(card, AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
+                SetStatOfTargetCard(card.Card, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
 
                 parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(AbilityUnitOwner, new ParametrizedAbilityParameters()
                 {
@@ -107,9 +107,8 @@ namespace Loom.ZombieBattleground
 
             if (parametrizedAbilityBoardObjects.Count > 0)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, parametrizedAbilityBoardObjects, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(parametrizedAbilityBoardObjects);
             }
-
         }
 
         private void SetStatOfTargetCard(WorkingCard card, bool overrideStats = false)
@@ -117,13 +116,13 @@ namespace Loom.ZombieBattleground
             if (overrideStats)
             {
                 card.InstanceCard.Damage = Attack;
-                card.InstanceCard.Health = Defense;
+                card.InstanceCard.Defense = Defense;
                 card.InstanceCard.Cost = Cost;
             }
             else
             {
                 card.InstanceCard.Damage += Attack;
-                card.InstanceCard.Health += Defense;
+                card.InstanceCard.Defense += Defense;
                 card.InstanceCard.Cost += Cost;
             }
         }

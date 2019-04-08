@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY || AbilityActivityType != Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
             CheckSubTriggers();
@@ -32,9 +32,9 @@ namespace Loom.ZombieBattleground
 
         private void CheckSubTriggers()
         {
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
             {
-                if (PlayerCallerOfAbility.BoardCards.FindAll(card => card.Model != AbilityUnitOwner).Count == 0)
+                if (PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(card => card != AbilityUnitOwner).Count == 0)
                 {
                     GiveBuffsToUnit(AbilityUnitOwner);
                 }
@@ -45,27 +45,27 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
             Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None;
-            foreach (Enumerators.GameMechanicDescriptionType type in AbilityData.TargetGameMechanicDescriptionTypes)
+            foreach (Enumerators.GameMechanicDescription type in AbilityData.TargetGameMechanicDescriptionTypes)
             {
                 switch (type)
                 {
-                    case Enumerators.GameMechanicDescriptionType.Guard:
+                    case Enumerators.GameMechanicDescription.Guard:
                         unit.AddBuffShield();
                         actionEffectType = Enumerators.ActionEffectType.Guard;
                         break;
-                    case Enumerators.GameMechanicDescriptionType.Destroy:
+                    case Enumerators.GameMechanicDescription.Destroy:
                         unit.AddBuff(Enumerators.BuffType.DESTROY);
                         actionEffectType = Enumerators.ActionEffectType.DeathMark;
                         break;
-                    case Enumerators.GameMechanicDescriptionType.Reanimate:
+                    case Enumerators.GameMechanicDescription.Reanimate:
                         unit.AddBuff(Enumerators.BuffType.REANIMATE);
                         actionEffectType = Enumerators.ActionEffectType.Reanimate;
                         break;
-                    case Enumerators.GameMechanicDescriptionType.Heavy:
+                    case Enumerators.GameMechanicDescription.Heavy:
                         unit.SetAsHeavyUnit();
                         actionEffectType = Enumerators.ActionEffectType.Heavy;
                         break;
-                    case Enumerators.GameMechanicDescriptionType.Feral:
+                    case Enumerators.GameMechanicDescription.Feral:
                         unit.SetAsFeralUnit();
                         actionEffectType = Enumerators.ActionEffectType.Feral;
                         break;

@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if(AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if(AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
 
             }

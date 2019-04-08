@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
                 _units = new List<BoardUnitModel>();
                 _units.Add(TargetUnit);
 
-                InvokeActionTriggered(_units.Select(x => BattlegroundController.GetBoardUnitViewByModel(x)).ToList());
+                InvokeActionTriggered(_units);
             }
         }
 

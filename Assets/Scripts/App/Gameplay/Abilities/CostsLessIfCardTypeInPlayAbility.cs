@@ -49,9 +49,9 @@ namespace Loom.ZombieBattleground
                     gooCost = -Mathf.Abs(Value);
                 }
             }
-            else if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                gooCost = -(Mathf.Abs(Value) * PlayerCallerOfAbility.BoardCards.Count);
+                gooCost = -(Mathf.Abs(Value) * PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Count);
             }
             else
             {
