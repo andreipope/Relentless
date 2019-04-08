@@ -38,7 +38,8 @@ namespace Loom.ZombieBattleground
 
         private float _percentage;
 
-        private bool _isLoaded;
+        private bool _isLoaded,
+                     _isHasInternetConnection;
 
         private IDataManager _dataManager;
 
@@ -71,6 +72,9 @@ namespace Loom.ZombieBattleground
             //this makes us skip the initial "bar fill"
             _percentage = 100f;
 #endif
+
+            if(!_isHasInternetConnection)
+                return;
 
             if (!_isLoaded)
             {
@@ -155,6 +159,8 @@ namespace Loom.ZombieBattleground
             _loaderBar.fillAmount = 0.03f;
 
             _progressBar.gameObject.SetActive(false);
+
+            CheckForInternetConnection();            
         }
 
         public void Hide()
@@ -173,6 +179,36 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
 
+        }
+        
+        private void CheckForInternetConnection()
+        {
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                _isHasInternetConnection = false;
+                InternetConnectionPopup popup = _uiManager.GetPopup<InternetConnectionPopup>();
+                popup.ConfirmationReceived += ConfirmRetryIfNoConnection;
+                popup.Show("Internet connection required. Please check your internet connection and try again.");
+            }
+            else
+            {
+                _isHasInternetConnection = true;
+            }
+        }
+
+        private async void ConfirmRetryIfNoConnection(bool status)
+        {
+            _uiManager.GetPopup<InternetConnectionPopup>().ConfirmationReceived -= ConfirmRetryIfNoConnection;
+            _uiManager.HidePopup<InternetConnectionPopup>();
+            if(status)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                CheckForInternetConnection();
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().QuitApplication();
+            }
         }
 
         private void LanguageWasChangedEventHandler(Enumerators.Language obj)
