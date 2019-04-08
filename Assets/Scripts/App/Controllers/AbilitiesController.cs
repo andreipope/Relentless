@@ -532,10 +532,7 @@ namespace Loom.ZombieBattleground
                                            {
                                                boardUnitModel.Owner.PlayerCardsController.AddCardToBoard(boardUnitModel, (ItemPosition)card.FuturePositionOnBoard);
 
-                                               InternalTools.DoActionDelayed(() =>
-                                               {
-                                                   Object.Destroy(card.GameObject);
-                                               }, 0.5f);
+                                               InternalTools.DoActionDelayed(card.Dispose, 0.5f);
 
                                                ProceedWithCardToGraveyard(card);
                                            }
@@ -1182,12 +1179,7 @@ namespace Loom.ZombieBattleground
                 {
                     card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
 
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        Object.Destroy(card.GameObject);
-                    }, 0.5f);
-
-                    ProceedWithCardToGraveyard(card);
+                    InternalTools.DoActionDelayed(card.Dispose, 0.5f);
                 }
                 else
                 {
