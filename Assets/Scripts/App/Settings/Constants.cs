@@ -206,7 +206,13 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage = true;
+        internal static readonly bool EnableShopPage =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            true;
+#else
+            false;
+#endif
+
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
