@@ -56,12 +56,12 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(_reanimatedUnit, GameplayManager.CurrentPlayer);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
             }
             else
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
+                BattlegroundController.RegisterBoardUnitView(_reanimatedUnit, GameplayManager.OpponentPlayer);
                 if (_gameplayManager.IsLocalPlayerTurn()) {
                     _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
                 }
@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
 
-            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
+            if (owner != GameplayManager.CurrentTurnPlayer)
             {
                 boardUnitView.Model.IsPlayable = true;
             }

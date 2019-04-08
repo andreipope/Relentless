@@ -80,6 +80,7 @@ namespace Editor
             }
 
             BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
+            OpponentController opponentController = GameClient.Get<IGameplayManager>().GetController<OpponentController>();
 
             GUILayout.Label("Match Type: " + matchManager.MatchType);
 
@@ -129,8 +130,7 @@ namespace Editor
 
                                 if (view != null)
                                 {
-                                    GameObject viewGameObject = view.Transform != null ? view.Transform.gameObject : null;
-                                    EditorGUILayout.ObjectField(viewGameObject, typeof(GameObject), true, GUILayout.Width(150));
+                                    EditorGUILayout.ObjectField(view.GameObject, typeof(GameObject), true, GUILayout.Width(150));
                                 }
                             }
                             EditorGUILayout.EndHorizontal();
@@ -143,24 +143,14 @@ namespace Editor
 
                         Player player = isCurrentPlayer ? gameplayManager.CurrentPlayer : gameplayManager.OpponentPlayer;
 
-                        DrawViewList("BoardItemsInUse", player.BoardItemsInUse);
-                        EditorGUILayout.Space();
-
-                        DrawViewList("CardsPreparingToHand", player.CardsPreparingToHand);
-                        EditorGUILayout.Space();
-
-                        if (isCurrentPlayer)
+                        if (matchManager.MatchType == Enumerators.MatchType.PVP && !isCurrentPlayer)
                         {
-                            DrawViewList("BattlegroundController.PlayerHandCards", battlegroundController.PlayerHandCards);
+                            DrawViewList("BoardItemsInUse", opponentController.BoardItemsInUse);
                             EditorGUILayout.Space();
-                            DrawViewList("BattlegroundController.PlayerGraveyardCards", battlegroundController.PlayerGraveyardCards);
                         }
-                        else
-                        {
-                            DrawViewList("BattlegroundController.OpponentHandCards", battlegroundController.OpponentHandCards);
-                            EditorGUILayout.Space();
-                            DrawViewList("BattlegroundController.OpponentGraveyardCards", battlegroundController.OpponentGraveyardCards);
-                        }
+
+                        DrawViewList("MulliganCards", player.MulliganCards);
+                        EditorGUILayout.Space();
                     }
 
                     bool isExpanded = true;

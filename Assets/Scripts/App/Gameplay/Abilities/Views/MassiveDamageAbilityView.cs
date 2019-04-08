@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
                 Vector3 targetPosition = Vector3.zero;
 
-                if (Ability.BoardItem != null && Ability.BoardItem.Model.Prototype.MouldId == LawnmowerCardId)
+                if (Ability.AbilityUnitOwner != null && Ability.AbilityUnitOwner.Prototype.MouldId == LawnmowerCardId)
                 {
                     CreateVfx(targetPosition + offset, true, delayBeforeDestroy, true);
                     VfxObject.transform.position = Ability.PlayerCallerOfAbility.IsLocalPlayer ? Vector3.up * 2.05f : Vector3.up * -1.45f;

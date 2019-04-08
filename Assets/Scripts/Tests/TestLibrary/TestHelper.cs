@@ -1124,14 +1124,13 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
+            Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
+            BoardCardView boardCardView = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
             switch (boardUnitModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE
                     when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                 {
-                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView =
-                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == boardUnitModel);
                     Assert.NotNull(boardCardView, $"Card {boardUnitModel} not found in local player hand");
                     Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
@@ -1155,9 +1154,6 @@ namespace Loom.ZombieBattleground.Test
                 }
                 case Enumerators.CardKind.ITEM:
                 {
-                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
-
                     _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
                         boardCardView.HandBoardCard,

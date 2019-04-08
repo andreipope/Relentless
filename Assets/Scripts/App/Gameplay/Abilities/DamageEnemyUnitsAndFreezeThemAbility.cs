@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            Player opponent = PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
 
@@ -71,11 +71,11 @@ namespace Loom.ZombieBattleground
                 switch (boardObject)
                 {
                     case Player player:
-                        BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                        BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
                         player.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     case BoardUnitModel unit:
-                        BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                        BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
                         unit.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     default:

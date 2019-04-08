@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((IBoardUnitView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()
@@ -282,9 +282,10 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
-                foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
+                IReadOnlyList<BoardCardView> views = _battlegroundController.GetViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+                foreach (BoardCardView card in views)
                 {
-                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card?.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }

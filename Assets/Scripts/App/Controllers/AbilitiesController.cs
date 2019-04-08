@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
         public ActiveAbility CreateActiveAbility(
             AbilityData abilityData,
             Enumerators.CardKind kind,
-            object boardObject,
+            BoardObject boardObject,
             Player caller,
             BoardUnitModel boardUnitModel)
         {
@@ -148,17 +148,8 @@ namespace Loom.ZombieBattleground
 
                 switch(boardObject)
                 {
-                    case BoardCardView card:
-                        activeAbility.Ability.BoardCardView = card;
-                        break;
                     case BoardUnitModel model:
                         activeAbility.Ability.AbilityUnitOwner = model;
-                        break;
-                    case BoardItem item:
-                        activeAbility.Ability.BoardItem = item;
-                        break;
-                    case BoardUnitView view:
-                        activeAbility.Ability.AbilityUnitOwner = view.Model;
                         break;
                     case Player player:
                         break;
@@ -217,7 +208,7 @@ namespace Loom.ZombieBattleground
         {
             bool available = false;
 
-            Player opponent = localPlayer.Equals(_gameplayManager.CurrentPlayer) ?
+            Player opponent = localPlayer == _gameplayManager.CurrentPlayer ?
                 _gameplayManager.OpponentPlayer :
                 _gameplayManager.CurrentPlayer;
 
@@ -422,7 +413,7 @@ namespace Loom.ZombieBattleground
         {
             IReadOnlyCard prototype = boardUnitModel.Card.Prototype;
 
-            IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
+            CardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
 
             GameplayQueueAction<object> abilityHelperAction = null;
 
@@ -537,7 +528,7 @@ namespace Loom.ZombieBattleground
                                                    Object.Destroy(card.GameObject);
                                                }, 0.5f);
 
-                                               ProceedWithCardToGraveyard(card);
+                                               ProceedWithCardToGraveyard(boardUnitModel);
                                            }
                                            else
                                            {
@@ -553,7 +544,7 @@ namespace Loom.ZombieBattleground
 
                                                InternalTools.DoActionDelayed(() =>
                                                {
-                                                   ProceedWithCardToGraveyard(card);
+                                                   ProceedWithCardToGraveyard(boardUnitModel);
                                                }, 1.5f);
                                            }
 
@@ -572,7 +563,8 @@ namespace Loom.ZombieBattleground
                                        },
                                        failedCallback: () =>
                                        {
-                                           instance.Abilities = prototype.Abilities.Select(a => new AbilityData(a)).ToList();
+                                           instance.Abilities.Clear();
+                                           instance.Abilities.AddRange(prototype.Abilities.Select(a => new AbilityData(a)));
 
                                            card.Model.Card.Owner.CurrentGoo += card.Model.Card.InstanceCard.Cost;
 
@@ -583,12 +575,11 @@ namespace Loom.ZombieBattleground
                                            boardUnitModel.SetPicture();
 
                                            boardUnitModel.Owner.PlayerCardsController.AddCardFromBoardToHand(card.Model);
-                                           _battlegroundController.PlayerHandCards.Insert(ItemPosition.End, card);
 
                                            BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
                                            if (boardUnitView != null)
                                            {
-                                               _battlegroundController.UnregisterBoardUnitView(boardUnitModel.Owner, boardUnitView);
+                                               _battlegroundController.UnregisterBoardUnitView(boardUnitView);
                                            }
 
                                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -737,7 +728,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void BuffUnitByAbility(Enumerators.AbilityType ability,
-                                    object target,
+                                    BoardObject target,
                                     Enumerators.CardKind cardKind,
                                     BoardUnitModel boardUnitModel,
                                     Player owner,
@@ -757,13 +748,13 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void CallAbilitiesInHand(BoardCardView boardCardView, BoardUnitModel boardUnitModel)
+        public void CallAbilitiesInHand(BoardUnitModel boardUnitModel)
         {
             List<AbilityData> handAbilities =
-                boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Trigger.Equals(Enumerators.AbilityTrigger.IN_HAND));
+                boardUnitModel.Card.InstanceCard.Abilities.FindAll(x => x.Trigger == Enumerators.AbilityTrigger.IN_HAND);
             foreach (AbilityData ability in handAbilities)
             {
-                CreateActiveAbility(ability, boardUnitModel.Card.Prototype.Kind, boardCardView, boardUnitModel.Card.Owner, boardUnitModel)
+                CreateActiveAbility(ability, boardUnitModel.Card.Prototype.Kind, boardUnitModel, boardUnitModel.Card.Owner, boardUnitModel)
                     .Ability
                     .Activate();
             }
@@ -1187,7 +1178,7 @@ namespace Loom.ZombieBattleground
                         Object.Destroy(card.GameObject);
                     }, 0.5f);
 
-                    ProceedWithCardToGraveyard(card);
+                    ProceedWithCardToGraveyard(card.Model);
                 }
                 else
                 {
@@ -1202,7 +1193,7 @@ namespace Loom.ZombieBattleground
 
                     InternalTools.DoActionDelayed(() =>
                     {
-                        ProceedWithCardToGraveyard(card);
+                        ProceedWithCardToGraveyard(card.Model);
                     }, 1.5f);
                 }
 
@@ -1235,9 +1226,9 @@ namespace Loom.ZombieBattleground
             _boardController.UpdateWholeBoard(null);
         }
 
-        private void ProceedWithCardToGraveyard(BoardCardView card)
+        private void ProceedWithCardToGraveyard(BoardUnitModel card)
         {
-            card.Model.Card.Owner.GraveyardCardsCount++;
+            card.Card.Owner.GraveyardCardsCount++;
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -1245,7 +1236,7 @@ namespace Loom.ZombieBattleground
                 Caller = card,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>(),
                 CheckForCardOwner = false,
-                Model = card.Model
+                Model = card
             });
         }
 

@@ -357,7 +357,7 @@ namespace Loom.ZombieBattleground
 
                                 SetCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
 
-                                _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.CardsPreparingToHand);
+                                _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.MulliganCards);
                             } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
                             {
                                 OnReceivePlayerActionType(playerActionEvent);

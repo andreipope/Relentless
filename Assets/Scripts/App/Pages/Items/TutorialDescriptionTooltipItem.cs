@@ -18,6 +18,7 @@ namespace Loom.ZombieBattleground
         private readonly ITutorialManager _tutorialManager;
         private readonly ILoadObjectsManager _loadObjectsManager;
         private readonly IGameplayManager _gameplayManager;
+        private readonly BattlegroundController _battlegroundController;
 
         private const float KoefSize = 0.88f;
 
@@ -87,6 +88,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             this.Id = id;
             OwnerType = owner;
@@ -143,11 +145,15 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                         if (_ownerId != 0)
                         {
-                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards.FirstOrDefault(card => card.Model.Card.TutorialObjectId == ownerId);
+                            _ownerCardInHand =
+                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
+                                    _gameplayManager.CurrentPlayer.CardsInHand.FirstOrDefault(card => card.Card.TutorialObjectId == ownerId)
+                                );
                         }
-                        else if(_gameplayManager.GetController<BattlegroundController>().PlayerHandCards.Count > 0)
+                        else if(_gameplayManager.CurrentPlayer.CardsInHand.Count > 0)
                         {
-                            _ownerCardInHand = _gameplayManager.GetController<BattlegroundController>().PlayerHandCards[0];
+                            _ownerCardInHand =
+                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand[0]);
                         }
                         break;
                     default:

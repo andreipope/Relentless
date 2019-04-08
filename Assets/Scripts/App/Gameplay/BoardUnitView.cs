@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
             Transform.DOKill();
             Object.Destroy(GameObject);
 
-            _battlegroundController.UnregisterBoardUnitView(Model.OwnerPlayer, this);
+            _battlegroundController.UnregisterBoardUnitView(this, Model.OwnerPlayer);
         }
 
         public void ForceSetGameObject(GameObject overrideObject)
@@ -201,9 +201,6 @@ namespace Loom.ZombieBattleground
         private void SetObjectInfo()
         {
             Model.GameMechanicDescriptionsOnUnitChanged += BoardUnitGameMechanicDescriptionsOnUnitChanged;
-
-            Enumerators.Faction faction = _cardsController.GetSetOfCard(Model.Card.Prototype);
-            string rank = Model.Card.Prototype.Rank.ToString().ToLowerInvariant();
 
             _pictureSprite.sprite = _pictureSprite.sprite = Model.CardPicture;
 
@@ -425,7 +422,7 @@ namespace Loom.ZombieBattleground
                 _frozenSprite.DOFade(0, 1);
             }
 
-            if (Model.OwnerPlayer != null && Model.IsPlayable && _gameplayManager.CurrentTurnPlayer.Equals(Model.OwnerPlayer))
+            if (Model.OwnerPlayer != null && Model.IsPlayable && _gameplayManager.CurrentTurnPlayer == Model.OwnerPlayer)
             {
                 if (Model.CurrentDamage > 0)
                 {
@@ -816,7 +813,7 @@ namespace Loom.ZombieBattleground
                     _fightTargetingArrow.IgnoreBoardObjectsList = Model.AttackedBoardObjectsThisTurn;
                 }
 
-                if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                if (Model.OwnerPlayer == _gameplayManager.CurrentPlayer)
                 {
                     _battlegroundController.DestroyCardPreview();
                     _playerController.IsCardSelected = true;
@@ -842,7 +839,7 @@ namespace Loom.ZombieBattleground
                 {
                     _fightTargetingArrow.End(this);
 
-                    if (Model.OwnerPlayer.Equals(_gameplayManager.CurrentPlayer))
+                    if (Model.OwnerPlayer == _gameplayManager.CurrentPlayer)
                     {
                         _playerController.IsCardSelected = false;
                     }
@@ -1038,7 +1035,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"({nameof(Model)}: {Model})";
+            return $"([{GetType().Name}] {nameof(Model)}: {Model})";
         }
 
 #if UNITY_EDITOR

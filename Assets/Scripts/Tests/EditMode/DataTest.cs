@@ -129,9 +129,9 @@ namespace Loom.ZombieBattleground.Test
                 100500,
                 373,
                 Enumerators.Faction.LIFE,
-                new List<Data.OverlordSkill>
+                new List<Data.OverlordSkillData>
                 {
-                    new Data.OverlordSkill(
+                    new Data.OverlordSkillData(
                         0,
                         "title",
                         "supericon",

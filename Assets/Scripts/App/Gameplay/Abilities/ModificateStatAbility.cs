@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.TURN)
                 return;
 
-            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility));
+            ModificateStats(AbilityUnitOwner, GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility);
         }
 
         protected override void UnitDiedHandler()

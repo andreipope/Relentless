@@ -139,11 +139,9 @@ namespace Loom.ZombieBattleground
 
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner ?? (object) BoardItem;
-
             foreach (BoardUnitModel unit in _targetUnits)
             {
-                BattleController.AttackUnitByAbility(caller, AbilityData, unit);
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
             }
 
             InvokeUseAbilityEvent(

@@ -112,9 +112,7 @@ namespace Loom.ZombieBattleground
 
                 BattlegroundController.DestroyBoardUnit(unit, false);
 
-                BoardUnitModel card = BoardItem?.Model;
-
-                if(card != null && card.Prototype.MouldId == TorchCardId)
+                if(AbilityUnitOwner != null && AbilityUnitOwner.Prototype.MouldId == TorchCardId)
                 {
                     _checkForCardOwner = true;
                 }
@@ -122,7 +120,7 @@ namespace Loom.ZombieBattleground
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -132,7 +130,7 @@ namespace Loom.ZombieBattleground
                         }
                     },
                     CheckForCardOwner = _checkForCardOwner,
-                    Model = card
+                    Model = AbilityUnitOwner
                 });
             }
         }

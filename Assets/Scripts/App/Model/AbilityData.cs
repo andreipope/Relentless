@@ -201,10 +201,11 @@ namespace Loom.ZombieBattleground.Data
                 Path = path;
             }
 
-            public VisualEffectInfo(VisualEffectInfo source)
+            public VisualEffectInfo(VisualEffectInfo source) : this(
+                source.Type,
+                source.Path
+                )
             {
-                Type = source.Type;
-                Path = source.Path;
             }
 
             public void ForceSetPath(string path)
@@ -237,11 +238,12 @@ namespace Loom.ZombieBattleground.Data
                 Attribute = attribute;
             }
 
-            public ChoosableAbility(ChoosableAbility source)
+            public ChoosableAbility(ChoosableAbility source) : this (
+                source.Description,
+                new AbilityData(source.AbilityData),
+                source.Attribute
+            )
             {
-                Description = source.Description;
-                Attribute = source.Attribute;
-                AbilityData = new AbilityData(source.AbilityData);
             }
         }
     }

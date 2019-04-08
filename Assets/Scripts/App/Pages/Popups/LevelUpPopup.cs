@@ -247,7 +247,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Transform _parentGameObject;
 
-            private OverlordSkill _skill;
+            private OverlordSkillData _skill;
 
             private bool _isSelected;
 
@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public OverlordSkill Skill
+            public OverlordSkillData Skill
             {
                 get => _skill;
                 set

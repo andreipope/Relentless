@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             base.TurnEndedHandler();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility)
                 return;
 
             DealDamageToUnitOwner();
@@ -56,7 +56,7 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
             {
-                if (GetCaller() == AbilityUnitOwner)
+                if (AbilityUnitOwner == AbilityUnitOwner)
                 {
                     AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                         ActionType = Enumerators.ActionType.CardAffectingCard,
-                        Caller = GetCaller(),
+                        Caller = AbilityUnitOwner,
                         TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         {
                             new PastActionsPopup.TargetEffectParam()
@@ -120,10 +120,8 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            object caller = GetCaller();
-
+            BoardObject caller = AbilityUnitOwner;
             Enumerators.ActionType actionType;
-
             switch (_targetObject)
             {
                 case BoardUnitModel unit:
@@ -141,7 +139,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()

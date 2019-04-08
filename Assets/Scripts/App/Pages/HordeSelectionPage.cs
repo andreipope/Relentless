@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
             BattleButtonUpdate();
         }
 
-        private Sprite GetSpriteFromSkill(OverlordSkill workableSkill)
+        private Sprite GetSpriteFromSkill(OverlordSkillData workableSkill)
         {
             string iconPath = string.Empty;
             string iconPathLocked = "Images/OverlordAbilitiesIcons/overlordability_silo_closed";
@@ -650,7 +650,7 @@ namespace Loom.ZombieBattleground
             HordeDeckObject deck = _hordeDecks.FirstOrDefault(o => o.SelfDeck == _selectedDeck);
             if (deck != null)
             {
-                OverlordSkill skill = skillIndex == 0 ?
+                OverlordSkillData skill = skillIndex == 0 ?
                     deck.SelfOverlord.GetSkill(deck.SelfDeck.PrimarySkill) :
                     deck.SelfOverlord.GetSkill(deck.SelfDeck.SecondarySkill);
 

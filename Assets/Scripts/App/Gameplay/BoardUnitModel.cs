@@ -237,11 +237,7 @@ namespace Loom.ZombieBattleground
 
         public CardInstanceSpecificData InstanceCard => Card.InstanceCard;
 
-        public IReadOnlyCard Prototype
-        {
-            get => Card.Prototype   ;
-            set => Card.Prototype    = value;
-        }
+        public IReadOnlyCard Prototype => Card.Prototype;
 
         public string Name => Card.Prototype.Name;
 
@@ -281,7 +277,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Add(type);
         }
 
-        public void ApplyBuff(Enumerators.BuffType type, bool ignoreTurnsOnBoard = false)
+        public void ApplyBuff(Enumerators.BuffType type)
         {
             switch (type)
             {
@@ -304,7 +300,7 @@ namespace Loom.ZombieBattleground
                     HasBuffHeavy = true;
                     break;
                 case Enumerators.BuffType.BLITZ:
-                    if ((ignoreTurnsOnBoard || NumTurnsOnBoard == 0) && !HasFeral)
+                    if (NumTurnsOnBoard == 0 && !HasFeral)
                     {
                         AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Blitz);
                         HasBuffRush = true;
@@ -545,7 +541,7 @@ namespace Loom.ZombieBattleground
                 UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             }
 
-            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (OwnerPlayer != null && _gameplayManager.CurrentTurnPlayer == OwnerPlayer)
             {
                 if (IsPlayable)
                 {
@@ -586,7 +582,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turns)
         {
-            if (AttackedThisTurn || NumTurnsOnBoard == 0 || !_gameplayManager.CurrentTurnPlayer.Equals(OwnerPlayer))
+            if (AttackedThisTurn || NumTurnsOnBoard == 0 || _gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 turns++;
 
             if (turns > _stunTurns)
@@ -895,7 +891,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveUnitFromBoard()
         {
-            _battlegroundController.BoardUnitViews.Remove(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this));
+            _battlegroundController.UnregisterBoardUnitView(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this), this.OwnerPlayer);
             OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(this);
             OwnerPlayer.PlayerCardsController.AddCardToGraveyard(this);
 
@@ -965,10 +961,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetToInitial()
         {
-            Card.InstanceCard.Abilities = new List<AbilityData>(Card.Prototype.Abilities);
-            Card.InstanceCard.Cost = Card.Prototype.Cost;
-            Card.InstanceCard.Damage = Card.Prototype.Damage;
-            Card.InstanceCard.Defense = Card.Prototype.Defense;
+            Card.InstanceCard.CopyFrom(Card.Prototype);
             InitialUnitType = Card.Prototype.Type;
             BuffedDefense = 0;
             BuffedDamage = 0;
@@ -1001,7 +994,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"({nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
+            return $"([{nameof(BoardUnitModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
         }
     }
 }

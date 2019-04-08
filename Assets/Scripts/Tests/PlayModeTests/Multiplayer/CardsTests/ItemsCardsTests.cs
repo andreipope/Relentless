@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine.TestTools;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
@@ -842,10 +843,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     },
                     opponent =>
                     {
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
-                        });
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start, pvpTestContext.GetCurrentPlayer().InstanceId);
                     },
                 };
 
@@ -855,10 +853,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - 5, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
-
 
         [UnityTest]
         [Timeout(int.MaxValue)]
@@ -1429,7 +1426,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             });
         }
 
-
         [UnityTest]
         [Timeout(int.MaxValue)]
         public IEnumerator JunkSpear()
@@ -1544,6 +1540,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId opponentIgneouZ2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "IgneouZ", 2);
                 InstanceId opponentIgneouZ3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "IgneouZ", 3);
                 InstanceId opponentZedKitId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zed Kit", 1);
+
+                int CalculateTotalDefense(Player player)
+                {
+                    return
+                        player.Defense +
+                        player.CardsOnBoard.Sum(card => card.CurrentDefense);
+                }
+
+                int playerTotalDefense = 0;
+                int opponentTotalDefense = 0;
+
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
@@ -1583,6 +1590,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
+                           opponent.CardAttack(opponentBoomerId, pvpTestContext.GetCurrentPlayer().InstanceId);
+                       },
+                       player =>
+                       {
+                           player.CardAttack(playerBoomerId, pvpTestContext.GetOpponentPlayer().InstanceId);
+                       },
+                       opponent =>
+                       {
+                           playerTotalDefense = CalculateTotalDefense(pvpTestContext.GetCurrentPlayer());
+                           opponentTotalDefense = CalculateTotalDefense(pvpTestContext.GetOpponentPlayer());
+
                            opponent.CardPlay(opponentZedKitId, ItemPosition.Start, null, true);
                            opponent.CardAbilityUsed(opponentZedKitId, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>(){
                                new ParametrizedAbilityInstanceId(opponentBoomerId),
@@ -1595,13 +1613,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.CardPlay(playerZedKitId, ItemPosition.Start);
                            player.LetsThink(2);
                        },
-                       opponent =>{},
+                       opponent => {},
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().CardsOnBoard.FindAll(card => card.CurrentDefense == 5).Count);
-                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().CardsOnBoard.FindAll(card => card.CurrentDefense == 5).Count);
+                    Assert.AreEqual(8, CalculateTotalDefense(pvpTestContext.GetCurrentPlayer()) - playerTotalDefense);
+                    Assert.AreEqual(8, CalculateTotalDefense(pvpTestContext.GetOpponentPlayer()) - opponentTotalDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
+            GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
             Action();
         }
@@ -110,7 +110,7 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
-            foreach (object target in _targets)
+            foreach (BoardObject target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 
@@ -126,7 +126,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
@@ -149,10 +149,10 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, damageOverride);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, damageOverride);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, damageOverride);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, damageOverride);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);

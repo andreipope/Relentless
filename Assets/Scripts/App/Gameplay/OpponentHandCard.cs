@@ -30,6 +30,11 @@ namespace Loom.ZombieBattleground
             Object.Destroy(GameObject);
         }
 
+        public override string ToString()
+        {
+            return $"([{nameof(OpponentHandCard)}] {nameof(Model)}: {Model})";
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {

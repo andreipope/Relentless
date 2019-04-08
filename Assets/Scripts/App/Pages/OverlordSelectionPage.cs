@@ -189,7 +189,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (OverlordObject item in _overlordObjects)
             {
-                if (!item.Equals(overlordObject))
+                if (item != overlordObject)
                 {
                     item.Deselect();
                 }

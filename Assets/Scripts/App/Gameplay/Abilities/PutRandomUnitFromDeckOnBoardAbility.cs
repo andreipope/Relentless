@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCardView,
+                Target = boardCardView.Model,
             });
         }
     }

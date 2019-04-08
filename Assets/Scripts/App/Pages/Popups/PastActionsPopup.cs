@@ -165,23 +165,8 @@ namespace Loom.ZombieBattleground
                             break;
                     }
                     break;
-                case ItemBoardCard itemBoardCard:
-                    _leftBlockCardItemElement.Init(itemBoardCard.Model.Card, cardPicture: itemBoardCard.Model.CardPicture);
-                    break;
-                case BoardItem item:
-                    _leftBlockCardItemElement.Init(item.Model.Card, cardPicture: item.Model.CardPicture);
-                    break;
-                case UnitBoardCard unitBoardCard:
-                    _leftBlockCardUnitElement.Init(unitBoardCard.Model.Card, cardPicture: unitBoardCard.Model.CardPicture);
-                    unitCardElement = _leftBlockCardUnitElement as UnitCardElement;
-                    unitCardElement.Damage = unitBoardCard.Model.CurrentDamage;
-                    unitCardElement.Defense = unitBoardCard.Model.CurrentDefense;
-                    break;
                 case HandBoardCard card:
                     _leftBlockCardUnitElement.Init(card.BoardUnitModel.Card, cardPicture: card.BoardUnitModel.CardPicture);
-                    break;
-                case BoardUnitView unit:
-                    _leftBlockCardUnitElement.Init(unit.Model.Card, cardPicture: unit.Model.CardPicture);
                     break;
                 case null:
                     break;
@@ -216,17 +201,20 @@ namespace Loom.ZombieBattleground
                     ActionElement actionElement;
                     switch (targetEffect.Target)
                     {
-                        case BoardCardView card when card is ItemBoardCard:
-                            actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.Model.CardPicture);
-                            break;
-                        case BoardCardView card when card is UnitBoardCard:
-                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.Model.CardPicture);
-                            break;
                         case BoardUnitModel unit:
-                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
+                            switch (unit.Card.Prototype.Kind)
+                            {
+                                case Enumerators.CardKind.CREATURE:
+                                    actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                                    actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
+                                    break;
+                                case Enumerators.CardKind.ITEM:
+                                    actionElement = new SmallItemCardElement(_parentOfRightBlockElements, true);
+                                    actionElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
+                                    break;
+                                default:
+                                    throw new ArgumentOutOfRangeException();
+                            }
                             break;
                         case HandBoardCard card:
                             if(card.BoardCardView is ItemBoardCard)
@@ -240,10 +228,6 @@ namespace Loom.ZombieBattleground
 
                             actionElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
                                 card.BoardUnitModel.CardPicture);
-                            break;
-                        case BoardUnitView unit:
-                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
-                            actionElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.Model.CardPicture);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -270,41 +254,27 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         _rightBlockOverlordElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
                         break;
-                    case BoardCardView card when card is ItemBoardCard:
-                        _rightBlockCardItemElement.Init(card.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.Model.CardPicture);
-                        break;
-                    case BoardCardView card when card is UnitBoardCard boardCard:
-                        _rightBlockCardUnitElement.Init(boardCard.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.Model.CardPicture);
-                        unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = boardCard.Model.CurrentDamage;
-                        unitCardElement.Defense = boardCard.Model.CurrentDefense;
-                        break;
                     case HandBoardCard card:
                         _rightBlockCardUnitElement.Init(card.BoardUnitModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, card.BoardUnitModel.CardPicture);
                         break;
                     case BoardUnitModel unit:
-                        _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
-                        unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
-                        unitCardElement.Damage = unit.MaxCurrentDamage;
-                        unitCardElement.Defense = unit.MaxCurrentDefense;
+                        switch (unit.Card.Prototype.Kind)
+                        {
+                            case Enumerators.CardKind.CREATURE:
+                                _rightBlockCardUnitElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
+                                unitCardElement = _rightBlockCardUnitElement as UnitCardElement;
+                                unitCardElement.Damage = unit.CurrentDamage;
+                                unitCardElement.Defense = unit.CurrentDefense;
+                                break;
+                            case Enumerators.CardKind.ITEM:
+                                _rightBlockCardItemElement.Init(unit.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.CardPicture);
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
                         break;
                     case BoardSkill skill:
                         _rightBlockOverlordSkillElement.Init(skill, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
-                        break;
-                    case WorkingCard workingCard:
-                        if(workingCard.Prototype.Kind == Enumerators.CardKind.ITEM)
-                        {
-                            _rightBlockCardItemElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
-                                _loadObjectsManager.GetObjectByPath<Sprite>($"{Constants.PathToCardsIllustrations}{workingCard.Prototype.Picture.ToLowerInvariant()}"));
-                        }
-                        else
-                        {
-                            _rightBlockCardUnitElement.Init(workingCard, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
-                                _loadObjectsManager.GetObjectByPath<Sprite>($"{Constants.PathToCardsIllustrations}{workingCard.Prototype.Picture.ToLowerInvariant()}"));
-                        }
-                        break;
-                    case BoardUnitView unit:
-                        _rightBlockCardUnitElement.Init(unit.Model.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value, unit.Model.CardPicture);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
@@ -315,7 +285,7 @@ namespace Loom.ZombieBattleground
         public class PastActionParam
         {
             public Enumerators.ActionType ActionType;
-            public object Caller;
+            public BoardObject Caller;
             public List<TargetEffectParam> TargetEffects;
             public bool CheckForCardOwner;
             public BoardUnitModel Model;
@@ -323,7 +293,7 @@ namespace Loom.ZombieBattleground
 
         public class TargetEffectParam
         {
-            public object Target;
+            public BoardObject Target;
             public Enumerators.ActionEffectType ActionEffectType;
             public int Value;
             public bool HasValue;

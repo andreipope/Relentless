@@ -54,13 +54,16 @@ namespace Loom.ZombieBattleground
                 gooCost = PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction).Count * Value;
             }
 
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
-                BoardUnitModel.Prototype.Cost + gooCost, BoardCardView);
+            CardsController.SetGooCostOfCardInHand(
+                PlayerCallerOfAbility,
+                BoardUnitModel,
+                BoardUnitModel.Prototype.Cost + gooCost,
+                BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(BoardUnitModel));
         }
 
         private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
         {
-            if (!boardUnitModel.Equals(BoardUnitModel))
+            if (boardUnitModel == BoardUnitModel)
                 return;
 
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;

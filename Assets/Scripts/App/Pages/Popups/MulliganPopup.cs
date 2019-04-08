@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             GameObject prefab = null;
             MulliganCardItem item = null;
             int index = 0;
-            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.MulliganCards)
             {
                 prefab = card.Prototype.Kind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _itemCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
