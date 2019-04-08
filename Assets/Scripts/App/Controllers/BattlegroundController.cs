@@ -704,7 +704,9 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(CurrentBoardCard, new BoardUnitModel(boardUnitModel.Card));
+                    BoardUnitModel previewModel = new BoardUnitModel(
+                        new WorkingCard(boardUnitModel.Prototype, boardUnitModel.Prototype, boardUnitModel.OwnerPlayer, boardUnitModel.InstanceId));
+                    boardCardView = new UnitBoardCard(CurrentBoardCard, previewModel);
                     (boardCardView as UnitBoardCard).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
