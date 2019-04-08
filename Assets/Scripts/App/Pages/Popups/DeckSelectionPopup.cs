@@ -50,6 +50,8 @@ namespace Loom.ZombieBattleground
         
         private int _selectDeckIndex;
 
+        private List<Vector3> _deckIconPositionList;
+
         #region IUIPopup
 
         public void Init()
@@ -67,6 +69,8 @@ namespace Loom.ZombieBattleground
                     ReloadDeckDataAndDisplay();
                 }
             };
+
+            _deckIconPositionList = new List<Vector3>();
         }
 
         public void Dispose()
@@ -79,7 +83,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             DisposeCreatedObject();
-
+            _deckIconPositionList.Clear();
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
@@ -109,6 +113,13 @@ namespace Loom.ZombieBattleground
             _buttonLeft = Self.transform.Find("Button_Left").GetComponent<Button>();
             _buttonRight.onClick.AddListener(ButtonRightHandler);
             _buttonLeft.onClick.AddListener(ButtonLeftHandler);
+
+            Transform frameGroup = Self.transform.Find("Frame_Group");
+            _deckIconPositionList.Clear();
+            foreach (Transform frame in frameGroup)
+            {
+                _deckIconPositionList.Add(frame.position);
+            }
 
             ReloadDeckDataAndDisplay();                        
         }
@@ -250,13 +261,11 @@ namespace Loom.ZombieBattleground
         {
             DisposeCreatedObject();
             _createdDeckIconList = new List<GameObject>();
-            List<Vector3> positionList = GetIconPositionList(_deckList.Count);
             
             for (int i = 0; i < _deckList.Count; i++)
             {
                 GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
                 deckIcon.transform.SetParent(_deckIconGroup);
-                deckIcon.transform.localPosition = positionList[i];
                 deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
 
                 Deck deck = _deckList[i];
@@ -288,18 +297,6 @@ namespace Loom.ZombieBattleground
                 };
             }
         }
-        
-        private List<Vector3> GetIconPositionList(int amount)
-        {
-            List<Vector3> positionList = new List<Vector3>();
-            for (int i = 0; i < amount; ++i)
-            {
-                Vector3 position = new Vector3(0f, 0f, 0f);
-                position.x += (i * 184f);
-                positionList.Add(position);
-            }
-            return positionList;
-        }
 
         private void UpdateSelectedDeckDisplay(Deck selectedDeck)
         {
@@ -307,17 +304,26 @@ namespace Loom.ZombieBattleground
             OverlordModel selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
             _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Faction);
 
-            for (int i = 0; i < _deckList.Count && i < _createdDeckIconList.Count; i++)
+            int middleFrameIndex = _deckIconPositionList.Count / 2;
+            int shiftIndex = _selectDeckIndex - middleFrameIndex;
+            
+            int frameIndex;
+            GameObject deckIcon;
+            float scale;            
+            for (int i = 0; i < _createdDeckIconList.Count; ++i)
             {
-                Deck deck = _deckList[i];
-                if(deck == selectedDeck)
+                deckIcon = _createdDeckIconList[i];
+                frameIndex = i - shiftIndex;
+                if(frameIndex < 0 || frameIndex >= _deckIconPositionList.Count)
                 {
-                    _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleSelected;
-                    _deckIconGroup.localPosition = -Vector3.right * (i * 184f);
+                    deckIcon.SetActive(false);
                 }
                 else
                 {
-                    _createdDeckIconList[i].transform.localScale = Vector3.one * _deckIconScaleNormal;
+                    deckIcon.SetActive(true);
+                    deckIcon.transform.position = _deckIconPositionList[frameIndex];
+                    scale = (i == _selectDeckIndex) ? _deckIconScaleSelected : _deckIconScaleNormal;
+                    deckIcon.transform.localScale = Vector3.one * scale;
                 }
             }            
         }
