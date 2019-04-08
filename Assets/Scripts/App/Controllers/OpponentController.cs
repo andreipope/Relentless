@@ -484,8 +484,8 @@ namespace Loom.ZombieBattleground
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);
-                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 break;
                         }
 
