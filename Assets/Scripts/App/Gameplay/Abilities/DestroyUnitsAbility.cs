@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public event Action OnUpdateEvent;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         public DestroyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
 
             foreach (Enumerators.Target target in AbilityTargets)
             {
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel unit in _units)
+                foreach (CardModel unit in _units)
                 {
                     targetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {

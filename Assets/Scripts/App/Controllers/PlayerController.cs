@@ -165,8 +165,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
-                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
+                CardModel[] cardModels = workingDeck.Select(card => new CardModel(card)).ToArray();
+                player.PlayerCardsController.SetCardsInDeck(cardModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -201,8 +201,8 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    BoardUnitModel[] boardUnitModels = workingCards.Select(card => new BoardUnitModel(card)).ToArray();
-                    player.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels);
+                    CardModel[] cardModels = workingCards.Select(card => new CardModel(card)).ToArray();
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(cardModels);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -267,7 +267,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview((IBoardUnitView) param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((ICardView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()
@@ -282,7 +282,7 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
-                IReadOnlyList<BoardCardView> views = _battlegroundController.GetViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+                IReadOnlyList<BoardCardView> views = _battlegroundController.GetCardViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
                 foreach (BoardCardView card in views)
                 {
                     card?.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
@@ -543,11 +543,11 @@ namespace Loom.ZombieBattleground
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
-        private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
+        private void ClickedOnBoardObjectEventHandler(IBoardObject boardObject)
         {
             switch (boardObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     if (!unit.IsAttacking)
                     {
                         StopHandTimer();
@@ -557,7 +557,7 @@ namespace Loom.ZombieBattleground
                         {
                             HandCardPreview(new object[]
                             {
-                                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)
+                                _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)
                             });
                         }
                     }

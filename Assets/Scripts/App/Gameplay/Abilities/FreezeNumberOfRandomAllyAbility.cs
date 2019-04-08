@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public int Turns { get; }
 
-        private List<BoardObject> _allies;
+        private List<IBoardObject> _allies;
 
         public FreezeNumberOfRandomAllyAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _allies = new List<BoardObject>();
+            _allies = new List<IBoardObject>();
 
             if (PredefinedTargets != null)
             {
@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
                     case Player player:
                         player.Stun(Enumerators.StunType.FREEZE, Turns);
                         break;
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         unit.Stun(Enumerators.StunType.FREEZE, Turns);
                         break;
                     default:

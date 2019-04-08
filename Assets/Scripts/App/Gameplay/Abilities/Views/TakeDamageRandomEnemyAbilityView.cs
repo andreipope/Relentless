@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground
 
         private string _cardName;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public TakeDamageRandomEnemyAbilityView(TakeDamageRandomEnemyAbility ability) : base(ability)
         {
@@ -22,7 +22,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<BoardObject>;
+            _targets = info as List<IBoardObject>;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
@@ -30,12 +30,12 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
-                foreach (BoardObject boardObject in _targets)
+                foreach (IBoardObject boardObject in _targets)
                 {
                     switch (boardObject)
                     {
-                        case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                        case CardModel unit:
+                            targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = player.AvatarObject.transform.position;
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                    VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                     VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }
@@ -84,12 +84,12 @@ namespace Loom.ZombieBattleground
                     delaySound = effectInfo.delayForSound;
                 }
 
-                foreach (BoardObject boardObject in _targets)
+                foreach (IBoardObject boardObject in _targets)
                 {
                     switch (boardObject)
                     {
-                        case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                        case CardModel unit:
+                            targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;

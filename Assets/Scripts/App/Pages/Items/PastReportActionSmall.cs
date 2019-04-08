@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
                         player.SelfOverlord.Faction + "_EXP");
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     sprite = unit.CardPicture;
                     break;
                 case BoardSkill skill:

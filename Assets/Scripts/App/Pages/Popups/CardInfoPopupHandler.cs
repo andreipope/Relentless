@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.Rendering;
 using Object = UnityEngine.Object;
@@ -84,7 +85,18 @@ namespace Loom.ZombieBattleground
                 Object.DestroyImmediate(_previewCard.GameObject);
             }
 
-            _previewCard = new BoardCardView(Object.Instantiate(card.GameObject), card.Model);
+            switch (card.Model.Card.Prototype.Kind)
+            {
+                case Enumerators.CardKind.CREATURE:
+                    _previewCard = new UnitBoardCardView(Object.Instantiate(card.GameObject), card.Model);
+                    break;
+                case Enumerators.CardKind.ITEM:
+                    _previewCard = new ItemBoardCardView(Object.Instantiate(card.GameObject), card.Model);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
             _previewCard.GameObject.name = "CardPreview";
             _previewCard.GameObject.transform.position = card.GameObject.transform.position;
             _previewCard.GameObject.transform.localScale = card.GameObject.transform.lossyScale;

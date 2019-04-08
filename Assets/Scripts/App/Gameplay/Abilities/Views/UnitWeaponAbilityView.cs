@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
 
-                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform, false);
+                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform, false);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)

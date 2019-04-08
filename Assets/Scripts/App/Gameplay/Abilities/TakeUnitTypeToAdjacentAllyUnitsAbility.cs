@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnit(CardModel unit)
         {
             if (unit == null)
                 return;

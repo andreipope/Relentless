@@ -81,7 +81,7 @@ namespace Loom.ZombieBattleground
                                                 bool dynamicPosition,
                                                 int ownerId = 0,
                                                 Enumerators.TutorialObjectLayer layer = Enumerators.TutorialObjectLayer.Default,
-                                                BoardObject boardObjectOwner = null,
+                                                IBoardObject boardObjectOwner = null,
                                                 float minimumShowTime = Constants.DescriptionTooltipMinimumShowTime,
                                                 string tutorialUIElementOwnerName = Constants.Empty)
         {
@@ -131,38 +131,38 @@ namespace Loom.ZombieBattleground
 
             if (ownerId > 0)
             {
-                BoardUnitModel boardUnitModel = null;
+                CardModel cardModel = null;
                 switch (OwnerType)
                 {
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        boardUnitModel = _gameplayManager.CurrentPlayer.CardsOnBoard.First((x) =>
+                        cardModel = _gameplayManager.CurrentPlayer.CardsOnBoard.First((x) =>
                             x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
-                        boardUnitModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
+                        cardModel = _gameplayManager.OpponentPlayer.CardsOnBoard.First((x) =>
                             x.TutorialObjectId == ownerId);
                         break;
                     case Enumerators.TutorialObjectOwner.PlayerCardInHand:
                         if (_ownerId != 0)
                         {
                             _ownerCardInHand =
-                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(
+                                _battlegroundController.GetCardViewByModel<BoardCardView>(
                                     _gameplayManager.CurrentPlayer.CardsInHand.FirstOrDefault(card => card.Card.TutorialObjectId == ownerId)
                                 );
                         }
                         else if(_gameplayManager.CurrentPlayer.CardsInHand.Count > 0)
                         {
                             _ownerCardInHand =
-                                _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand[0]);
+                                _battlegroundController.GetCardViewByModel<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand[0]);
                         }
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (boardUnitModel != null)
+                if (cardModel != null)
                 {
-                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                    _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(cardModel);
                 }
             }
             else if(boardObjectOwner != null)
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
                     case Enumerators.TutorialObjectOwner.Battleframe:
                     case Enumerators.TutorialObjectOwner.EnemyBattleframe:
                     case Enumerators.TutorialObjectOwner.PlayerBattleframe:
-                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardObjectOwner as BoardUnitModel);
+                        _ownerUnit = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(boardObjectOwner as CardModel);
                         break;
                     case Enumerators.TutorialObjectOwner.HandCard:
                         break;

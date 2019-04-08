@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (BoardUnitModel unit in PlayerCallerOfAbility.CardsOnBoard)
+                foreach (CardModel unit in PlayerCallerOfAbility.CardsOnBoard)
                 {
                     unit.AddBuffSwing();
 

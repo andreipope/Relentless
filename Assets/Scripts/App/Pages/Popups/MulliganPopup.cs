@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
     public class MulliganPopup : IUIPopup
     {
         public GameObject Self { get; private set; }
-        public event Action<List<BoardUnitModel>> MulliganCards;
+        public event Action<List<CardModel>> MulliganCards;
 
         private ILoadObjectsManager _loadObjectsManager;
         private IUIManager _uiManager;
@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             GameObject prefab = null;
             MulliganCardItem item = null;
             int index = 0;
-            foreach (BoardUnitModel card in _gameplayManager.CurrentPlayer.MulliganCards)
+            foreach (CardModel card in _gameplayManager.CurrentPlayer.MulliganCards)
             {
                 prefab = card.Prototype.Kind == Enumerators.CardKind.CREATURE ? _unitCardPrefab : _itemCardPrefab;
                 item = new MulliganCardItem(prefab, Self.transform, card);
@@ -206,17 +206,17 @@ namespace Loom.ZombieBattleground
         {
             if (GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
-                _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.BoardUnitModel).ToList());
+                _gameplayManager.GetController<CardsController>().CardsDistribution(_mulliganCardItems.FindAll((x) => x.CardShouldBeChanged).Select((k) => k.CardModel).ToList());
             }
 
-            InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.BoardUnitModel).ToList());
+            InvokeMulliganCardsEvent(_mulliganCardItems.FindAll((x) => !x.CardShouldBeChanged).Select((k) => k.CardModel).ToList());
 
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
             _uiManager.HidePopup<MulliganPopup>();
         }    
 
-        public void InvokeMulliganCardsEvent(List<BoardUnitModel> cards)
+        public void InvokeMulliganCardsEvent(List<CardModel> cards)
         {
             MulliganCards?.Invoke(cards);
         }    
@@ -230,7 +230,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject selfObject;
 
-        public BoardUnitModel BoardUnitModel;
+        public CardModel CardModel;
 
         public int lastIndex;
 
@@ -246,9 +246,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isFirstUpdatePosition = false;
 
-        public MulliganCardItem(GameObject prefab, Transform parent, BoardUnitModel boardUnitModel)
+        public MulliganCardItem(GameObject prefab, Transform parent, CardModel cardModel)
         {
-            this.BoardUnitModel = boardUnitModel;
+            this.CardModel = cardModel;
 
             selfObject = Object.Instantiate(prefab, parent, false);
 
@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
 
             eventHandler = selfObject.transform.GetComponent<OnBehaviourHandler>();
 
-            switch (boardUnitModel.Prototype.Kind)
+            switch (cardModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     _cardElement = new UnitCardElement(selfObject);
@@ -268,7 +268,7 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            _cardElement.Init(boardUnitModel.Card, cardPicture: BoardUnitModel.CardPicture);
+            _cardElement.Init(cardModel.Card, cardPicture: CardModel.CardPicture);
         }
 
         public void SetChangedState(bool state)

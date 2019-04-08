@@ -23,12 +23,12 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool HasUniqueAnimation(BoardUnitModel boardUnitModel)
+        public bool HasUniqueAnimation(CardModel cardModel)
         {
-            return boardUnitModel.Card.Prototype.UniqueAnimation != Enumerators.UniqueAnimation.None;
+            return cardModel.Card.Prototype.UniqueAnimation != Enumerators.UniqueAnimation.None;
         }
 
-        public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
+        public void PlayUniqueArrivalAnimation(IBoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
             UniqueAnimation animation = GetUniqueAnimationByType(card.Prototype.UniqueAnimation);
             animation.Play(boardObject, startGeneralArrivalCallback, endArrivalCallback);

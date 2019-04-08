@@ -56,12 +56,12 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BattlegroundController.RegisterBoardUnitView(_reanimatedUnit, GameplayManager.CurrentPlayer);
+                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.CurrentPlayer);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
             }
             else
             {
-                BattlegroundController.RegisterBoardUnitView(_reanimatedUnit, GameplayManager.OpponentPlayer);
+                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.OpponentPlayer);
                 if (_gameplayManager.IsLocalPlayerTurn()) {
                     _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
                 }
@@ -98,9 +98,9 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CanDoDragActions = true;
         }
 
-        private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
+        private BoardUnitView CreateBoardUnit(CardModel cardModel, Player owner)
         {
-            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
+            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, cardModel);
 
             if (owner != GameplayManager.CurrentTurnPlayer)
             {

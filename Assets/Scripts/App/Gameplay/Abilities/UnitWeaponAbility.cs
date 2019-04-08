@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
             _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;
 
-            switch (BoardUnitModel.Card.Prototype.MouldId)
+            switch (CardModel.Card.Prototype.MouldId)
             {
                 case 41:
                     _gameMechanicType = Enumerators.GameMechanicDescription.SuperSerum;
@@ -105,7 +105,7 @@ namespace Loom.ZombieBattleground
             {
                 BattleController.AttackUnitByAbility(TargetUnit, AbilityData, TargetUnit, Damage);
 
-                CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position, true, 5f);
+                CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(TargetUnit).Transform.position, true, 5f);
 
                 TargetUnit.RemoveGameMechanicDescriptionFromUnit(_gameMechanicType);
             }

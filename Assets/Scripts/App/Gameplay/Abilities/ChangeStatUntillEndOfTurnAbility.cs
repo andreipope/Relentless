@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
 
         public int Damage { get; }
 
-        private List<BoardUnitModel> _boardUnits = new List<BoardUnitModel>();
+        private List<CardModel> _boardUnits = new List<CardModel>();
 
         public ChangeStatUntillEndOfTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (Damage != 0)
                 {
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
 
             base.TurnEndedHandler();
 
-            foreach (BoardUnitModel unit in _boardUnits)
+            foreach (CardModel unit in _boardUnits)
             {
                 if (unit == null)
                     continue;

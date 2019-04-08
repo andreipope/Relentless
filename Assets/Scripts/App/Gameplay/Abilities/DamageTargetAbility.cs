@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private BoardObject _targetObject;
+        private IBoardObject _targetObject;
 
         public DamageTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -120,11 +120,11 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            BoardObject caller = AbilityUnitOwner;
+            IBoardObject caller = AbilityUnitOwner;
             Enumerators.ActionType actionType;
             switch (_targetObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.AttackUnitByAbility(caller, AbilityData, unit);
                     actionType = Enumerators.ActionType.CardAffectingCard;
                     break;

@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
             {
                 IReadOnlyList<HandBoardCard> boardCardsTargets =
                     PredefinedTargets
-                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => x.BoardObject as CardModel)
                         .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
                         .ToList();
 
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                 return;
 
-            IReadOnlyList<BoardUnitModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
+            IReadOnlyList<CardModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
                 x => x.Card.InstanceCard.Cost <= Value &&
                     x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
             );
@@ -77,14 +77,14 @@ namespace Loom.ZombieBattleground
             if (cards.Count == 0)
                 return;
 
-            List<BoardObject> targets = new List<BoardObject>();
+            List<IBoardObject> targets = new List<IBoardObject>();
 
             for (int i = 0; i < cards.Count; i++)
             {
                 if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
                     break;
 
-                BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(cards[i]);
                 PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
             }
 

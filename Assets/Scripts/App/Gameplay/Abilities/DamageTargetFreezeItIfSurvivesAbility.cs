@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                DamageTarget(AffectObjectType == Enumerators.AffectObjectType.Player ? (BoardObject)TargetPlayer : TargetUnit);
+                DamageTarget(AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit);
             }
         }
 
@@ -37,10 +37,10 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> units;
+                List<CardModel> units;
                 if (PredefinedTargets != null)
                 {
-                    units = PredefinedTargets.Select(x => (x.BoardObject as BoardUnitModel)).ToList();
+                    units = PredefinedTargets.Select(x => (x.BoardObject as CardModel)).ToList();
                 }
                 else
                 {
@@ -53,10 +53,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void DamageTarget(BoardObject boardObject)
+        private void DamageTarget(IBoardObject boardObject)
         {
-            BoardObject caller = AbilityUnitOwner;
-            BoardObject target;
+            IBoardObject caller = AbilityUnitOwner;
+            IBoardObject target;
             Enumerators.ActionType actionType;
 
             bool isFreezed = false;
@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
                         isFreezed = true;
                     }
                     break;
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.AttackUnitByAbility(caller, AbilityData, unit);
                     target = unit;
                     actionType = Enumerators.ActionType.CardAffectingCard;

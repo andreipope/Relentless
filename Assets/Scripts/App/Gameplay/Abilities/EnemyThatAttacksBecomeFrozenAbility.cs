@@ -20,14 +20,14 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitDamagedHandler(BoardObject from)
+        protected override void UnitDamagedHandler(IBoardObject from)
         {
             base.UnitDamagedHandler(from);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
-            ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
+            ((CardModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

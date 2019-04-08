@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
                     {
-                        List<BoardUnitModel> allies;
+                        List<CardModel> allies;
 
                         allies = PlayerCallerOfAbility.CardsOnBoard
                         .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead)
@@ -104,13 +104,13 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
                                    unit.Card.Prototype.Faction == Faction &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
-                        foreach(BoardUnitModel unit in allies)
+                        foreach(CardModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
 
@@ -124,12 +124,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 
-                        foreach (BoardUnitModel unit in allies)
+                        foreach (CardModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
                         }
@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnit(CardModel unit)
         {
             if (unit == null)
                 return;

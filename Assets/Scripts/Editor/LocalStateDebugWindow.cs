@@ -102,15 +102,15 @@ namespace Editor
                         {
                             EditorGUILayout.BeginHorizontal();
                             {
-                                BoardUnitModel model;
-                                IBoardUnitView view = item as IBoardUnitView;
+                                CardModel model;
+                                ICardView view = item as ICardView;
                                 if (view != null)
                                 {
                                     model = view.Model;
                                 }
                                 else
                                 {
-                                    model = item as BoardUnitModel;
+                                    model = item as CardModel;
                                 }
 
                                 if (model == null)
@@ -160,7 +160,7 @@ namespace Editor
                         GameStateConstructor.Create().CreateCurrentGameStateFromLocalGame(false);
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, AfterPlayerDrawnHandlerCallback, ref isExpanded);
 
-                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.BoardUnitViews, true);
+                    DrawViewList("BattlegroundController: All Registered Views", battlegroundController.CardViews, true);
                 }
                 EditorGUILayout.EndVertical();
             }

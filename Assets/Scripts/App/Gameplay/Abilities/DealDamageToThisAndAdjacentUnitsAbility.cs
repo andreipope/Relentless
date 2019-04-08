@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class DealDamageToThisAndAdjacentUnitsAbility : AbilityBase
     {
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         public DealDamageToThisAndAdjacentUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             base.Action(param);
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
 
             int targetIndex = -1;
             for (int i = 0; i < PlayerCallerOfAbility.CardsOnBoard.Count; i++)
@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction?.ForceActionDone();
         }
 
-        private void TakeDamageToUnit(BoardUnitModel unit)
+        private void TakeDamageToUnit(CardModel unit)
         {
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
         }

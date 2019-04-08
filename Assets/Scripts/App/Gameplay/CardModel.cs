@@ -9,9 +9,9 @@ using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
+    public class CardModel : IOwnableBoardObject, IInstanceIdOwner
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitModel));
+        private static readonly ILog Log = Logging.GetLog(nameof(CardModel));
 
         public bool AttackedThisTurn;
 
@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
 
         public bool CanAttackByDefault;
 
-        public UniqueList<BoardObject> AttackedBoardObjectsThisTurn;
+        public UniqueList<IBoardObject> AttackedBoardObjectsThisTurn;
 
         public Enumerators.AttackRestriction AttackRestriction = Enumerators.AttackRestriction.ANY;
 
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
         public InstanceId InstanceId => Card.InstanceId;
 
-        public override Player OwnerPlayer => Card.Owner;
+        public Player OwnerPlayer => Card.Owner;
 
         public List<Enumerators.SkillTarget> AttackTargetsAvailability;
 
@@ -63,7 +63,7 @@ namespace Loom.ZombieBattleground
 
         public Sprite CardPicture { get; private set; }
 
-        public BoardUnitModel(WorkingCard card)
+        public CardModel(WorkingCard card)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
-            AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
+            AttackedBoardObjectsThisTurn = new UniqueList<IBoardObject>();
 
             IsCreatedThisTurn = true;
 
@@ -106,13 +106,13 @@ namespace Loom.ZombieBattleground
 
         public event Action UnitDying;
 
-        public event Action<BoardObject, int, bool> UnitAttacked;
+        public event Action<IBoardObject, int, bool> UnitAttacked;
 
         public event Action UnitAttackedEnded;
 
-        public event Action<BoardObject> UnitDamaged;
+        public event Action<IBoardObject> UnitDamaged;
 
-        public event Action<BoardObject> PrepairingToDie;
+        public event Action<IBoardObject> PrepairingToDie;
 
         public event PropertyChangedEvent<int> UnitDefenseChanged;
 
@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<bool> UnitDistractEffectStateChanged;
 
-        public event Action<BoardUnitModel> KilledUnit;
+        public event Action<CardModel> KilledUnit;
 
         public event Action<bool> BuffSwingStateChanged;
 
@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
             CreaturePlayableForceSet?.Invoke();
         }
 
-        public virtual bool CanBePlayed(Player owner)
+        public bool CanBePlayed(Player owner)
         {
             if (!Constants.DevModeEnabled)
             {
@@ -647,7 +647,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public virtual bool CanBeBuyed(Player owner)
+        public bool CanBeBuyed(Player owner)
         {
             if (!Constants.DevModeEnabled)
             {
@@ -662,7 +662,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void DoCombat(BoardObject target)
+        public void DoCombat(IBoardObject target)
         {
             if (target == null)
                 throw new ArgumentNullException(nameof(target));
@@ -726,7 +726,7 @@ namespace Loom.ZombieBattleground
                             );
                         }, Enumerators.QueueActionType.UnitCombat);
                     break;
-                case BoardUnitModel targetCardModel:
+                case CardModel targetCardModel:
 
                     IsPlayable = false;
                     AttackedThisTurn = true;
@@ -778,9 +778,9 @@ namespace Loom.ZombieBattleground
 
                                     if (HasSwing)
                                     {
-                                        List<BoardUnitModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
+                                        List<CardModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
 
-                                        foreach (BoardUnitModel unit in adjacent)
+                                        foreach (CardModel unit in adjacent)
                                         {
                                             _battleController.AttackUnitByUnit(this, unit,false);
                                         }
@@ -859,12 +859,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void InvokeUnitDamaged(BoardObject from)
+        public void InvokeUnitDamaged(IBoardObject from)
         {
             UnitDamaged?.Invoke(from);
         }
 
-        public void InvokeUnitAttacked(BoardObject target, int damage, bool isAttacker)
+        public void InvokeUnitAttacked(IBoardObject target, int damage, bool isAttacker)
         {
             UnitAttacked?.Invoke(target, damage, isAttacker);
         }
@@ -874,12 +874,12 @@ namespace Loom.ZombieBattleground
             UnitDied?.Invoke();
         }
 
-        public void InvokeKilledUnit(BoardUnitModel boardUnit)
+        public void InvokeKilledUnit(CardModel card)
         {
-            KilledUnit?.Invoke(boardUnit);
+            KilledUnit?.Invoke(card);
         }
 
-        public IReadOnlyList<BoardUnitModel> GetEnemyUnitsList(BoardUnitModel unit)
+        public IReadOnlyList<CardModel> GetEnemyUnitsList(CardModel unit)
         {
             if (_gameplayManager.CurrentPlayer.CardsOnBoard.Contains(unit))
             {
@@ -891,7 +891,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveUnitFromBoard()
         {
-            _battlegroundController.UnregisterBoardUnitView(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(this), this.OwnerPlayer);
+            _battlegroundController.UnregisterCardView(_battlegroundController.GetCardViewByModel<BoardUnitView>(this), this.OwnerPlayer);
             OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(this);
             OwnerPlayer.PlayerCardsController.AddCardToGraveyard(this);
 
@@ -994,7 +994,7 @@ namespace Loom.ZombieBattleground
 
         public override string ToString()
         {
-            return $"([{nameof(BoardUnitModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card})";
+            return $"([{nameof(CardModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card}, {nameof(Faction)}: {Faction})";
         }
     }
 }

@@ -46,11 +46,11 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
                 {
-                    IReadOnlyList<BoardUnitModel> units = PlayerCallerOfAbility.CardsOnBoard.FindAll(
+                    IReadOnlyList<CardModel> units = PlayerCallerOfAbility.CardsOnBoard.FindAll(
                                     x => x.Card.Prototype.Faction == Faction && x != AbilityUnitOwner);
                     units = InternalTools.GetRandomElementsFromList(units, Count);
 
-                    foreach (BoardUnitModel unit in units)
+                    foreach (CardModel unit in units)
                     {
                         ModificateStats(unit);
                     }
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> targets = new List<BoardUnitModel>();
+                List<CardModel> targets = new List<CardModel>();
 
                 foreach (Enumerators.Target targetType in AbilityTargets)
                 {
@@ -101,7 +101,7 @@ namespace Loom.ZombieBattleground
 
                 targets = targets.FindAll(x => x!= AbilityUnitOwner);
 
-                List<BoardUnitModel> finalTargets = new List<BoardUnitModel>();
+                List<CardModel> finalTargets = new List<CardModel>();
                 int count = Mathf.Max(1, Count);
                 while (count > 0 && targets.Count > 0)
                 {   
@@ -111,7 +111,7 @@ namespace Loom.ZombieBattleground
                     count--;
                 }
 
-                foreach (BoardUnitModel target in finalTargets)
+                foreach (CardModel target in finalTargets)
                 {
                     ModificateStats(target, false);
                 }
@@ -135,14 +135,14 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ModificateStats(BoardObject boardObject, bool revert = false)
+        private void ModificateStats(IBoardObject boardObject, bool revert = false)
         {
             if (revert && !_canBeReverted)
                 return;
 
             switch (boardObject)
             {
-                case BoardUnitModel boardUnit:
+                case CardModel boardUnit:
                     {
                         if (Faction == Enumerators.Faction.Undefined || Faction == boardUnit.Card.Prototype.Faction)
                         {
@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
 
                             _canBeReverted = !revert;
 
-                            CreateVfx(BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnit).Transform.position);
+                            CreateVfx(BattlegroundController.GetCardViewByModel<BoardUnitView>(boardUnit).Transform.position);
 
                             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
                             {
