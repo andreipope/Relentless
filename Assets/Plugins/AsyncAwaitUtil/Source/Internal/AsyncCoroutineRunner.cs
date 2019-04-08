@@ -26,9 +26,6 @@ namespace UnityAsyncAwaitUtil
 
         void Awake()
         {
-            // Don't show in scene hierarchy
-            gameObject.hideFlags = HideFlags.HideAndDontSave;
-
             DontDestroyOnLoad(gameObject);
         }
     }

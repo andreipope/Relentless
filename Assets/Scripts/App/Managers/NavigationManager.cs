@@ -1,3 +1,4 @@
+using log4net;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +8,8 @@ namespace Loom.ZombieBattleground
 {
     public class NavigationManager : IService, INavigationManager
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(NavigationManager));
+
         private EventSystem _currentEventSystem;
 
         private IInputManager _inputManager;
@@ -58,7 +61,7 @@ namespace Loom.ZombieBattleground
                     else
                     {
 #if UNITY_EDITOR
-                        Debug.Log("next nagivation element not found");
+                        Log.Info("next nagivation element not found");
 #endif
                     }
                 }

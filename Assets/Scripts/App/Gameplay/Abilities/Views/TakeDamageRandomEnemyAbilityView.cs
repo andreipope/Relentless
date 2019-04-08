@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
                     switch (boardObject)
                     {
                         case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = player.AvatarObject.transform.position;
@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                     VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
                 }
@@ -65,7 +65,6 @@ namespace Loom.ZombieBattleground
 
             string soundName = string.Empty;
             float delaySound = 0;
-
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
@@ -90,7 +89,7 @@ namespace Loom.ZombieBattleground
                     switch (boardObject)
                     {
                         case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;

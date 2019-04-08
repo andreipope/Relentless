@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rarity = (Enumerators.CardRank) IsChanceFit(0);
             List<Card> cards =
                 _dataManager.CachedCardsLibraryData.Cards
-                    .Where(item => item.CardRank == rarity && item.CardSetType != Enumerators.SetType.OTHERS)
+                    .Where(item => item.Rank == rarity && !item.Hidden)
                     .ToList();
             Card card = new Card(cards[Random.Range(0, cards.Count)]);
             return card;
@@ -69,11 +69,11 @@ namespace Loom.ZombieBattleground
         {
             List<Card> fullCollection =
                 _dataManager.CachedCardsLibraryData.Cards
-                    .Where(item => item.CardSetType != Enumerators.SetType.OTHERS)
+                    .Where(item => !item.Hidden)
                     .ToList();
 
-            List<Card> legendary = fullCollection.FindAll(item => item.CardRank == Enumerators.CardRank.GENERAL);
-            List<Card> epic = fullCollection.FindAll(item => item.CardRank == Enumerators.CardRank.COMMANDER);
+            List<Card> legendary = fullCollection.FindAll(item => item.Rank == Enumerators.CardRank.GENERAL);
+            List<Card> epic = fullCollection.FindAll(item => item.Rank == Enumerators.CardRank.COMMANDER);
 
             _cardsInPack.Add(fullCollection[Random.Range(0, fullCollection.Count)]);
             _cardsInPack.Add(fullCollection[Random.Range(0, fullCollection.Count)]);

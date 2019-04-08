@@ -3,26 +3,27 @@ using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class BlitzAbility : AbilityBase
     {
         private int Count { get; }
-        private Enumerators.SetType SetType { get; }
+        private Enumerators.Faction Faction { get; }
 
         public BlitzAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -32,45 +33,58 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitView> units = new List<BoardUnitView>();
-                foreach (Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                List<BoardUnitModel> units = new List<BoardUnitModel>();
+
+                if (PredefinedTargets != null)
                 {
-                    switch (targetType)
+                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().ToList();
+                }
+                else
+                {
+                    foreach (Enumerators.Target targetType in AbilityTargets)
                     {
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            units.AddRange(GetOpponentOverlord().BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            units.AddRange(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType));
-                            break;
+                        switch (targetType)
+                        {
+                            case Enumerators.Target.OPPONENT_CARD:
+                                units.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
+                                break;
+                            case Enumerators.Target.PLAYER_CARD:
+                                units.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
+                                break;
+                        }
                     }
+
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
 
-                units = InternalTools.GetRandomElementsFromList(units, Count);
-
-                foreach (BoardUnitView unit in units)
+                foreach (BoardUnitModel unit in units)
                 {
-                    TakeBlitzToUnit(unit.Model);
+                    TakeBlitzToUnit(unit);
                 }
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Select(x => x.Model).Cast<BoardObject>().ToList(),
-                                          AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    units
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
+                        .ToList()
+                );
             }
             else
             {
                 TakeBlitzToUnit(AbilityUnitOwner);
-
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { AbilityUnitOwner },
-                                             AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(AbilityUnitOwner)
+                    }
+                );
             }
         }
 
         private void TakeBlitzToUnit(BoardUnitModel unit)
         {
             unit.ApplyBuff(Enumerators.BuffType.BLITZ);
-            unit.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Blitz);
         }
     }
 }

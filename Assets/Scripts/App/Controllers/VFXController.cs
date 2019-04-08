@@ -72,7 +72,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayAttackVfx(BoardUnitModel model, Vector3 target)
         {
-            Enumerators.CardType type = model.Card.LibraryCard.CardType;
+            Enumerators.CardType type = model.Card.Prototype.Type;
             int damage = model.CurrentDamage;
             GameObject effect;
             GameObject vfxPrefab;
@@ -82,7 +82,7 @@ namespace Loom.ZombieBattleground
                 target = Utilites.CastVfxPosition(target);
             }
 
-            if (model.GameMechanicDescriptionsOnUnit.Exists(x => x == Enumerators.GameMechanicDescriptionType.Chainsaw))
+            if (model.GameMechanicDescriptionsOnUnit.Exists(x => x == Enumerators.GameMechanicDescription.Chainsaw))
             {
                 vfxPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/ChainSawAttack");
                 effect = Object.Instantiate(vfxPrefab);
@@ -190,15 +190,14 @@ namespace Loom.ZombieBattleground
             if (prefab == null)
                 return;
 
-            Vector3 position = Vector3.zero;
-
+            Vector3 position;
             switch (target)
             {
                 case BoardUnitView unit:
                     position = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    position = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 case Player player:
                     position = player.AvatarObject.transform.position;
@@ -253,7 +252,7 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -283,12 +282,15 @@ namespace Loom.ZombieBattleground
         public void CreateSkillVfx(GameObject prefab, Vector3 from, object target, Action<object> callbackComplete, bool isDirection = false)
         {
             if (target == null)
+            {
+                InternalTools.DoActionDelayed(() => callbackComplete(target), Time.deltaTime);
                 return;
+            }
 
             GameObject particleSystem = Object.Instantiate(prefab);
             particleSystem.transform.position = Utilites.CastVfxPosition(from + Vector3.forward);
 
-            Vector3 castVfxPosition;
+            Vector3 castVfxPosition = Vector3.zero;
             switch (target)
             {
                 case Player player:
@@ -298,7 +300,9 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    break;
+                case HandBoardCard cardInHand:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
@@ -342,7 +346,7 @@ namespace Loom.ZombieBattleground
                     target = unit.Transform;
                     break;
                 case BoardUnitModel unit:
-                    target = _battlegroundController.GetBoardUnitViewByModel(unit).Transform;
+                    target = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
                     break;
                 case Player _:
                     target = ((Player)onObject).AvatarObject.transform;
@@ -402,9 +406,7 @@ namespace Loom.ZombieBattleground
         {
             bool withEffect = true;
 
-            if (unitView.Model.LastAttackingSetType == Enumerators.SetType.ITEM ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.OTHERS ||
-                unitView.Model.LastAttackingSetType == Enumerators.SetType.NONE)
+            if (unitView.Model.LastAttackingSetType == Enumerators.Faction.ITEM)
             {
                 withEffect = false;
             }
@@ -480,7 +482,7 @@ namespace Loom.ZombieBattleground
 
             if (_withEffect)
             {
-                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UniqueArrivalAnimations/ZB_ANM_" +
+                SelfObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/UnitDeathAnimations/ZB_ANM_" +
                                                 InternalTools.FormatStringToPascaleCase(BoardUnitView.Model.LastAttackingSetType.ToString()) +
                                                 "DeathAnimation"));
 
@@ -527,7 +529,7 @@ namespace Loom.ZombieBattleground
 
         private void PlayDeathSound()
         {
-            string cardDeathSoundName = BoardUnitView.Model.Card.LibraryCard.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
+            string cardDeathSoundName = BoardUnitView.Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundDeath;
 
             if (!BoardUnitView.Model.OwnerPlayer.Equals(_gameplayManager.CurrentTurnPlayer))
             {
@@ -566,7 +568,6 @@ namespace Loom.ZombieBattleground
             {
                 AnimationEventReceived("End");
             }
-
             DestroyUnitTriggered?.Invoke(this);
         }
 

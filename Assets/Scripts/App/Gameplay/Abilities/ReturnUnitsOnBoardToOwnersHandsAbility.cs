@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -9,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        private List<BoardUnitView> _units;
+        public List<BoardUnitModel> Units { get; private set; }
 
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -21,9 +22,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -35,23 +36,25 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            _units = new List<BoardUnitView>();
-            _units.AddRange(GameplayManager.CurrentPlayer.BoardCards);
-            _units.AddRange(GameplayManager.OpponentPlayer.BoardCards);
-            _units =
-                _units
-                    .Where(x => x.Model != AbilityUnitOwner)
+            Units = new List<BoardUnitModel>();
+            Units.AddRange(GameplayManager.CurrentPlayer.CardsOnBoard);
+            Units.AddRange(GameplayManager.OpponentPlayer.CardsOnBoard);
+            Units =
+                Units
+                    .Where(card => card != AbilityUnitOwner &&
+                        card.CurrentDefense > 0 &&
+                        !card.IsDead)
                     .ToList();
 
             if (Value > 0)
             {
-                _units = _units.Where(x => x.Model.Card.InstanceCard.Cost <= Value).ToList();
+                Units = Units.Where(x => x.Card.InstanceCard.Cost <= Value).ToList();
             }
 
-            InvokeActionTriggered(_units);
+            InvokeActionTriggered(Units);
         }
 
-        private void ReturnBoardUnitToHand(BoardUnitView unit)
+        private void ReturnBoardUnitToHand(BoardUnitModel unit)
         {
             CardsController.ReturnCardToHand(unit);
         }
@@ -60,7 +63,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardUnitView unit in _units)
+            foreach (BoardUnitModel unit in Units)
             {
                 ReturnBoardUnitToHand(unit);
             }

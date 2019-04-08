@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -43,10 +43,10 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (AbilityData.AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.OPPONENT))
+                if (AbilityData.Targets.Contains(Enumerators.Target.OPPONENT))
                 {
                     _targetPlayer = GetOpponentOverlord();
-                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.SPELL && x != MainWorkingCard).Count; 
+                    _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != BoardUnitModel).Count; 
                 }
             }
 
@@ -65,15 +65,20 @@ namespace Loom.ZombieBattleground
 
         private void DamageTarget(Player player)
         {
-            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(
+                        player,
+                        new ParametrizedAbilityParameters
+                        {
+                            Attack = _damage
+                        }
+                    )
+                }
+            );
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<ParametrizedAbilityBoardObject>()
-            {
-                new ParametrizedAbilityBoardObject(player, new ParametrizedAbilityParameters()
-                    {
-                        Attack = _damage
-                    })
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+            BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _damage);
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
+using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -14,6 +16,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class QueueProxyPlayerActionTestProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MatchScenarioPlayer));
+
         private readonly Func<Queue<Func<Task>>> _getQueueFunc;
         private readonly MatchScenarioPlayer _matchScenarioPlayer;
 
@@ -63,12 +67,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public void CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"})");
-                return Proxy.CardPlay(card, position, entryAbilityTarget);
+                LogAction($"{nameof(CardPlay)}({nameof(card)}: {card}, {nameof(position)}: {position}, {nameof(entryAbilityTarget)}: {entryAbilityTarget?.ToString() ?? "null"}, {nameof(skipEntryAbilities)}: {skipEntryAbilities}, {nameof(forceSkipForPlayerToo)}: {forceSkipForPlayerToo})");
+                return Proxy.CardPlay(card, position, entryAbilityTarget, skipEntryAbilities);
             });
         }
 
@@ -93,12 +97,12 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
-        public void OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public void OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
             Queue.Enqueue(() =>
             {
-                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {target})");
-                return Proxy.OverlordSkillUsed(skillId, target);
+                LogAction($"{nameof(OverlordSkillUsed)}({nameof(skillId)}: {nameof(targets)}: {StringifyInstanceIds(targets)})");
+                return Proxy.OverlordSkillUsed(skillId, targets);
             });
         }
 
@@ -120,9 +124,27 @@ namespace Loom.ZombieBattleground.Test
             });
         }
 
+        public void LetsThink(float thinkTime = 1f, bool forceRealtime = false)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(LetsThink)}()");
+                return Proxy.LetsThink(thinkTime, forceRealtime);
+            });
+        }
+
+        public void AssertInQueue(Action action)
+        {
+            Queue.Enqueue(() =>
+            {
+                LogAction($"{nameof(AssertInQueue)}()");
+                return Proxy.AssertInQueue(action);
+            });
+        }
+
         private void LogAction(string log)
         {
-            Debug.Log($"[ScenarioPlayer] {Proxy.GetType().Name}: " + log);
+            Log.Info($"{Proxy.GetType().Name}: " + log);
         }
 
         private static string StringifyInstanceIds(IEnumerable<InstanceId> cards)
@@ -137,7 +159,7 @@ namespace Loom.ZombieBattleground.Test
 
         private static string StringifyList(IEnumerable<string> items)
         {
-            return "[" + String.Concat(", ", items) + "]";
+            return "[" + String.Join(", ", items) + "]";
         }
     }
 }

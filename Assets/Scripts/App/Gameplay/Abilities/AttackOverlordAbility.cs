@@ -10,12 +10,17 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
+
+        public AttackOverlordAbility() : base()
+        {
+
+        }
 
         public AttackOverlordAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            TargetTypes = ability.AbilityTargetTypes;
+            TargetTypes = ability.Targets;
             Value = ability.Value;
         }
 
@@ -23,9 +28,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
@@ -66,21 +71,22 @@ namespace Loom.ZombieBattleground
 
             Player targetObject = null; 
 
-            foreach (Enumerators.AbilityTargetType target in TargetTypes)
+            foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         targetObject = GetOpponentOverlord();
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         targetObject = PlayerCallerOfAbility;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
+                if(!PvPManager.UseBackendGameLogic)
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -101,5 +107,26 @@ namespace Loom.ZombieBattleground
 
             AbilityProcessingAction?.ForceActionDone();
         }
+
+        public void ActivateAbility(AttackOverlordOutcome outcome)
+        {
+            BoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
+            if (boardObject is Player targetOverlord)
+            {
+                BattleController.AttackPlayer(targetOverlord, outcome.Damage);
+                targetOverlord.Defense = outcome.NewDefence;
+            }
+            else
+            {
+                throw new Exception("Attack overlord should apply only on Player Overlord");
+            }
+        }
+    }
+
+    public class AttackOverlordOutcome
+    {
+        public InstanceId PlayerInstanceId;
+        public int Damage;
+        public int NewDefence;
     }
 }

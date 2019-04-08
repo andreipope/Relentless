@@ -1,5 +1,24 @@
 [
     {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "validators",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "name": "creator",
@@ -39,6 +58,14 @@
         },
         {
           "name": "waterPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "smallPackAddr",
+          "type": "address"
+        },
+        {
+          "name": "minionPackAddr",
           "type": "address"
         }
       ],

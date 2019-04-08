@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
 
             List<AbilityBase> unitAbilities = _abilitiesController.GetAbilitiesConnectedToUnit(Ability.TargetUnit);
 
-            int count = unitAbilities.FindAll((x) => x.AbilityData.AbilityType == Ability.AbilityData.AbilityType).Count;
+            int count = unitAbilities.FindAll((x) => x.AbilityData.Ability == Ability.AbilityData.Ability).Count;
 
             if(count > 1)
             {
@@ -79,7 +79,7 @@ namespace Loom.ZombieBattleground
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(effectType).Path);
 
-                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform, false);
+                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform, false);
 
                 AbilityEffectInfoView effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                 if (effectInfo != null)

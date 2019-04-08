@@ -14,9 +14,9 @@ namespace Loom.ZombieBattleground
     {
         private const float ScrollAnimationDuration = 0.5f;
 
-        private const int LoopStartFakeHeroCount = 1;
+        private const int LoopStartFakeOverlordCount = 1;
 
-        private const int LoopEndFakeHeroCount = 2;
+        private const int LoopEndFakeOverlordCount = 2;
 
         private const string ColorName = "_TintColor";
 
@@ -29,6 +29,8 @@ namespace Loom.ZombieBattleground
         private ISoundManager _soundManager;
 
         private IAppStateManager _appStateManager;
+
+        private ITutorialManager _tutorialManager;
 
         private GameObject _selfPage;
 
@@ -44,9 +46,9 @@ namespace Loom.ZombieBattleground
 
         private GameObject _rightContentObject;
 
-        private int _selectedHeroIndex;
+        private int _selectedOverlordIndex;
 
-        private Sequence _heroSelectScrollSequence;
+        private Sequence _overlordSelectScrollSequence;
 
         public void Init()
         {
@@ -55,6 +57,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
         }
 
         public void Update()
@@ -82,7 +85,14 @@ namespace Loom.ZombieBattleground
             _rightContentObject = _selfPage.transform.Find("Panel_OverlordContent/Panel_OverlordInfo").gameObject;
 
             FillOverlordObjects();
-            SetSelectedHeroIndexAndUpdateScrollPosition(0, false, force: true);
+
+            int index = 0;
+
+            if (_tutorialManager.IsTutorial)
+            {
+                index = _overlordObjects.FindIndex(overlord => overlord.SelfOverlord.Faction == _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet);
+            }
+            SetSelectedOverlordIndexAndUpdateScrollPosition(index, false, force: true);
         }
 
         public void Hide()
@@ -97,40 +107,40 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            _heroSelectScrollSequence?.Kill();
+            _overlordSelectScrollSequence?.Kill();
         }
 
-        private bool SetSelectedHeroIndexAndUpdateScrollPosition(
-            int heroIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false, int direction = 1)
+        private bool SetSelectedOverlordIndexAndUpdateScrollPosition(
+            int overlordIndex, bool animateTransition, bool selectOverlordObject = true, bool force = false, int direction = 1)
         {
-            if (!force && heroIndex == _selectedHeroIndex)
+            if (!force && overlordIndex == _selectedOverlordIndex)
             {
                 return false;
             }
-            _selectedHeroIndex = heroIndex;
+            _selectedOverlordIndex = overlordIndex;
 
             RectTransform overlordContainerRectTransform = _overlordsContainer.GetComponent<RectTransform>();
-            _heroSelectScrollSequence?.Kill();
+            _overlordSelectScrollSequence?.Kill();
             if (animateTransition)
             {
-                _heroSelectScrollSequence = DOTween.Sequence();
-                _heroSelectScrollSequence.Append(
+                _overlordSelectScrollSequence = DOTween.Sequence();
+                _overlordSelectScrollSequence.Append(
                         DOTween.To(
                             () => overlordContainerRectTransform.anchoredPosition,
                             v => overlordContainerRectTransform.anchoredPosition = v,
-                            CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex),
+                            CalculateOverlordContainerShiftForOverlordIndex(_selectedOverlordIndex),
                             ScrollAnimationDuration))
-                    .AppendCallback(() => _heroSelectScrollSequence = null);
+                    .AppendCallback(() => _overlordSelectScrollSequence = null);
             }
             else
             {
                 overlordContainerRectTransform.anchoredPosition =
-                    CalculateOverlordContainerShiftForHeroIndex(_selectedHeroIndex);
+                    CalculateOverlordContainerShiftForOverlordIndex(_selectedOverlordIndex);
             }
 
             if (selectOverlordObject)
             {
-                _overlordObjects[_selectedHeroIndex].Select(animateTransition, direction);
+                _overlordObjects[_selectedOverlordIndex].Select(animateTransition, direction);
             }
 
             return true;
@@ -143,31 +153,31 @@ namespace Loom.ZombieBattleground
             _overlordObjects = new List<OverlordObject>();
             _loopFakeOverlordObjects = new List<OverlordObject>();
 
-            for (int i = LoopStartFakeHeroCount - 1; i >= 0; i--)
+            for (int i = LoopStartFakeOverlordCount - 1; i >= 0; i--)
             {
-                int index = _dataManager.CachedHeroesData.Heroes.Count - i - 1;
-                Hero hero = _dataManager.CachedHeroesData.Heroes[index];
+                int index = _dataManager.CachedOverlordData.Overlords.Count - i - 1;
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[index];
                 OverlordObject current = new OverlordObject(_overlordsContainer.GetComponent<RectTransform>(),
-                    _rightContentObject, hero);
+                    _rightContentObject, overlord);
                 current.SelfObject.name += $" #{index}";
                 _loopFakeOverlordObjects.Add(current);
             }
 
-            for (int i = 0; i < _dataManager.CachedHeroesData.Heroes.Count; i++)
+            for (int i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
             {
-                Hero hero = _dataManager.CachedHeroesData.Heroes[i];
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[i];
                 OverlordObject current = new OverlordObject(_overlordsContainer.GetComponent<RectTransform>(),
-                    _rightContentObject, hero);
+                    _rightContentObject, overlord);
                 current.SelfObject.name += $" #{i}";
                 current.OverlordObjectSelectedEvent += OverlordObjectSelectedEventHandler;
                 _overlordObjects.Add(current);
             }
 
-            for (int i = 0; i < LoopEndFakeHeroCount; i++)
+            for (int i = 0; i < LoopEndFakeOverlordCount; i++)
             {
-                Hero hero = _dataManager.CachedHeroesData.Heroes[i];
+                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[i];
                 OverlordObject current = new OverlordObject(_overlordsContainer.GetComponent<RectTransform>(),
-                    _rightContentObject, hero);
+                    _rightContentObject, overlord);
                 current.SelfObject.name += $" #{i}";
                 _loopFakeOverlordObjects.Add(current);
             }
@@ -194,30 +204,30 @@ namespace Loom.ZombieBattleground
 
         private void SwitchOverlordObject(int direction)
         {
-            int newIndex = _selectedHeroIndex;
+            int newIndex = _selectedOverlordIndex;
             newIndex += direction;
 
             if (newIndex < 0)
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false, false, direction);
-                SetSelectedHeroIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true, true, false, direction);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount].Deselect(true, true);
+                SetSelectedOverlordIndexAndUpdateScrollPosition(_overlordObjects.Count, false, false, false, direction);
+                SetSelectedOverlordIndexAndUpdateScrollPosition(_overlordObjects.Count - 1, true, true, false, direction);
+                _loopFakeOverlordObjects[LoopStartFakeOverlordCount].Deselect(true, true);
             }
             else if (newIndex >= _overlordObjects.Count)
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(-1, false, false, false, direction);
-                SetSelectedHeroIndexAndUpdateScrollPosition(0, true, true, false, direction);
-                _loopFakeOverlordObjects[LoopStartFakeHeroCount - 1].Deselect(true, true);
+                SetSelectedOverlordIndexAndUpdateScrollPosition(-1, false, false, false, direction);
+                SetSelectedOverlordIndexAndUpdateScrollPosition(0, true, true, false, direction);
+                _loopFakeOverlordObjects[LoopStartFakeOverlordCount - 1].Deselect(true, true);
             }
             else
             {
-                SetSelectedHeroIndexAndUpdateScrollPosition(newIndex, true, true, false, direction);
+                SetSelectedOverlordIndexAndUpdateScrollPosition(newIndex, true, true, false, direction);
             }
         }
 
-        private Vector2 CalculateOverlordContainerShiftForHeroIndex(int heroIndex)
+        private Vector2 CalculateOverlordContainerShiftForOverlordIndex(int overlordIndex)
         {
-            return Vector2.left * (heroIndex + LoopStartFakeHeroCount) * _overlordsContainer.spacing;
+            return Vector2.left * (overlordIndex + LoopStartFakeOverlordCount) * _overlordsContainer.spacing;
         }
 
         private void ResetOverlordObjects()
@@ -272,9 +282,9 @@ namespace Loom.ZombieBattleground
 
             private Sequence _stateChangeSequence;
 
-            public OverlordObject(Transform parent, GameObject informationPanelObject, Hero hero)
+            public OverlordObject(Transform parent, GameObject informationPanelObject, OverlordModel overlord)
             {
-                SelfHero = hero;
+                SelfOverlord = overlord;
 
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 
@@ -282,13 +292,13 @@ namespace Loom.ZombieBattleground
                     Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>(
                             "Prefabs/UI/Elements/Item_OverlordSelectionOverlord"), parent, false);
-                SelfObject.gameObject.name = hero.FullName;
+                SelfObject.gameObject.name = overlord.FullName;
 
                 _highlightImage = SelfObject.transform.Find("Image_Highlight").gameObject.GetComponent<Image>();
                 Transform glowContainer = SelfObject.transform.Find("Glow");
                 Transform glowObject = Object.Instantiate(
                         _loadObjectsManager.GetObjectByPath<GameObject>(
-                            "Prefabs/VFX/UI/Overlord/ZB_ANM_OverLordSelector_" + SelfHero.HeroElement), glowContainer, false).transform;
+                            "Prefabs/VFX/UI/Overlord/ZB_ANM_OverLordSelector_" + SelfOverlord.Faction), glowContainer, false).transform;
 
                 _glowMeshMaterial = glowObject.Find("VFX_All/MeshGlow").GetComponent<MeshRenderer>().material;
                 _glowParticleShine = glowObject.Find("VFX_All/glowingEffect/energy").GetComponent<ParticleSystemRenderer>().material;
@@ -308,11 +318,11 @@ namespace Loom.ZombieBattleground
 
                 _overlordPictureSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ChooseOverlord/portrait_" +
-                        SelfHero.HeroElement.ToString().ToLowerInvariant() + "_hero");
+                        SelfOverlord.Faction.ToString().ToLowerInvariant() + "_hero");
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
                 _elementIconSprite =
                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/ElementIcons/Icon_element_" +
-                        SelfHero.HeroElement.ToString().ToLowerInvariant());
+                        SelfOverlord.Faction.ToString().ToLowerInvariant());
 
                 _overlordPictureGray.sprite = _overlordPicture.sprite = _overlordPictureSprite;
 
@@ -327,7 +337,7 @@ namespace Loom.ZombieBattleground
 
             public GameObject SelfObject { get; }
 
-            public Hero SelfHero { get; }
+            public OverlordModel SelfOverlord { get; }
 
             public bool IsSelected { get; private set; }
 
@@ -343,11 +353,11 @@ namespace Loom.ZombieBattleground
 
                 IsSelected = true;
 
-                SelfObject.gameObject.name = SelfHero.Name + " (Selected)";
+                SelfObject.gameObject.name = SelfOverlord.Name + " (Selected)";
 
-                _overlordNameText.text = SelfHero.Name;
-                _overlordDescriptionText.text = SelfHero.LongDescription;
-                _overlordShortDescription.text = SelfHero.ShortDescription;
+                _overlordNameText.text = SelfOverlord.Name;
+                _overlordDescriptionText.text = SelfOverlord.LongDescription;
+                _overlordShortDescription.text = SelfOverlord.ShortDescription;
 
                 _elementIcon.sprite = _elementIconSprite;
 
@@ -363,7 +373,7 @@ namespace Loom.ZombieBattleground
 
                 IsSelected = false;
 
-                SelfObject.gameObject.name = SelfHero.Name;
+                SelfObject.gameObject.name = SelfOverlord.Name;
                 SetUIActiveState(false, animateTransition, force);
             }
 
@@ -434,14 +444,14 @@ namespace Loom.ZombieBattleground
             }
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
 
-            _uiManager.GetPage<HordeEditingPage>().CurrentHero = _currentOverlordObject.SelfHero;
+            _uiManager.GetPage<HordeEditingPage>().CurrentOverlord = _currentOverlordObject.SelfOverlord;
 
             _uiManager.GetPopup<OverlordAbilitySelectionPopup>().PopupHiding += AbilityPopupClosedEvent;
 
             _uiManager.DrawPopup<OverlordAbilitySelectionPopup>(new object[]
             {
                 false,
-                _currentOverlordObject.SelfHero,
+                _currentOverlordObject.SelfOverlord,
                 null,
                 null
             });

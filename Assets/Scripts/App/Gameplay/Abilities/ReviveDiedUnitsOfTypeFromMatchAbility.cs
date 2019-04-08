@@ -1,26 +1,33 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class ReviveDiedUnitsOfTypeFromMatchAbility : AbilityBase
     {
-        public Enumerators.SetType SetType;
+        private IGameplayManager _gameplayManager;
+
+        private AbilitiesController _abilitiesController;
+        public Enumerators.Faction Faction;
 
         public ReviveDiedUnitsOfTypeFromMatchAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -30,37 +37,55 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            IReadOnlyList<WorkingCard> units =
-                GameplayManager.CurrentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
-
-            foreach (WorkingCard unit in units)
+            void Process(Player player)
             {
-                ReviveUnit(unit);
+                List<BoardUnitModel> boardUnitModels = new List<BoardUnitModel>();
+                boardUnitModels.AddRange(player.CardsOnBoard.Where(x => x.Card.Prototype.Faction == Faction));
+                boardUnitModels.AddRange(player.CardsInHand.Where(x => x.Card.Prototype.Faction == Faction));
+                IReadOnlyList<BoardUnitModel> graveyardCards =
+                    player.CardsInGraveyard.FindAll(unit =>
+                        unit.Prototype.Faction == Faction && !boardUnitModels.Exists(card => card.InstanceId == unit.InstanceId));
+
+                foreach (BoardUnitModel unit in graveyardCards)
+                {
+                    ReviveUnit(unit);
+                }
             }
 
-            units = GameplayManager.OpponentPlayer.CardsInGraveyard.FindAll(x => x.LibraryCard.CardSetType == SetType);
+            Process(GameplayManager.CurrentPlayer);
+            Process(GameplayManager.OpponentPlayer);
 
-            foreach (WorkingCard unit in units)
-            {
-                ReviveUnit(unit);
-            }
+            GameplayManager.CanDoDragActions = true;
         }
 
-        private void ReviveUnit(WorkingCard workingCard)
+        private void ReviveUnit(BoardUnitModel boardUnitModel)
         {
-            Player playerOwner = workingCard.Owner;
+            Player playerOwner = boardUnitModel.Owner;
 
-            if (playerOwner.BoardCards.Count >= playerOwner.MaxCardsInPlay)
+            if (playerOwner.CardsOnBoard.Count >= playerOwner.MaxCardsInPlay)
                 return;
 
-            Card libraryCard = new Card(workingCard.LibraryCard);
+            playerOwner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
+            boardUnitModel.ResetToInitial();
+            BoardUnitModel revivedBoardUnitModel = boardUnitModel;
+            BoardUnitView revivedBoardUnitView = BattlegroundController.CreateBoardUnit(playerOwner, revivedBoardUnitModel);
 
-            WorkingCard card = new WorkingCard(libraryCard, libraryCard, playerOwner);
-            BoardUnitView unit = BattlegroundController.CreateBoardUnit(playerOwner, card);
+            playerOwner.PlayerCardsController.AddCardToBoard(revivedBoardUnitModel, ItemPosition.End);
 
-            playerOwner.RemoveCardFromGraveyard(workingCard);
-            playerOwner.AddCardToBoard(card, ItemPosition.End);
-            playerOwner.BoardCards.Insert(ItemPosition.End, unit);
+            if (playerOwner.IsLocalPlayer)
+            {
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, revivedBoardUnitView);
+                _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+            }
+            else
+            {
+                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, revivedBoardUnitView);
+                if (_gameplayManager.IsLocalPlayerTurn()) {
+                    _abilitiesController.ActivateAbilitiesOnCard(revivedBoardUnitView.Model, AbilityUnitOwner, AbilityUnitOwner.Owner);
+                }
+            }
+
+            RanksController.AddUnitForIgnoreRankBuff(revivedBoardUnitModel);
 
             BoardController.UpdateCurrentBoardOfPlayer(playerOwner, null);
         }

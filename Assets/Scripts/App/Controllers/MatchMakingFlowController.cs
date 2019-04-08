@@ -1,32 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
+using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
-namespace Loom.ZombieBattleground
-{
+namespace Loom.ZombieBattleground {
     /// <summary>
     /// Executes the matchmaking sequences, notices about state changes and successful match.
     /// </summary>
     public class MatchMakingFlowController
     {
-        private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
-        private const string PlayerIsNotInPool = "Player not found in player pool";
+        private static readonly ILog Log = Logging.GetLog(nameof(MatchMakingFlowController));
 
-        private readonly BackendFacade _backendFacade;
-        private readonly UserDataModel _userDataModel;
-
+        protected readonly BackendFacade _backendFacade;
+        protected readonly UserDataModel _userDataModel;
         private CancellationTokenSource _cancellationTokenSource;
         private MatchMakingState _state = MatchMakingState.NotStarted;
         private MatchMetadata _matchMetadata;
-
         private float _currentWaitingTime;
         private long _deckId;
         private Address? _customGameModeAddress;
@@ -34,8 +30,21 @@ namespace Loom.ZombieBattleground
         private bool _useBackendGameLogic;
         private DebugCheatsConfiguration _debugCheats;
 
-        public event Action<MatchMakingState> StateChanged;
+        // TODO: use a setup object?
+        public MatchMakingFlowController(
+            BackendFacade backendFacade,
+            UserDataModel userDataModel)
+        {
+            _backendFacade = backendFacade;
+            _userDataModel = userDataModel;
 
+            _cancellationTokenSource = new CancellationTokenSource();
+        }
+
+        private const string PlayerIsAlreadyInAMatch = "Player is already in a match";
+        private const string PlayerIsNotInPool = "Player not found in player pool";
+
+        public event Action<MatchMakingState> StateChanged;
         public event Action<MatchMetadata> MatchConfirmed;
 
         public float ActionWaitingTime { get; set; } = 3.5f;
@@ -76,17 +85,8 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public MatchMakingFlowController(
-            BackendFacade backendFacade,
-            UserDataModel userDataModel)
-        {
-            _backendFacade = backendFacade;
-            _userDataModel = userDataModel;
+        protected CancellationTokenSource CancellationTokenSource => _cancellationTokenSource;
 
-            _cancellationTokenSource = new CancellationTokenSource();
-        }
-
-        // TODO: use a setup object?
         public async Task Start(
             long deckId,
             Address? customGameModeAddress,
@@ -94,6 +94,7 @@ namespace Loom.ZombieBattleground
             bool useBackendGameLogic,
             DebugCheatsConfiguration debugCheats)
         {
+            Log.Debug("Start");
             _cancellationTokenSource?.Cancel();
             _cancellationTokenSource = new CancellationTokenSource();
 
@@ -110,12 +111,14 @@ namespace Loom.ZombieBattleground
 
         public async Task Stop()
         {
+            Log.Debug("Stop");
             _cancellationTokenSource.Cancel();
             await SetState(MatchMakingState.Canceled);
         }
 
         public Task Restart()
         {
+            Log.Debug("Restart");
             return Start(_deckId, _customGameModeAddress, _tags, _useBackendGameLogic, _debugCheats);
         }
 
@@ -152,10 +155,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task RegisterPlayerToPool ()
+        protected async Task RegisterPlayerToPool()
         {
             try
             {
+                Log.Debug("RegisterPlayerToPool");
                 RegisterPlayerPoolResponse result = await _backendFacade.RegisterPlayerPool(
                     _userDataModel.UserId,
                     _deckId,
@@ -169,13 +173,14 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                ErrorHandler(e);
+                await ErrorFirstChanceHandler(e);
             }
         }
 
-        private async Task InitiateAcceptingMatch (long matchId) {
+        protected async Task InitiateAcceptingMatch (long matchId) {
             try
             {
+                Log.Debug("InitiateAcceptingMatch");
                 AcceptMatchResponse result = await _backendFacade.AcceptMatch(
                     _userDataModel.UserId,
                     matchId
@@ -186,15 +191,16 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                ErrorHandler(e);
+                await ErrorFirstChanceHandler(e);
                 await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
-        private async Task InitiateFindingMatch()
+        protected async Task InitiateFindingMatch()
         {
             try
             {
+                Log.Debug("InitiateFindingMatch");
                 FindMatchResponse result = await _backendFacade.FindMatch(
                     _userDataModel.UserId,
                     _tags
@@ -234,14 +240,15 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                ErrorHandler(e);
+                await ErrorFirstChanceHandler(e);
                 await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
-        private async Task CheckIfOpponentIsReady () {
+        protected async Task CheckIfOpponentIsReady() {
             try
             {
+                Log.Debug("CheckIfOpponentIsReady");
                 FindMatchResponse result = await _backendFacade.FindMatch(
                     _userDataModel.UserId,
                     _tags
@@ -280,7 +287,7 @@ namespace Loom.ZombieBattleground
 
                         if (opponentHasAccepted && !mustAccept)
                         {
-                            Debug.Log("The Match is Starting!");
+                            Log.Info("The Match is Starting!");
                             await ConfirmMatch(result);
                         }
                         else
@@ -304,48 +311,21 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                ErrorHandler(e);
+                await ErrorFirstChanceHandler(e);
                 await SetState(MatchMakingState.WaitingPeriod);
             }
         }
 
-        private async void ErrorHandler (Exception exception) {
-            // Just restart the entire process
-            // FIXME: why does this error still occur, though?
-            if (exception.Message.Contains(PlayerIsAlreadyInAMatch) || exception.Message.Contains(PlayerIsNotInPool))
-            {
-                try
-                {
-                    CancelFindMatchResponse result = await _backendFacade.CancelFindMatchRelatedToUserId(
-                        _userDataModel.UserId
-                    );
-
-                    await Restart();
-                }
-                catch(TimeoutException e)
-                {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
-                }
-                catch (Exception e)
-                {
-                    ErrorHandler(e);
-                }
-            }
-            else
-            {
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
-            }
-        }
-
-        private async Task SetState(MatchMakingState state)
+        protected async Task SetState(MatchMakingState state)
         {
             if (await CancelIfNeededAndSetCanceledState())
                 return;
 
+            Log.Debug("SetState: " + state);
             await SetStateUnchecked(state);
         }
 
-        private async Task SetStateUnchecked(MatchMakingState state)
+        protected async Task SetStateUnchecked(MatchMakingState state)
         {
             _state = state;
             StateChanged?.Invoke(state);
@@ -379,7 +359,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async Task ConfirmMatch(FindMatchResponse findMatchResponse)
+        protected async Task ConfirmMatch(FindMatchResponse findMatchResponse)
         {
             _matchMetadata = new MatchMetadata(
                 findMatchResponse.Match.Id,
@@ -390,10 +370,11 @@ namespace Loom.ZombieBattleground
 
             await SetState(MatchMakingState.Confirmed);
 
+            Log.Debug("MatchConfirmed");
             MatchConfirmed?.Invoke(_matchMetadata);
         }
 
-        private async Task<bool> CancelIfNeededAndSetCanceledState()
+        protected async Task<bool> CancelIfNeededAndSetCanceledState()
         {
             if (!_cancellationTokenSource.IsCancellationRequested)
                 return false;
@@ -406,6 +387,49 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
+        protected virtual async Task ErrorFirstChanceHandler (Exception exception)
+        {
+            if (_cancellationTokenSource.IsCancellationRequested)
+                return;
+
+            // Just restart the entire process
+            // FIXME: why does this error still occur, though?
+            if (IsKnownIgnorableException(exception))
+            {
+                try
+                {
+                    await _backendFacade.CancelFindMatchRelatedToUserId(
+                        _userDataModel.UserId
+                    );
+
+                    await Restart();
+                }
+                catch(TimeoutException e)
+                {
+                    await ErrorSecondChanceHandler(e);
+                }
+                catch (Exception e)
+                {
+                    await ErrorFirstChanceHandler(e);
+                }
+            }
+            else
+            {
+                await ErrorSecondChanceHandler(exception);
+            }
+        }
+
+        protected virtual Task ErrorSecondChanceHandler (Exception exception)
+        {
+            throw exception;
+        }
+
+        protected bool IsKnownIgnorableException(Exception exception)
+        {
+            return
+                exception.Message.Contains(PlayerIsAlreadyInAMatch) ||
+                exception.Message.Contains(PlayerIsNotInPool);
+        }
 
         public enum MatchMakingState
         {

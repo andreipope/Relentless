@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
+using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -13,6 +15,7 @@ using UnityEngine;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Debug = UnityEngine.Debug;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
+using ILogger = log4net.Core.ILogger;
 using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground.Test
@@ -116,13 +119,14 @@ namespace Loom.ZombieBattleground.Test
             UserDataModel = new UserDataModel(
                 "DebugClient_" +
                 (name != null ? name + "_" : "") +
-                new global::System.Random().Next(int.MinValue, int.MaxValue).ToString().Replace("-", "0"),
+                Guid.NewGuid(),
                 CryptoUtils.GeneratePrivateKey()
             );
         }
 
         public async Task Start(
             Func<Contract, IContractCallProxy> contractCallProxyFactory,
+            DAppChainClientConfiguration clientConfiguration,
             Action<MatchMakingFlowController> onMatchMakingFlowControllerCreated = null,
             Action<BackendFacade> onBackendFacadeCreated = null,
             Action<DAppChainClient> onClientCreatedCallback = null,
@@ -131,16 +135,12 @@ namespace Loom.ZombieBattleground.Test
         {
             await Reset();
 
-            //Debug.Log(JsonConvert.SerializeObject(UserDataModel, Formatting.Indented));
-
-            BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint(), contractCallProxyFactory)
-            {
-                Logger = enabledLogs ? new Logger(new PrefixUnityLogger($"[{UserDataModel.UserId}] ")) : null,
-                EnableRpcLogging = true
-            };
+            TaggedLoggerWrapper taggedLoggerWrapper = new TaggedLoggerWrapper(Logging.GetLog(nameof(BackendFacade)).Logger, UserDataModel.UserId);
+            ILog log = new LogImpl(taggedLoggerWrapper);
+            BackendFacade backendFacade = new BackendFacade(GameClient.GetDefaultBackendEndpoint(), contractCallProxyFactory, log, log);
             backendFacade.Init();
             onBackendFacadeCreated?.Invoke(backendFacade);
-            await backendFacade.CreateContract(UserDataModel.PrivateKey, onClientCreatedCallback, chainClientCallExecutor);
+            await backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, onClientCreatedCallback, chainClientCallExecutor);
 
             try
             {
@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground.Test
         public async Task Update()
         {
 #if UNITY_EDITOR
-            double timeSinceStartup = Utilites.GetTimeSinceStartup();
+            double timeSinceStartup = Utilites.GetTimestamp();
 #else
             double timeSinceStartup = Time.realtimeSinceStartup;
 #endif
@@ -207,26 +207,6 @@ namespace Loom.ZombieBattleground.Test
                         await BackendFacade.KeepAliveStatus(UserDataModel.UserId, MatchMakingFlowController.MatchMetadata.Id);
                     }
                 }
-            }
-        }
-
-        private class PrefixUnityLogger : ILogHandler
-        {
-            private readonly string _prefix;
-
-            public PrefixUnityLogger(string prefix)
-            {
-                _prefix = prefix;
-            }
-
-            public void LogFormat(LogType logType, Object context, string format, params object[] args)
-            {
-                Debug.unityLogger.LogFormat(logType, context, _prefix + format, args);
-            }
-
-            public void LogException(Exception exception, Object context)
-            {
-                Debug.unityLogger.LogException(exception, context);
             }
         }
     }

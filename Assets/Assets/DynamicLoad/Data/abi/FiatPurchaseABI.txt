@@ -104,6 +104,10 @@
         {
           "name": "minionPackAddr",
           "type": "address"
+        },
+        {
+          "name": "binancePackAddr",
+          "type": "address"
         }
       ],
       "payable": false,
@@ -201,7 +205,7 @@
         },
         {
           "name": "amounts",
-          "type": "uint256[10]"
+          "type": "uint256[11]"
         },
         {
           "name": "txID",

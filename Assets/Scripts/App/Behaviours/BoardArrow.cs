@@ -6,9 +6,9 @@ using UnityEngine;
 
 public class BoardArrow : MonoBehaviour
 {
-    public List<Enumerators.SkillTargetType> TargetsType = new List<Enumerators.SkillTargetType>();
+    public List<Enumerators.SkillTarget> TargetsType = new List<Enumerators.SkillTarget>();
 
-    public List<Enumerators.SetType> ElementType = new List<Enumerators.SetType>();
+    public List<Enumerators.Faction> ElementType = new List<Enumerators.Faction>();
 
     protected IGameplayManager GameplayManager;
     protected ITutorialManager TutorialManager;
@@ -34,6 +34,8 @@ public class BoardArrow : MonoBehaviour
     public BoardUnitView SelectedCard { get; set; }
 
     public Player SelectedPlayer { get; set; }
+
+    public GameObject SelfObject => _selfObject;
 
     public bool IsDragging()
     {
@@ -84,7 +86,7 @@ public class BoardArrow : MonoBehaviour
         ArrowObject.transform.localScale = new Vector3(scaleX, scaleY, ArrowObject.transform.localScale.z);
     }
 
-    public virtual void SetTarget(object target)
+    public virtual void SetTarget(BoardObject target)
     {
     }
 

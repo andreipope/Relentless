@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
+                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
                 targetPosition += VfxObject.transform.forward * localOffset.z;
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position;
+                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                 InternalTools.DoActionDelayed(() =>
                 {
                     VfxObject.transform.DOMove(targetPosition, durationOfMoving).OnComplete(ActionCompleted);
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 Vector3 targetPosition = Ability.AffectObjectType == Enumerators.AffectObjectType.Character ?
-                _battlegroundController.GetBoardUnitViewByModel(Ability.TargetUnit).Transform.position :
+                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position :
                 Ability.TargetPlayer.AvatarObject.transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
@@ -129,7 +129,7 @@ namespace Loom.ZombieBattleground
 
         private void SetRotation(Vector3 targetPosition)
         {
-            float angle = AngleBetweenVector3(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position, targetPosition);
+            float angle = AngleBetweenVector3(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position, targetPosition);
             VfxObject.transform.eulerAngles = new Vector3(VfxObject.transform.eulerAngles.x, VfxObject.transform.eulerAngles.y, angle);
         }
     }

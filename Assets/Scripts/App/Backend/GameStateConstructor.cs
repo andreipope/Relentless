@@ -33,6 +33,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 throw new Exception("Game must be PVP");
 
             return CreateGameState(
+                _pvpManager.CurrentActionIndex,
                 _pvpManager.IsFirstPlayer(),
                 _pvpManager.InitialGameState.Id,
                 _pvpManager.InitialGameState.RandomSeed,
@@ -49,6 +50,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             bool isFirstPlayer = _gameplayManager.StartingTurn == Enumerators.StartingTurn.Player;
             return CreateGameState(
+                -1,
                 isFirstPlayer,
                 -1,
                 -1,
@@ -70,25 +72,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 CardsInPlay =
                 {
                     player.CardsOnBoard
-                        .Concat(player.BoardCards.Select(card => card.Model.Card))
-                        .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInDeck =
                 {
-                    player.CardsInDeck.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInDeck.Select(card => card.Card.ToProtobuf()).ToArray()
                 },
                 CardsInHand =
                 {
                     player.CardsInHand
                         .Distinct()
-                        .Select(card => card.ToProtobuf())
+                        .Select(card => card.Card.ToProtobuf())
                         .ToArray()
                 },
                 CardsInGraveyard =
                 {
-                    player.CardsInGraveyard.Select(card => card.ToProtobuf()).ToArray()
+                    player.CardsInGraveyard.Select(card => card.Card.ToProtobuf()).ToArray()
                 }
             };
 
@@ -109,7 +109,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return playerState;
         }
 
-        private  GameState CreateGameState(bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
+        private GameState CreateGameState(int currentActionIndex, bool isFirstPlayer, long matchId, long randomSeed, string currentPlayerId, string opponentPlayerId, bool removeNonEssentialData)
         {
             Player player0 = isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
             Player player1 = !isFirstPlayer ? _gameplayManager.CurrentPlayer : _gameplayManager.OpponentPlayer;
@@ -124,7 +124,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 {
                     CreateFakePlayerStateFromPlayer(isFirstPlayer ? currentPlayerId : opponentPlayerId, player0, removeNonEssentialData),
                     CreateFakePlayerStateFromPlayer(!isFirstPlayer ? currentPlayerId : opponentPlayerId, player1, removeNonEssentialData)
-                }
+                },
+                CurrentActionIndex = currentActionIndex
             };
 
             return gameState;

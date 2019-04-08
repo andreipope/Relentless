@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
@@ -8,16 +7,15 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardAbility : AbilityBase
     {
-        public Enumerators.SetType SetType { get; }
-        public Enumerators.UnitStatusType UnitStatusType { get; }
-
-        public int Count { get; set; }
+        public Enumerators.Faction Faction { get; }
+        public Enumerators.UnitSpecialStatus UnitSpecialStatusType { get; }
+        public int Count { get; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
-            UnitStatusType = ability.TargetUnitStatusType;
+            Faction = ability.Faction;
+            UnitSpecialStatusType = ability.TargetUnitSpecialStatus;
             Count = ability.Count;
         }
 
@@ -25,9 +23,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -35,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitKilledUnitHandler(BoardUnitModel unit)
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.KILL_UNIT)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
 
             Action();
@@ -45,7 +43,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -55,7 +53,7 @@ namespace Loom.ZombieBattleground
         {
             base.ChangeRageStatusAction(status);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.RAGE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.RAGE)
                 return;
 
             if (status)
@@ -67,7 +65,7 @@ namespace Loom.ZombieBattleground
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             Action();
@@ -77,41 +75,39 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (UnitStatusType != Enumerators.UnitStatusType.NONE &&
-                 PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.UnitStatus == UnitStatusType && x.Model != AbilityUnitOwner)
+            if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && PlayerCallerOfAbility
+                    .CardsOnBoard.FindAll(x => x.UnitStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (SetType != Enumerators.SetType.NONE &&
-                (SetType == Enumerators.SetType.NONE ||
-                    PlayerCallerOfAbility
-                    .BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType && x.Model != AbilityUnitOwner)
+            else if (Faction != 0 && PlayerCallerOfAbility.CardsOnBoard
+                    .FindAll(card => card.Card.Prototype.Faction == Faction &&
+                        card != AbilityUnitOwner &&
+                        card.CurrentDefense > 0 &&
+                        !card.IsDead)
                     .Count <= 0)
-                )
                 return;
-
 
             int cardsCount = Mathf.Clamp(Count, 1, Count);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                cardsCount = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card != MainWorkingCard).Count;
+                cardsCount = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != BoardUnitModel.Card).Count;
             }
-            else if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
             {
-                cardsCount = PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.Card.LibraryCard.CardSetType == SetType).Count;
+                cardsCount = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
             }
 
-            if (AbilityTargetTypes.Count > 0)
+            if (AbilityTargets.Count > 0)
             {
-                foreach (Enumerators.AbilityTargetType abilityTargetType in AbilityTargetTypes)
+                foreach (Enumerators.Target abilityTargetType in AbilityTargets)
                 {
                     switch (abilityTargetType)
                     {
-                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, false, cardsCount);
                             break;
-                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, true, cardsCount);
                             break;
                         default:
@@ -122,7 +118,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
             }
         }
 
@@ -132,14 +128,11 @@ namespace Loom.ZombieBattleground
             {
                 if (fromOtherPlayerDeck)
                 {
-                    CardsController.AddCardToHandFromOtherPlayerDeck(from,
-                         from.Equals(GameplayManager.CurrentPlayer) ?
-                             GameplayManager.OpponentPlayer :
-                             GameplayManager.CurrentPlayer);
+                    PlayerCallerOfAbility.PlayerCardsController.AddCardToHandFromOtherPlayerDeck();
                 }
                 else
                 {
-                    CardsController.AddCardToHandFromOtherPlayerDeck(from, to);
+                    PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
                 }
             }
         }

@@ -1,13 +1,12 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class ChangeStatAbility : AbilityBase
     {
-        public Enumerators.StatType StatType { get; }
+        public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
 
@@ -18,7 +17,7 @@ namespace Loom.ZombieBattleground
         public ChangeStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.AbilityStatType;
+            StatType = ability.Stat;
             Value = ability.Value;
             Attack = ability.Damage;
             Defense = ability.Defense;
@@ -28,17 +27,17 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent();
 
-                if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                 {
-                    if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+                    if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
                     {
                         ChangeStatsToItself();
                     }
-                    else if(AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER_ALL_CARDS))
+                    else if(AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
                     {
                         ChangeStatsOfPlayerAllyCards(false);
                     }
@@ -54,14 +53,17 @@ namespace Loom.ZombieBattleground
             {
                 ChangeStatsOfTarget(TargetUnit);
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>() { TargetUnit }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK || !isAttacker)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
             ChangeStatsToItself();
@@ -71,17 +73,17 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             ChangeStatsToItself();
         }
 
-        protected override void TurnEndedHandler()
+		protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
             ChangeStatsToItself();
@@ -94,26 +96,26 @@ namespace Loom.ZombieBattleground
 
         private void ChangeStatsOfPlayerAllyCards(bool withCaller = false)
         {
-            foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+            foreach (BoardUnitModel unit in PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard)
             {
-                if (!withCaller && unit.Model.Card == MainWorkingCard)
+                if (!withCaller && unit.Card == BoardUnitModel.Card)
                     continue;
 
-                ChangeStatsOfTarget(unit.Model);
+                ChangeStatsOfTarget(unit);
             }
         }
-
+        
         private void ChangeStatsOfTarget(BoardUnitModel unit)
         {
-            if (StatType != Enumerators.StatType.UNDEFINED)
+            if (StatType != Enumerators.Stat.UNDEFINED)
             {
                 switch (StatType)
                 {
-                    case Enumerators.StatType.HEALTH:
-                        unit.BuffedHp += Value;
-                        unit.CurrentHp += Value;
+                    case Enumerators.Stat.DEFENSE:
+                        unit.BuffedDefense += Value;
+                        unit.CurrentDefense += Value;
                         break;
-                    case Enumerators.StatType.DAMAGE:
+                    case Enumerators.Stat.DAMAGE:
                         unit.BuffedDamage += Value;
                         unit.CurrentDamage += Value;
                         break;
@@ -121,8 +123,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                unit.BuffedHp += Defense;
-                unit.CurrentHp += Defense;
+                unit.BuffedDefense += Defense;
+                unit.CurrentDefense += Defense;
                 unit.BuffedDamage += Attack;
                 unit.CurrentDamage += Attack;
             }

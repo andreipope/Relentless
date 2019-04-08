@@ -1,37 +1,57 @@
+using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
+using System.Collections.Generic;
+using Newtonsoft.Json;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
-    public class CardInstanceSpecificData
+    public class CardInstanceSpecificData : IReadOnlyCardInstanceSpecificData
     {
         public int Damage { get; set; }
 
-        public int Health { get; set; }
+        public int Defense { get; set; }
 
-        public Enumerators.SetType CardSetType { get; set; }
+        public Enumerators.Faction Faction { get; set; }
 
         public Enumerators.CardType CardType { get; protected set; }
 
         public int Cost { get; set; }
 
+        public IList<AbilityData> Abilities { get; set; }
+
         public CardInstanceSpecificData(IReadOnlyCard card)
             : this(
                 card.Damage,
-                card.Health,
-                card.CardSetType,
-                card.CardType,
-                card.Cost)
+                card.Defense,
+                card.Faction,
+                card.Type,
+                card.Cost,
+                card.Abilities)
         {
         }
 
-        public CardInstanceSpecificData(int damage, int health, Enumerators.SetType cardSetType, Enumerators.CardType cardType, int cost)
+        public CardInstanceSpecificData(CardInstanceSpecificData source)
+            : this(
+                source.Damage,
+                source.Defense,
+                source.Faction,
+                source.CardType,
+                source.Cost,
+                new List<AbilityData>(source.Abilities))
+        {
+        }
+
+        public CardInstanceSpecificData(int damage, int defense, Enumerators.Faction faction, Enumerators.CardType cardType, int cost, IReadOnlyList<AbilityData> abilities)
         {
             Damage = damage;
-            Health = health;
-            CardSetType = cardSetType;
+            Defense = defense;
+            Faction = faction;
             CardType = cardType;
             Cost = cost;
+            Abilities = abilities.Select(a => new AbilityData(a)).ToList();
         }
     }
 }

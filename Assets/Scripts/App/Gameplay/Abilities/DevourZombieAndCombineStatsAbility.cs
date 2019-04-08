@@ -12,8 +12,6 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnitModel> _units;
 
-        private bool _isTarget;
-
         public DevourZombiesAndCombineStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -26,7 +24,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
@@ -51,8 +49,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved && Value > 0)
             {
-                _isTarget = true;
-
                 _units.Add(TargetUnit);
                 DevourTargetZombie(TargetUnit);
                 InvokeActionTriggered(_units);
@@ -61,15 +57,13 @@ namespace Loom.ZombieBattleground
 
         private void DevourAllAllyZombies()
         {
-            _isTarget = false;
-
             if (PredefinedTargets != null)
             {
                 _units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
             }
             else
             {
-                _units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model).ToList();
+                _units = PlayerCallerOfAbility.CardsOnBoard.ToList();
             }
 
             foreach (BoardUnitModel unit in _units)
@@ -83,19 +77,38 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardUnitModel unit in _units)
             {
                 if (unit == AbilityUnitOwner)
                     continue;
 
-                BattlegroundController.DestroyBoardUnit(unit, false, true);
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Devour,
+                    Target = unit,
+                });
+
+                BattlegroundController.DestroyBoardUnit(unit, false, true, false);
             }
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
 
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
             List<BoardObject> targets = _units.Cast<BoardObject>().ToList();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                targets
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
         }
 
         private void DevourTargetZombie(BoardUnitModel unit)
@@ -103,14 +116,22 @@ namespace Loom.ZombieBattleground
             if (unit == AbilityUnitOwner)
                 return;
 
-            int health = unit.InitialHp;
-            int damage = unit.InitialDamage;
+            int defense = unit.Card.Prototype.Defense;
+            int damage = unit.Card.Prototype.Damage;
 
-            AbilityUnitOwner.BuffedHp += health;
-            AbilityUnitOwner.CurrentHp += health;
+            AbilityUnitOwner.BuffedDefense += defense;
+            AbilityUnitOwner.CurrentDefense += defense;
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.CurrentDamage += damage;
+
+            RanksController.AddUnitForIgnoreRankBuff(unit);
+
+            unit.IsReanimated = true;
+            BoardUnitView view = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+            view.StopSleepingParticles();
+
+            unit.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
         }
     }
 }

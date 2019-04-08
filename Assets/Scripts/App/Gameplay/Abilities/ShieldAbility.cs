@@ -15,11 +15,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 TakeGuardToTarget(AbilityUnitOwner);
+                InvokeUseAbilityEvent();
             }
         }
 
@@ -30,6 +29,10 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 TakeGuardToTarget(TargetUnit);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 

@@ -132,36 +132,19 @@ namespace Loom.ZombieBattleground
             {
                 case Player player:
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
-                        player.SelfHero.HeroElement + "_EXP");
+                        player.SelfOverlord.Faction + "_EXP");
                     break;
                 case BoardUnitModel unit:
-                    {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(unit.Card.LibraryCard);
-                        string rank = unit.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
-                        string picture = unit.Card.LibraryCard.Picture.ToLowerInvariant();
-
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
-                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-                    }
+                    sprite = unit.CardPicture;
                     break;
-                case BoardCard card:
-                    if (card.PictureSprite && card.PictureSprite != null)
-                    {
-                        sprite = card.PictureSprite.sprite;
-                    }
+                case BoardCardView card:
+                    sprite = card.Model.CardPicture;
                     break;
                 case BoardSkill skill:
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + skill.Skill.IconPath);
                     break;
-                case BoardSpell spell:
-                    {
-                        Enumerators.SetType setType = CardsController.GetSetOfCard(spell.Card.LibraryCard);
-                        string rank = spell.Card.LibraryCard.CardRank.ToString().ToLowerInvariant();
-                        string picture = spell.Card.LibraryCard.Picture.ToLowerInvariant();
-
-                        string fullPathToPicture = string.Format("Images/Cards/Illustrations/{0}_{1}_{2}", setType.ToString().ToLowerInvariant(), rank, picture);
-                        sprite = LoadObjectsManager.GetObjectByPath<Sprite>(fullPathToPicture);
-                    }
+                case BoardItem item:
+                    sprite = item.Model.CardPicture;
                     break;
                 case null:
                     break;

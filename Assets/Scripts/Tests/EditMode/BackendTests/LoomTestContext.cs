@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Runtime.ExceptionServices;
 using System.Threading.Tasks;
+using log4net;
+using log4net.Core;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Test;
@@ -13,13 +15,15 @@ namespace Loom.ZombieBattleground.Test
     {
         public BackendFacade BackendFacade;
 
-        public UserDataModel UserDataModel;
+        private UserDataModel _userDataModel;
 
-        public void TestSetUp(string userId = "Loom")
+        public void TestSetUp()
         {
-            BackendEndpoint backendEndpoint = new BackendEndpoint(BackendEndpointsContainer.Endpoints[BackendPurpose.Local]);
-            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract));
-            UserDataModel = new UserDataModel(userId, CryptoUtils.GeneratePrivateKey());
+            _userDataModel = new UserDataModel(TestHelper.Instance.CreateTestUserName(), CryptoUtils.GeneratePrivateKey());
+            BackendEndpoint backendEndpoint = GameClient.GetDefaultBackendEndpoint();
+            TaggedLoggerWrapper taggedLoggerWrapper = new TaggedLoggerWrapper(Logging.GetLog(nameof(BackendFacade)).Logger, _userDataModel.UserId);
+            ILog log = new LogImpl(taggedLoggerWrapper);
+            BackendFacade = new BackendFacade(backendEndpoint, contract => new DefaultContractCallProxy(contract), log, log);
         }
 
         public void TestTearDown()
@@ -51,7 +55,7 @@ namespace Loom.ZombieBattleground.Test
 
         public string CreateUniqueUserId(string userId)
         {
-            return userId + "_" + new Random().NextDouble();
+            return userId + "_" + Guid.NewGuid();
         }
 
         private async Task EnsureContract()
@@ -59,7 +63,7 @@ namespace Loom.ZombieBattleground.Test
             if (BackendFacade.IsConnected)
                 return;
 
-            await BackendFacade.CreateContract(UserDataModel.PrivateKey);
+            await BackendFacade.CreateContract(_userDataModel.PrivateKey, new DAppChainClientConfiguration());
         }
     }
 }

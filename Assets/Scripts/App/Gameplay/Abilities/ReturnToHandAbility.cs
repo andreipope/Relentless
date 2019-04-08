@@ -34,25 +34,27 @@ namespace Loom.ZombieBattleground
 
         private void ReturnTargetToHand(BoardUnitModel unit)
         {
-            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position;
 
             CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(BattlegroundController.GetBoardUnitViewByModel(unit));
+            CardsController.ReturnCardToHand(TargetUnit);
 
-            if(AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
                 unit.Card.InstanceCard.Cost += Cost;
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-            {
-                unit
-            }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject>
+                {
+                    new ParametrizedAbilityBoardObject(unit)
+                }
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
+                ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = GetCaller(),
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {

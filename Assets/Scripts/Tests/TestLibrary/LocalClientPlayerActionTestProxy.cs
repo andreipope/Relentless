@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using NUnit.Framework;
 using UnityEngine;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 using NotImplementedException = System.NotImplementedException;
@@ -17,6 +20,8 @@ namespace Loom.ZombieBattleground.Test
     /// </summary>
     public class LocalClientPlayerActionTestProxy : IPlayerActionTestProxy
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LocalClientPlayerActionTestProxy));
+
         private readonly TestHelper _testHelper;
         private readonly IPvPManager _pvpManager;
         private readonly IQueueManager _queueManager;
@@ -35,7 +40,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(3000);
             await _testHelper.EndTurn();
+            await Task.Delay(1000);
         }
 
         public Task LeaveMatch()
@@ -48,7 +55,7 @@ namespace Loom.ZombieBattleground.Test
             throw new NotImplementedException();
         }
 
-        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
             BoardObject entryAbilityTargetBoardObject = null;
             if (entryAbilityTarget != null)
@@ -57,8 +64,14 @@ namespace Loom.ZombieBattleground.Test
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
             }
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
-            await _testHelper.PlayCardFromHandToBoard(workingCard, position, false, entryAbilityTargetBoardObject);
+            BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+
+            if (!forceSkipForPlayerToo)
+            {
+                skipEntryAbilities = false;
+            }
+
+            await _testHelper.PlayCardFromHandToBoard(boardUnitModel, position, entryAbilityTargetBoardObject, skipEntryAbilities);
         }
 
         public Task RankBuff(InstanceId card, IEnumerable<InstanceId> units)
@@ -76,17 +89,44 @@ namespace Loom.ZombieBattleground.Test
             return Task.CompletedTask;
         }
 
-        public Task OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public async Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            throw new NotImplementedException();
+            List<ParametrizedAbilityBoardObject> targetBoardObjects = targets != null ? targets.Select(target =>
+            {
+                return new ParametrizedAbilityBoardObject(_testHelper.BattlegroundController.GetBoardObjectByInstanceId(target.Id), target.Parameters);
+            }).ToList() : null;
+            BoardSkill boardSkill = _testHelper.GetBoardSkill(_testHelper.GetCurrentPlayer(), skillId);
+            await _testHelper.DoBoardSkill(boardSkill, targetBoardObjects);
         }
 
-        public Task CardAttack(InstanceId attacker, InstanceId target)
+        public async Task CardAttack(InstanceId attacker, InstanceId target)
         {
-            BoardUnitModel boardUnitModel = _testHelper.GetCardOnBoardByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer).Model;
-            boardUnitModel.DoCombat(_testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            BoardUnitModel boardUnitModel = _testHelper.GetBoardUnitModelByInstanceId(attacker, Enumerators.MatchPlayer.CurrentPlayer);
+            BoardUnitView boardUnitView = _testHelper.BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
 
-            return Task.CompletedTask;
+            void CheckAttacker()
+            {
+                Assert.NotNull(boardUnitModel.OwnerPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(boardUnitModel.OwnerPlayer.IsLocalPlayer, "boardUnitView.Model.OwnerPlayer != null");
+                Assert.True(_testHelper.GameplayManager.GetController<PlayerController>().IsActive, "PlayerController.IsActive");
+                Assert.True(boardUnitModel.UnitCanBeUsable(), "boardUnitView.Model.UnitCanBeUsable()");
+            }
+
+            CheckAttacker();
+
+            await new WaitUntil(() =>
+            {
+                AsyncTestRunner.Instance.ThrowIfCancellationRequested();
+                return boardUnitView.ArrivalDone;
+            });
+
+            boardUnitView.StartAttackTargeting();
+            Assert.NotNull(boardUnitView.FightTargetingArrow, "boardUnitView.FightTargetingArrow != null");
+            await _testHelper.SelectTargetOnFightTargetArrow(boardUnitView.FightTargetingArrow, _testHelper.BattlegroundController.GetTargetByInstanceId(target));
+            CheckAttacker();
+            boardUnitView.FinishAttackTargeting();
+
+            await Task.Delay(1000);
         }
 
         public Task CheatDestroyCardsOnBoard(IEnumerable<InstanceId> targets)
@@ -104,14 +144,25 @@ namespace Loom.ZombieBattleground.Test
             throw new NotSupportedException();
         }
 
+        public async Task LetsThink(float thinkTime, bool forceRealtime)
+        {
+            await _testHelper.LetsThink(thinkTime, forceRealtime);
+        }
+
+        public Task AssertInQueue(Action action)
+        {
+            action();
+            return Task.CompletedTask;
+        }
+
         private void HandleNextCardAbility()
         {
-            AbilityBoardArrow abilityBoardArrow = _testHelper.GetAbilityBoardArrow();
+            AbilityBoardArrow abilityBoardArrow = GameObject.FindObjectOfType<AbilityBoardArrow>();
 
             // TODO: Handle non-entry targetable abilities (do they even exist)?
             if (abilityBoardArrow != null)
             {
-                Debug.Log("! oh wow, abilityBoardArrow", abilityBoardArrow);
+                Log.Info("! oh wow, abilityBoardArrow " + abilityBoardArrow);
             }
             if (abilityBoardArrow && _cardAbilityRequestsQueue.Count == 0)
             {
@@ -134,7 +185,10 @@ namespace Loom.ZombieBattleground.Test
 
             public override string ToString()
             {
-                return $"({nameof(Card)}: {Card}, {nameof(AbilityType)}: {AbilityType}, {nameof(Targets)}: {Targets})";
+                return
+                    $"({nameof(Card)}: {Card}, " +
+                    $"{nameof(AbilityType)}: {AbilityType}, " +
+                    $"{nameof(Targets)}: {Targets})";
             }
         }
     }

@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -12,15 +13,17 @@ namespace Loom.ZombieBattleground
 {
     public class CheatUI : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CheatUI));
+
         private const string PersistentFileName = "CheatsSettings.json";
 
         private readonly List<Action> _updateBinds = new List<Action>();
-
         private IPvPManager _pvpManager;
         private IDataManager _dataManager;
         private CustomDeckEditor _customDeckEditor;
 
-#if !USE_PRODUCTION_BACKEND
+        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
+
         private void OnGUI()
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
@@ -79,7 +82,6 @@ namespace Loom.ZombieBattleground
 
             _customDeckEditor?.OnGUI();
         }
-#endif
 
         private void Start()
         {
@@ -98,7 +100,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                Log.Warn(e);
             }
         }
 
@@ -119,8 +121,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private static float UIScaleFactor => Math.Min(2f, Screen.dpi / 96f);
-
         private class CustomDeckEditor
         {
             private readonly CheatUI _cheatUI;
@@ -130,6 +130,7 @@ namespace Loom.ZombieBattleground
             private bool _visible;
             private Vector2 _customDeckScrollPosition;
             private Vector2 _cardLibraryScrollPosition;
+            private string _nameFilterString = "";
 
             public bool Visible => _visible;
 
@@ -145,12 +146,12 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.OverlordSkill.NONE, Enumerators.OverlordSkill.NONE);
+                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
                 {
-                    _cardNameToDescription[card.Name] = $"{card.Name} (set: {card.CardSetType}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Health})";
+                    _cardNameToDescription[card.Name] = $"{card.Name} (faction: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
 
@@ -205,11 +206,21 @@ namespace Loom.ZombieBattleground
                         // Card Library
                         GUILayout.BeginVertical("Card Library", Styles.OpaqueWindow, GUILayout.Height(Screen.height * (1f - customDeckScreenHeightRatio) / UIScaleFactor));
                         {
+                            GUILayout.BeginHorizontal();
+                            {
+                                GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
+                                _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
+                            }
+
+                            GUILayout.EndHorizontal();
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;
-                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.CardSetType).ThenBy(card => card.Name))
+                                foreach (Card card in cardLibrary.Cards.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                                 {
+                                    if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                        continue;
+
                                     GUILayout.BeginHorizontal();
                                     {
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
@@ -247,11 +258,11 @@ namespace Loom.ZombieBattleground
                         GUILayout.Label("Secondary Skill");
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
-                        GUILayout.Label("Hero Id");
-                        string heroIdString = GUILayout.TextField(customDeck.HeroId.ToString());
-                        if (int.TryParse(heroIdString, out int newHeroId))
+                        GUILayout.Label("Overlord Id");
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.HeroId = newHeroId;
+                            customDeck.OverlordId = newOverlordId;
                         }
                     }
                     GUILayout.EndVertical();
@@ -328,7 +339,7 @@ namespace Loom.ZombieBattleground
 
             private static T DrawEnumPopup<T>(T value, IMGUIPopup popup)
             {
-                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.OverlordSkill));
+                T[] values = (T[]) Enum.GetValues(typeof(Enumerators.Skill));
                 for (int i = 0; i < values.Length; i++)
                 {
                     if (value.Equals(values[i]))

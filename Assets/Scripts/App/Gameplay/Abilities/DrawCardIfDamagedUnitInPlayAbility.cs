@@ -16,9 +16,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -28,9 +28,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if(PlayerCallerOfAbility.BoardCards.FindAll(x => x.Model.CurrentHp < x.Model.MaxCurrentHp).Count > 0)
+            if(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.CurrentDefense < x.MaxCurrentDefense).Count > 0)
             {
-                CardsController.AddCardToHand(PlayerCallerOfAbility);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
             }
         }
     }

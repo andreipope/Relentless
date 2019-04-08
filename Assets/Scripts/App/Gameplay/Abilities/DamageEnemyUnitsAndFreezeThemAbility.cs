@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private List<BoardObject> _targets;
 
+        private const int CountOfStun = 1;
+
         public DamageEnemyUnitsAndFreezeThemAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -24,9 +26,9 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -42,14 +44,14 @@ namespace Loom.ZombieBattleground
 
             _targets.Clear();
 
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        _targets.AddRange(opponent.BoardCards.Select((x) => x.Model).ToList());
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        _targets.AddRange(opponent.CardsOnBoard);
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
+                    case Enumerators.Target.OPPONENT:
                         _targets.Add(opponent);
                         break;
                     default:
@@ -70,11 +72,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Player player:
                         BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
-                        player.Stun(Enumerators.StunType.FREEZE, Value);
+                        player.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     case BoardUnitModel unit:
                         BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
-                        unit.Stun(Enumerators.StunType.FREEZE, Value);
+                        unit.Stun(Enumerators.StunType.FREEZE, CountOfStun);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

@@ -13,7 +13,6 @@ namespace Loom.ZombieBattleground
         event Action MatchCreatedActionReceived;
         event Action MatchingStartedActionReceived;
         event Action<PlayerActionLeaveMatch> PlayerLeftGameActionReceived;
-        event Action MatchingFailed;
 
         event Action GameStartedActionReceived;
         event Action GameEndedActionReceived;
@@ -30,13 +29,15 @@ namespace Loom.ZombieBattleground
 
         event Action LeaveMatchReceived;
 
+        int CurrentActionIndex { get; set; }
+
         Address? CustomGameModeAddress { get; set; }
 
         MatchMetadata MatchMetadata { get; }
 
         GameState InitialGameState { get; }
 
-        List<string> PvPTags { get; set; }
+        List<string> PvPTags { get; }
 
         DebugCheatsConfiguration DebugCheats { get; }
 

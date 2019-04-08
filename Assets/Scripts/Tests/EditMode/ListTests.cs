@@ -5,6 +5,7 @@ using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class ListTests
     {
         [Test]
@@ -26,9 +27,9 @@ namespace Loom.ZombieBattleground.Test
         {
             UniquePositionedList<int> uniquePositionedList = new UniquePositionedList<int>(new PositionedList<int>(new[] { 1, 2, 3 }));
 
-            Assert.DoesNotThrow(() => uniquePositionedList.Insert(0, 4));
+            Assert.DoesNotThrow(() => uniquePositionedList.Insert((ItemPosition) 0, 4));
             Assert.AreEqual(new[] { 4, 1, 2, 3 }, uniquePositionedList.ToArray());
-            Assert.Throws<ArgumentException>(() => uniquePositionedList.Insert(0, 1), "Item \"1\" is already in the list");
+            Assert.Throws<ArgumentException>(() => uniquePositionedList.Insert((ItemPosition) 0, 1), "Item \"1\" is already in the list");
 
             Assert.Throws<ArgumentException>(
                 () => new UniquePositionedList<int>(new PositionedList<int>(new[] { 1, 2, 3, 3 })),

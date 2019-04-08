@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -20,27 +21,30 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardObject> targets = new List<BoardObject>();
 
-            BoardUnitModel boardUnit;
+            BoardUnitModel boardUnitModel;
+            BoardUnitView boardUnitView;
             for (int i = 0; i < Count; i++)
             {
-                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
-                boardUnit = CardsController.SpawnUnitOnBoard(PlayerCallerOfAbility, Name, ItemPosition.End).Model;
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                boardUnitView = PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
+                boardUnitModel = boardUnitView.Model;
+
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                    Target = boardUnit,
+                    Target = boardUnitModel,
                 });
 
-                targets.Add(boardUnit);
+                targets.Add(boardUnitModel);
             }
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.DeathMark,
                 Target = AbilityUnitOwner,
@@ -52,10 +56,14 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent(
+                targets
+                    .Select(boardObject => new ParametrizedAbilityBoardObject(boardObject))
+                    .ToList()
+            );
         }
     }
 }

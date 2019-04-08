@@ -15,10 +15,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
 
             SetAttackAvailability(AbilityUnitOwner);
         }
@@ -28,20 +28,20 @@ namespace Loom.ZombieBattleground
             if (boardUnit == null)
                 return;
 
-            if (AbilityTargetTypes.Count > 0)
+            if (AbilityTargets.Count > 0)
             {
                 boardUnit.AttackTargetsAvailability.Clear();
 
-                foreach(Enumerators.AbilityTargetType targetType in AbilityTargetTypes)
+                foreach(Enumerators.Target targetType in AbilityTargets)
                 {
                     switch(targetType)
                     {
-                        case Enumerators.AbilityTargetType.OPPONENT:
-                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT);
+                        case Enumerators.Target.OPPONENT:
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTarget.OPPONENT);
                             break;
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTargetType.OPPONENT_CARD);
+                        case Enumerators.Target.OPPONENT_CARD:
+                        case Enumerators.Target.OPPONENT_ALL_CARDS:
+                            boardUnit.AttackTargetsAvailability.Add(Enumerators.SkillTarget.OPPONENT_CARD);
                             break;
                     }
                 }

@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
 
         private TextMeshProUGUI _message;
 
-        private SpriteRenderer _selectHeroSpriteRenderer;
+        private SpriteRenderer _selectOverlordSpriteRenderer;
 
         private Image _experienceBar;
 
@@ -55,7 +55,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
-        private Hero _currentPlayerHero;
+        private OverlordModel _currentPlayerOverlord;
 
         private bool _isLevelUp;
         private Coroutine _fillExperienceBarCoroutine;
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/YouWonPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _selectHeroSpriteRenderer = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero")
+            _selectOverlordSpriteRenderer = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/SelectHero")
                 .GetComponent<SpriteRenderer>();
             _message = Self.transform.Find("Pivot/YouWonPopup/YouWonPanel/UI/Message").GetComponent<TextMeshProUGUI>();
 
@@ -136,17 +136,17 @@ namespace Loom.ZombieBattleground
 
             Self.SetActive(true);
 
-            int heroId = _gameplayManager.IsTutorial
+            int overlordId = _gameplayManager.IsTutorial
                 ? _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId :
-                  _gameplayManager.CurrentPlayerDeck.HeroId;
+                  _gameplayManager.CurrentPlayerDeck.OverlordId;
 
-            _currentPlayerHero = _dataManager.CachedHeroesData.Heroes[heroId];
-            string heroName = _currentPlayerHero.HeroElement.ToString().ToLowerInvariant();
+            _currentPlayerOverlord = _dataManager.CachedOverlordData.Overlords[overlordId];
+            string overlordFaction = _currentPlayerOverlord.Faction.ToString().ToLowerInvariant();
 
-            _selectHeroSpriteRenderer.sprite =
-                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + heroName.ToLowerInvariant());
+            _selectOverlordSpriteRenderer.sprite =
+                _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" + overlordFaction.ToLowerInvariant());
 
-            _overlordManager.ApplyExperienceFromMatch(_currentPlayerHero);
+            _overlordManager.ApplyExperienceFromMatch(_currentPlayerOverlord);
 
             _currentLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin).ToString();
             _nextLevel.text = (_overlordManager.MatchExperienceInfo.LevelAtBegin + 1).ToString();
@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
             _isLevelUp = false;
 
             float currentExperiencePercentage = (float)_overlordManager.MatchExperienceInfo.ExperienceAtBegin /
-                                                _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
+                                                _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
             _experienceBar.fillAmount = currentExperiencePercentage;
 
             FillingExperienceBar();
@@ -166,19 +166,23 @@ namespace Loom.ZombieBattleground
                 {
                     _message.gameObject.SetActive(false);
                 }
+                else if( _tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId)
+                {
+                    _message.text = "Congratulations!\nThe reward will be\nautomatically claimed..";
+                }
             }
         }
 
         private void FillingExperienceBar()
         {
-            if (_currentPlayerHero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
+            if (_currentPlayerOverlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
             {
-                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBarWithLevelUp(_currentPlayerHero.Level));
+                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBarWithLevelUp(_currentPlayerOverlord.Level));
             }
-            else if (_currentPlayerHero.Experience > _overlordManager.MatchExperienceInfo.ExperienceAtBegin)
+            else if (_currentPlayerOverlord.Experience > _overlordManager.MatchExperienceInfo.ExperienceAtBegin)
             {
-                float updatedExperiencePercetage = (float)_currentPlayerHero.Experience
-                    / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerHero);
+                float updatedExperiencePercetage = (float)_currentPlayerOverlord.Experience
+                    / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
 
                 _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar(updatedExperiencePercetage));
             }
@@ -248,11 +252,15 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouWonPopupClosed);
 
-                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += () =>
+                _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
                 {
                     _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
+                    if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
+                    {
+                        await GameClient.Get<TutorialRewardManager>().CallRewardTutorialFlow();
+                    } 
                 };
                 _uiManager.DrawPopup<TutorialProgressInfoPopup>();
             }

@@ -6,27 +6,26 @@ namespace Loom.ZombieBattleground
 {
     public class AllyUnitsOfTypeInPlayGetStatsAbility : AbilityBase
     {
-        public int Health { get; }
+        public int Defense { get; }
 
         public int Damage { get; }
 
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction Faction { get; }
 
         public AllyUnitsOfTypeInPlayGetStatsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Health = ability.Health;
+            Defense = ability.Defense;
             Damage = ability.Damage;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            InvokeUseAbilityEvent();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -36,15 +35,15 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            foreach (BoardUnitView unit in PlayerCallerOfAbility.BoardCards)
+            foreach (BoardUnitModel unit in PlayerCallerOfAbility.CardsOnBoard)
             {
-                if (unit.Model.Card.LibraryCard.CardSetType.Equals(SetType) && unit.Model != AbilityUnitOwner)
+                if (unit.Card.Prototype.Faction == Faction && unit != AbilityUnitOwner)
                 {
-                    unit.Model.BuffedDamage += Damage;
-                    unit.Model.CurrentDamage += Damage;
+                    unit.BuffedDamage += Damage;
+                    unit.CurrentDamage += Damage;
 
-                    unit.Model.BuffedHp += Health;
-                    unit.Model.CurrentHp += Health;
+                    unit.BuffedDefense += Defense;
+                    unit.CurrentDefense += Defense;
                 }
             }
         }

@@ -17,14 +17,14 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         protected override void UnitDamagedHandler(BoardObject from)
         {
             base.UnitDamagedHandler(from);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.AT_DEFENCE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
             ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);

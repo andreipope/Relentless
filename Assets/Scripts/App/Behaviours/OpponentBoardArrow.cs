@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
     {
         private object _target;
 
-        public override void SetTarget(object target)
+        public override void SetTarget(BoardObject target)
         {
             _target = target;
 
@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
                     player.SetGlowStatus(true);
                     break;
                 case BoardUnitModel unit:
-                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(unit);
+                    BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
                     TargetPosition = unitView.Transform.position;
                     unitView.SetSelectedUnit(true);
                     break;
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
                         player.SetGlowStatus(false);
                         break;
                     case BoardUnitModel unit:
-                        BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(unit);
+                        BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
                         unitView.SetSelectedUnit(false);
                         break;
                     default:

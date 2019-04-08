@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -9,6 +10,8 @@ using UnityEngine;
 
 static class BattleCommandsHandler
 {
+    private static readonly ILog Log = Logging.GetLog(nameof(BattleCommandsHandler));
+
     private static IGameplayManager _gameplayManager;
     private static SkillsController _skillController;
     private static BattlegroundController _battlegroundController;
@@ -53,7 +56,7 @@ static class BattleCommandsHandler
         {
             if (_skillController.PlayerPrimarySkill == null)
             {
-                Debug.LogError("Primary Skill is Not set");
+                Log.Error("Primary Skill is Not set");
             }
             else
             {
@@ -64,7 +67,7 @@ static class BattleCommandsHandler
         {
             if (_skillController.PlayerSecondarySkill == null)
             {
-                Debug.LogError("Secondary Skill is Not set");
+                Log.Error("Secondary Skill is Not set");
             }
             else
             {
@@ -106,18 +109,18 @@ static class BattleCommandsHandler
 
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
-        WorkingCard workingCard = player.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = player.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(player, workingCard);
+            player.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
         }
         else
         {
-            Debug.LogError(cardName + " not Found.");
+            Log.Error(cardName + " not Found.");
         }
     }
 
@@ -127,7 +130,7 @@ static class BattleCommandsHandler
         string[] deckNames = new string[player.CardsInDeck.Count];
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            deckNames[i] = player.CardsInDeck[i].LibraryCard.Name;
+            deckNames[i] = player.CardsInDeck[i].Prototype.Name;
         }
         return deckNames;
     }
@@ -140,18 +143,18 @@ static class BattleCommandsHandler
         string cardsInHand = "Cards In Hand = ";
         for (var i = 0; i < player.CardsInDeck.Count; i++)
         {
-            cardsInDeck += player.CardsInDeck[i].LibraryCard.Name + ",";
+            cardsInDeck += player.CardsInDeck[i].Prototype.Name + ",";
         }
 
         for (var i = 0; i < player.CardsInHand.Count; i++)
         {
-            cardsInHand += player.CardsInHand[i].LibraryCard.Name + ",";
+            cardsInHand += player.CardsInHand[i].Prototype.Name + ",";
         }
 
         cardsInDeck = cardsInDeck.TrimEnd(',');
         cardsInHand = cardsInHand.TrimEnd(',');
-        Debug.Log(cardsInDeck);
-        Debug.Log(cardsInHand);
+        Log.Info(cardsInDeck);
+        Log.Info(cardsInHand);
     }
 
     [CommandHandler(Description = "Sets the number of goo vials / bottles for the player where x is the number of goo vials")]
@@ -160,13 +163,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogWarning("Please Wait For Your Turn");
+            Log.Warn("Please Wait For Your Turn");
             return;
         }
 
         if (gooVials <= 0 || gooVials > player.MaxGooVials)
         {
-            Debug.LogError("Vials should not be less than zero or more than " + player.MaxGooVials);
+            Log.Error("Vials should not be less than zero or more than " + player.MaxGooVials);
             return;
         }
 
@@ -179,13 +182,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
         if (gooAmount < 0)
         {
-            Debug.LogError("Goo Amount should not be less than zero");
+            Log.Error("Goo Amount should not be less than zero");
             return;
         }
 
@@ -200,25 +203,24 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Adds xp to an overlord. ")]
     private static void AddXP([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int xpAmount)
     {
-        Hero hero = _dataManager.CachedHeroesData.Heroes
-            .Find(x => x.Name == overlordName);
+        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords.Find(x => x.Name == overlordName);
 
-        if (hero == null)
+        if (overlord == null)
         {
-            Debug.LogError(" Hero not found");
+            Log.Error("Overlord not found");
             return;
         }
 
         if (xpAmount <= 0)
         {
-            Debug.LogError("Xp Amount should be higher than zero");
+            Log.Error("Xp Amount should be higher than zero");
             return;
         }
 
-        _overlordManager.InitializeExperienceInfoInMatch(hero);
+        _overlordManager.InitializeExperienceInfoInMatch(overlord);
 
-        _overlordManager.ApplyExperience(hero, xpAmount);
-        if (hero.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
+        _overlordManager.ApplyExperience(overlord, xpAmount);
+        if (overlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
         {
             _uiManager.DrawPopup<LevelUpPopup>();
         }
@@ -227,32 +229,32 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Adds xp to an overlord. ")]
     private static void SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
     {
-        Hero hero = _dataManager.CachedHeroesData.Heroes
+        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords
             .Find(x => x.Name == overlordName);
 
-        if (hero == null)
+        if (overlord == null)
         {
-            Debug.LogError(" Hero not found");
+            Log.Error("Overlord not found");
             return;
         }
 
         if (level <= 0 || level > 20)
         {
-            Debug.LogError("Level cant be set less than 1 nor max than 20");
+            Log.Error("Level cant be set less than 1 nor max than 20");
             return;
         }
 
-        hero.Level = level;
+        overlord.Level = level;
 
-        _dataManager.SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+        _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 
     public static IEnumerable<string> OverlordsNames()
     {
-        string[] overlordNames = new string[_dataManager.CachedHeroesData.Heroes.Count];
-        for (var i = 0; i < _dataManager.CachedHeroesData.Heroes.Count; i++)
+        string[] overlordNames = new string[_dataManager.CachedOverlordData.Overlords.Count];
+        for (var i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
         {
-            overlordNames[i] = _dataManager.CachedHeroesData.Heroes[i].Name;
+            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Name;
         }
         return overlordNames;
     }
@@ -264,10 +266,10 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
-        _cardsController.CreateNewCardByNameAndAddToHand(player, cardName);
+        player.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -276,13 +278,13 @@ static class BattleCommandsHandler
         Player player = _gameplayManager.CurrentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
-            Debug.LogError("Please Wait For Your Turn");
+            Log.Error("Please Wait For Your Turn");
             return;
         }
 
         if (_skillController.PlayerPrimarySkill == null)
         {
-            Debug.LogError("Primary Skill is Not set");
+            Log.Error("Primary Skill is Not set");
         }
         else
         {
@@ -293,7 +295,7 @@ static class BattleCommandsHandler
 
         if (_skillController.PlayerSecondarySkill == null)
         {
-            Debug.LogError("Secondary Skill is Not set");
+            Log.Error("Secondary Skill is Not set");
         }
         else
         {
@@ -310,11 +312,11 @@ static class BattleCommandsHandler
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
-            Debug.LogError("Please Wait For Opponent Turn");
+            Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        WorkingCard workingCard = _cardsController.CreateNewCardByNameAndAddToHand(opponentPlayer, cardName);
-        _aiController.PlayCardOnBoard(workingCard, true);
+        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
     [CommandHandler(Description = "Force the AI to draw and IMMEDIATELY play a card.")]
@@ -323,20 +325,20 @@ static class BattleCommandsHandler
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
         if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
-            Debug.LogError("Please Wait For Opponent Turn");
+            Log.Error("Please Wait For Opponent Turn");
             return;
         }
 
-        WorkingCard workingCard = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-        if (workingCard != null)
+        BoardUnitModel boardUnitModel = opponentPlayer.CardsInDeck.FirstOrDefault(x => x.Prototype.Name == cardName);
+        if (boardUnitModel != null)
         {
-            _cardsController.AddCardToHand(opponentPlayer, workingCard);
-            workingCard = opponentPlayer.CardsInHand.FirstOrDefault(x => x.LibraryCard.Name == cardName);
-            _aiController.PlayCardOnBoard(workingCard, true);
+            opponentPlayer.PlayerCardsController.AddCardFromDeckToHand(boardUnitModel);
+            boardUnitModel = opponentPlayer.CardsInHand.FirstOrDefault(x => x.Prototype.Name == cardName);
+            _aiController.PlayCardOnBoard(boardUnitModel, true);
         }
         else
         {
-            Debug.LogError(cardName + " not Found.");
+            Log.Error(cardName + " not Found.");
         }
     }
 
@@ -363,14 +365,14 @@ static class BattleCommandsHandler
     {
         if (_gameplayManager.CurrentTurnPlayer != _gameplayManager.CurrentPlayer)
         {
-            Debug.LogError("Please Wait for Your turn");
+            Log.Error("Please Wait for Your turn");
             return;
         }
 
         PlayerMove playerMove = _gameplayManager.PlayerMoves.GetPlayerMove();
         if (playerMove == null)
         {
-            Debug.LogError(" No Moves Exists");
+            Log.Error(" No Moves Exists");
             return;
         }
 
@@ -404,31 +406,30 @@ static class BattleCommandsHandler
         }
         else
         {
-            _cardsController.ReturnCardToHand(obj.Unit);
+            _cardsController.ReturnCardToHand(obj.Unit.Model);
             _gameplayManager.CurrentPlayer.CurrentGoo += obj.GooCost;
         }
     }
 
     private static void GetCardFromGraveyard(BoardUnitView unit, Player player)
     {
-        Card libraryCard = new Card(unit.Model.Card.LibraryCard);
-        WorkingCard workingCard = new WorkingCard(libraryCard, libraryCard, player);
-        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, workingCard);
+        Card prototype = new Card(unit.Model.Card.Prototype);
+        WorkingCard workingCard = new WorkingCard(prototype, prototype, player);
+        BoardUnitModel boardUnitModel = new BoardUnitModel(workingCard);
+        BoardUnitView newUnit = _battlegroundController.CreateBoardUnit(player, boardUnitModel);
 
-        player.RemoveCardFromGraveyard(unit.Model.Card);
-        player.AddCardToBoard(workingCard, ItemPosition.End);
-        player.BoardCards.Insert(ItemPosition.End, newUnit);
-        _battlegroundController.PlayerBoardCards.Insert(ItemPosition.End, newUnit);
+        player.PlayerCardsController.RemoveCardFromGraveyard(unit.Model);
+        player.PlayerCardsController.AddCardToBoard(boardUnitModel, ItemPosition.End);
+        _battlegroundController.RegisterBoardUnitView(player, newUnit);
 
-        _boardController.UpdateBoard(player.BoardCards, true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.CardsOnBoard), true, null);
     }
-
 
     private static void RevertAttackOnUnit(IMove move)
     {
         AttackUnit obj = (AttackUnit) move;
 
-        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel(obj.AttackingUnitModel);
+        BoardUnitView attackingUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(obj.AttackingUnitModel);
         if (attackingUnitView.GameObject == null)
         {
             GetCardFromGraveyard(attackingUnitView, _gameplayManager.CurrentPlayer);
@@ -437,10 +438,10 @@ static class BattleCommandsHandler
         {
             obj.AttackingUnitModel.NumTurnsOnBoard--;
             obj.AttackingUnitModel.OnStartTurn();
-            obj.AttackingUnitModel.CurrentHp += obj.DamageOnAttackingUnit;
+            obj.AttackingUnitModel.CurrentDefense += obj.DamageOnAttackingUnit;
         }
 
-         obj.AttackedUnitModel.CurrentHp += obj.DamageOnAttackedUnit;
+         obj.AttackedUnitModel.CurrentDefense += obj.DamageOnAttackedUnit;
     }
 
 
@@ -457,53 +458,53 @@ static class BattleCommandsHandler
     private static void RevertOverlordSkill(IMove move)
     {
         PlayOverlordSkill obj = (PlayOverlordSkill) move;
-        switch (obj.Skill.Skill.OverlordSkill)
+        switch (obj.Skill.Skill.Skill)
         {
-            case Enumerators.OverlordSkill.NONE:
+            case Enumerators.Skill.NONE:
                 break;
-            case Enumerators.OverlordSkill.PUSH:
+            case Enumerators.Skill.PUSH:
                 RevertPush(obj);
                 break;
-            case Enumerators.OverlordSkill.DRAW:
+            case Enumerators.Skill.DRAW:
                 RevertDraw(obj);
                 break;
-            case Enumerators.OverlordSkill.HARDEN:
+            case Enumerators.Skill.HARDEN:
                 RevertHarden(obj);
                 break;
-            case Enumerators.OverlordSkill.STONE_SKIN:
+            case Enumerators.Skill.STONE_SKIN:
                 RevertStoneSkin(obj);
                 break;
-            case Enumerators.OverlordSkill.FIRE_BOLT:
+            case Enumerators.Skill.FIRE_BOLT:
                 RevertFireBolt(obj);
                 break;
-            case Enumerators.OverlordSkill.RABIES:
+            case Enumerators.Skill.RABIES:
                 RevertRabies(obj);
                 break;
-            case Enumerators.OverlordSkill.FIREBALL:
+            case Enumerators.Skill.FIREBALL:
                 RevertFireball(obj);
                 break;
-            case Enumerators.OverlordSkill.HEALING_TOUCH:
+            case Enumerators.Skill.HEALING_TOUCH:
                 RevertHealingTouch(obj);
                 break;
-            case Enumerators.OverlordSkill.MEND:
+            case Enumerators.Skill.MEND:
                 RevertMend(obj);
                 break;
-            case Enumerators.OverlordSkill.POISON_DART:
+            case Enumerators.Skill.POISON_DART:
                 RevertPosionDartAttack(obj);
                 break;
-            case Enumerators.OverlordSkill.TOXIC_POWER:
+            case Enumerators.Skill.TOXIC_POWER:
                 RevertToxicPowerAttack(obj);
                 break;
-            case Enumerators.OverlordSkill.FREEZE:
+            case Enumerators.Skill.FREEZE:
                 RevertFreeze(obj);
                 break;
-            case Enumerators.OverlordSkill.ICE_BOLT:
+            case Enumerators.Skill.ICE_BOLT:
                 RevertIceBolt(obj);
                 break;
-            case Enumerators.OverlordSkill.ICE_WALL:
+            case Enumerators.Skill.ICE_WALL:
                 RevertIceWall(obj);
                 break;
-            case Enumerators.OverlordSkill.BLIZZARD:
+            case Enumerators.Skill.BLIZZARD:
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -512,14 +513,14 @@ static class BattleCommandsHandler
 
     private static void RevertIceWall(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
-            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
         }
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -527,11 +528,11 @@ static class BattleCommandsHandler
 
     private static void RevertFireball(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -541,7 +542,7 @@ static class BattleCommandsHandler
 
     private static void RevertMend(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -550,11 +551,11 @@ static class BattleCommandsHandler
 
     private static void RevertHealingTouch(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertHealUnityBySkill(unit, playOverlordSkill.Skill);
         }
@@ -564,7 +565,7 @@ static class BattleCommandsHandler
 
     private static void RevertIceBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
             unit.RevertStun();
@@ -574,11 +575,11 @@ static class BattleCommandsHandler
 
     private static void RevertFreeze(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             player.RevertStun();
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.RevertStun();
         }
@@ -588,7 +589,7 @@ static class BattleCommandsHandler
 
     private static void RevertRabies(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.SetInitialUnitType();
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -597,11 +598,11 @@ static class BattleCommandsHandler
 
     private static void RevertFireBolt(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -611,17 +612,17 @@ static class BattleCommandsHandler
 
     private static void RevertStoneSkin(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
-            unit.BuffedHp -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentHp -= playOverlordSkill.Skill.Skill.Value;
+            unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
             playOverlordSkill.Skill.SetCoolDown(0);
         }
     }
 
     private static void RevertHarden(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertHealPlayerBySkill(player, playOverlordSkill.Skill);
             playOverlordSkill.Skill.SetCoolDown(0);
@@ -631,10 +632,10 @@ static class BattleCommandsHandler
     private static void RevertPush(PlayOverlordSkill playOverlordSkill)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Target;
+        BoardUnitModel targetUnit = (BoardUnitModel)playOverlordSkill.Targets[0].BoardObject;
         WorkingCard workingCard = targetUnit.Card;
 
-        BoardCard card = _battlegroundController.PlayerHandCards.First(x => x.WorkingCard == workingCard);
+        BoardCardView card = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == workingCard);
         _cardsController.PlayPlayerCard(player, card, card.HandBoardCard, null);
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -647,12 +648,12 @@ static class BattleCommandsHandler
 
     private static void RevertToxicPowerAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is BoardUnitModel unit)
+        if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
-            unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Attack;
-            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Attack;
+            unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Damage;
+            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Damage;
 
             playOverlordSkill.Skill.SetCoolDown(0);
         }
@@ -660,11 +661,11 @@ static class BattleCommandsHandler
 
     private static void RevertPosionDartAttack(PlayOverlordSkill playOverlordSkill)
     {
-        if (playOverlordSkill.Target is Player player)
+        if (playOverlordSkill.Targets[0].BoardObject is Player player)
         {
             RevertAttackOnOverlordBySkill(player, playOverlordSkill.Skill);
         }
-        else if(playOverlordSkill.Target is BoardUnitModel unit)
+        else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
         }
@@ -680,7 +681,7 @@ static class BattleCommandsHandler
     private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
     {
         BoardUnitModel creature = unitModel;
-        creature.CurrentHp += boardSkill.Skill.Value;
+        creature.CurrentDefense += boardSkill.Skill.Value;
     }
 
     private static void RevertHealPlayerBySkill(Player player, BoardSkill boardSkill)
@@ -696,17 +697,17 @@ static class BattleCommandsHandler
         if (unitModel == null)
             return;
 
-        unitModel.CurrentHp -= boardSkill.Skill.Value;
+        unitModel.CurrentDefense -= boardSkill.Skill.Value;
     }
 
     [CommandHandler(Description = "Unlocks current overlord abilities")]
     private static void UnlockAllCurrentOverlordAbilities()
     {
-        foreach (var skill in _gameplayManager.CurrentPlayer.SelfHero.Skills)
+        foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
         {
             skill.Unlocked = true;
         }
 
-        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.HEROES_DATA);
+        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 }

@@ -23,39 +23,39 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public bool HasUniqueAnimation(WorkingCard card)
+        public bool HasUniqueAnimation(BoardUnitModel boardUnitModel)
         {
-            return card.LibraryCard.UniqueAnimationType != Enumerators.UniqueAnimationType.None;
+            return boardUnitModel.Card.Prototype.UniqueAnimation != Enumerators.UniqueAnimation.None;
         }
 
         public void PlayUniqueArrivalAnimation(BoardObject boardObject, WorkingCard card, Action startGeneralArrivalCallback, Action endArrivalCallback)
         {
-            UniqueAnimation animation = GetUniqueAnimationByType(card.LibraryCard.UniqueAnimationType);
+            UniqueAnimation animation = GetUniqueAnimationByType(card.Prototype.UniqueAnimation);
             animation.Play(boardObject, startGeneralArrivalCallback, endArrivalCallback);
         }
 
-        private UniqueAnimation GetUniqueAnimationByType(Enumerators.UniqueAnimationType uniqueAnimationType)
+        private UniqueAnimation GetUniqueAnimationByType(Enumerators.UniqueAnimation uniqueAnimationType)
         {
             UniqueAnimation uniqueAnimation;
 
             switch (uniqueAnimationType)
             {
-                case Enumerators.UniqueAnimationType.ShammannArrival:
+                case Enumerators.UniqueAnimation.ShammannArrival:
                     uniqueAnimation = new ShammannArrivalUniqueAnimation();
                     break;
-                case Enumerators.UniqueAnimationType.ZVirusArrival:
+                case Enumerators.UniqueAnimation.ZVirusArrival:
                     uniqueAnimation = new ZVirusArrivalUniqueAnimation();
                     break;
-                case Enumerators.UniqueAnimationType.ZeuzArrival:
+                case Enumerators.UniqueAnimation.ZeuzArrival:
                     uniqueAnimation = new ZeuZArrivalUniqueAnimation();
                     break;
-                case Enumerators.UniqueAnimationType.CerberusArrival:
+                case Enumerators.UniqueAnimation.CerberusArrival:
                     uniqueAnimation = new CerberusArrivalUniqueAnimation();
                     break;
-                case Enumerators.UniqueAnimationType.TzunamyArrival:
+                case Enumerators.UniqueAnimation.TzunamyArrival:
                     uniqueAnimation = new TzunamyArrivalUniqueAnimation();
                     break;
-                case Enumerators.UniqueAnimationType.ChernoBillArrival:
+                case Enumerators.UniqueAnimation.ChernoBillArrival:
                     uniqueAnimation = new ChernoBillArrivalUniqueAnimation();
                     break;
                 default:

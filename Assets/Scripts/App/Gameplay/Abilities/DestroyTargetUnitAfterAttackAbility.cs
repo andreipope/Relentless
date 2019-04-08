@@ -18,9 +18,9 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
 
-            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescriptionType.Destroy);
+            AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Destroy);
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
             switch (info)
             {
                 case BoardUnitModel boardUnitModel:
-                    BattlegroundController.DestroyBoardUnit(boardUnitModel);
+                    BattlegroundController.DestroyBoardUnit(boardUnitModel, handleShield:true);
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ATTACK)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK)
                 return;
 
             Action(from);

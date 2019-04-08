@@ -6,13 +6,14 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
 using NUnit.Framework;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
-using CardViewInfo = Loom.ZombieBattleground.Data.CardViewInfo;
+using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
 using Deck = Loom.ZombieBattleground.Data.Deck;
-using Hero = Loom.ZombieBattleground.Data.Hero;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("QuickSubset")]
     public class DataTest
     {
         [Test]
@@ -27,8 +28,8 @@ namespace Loom.ZombieBattleground.Test
                     new DeckCardData("card 1", 3),
                     new DeckCardData("card 2", 4)
                 },
-                Enumerators.OverlordSkill.HEALING_TOUCH,
-                Enumerators.OverlordSkill.MEND
+                Enumerators.Skill.HEALING_TOUCH,
+                Enumerators.Skill.MEND
             );
 
             Deck deserialized = original.ToProtobuf().FromProtobuf();
@@ -38,7 +39,7 @@ namespace Loom.ZombieBattleground.Test
         [Test]
         public void CardProtobufSerialization()
         {
-            Card original = new Card(
+            Card card = new Card(
                 123,
                 "Foo",
                 3,
@@ -47,7 +48,7 @@ namespace Loom.ZombieBattleground.Test
                 "awesomePicture",
                 4,
                 5,
-                Enumerators.SetType.ITEM,
+                Enumerators.Faction.ITEM,
                 "awesomeFrame",
                 Enumerators.CardKind.CREATURE,
                 Enumerators.CardRank.GENERAL,
@@ -57,35 +58,36 @@ namespace Loom.ZombieBattleground.Test
                     CreateAbilityData(true,
                         () => new List<AbilityData.ChoosableAbility>
                         {
-                            new AbilityData.ChoosableAbility("choosable ability 1", CreateAbilityData(false, null)),
-                            new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null))
+                            new AbilityData.ChoosableAbility("choosable ability 1", CreateAbilityData(false, null), ""),
+                            new AbilityData.ChoosableAbility("choosable ability 2", CreateAbilityData(false, null), "")
                         })
                 },
-                new CardViewInfo(
+                new PictureTransform(
                     new FloatVector3(0.3f, 0.4f, 0.5f),
                     FloatVector3.One
                 ),
-                Enumerators.UniqueAnimationType.ShammannArrival,
-                Enumerators.SetType.ITEM
+                Enumerators.UniqueAnimation.ShammannArrival,
+                true
             );
 
-            Card deserialized = original.ToProtobuf().FromProtobuf();
+            WorkingCard original = new WorkingCard(card, card, null, new Data.InstanceId(373));
+            WorkingCard deserialized = original.ToProtobuf().FromProtobuf(null);
             original.ShouldDeepEqual(deserialized);
         }
 
         [Test]
-        public void HeroProtobufSerialization()
+        public void OverlordProtobufSerialization()
         {
-            Protobuf.Hero protobuf = new Protobuf.Hero
+            Protobuf.Overlord protobuf = new Protobuf.Overlord
             {
-                HeroId = 1,
+                OverlordId = 1,
                 Icon = "icon",
                 Name = "name",
                 ShortDescription = "short desc",
                 LongDescription = "long desc",
                 Experience = 100500,
                 Level = 373,
-                Element = CardSetType.Types.Enum.Life,
+                Faction = Protobuf.Faction.Types.Enum.Life,
                 Skills =
                 {
                     new Skill
@@ -96,29 +98,29 @@ namespace Loom.ZombieBattleground.Test
                         Cooldown = 1,
                         InitialCooldown = 2,
                         Value = 3,
-                        Attack = 4,
+                        Damage = 4,
                         Count = 5,
-                        Skill_ = OverlordSkillKind.Types.Enum.Freeze,
+                        Skill_ = Protobuf.OverlordSkill.Types.Enum.Freeze,
                         SkillTargets =
                         {
-                            OverlordAbilityTarget.Types.Enum.Opponent,
-                            OverlordAbilityTarget.Types.Enum.AllCards
+                            SkillTarget.Types.Enum.Opponent,
+                            SkillTarget.Types.Enum.AllCards
                         },
                         TargetUnitSpecialStatus = UnitSpecialStatus.Types.Enum.Frozen,
-                        ElementTargets =
+                        TargetFactions =
                         {
-                            CardSetType.Types.Enum.Fire,
-                            CardSetType.Types.Enum.Life
+                            Protobuf.Faction.Types.Enum.Fire,
+                            Protobuf.Faction.Types.Enum.Life
                         },
                         Unlocked = true,
                         CanSelectTarget = true
                     }
                 },
-                PrimarySkill =  OverlordSkillKind.Types.Enum.HealingTouch,
-                SecondarySkill = OverlordSkillKind.Types.Enum.Mend
+                PrimarySkill = Protobuf.OverlordSkill.Types.Enum.HealingTouch,
+                SecondarySkill = Protobuf.OverlordSkill.Types.Enum.Mend
             };
 
-            Hero client = new Hero(
+            OverlordModel client = new OverlordModel(
                 1,
                 "icon",
                 "name",
@@ -126,10 +128,10 @@ namespace Loom.ZombieBattleground.Test
                 "long desc",
                 100500,
                 373,
-                Enumerators.SetType.LIFE,
-                new List<HeroSkill>
+                Enumerators.Faction.LIFE,
+                new List<Data.OverlordSkill>
                 {
-                    new HeroSkill(
+                    new Data.OverlordSkill(
                         0,
                         "title",
                         "supericon",
@@ -139,25 +141,25 @@ namespace Loom.ZombieBattleground.Test
                         3,
                         4,
                         5,
-                        Enumerators.OverlordSkill.FREEZE,
-                        new List<Enumerators.SkillTargetType>
+                        Enumerators.Skill.FREEZE,
+                        new List<Enumerators.SkillTarget>
                         {
-                            Enumerators.SkillTargetType.OPPONENT,
-                            Enumerators.SkillTargetType.ALL_CARDS
+                            Enumerators.SkillTarget.OPPONENT,
+                            Enumerators.SkillTarget.ALL_CARDS
                         },
-                        Enumerators.UnitStatusType.FROZEN,
-                        new List<Enumerators.SetType>
+                        Enumerators.UnitSpecialStatus.FROZEN,
+                        new List<Enumerators.Faction>
                         {
-                            Enumerators.SetType.FIRE,
-                            Enumerators.SetType.LIFE
+                            Enumerators.Faction.FIRE,
+                            Enumerators.Faction.LIFE
                         },
                         true,
                         true,
                         false
                     )
                 },
-                Enumerators.OverlordSkill.HEALING_TOUCH,
-                Enumerators.OverlordSkill.MEND
+                Enumerators.Skill.HEALING_TOUCH,
+                Enumerators.Skill.MEND
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());
@@ -174,19 +176,19 @@ namespace Loom.ZombieBattleground.Test
             return
                 new AbilityData(
                     Enumerators.AbilityType.RAGE,
-                    Enumerators.AbilityActivityType.ACTIVE,
-                    Enumerators.AbilityCallType.IN_HAND,
-                    new List<Enumerators.AbilityTargetType>
+                    Enumerators.AbilityActivity.ACTIVE,
+                    Enumerators.AbilityTrigger.IN_HAND,
+                    new List<Enumerators.Target>
                     {
-                        Enumerators.AbilityTargetType.ITSELF,
-                        Enumerators.AbilityTargetType.PLAYER
+                        Enumerators.Target.ITSELF,
+                        Enumerators.Target.PLAYER
                     },
-                    Enumerators.StatType.DAMAGE,
-                    Enumerators.SetType.TOXIC,
-                    Enumerators.AbilityEffectType.TARGET_ROCK,
+                    Enumerators.Stat.DAMAGE,
+                    Enumerators.Faction.TOXIC,
+                    Enumerators.AbilityEffect.TARGET_ROCK,
                     Enumerators.AttackRestriction.ONLY_DIFFERENT,
                     Enumerators.CardType.WALKER,
-                    Enumerators.UnitStatusType.FROZEN,
+                    Enumerators.UnitSpecialStatus.FROZEN,
                     Enumerators.CardType.HEAVY,
                     1,
                     2,
@@ -200,8 +202,8 @@ namespace Loom.ZombieBattleground.Test
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Impact, "path1"),
                         new AbilityData.VisualEffectInfo(Enumerators.VisualEffectType.Moving, "path2")
                     },
-                    Enumerators.GameMechanicDescriptionType.Death,
-                    Enumerators.SetType.LIFE,
+                    Enumerators.GameMechanicDescription.Death,
+                    Enumerators.Faction.LIFE,
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,
                     7,

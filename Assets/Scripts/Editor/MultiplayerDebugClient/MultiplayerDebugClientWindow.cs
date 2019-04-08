@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             {
                 DrawSeparator();
                 bool isExpanded = _initialGameState.IsExpanded;
-                GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, ref isExpanded);
+                GameStateGUI.DrawGameState(_initialGameState.Instance, DebugClient.UserDataModel?.UserId, "Initial Game State", null, null, ref isExpanded);
                 _initialGameState.IsExpanded = isExpanded;
             }
 
@@ -236,6 +236,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                                 DebugClient.UserDataModel?.UserId,
                                 playerState.Id == DebugClient.UserDataModel?.UserId,
                                 DebugClient.UseBackendGameLogic),
+                        null,
                         ref isExpanded);
                     _currentGameState.IsExpanded = isExpanded;
                 }
@@ -311,6 +312,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         await UpdateCurrentGameState();
                     });
                 }
+
+                if (GUILayout.Button("Handshake"))
+                {
+                    EnqueueAsyncTask(async () =>
+                    {
+                        List<Data.InstanceId> cardsInHandForMulligan = new List<Data.InstanceId>();
+                        foreach (CardInstance card in opponentPlayerState.CardsInHand) 
+                        {
+                            cardsInHandForMulligan.Add(card.InstanceId.FromProtobuf());
+                        }
+
+                        await DebugClient.BackendFacade.SendPlayerAction(
+                            DebugClient.MatchRequestFactory.CreateAction(DebugClient.PlayerActionFactory.Mulligan(cardsInHandForMulligan))
+                        );
+
+                        await UpdateCurrentGameState();
+                    });
+                }
             }
             GUILayout.EndHorizontal();
 
@@ -323,7 +342,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 _gameActionsState.CardPlayCardIndex =
                     EditorGUILayout.Popup(
                         _gameActionsState.CardPlayCardIndex,
-                        cardsInHand.Select(GameStateGUI.SimpleFormatCardInstance).ToArray()
+                        cardsInHand.Select(card => GameStateGUI.FormatCardInstance(card, false)).ToArray()
                     );
 
                 int[] cardPlayPositions = Enumerable.Range(0, currentPlayerState.CardsInPlay.Count + 1).ToArray();
@@ -373,7 +392,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 _gameActionsState.CardAttackAttackerIndex =
                     EditorGUILayout.Popup(
                         _gameActionsState.CardAttackAttackerIndex,
-                        attackers.Select(GameStateGUI.SimpleFormatCardInstance).ToArray()
+                        attackers.Select(card => GameStateGUI.FormatCardInstance(card, false)).ToArray()
                     );
 
                 DrawMinWidthLabel("Target");
@@ -381,7 +400,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUILayout.Popup(
                         _gameActionsState.CardAttackTargetIndex,
                         new[] { "Enemy Overlord", "Own Overlord" }.Concat(
-                                targets.Select(GameStateGUI.SimpleFormatCardInstance))
+                                targets.Select(card => GameStateGUI.FormatCardInstance(card, false)))
                             .ToArray()
                     );
 
@@ -404,8 +423,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         }
                         else
                         {
-                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex].InstanceId.Id;
-                            attackTargetInstanceId -= 2;
+                            attackTargetInstanceId = targets.Count == 0 ? -1 : targets[_gameActionsState.CardAttackTargetIndex-2].InstanceId.Id;
                         }
 
                         await DebugClient.BackendFacade.SendPlayerAction(
@@ -436,7 +454,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 _gameActionsState.CardToDestroyIndex =
                     EditorGUILayout.Popup(
                         _gameActionsState.CardToDestroyIndex,
-                        cardsInPlay.Select(GameStateGUI.SimpleFormatCardInstance).ToArray()
+                        cardsInPlay.Select(card => GameStateGUI.FormatCardInstance(card, false)).ToArray()
                     );
 
                 EditorGUI.BeginDisabledGroup(cardsInPlay.Count == 0);
@@ -580,6 +598,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
         {
             await DebugClient.Start(
                 contract => new DefaultContractCallProxy(contract),
+                new DAppChainClientConfiguration(),
                 matchMakingFlowController =>
                 {
                     matchMakingFlowController.MatchConfirmed += OnMatchConfirmed;
@@ -611,8 +630,6 @@ namespace Loom.ZombieBattleground.Editor.Tools
             EditorGUI.DrawRect(rect, Color.black);
             EditorGUILayout.Space();
         }
-
-
 
         [Serializable]
         private class GameActionsState

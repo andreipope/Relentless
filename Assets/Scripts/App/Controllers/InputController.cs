@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using System.Linq;
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -28,9 +29,15 @@ namespace Loom.ZombieBattleground
 
         public event Action NoObjectsSelectedEvent;
 
+        public event Action<BoardObject> ClickedOnBoardObjectEvent;
+
+        public event Action<BoardObject> DragOnBoardObjectEvent;
+
         private IGameplayManager _gameplayManager;
 
         private ITutorialManager _tutorialManager;
+
+        private BattlegroundController _battlegroundController;
 
         private Camera _raysCamera;
 
@@ -42,6 +49,8 @@ namespace Loom.ZombieBattleground
 
         private bool _isHovering;
 
+        private PointerEventSolver _pointerEventSolver;
+
         public void Dispose()
         {
         }
@@ -50,8 +59,14 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
 
             _selectedUnitsList = new List<BoardUnitView>();
+
+            _pointerEventSolver = new PointerEventSolver();
+            _pointerEventSolver.Clicked += PointerClickedHandler;
+            _pointerEventSolver.Ended += PointerEndedHandler;
+            _pointerEventSolver.DragStarted += PointerDragStartedHandler;
         }
 
         public void Update()
@@ -69,6 +84,8 @@ namespace Loom.ZombieBattleground
 
         private void HandleInput()
         {
+            _pointerEventSolver.Update();
+
             if (Application.isMobilePlatform)
             {
                 foreach (Touch touch in Input.touches)
@@ -79,6 +96,7 @@ namespace Loom.ZombieBattleground
                             GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
 
                             CastRay(touch.position, SRLayerMask.Battleground);
+                            _pointerEventSolver.PushPointer(PointerEventSolver.DefaultDelta);
                             break;
                         case TouchPhase.Moved:
                         case TouchPhase.Stationary:
@@ -86,6 +104,8 @@ namespace Loom.ZombieBattleground
                             break;
                         case TouchPhase.Canceled:
                         case TouchPhase.Ended:
+                            _pointerEventSolver.PopPointer();
+
                             foreach (BoardUnitView unit in _selectedUnitsList)
                             {
                                 UnitDeselectedEvent?.Invoke(unit);
@@ -98,8 +118,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-
-                if(_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
+                if (_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
                 {
                     CastRay(Input.mousePosition, SRLayerMask.Battleground, isHovering: true);
                 }
@@ -109,6 +128,7 @@ namespace Loom.ZombieBattleground
                     GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.TapOnScreen);
 
                     CastRay(Input.mousePosition, SRLayerMask.Battleground);
+                    _pointerEventSolver.PushPointer(PointerEventSolver.DefaultDelta);
                 }
                 else if (Input.GetMouseButton(0))
                 {
@@ -116,6 +136,8 @@ namespace Loom.ZombieBattleground
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
+                    _pointerEventSolver.PopPointer();
+
                     foreach (BoardUnitView unit in _selectedUnitsList)
                     {
                         UnitDeselectedEvent?.Invoke(unit);
@@ -167,161 +189,30 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            bool hasPoinerTarget = false;
-
-            if(_gameplayManager.IsTutorial)
-            {
-                if (collider.name.Equals(Constants.PlayerManaBar))
-                {
-                    hasPoinerTarget = true;
-
-                    if (isHovering)
-                    {
-                        UpdateHovering(collider.gameObject, isManaBar: true);
-                    }
-                    else
-                    {
-                        ManaBarSelected?.Invoke(collider.gameObject);
-                    }
-                }
-                else
-                {
-                    BoardCard boardCard = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
-
-                    if (boardCard != null)
-                    {
-                        hasPoinerTarget = true;
-
-                        if (isHovering)
-                        {
-                            UpdateHovering(collider.gameObject, boardCard: boardCard);
-                        }
-                    }
-                }
-            }
-
-            // check on units
+            bool hasPointerTarget = false;
             bool hasTarget = false;
 
-            foreach (BoardUnitView unit in _gameplayManager.CurrentPlayer.BoardCards)
-            {
-                if (unit.GameObject == collider.gameObject)
-                {
-                    hasTarget = true;
-                    hasPoinerTarget = true;
+            hasPointerTarget = ProcessTutorialActions(ref hasPointerTarget, collider, isHovering);
 
-                    if (isHovering)
-                    {
-                        UpdateHovering(collider.gameObject, unit: unit);
-                    }
-                    else
-                    {
-                        if (!permanent)
-                        {
-                            if (!_selectedUnitsList.Contains(unit))
-                            {
-                                _selectedUnitsList.Add(unit);
-                            }
+            IReadOnlyList<BoardUnitView> playerCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.CurrentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> opponentCardsOnBoardUnitViews = _battlegroundController.GetBoardUnitViewsFromModels(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, playerCardsOnBoardUnitViews, collider, permanent, isHovering);
+            ProcessUnits(ref hasTarget, ref hasPointerTarget, opponentCardsOnBoardUnitViews, collider, permanent, isHovering);
 
-                            UnitSelectedEvent?.Invoke(unit);
-                        }
-                        else
-                        {
-                            UnitSelectingEvent?.Invoke(unit);
-                        }
-                    }
-
-                    break;
-                }
-            }
-
-            foreach (BoardUnitView unit in _gameplayManager.OpponentPlayer.BoardCards)
-            {
-                if (unit.GameObject == collider.gameObject)
-                {
-                    hasTarget = true;
-                    hasPoinerTarget = true;
-
-                    if (isHovering)
-                    {
-                        UpdateHovering(collider.gameObject, unit: unit);
-                    }
-                    else
-                    {
-                        if (!permanent)
-                        {
-                            if (!_selectedUnitsList.Contains(unit))
-                            {
-                                _selectedUnitsList.Add(unit);
-                            }
-
-                            UnitSelectedEvent?.Invoke(unit);
-                        }
-                        else
-                        {
-                            UnitSelectingEvent?.Invoke(unit);
-                        }
-                    }
-                    break;
-                }
-            }
-
-            // check on players
-            if (_gameplayManager.CurrentPlayer.AvatarObject == collider.gameObject)
-            {
-                hasTarget = true;
-                hasPoinerTarget = true;
-
-                if (isHovering)
-                {
-                    UpdateHovering(collider.gameObject, _gameplayManager.CurrentPlayer);
-                }
-                else
-                {
-                    if (!permanent)
-                    {
-                        PlayerSelectedEvent?.Invoke(_gameplayManager.CurrentPlayer);
-                    }
-                    else
-                    {
-                        PlayerSelectingEvent?.Invoke(_gameplayManager.CurrentPlayer);
-                    }
-                }
-            }
-
-            if (_gameplayManager.OpponentPlayer.AvatarObject == collider.gameObject)
-            {
-                hasTarget = true;
-                hasPoinerTarget = true;
-
-                if (isHovering)
-                {
-                    UpdateHovering(collider.gameObject, _gameplayManager.OpponentPlayer);
-                }
-                else
-                {
-                    if (!permanent)
-                    {
-                        PlayerSelectedEvent?.Invoke(_gameplayManager.OpponentPlayer);
-                    }
-                    else
-                    {
-                        PlayerSelectingEvent?.Invoke(_gameplayManager.OpponentPlayer);
-                    }
-                }
-            }
+            ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.CurrentPlayer, collider, permanent, isHovering);
+            ProcessPlayers(ref hasTarget, ref hasPointerTarget, _gameplayManager.OpponentPlayer, collider, permanent, isHovering);
 
             if (!hasTarget)
             {
                 NoObjectsSelectedEvent?.Invoke();
             }
-            if(!hasPoinerTarget)
+            if (!hasPointerTarget)
             {
                 ClearHovering();
             }
         }
 
-        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCard boardCard = null, bool isManaBar = false)
+        private void UpdateHovering(GameObject obj, Player player = null, BoardUnitView unit = null, BoardCardView boardCardView = null, bool isManaBar = false)
         {
             if (_hoveringObject != obj)
             {
@@ -342,7 +233,7 @@ namespace Loom.ZombieBattleground
                     {
                         PlayerPointerEnteredEvent?.Invoke(player);
                     }
-                    else if (boardCard != null)
+                    else if (boardCardView != null)
                     {
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.PlayerCardInHandSelected);
                     }
@@ -360,6 +251,157 @@ namespace Loom.ZombieBattleground
             _isHovering = false;
             _hoveringObject = null;
             _timeHovering = 0;
+        }
+
+        private (bool, bool) ProcessUnits(
+                ref bool hasTarget,
+                ref bool hasPoinerTarget,
+                IReadOnlyList<BoardUnitView> boardCards,
+                Collider2D collider,
+                bool permanent = false,
+                bool isHovering = false)
+        {
+            foreach (BoardUnitView unit in boardCards)
+            {
+                if (unit.GameObject.GetInstanceID() == collider.gameObject.GetInstanceID())
+                {
+                    hasTarget = true;
+                    hasPoinerTarget = true;
+
+                    if (isHovering)
+                    {
+                        UpdateHovering(collider.gameObject, unit: unit);
+                    }
+                    else
+                    {
+                        if (!permanent)
+                        {
+                            if (!_selectedUnitsList.Contains(unit))
+                            {
+                                _selectedUnitsList.Add(unit);
+                            }
+
+                            UnitSelectedEvent?.Invoke(unit);
+                        }
+                        else
+                        {
+                            UnitSelectingEvent?.Invoke(unit);
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return (hasTarget, hasPoinerTarget);
+        }
+
+        private bool ProcessTutorialActions(
+                ref bool hasPoinerTarget,
+                Collider2D collider,
+                bool isHovering = false)
+        {
+            if (_gameplayManager.IsTutorial)
+            {
+                if (collider.name.Equals(Constants.PlayerManaBar))
+                {
+                    hasPoinerTarget = true;
+
+                    if (isHovering)
+                    {
+                        UpdateHovering(collider.gameObject, isManaBar: true);
+                    }
+                    else
+                    {
+                        ManaBarSelected?.Invoke(collider.gameObject);
+                    }
+                }
+                else
+                {
+                    BoardCardView boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(collider.gameObject);
+
+                    if (boardCardView != null)
+                    {
+                        hasPoinerTarget = true;
+
+                        if (isHovering)
+                        {
+                            UpdateHovering(collider.gameObject, boardCardView: boardCardView);
+                        }
+                    }
+                }
+            }
+
+            return hasPoinerTarget;
+        }
+
+        private (bool, bool) ProcessPlayers(
+                ref bool hasTarget,
+                ref bool hasPoinerTarget,
+                Player player,
+                Collider2D collider,
+                bool permanent = false,
+                bool isHovering = false)
+        {
+            if (player.AvatarObject == collider.gameObject)
+            {
+                hasTarget = true;
+                hasPoinerTarget = true;
+
+                if (isHovering)
+                {
+                    UpdateHovering(collider.gameObject, player);
+                }
+                else
+                {
+                    if (!permanent)
+                    {
+                        PlayerSelectedEvent?.Invoke(player);
+                    }
+                    else
+                    {
+                        PlayerSelectingEvent?.Invoke(player);
+                    }
+                }
+            }
+
+            return (hasTarget, hasPoinerTarget);
+        }
+
+        private void PointerClickedHandler()
+        {
+            BoardObject boardObject = null;
+
+            if (_selectedUnitsList.Count > 0)
+            {
+                boardObject = _selectedUnitsList[0].Model;
+            }
+
+            if (boardObject != null)
+            {
+                InternalTools.DoActionDelayed(() =>
+                {
+                    ClickedOnBoardObjectEvent?.Invoke(boardObject);
+                }, Time.deltaTime);
+            }
+        }
+
+        private void PointerEndedHandler()
+        {
+        }
+
+        private void PointerDragStartedHandler()
+        {
+            BoardObject boardObject = null;
+
+            if (_selectedUnitsList.Count > 0)
+            {
+                boardObject = _selectedUnitsList[0].Model;
+            }
+
+            if (boardObject != null)
+            {
+                DragOnBoardObjectEvent?.Invoke(boardObject);
+            }
         }
     }
 }

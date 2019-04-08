@@ -11,10 +11,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.Local,
                     new BackendEndpoint(
                         "https://stage-auth.loom.games",
-                        "ws://127.0.0.1:9999/queryws",
-                        "ws://127.0.0.1:46657/websocket",
+                        "ws://127.0.0.1:46658/queryws",
+                        "ws://127.0.0.1:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3",
+                        "v5",
                         false,
                         false,
                         false
@@ -24,8 +24,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.BranchTesting,
                     new BackendEndpoint(
                         "https://stage-auth.loom.games",
-                        "ws://gamechain-2.dappchains.com:9999/queryws",
-                        "ws://gamechain-2.dappchains.com:46657/websocket",
+                        "ws://battleground-testnet-asia2.dappchains.com:46658/queryws",
+                        "ws://battleground-testnet-asia2.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
                         "v3",
                         false,
@@ -37,10 +37,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.Staging,
                     new BackendEndpoint(
                         "https://stage-auth.loom.games",
-                        "ws://gamechain-staging.dappchains.com:9999/queryws",
-                        "ws://gamechain-staging.dappchains.com:46657/websocket",
+                        "ws://gamechain-staging.dappchains.com:46658/queryws",
+                        "ws://gamechain-staging.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
-                        "v3",
+                        "v5",
                         false,
                         false,
                         false
@@ -50,8 +50,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.Production,
                     new BackendEndpoint(
                         "https://auth.loom.games",
-                        "ws://gamechain.dappchains.com:9999/queryws",
-                        "ws://gamechain.dappchains.com:46657/websocket",
+                        "ws://gamechain.dappchains.com:46658/queryws",
+                        "ws://gamechain.dappchains.com:46658/websocket",
                         "https://vault.delegatecall.com/v1",
                         "v5",
                         false,
@@ -63,8 +63,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     BackendPurpose.Rebalance,
                     new BackendEndpoint(
                         "https://stage-auth.loom.games",
-                        "ws://gamechain-staging.dappchains.com:9999/queryws",
-                        "ws://gamechain-staging.dappchains.com:46657/websocket",
+                        "ws://gamechain-staging.dappchains.com:46658/queryws",
+                        "ws://gamechain-staging.dappchains.com:46658/websocket",
                         "https://stage-vault.delegatecall.com/v1",
                         "v6",
                         false,

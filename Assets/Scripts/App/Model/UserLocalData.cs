@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground.Data
 
         public bool Tutorial = true;
 
+        public bool TutorialRewardClaimed = false;
+
         public int LastSelectedDeckId;
 
         public bool AgreedTerms = false;
@@ -54,8 +56,15 @@ namespace Loom.ZombieBattleground.Data
 #if !UNITY_ANDROID && !UNITY_IOS
             AppScreenMode = Enumerators.ScreenMode.FullScreen;
 
-            Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
-            AppResolution = new Vector2Int(resolution.width, resolution.height);
+            if (Screen.resolutions.Length > 0)
+            {
+                Resolution resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+                AppResolution = new Vector2Int(resolution.width, resolution.height);
+            }
+            else
+            {
+                AppResolution = new Vector2Int(1280, 720);
+            }
 #endif
             TutorialTooltipsPassed = new List<int>();
         }

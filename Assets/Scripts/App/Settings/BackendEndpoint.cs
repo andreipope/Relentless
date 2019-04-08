@@ -1,7 +1,10 @@
+using Newtonsoft.Json;
+
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendEndpoint
     {
+        [JsonConstructor]
         public BackendEndpoint(string authHost, string readerHost, string writerHost, string vaultHost, string dataVersion, bool isMaintenanceMode, bool isForceUpdate, bool isConnectionImpossible)
         {
             AuthHost = authHost;

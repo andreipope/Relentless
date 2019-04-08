@@ -7,18 +7,18 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class OpponentHandCard : IView
+    public class OpponentHandCard : IBoardUnitView
     {
         public Transform Transform => GameObject.transform;
 
         public GameObject GameObject { get; }
 
-        public WorkingCard WorkingCard { get; }
+        public BoardUnitModel Model { get; }
 
-        public OpponentHandCard(GameObject selfObject, WorkingCard card)
+        public OpponentHandCard(GameObject selfObject, BoardUnitModel model)
         {
             GameObject = selfObject;
-            WorkingCard = card;
+            Model = model;
 
 #if UNITY_EDITOR
             MainApp.Instance.OnDrawGizmosCalled += OnDrawGizmos;
@@ -39,10 +39,10 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (WorkingCard == null)
+            if (Model == null)
                 return;
 
-            DebugCardInfoDrawer.Draw(Transform.position, WorkingCard.InstanceId.Id, WorkingCard.LibraryCard.Name);
+            DebugCardInfoDrawer.Draw(Transform.position, Model.Card.InstanceId.Id, Model.Card.Prototype.Name);
         }
 #endif
     }

@@ -6,30 +6,29 @@ namespace Loom.ZombieBattleground
 {
     public class TakeDefenseToOverlordWithDefenseAbility : AbilityBase
     {
-        public int Value { get; }
+        public int AddedDefenseAboveThreshold { get; }
 
-        public int Health { get; }
+        public int AddedDefenseBelowThreshold { get; }
 
-        public int Defense { get; }
+        public int DefenseThreshold { get; }
 
-        public List<Enumerators.AbilityTargetType> TargetTypes { get; }
+        public List<Enumerators.Target> TargetTypes { get; }
 
         public TakeDefenseToOverlordWithDefenseAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = AbilityData.Value;
-            Health = AbilityData.Health;
-            Defense = AbilityData.Defense;
-            TargetTypes = AbilityData.AbilityTargetTypes;
+            AddedDefenseAboveThreshold = AbilityData.Value;
+            AddedDefenseBelowThreshold = AbilityData.Defense;
+            DefenseThreshold = AbilityData.Defense2;
+            TargetTypes = AbilityData.Targets;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            InvokeUseAbilityEvent();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -39,16 +38,16 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (TargetTypes.Contains(Enumerators.AbilityTargetType.PLAYER))
+            if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
-                int defenseToBuff = Value;
+                int defenseToBuff = AddedDefenseAboveThreshold;
 
-                if(PlayerCallerOfAbility.Defense <= Defense)
+                if(PlayerCallerOfAbility.Defense <= DefenseThreshold)
                 {
-                    defenseToBuff = Health;
+                    defenseToBuff = AddedDefenseBelowThreshold;
                 }
 
-                PlayerCallerOfAbility.BuffedHp += defenseToBuff;
+                PlayerCallerOfAbility.BuffedDefense += defenseToBuff;
                 PlayerCallerOfAbility.Defense += defenseToBuff;
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -11,6 +12,8 @@ namespace Loom.ZombieBattleground
 {
     public class LoadingPage : IUIElement
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoadingPage));
+
         private IUIManager _uiManager;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -65,6 +68,7 @@ namespace Loom.ZombieBattleground
                 return;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+            //this makes us skip the initial "bar fill"
             _percentage = 100f;
 #endif
 
@@ -90,8 +94,17 @@ namespace Loom.ZombieBattleground
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(e.Message);
+                    Log.Info(e.Message);
                     _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
+                }
+
+                try
+                {
+                    await GameClient.Get<IDataManager>().LoadZbVersionData();
+                }
+                catch (Exception e)
+                {
+                    Log.Info(e.Message);
                 }
 
                 if (_backendDataControlMediator.UserDataModel != null)

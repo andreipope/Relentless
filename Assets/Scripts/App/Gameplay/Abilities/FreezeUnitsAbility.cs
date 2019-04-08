@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
     public class FreezeUnitsAbility : AbilityBase
     {
         public int Value { get; }
-
+        
         public FreezeUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
@@ -33,10 +33,10 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 TargetUnit.Stun(Enumerators.StunType.FREEZE, Value);
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
-                    TargetUnit
-                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
@@ -53,26 +53,23 @@ namespace Loom.ZombieBattleground
                 });
             }
         }
-
+        
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitView unit in GetOpponentOverlord().BoardCards)
+            foreach (BoardUnitModel unit in GetOpponentOverlord().CardsOnBoard)
             {
-                unit.Model.Stun(Enumerators.StunType.FREEZE, Value);
-
+                unit.Stun(Enumerators.StunType.FREEZE, Value);
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                    Target = unit.Model,
+                    Target = unit
                 });
             }
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
+            
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
@@ -80,7 +77,10 @@ namespace Loom.ZombieBattleground
                 TargetEffects = TargetEffects
             });
 
+            InvokeUseAbilityEvent();
+
             AbilityProcessingAction?.ForceActionDone();
         }
+
     }
 }

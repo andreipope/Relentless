@@ -1,6 +1,7 @@
 using DG.Tweening;
 using Loom.ZombieBattleground;
 using Loom.ZombieBattleground.Common;
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -10,7 +11,11 @@ public class HandBoardCard : OwnableBoardObject
 
     public bool Enabled = true;
 
-    public BoardCard CardView { get; protected set; }
+    public BoardUnitModel BoardUnitModel { get; protected set; }
+
+    public BoardCardView BoardCardView { get; protected set; }
+
+    public bool IsReturnToHand { get; private set; }
 
     protected bool StartedDrag;
 
@@ -30,19 +35,24 @@ public class HandBoardCard : OwnableBoardObject
 
     private readonly OnBehaviourHandler _behaviourHandler;
 
-    private bool _isHandCard = true;
+    private readonly SortingGroup _sortingGroup;
 
-    private bool _isReturnToHand;
+    private bool _isHandCard = true;
 
     private bool _alreadySelected;
 
     private bool _canceledPlay;
 
-    public HandBoardCard(GameObject selfObject, BoardCard boardCard)
+    private bool _isHovering;
+
+    private int _normalSortingOrder;
+
+    public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
         GameObject = selfObject;
 
-        CardView = boardCard;
+        BoardCardView = boardCardView;
+        BoardUnitModel = boardCardView.Model;
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _soundManager = GameClient.Get<ISoundManager>();
@@ -53,6 +63,8 @@ public class HandBoardCard : OwnableBoardObject
 
         _behaviourHandler = GameObject.GetComponent<OnBehaviourHandler>();
 
+        _sortingGroup = GameObject.GetComponent<SortingGroup>();
+
         _behaviourHandler.MouseUpTriggered += MouseUp;
         _behaviourHandler.Updating += UpdatingHandler;
     }
@@ -60,6 +72,8 @@ public class HandBoardCard : OwnableBoardObject
     public Transform Transform => GameObject.transform;
 
     public GameObject GameObject { get; }
+
+    public override Player OwnerPlayer => BoardUnitModel.OwnerPlayer;
 
     public void UpdatingHandler(GameObject obj)
     {
@@ -81,7 +95,7 @@ public class HandBoardCard : OwnableBoardObject
 
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
-                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, CardView, this);
+                _cardsController.HoverPlayerCardOnBattleground(OwnerPlayer, BoardCardView);
             }
             else
             {
@@ -95,7 +109,7 @@ public class HandBoardCard : OwnableBoardObject
         if (!Enabled)
             return;
 
-        if (_playerController.IsActive && CardView.CanBePlayed(OwnerPlayer) && !_isReturnToHand && !_alreadySelected &&
+        if (_playerController.IsActive && BoardUnitModel.CanBePlayed(OwnerPlayer) && !IsReturnToHand && !_alreadySelected &&
             Enabled)
         {
 
@@ -103,10 +117,10 @@ public class HandBoardCard : OwnableBoardObject
                 !_tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
                 SpecificBattlegroundInfo.DisabledInitialization)
             {
-                if (CardView.CanBeBuyed(OwnerPlayer))
+                if (BoardUnitModel.CanBeBuyed(OwnerPlayer))
                 {
                     if (!_tutorialManager.GetCurrentTurnInfo().PlayCardsSequence.Exists(info =>
-                        info.TutorialObjectId == CardView.WorkingCard.TutorialObjectId))
+                        info.TutorialObjectId == BoardUnitModel.Card.TutorialObjectId))
                     {
                         _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordTriedToPlayUnsequentionalCard);
                         return;
@@ -117,8 +131,8 @@ public class HandBoardCard : OwnableBoardObject
             }
 
             StartedDrag = true;
-            InitialPos = Transform.position;
-            InitialRotation = Transform.eulerAngles;
+            InitialPos = BoardCardView.PositionOnHand;
+            InitialRotation = BoardCardView.RotationOnHand;
 
             Transform.eulerAngles = Vector3.zero;
 
@@ -129,14 +143,8 @@ public class HandBoardCard : OwnableBoardObject
 
     public void CheckStatusOfHighlight()
     {
-        if (CardView.CanBePlayed(OwnerPlayer) && CardView.CanBeBuyed(OwnerPlayer))
-        {
-            CardView.SetHighlightingEnabled(true);
-        }
-        else
-        {
-            CardView.SetHighlightingEnabled(false);
-        }
+        bool enableHighlight = BoardUnitModel.CanBePlayed(OwnerPlayer) && BoardUnitModel.CanBeBuyed(OwnerPlayer);
+        BoardCardView.SetHighlightingEnabled(enableHighlight);
     }
 
     public void MouseUp(GameObject obj)
@@ -157,16 +165,16 @@ public class HandBoardCard : OwnableBoardObject
         _playerController.IsCardSelected = false;
 
         bool playable = !_canceledPlay &&
-            CardView.CanBeBuyed(OwnerPlayer) &&
-            (CardView.WorkingCard.LibraryCard.CardKind != Enumerators.CardKind.CREATURE ||
-                OwnerPlayer.BoardCards.Count < OwnerPlayer.MaxCardsInPlay);
+            BoardUnitModel.CanBeBuyed(OwnerPlayer) &&
+            (BoardUnitModel.Card.Prototype.Kind != Enumerators.CardKind.CREATURE ||
+                OwnerPlayer.CardsOnBoard.Count < OwnerPlayer.MaxCardsInPlay);
 
         if (playable)
         {
             if (BoardZone.GetComponent<BoxCollider2D>().bounds.Contains(Transform.position) && _isHandCard)
             {
                 _isHandCard = false;
-                _cardsController.PlayPlayerCard(OwnerPlayer, CardView, this, PlayCardOnBoard =>
+                _cardsController.PlayPlayerCard(OwnerPlayer, BoardCardView, this, PlayCardOnBoard =>
                 {
                     if (OwnerPlayer == _gameplayManager.CurrentPlayer)
                     {
@@ -175,7 +183,7 @@ public class HandBoardCard : OwnableBoardObject
                     }
                 });
 
-                CardView.SetHighlightingEnabled(false);
+                BoardCardView.SetHighlightingEnabled(false);
             }
             else
             {
@@ -189,6 +197,7 @@ public class HandBoardCard : OwnableBoardObject
         }
         else
         {
+            _canceledPlay = false;
             ReturnToHandAnim();
 
             if (_tutorialManager.IsTutorial)
@@ -200,8 +209,7 @@ public class HandBoardCard : OwnableBoardObject
 
     private void ReturnToHandAnim()
     {
-        _isReturnToHand = true;
-        _gameplayManager.CanDoDragActions = true;
+        IsReturnToHand = true;
 
         _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND, Constants.CardsMoveSoundVolume);
 
@@ -210,7 +218,7 @@ public class HandBoardCard : OwnableBoardObject
             {
                 Transform.position = InitialPos;
                 Transform.eulerAngles = InitialRotation;
-                _isReturnToHand = false;
+                IsReturnToHand = false;
 
                 _gameplayManager.CanDoDragActions = true;
             });
@@ -231,7 +239,7 @@ public class HandBoardCard : OwnableBoardObject
         _canceledPlay = false;
         _alreadySelected = false;
         StartedDrag = false;
-        _isReturnToHand = true;
+        IsReturnToHand = true;
         _isHandCard = true;
         Enabled = true;
         GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.HandCards;
@@ -243,7 +251,34 @@ public class HandBoardCard : OwnableBoardObject
             () =>
             {
                 Transform.position = InitialPos;
-                _isReturnToHand = false;
+                IsReturnToHand = false;
             });
+    }
+
+    public void HoveringAndZoom()
+    {
+        Transform.DOScale(Constants.DefaultScaleForZoomedCardInHand, Constants.DurationHoveringHandCard);
+        Transform.DOMove(new Vector3(BoardCardView.PositionOnHand.x, -5f, 0), Constants.DurationHoveringHandCard);
+        Transform.DORotate(Vector3.zero, 0.15f);
+        _normalSortingOrder = _sortingGroup.sortingOrder;
+        _sortingGroup.sortingOrder = 100;
+        _isHovering = true;
+    }
+
+    public void ResetHoveringAndZoom(bool isMove = true, Action onComplete = null)
+    {
+        if (isMove)
+        {
+            Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
+        }
+        Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
+        Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard).OnComplete(() =>
+        {
+            onComplete?.Invoke();
+            _isHovering = false;
+        });
+
+        _sortingGroup.sortingOrder = _normalSortingOrder;
+
     }
 }

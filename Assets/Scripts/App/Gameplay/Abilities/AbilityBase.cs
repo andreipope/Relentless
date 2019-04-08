@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -17,33 +16,35 @@ namespace Loom.ZombieBattleground
 
         public bool IsPVPAbility;
 
-        public Enumerators.AbilityActivityType AbilityActivityType;
+        public bool IgnoreAbilityUsageEvent;
 
-        public Enumerators.AbilityCallType AbilityCallType;
+        public Enumerators.AbilityActivity AbilityActivity;
+
+        public Enumerators.AbilityTrigger AbilityTrigger;
 
         public Enumerators.AffectObjectType AffectObjectType;
 
-        public Enumerators.AbilityEffectType AbilityEffectType;
+        public Enumerators.AbilityEffect AbilityEffect;
 
         public Enumerators.CardType TargetCardType = Enumerators.CardType.UNDEFINED;
 
-        public Enumerators.UnitStatusType TargetUnitStatusType = Enumerators.UnitStatusType.NONE;
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
 
-        public List<Enumerators.AbilityTargetType> AbilityTargetTypes;
+        public List<Enumerators.Target> AbilityTargets;
 
         public Enumerators.CardKind CardKind;
 
-        public IReadOnlyCard CardOwnerOfAbility;
+        public BoardUnitModel CardOwnerOfAbility => BoardUnitModel;
 
-        public WorkingCard MainWorkingCard;
+        public BoardUnitModel BoardUnitModel;
 
         public BoardUnitModel AbilityUnitOwner;
 
         public Player PlayerCallerOfAbility;
 
-        public BoardSpell BoardSpell;
+        public BoardItem BoardItem;
 
-        public BoardCard BoardCard;
+        public BoardCardView BoardCardView;
 
         public BoardUnitModel TargetUnit;
 
@@ -62,6 +63,8 @@ namespace Loom.ZombieBattleground
         protected ActionsQueueController ActionsQueueController;
 
         protected BattlegroundController BattlegroundController;
+
+        protected RanksController RanksController;
 
         protected CardsController CardsController;
 
@@ -93,11 +96,21 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _playerAvatar;
 
-        private readonly Player _opponenentAvatar;
+        private readonly Player _opponentAvatar;
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
         protected bool UnitOwnerIsInRage;
+        
+        public AbilityBase()
+        {
+            GameplayManager = GameClient.Get<IGameplayManager>();
+            BoardController = GameplayManager.GetController<BoardController>();
+            BattleController = GameplayManager.GetController<BattleController>();
+            BattlegroundController = GameplayManager.GetController<BattlegroundController>();
+            CardsController = GameplayManager.GetController<CardsController>();
+            RanksController = GameplayManager.GetController<RanksController>();
+        }
 
         public AbilityBase(Enumerators.CardKind cardKind, AbilityData ability)
         {
@@ -116,15 +129,16 @@ namespace Loom.ZombieBattleground
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
+            RanksController = GameplayManager.GetController<RanksController>();
 
             AbilityData = ability;
             CardKind = cardKind;
-            AbilityActivityType = ability.ActivityType;
-            AbilityCallType = ability.CallType;
-            AbilityTargetTypes = ability.AbilityTargetTypes;
-            AbilityEffectType = ability.AbilityEffectType;
+            AbilityActivity = ability.Activity;
+            AbilityTrigger = ability.Trigger;
+            AbilityTargets = ability.Targets;
+            AbilityEffect = ability.Effect;
             _playerAvatar = GameplayManager.CurrentPlayer;
-            _opponenentAvatar = GameplayManager.OpponentPlayer;
+            _opponentAvatar = GameplayManager.OpponentPlayer;
 
             PermanentInputEndEvent += InputEndedHandler;
 
@@ -142,7 +156,7 @@ namespace Loom.ZombieBattleground
         public AbilityData AbilityData { get; protected set; }
 
         public void ActivateSelectTarget(
-            List<Enumerators.SkillTargetType> targetsType = null, Action callback = null, Action failedCallback = null)
+            List<Enumerators.SkillTarget> targetsType = null, Action callback = null, Action failedCallback = null)
         {
             OnObjectSelectedByTargettingArrowCallback = callback;
             OnObjectSelectFailedByTargettingArrowCallback = failedCallback;
@@ -151,10 +165,10 @@ namespace Loom.ZombieBattleground
                 Object
                 .Instantiate(LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/Arrow/AttackArrowVFX_Object"))
                 .AddComponent<AbilityBoardArrow>();
-            TargettingArrow.PossibleTargets = AbilityTargetTypes;
+            TargettingArrow.PossibleTargets = AbilityTargets;
             TargettingArrow.TargetUnitType = TargetCardType;
-            TargettingArrow.TargetUnitStatusType = TargetUnitStatusType;
-            TargettingArrow.UnitDefense = AbilityData.Defense;
+            TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
+            TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
 
             switch (CardKind)
@@ -165,7 +179,7 @@ namespace Loom.ZombieBattleground
                     TargettingArrow.SelfBoardCreature = abilityUnitOwnerView;
                     TargettingArrow.Begin(abilityUnitOwnerView.Transform.position);
                     break;
-                case Enumerators.CardKind.SPELL:
+                case Enumerators.CardKind.ITEM:
                     TargettingArrow.Begin(SelectedPlayer.AvatarObject.transform.position);
                     break;
                 default:
@@ -197,8 +211,6 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
-
-            AbilityProcessingAction?.ForceActionDone();
         }
 
         public virtual void Activate()
@@ -217,24 +229,24 @@ namespace Loom.ZombieBattleground
                     {
                         AbilityUnitOwner.UnitDied += UnitDiedHandler;
                         AbilityUnitOwner.UnitAttacked += UnitAttackedHandler;
-                        AbilityUnitOwner.UnitHpChanged += UnitHpChangedHandler;
+                        AbilityUnitOwner.UnitDefenseChanged += UnitHpChangedHandler;
                         AbilityUnitOwner.UnitDamaged += UnitDamagedHandler;
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
                         AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
                     }
                     break;
-                case Enumerators.CardKind.SPELL:
-                    if (BoardSpell != null)
+                case Enumerators.CardKind.ITEM:
+                    if (BoardItem != null)
                     {
-                        BoardSpell.Used += UsedHandler;
+                        BoardItem.Used += UsedHandler;
                     }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
             }
 
-            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponenentAvatar;
+            SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
         }
 
         public virtual void Update()
@@ -262,7 +274,7 @@ namespace Loom.ZombieBattleground
             {
                 AbilityUnitOwner.UnitDied -= UnitDiedHandler;
                 AbilityUnitOwner.UnitAttacked -= UnitAttackedHandler;
-                AbilityUnitOwner.UnitHpChanged -= UnitHpChangedHandler;
+                AbilityUnitOwner.UnitDefenseChanged -= UnitHpChangedHandler;
                 AbilityUnitOwner.UnitDamaged -= UnitDamagedHandler;
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
@@ -272,9 +284,26 @@ namespace Loom.ZombieBattleground
             AbilitiesController.DeactivateAbility(ActivityId);
         }
 
+        public void ChangePlayerCallerOfAbility(Player player)
+        {
+            PlayerOwnerHasChanged(PlayerCallerOfAbility, player);
+
+            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+
+            PlayerCallerOfAbility = player;
+
+            PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
+            PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
         {
             Deactivate();
+        }
+
+        protected virtual void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
         }
 
         public virtual void SelectedTargetAction(bool callInputEndBefore = false)
@@ -387,7 +416,7 @@ namespace Loom.ZombieBattleground
 
         protected virtual void TurnEndedHandler()
         {
-            if (TargettingArrow != null)
+            if (TargettingArrow != null && !GameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
             {
                 InputEndedHandler();
             }
@@ -407,7 +436,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitHpChangedHandler()
+        protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
             if (!UnitOwnerIsInRage)
             {
@@ -446,7 +475,7 @@ namespace Loom.ZombieBattleground
         
         protected void UsedHandler()
         {
-            BoardSpell.Used -= UsedHandler;
+            BoardItem.Used -= UsedHandler;
         }
 
         protected void ClearParticles()
@@ -457,9 +486,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public object GetCaller()
+        public BoardObject GetCaller()
         {
-            return AbilityUnitOwner ?? (object) BoardSpell;
+            return AbilityUnitOwner ?? (BoardObject) BoardItem;
         }
 
         public Player GetOpponentOverlord()
@@ -471,15 +500,16 @@ namespace Loom.ZombieBattleground
 
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
-            return BattlegroundController.GetBoardUnitViewByModel(AbilityUnitOwner);
+            return BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(AbilityUnitOwner);
         }
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().BoardCards, count).Select(x => x.Model).ToList();
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
         }
 
-        protected void InvokeActionTriggered(object info = null)
+        public void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);
         }
@@ -492,6 +522,27 @@ namespace Loom.ZombieBattleground
         protected void ReportAbilityDoneAction(List<BoardObject> targets)
         {
 
+        }
+
+        protected int GetAbilityIndex()
+        {
+            int index = BoardUnitModel.Card.InstanceCard.Abilities.IndexOf(AbilityData);
+            if (index == -1)
+                throw new Exception($"Ability {AbilityData} not found in card {BoardUnitModel}");
+
+            return index;
+        }
+
+        protected void InvokeUseAbilityEvent(List<ParametrizedAbilityBoardObject> targets = null)
+        {
+            if (IgnoreAbilityUsageEvent)
+                return;
+
+            AbilitiesController.InvokeUseAbilityEvent(
+                BoardUnitModel,
+                AbilityData.Ability,
+                targets ?? new List<ParametrizedAbilityBoardObject>()
+            );
         }
     }
 }

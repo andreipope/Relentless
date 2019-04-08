@@ -8,13 +8,13 @@ namespace Loom.ZombieBattleground
 {
     public class AbilityBoardArrow : BoardArrow
     {
-        public List<Enumerators.AbilityTargetType> PossibleTargets = new List<Enumerators.AbilityTargetType>();
+        public List<Enumerators.Target> PossibleTargets = new List<Enumerators.Target>();
 
         public BoardUnitView SelfBoardCreature;
 
         public Enumerators.CardType TargetUnitType;
 
-        public Enumerators.UnitStatusType TargetUnitStatusType;
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatusType;
 
         public int UnitDefense = 0;
 
@@ -42,30 +42,30 @@ namespace Loom.ZombieBattleground
 
         public override void OnCardSelected(BoardUnitView unit)
         {
-            if (unit.Model.CurrentHp <= 0 || unit.Model.IsDead)
+            if (unit.Model.CurrentDefense <= 0 || unit.Model.IsDead)
                 return;
 
             if (TutorialManager.IsTutorial)
             {
                 if ((!unit.Model.OwnerPlayer.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT_CARD)) ||
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT_CARD)) ||
                     (unit.Model.OwnerPlayer.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER_CARD)))
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.PLAYER_CARD)))
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER_CARD) &&
+            if (PossibleTargets.Contains(Enumerators.Target.PLAYER_CARD) &&
                 unit.GameObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT_CARD) &&
+                PossibleTargets.Contains(Enumerators.Target.OPPONENT_CARD) &&
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+                PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
-                    if (TargetUnitStatusType == Enumerators.UnitStatusType.NONE ||
-                        unit.Model.UnitStatus == TargetUnitStatusType)
+                    if (TargetUnitSpecialStatusType == Enumerators.UnitSpecialStatus.NONE ||
+                        unit.Model.UnitSpecialStatus == TargetUnitSpecialStatusType)
                     {
-                        if ((UnitDefense > 0 && unit.Model.CurrentHp <= UnitDefense) || UnitDefense == 0)
+                        if ((UnitDefense > 0 && unit.Model.CurrentDefense <= UnitDefense) || UnitDefense == 0)
                         {
                             if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
                             {
@@ -107,17 +107,17 @@ namespace Loom.ZombieBattleground
             if (TutorialManager.IsTutorial)
             {
                 if ((!player.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.OPPONENT)) ||
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.OPPONENT)) ||
                     (player.IsLocalPlayer &&
-                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTargetType.PLAYER)))
+                    !TutorialManager.CurrentTutorialStep.ToGameplayStep().SelectableTargets.Contains(Enumerators.SkillTarget.PLAYER)))
                     return;
             }
 
-            if (PossibleTargets.Contains(Enumerators.AbilityTargetType.PLAYER) &&
+            if (PossibleTargets.Contains(Enumerators.Target.PLAYER) &&
                 player.AvatarObject.CompareTag(SRTags.PlayerOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.OPPONENT) &&
+                PossibleTargets.Contains(Enumerators.Target.OPPONENT) &&
                 player.AvatarObject.CompareTag(SRTags.OpponentOwned) ||
-                PossibleTargets.Contains(Enumerators.AbilityTargetType.ALL))
+                PossibleTargets.Contains(Enumerators.Target.ALL))
             {
                 SelectedPlayer = player;
                 SelectedCard?.SetSelectedUnit(false);

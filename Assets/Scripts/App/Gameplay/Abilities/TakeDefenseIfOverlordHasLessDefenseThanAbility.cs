@@ -9,13 +9,13 @@ namespace Loom.ZombieBattleground
     {
         public int Value;
 
-        public int Health;
+        public int Defense;
 
         public TakeDefenseIfOverlordHasLessDefenseThanAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            Health = ability.Health;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -24,22 +24,22 @@ namespace Loom.ZombieBattleground
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/GreenHealVFX");
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.Defense <= Health)
+            if (PlayerCallerOfAbility.Defense <= Defense)
             {
-                AbilityUnitOwner.BuffedHp += Value;
-                AbilityUnitOwner.CurrentHp += Value;
+                AbilityUnitOwner.BuffedDefense += Value;
+                AbilityUnitOwner.CurrentDefense += Value;
             }
         }
     }

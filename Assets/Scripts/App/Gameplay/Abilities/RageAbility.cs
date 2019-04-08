@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
@@ -18,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         protected override void ChangeRageStatusAction(bool status)
@@ -29,7 +28,7 @@ namespace Loom.ZombieBattleground
             {
                 if (status)
                 {
-                    if (AbilityUnitOwner.CurrentHp < AbilityUnitOwner.MaxCurrentHp)
+                    if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
                     {
                         AbilityUnitOwner.BuffedDamage += Value;
                         AbilityUnitOwner.CurrentDamage += Value;
@@ -38,7 +37,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    if (AbilityUnitOwner.CurrentHp >= AbilityUnitOwner.MaxCurrentHp)
+                    if (AbilityUnitOwner.CurrentDefense >= AbilityUnitOwner.MaxCurrentDefense)
                     {
                         AbilityUnitOwner.BuffedDamage -= Value;
                         AbilityUnitOwner.CurrentDamage -= Value;

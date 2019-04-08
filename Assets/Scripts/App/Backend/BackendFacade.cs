@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Linq;
 using Loom.Client;
 using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
@@ -10,12 +11,13 @@ using Newtonsoft.Json;
 using Plugins.AsyncAwaitUtil.Source;
 using UnityEngine;
 using System.Text;
+using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class BackendFacade : IService
     {
-        private int _subscribeCount;
         private IRpcClient _reader;
         private IContractCallProxy _contractCallProxy;
         private Func<Contract, IContractCallProxy> _contractCallProxyFactory;
@@ -34,25 +36,27 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Contract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             Contract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
 
-        public ILogger Logger { get; set; } = Debug.unityLogger;
-
-        public bool EnableRpcLogging { get; set; } = false;
-
         public IContractCallProxy ContractCallProxy => _contractCallProxy;
 
-        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory)
+        public ILog Log { get; }
+
+        public ILog RpcLog { get; }
+
+        public BackendFacade(BackendEndpoint backendEndpoint, Func<Contract, IContractCallProxy> contractCallProxyFactory, ILog log, ILog rpcLog)
         {
             BackendEndpoint = backendEndpoint ?? throw new ArgumentNullException(nameof(backendEndpoint));
             _contractCallProxyFactory = contractCallProxyFactory ?? throw new ArgumentNullException(nameof(contractCallProxyFactory));
+            Log = log ?? throw new ArgumentNullException(nameof(log));
+            RpcLog = rpcLog ?? throw new ArgumentNullException(nameof(rpcLog));
         }
 
         public void Init()
         {
-            Logger?.Log("Auth Host: " + BackendEndpoint.AuthHost);
-            Logger?.Log("Reader Host: " + BackendEndpoint.ReaderHost);
-            Logger?.Log("Writer Host: " + BackendEndpoint.WriterHost);
-            Logger?.Log("Vault Host: " + BackendEndpoint.VaultHost);
-            Logger?.Log("Card Data Version: " + BackendEndpoint.DataVersion);
+            Log.Info("Auth Host: " + BackendEndpoint.AuthHost);
+            Log.Info("Reader Host: " + BackendEndpoint.ReaderHost);
+            Log.Info("Writer Host: " + BackendEndpoint.WriterHost);
+            Log.Info("Vault Host: " + BackendEndpoint.VaultHost);
+            Log.Info("Card Data Version: " + BackendEndpoint.DataVersion);
         }
 
         public void Update()
@@ -67,6 +71,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task CreateContract(
             byte[] privateKey,
+            DAppChainClientConfiguration clientConfiguration,
             Action<DAppChainClient> onClientCreatedCallback = null,
             IDAppChainClientCallExecutor chainClientCallExecutor = null
             )
@@ -74,7 +79,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             byte[] publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
             Address callerAddr = Address.FromPublicKey(publicKey);
 
-            ILogger logger = EnableRpcLogging ? Logger ?? NullLogger.Instance : NullLogger.Instance;
+            ILogger logger = RpcLog != null ? (ILogger) new UnityLoggerWrapper(RpcLog) : NullLogger.Instance;
 
             IRpcClient writer =
                 RpcClientFactory
@@ -93,7 +98,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DAppChainClient client = new DAppChainClient(
                 writer,
                 _reader,
-                callExecutor: chainClientCallExecutor
+                clientConfiguration,
+                chainClientCallExecutor
                 )
             {
                 Logger = logger
@@ -220,30 +226,30 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #endregion
 
-        #region Heroes
+        #region Overlords
 
-        private const string HeroesList = "ListHeroes";
+        private const string OverlordsList = "ListOverlords";
 
-        public async Task<ListHeroesResponse> GetHeroesList(string userId)
+        public async Task<ListOverlordsResponse> GetOverlordList(string userId)
         {
-            ListHeroesRequest request = new ListHeroesRequest
+            ListOverlordsRequest request = new ListOverlordsRequest
             {
                 UserId = userId
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListHeroesResponse>(HeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
         }
 
-        private const string GlobalHeroesList = "ListHeroLibrary";
+        private const string GlobalOverlordsList = "ListOverlordLibrary";
 
-        public async Task<ListHeroLibraryResponse> GetGlobalHeroesList()
+        public async Task<ListOverlordLibraryResponse> GetGlobalOverlordsList()
         {
-            ListHeroLibraryRequest request = new ListHeroLibraryRequest
+            ListOverlordLibraryRequest request = new ListOverlordLibraryRequest
             {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListHeroLibraryResponse>(GlobalHeroesList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
         }
 
         #endregion
@@ -327,7 +333,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
                 httpResponseMessage.ReadToEnd());
             return loginData;
@@ -350,7 +356,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
@@ -392,7 +398,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
@@ -413,13 +419,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
             vaultTokenRequest.access_token = accessToken;
 
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
-            Debug.Log(JsonConvert.SerializeObject(vaultTokenRequest));
+            Log.Debug(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
@@ -442,7 +448,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -478,7 +484,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ToString());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -495,12 +501,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = "https://auth.loom.games" + queryURLsEndPoint + "?version=" + Constants.CurrentVersionBase + "&environment=production";
 
-            Debug.Log(webrequestCreationInfo.Url);
+            Log.Debug(webrequestCreationInfo.Url);
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Debug.Log(httpResponseMessage.ReadToEnd());
+            Log.Debug(httpResponseMessage.ReadToEnd());
             if (!httpResponseMessage.IsSuccessStatusCode)
                 throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
 
@@ -702,38 +708,21 @@ namespace Loom.ZombieBattleground.BackendCommunication
         }
 
         public async Task SubscribeEvent(IList<string> topics)
-         {
-#warning Fix the multiple subscription issue once and for all
-
-            for (int i = _subscribeCount; i > 0; i--) {
-                await UnsubscribeEvent();
-            }
-
+        {
+            await UnsubscribeEvent();
             await _reader.SubscribeAsync(EventHandler, topics);
-            _subscribeCount++;
         }
 
-         public async Task UnsubscribeEvent()
-         {
-            //TODO Remove the logs once we fix the multiple subscription issue once and for all
-            if (_subscribeCount > 0)
+        public async Task UnsubscribeEvent()
+        {
+            try
             {
-                Debug.Log("Unsubscribing from Event - Current Subscriptions = " + _subscribeCount);
-                try
-                {
-                    await _reader.UnsubscribeAsync(EventHandler);
-                    _subscribeCount--;
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.LogException(e);
-                    Debug.Log("Unsubscribe Error " + e);
-                }
-
+                await _reader.UnsubscribeAsync(EventHandler);
             }
-            else
+            catch (Exception e)
             {
-                Debug.Log("Tried to Unsubscribe, count <= 0 = " + _subscribeCount);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e);
             }
         }
 
@@ -768,9 +757,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
         }
 
+        //attempt to implement a one message action policy
+        private byte[] previousData;
         private void EventHandler(object sender, JsonRpcEventData e)
         {
-            PlayerActionDataReceived?.Invoke(e.Data);
+            if (previousData == null || !previousData.SequenceEqual(e.Data)) {
+                previousData = e.Data;
+                PlayerActionDataReceived?.Invoke(e.Data);
+            }
         }
 
 #endregion
@@ -808,6 +802,23 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(CallCustomGameModeFunctionMethod, request);
         }
 
+#endregion
+
+#region RewardTutorial
+        private const string RewardTutorialCompletedMethod = "RewardTutorialCompleted";
+        public async Task<RewardTutorialCompletedResponse> GetRewardTutorialCompletedResponse()
+        {
+            Log.Debug("GetRewardTutorialCompletedResponse");
+            RewardTutorialCompletedRequest request = new RewardTutorialCompletedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialCompletedResponse>(RewardTutorialCompletedMethod, request);
+        }
+
+        private const string RewardTutorialClaimMethod = "ConfirmRewardTutorialClaimed";
+        public async Task<RewardTutorialClaimed> ConfirmRewardTutorialClaimed()
+        {
+            ConfirmRewardTutorialClaimedRequest request = new ConfirmRewardTutorialClaimedRequest();
+            return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
+        }
 #endregion
     }
 }

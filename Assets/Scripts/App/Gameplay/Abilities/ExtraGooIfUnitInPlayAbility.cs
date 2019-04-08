@@ -1,6 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -9,6 +8,8 @@ namespace Loom.ZombieBattleground
     {
         private const int MaxExtraGooValue = 9999;
         private const int MinExtraGooValue = 0;
+
+        private bool _gooWasChanged;
 
         public int Value { get; }
 
@@ -22,28 +23,54 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            InvokeUseAbilityEvent();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo + Value, MinExtraGooValue, MaxExtraGooValue);
-            PlayerCallerOfAbility.CurrentGoo += Value;
+            Action(new object[] { PlayerCallerOfAbility, 1 });
         }
 
         protected override void UnitDiedHandler()
         {
             base.UnitDiedHandler();
 
-            PlayerCallerOfAbility.ExtraGoo = Mathf.Clamp(PlayerCallerOfAbility.ExtraGoo - Value, MinExtraGooValue, MaxExtraGooValue);
-            PlayerCallerOfAbility.CurrentGoo -= Value;
+            if (_gooWasChanged)
+            {
+                Action(new object[] { PlayerCallerOfAbility, -1 });
+            }
+        }
+
+        public override void Deactivate()
+        {
+            base.Deactivate();
+
+            if (_gooWasChanged)
+            {
+                Action(new object[] { PlayerCallerOfAbility, -1 });
+            }
+        }
+
+        protected override void PlayerOwnerHasChanged(Player oldPlayer, Player newPlayer)
+        {
+            Action(new object[] { oldPlayer, -1 });
+            Action(new object[] { newPlayer, 1 });
+        }
+
+        public override void Action(object info = null)
+        {
+            base.Action(info);
+
+            Player player = ((object[])info)[0] as Player;
+            int revertSymbol = (int)((object[])info)[1];
+
+            _gooWasChanged = revertSymbol > 0;
+
+            player.ExtraGoo = Mathf.Clamp(player.ExtraGoo + (Value * revertSymbol), MinExtraGooValue, MaxExtraGooValue);
+
+            if (GameplayManager.CurrentTurnPlayer.Equals(player))
+            {
+                player.CurrentGoo += (Value * revertSymbol);
+            }
         }
     }
 }

@@ -12,18 +12,20 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
+        private BoardObject _targetObject;
+
         public DamageTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
-            TargetUnitStatusType = ability.TargetUnitStatusType;
+            TargetUnitSpecialStatus = ability.TargetUnitSpecialStatus;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             DealDamageToUnitOwner();
@@ -35,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                InvokeActionTriggered();
+                Action();
             }
         }
 
@@ -43,7 +45,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
                 !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
@@ -52,7 +54,7 @@ namespace Loom.ZombieBattleground
 
         private void DealDamageToUnitOwner()
         {
-            if (AbilityTargetTypes.Contains(Enumerators.AbilityTargetType.ITSELF))
+            if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
             {
                 if (GetCaller() == AbilityUnitOwner)
                 {
@@ -60,7 +62,7 @@ namespace Loom.ZombieBattleground
 
                     BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
 
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                    InvokeUseAbilityEvent();
 
                     ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
@@ -83,41 +85,57 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        public override void Action(object info = null)
+        {
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+
+            base.Action(info);
+
+            switch (AffectObjectType)
+            {
+                case Enumerators.AffectObjectType.Player:
+                    _targetObject = TargetPlayer;
+                    break;
+                case Enumerators.AffectObjectType.Character:                   
+                    _targetObject = TargetUnit;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
+            }
+
+            if(_targetObject != null)
+            {
+                InvokeUseAbilityEvent(
+                        new List<ParametrizedAbilityBoardObject>
+                        {
+                            new ParametrizedAbilityBoardObject(_targetObject)
+                        }
+                    );
+            }
+
+            InvokeActionTriggered();
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
             object caller = GetCaller();
 
-            object target = null;
-
             Enumerators.ActionType actionType;
 
-            switch (AffectObjectType)
+            switch (_targetObject)
             {
-                case Enumerators.AffectObjectType.Player:
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetPlayer
-                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
-                    BattleController.AttackPlayerByAbility(caller, AbilityData, TargetPlayer);
-
-                    target = TargetPlayer;
-                    actionType = Enumerators.ActionType.CardAffectingOverlord;
-                    break;
-                case Enumerators.AffectObjectType.Character:
-                    BattleController.AttackUnitByAbility(caller, AbilityData, TargetUnit);
-                    AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                    {
-                        TargetUnit
-                    }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
-
-                    target = TargetUnit;
+                case BoardUnitModel unit:
+                    BattleController.AttackUnitByAbility(caller, AbilityData, unit);
                     actionType = Enumerators.ActionType.CardAffectingCard;
                     break;
+                case Player player:
+                    BattleController.AttackPlayerByAbility(caller, AbilityData, player);
+                    actionType = Enumerators.ActionType.CardAffectingOverlord;
+                    break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
+                    throw new ArgumentOutOfRangeException(nameof(_targetObject), _targetObject, null);
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -129,12 +147,14 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                            Target = target,
+                            Target = _targetObject,
                             HasValue = true,
                             Value = -AbilityData.Value
                         }
                     }
             });
+
+            AbilityProcessingAction?.ForceActionDone();
         }
     }
 }

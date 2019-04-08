@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Count { get; }
 
+        public List<BoardUnitModel> MovedUnits => _movedUnits;
+
         private List<BoardUnitModel> _movedUnits;
 
         public TakeControlEnemyUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -22,14 +24,15 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 if (PredefinedTargets != null)
                 {
-                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList());
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList()
+                        .FindAll(card => card.CurrentDefense > 0 && !card.IsDead));
                 }
                 else
                 {
@@ -61,7 +64,7 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in units)
             {
-                if (PlayerCallerOfAbility.BoardCards.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
+                if (PlayerCallerOfAbility.CardsOnBoard.Count >= PlayerCallerOfAbility.MaxCardsInPlay)
                     break;
 
                 _movedUnits.Add(unit);
@@ -79,8 +82,11 @@ namespace Loom.ZombieBattleground
 
             if (_movedUnits.Count > 0)
             {
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _movedUnits.Cast<BoardObject>().ToList(), AbilityData.AbilityType,
-                                                         Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    _movedUnits
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
+                        .ToList()
+                );
             }
         }
 

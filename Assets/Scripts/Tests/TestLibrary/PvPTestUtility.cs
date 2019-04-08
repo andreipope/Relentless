@@ -2,25 +2,40 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using NUnit.Framework;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
     public static class PvPTestUtility
     {
-        private static readonly TestHelper TestHelper = TestHelper.Instance;
+        private static readonly ILog Log = Logging.GetLog(nameof(PvPTestUtility));
+
+        private static TestHelper TestHelper => TestHelper.Instance;
 
         public static async Task GenericPvPTest(
             PvpTestContext pvpTestContext,
             IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns,
             Action validateEndStateAction,
-            bool enableReverseMatch = true)
+            bool enableReverseMatch = true,
+            bool enableBackendGameLogicMatch = false,
+            bool enableClientGameLogicMatch = true,
+            bool onlyReverseMatch = false,
+            Action afterSetupAction = null
+            )
         {
+            void LogTestMode()
+            {
+                Log.Info($"= RUNNING INTEGRATION TEST [{TestContext.CurrentTestExecutionContext.CurrentTest.Name}] Reverse: {pvpTestContext.IsReversed}, UseBackendLogic: {pvpTestContext.UseBackendLogic}");
+            }
+
             async Task ExecuteTest()
             {
+                LogTestMode();
                 await GenericPvPTest(
                     turns,
                     pvpTestContext.Player1Deck,
@@ -36,23 +51,52 @@ namespace Loom.ZombieBattleground.Test
                         TestHelper.DebugCheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player2Deck : pvpTestContext.Player1Deck;
                         TestHelper.DebugCheats.DisableDeckShuffle = true;
                         TestHelper.DebugCheats.IgnoreGooRequirements = true;
+                        TestHelper.DebugCheats.CustomRandomSeed = 1337;
+                        GameClient.Get<IPvPManager>().UseBackendGameLogic = pvpTestContext.UseBackendLogic;
+                        afterSetupAction?.Invoke();
                     },
                     cheats =>
                     {
                         cheats.UseCustomDeck = true;
                         cheats.CustomDeck = pvpTestContext.IsReversed ? pvpTestContext.Player1Deck : pvpTestContext.Player2Deck;
-                    },
+                        },
                     validateEndStateAction);
             }
 
-            pvpTestContext.IsReversed = false;
-            await ExecuteTest();
-
-            if (enableReverseMatch)
+            async Task ExecuteTestWithReverse()
             {
-                Debug.Log("Starting reversed Pvp test");
-                pvpTestContext.IsReversed = true;
-                await ExecuteTest();
+                if (!onlyReverseMatch)
+                {
+                    pvpTestContext.IsReversed = false;
+                    await ExecuteTest();
+                }
+
+                if (enableReverseMatch)
+                {
+                    pvpTestContext.IsReversed = true;
+                    await ExecuteTest();
+                }
+            }
+
+#if !ENABLE_BACKEND_INTEGRATION_TESTS
+            enableBackendGameLogicMatch = false;
+#endif
+            if (!enableClientGameLogicMatch && !enableBackendGameLogicMatch)
+                throw new Exception("At least one tests must be run");
+
+            if (!enableReverseMatch && onlyReverseMatch)
+                throw new Exception("!enableReverseMatch && onlyReverseMatch");
+
+            if (enableClientGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = false;
+                await ExecuteTestWithReverse();
+            }
+
+            if (enableBackendGameLogicMatch)
+            {
+                pvpTestContext.UseBackendLogic = true;
+                await ExecuteTestWithReverse();
             }
         }
 
@@ -63,60 +107,62 @@ namespace Loom.ZombieBattleground.Test
             Action<DebugCheatsConfiguration> modifyOpponentDebugCheats,
             Action validateEndStateAction)
         {
-            await TestHelper.CreateAndConnectOpponentDebugClient();
+            MatchScenarioPlayer matchScenarioPlayer = null;
+
+            bool canceled = false;
+            await TestHelper.CreateAndConnectOpponentDebugClient(
+                async exception =>
+                {
+                    await GameClient.Get<IPvPManager>().StopMatchmaking();
+                    matchScenarioPlayer?.AbortNextMoves();
+                    canceled = true;
+                }
+                );
             setupAction?.Invoke();
 
-            await StartOnlineMatch(selectedHordeIndex: -1, createOpponent: false);
+            await StartOnlineMatch(null, createOpponent: false);
 
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
-            await GameClient.Get<IMatchManager>().FindMatch();
+            await TestHelper.MainMenuTransition("Button_Battle");
             GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
 
-            MatchScenarioPlayer matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns);
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
+
+            Assert.IsFalse(canceled, "canceled");
             await TestHelper.WaitUntilPlayerOrderIsDecided();
+            Assert.IsFalse(canceled, "canceled");
 
-            await matchScenarioPlayer.Play();
+            GameClient.Get<IGameplayManager>().OpponentHasDoneMulligan = true;
+
+            using (matchScenarioPlayer = new MatchScenarioPlayer(TestHelper, turns))
+            {
+                await matchScenarioPlayer.Play();
+            }
+
             validateEndStateAction?.Invoke();
-
             await TestHelper.GoBackToMainScreen();
         }
 
-        public static async Task StartOnlineMatch(int selectedHordeIndex = 0, bool createOpponent = true, IList<string> tags = null)
+        public static async Task StartOnlineMatch(IReadOnlyList<string> tags = null, bool createOpponent = true)
         {
-            await TestHelper.MainMenuTransition("Button_Play");
-            await TestHelper.AssertIfWentDirectlyToTutorial(TestHelper.GoBackToMainAndPressPlay);
-
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PlaySelection);
+            await TestHelper.MainMenuTransition("Panel_Battle_Mode");
             await TestHelper.MainMenuTransition("Button_PvPMode");
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.PvPSelection);
-            await TestHelper.MainMenuTransition("Button_CasualType");
-            await TestHelper.AssertCurrentPageName(Enumerators.AppState.HordeSelection);
-
-            if (selectedHordeIndex > 0)
-            {
-                await TestHelper.SelectAHordeByIndex(selectedHordeIndex);
-            }
 
             if (tags == null)
             {
-                tags = new List<string>();
+                tags = new List<string>
+                {
+                    "onlineTest",
+                    TestHelper.GetTestName(),
+                    Guid.NewGuid().ToString()
+                };
             }
-
-            tags.Insert(0, "pvpTest");
-            tags.Insert(1, TestHelper.GetTestName());
-
             TestHelper.SetPvPTags(tags);
             TestHelper.DebugCheats.Enabled = true;
             TestHelper.DebugCheats.CustomRandomSeed = 0;
 
             await TestHelper.LetsThink();
-
-            if (selectedHordeIndex > 0)
-            {
-                await TestHelper.MainMenuTransition("Button_Battle");
-            }
 
             if (createOpponent)
             {
@@ -124,36 +170,35 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public static WorkingCard GetCardOnBoard(Player player, string name)
+        public static BoardUnitModel GetCardOnBoard(Player player, string name)
         {
-            WorkingCard workingCard =
+            BoardUnitModel boardUnitModel =
                 player
-                .BoardCards
-                .Select(boardCard => boardCard.Model.Card)
+                .CardsOnBoard
                 .Concat(player.CardsOnBoard)
-                .FirstOrDefault(card => CardNameEqual(name, card));
+                .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (workingCard == null)
+            if (boardUnitModel == null)
             {
                 throw new Exception($"No '{name}' cards found on board for player {player}");
             }
 
-            return workingCard;
+            return boardUnitModel;
         }
 
-        public static WorkingCard GetCardInHand(Player player, string name)
+        public static BoardUnitModel GetCardInHand(Player player, string name)
         {
-            WorkingCard workingCard =
+            BoardUnitModel boardUnitModel =
                 player
                     .CardsInHand
-                    .FirstOrDefault(card => CardNameEqual(name, card));
+                    .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (workingCard == null)
+            if (boardUnitModel == null)
             {
                 throw new Exception($"No '{name}' cards found in hand of player {player}");
             }
 
-            return workingCard;
+            return boardUnitModel;
         }
 
         public static bool CardNameEqual(string name1, string name2)
@@ -161,9 +206,31 @@ namespace Loom.ZombieBattleground.Test
             return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static bool CardNameEqual(string name, WorkingCard card)
+        public static Deck GetDeckWithCards(string name, int overlordId = 0, params DeckCardData[] cards)
         {
-            return CardNameEqual(name, card.LibraryCard.Name);
+            Deck deck = new Deck(
+                 0,
+                 overlordId,
+                 name,
+                 cards.ToList(),
+                 Enumerators.Skill.NONE,
+                 Enumerators.Skill.NONE
+             );
+
+            return deck;
+        }
+
+        public static Deck GetDeckWithCards(string name,
+                                    int overlordId = 0,
+                                    Enumerators.Skill primarySkill = Enumerators.Skill.NONE,
+                                    Enumerators.Skill secondarySkill = Enumerators.Skill.NONE,
+                                    params DeckCardData[] cards)
+        {
+            Deck deck = GetDeckWithCards(name, overlordId, cards);
+            deck.PrimarySkill = primarySkill;
+            deck.SecondarySkill = secondarySkill;
+
+            return deck;
         }
     }
 }

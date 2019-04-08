@@ -132,5 +132,46 @@ namespace Loom.ZombieBattleground.Helpers
         {
             return CultureInfo.CurrentCulture.TextInfo.ToTitleCase(root.ToLower().Replace("_", " ")).Replace(" ", string.Empty);
         }
+
+        public static ItemPosition GetSafePositionToInsert<T>(ItemPosition position, IReadOnlyCollection<T> list)
+        {
+            return new ItemPosition(Mathf.Clamp(position.GetIndex(list), 0, list.Count));
+        }
+
+        public static ItemPosition GetSafePositionToInsert<T>(int position, IReadOnlyCollection<T> list)
+        {
+            return new ItemPosition(Mathf.Clamp(position, 0, list.Count));
+        }
+
+        public static async global::System.Threading.Tasks.Task<T> GetJsonFromLink<T>(
+            string uri,
+            log4net.ILog log,
+            global::Newtonsoft.Json.JsonSerializerSettings jsonSerializerSettings)
+        {
+            T result = default(T);
+
+            UnityEngine.Networking.UnityWebRequest request = UnityEngine.Networking.UnityWebRequest.Get(uri);
+            await request.SendWebRequest();
+
+            while (!request.isDone) { await global::System.Threading.Tasks.Task.Delay(10); }
+
+            if (!request.isNetworkError && !request.isHttpError)
+            {
+                try
+                {
+                    result = global::Newtonsoft.Json.JsonConvert.DeserializeObject<T>(request.downloadHandler.text, jsonSerializerSettings);
+                }
+                catch (Exception e)
+                {
+                    log?.Warn($"Parse json to Type {typeof(T).Name} has error;", e);
+                }
+            }
+            else
+            {
+                log?.Warn($"{uri} : request error: {request.downloadHandler?.text}");
+            }
+
+            return result;
+        }
     }
 }

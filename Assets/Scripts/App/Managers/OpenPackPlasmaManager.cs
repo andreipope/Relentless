@@ -12,20 +12,22 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
+using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
 
     public class OpenPackPlasmaManager : IService 
     {    
-    	public List<Card> CardsReceived { get; private set; }
+        private static readonly ILog Log = Logging.GetLog(nameof(OpenPackPlasmaManager));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(OpenPackPlasmaManager) + "Rpc");
+        
+        public List<Card> CardsReceived { get; private set; }
         
         #region Contract
         private TextAsset _abiCardFaucet;
-        private TextAsset _abiBoosterPack;
-        
-        private EvmContract _cardFaucetContract;
-        private EvmContract _boosterPackContract;    
+        private TextAsset[] _abiPacks;
         #endregion    
         
         #region Key
@@ -39,13 +41,18 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
-        
-        private const int _boosterPackIndex = 0;
 
         private const int _cardsPerPack = 5;
+
+        private const int _maxRequestRetryAttempt = 5;
+
+        private bool _eventInitialized;
         
         private BackendDataControlMediator _backendDataControlMediator;
         private ILoadObjectsManager _loadObjectsManager;  
@@ -57,9 +64,15 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _dataManager = GameClient.Get<IDataManager>();
             CardsReceived = new List<Card>();
+            _eventInitialized = false;
                       
-            _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI"); 
-            _abiBoosterPack = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/BoosterPackABI");            
+            _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI");
+            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
+            _abiPacks = new TextAsset[packTypes.Length];
+            for (int i = 0;i < packTypes.Length;++i)
+            {
+                _abiPacks[i] = _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI");
+            }
         }
         
         public void Update()
@@ -70,68 +83,150 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        public async Task<int> CallPackBalanceContract()
+        private string GetContractAddress(int packTypeId)
         {
-             _boosterPackContract = await GetContract(
+            switch( (Enumerators.MarketplaceCardPackType)packTypeId)
+            {
+                case Enumerators.MarketplaceCardPackType.Booster:
+                    return PlasmaChainEndpointsContainer.ContractAddressBoosterPack;
+                case Enumerators.MarketplaceCardPackType.Super:
+                    return PlasmaChainEndpointsContainer.ContractAddressSuperPack;
+                case Enumerators.MarketplaceCardPackType.Air:
+                    return PlasmaChainEndpointsContainer.ContractAddressAirPack;
+                case Enumerators.MarketplaceCardPackType.Earth:
+                    return PlasmaChainEndpointsContainer.ContractAddressEarthPack;
+                case Enumerators.MarketplaceCardPackType.Fire:
+                    return PlasmaChainEndpointsContainer.ContractAddressFirePack;
+                case Enumerators.MarketplaceCardPackType.Life:
+                    return PlasmaChainEndpointsContainer.ContractAddressLifePack;
+                case Enumerators.MarketplaceCardPackType.Toxic:
+                    return PlasmaChainEndpointsContainer.ContractAddressToxicPack;
+                case Enumerators.MarketplaceCardPackType.Water:
+                    return PlasmaChainEndpointsContainer.ContractAddressWaterPack;
+                case Enumerators.MarketplaceCardPackType.Small:
+                    return PlasmaChainEndpointsContainer.ContractAddressSmallPack;
+                case Enumerators.MarketplaceCardPackType.Minion:
+                    return PlasmaChainEndpointsContainer.ContractAddressMinionPack;
+                default:
+                    break;
+            }
+            return "";
+        }
+        
+        public async Task<int> CallPackBalanceContract(int packTypeId)
+        {        
+            Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
+            EvmContract packContract = GetContract(
                 PrivateKey,
                 PublicKey,
-                _abiBoosterPack.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+                _abiPacks[packTypeId].ToString(),
+                GetContractAddress(packTypeId)
             );
-            int amount = await CallBalanceContract(_boosterPackContract);
-            return amount;
+
+            int amount;
+            int count = 0;            
+            while (true)
+            {
+                try
+                {
+                    amount = await CallBalanceContract(packContract);
+                    break;
+                }
+                catch
+                {
+                    Log.Info($"smart contract [balanceOf] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                if(count > _maxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallPackBalanceContract)} with packTypeId {packTypeId}  failed after {count} attempts");
+                }
+                Log.Info($"Retry CallPackBalance: {count}");
+            }
+            return amount;            
         }
 
-        public async Task<List<Card>> CallOpenPack(int packToOpenAmount)
+        public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
-             _cardFaucetContract = await GetContract(
+            List<Card> resultList;
+            EvmContract cardFaucetContract = GetContract(
                 PrivateKey,
                 PublicKey,
                 _abiCardFaucet.ToString(),
                 PlasmaChainEndpointsContainer.ContractAddressCardFaucet
             );
-            _boosterPackContract = await GetContract(
+            EvmContract packContract = GetContract(
                 PrivateKey,
                 PublicKey,
-                _abiBoosterPack.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressBoosterPack
+                _abiPacks[packTypeId].ToString(),
+                GetContractAddress(packTypeId)
             );
 
-            _cardFaucetContract.EventReceived += ContractEventReceived;
-        
-            CardsReceived.Clear();
-            int expectCardReceiveAmount = packToOpenAmount * _cardsPerPack;
-
-            for (int i = 0; i < packToOpenAmount; ++i)
+            if (!_eventInitialized)
             {
-                await CallBalanceContract(_boosterPackContract);
-                await CallApproveContract(_boosterPackContract);
-                await CallOpenPackContract(_cardFaucetContract, _boosterPackIndex);
-                await CallBalanceContract(_boosterPackContract);
+                cardFaucetContract.EventReceived += ContractEventReceived;
+                _eventInitialized = true;
             }
 
-            double timeOut = 4.99;
-            double interval = 1.0;
-            while( timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount )
-            {                
-                await Task.Delay(TimeSpan.FromSeconds(interval));
-                timeOut -= interval;
-            }
+            int expectCardReceiveAmount = _cardsPerPack;
 
-            return CardsReceived;                                   
+            int count = 0;
+            while (true)
+            {
+                resultList = new List<Card>();
+                CardsReceived.Clear();
+
+                try
+                {
+                    await CallBalanceContract(packContract);
+                    await CallApproveContract(packContract);
+                    await CallOpenPackContract(cardFaucetContract, packTypeId);
+                    await CallBalanceContract(packContract);
+
+                    double timeOut = 29.99;
+                    double interval = 1.0;
+                    while (timeOut > 0.0 && CardsReceived.Count < expectCardReceiveAmount)
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(interval));
+                        timeOut -= interval;
+                    }
+
+
+                    foreach (Card card in CardsReceived)
+                    {
+                        resultList.Add(card);
+                    }
+                    break;
+                }
+                catch
+                {
+                    Log.Info($"smart contract [open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                if(count > _maxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallOpenPack)} with packTypeId {packTypeId}  failed after {count} attempts");
+                }
+                Log.Info($"Retry CallOpenPack: {count}");
+            }
+            return resultList;                                   
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+            
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
@@ -153,6 +248,8 @@ namespace Loom.ZombieBattleground
     
             return new EvmContract(client, contractAddr, callerAddr, abi);
         }
+
+        private const string BalanceOfMethod = "balanceOf";
         
         public async Task<int> CallBalanceContract(EvmContract contract)
         {
@@ -161,16 +258,18 @@ namespace Loom.ZombieBattleground
                 throw new Exception("Contract not signed in!");
             }
             
-            Debug.Log("Calling smart contract [balanceOf]");
+            Log.Info($"Calling smart contract [{BalanceOfMethod}]");
             int result = await contract.StaticCallSimpleTypeOutputAsync<int>(
-                "balanceOf",
+                BalanceOfMethod,
                  Address.FromPublicKey(PublicKey).ToString()
             );        
-            Debug.Log("<color=green>" + "balanceOf RESULT: " + result + "</color>");
+            Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
         
-            Debug.Log("Smart contract method [balanceOf] finished executing.");
+            Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
             return result;
         }
+        
+        private const string ApproveMethod = "approve";
         
         public async Task CallApproveContract(EvmContract contract)
         {
@@ -178,26 +277,28 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log("Calling smart contract [approve]");
+            Log.Info("Calling smart contract [approve]");
     
             int amountToApprove = 1;
         
-            await contract.CallAsync("approve", PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
+            await contract.CallAsync(ApproveMethod, PlasmaChainEndpointsContainer.ContractAddressCardFaucet , amountToApprove);
         
-            Debug.Log("Smart contract method [approve] finished executing.");
+            Log.Info($"Smart contract method [{ApproveMethod}] finished executing.");
         }
         
-        public async Task CallOpenPackContract(EvmContract contract, int packIndex)
+        private const string OpenPackMethod = "openBoosterPack";
+        
+        public async Task CallOpenPackContract(EvmContract contract, int packTypeId)
         {
             if (contract == null)
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [openBoosterPack] {packIndex}");
+            Log.Info( $"Calling smart contract [{OpenPackMethod}] with packId: {packTypeId}");
         
-            await contract.CallAsync("openBoosterPack", packIndex);
+            await contract.CallAsync(OpenPackMethod, packTypeId);
         
-            Debug.Log($"Smart contract method [openBoosterPack] {packIndex} finished executing.");
+            Log.Info($"Smart contract method [{OpenPackMethod}] with packId: {packTypeId} finished executing.");
         }
         
         [Event("GeneratedCard")]
@@ -212,15 +313,15 @@ namespace Loom.ZombieBattleground
 
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
-            Debug.LogFormat("Received smart contract event: " + e.EventName);
-            OnOpenPackEvent onOpenBoosterPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
-            Debug.Log($"<color=red>CardId: {onOpenBoosterPackEvent.CardId}, BoosterType: {onOpenBoosterPackEvent.BoosterType}</color>");
+            Log.InfoFormat("Received smart contract event: " + e.EventName);
+            OnOpenPackEvent onOpenPackEvent = e.DecodeEventDto<OnOpenPackEvent>();
+            Log.Info($"<color=red>CardId: {onOpenPackEvent.CardId}, BoosterType: {onOpenPackEvent.BoosterType}</color>");
 
-            if ((int)onOpenBoosterPackEvent.CardId % 10 == 0)
+            if ((int)onOpenPackEvent.CardId % 10 == 0)
             {
-                int mouldId = (int)onOpenBoosterPackEvent.CardId / 10;
+                int mouldId = (int)onOpenPackEvent.CardId / 10;
                 Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
-                Debug.Log($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
                 CardsReceived.Add(card);
             }
         }                   

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using log4net;
+using Loom.Google.Protobuf;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
@@ -10,6 +12,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 {
     public class ActionCollectorUploader : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(ActionCollectorUploader));
+        public static readonly ILog PlayerActionLog = Logging.GetLog("PlayerActionTrace");
+
         private IGameplayManager _gameplayManager;
 
         private IMatchManager _matchManager;
@@ -162,7 +167,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void DrawCardHandler(WorkingCard card)
+            private void DrawCardHandler(BoardUnitModel boardUnitModel)
             {
                 /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
                 PlayerAction playerAction = new PlayerAction
@@ -220,9 +225,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void CardPlayedHandler(WorkingCard card, int position)
+            private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
             {
-                AddAction(_playerActionFactory.CardPlay(card.InstanceId, position));
+                AddAction(_playerActionFactory.CardPlay(boardUnitModel.InstanceId, position));
             }
 
             private void TurnEndedHandler()
@@ -243,50 +248,45 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 AddAction(_playerActionFactory.LeaveMatch());
             }
 
-            private void CardAttackedHandler(WorkingCard attacker, Data.InstanceId instanceId)
+            private void CardAttackedHandler(BoardUnitModel attacker, Data.InstanceId instanceId)
             {
                 AddAction(_playerActionFactory.CardAttack(attacker.InstanceId, instanceId));
             }
 
             private void AbilityUsedHandler(
-                WorkingCard card,
+                BoardUnitModel boardUnitModel,
                 Enumerators.AbilityType abilityType,
                 List<ParametrizedAbilityBoardObject> targets = null)
             {
-                AddAction(_playerActionFactory.CardAbilityUsed(card.InstanceId, abilityType, targets));
+                AddAction(_playerActionFactory.CardAbilityUsed(boardUnitModel.InstanceId, abilityType, targets));
             }
 
-            private void MulliganHandler(List<WorkingCard> cards)
+            private void MulliganHandler(List<BoardUnitModel> cards)
             {
                 AddAction(_playerActionFactory.Mulligan(cards.Select(card => card.InstanceId)));
             }
 
-            private void SkillUsedHandler(BoardSkill skill, BoardObject target)
+            private void SkillUsedHandler(BoardSkill skill, List<ParametrizedAbilityBoardObject> targets = null)
             {
-                Data.InstanceId targetInstanceId;
-                switch (target)
-                {
-                    case BoardUnitModel unit:
-                        targetInstanceId = unit.Card.InstanceId;
-                        break;
-                    case Player player:
-                        targetInstanceId = new Data.InstanceId(player.InstanceId.Id);
-                        break;
-                    default:
-                        throw new Exception($"Unhandled target type {target}");
-                }
-
-                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targetInstanceId));
+                AddAction(_playerActionFactory.OverlordSkillUsed(skill.SkillId, targets));
             }
 
-            private void RanksUpdatedHandler(WorkingCard card, List<BoardUnitView> units)
+            private void RanksUpdatedHandler(BoardUnitModel card, IReadOnlyList<BoardUnitModel> targetUnits)
             {
-                AddAction(_playerActionFactory.RankBuff(card.InstanceId, units.Select(unit => unit.Model.Card.InstanceId).ToList()));
+                AddAction(_playerActionFactory.RankBuff(card.InstanceId, targetUnits.Select(unit => unit.Card.InstanceId).ToList()));
             }
 
             private void AddAction(PlayerAction playerAction)
             {
-                _queueManager.AddAction(_matchRequestFactory.CreateAction(playerAction));
+                PlayerActionRequest matchAction = _matchRequestFactory.CreateAction(playerAction);
+
+                // Exclude ControlGameState from logs for clarity
+                GameState controlGameState = playerAction.ControlGameState;
+                playerAction.ControlGameState = null;
+                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
+                playerAction.ControlGameState = controlGameState;
+
+                _queueManager.AddAction(matchAction);
             }
         }
     }

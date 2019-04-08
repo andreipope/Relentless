@@ -12,7 +12,10 @@ using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
 using Loom.ZombieBattleground.Common;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
@@ -38,30 +41,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public static T CastStringTuEnum<T>(string data, bool isManual = false)
-        {
-            if (isManual)
-            {
-                return (T)Enum.Parse(typeof(T), data);
-            }
-            else
-            {
-                return (T)Enum.Parse(typeof(T), data.ToUpperInvariant());
-            }
-        }
-
-        public static List<T> CastList<T>(string data, char separator = '|')
-        {
-            List<T> list = new List<T>();
-            string[] targets = data.Split(separator);
-            foreach (string target in targets)
-            {
-                list.Add(CastStringTuEnum<T>(target));
-            }
-
-            return list;
-        }
-
         public static Vector3 CastVfxPosition(Vector3 position)
         {
             return new Vector3(position.x, position.z, position.y);
@@ -81,11 +60,33 @@ namespace Loom.ZombieBattleground
             return str.Substring(0, maxLength);
         }
 
-        public static double GetTimeSinceStartup()
+        public static double GetTimestamp()
         {
-            long ticks = Stopwatch.GetTimestamp();
-            double uptime = (double)ticks / Stopwatch.Frequency;
-            return uptime;
+            return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
+        }
+
+        public static GameObject[] CollectAllSceneRootGameObjects(GameObject dontDestroyOnLoadGameObject)
+        {
+            Scene[] scenes = new Scene[SceneManager.sceneCount];
+            for (int i = 0; i < SceneManager.sceneCount; ++i)
+            {
+                scenes[i] = SceneManager.GetSceneAt(i);
+            }
+
+            return 
+                scenes
+                    .Concat(new[]
+                    {
+                        dontDestroyOnLoadGameObject.scene
+                    })
+                    .Distinct()
+                    .SelectMany(scene => scene.GetRootGameObjects())
+                    .ToArray();
+        }
+
+        public static string JsonPrettyPrint(string json)
+        {
+            return JToken.Parse(json).ToString(Formatting.Indented);
         }
 
         #region asset bundles and cache
@@ -126,7 +127,7 @@ namespace Loom.ZombieBattleground
             }
             catch (CryptographicException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
                 return null;
             }
 

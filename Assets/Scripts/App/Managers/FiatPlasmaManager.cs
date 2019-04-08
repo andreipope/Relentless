@@ -12,11 +12,16 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
 using System.Text;
+using log4net;
+using log4netUnitySupport;
 
 namespace Loom.ZombieBattleground
 {
     public class FiatPlasmaManager : IService
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(FiatPlasmaManager));
+        private static readonly ILog RpcLog = Logging.GetLog(nameof(FiatPlasmaManager) + "Rpc");
+
         #region Contract
         private TextAsset _abiFiatPurchase;
         private EvmContract _fiatPurchaseContract;
@@ -33,15 +38,22 @@ namespace Loom.ZombieBattleground
         
         private byte[] PublicKey
         {
-            get { return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); }
+            get 
+            { 
+                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
+            }
         }
         #endregion
         
         private BackendDataControlMediator _backendDataControlMediator;
+        
         private ILoadObjectsManager _loadObjectsManager;   
         
         private bool _isEventTriggered = false;      
+        
         private string _eventResponse;           
+        
+        private const int MaxRequestRetryAttempt = 5;
     
         public void Init()
         {           
@@ -62,7 +74,7 @@ namespace Loom.ZombieBattleground
          public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
         {
             ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);
-            _fiatPurchaseContract = await GetContract
+            _fiatPurchaseContract = GetContract
             (
                 PrivateKey,
                 PublicKey,
@@ -74,6 +86,8 @@ namespace Loom.ZombieBattleground
             responseEvent = await CallRequestPacksContract(_fiatPurchaseContract, contractParams);             
             return responseEvent;
         }
+
+        private const string RequestPacksMethod = "requestPacks";
         
         private async Task<string> CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
         {              
@@ -81,62 +95,74 @@ namespace Loom.ZombieBattleground
             {
                 throw new Exception("Contract not signed in!");
             }
-            Debug.Log( $"Calling smart contract [requestPacks]");          
-
-            _isEventTriggered = false;
-            _eventResponse = "";  
-            try
+            Log.Info( $"Calling smart contract [{RequestPacksMethod}]");
+            
+            int count = 0;
+            while (true)
             {
-                
-                await contract.CallAsync
-                (
-                    "requestPacks",
-                    contractParams.UserId,
-                    contractParams.r,
-                    contractParams.s,
-                    contractParams.v,
-                    contractParams.hash,
-                    contractParams.amount,
-                    contractParams.TxID
-                );
-                Debug.Log($"Smart contract method [requestPacks] finished executing.");
-                for( int i=0; i<10; ++i)
+                _isEventTriggered = false;
+                _eventResponse = ""; 
+                try
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    Debug.Log($"<color=green>Wait {i + 1} sec</color>");
-                    if( _isEventTriggered )
+
+                    await contract.CallAsync
+                    (
+                        RequestPacksMethod,
+                        contractParams.UserId,
+                        contractParams.r,
+                        contractParams.s,
+                        contractParams.v,
+                        contractParams.hash,
+                        contractParams.amount,
+                        contractParams.TxID
+                    );
+                    Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
+                    for (int i = 0; i < 10; ++i)
                     {
-                        return _eventResponse;
+                        await Task.Delay(TimeSpan.FromSeconds(1));
+                        Log.Info($"<color=green>Wait {i + 1} sec</color>");
+                        if (_isEventTriggered)
+                        {
+                            return _eventResponse;
+                        }
                     }
+                    Log.Info($"Wait for [requestPacks] response too long");
                 }
-                Debug.Log($"Wait for [requestPacks] response too long");
+                catch
+                {
+                    Log.Info($"smart contract [{RequestPacksMethod}] error or reverted");
+                    await Task.Delay(TimeSpan.FromSeconds(1)); 
+                }
+                ++count;
+                Log.Info($"Retry {RequestPacksMethod}: {count}");
+                if(count > MaxRequestRetryAttempt)
+                {
+                    throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
+                }
             }
-            catch
-            {
-                Debug.Log($"smart contract [requestPacks] error or reverted");                
-            }
-            return "";
         }
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
-            Debug.LogFormat("Received smart contract event: " + e.EventName);
-            Debug.LogFormat("BlockHeight: " + e.BlockHeight);
+            Log.InfoFormat("Received smart contract event: " + e.EventName);
+            Log.InfoFormat("BlockHeight: " + e.BlockHeight);
             _isEventTriggered = true;
             _eventResponse = e.EventName;
         }
         
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {        
+        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        {
+            ILogger logger = new UnityLoggerWrapper(RpcLog);
+
             IRpcClient writer = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
                 .Create();
     
             IRpcClient reader = RpcClientFactory
                 .Configure()
-                .WithLogger(Debug.unityLogger)
+                .WithLogger(logger)
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
@@ -176,7 +202,7 @@ namespace Loom.ZombieBattleground
         {
             string log = "ContractRequest Params: \n";
             int UserId = fiatResponse.UserId;
-            string hash = fiatResponse.VerifyHash.hash.Substring(2);
+            string hash = fiatResponse.VerifyHash.hash;
             int TxID = fiatResponse.TxID;
             string sig = fiatResponse.VerifyHash.signature;
             string r = Slice(sig, 2, 66);
@@ -195,6 +221,7 @@ namespace Loom.ZombieBattleground
             amountList.Add( fiatResponse.Water);        
             amountList.Add( fiatResponse.Small);
             amountList.Add( fiatResponse.Minion);
+            amountList.Add( fiatResponse.Binance);
 
             log += "UserId: " + UserId + "\n";
             log += "r: " + r + "\n";
@@ -202,21 +229,21 @@ namespace Loom.ZombieBattleground
             log += "v: " + v + "\n";
             log += "hash: " + hash + "\n";
             string amountStr = "[";
-            for(int i=0; i<amountList.Count;++i)
+            for (int i = 0; i < amountList.Count;++i)
             {
                 amountStr += amountList[i] + " ";
             }
             amountStr += "]";
             log += "amount: " + amountStr + "\n";
             log += "TxID: " + TxID + "\n";
-            Debug.Log(log);
+            Log.Info(log);
     
             ContractRequest contractParams = new ContractRequest();
             contractParams.UserId = UserId;
-            contractParams.r = HexStringToByte(r);
-            contractParams.s = HexStringToByte(s);
+            contractParams.r = CryptoUtils.HexStringToBytes(r);
+            contractParams.s = CryptoUtils.HexStringToBytes(s);
             contractParams.v = (sbyte)v;
-            contractParams.hash = HexStringToByte(hash);
+            contractParams.hash = CryptoUtils.HexStringToBytes(hash);
             contractParams.amount = amountList.ToArray();
             contractParams.TxID = TxID;
             return contractParams;
@@ -235,16 +262,6 @@ namespace Loom.ZombieBattleground
         {
             BigInteger b = BigInteger.Parse(hexString,NumberStyles.AllowHexSpecifier);
             return b;
-        }
-    
-        public Byte[] HexStringToByte(string str)
-        {
-            string hex = str; 
-            byte[] bytes = new byte[hex.Length / 2];
-            
-            for (int i = 0; i < hex.Length; i += 2)
-                bytes[i/2] = Convert.ToByte(hex.Substring(i, 2), 16);
-            return bytes;
         }
 #endregion     
     }

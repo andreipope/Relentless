@@ -26,7 +26,7 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _buttonMelt;
 
-        private Card _card;
+        private IReadOnlyCard _card;
 
         public GameObject Self { get; private set; }
 
@@ -78,10 +78,10 @@ namespace Loom.ZombieBattleground
         {
             Show();
 
-            _card = (Card) data;
+            _card = (IReadOnlyCard) data;
             _description.text = _card.FlavorText;
 
-            _amountAward.text = (5 * ((int) _card.CardRank + 1)).ToString();
+            _amountAward.text = (5 * ((int) _card.Rank + 1)).ToString();
 
             CardData = GameClient.Get<IDataManager>().CachedCollectionData.GetCardData(_card.Name);
             UpdateCardAmount();

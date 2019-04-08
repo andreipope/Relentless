@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -16,7 +17,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             HandleSubtriggers();
@@ -34,9 +35,17 @@ namespace Loom.ZombieBattleground
 
         private void HandleSubtriggers()
         {
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                List<BoardUnitModel> units = GetRandomEnemyUnits(1);
+                List<BoardUnitModel> units;
+                if (PredefinedTargets != null)
+                {
+                    units = PredefinedTargets.Select(x => (x.BoardObject as BoardUnitModel)).ToList();
+                }
+                else
+                {
+                    units = GetRandomEnemyUnits(1);
+                }
                 if (units.Count > 0)
                 {
                     DamageTarget(units[0]);
@@ -72,7 +81,7 @@ namespace Loom.ZombieBattleground
                     target = unit;
                     actionType = Enumerators.ActionType.CardAffectingCard;
 
-                    if (unit.CurrentHp > 0)
+                    if (unit.CurrentDefense > 0)
                     {
                         unit.Stun(Enumerators.StunType.FREEZE, 1);
                         isFreezed = true;
@@ -82,13 +91,10 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard,
-                new List<BoardObject>
-                {
-                    target
-                },
-                AbilityData.AbilityType,
-                AffectObjectType
+            InvokeUseAbilityEvent(
+                new List<ParametrizedAbilityBoardObject> {
+                    new ParametrizedAbilityBoardObject(target)
+                }
             );
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();

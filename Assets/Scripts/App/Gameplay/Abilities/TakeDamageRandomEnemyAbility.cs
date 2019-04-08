@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         public int Count { get; }
 
-        public Enumerators.SetType SetType;
+        public Enumerators.Faction Faction;
 
         private List<BoardObject> _targets;
 
@@ -25,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             Damage = ability.Damage;
             Count = ability.Count;
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
 
             _targets = new List<BoardObject>();
         }
@@ -34,29 +34,29 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
-                return;
+            InvokeUseAbilityEvent();
 
-            Action();
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
+            {
+                Action();
+            }
         }
 
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.END ||
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
           !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
                 return;
-
             Action();
         }
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             Action();
         }
@@ -65,59 +65,56 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PredefinedTargets != null)
-            {
-                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
-            }
-            else
-            {
-                _targets = new List<BoardObject>();
+            List<BoardObject> possibleTargets = new List<BoardObject>();
 
-                foreach (Enumerators.AbilityTargetType abilityTarget in AbilityData.AbilityTargetTypes)
+            foreach (Enumerators.Target abilityTarget in AbilityData.Targets)
+            {
+                switch (abilityTarget)
                 {
-                    switch (abilityTarget)
-                    {
-                        case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        case Enumerators.AbilityTargetType.OPPONENT_CARD:
-                            _targets.AddRange(GetOpponentOverlord().BoardCards
-                                .FindAll(unit => unit.Model.CurrentHp > 0)
-                                .Select(unit => unit.Model));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        case Enumerators.AbilityTargetType.PLAYER_CARD:
-                            _targets.AddRange(PlayerCallerOfAbility.BoardCards
-                                .FindAll(unit => unit.Model.CurrentHp > 0)
-                                .Select(unit => unit.Model));
-                            break;
-                        case Enumerators.AbilityTargetType.PLAYER:
-                            _targets.Add(PlayerCallerOfAbility);
-                            break;
-                        case Enumerators.AbilityTargetType.OPPONENT:
-                            _targets.Add(GetOpponentOverlord());
-                            break;
-                    }
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
+                        possibleTargets.AddRange(GetOpponentOverlord().CardsOnBoard
+                            .FindAll(unit => unit.CurrentDefense > 0));
+                        break;
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
+                        possibleTargets.AddRange(PlayerCallerOfAbility.CardsOnBoard
+                            .FindAll(unit => unit.CurrentDefense > 0));
+                        break;
+                    case Enumerators.Target.PLAYER:
+                        possibleTargets.Add(PlayerCallerOfAbility);
+                        break;
+                    case Enumerators.Target.OPPONENT:
+                        possibleTargets.Add(GetOpponentOverlord());
+                        break;
                 }
+            }
 
-                _targets = InternalTools.GetRandomElementsFromList(_targets, Count);
+            _targets = new List<BoardObject>();
+            int count = Mathf.Max(1, Count);
+            while (count > 0 && possibleTargets.Count > 0)
+            {   
+                int chosenIndex = MTwister.IRandom(0, possibleTargets.Count-1);
+                _targets.Add(possibleTargets[chosenIndex]);
+                possibleTargets.RemoveAt(chosenIndex);
+                count--;
             }
 
             InvokeActionTriggered(_targets);      
-
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, _targets, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
 
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
             foreach (object target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                     Target = target,
@@ -130,22 +127,21 @@ namespace Loom.ZombieBattleground
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
-
-            if (IsPVPAbility)
-            {
-                Deactivate();
-            }
         }
 
         private void ActionCompleted(object target, out int damageWas)
         {
-            int damageOverride = Damage;
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH) {
+                base.UnitDiedHandler();
+            }
+            
+            int damageOverride = Mathf.Max(1, Damage);
 
-            if (AbilityData.AbilitySubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachFactionOfUnitInHand)
             {
-                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.LibraryCard.CardSetType == SetType).Count;
+                damageOverride = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
             }
 
             damageWas = damageOverride;

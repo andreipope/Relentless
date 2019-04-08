@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using log4net;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -6,6 +7,8 @@ namespace Loom.ZombieBattleground
     [DisallowMultipleComponent]
     public class SingletonTag : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(SingletonTag));
+
         private void Start()
         {
             string tag = gameObject.tag;
@@ -16,7 +19,7 @@ namespace Loom.ZombieBattleground
             if (existingSingleton != null)
             {
                 gameObject.SetActive(false);
-                Debug.LogWarning($"Found another {nameof(SingletonTag)} with tag {tag}, disabled itself");
+                Log.Warn($"Found another {nameof(SingletonTag)} with tag {tag}, disabled itself");
             }
         }
     }

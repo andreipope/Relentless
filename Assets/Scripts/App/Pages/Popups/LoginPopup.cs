@@ -4,6 +4,7 @@ using System.Numerics;
 using Loom.Client;
 using System.Security.Cryptography;
 using System.Text;
+using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using TMPro;
@@ -11,12 +12,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
+using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
 {
     public class LoginPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LoginPopup));
+
         public static Action OnHidePopupEvent;
+        public static Action OnLoginSuccess;
 
         public bool IsRegisteredUser;
 
@@ -27,6 +32,12 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
 
         private IAppStateManager _appStateManager;
+
+        private ITutorialManager _tutorialManager;
+
+        private IDataManager _dataManager;
+
+        private IInputManager _inputManager;
 
         private BackendFacade _backendFacade;
 
@@ -88,14 +99,19 @@ namespace Loom.ZombieBattleground
         private InputField _OTPFieldOTP;
         private Image _backgroundDarkImage;
 
-        private string _lastErrorMessage;
+        private EventSystem _currentEventSystem;
 
+        private string _lastErrorMessage;
 
         private LoginState _state;
 
         private LoginState _lastPopupState;
 
         private string _lastGUID;
+
+        private bool _gameStarted = false;
+
+        private int _onEnterInputIndex = -1;
 
         public GameObject Self { get; private set; }
 
@@ -107,6 +123,10 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
+            _dataManager = GameClient.Get<IDataManager>();
+            _inputManager = GameClient.Get<IInputManager>();
+            _currentEventSystem = EventSystem.current;
         }
 
         public void Dispose()
@@ -123,6 +143,8 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+
+            _inputManager.UnregisterInputHandler(_onEnterInputIndex);
         }
 
         public void SetMainPriority()
@@ -197,6 +219,9 @@ namespace Loom.ZombieBattleground
                 SetUIState(LoginState.InitiateLogin);
                 Self.SetActive(true);
             }
+
+            _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
+                (int)KeyCode.Return, null, OnInputDownEnterButton);
         }
 
         public void Show(object data)
@@ -243,6 +268,14 @@ namespace Loom.ZombieBattleground
         {
             Show();
             SetLoginAsGuestState();
+        }
+
+        private void OnInputDownEnterButton()
+        {
+            if (_currentEventSystem.currentSelectedGameObject == (_passwordFieldLogin.gameObject || _emailFieldLogin.gameObject))
+            {
+                PressedLoginHandler();
+            }
         }
 
         private void PressedSendOTPHandler()
@@ -379,7 +412,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 if (e.Message == Constants.VaultEmptyErrorCode)
                 {
@@ -387,7 +420,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    Debug.Log(e.ToString());
+                    Log.Info(e.ToString());
                     string errorMsg = string.Empty;
                     if (e.Message.Contains("Forbidden"))
                     {
@@ -418,9 +451,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
 
-                Debug.Log(e.ToString());
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -437,9 +469,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-
-                Debug.Log(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -467,9 +497,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
-
-                Debug.Log(e.ToString());
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
@@ -563,7 +591,7 @@ namespace Loom.ZombieBattleground
             }
             catch (GameVersionMismatchException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 SetUIState(LoginState.RemoteVersionMismatch);
                 UpdateVersionMismatchText(e);
@@ -572,7 +600,7 @@ namespace Loom.ZombieBattleground
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -582,7 +610,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -592,9 +620,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.Log(e.ToString());
+                Log.Info(e.ToString());
                 _lastErrorMessage = e.Message;
                 if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
                 {
@@ -619,11 +647,17 @@ namespace Loom.ZombieBattleground
 
                 SuccessfulLogin();
 
+                if(!_gameStarted)
+                {
+                    _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
+                    _gameStarted = true;
+                }
+
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
             catch (TimeoutException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -632,7 +666,7 @@ namespace Loom.ZombieBattleground
             }
             catch (RpcClientException e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
@@ -641,9 +675,9 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Helpers.ExceptionReporter.LogException(e);
+                Helpers.ExceptionReporter.SilentReportException(e);
 
-                Debug.LogWarning(e);
+                Log.Warn(e);
                 _lastErrorMessage = e.Message;
                 SetUIState(LoginState.ValidationFailed);
             }
@@ -651,46 +685,59 @@ namespace Loom.ZombieBattleground
 
         private async void SuccessfulLogin()
         {
-            if (!_backendDataControlMediator.UserDataModel.IsRegistered && GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial)
+            if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
 #if USE_REBALANCE_BACKEND
                 GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 #else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
-                (GameClient.Get<ITutorialManager>() as TutorialManager).CheckAvailableTutorial();
+                (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
-                GameClient.Get<ITutorialManager>().SetupTutorialById(GameClient.Get<IDataManager>().CachedUserLocalData.CurrentTutorialId);
+                _tutorialManager.SetupTutorialById(_dataManager.CachedUserLocalData.CurrentTutorialId);
 
-                if (GameClient.Get<ITutorialManager>().CurrentTutorial.IsGameplayTutorial())
+                if (_tutorialManager.CurrentTutorial.IsGameplayTutorial())
                 {
-                    Data.Deck savedTutorialDeck = GameClient.Get<IDataManager>().CachedUserLocalData.TutorialSavedDeck;
+                    Data.Deck savedTutorialDeck = _dataManager.CachedUserLocalData.TutorialSavedDeck;
 
                     if (savedTutorialDeck != null)
                     {
-                        if (GameClient.Get<IDataManager>().CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
+                        if (_dataManager.CachedDecksData.Decks.Find(deck => deck.Id == savedTutorialDeck.Id) == null)
                         {
-                            GameClient.Get<IDataManager>().CachedDecksData.Decks.Add(savedTutorialDeck);
+                            _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
                             await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
                         }
                     }
                     else
                     {
-                        savedTutorialDeck = GameClient.Get<IDataManager>().CachedDecksData.Decks.Last();
+                        savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
                     _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
-                    GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                    if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
+                    {
+                        _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
+
+                        string tutorialSkipQuestion = "Welcome, Zombie Slayer!\nWould you like a tutorial to get you started?";
+                        QuestionPopup questionPopup = _uiManager.GetPopup<QuestionPopup>();
+                        questionPopup.ConfirmationReceived += ConfirmTutorialReceivedHandler;
+
+                        _uiManager.DrawPopup<QuestionPopup>(new object[] { tutorialSkipQuestion, false });
+                    }
+                    else
+                    {
+                        await GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+                    }
                 }
                 else
                 {
                     _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
-                    if (!GameClient.Get<ITutorialManager>().IsTutorial)
+                    if (!_tutorialManager.IsTutorial)
                     {
-                        GameClient.Get<ITutorialManager>().StartTutorial();
+                        _tutorialManager.StartTutorial();
                     }
                 }
 #endif
@@ -700,6 +747,20 @@ namespace Loom.ZombieBattleground
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
             Hide();
+            OnLoginSuccess?.Invoke();
+        }
+
+        private void ConfirmTutorialReceivedHandler(bool state)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmTutorialReceivedHandler;
+            if (state)
+            {
+                GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
+            }
+            else
+            {
+                _tutorialManager.SkipTutorial();
+            }
         }
 
         private void SetUIState(LoginState state, string errorMsg = "")
@@ -715,7 +776,7 @@ namespace Loom.ZombieBattleground
             if (Self == null)
                 return;
 
-            Debug.Log(state);
+            Log.Info(state);
             _state = state;
             _backgroundGroup.gameObject.SetActive(false);
             _loginGroup.gameObject.SetActive(false);
@@ -733,17 +794,17 @@ namespace Loom.ZombieBattleground
                 actions[0] = () =>
                 {
 #if UNITY_EDITOR
-                    Debug.LogWarning("Version Mismatched");
+                    Log.Warn("Version Mismatched");
 #elif UNITY_ANDROID
-                    Application.OpenURL(Constants.GameLinkForAndroid);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPlayStore);
 #elif UNITY_IOS
-                    Application.OpenURL(Constants.GameLinkForIOS);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlAppStore);
 #elif UNITY_STANDALONE_OSX
-                    Application.OpenURL(Constants.GameLinkForOSX);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlMac);
 #elif UNITY_STANDALONE_WIN
-                    Application.OpenURL(Constants.GameLinkForWindows);
+                    Application.OpenURL(_dataManager.ZbVersion.Version.DownloadUrlPC);
 #else
-                    Debug.LogWarning("Version Mismatched");
+                    Log.Warn("Version Mismatched");
 #endif
                 };
                 actions[1] = () =>
@@ -845,7 +906,7 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Debug.Log(e.Message);
+                Log.Info(e.Message);
                 _backendFacade.BackendEndpoint = BackendEndpointsContainer.Endpoints[BackendPurpose.Production];
             }
             finally

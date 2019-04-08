@@ -18,16 +18,14 @@ namespace Loom.ZombieBattleground
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
-            Count = ability.Count;
-
-            Count = Mathf.Clamp(Count, 1, Count);
+            Count = Mathf.Clamp(ability.Count, 1, ability.Count);
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType == Enumerators.AbilityCallType.ENTRY && AbilityActivityType == Enumerators.AbilityActivityType.PASSIVE)
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
             {
                 HandleTargets();
             }
@@ -40,10 +38,12 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 TakeTypeToUnits(new List<BoardUnitModel>() { TargetUnit });
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>()
-                {
-                    TargetUnit
-                }, AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(TargetUnit)
+                    }
+                );
             }
         }
 
@@ -57,11 +57,11 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                units = PlayerCallerOfAbility.BoardCards.Select(x => x.Model)
+                units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard
                .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
                .ToList();
 
-                if (AbilityData.AbilitySubTrigger != Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                if (AbilityData.SubTrigger != Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                 {
                     units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
@@ -71,7 +71,9 @@ namespace Loom.ZombieBattleground
             {
                 TakeTypeToUnits(units);
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, units.Cast<BoardObject>().ToList(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>(
+                    units.Select(item => new ParametrizedAbilityBoardObject(item)))
+                );
             }
         }
 
@@ -92,7 +94,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            PostGameActionReport(units);
+ 			PostGameActionReport(units);
         }
 
         private void PostGameActionReport(List<BoardUnitModel> targets)

@@ -1,7 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -24,7 +22,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Character);
+            InvokeUseAbilityEvent();
         }
 
         protected override void TurnEndedHandler()
@@ -33,8 +31,6 @@ namespace Loom.ZombieBattleground
 
             if (CheckActionEnded())
                 return;
-
-            CountDelay();
         }
 
         protected override void TurnStartedHandler()
@@ -44,14 +40,17 @@ namespace Loom.ZombieBattleground
             if (CheckActionEnded())
                 return;
 
-            CountDelay();
+            if (GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            {
+                CountDelay();
+            }
         }
 
         private void CountDelay()
         {
-            CheckDelayEnded();
-
             _delayedTurnsLeft--;
+
+            CheckDelayEnded();           
         }
 
         private void CheckDelayEnded()

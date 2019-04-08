@@ -20,7 +20,7 @@ namespace Loom.ZombieBattleground
             const float delayBeforeSpawn = 0f;
             const float delayBeforeDestroyVFX = 5f;
 
-            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel(boardObject as BoardUnitModel);
+            BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardObject as BoardUnitModel);
 
             InternalTools.DoActionDelayed(() =>
             {

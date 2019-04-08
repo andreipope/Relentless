@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -25,9 +23,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(), AbilityData.AbilityType, Enumerators.AffectObjectType.Player);
-
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            InvokeUseAbilityEvent();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             TakeDamage(true);
@@ -38,15 +35,12 @@ namespace Loom.ZombieBattleground
             OnUpdateEvent?.Invoke();
         }
 
-        public override void Dispose()
-        {
-        }
-
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
+                base.UnitDiedHandler();
                 return;
+            }
 
             TakeDamage();
         }
@@ -55,12 +49,12 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.END)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
             TakeDamage();
         }
-
+        
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
@@ -70,7 +64,7 @@ namespace Loom.ZombieBattleground
                 OneActionCompleted(_targets[i]);
             }
 
-            if (TutorialManager.IsTutorial && AbilityCallType == Enumerators.AbilityCallType.DEATH)
+            if (TutorialManager.IsTutorial && AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
             {
                 TutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.DeathAbilityCompleted);
             }
@@ -80,30 +74,25 @@ namespace Loom.ZombieBattleground
         {
             _targets = new List<BoardObject>();
 
-            BoardObject caller = (BoardObject)AbilityUnitOwner ?? BoardSpell;
-
-            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
-                GameplayManager.OpponentPlayer :
-                GameplayManager.CurrentPlayer;
-            foreach (Enumerators.AbilityTargetType target in AbilityTargetTypes)
+            foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {
-                    case Enumerators.AbilityTargetType.OPPONENT_ALL_CARDS:
-                        _targets.AddRange(opponent.BoardCards.Select(x => x.Model));
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        _targets.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER_ALL_CARDS:
-                        _targets.AddRange(PlayerCallerOfAbility.BoardCards.Select(x => x.Model));
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
 
                         if (exceptCaller && _targets.Contains(AbilityUnitOwner))
                         {
                             _targets.Remove(AbilityUnitOwner);
                         }
                         break;
-                    case Enumerators.AbilityTargetType.OPPONENT:
-                        _targets.Add(opponent);
+                    case Enumerators.Target.OPPONENT:
+                        _targets.Add(GetOpponentOverlord());
                         break;
-                    case Enumerators.AbilityTargetType.PLAYER:
+                    case Enumerators.Target.PLAYER:
                         _targets.Add(PlayerCallerOfAbility);
                         break;
                     default:

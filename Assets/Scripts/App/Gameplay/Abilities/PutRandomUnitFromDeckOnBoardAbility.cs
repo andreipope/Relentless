@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -34,74 +34,85 @@ namespace Loom.ZombieBattleground
             base.Action(info);
 
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             if (PredefinedTargets != null)
             {
-                IEnumerable<HandBoardCard> targets = PredefinedTargets.Select(x => x.BoardObject as HandBoardCard);
+                IReadOnlyList<HandBoardCard> targets =
+                    PredefinedTargets
+                        .Select(x => x.BoardObject as BoardUnitModel)
+                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
+                        .ToList();
 
                 foreach (HandBoardCard target in targets)
                 {
-                    PutCardFromDeckToBoard(target.OwnerPlayer, target.CardView, ref TargetEffects, ref boardCards);
+                    PutCardFromDeckToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, target.OwnerPlayer.IsLocalPlayer);
                 }
             }
             else
             {
-                BoardCard boardCard;
-                Player playerOwner;
-                UniquePositionedList<WorkingCard> filteredCards = null;
+                BoardCardView boardCardView;
 
-                foreach (Enumerators.AbilityTargetType targetType in AbilityData.AbilityTargetTypes)
+                foreach (Enumerators.Target targetType in AbilityData.Targets)
                 {
-                    playerOwner = null;
+                    Player playerOwner = null;
                     switch (targetType)
                     {
-                        case Enumerators.AbilityTargetType.PLAYER:
+                        case Enumerators.Target.PLAYER:
                             playerOwner = PlayerCallerOfAbility;
                             break;
-                        case Enumerators.AbilityTargetType.OPPONENT:
+                        case Enumerators.Target.OPPONENT:
                             playerOwner = GetOpponentOverlord();
                             break;
                         default:
                             throw new NotImplementedException(nameof(targetType) + " not implemented!");
                     }
 
-                    filteredCards = playerOwner.CardsInDeck.FindAll(x => x.LibraryCard.CardKind == Enumerators.CardKind.CREATURE);
+                    IReadOnlyList<BoardUnitModel> filteredCards = playerOwner.CardsInDeck.FindAll(x => x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE);
                     filteredCards = InternalTools.GetRandomElementsFromList(filteredCards, Count).ToUniquePositionedList();
                     if (filteredCards.Count == 0)
                         continue;
 
-                    boardCard = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
-
-                    PutCardFromDeckToBoard(playerOwner, boardCard, ref TargetEffects, ref boardCards);
+                    if (playerOwner.CardsOnBoard.Count < Constants.MaxBoardUnits)
+                    {
+                        boardCardView = BattlegroundController.CreateCustomHandBoardCard(filteredCards[0]);
+                        PutCardFromDeckToBoard(playerOwner, boardCardView, ref targetEffects, ref boardCards, true);
+                    }
                 }
             }
 
-            AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, boardCards.Cast<BoardObject>().ToList(),
-                                                     AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+            InvokeUseAbilityEvent(
+                boardCards
+                    .Select(x => new ParametrizedAbilityBoardObject(x))
+                    .ToList()
+            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = targetEffects
             });
         }
 
-        private void PutCardFromDeckToBoard(Player owner, BoardCard boardCard,
-                                            ref List<PastActionsPopup.TargetEffectParam> TargetEffects,
-                                            ref List<HandBoardCard> cards)
+        private void PutCardFromDeckToBoard(Player owner, BoardCardView boardCardView,
+                                            ref List<PastActionsPopup.TargetEffectParam> targetEffects,
+                                            ref List<HandBoardCard> cards, bool activateAbility)
         {
-            owner.RemoveCardFromDeck(boardCard.WorkingCard);
+            if (!activateAbility && GameClient.Get<IGameplayManager>().IsLocalPlayerTurn()) {
+                activateAbility = true;
+            }
+            
+            owner.PlayerCardsController.RemoveCardFromDeck(boardCardView.Model);
 
-            CardsController.SummonUnitFromHand(owner, boardCard);
+            owner.PlayerCardsController.SummonUnitFromHand(boardCardView, activateAbility);
 
-            cards.Add(boardCard.HandBoardCard);
+            cards.Add(boardCardView.HandBoardCard);
 
-            TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
                 ActionEffectType = Enumerators.ActionEffectType.PlayRandomCardOnBoardFromDeck,
-                Target = boardCard,
+                Target = boardCardView,
             });
         }
     }

@@ -76,6 +76,7 @@ namespace Loom.ZombieBattleground
             if (Instance == this)
             {
                 GameClient.Instance.Dispose();
+                Instance = null;
             }
         }
 

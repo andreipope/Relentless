@@ -8,19 +8,19 @@ namespace Loom.ZombieBattleground
 {
     public class DrawCardByFactionAbility : AbilityBase
     {
-        public Enumerators.SetType SetType { get; }
+        public Enumerators.Faction Faction { get; }
 
         public DrawCardByFactionAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            SetType = ability.AbilitySetType;
+            Faction = ability.Faction;
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitKilledUnitHandler(BoardUnitModel unit)
         {
-            if (AbilityCallType != Enumerators.AbilityCallType.KILL_UNIT)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
 
             Action();
@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            if (AbilityCallType != Enumerators.AbilityCallType.DEATH)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -48,15 +48,14 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            WorkingCard card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.LibraryCard.CardSetType == SetType);
+            BoardUnitModel card = PlayerCallerOfAbility.CardsInDeck.FirstOrDefault(x => x.Prototype.Faction == Faction);
 
             if (card != null)
             {
                 PlayerCallerOfAbility.PlayDrawCardVFX();
-                CardsController.AddCardToHand(PlayerCallerOfAbility, card);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand(card);
 
-                AbilitiesController.ThrowUseAbilityEvent(MainWorkingCard, new List<BoardObject>(),
-                                                         AbilityData.AbilityType, Enumerators.AffectObjectType.Card);
+                InvokeUseAbilityEvent();
             }
         }
     }

@@ -98,24 +98,24 @@ namespace Loom.ZombieBattleground
 
             object[] param = (object[])data;
 
-            ApplyInfoAboutHeroes((Hero)param[0], (Hero)param[1]);
+            ApplyInfoAboutOverlords((OverlordModel)param[0], (OverlordModel)param[1]);
         }
 
         public void Update()
         {
         }
 
-        private void ApplyInfoAboutHeroes(Hero player, Hero opponent)
+        private void ApplyInfoAboutOverlords(OverlordModel player, OverlordModel opponent)
         {
             _playerOverlordNameText.text = player.Name.ToUpperInvariant();
             _opponentOverlordNameText.text = opponent.Name.ToUpperInvariant();
 
             _playerOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    player.HeroElement.ToString().ToLowerInvariant());
+                    player.Faction.ToString().ToLowerInvariant());
             _opponentOverlordPicture.sprite =
                 _loadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/hero_" +
-                    opponent.HeroElement.ToString().ToLowerInvariant());
+                    opponent.Faction.ToString().ToLowerInvariant());
 
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
@@ -135,6 +135,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case "EndRotate":
                     _soundManager.StopPlaying(Enumerators.SoundType.CARD_DECK_TO_HAND_SINGLE);
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndCardFlipPlayerOrderPopup);
                     break;
                 default:
                     break;

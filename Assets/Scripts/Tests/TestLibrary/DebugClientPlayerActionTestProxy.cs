@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
+using NUnit.Framework;
+using UnityEngine;
+using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test
@@ -25,7 +28,9 @@ namespace Loom.ZombieBattleground.Test
 
         public async Task EndTurn()
         {
+            await Task.Delay(3000);
             await SendPlayerAction(_client.PlayerActionFactory.EndTurn());
+            await Task.Delay(2000);
         }
 
         public async Task LeaveMatch()
@@ -38,30 +43,30 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.Mulligan(cards));
         }
 
-        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null)
+        public async Task CardPlay(InstanceId card, ItemPosition position, InstanceId? entryAbilityTarget = null, bool skipEntryAbilities = false, bool forceSkipForPlayerToo = false)
         {
+            BoardUnitModel boardUnitModel = _testHelper.BattlegroundController.GetBoardUnitModelByInstanceId(card);
+            Assert.NotNull(boardUnitModel, $"boardUnitModel != null for instance id {card}");
+
             await SendPlayerAction(_client.PlayerActionFactory.CardPlay(card, position.GetIndex(int.MaxValue)));
 
-            BoardObject entryAbilityTargetBoardObject = null;
-
             // Entry abilities handling
-            WorkingCard workingCard = _testHelper.BattlegroundController.GetWorkingCardByInstanceId(card);
-
             // First, fire targetable entry abilities
             if (entryAbilityTarget != null)
             {
-                entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(entryAbilityTarget.Value);
+                BoardObject entryAbilityTargetBoardObject = _testHelper.BattlegroundController.GetBoardObjectByInstanceId(entryAbilityTarget.Value);
                 if (entryAbilityTargetBoardObject == null)
                     throw new Exception($"'Entry ability target with instance ID {entryAbilityTarget.Value}' not found on board");
 
                 AbilityData entryAbility =
-                    workingCard.LibraryCard.Abilities
-                    .FirstOrDefault(x => _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
+                    boardUnitModel.InstanceCard.Abilities
+                    .FirstOrDefault(x =>
+                        _testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x));
 
                 if (entryAbility == null)
                     throw new Exception($"No entry ability found for target {entryAbilityTarget}");
 
-                Enumerators.AbilityType abilityType = entryAbility.AbilityType;
+                Enumerators.AbilityType abilityType = entryAbility.Ability;
                 await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
                     card,
                     abilityType,
@@ -69,21 +74,24 @@ namespace Loom.ZombieBattleground.Test
                     ));
             }
 
-            // Second, fire non-targetable entry abilities
-            AbilityData[] entryAbilities =
-                workingCard.LibraryCard.Abilities
-                    .Where(x =>
-                        _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
-                        !_testHelper.AbilitiesController.IsAbilityCanActivateTargetAtStart(x))
-                    .ToArray();
-
-            foreach (AbilityData entryAbility in entryAbilities)
+            if (!skipEntryAbilities)
             {
-                await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
-                    card,
-                    entryAbility.AbilityType,
-                    new ParametrizedAbilityInstanceId[]{ }
-                ));
+                // Second, fire non-targetable entry abilities
+                AbilityData[] entryAbilities =
+                    boardUnitModel.InstanceCard.Abilities
+                        .Where(x =>
+                            _testHelper.AbilitiesController.IsAbilityCallsAtStart(x) &&
+                            !_testHelper.AbilitiesController.IsAbilityActive(x))
+                        .ToArray();
+
+                foreach (AbilityData entryAbility in entryAbilities)
+                {
+                    await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(
+                        card,
+                        entryAbility.Ability,
+                        new ParametrizedAbilityInstanceId[] { }
+                    ));
+                }
             }
         }
 
@@ -100,9 +108,10 @@ namespace Loom.ZombieBattleground.Test
             await SendPlayerAction(_client.PlayerActionFactory.CardAbilityUsed(card, abilityType, targets));
         }
 
-        public async Task OverlordSkillUsed(SkillId skillId, InstanceId target)
+        public async Task OverlordSkillUsed(SkillId skillId, IReadOnlyList<ParametrizedAbilityInstanceId> targets = null)
         {
-            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, target));
+            await SendPlayerAction(_client.PlayerActionFactory.OverlordSkillUsed(skillId, targets));
+            await new WaitForSeconds(4f);
         }
 
         public async Task CardAttack(InstanceId attacker, InstanceId target)
@@ -132,6 +141,17 @@ namespace Loom.ZombieBattleground.Test
                     action
                 )
             );
+        }
+
+        public async Task LetsThink(float thinkTime, bool forceRealtime)
+        {
+            await _testHelper.LetsThink(thinkTime, forceRealtime);
+        }
+
+        public async Task AssertInQueue(Action action)
+        {
+           action();
+           await new WaitForSeconds(1f);
         }
     }
 }

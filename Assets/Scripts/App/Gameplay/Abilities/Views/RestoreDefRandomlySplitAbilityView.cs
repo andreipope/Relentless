@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private string _cardName;
 
-        private List<object> _targets;
+        private List<BoardObject> _targets;
 
         public RestoreDefRandomlySplitAbilityView(RestoreDefRandomlySplitAbility ability) : base(ability)
         {
@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targets = info as List<object>;
+            _targets = info as List<BoardObject>;
 
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
                     switch (boardObject)
                     {
                         case BoardUnitModel unit:
-                            targetPosition = _battlegroundController.GetBoardUnitViewByModel(unit).Transform.position;
+                            targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
                             targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
                     }
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel(Ability.AbilityUnitOwner).Transform.position);
+                    VfxObject.transform.position = Utilites.CastVfxPosition(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position);
                     targetPosition = Utilites.CastVfxPosition(targetPosition);
                     VfxObject.transform.DOMove(targetPosition, 0.5f).OnComplete(ActionCompleted);
                     ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
