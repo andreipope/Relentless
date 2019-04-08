@@ -700,16 +700,18 @@ namespace Loom.ZombieBattleground
             }
 
             BoardCardView boardCardView;
+            BoardUnitModel previewModel = new BoardUnitModel(
+               new WorkingCard(boardUnitModel.Prototype, boardUnitModel.Prototype, boardUnitModel.OwnerPlayer, boardUnitModel.InstanceId));
             switch (card.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCard(CurrentBoardCard, boardUnitModel);
+                    boardCardView = new UnitBoardCard(CurrentBoardCard, previewModel);
                     (boardCardView as UnitBoardCard).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new ItemBoardCard(CurrentBoardCard, boardUnitModel);
+                    boardCardView = new ItemBoardCard(CurrentBoardCard, previewModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
