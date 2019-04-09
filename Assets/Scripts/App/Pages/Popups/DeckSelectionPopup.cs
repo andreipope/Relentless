@@ -296,6 +296,34 @@ namespace Loom.ZombieBattleground
                     hordeSelection.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
                 };
             }
+
+            AddNewDeckButton();
+        }
+        
+        private void AddNewDeckButton()
+        {
+            GameObject deckIcon = Object.Instantiate(_deckIconPrefab);
+            deckIcon.transform.SetParent(_deckIconGroup);
+            deckIcon.transform.localScale = Vector3.one * _deckIconScaleNormal;
+            
+            deckIcon.GetComponent<Image>().sprite = _loadObjectsManager.GetObjectByPath<Sprite>
+            (
+                "Images/UI/MainMenu/DeckIcons/icon_newdeck"
+            );
+            
+            _createdDeckIconList.Add(deckIcon);
+            
+            deckIcon.AddComponent<MultiPointerClickHandler>().SingleClickReceived += ()=>
+            {
+                if (_tutorialManager.IsTutorial)
+                    return;
+
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
+                _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab
+                (
+                    HordeSelectionWithNavigationPage.Tab.SelectOverlord
+                );
+            };
         }
 
         private void UpdateSelectedDeckDisplay(Deck selectedDeck)
