@@ -1598,7 +1598,7 @@ namespace Loom.ZombieBattleground.Test
 
             await SetDeckTitle("Kalile");
 
-            await AddCardToHorde("Air", "Whizpar", 4);
+            await AddCardToHorde("Air", "Whizper", 4);
             await AddCardToHorde("Air", "Soothsayer", 4);
             await AddCardToHorde("Air", "FumeZ", 4);
             await AddCardToHorde("Air", "Breezee", 4);
