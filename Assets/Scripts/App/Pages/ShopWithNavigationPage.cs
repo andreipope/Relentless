@@ -157,16 +157,20 @@ namespace Loom.ZombieBattleground
 
         private void LoadItems()
         {
-            string path = "Panel_Content/Group_Packs";
+            string path = "Panel_Content/Mask/Group_Packs";
             
             _itemButtonList.Clear();
             _textItemNameList.Clear();
             _textItemPriceList.Clear();
+
+            int maxPackObject = _selfPage.transform.Find(path).childCount;
             
-            for (int i = 0; i < _productData.packs.Length; ++i)
+            for (int i = 0; i < _productData.packs.Length && i < maxPackObject; ++i)
             {
                 int index = i;
+                
                 Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();
+                button.transform.parent.gameObject.SetActive(true);
                 _itemButtonList.Add(button);
                 button.onClick.AddListener(()=>
                 {
