@@ -37,7 +37,9 @@ namespace Loom.ZombieBattleground
         private List<TextMeshProUGUI> _textItemNameList,
                                       _textItemPriceList;
 
-        private ShopData _shopData;
+        private FiatBackendManager.FiatProduct _productData;
+
+        private string _currencyPrefix;
         
         #region IUIElement
         
@@ -51,7 +53,7 @@ namespace Loom.ZombieBattleground
             _textItemPriceList = new List<TextMeshProUGUI>();
 
             InitPurchaseLogic();
-            LoadShopData();         
+            LoadProductData();         
         }
 
         public void Update()
@@ -62,14 +64,20 @@ namespace Loom.ZombieBattleground
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-            
-            LoadItems();
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
 
             UpdatePageScaleToMatchResolution();
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
             _uiManager.DrawPopup<AreaBarPopup>();
+            
+            if(!CheckIfProductDataAvailable())
+            {
+                ReloadProductData();
+                _uiManager.DrawPopup<WarningPopup>($"Cannot load product data\n Please try again");                
+                return;
+            }
+            LoadItems();
         }
         
         public void Hide()
@@ -107,7 +115,7 @@ namespace Loom.ZombieBattleground
         {
             #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
             _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
-            _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );
+            _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
             #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
             _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
@@ -134,6 +142,19 @@ namespace Loom.ZombieBattleground
             }
         } 
         
+        private bool CheckIfProductDataAvailable()
+        {
+            return _productData != null;
+        }
+        
+        private async void ReloadProductData()
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>($"Loading products data");
+            await LoadProductData();
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+        }
+
         private void LoadItems()
         {
             string path = "Panel_Content/Group_Packs";
@@ -142,7 +163,7 @@ namespace Loom.ZombieBattleground
             _textItemNameList.Clear();
             _textItemPriceList.Clear();
             
-            for (int i = 0; i < _shopData.NumberOfItems; ++i)
+            for (int i = 0; i < _productData.packs.Length; ++i)
             {
                 int index = i;
                 Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();
@@ -152,20 +173,49 @@ namespace Loom.ZombieBattleground
                     PlayClickSound();
                     BuyButtonHandler(index);
                 });
+
+                FiatBackendManager.FiatProductPack packData = _productData.packs[i];
                 
                 TextMeshProUGUI textName = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_PackName").GetComponent<TextMeshProUGUI>();
-                textName.text = _shopData.ItemNames[i];
+                textName.text = packData.display_name;
                 _textItemNameList.Add(textName);
                 
                 TextMeshProUGUI textPrice = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_Price").GetComponent<TextMeshProUGUI>();
-                textPrice.text = _shopData.ItemCosts[i];
+                textPrice.text = _currencyPrefix + (packData.price / (float)_productData.unit_percent).ToString("n2");
                 _textItemPriceList.Add(textPrice);
             }
         }
         
-        private void LoadShopData()
+        private async Task LoadProductData()
         {
-            _shopData = JsonConvert.DeserializeObject<ShopData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/shop_data").text);            
+            FiatBackendManager.FiatProductResponse fiatProductResponse;
+            try
+            {
+                fiatProductResponse = await _fiatBackendManager.CallFiatProducts();
+            }
+            catch(Exception e)
+            {
+                Log.Info($"{nameof(_fiatBackendManager.CallFiatProducts)} failed: {e.Message}");                
+                return;
+            }
+
+            try
+            {
+#if UNITY_ANDROID
+                _productData = fiatProductResponse.products.First(x => x.store == "PlayStore");
+#elif UNITY_IOS
+                _productData = fiatProductResponse.products.First(x => x.store == "AppStore");
+#else
+                _productData = fiatProductResponse.products.First(x => x.store == "MarketPlace"); 
+#endif
+            }
+            catch(Exception e)
+            {
+                Log.Info($"Parsing product data failed: {e.Message}");                
+                return;
+            }
+
+            _currencyPrefix = string.Equals(_productData.currency, "USD") ? "$" : "";
         }
 
 #region Purchasing Logic
