@@ -63,11 +63,11 @@ namespace Loom.ZombieBattleground
 
         protected Animator CardAnimator;
 
-        protected Vector3 PositionOnHand;
+        public Vector3 PositionOnHand { get; private set; }
 
-        protected Vector3 RotationOnHand;
+        public Vector3 RotationOnHand { get; private set; }
 
-        protected Vector3 ScaleOnHand;
+        public Vector3 ScaleOnHand { get; private set; }
 
         protected AnimationEventTriggering AnimationEventTriggering;
 
@@ -310,6 +310,7 @@ namespace Loom.ZombieBattleground
         {
             _hasDestroyed = true;
             Object.Destroy(GameObject);
+            Model.CardPictureWasUpdated -= PictureUpdatedEvent;
         }
 
         public void DrawCardFromOpponentDeckToPlayer()

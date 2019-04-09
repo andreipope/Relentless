@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
 
         private void ClearPreviewCard()
         {
-            Object.Destroy(_previewCard?.GameObject);
+            _previewCard?.Dispose();
             _previewCard = null;
         }
 

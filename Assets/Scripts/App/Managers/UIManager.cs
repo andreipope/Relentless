@@ -32,21 +32,8 @@ namespace Loom.ZombieBattleground
             CanvasScaler = Canvas.GetComponent<CanvasScaler>();
 
             Pages = new List<IUIElement>();
-            Pages.Add(new LoadingPage());
-            if (!Constants.EnableNewUI)
-            { 
-                Pages.Add(new MainMenuPage());
-                Pages.Add(new OverlordSelectionPage());
-                Pages.Add(new HordeSelectionPage());
-                Pages.Add(new ArmyPage());
-                Pages.Add(new HordeEditingPage());
-                Pages.Add(new ShopPage());
-            }
+            Pages.Add(new LoadingPage());          
             Pages.Add(new GameplayPage());
-            Pages.Add(new PackOpenerPage());
-            Pages.Add(new CreditsPage());
-            if (!Constants.EnableNewUI)
-                Pages.Add(new PlaySelectionPage());
             Pages.Add(new PvPSelectionPage());
             Pages.Add(new CustomGameModeListPage());
             Pages.Add(new CustomGameModeCustomUiPage());            
@@ -69,8 +56,6 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new QuestionPopup());
             _uiPopups.Add(new TutorialAvatarPopup());
             _uiPopups.Add(new PreparingForBattlePopup());
-            _uiPopups.Add(new YouLosePopup());
-            _uiPopups.Add(new YouWonPopup());
             _uiPopups.Add(new LevelUpPopup());
             _uiPopups.Add(new YourTurnPopup());
             _uiPopups.Add(new ConfirmationPopup());
@@ -80,12 +65,8 @@ namespace Loom.ZombieBattleground
             //_uiPopups.Add(new TermsPopup());
             _uiPopups.Add(new LoginPopup());
             _uiPopups.Add(new MatchMakingPopup());
-            _uiPopups.Add(new ConnectionPopup());
-            if (!Constants.EnableNewUI)            
-                _uiPopups.Add(new OverlordAbilitySelectionPopup());
-            _uiPopups.Add(new OverlordAbilityTooltipPopup());
+            _uiPopups.Add(new ConnectionPopup());         
             _uiPopups.Add(new PastActionsPopup());
-            _uiPopups.Add(new SettingsPopup());
             _uiPopups.Add(new UpdatePopup());
             _uiPopups.Add(new MulliganPopup());
             _uiPopups.Add(new LoadDataMessagePopup());
@@ -105,6 +86,9 @@ namespace Loom.ZombieBattleground
             _uiPopups.Add(new MySettingPopup());
             _uiPopups.Add(new LoadingBarPopup());
             _uiPopups.Add(new CreditPopup());
+            _uiPopups.Add(new SettingsWithCreditsPopup());
+            _uiPopups.Add(new YouWonYouLostWithRewardPopup());
+            _uiPopups.Add(new InternetConnectionPopup());
 
             foreach (IUIPopup popup in _uiPopups)
             {

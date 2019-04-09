@@ -40,17 +40,14 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: bd4bcc70af07d00408c482e1dfe6a373, type: 3}
     - {fileID: 2800000, guid: f1af1cc0b3f419146abf0624f6c48e7f, type: 3}
     - {fileID: 2800000, guid: fb87650d058bf724fb1576d864a631ef, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: bd4bcc70af07d00408c482e1dfe6a373, type: 3}
   - {fileID: 21300000, guid: f1af1cc0b3f419146abf0624f6c48e7f, type: 3}
   - {fileID: 21300000, guid: fb87650d058bf724fb1576d864a631ef, type: 3}
   m_PackedSpriteNamesToIndex:
-  - abilityselect_panel
   - frame_overlordskill_medium
   - fxplaceholder_frame_overlordskill_medium
   m_Tag: OverlordAbilitySelectionUI_Atlas

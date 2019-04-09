@@ -24,8 +24,8 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
-        private TextMeshProUGUI _textCardName,
-                                _textCardDescription;
+        private TextMeshProUGUI _textHeader,
+                                _textDescription;
 
         private Button _buttonAdd,
                        _buttonRemove,
@@ -134,8 +134,8 @@ namespace Loom.ZombieBattleground
             _inputFieldSearch.onEndEdit.AddListener(OnInputFieldSearchEndedEdit);
             _inputFieldSearch.text = "";
             
-            _textCardName = Self.transform.Find("Text_CardName").GetComponent<TextMeshProUGUI>();            
-            _textCardDescription = Self.transform.Find("Text_CardDesc").GetComponent<TextMeshProUGUI>();
+            _textHeader = Self.transform.Find("Text_CardTitle").GetComponent<TextMeshProUGUI>();            
+            _textDescription = Self.transform.Find("Text_CardDesc").GetComponent<TextMeshProUGUI>();
 
             _groupCreatureCard = Self.transform.Find("Group_CreatureCard");
 
@@ -177,7 +177,8 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.AddCardToDeck
             (
-                _filteredCardList[_currentCardIndex]
+                _filteredCardList[_currentCardIndex],
+                true
             );
             Hide();
         }
@@ -190,7 +191,8 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             _uiManager.GetPage<HordeSelectionWithNavigationPage>().HordeEditTab.RemoveCardFromDeck
             (
-                _filteredCardList[_currentCardIndex]
+                _filteredCardList[_currentCardIndex],
+                true
             ); 
             Hide();
         }
@@ -274,8 +276,8 @@ namespace Loom.ZombieBattleground
             
             _createdBoardCard = boardCard.GameObject;
 
-            _textCardName.text = card.Name;
-            _textCardDescription.text = card.Description;
+            _textHeader.text = "";
+            _textDescription.text = card.FlavorText;
         }
         
         private void UpdateFilteredCardList()

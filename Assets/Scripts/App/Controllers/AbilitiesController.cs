@@ -532,10 +532,7 @@ namespace Loom.ZombieBattleground
                                            {
                                                boardUnitModel.Owner.PlayerCardsController.AddCardToBoard(boardUnitModel, (ItemPosition)card.FuturePositionOnBoard);
 
-                                               InternalTools.DoActionDelayed(() =>
-                                               {
-                                                   Object.Destroy(card.GameObject);
-                                               }, 0.5f);
+                                               InternalTools.DoActionDelayed(card.Dispose, 0.5f);
 
                                                ProceedWithCardToGraveyard(card);
                                            }
@@ -1063,6 +1060,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES:
                     ability = new ReplaceUnitsWithTypeOnStrongerOnesAbility(cardKind, abilityData);
+                    abilityView = new ReplaceUnitsWithTypeOnStrongerOnesAbilityView((ReplaceUnitsWithTypeOnStrongerOnesAbility)ability);
                     break;
                 case Enumerators.AbilityType.RESTORE_DEF_RANDOMLY_SPLIT:
                     ability = new RestoreDefRandomlySplitAbility(cardKind, abilityData);
@@ -1181,12 +1179,7 @@ namespace Loom.ZombieBattleground
                 {
                     card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
 
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        Object.Destroy(card.GameObject);
-                    }, 0.5f);
-
-                    ProceedWithCardToGraveyard(card);
+                    InternalTools.DoActionDelayed(card.Dispose, 0.5f);
                 }
                 else
                 {
