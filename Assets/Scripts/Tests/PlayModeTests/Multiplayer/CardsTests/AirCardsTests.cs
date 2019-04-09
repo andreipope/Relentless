@@ -36,10 +36,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId playerPyromazId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
                 InstanceId playerMindFlayerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Mind Flayer", 1);
 
-                InstanceId opponentWoodId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
-                InstanceId opponentWood2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 2);
-                InstanceId opponentWood3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 3);
-                InstanceId opponentWood4Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 4);
+                InstanceId opponentSlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 1);
+                InstanceId opponentSlab2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 2);
+                InstanceId opponentSlab3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 3);
+                InstanceId opponentSlab4Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Slab", 4);
                 InstanceId opponentMindFlayerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Mind Flayer", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
@@ -51,14 +51,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWoodId, ItemPosition.Start);
+                           opponent.CardPlay(opponentSlabId, ItemPosition.Start);
                        },
                        player =>
                        {
                            player.CardPlay(playerMindFlayerId, ItemPosition.Start);
                            player.CardAbilityUsed(playerMindFlayerId, Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT, new List<ParametrizedAbilityInstanceId>()
                            {  
-                               new ParametrizedAbilityInstanceId(opponentWoodId)
+                               new ParametrizedAbilityInstanceId(opponentSlabId)
                            });
                            player.LetsThink(2);
                            player.AssertInQueue(() => {
@@ -67,13 +67,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWood2Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentWood3Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentWood4Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentSlab2Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentSlab3Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentSlab4Id, ItemPosition.Start);
                            opponent.LetsThink(2);
-                           opponent.CardAttack(opponentWood2Id, playerMindFlayerId);
-                           opponent.CardAttack(opponentWood3Id, playerMindFlayerId);
-                           opponent.CardAttack(opponentWood4Id, opponentWoodId);
+                           opponent.CardAttack(opponentSlab2Id, playerMindFlayerId);
+                           opponent.CardAttack(opponentSlab3Id, playerMindFlayerId);
+                           opponent.CardAttack(opponentSlab4Id, opponentSlabId);
                            opponent.LetsThink(2);
                            opponent.CardPlay(opponentMindFlayerId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentMindFlayerId, Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT, new List<ParametrizedAbilityInstanceId>()
