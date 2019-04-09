@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground.Common
         public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
-        public const bool MulliganEnabled = false;
+        public const bool MulliganEnabled = true;
 
         public static readonly bool AlwaysGuestLogin = false;
 
