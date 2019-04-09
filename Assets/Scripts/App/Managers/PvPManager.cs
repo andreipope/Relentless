@@ -246,7 +246,7 @@ namespace Loom.ZombieBattleground
             InitialGameState = null;
 
             MatchMetadata = matchMetadata;
-
+            
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
             {
@@ -328,7 +328,6 @@ namespace Loom.ZombieBattleground
                         }
                         if (matchCanStart)
                         {
-                            MTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
                             MatchingStartedActionReceived?.Invoke();
                         }
                         break;

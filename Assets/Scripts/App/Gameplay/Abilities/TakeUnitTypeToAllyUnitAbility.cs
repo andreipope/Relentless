@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
 
                         if (allies.Count > 0)
                         {
-                            int random = MTwister.IRandom(0, allies.Count);
+                            int random = MTwister.IRandom(0, allies.Count - 1);
 
                             TakeTypeToUnit(allies[random]);
 

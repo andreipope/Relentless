@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
         
-        private const float _timeBeforeRetry = 5;
+        private const float _timeBeforeRetry = 15;
         private float _currentTimerCounter;
 
         private const int _totalAttemptsBeforeAutomaticWin = 5;
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Self != null) 
+            if (Self != null && Self.activeSelf) 
             {
                 if (_appStateManager.AppState != Enumerators.AppState.GAMEPLAY)
                 {

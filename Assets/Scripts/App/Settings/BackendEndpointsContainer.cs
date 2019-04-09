@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                         "ws://gamechain.dappchains.com:46658/queryws",
                         "ws://gamechain.dappchains.com:46658/websocket",
                         "https://vault.delegatecall.com/v1",
-                        "v5",
+                        "v7",
                         false,
                         false,
                         true

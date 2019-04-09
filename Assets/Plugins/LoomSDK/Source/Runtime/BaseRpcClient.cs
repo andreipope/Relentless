@@ -88,8 +88,7 @@ namespace Loom.Client.Internal
                 return;
 
             throw new RpcClientException(
-                $"Client must be in {nameof(RpcConnectionState.Connected)} state, " +
-                $"current state is {connectionState}",
+                "Your game client is currently OFFLINE. Please check your internet connection and try again later.",
                 1,
                 this
             );
