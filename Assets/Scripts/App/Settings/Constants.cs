@@ -179,7 +179,7 @@ namespace Loom.ZombieBattleground.Common
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
-        public const bool MulliganEnabled = false;
+        public const bool MulliganEnabled = true;
 
         public static readonly bool AlwaysGuestLogin = false;
 
