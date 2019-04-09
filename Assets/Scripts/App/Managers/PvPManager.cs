@@ -350,9 +350,10 @@ namespace Loom.ZombieBattleground
                             {
                                List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
                                int cardsRemoved = 0;
+                               bool found;
                                foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand) 
                                {
-                                   bool found = false;
+                                   found = false;
                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
                                    {
                                        if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
@@ -371,8 +372,7 @@ namespace Loom.ZombieBattleground
 
                                for (int i = 0; i < cardsRemoved; i++)
                                {
-                                   BoardUnitModel card = _gameplayManager.CurrentPlayer.CardsInDeck[i];
-                                   finalCardsInHand.Add(card);
+                                   finalCardsInHand.Add(_gameplayManager.CurrentPlayer.CardsInDeck[i]);
                                }
 
                                _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
@@ -392,9 +392,10 @@ namespace Loom.ZombieBattleground
                             if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                List<BoardUnitModel> cardsToRemove = new List<BoardUnitModel>();
+                               bool found;
                                foreach (BoardUnitModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand) 
                                {
-                                   bool found = false;
+                                   found = false;
                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
                                    {
                                        if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
@@ -422,8 +423,7 @@ namespace Loom.ZombieBattleground
 
                                for (int i = 0; i < cardsToRemove.Count; i++)
                                {
-                                   BoardUnitModel card = _gameplayManager.OpponentPlayer.CardsInDeck[0];
-                                   _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(card);
+                                   _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer.CardsInDeck[0]);
                                }
                             }
                         }
