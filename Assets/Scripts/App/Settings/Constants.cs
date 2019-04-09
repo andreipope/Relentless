@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.15";
+        internal const string CurrentVersionBase = "0.1.18";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -176,7 +176,7 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
-        public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
         public const bool MulliganEnabled = true;

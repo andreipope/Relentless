@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
         
         private bool CheckIfSelectDeckContainEnoughCards(Deck deck)
         {
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.DevModeEnabled)
                 return true;
                 
             return deck.GetNumCards() == Constants.MinDeckSize;

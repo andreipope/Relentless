@@ -74,10 +74,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 InstanceId playerBurnId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burrrnn", 1);
                 InstanceId playerBurn2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burrrnn", 2);
+                InstanceId playerBurn3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Burrrnn", 3);
                 InstanceId playerZpitterId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zpitter", 1);
 
                 InstanceId opponentBurnId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burrrnn", 1);
                 InstanceId opponentBurn2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burrrnn", 2);
+                InstanceId opponentBurn3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Burrrnn", 3);
                 InstanceId opponentZpitterId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zpitter", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
@@ -89,11 +91,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerBurnId, ItemPosition.Start);
                            player.CardPlay(playerBurn2Id, ItemPosition.Start);
+                           player.CardPlay(playerBurn3Id, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentBurnId, ItemPosition.Start);
                            opponent.CardPlay(opponentBurn2Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentBurn3Id, ItemPosition.Start);
                        },
                        player => {
                            player.CardPlay(playerZpitterId, ItemPosition.Start);

@@ -28,7 +28,6 @@ namespace Loom.ZombieBattleground
 
         public GameObject Self { get; private set; }
 
-
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -85,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Self != null) 
+            if (Self != null && Self.activeSelf) 
             {
                 if (_appStateManager.AppState != Enumerators.AppState.GAMEPLAY)
                 {

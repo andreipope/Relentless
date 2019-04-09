@@ -257,9 +257,12 @@ namespace Loom.ZombieBattleground
         {
             GameplayManager.GameEnded -= GameEndedHandler;
 
-            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
-            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
-
+            if (PlayerCallerOfAbility != null) 
+            {
+                PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+                PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+            }
+            
             VFXAnimationEnded -= VFXAnimationEndedHandler;
 
             DeactivateSelectTarget();

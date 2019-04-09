@@ -202,6 +202,15 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
+
+        public async Task SendLeaveMatchIfInPlay()
+        {
+            if (GameClient.Get<IGameplayManager>().IsGameStarted)
+            {
+                await GameClient.Get<BackendFacade>().SendPlayerAction(
+                 GameClient.Get<ActionCollectorUploader>().GetLeaveMatchRequest());
+            }
+        }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
@@ -210,7 +219,9 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1, null), false, true);
+                    string errorMsg =
+                        "Your game client is now OFFLINE. Please check your internet connection and try again later.";
+                    HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null), false, true);
                 }
             }, null);
         }
