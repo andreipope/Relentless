@@ -54,7 +54,16 @@ namespace Loom.ZombieBattleground
 
             TakeDamage();
         }
-        
+
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        {
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+                return;
+
+            TakeDamage();
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();

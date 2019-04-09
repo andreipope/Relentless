@@ -82,11 +82,11 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty]
         public int Cost { get; private set; }
 
-        [JsonProperty("target_card_kind")]
-        public Enumerators.CardKind TargetCardKind { get; private set; }
+        [JsonProperty]
+        public Enumerators.CardKind TargetKind { get; private set; }
 
-        [JsonProperty("target_mechanic_description_types")]
-        public List<Enumerators.GameMechanicDescription> TargetGameMechanicDescriptionTypes { get; private set; }
+        [JsonProperty]
+        public List<Enumerators.GameMechanicDescription> TargetGameMechanicDescriptions { get; private set; }
 
         [JsonConstructor]
         public AbilityData(
@@ -114,7 +114,9 @@ namespace Loom.ZombieBattleground.Data
             Enumerators.AbilitySubTrigger abilitySubTrigger,
             List<ChoosableAbility> choosableAbilities,
             int defense2,
-            int cost)
+            int cost,
+            Enumerators.CardKind targetCardkind,
+            List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes)
         {
             Ability = ability;
             Activity = activity;
@@ -141,6 +143,8 @@ namespace Loom.ZombieBattleground.Data
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
             Defense2 = defense2;
             Cost = cost;
+            TargetKind = targetCardkind;
+            TargetGameMechanicDescriptions = targetGameMechanicDescriptionTypes;
         }
 
         public AbilityData(AbilityData source) : this (
@@ -168,7 +172,9 @@ namespace Loom.ZombieBattleground.Data
             source.SubTrigger,
             source.ChoosableAbilities.Select(a => new ChoosableAbility(a)).ToList(),
             source.Defense2,
-            source.Cost
+            source.Cost,
+            source.TargetKind,
+            source.TargetGameMechanicDescriptions
         ) 
         {
         }

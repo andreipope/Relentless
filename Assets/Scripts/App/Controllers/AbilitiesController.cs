@@ -1301,7 +1301,9 @@ namespace Loom.ZombieBattleground
                         default(Enumerators.AbilitySubTrigger),
                         null,
                         0,
-                        0
+                        0,
+                        default(Enumerators.CardKind),
+                        null
                         );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
@@ -1330,7 +1332,9 @@ namespace Loom.ZombieBattleground
                         default(Enumerators.AbilitySubTrigger),
                         null,
                         0,
-                        0
+                        0,
+                        default(Enumerators.CardKind),
+                        null
                     );
                     break;
             }

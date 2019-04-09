@@ -63,7 +63,15 @@ namespace Loom.ZombieBattleground
                         _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        _units.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+
+                        if (AbilityUnitOwner != null)
+                        {
+                            if (_units.Contains(AbilityUnitOwner))
+                            {
+                                _units.Remove(AbilityUnitOwner);
+                            }
+                        }
                         break;
                 }
             }

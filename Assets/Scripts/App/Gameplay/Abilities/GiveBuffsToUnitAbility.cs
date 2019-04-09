@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
         {
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
             Enumerators.ActionEffectType actionEffectType = Enumerators.ActionEffectType.None;
-            foreach (Enumerators.GameMechanicDescription type in AbilityData.TargetGameMechanicDescriptionTypes)
+            foreach (Enumerators.GameMechanicDescription type in AbilityData.TargetGameMechanicDescriptions)
             {
                 switch (type)
                 {

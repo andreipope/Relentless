@@ -685,7 +685,9 @@ namespace Loom.ZombieBattleground.Common
             AllyUnitsByFactionThatCost,
             YourOverlord,
             PermanentChanges,
-            HasChangesInParameters
+            HasChangesInParameters,
+            LessDefThanInOpponent,
+            OverlordDefenseEqualOrLess,
         }
 
         public enum UniqueAnimation

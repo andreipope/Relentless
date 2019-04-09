@@ -27,7 +27,7 @@ namespace Loom.ZombieBattleground
         {
             Attack = ability.Damage;
             Defense = ability.Defense;
-            TargetCardKind = ability.TargetCardKind;
+            TargetCardKind = ability.TargetKind;
             Cost = ability.Cost;
 
             Count = Mathf.Clamp(ability.Count, 1, ability.Count);
@@ -92,7 +92,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind), Count);
+                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
+                                                                TargetCardKind == Enumerators.CardKind.UNDEFINED), Count);
             }
 
             foreach (BoardUnitModel card in cards)
