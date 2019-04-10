@@ -124,6 +124,27 @@ namespace Loom.ZombieBattleground
             return fiatResponseList;
         }
         
+        public async Task<FiatProductResponse> CallFiatProducts()
+        {
+            Log.Info($"{nameof(CallFiatProducts)}");
+            WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
+            webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatProductsURL;
+            
+            HttpResponseMessage httpResponseMessage =
+                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new Exception($"{nameof(CallFiatProducts)} failed with error code {httpResponseMessage.StatusCode}");
+            }
+
+            FiatProductResponse productResponse = JsonConvert.DeserializeObject<FiatProductResponse>
+            (
+                httpResponseMessage.ReadToEnd()
+            );
+            return productResponse;
+        }
+
         [Serializable]
         public class FiatClaimRequestBody
         {
@@ -203,6 +224,29 @@ namespace Loom.ZombieBattleground
         {
             public string hash;
             public string signature;
+        }
+        
+        public class FiatProductResponse
+        {
+            public FiatProduct[] products;
+        }
+        
+        public class FiatProduct
+        {
+            public string currency;
+            public string store;
+            public FiatProductPack[] packs;
+            public int unit_percent;
+        }
+        
+        public class FiatProductPack
+        {
+            public string uid;
+            public string display_name;
+            public string description;
+            public string store_id;
+            public int amount;
+            public int price;
         }
     }
 }
