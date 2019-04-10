@@ -41,6 +41,10 @@ namespace Loom.ZombieBattleground
             _stateManager = GameClient.Get<IAppStateManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            
+            _uiManager.GetPopup<SettingsWithCreditsPopup>().OnLoginButtonDisplayUpdate += UpdateLoginButtonDisplay;
+            LoginPopup.OnShowPopupEvent += () => UpdateLoginButtonDisplay(true);
+            LoginPopup.OnHidePopupEvent += () => UpdateLoginButtonDisplay(false);
         }
 
         public void Dispose()
@@ -138,5 +142,13 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void UpdateLoginButtonDisplay(bool status)
+        {
+            if (Self != null)
+            {
+                _buttonLogin.gameObject.SetActive(!status);
+            }
+        }
     }
 }
