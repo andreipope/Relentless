@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.15";
+        internal const string CurrentVersionBase = "0.1.18";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -176,10 +176,10 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
-        public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
-        public const bool MulliganEnabled = false;
+        public const bool MulliganEnabled = true;
 
         public static readonly bool AlwaysGuestLogin = false;
 
@@ -206,15 +206,19 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage = true;
+        internal static readonly bool EnableShopPage =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            true;
+#else
+            false;
+#endif
+
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
         internal const int LastTutorialId = 8;
-        
-        internal static readonly bool EnableNewUI = true;
 
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
         

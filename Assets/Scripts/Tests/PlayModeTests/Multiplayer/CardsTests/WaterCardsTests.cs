@@ -165,29 +165,29 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator Maelstrom()
+        public IEnumerator Maelztrom()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Maelstrom", 1),
-                    new DeckCardData("Whizpar", 20));
+                    new DeckCardData("Maelztrom", 1),
+                    new DeckCardData("Whizper", 20));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Maelstrom", 1),
-                    new DeckCardData("Whizpar", 20));
+                    new DeckCardData("Maelztrom", 1),
+                    new DeckCardData("Whizper", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerWhizparId1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizpar", 1);
-                InstanceId playerWhizparId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizpar", 2);
-                InstanceId playerMaelstromId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Maelstrom", 1);
+                InstanceId playerWhizperId1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizper", 1);
+                InstanceId playerWhizperId2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whizper", 2);
+                InstanceId playerMaelstromId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Maelztrom", 1);
 
-                InstanceId opponentWhizparId1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizpar", 1);
-                InstanceId opponentWhizparId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizpar", 2);
-                InstanceId opponentMaelstromrId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Maelstrom", 1);
+                InstanceId opponentWhizperId1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizper", 1);
+                InstanceId opponentWhizperId2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whizper", 2);
+                InstanceId opponentMaelstromrId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Maelztrom", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
@@ -201,22 +201,22 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerWhizparId1, ItemPosition.Start);
-                           player.CardPlay(playerWhizparId2, ItemPosition.Start);
+                           player.CardPlay(playerWhizperId1, ItemPosition.Start);
+                           player.CardPlay(playerWhizperId2, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWhizparId1, ItemPosition.Start);
-                           opponent.CardPlay(opponentWhizparId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentWhizperId1, ItemPosition.Start);
+                           opponent.CardPlay(opponentWhizperId2, ItemPosition.Start);
                        },
                        player =>
                        {
-                           player.CardAttack(playerWhizparId1, opponentWhizparId1);
+                           player.CardAttack(playerWhizperId1, opponentWhizperId1);
                            player.CardPlay(playerMaelstromId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWhizparId2, ItemPosition.Start);
+                           opponent.CardPlay(opponentWhizperId2, ItemPosition.Start);
                        },
                        player => {},
                        opponent => {
