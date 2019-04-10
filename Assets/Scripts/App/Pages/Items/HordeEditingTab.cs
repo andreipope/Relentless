@@ -346,6 +346,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
 
+            _buttonSaveDeck.enabled = false;
+
             PlayClickSound();
 
             SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -353,6 +355,8 @@ namespace Loom.ZombieBattleground
         
         private void FinishAddDeck(bool success, Deck deck)
         {
+            _buttonSaveDeck.enabled = true;
+
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
             _myDeckPage.IsEditingNewDeck = false;
 
@@ -366,6 +370,8 @@ namespace Loom.ZombieBattleground
         
         private void FinishEditDeck(bool success, Deck deck)
         {
+            _buttonSaveDeck.enabled = true;
+
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
             _myDeckPage.ChangeTab(_nextTab);
         }
