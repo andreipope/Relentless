@@ -98,6 +98,7 @@ namespace Loom.ZombieBattleground
             
             _buttonQuitToMainMenu = Self.transform.Find("Button_QuitToMainMenu").GetComponent<Button>();
             _buttonQuitToMainMenu.onClick.AddListener(ButtonQuitToMainMenuHandler);
+            _buttonQuitToMainMenu.gameObject.SetActive(false);
             
             _buttonQuitToDesktop = Self.transform.Find("Button_QuitToDeskTop").GetComponent<Button>();
             _buttonQuitToDesktop.onClick.AddListener(ButtonQuitToDesktopHandler);

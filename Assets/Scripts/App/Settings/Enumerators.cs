@@ -209,7 +209,6 @@ namespace Loom.ZombieBattleground.Common
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
-            CREDITS,
             PlaySelection,
             PvPSelection,
             CustomGameModeList,

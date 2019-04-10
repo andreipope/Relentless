@@ -98,6 +98,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AffectObjectType.Character:                   
                     _targetObject = TargetUnit;
+                    TargetUnit.HandleDefenseBuffer(Value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
