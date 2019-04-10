@@ -39,7 +39,8 @@ namespace Loom.ZombieBattleground
                     }
                     else if(AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
                     {
-                        ChangeStatsOfPlayerAllyCards(false);
+                        GetParameters(out int defense, out int attack);
+                        ChangeStatsOfPlayerAllyCards(defense, attack, false);
                     }
                 }
             }
@@ -51,7 +52,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                ChangeStatsOfTarget(TargetUnit);
+                GetParameters(out int defense, out int attack);
+                ChangeStatsOfTarget(TargetUnit, defense, attack);
 
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
@@ -89,44 +91,59 @@ namespace Loom.ZombieBattleground
             ChangeStatsToItself();
         }
 
-        private void ChangeStatsToItself()
+        protected override void ChangeAuraStatusAction(bool status)
         {
-            ChangeStatsOfTarget(AbilityUnitOwner);
+            base.ChangeAuraStatusAction(status);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            if (status)
+            {
+                ChangeStatsOfPlayerAllyCards(Defense, Attack, false);
+            }
+            else
+            {
+                ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+            }
         }
 
-        private void ChangeStatsOfPlayerAllyCards(bool withCaller = false)
+        private void ChangeStatsToItself()
+        {
+            GetParameters(out int defense, out int attack);
+            ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
+        }
+
+        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false)
         {
             foreach (BoardUnitModel unit in PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard)
             {
                 if (!withCaller && unit.Card == BoardUnitModel.Card)
                     continue;
 
-                ChangeStatsOfTarget(unit);
+                ChangeStatsOfTarget(unit, defense, damage);
             }
         }
         
-        private void ChangeStatsOfTarget(BoardUnitModel unit)
+        private void ChangeStatsOfTarget(BoardUnitModel unit, int defense, int damage)
         {
-            if (StatType != Enumerators.Stat.UNDEFINED)
+            unit.BuffedDefense += defense;
+            unit.CurrentDefense += defense;
+            unit.BuffedDamage += damage;
+            unit.CurrentDamage += damage;
+        }
+
+        private void GetParameters(out int defense, out int attack)
+        {
+            if(StatType != Enumerators.Stat.UNDEFINED)
             {
-                switch (StatType)
-                {
-                    case Enumerators.Stat.DEFENSE:
-                        unit.BuffedDefense += Value;
-                        unit.CurrentDefense += Value;
-                        break;
-                    case Enumerators.Stat.DAMAGE:
-                        unit.BuffedDamage += Value;
-                        unit.CurrentDamage += Value;
-                        break;
-                }
+                defense = Value;
+                attack = Value;
             }
             else
             {
-                unit.BuffedDefense += Defense;
-                unit.CurrentDefense += Defense;
-                unit.BuffedDamage += Attack;
-                unit.CurrentDamage += Attack;
+                defense = Defense;
+                attack = Attack;
             }
         }
     }

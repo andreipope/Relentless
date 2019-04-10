@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                 CardsController.SetGooCostOfCardInHand(
                     PlayerCallerOfAbility,
                     BoardUnitModel,
-                    Cost,
+                    cost,
                     BoardCardView
                 );
             }

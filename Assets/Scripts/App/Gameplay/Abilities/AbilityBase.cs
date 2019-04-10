@@ -247,6 +247,8 @@ namespace Loom.ZombieBattleground
             }
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
+
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -428,6 +430,8 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
+            ChangeAuraStatusAction(false);
+
             Deactivate();
             Dispose();
         }
@@ -467,6 +471,10 @@ namespace Loom.ZombieBattleground
 
         }
 
+        protected virtual void ChangeAuraStatusAction(bool status)
+        {
+
+        }
 
         protected virtual void PrepairingToDieHandler(BoardObject from)
         {

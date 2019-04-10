@@ -164,7 +164,8 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS,
             CARD_COST,
             FILL_BOARD_BY_UNITS,
-            DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS
+            DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS,
+            CHANGE_COST
         }
 
         public enum ActionType
@@ -693,7 +694,8 @@ namespace Loom.ZombieBattleground.Common
             HasChangesInParameters,
             LessDefThanInOpponent,
             OverlordDefenseEqualOrLess,
-            OnlyThisCardInHand
+            OnlyThisCardInHand,
+            AllCardsInHand
         }
 
         public enum UniqueAnimation

@@ -50,6 +50,17 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        {
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
         protected override void ChangeRageStatusAction(bool status)
         {
             base.ChangeRageStatusAction(status);
