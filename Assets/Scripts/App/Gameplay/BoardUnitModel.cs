@@ -198,6 +198,8 @@ namespace Loom.ZombieBattleground
 
         public bool TakeFreezeToAttacked { get; set; }
 
+        public int AdditionalDamage { get; set; }
+
         public int DamageDebuffUntillEndOfTurn { get; set; }
 
         public int HpDebuffUntillEndOfTurn { get; set; }
@@ -209,6 +211,8 @@ namespace Loom.ZombieBattleground
         public bool IsReanimated { get; set; }
 
         public bool AttackAsFirst { get; set; }
+
+        public bool AgileEnabled { get; private set; }
 
         public Enumerators.UnitSpecialStatus UnitSpecialStatus { get; set; }
 
@@ -637,6 +641,11 @@ namespace Loom.ZombieBattleground
             UpdateVisualStateOfDistract(false);
         }
 
+        public void SetAgileStatus(bool status)
+        {
+            AgileEnabled = status;
+        }
+
         public void UpdateVisualStateOfDistract(bool status)
         {
             UnitDistractEffectStateChanged?.Invoke(status);
@@ -790,7 +799,7 @@ namespace Loom.ZombieBattleground
                                 targetCardModel,
                                 () =>
                                 {
-                                    _battleController.AttackUnitByUnit(this, targetCardModel);
+                                    _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
 
                                     if (HasSwing)
                                     {
@@ -798,7 +807,7 @@ namespace Loom.ZombieBattleground
 
                                         foreach (BoardUnitModel unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit,false);
+                                            _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
                                         }
                                     }
 

@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Principal;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -102,6 +100,8 @@ namespace Loom.ZombieBattleground
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
+        protected bool UnitOwnerIsInRage;
+        
         public AbilityBase()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -247,6 +247,8 @@ namespace Loom.ZombieBattleground
             }
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
+
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -431,6 +433,8 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
+            ChangeAuraStatusAction(false);
+
             Deactivate();
             Dispose();
         }
@@ -440,6 +444,20 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            if (!UnitOwnerIsInRage)
+            {
+                UnitOwnerIsInRage = true;
+                ChangeRageStatusAction(UnitOwnerIsInRage);
+            }
+            else
+            {
+                UnitOwnerIsInRage = false;
+                ChangeRageStatusAction(UnitOwnerIsInRage);
+            }
+        }
+
+        protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
 
@@ -456,6 +474,10 @@ namespace Loom.ZombieBattleground
 
         }
 
+        protected virtual void ChangeAuraStatusAction(bool status)
+        {
+
+        }
 
         protected virtual void PrepairingToDieHandler(BoardObject from)
         {
@@ -496,6 +518,17 @@ namespace Loom.ZombieBattleground
         {
             return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+        }
+
+        protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
+        {
+            return InternalTools.GetRandomElementsFromList(units, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+        }
+
+        protected List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count);
         }
 
         public void InvokeActionTriggered(object info = null)

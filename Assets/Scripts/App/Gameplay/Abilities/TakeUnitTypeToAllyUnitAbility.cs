@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.Prototype.Faction == Faction &&
+                                   (unit.Card.Prototype.Faction == Faction || Faction == Enumerators.Faction.Undefined) &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
@@ -132,6 +132,31 @@ namespace Loom.ZombieBattleground
                         foreach (BoardUnitModel unit in allies)
                         {
                             TakeTypeToUnit(unit);
+
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = effectType,
+                                Target = unit
+                            });
+                        }
+                    }
+                    break;
+                case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
+                    {
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
+                                       unit => unit != AbilityUnitOwner &&
+                                           !unit.IsDead &&
+                                           unit.CurrentDefense > 0).ToList();
+
+                        foreach (BoardUnitModel unit in allies)
+                        {
+                            TakeTypeToUnit(unit);
+
+                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = effectType,
+                                Target = unit
+                            });
                         }
                     }
                     break;

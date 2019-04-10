@@ -43,22 +43,26 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.None ||
+                AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
             {
-                for (int i = 0; i < Count; i++)
+                if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials)
                 {
-                    PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                    for (int i = 0; i < Count; i++)
+                    {
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                    }
                 }
-            }
-            else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
-            {
-                for (int i = 0; i < Count - 1; i++)
+                else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
                 {
-                    PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                    for (int i = 0; i < Count - 1; i++)
+                    {
+                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                    }
                 }
-            }
 
-            PlayerCallerOfAbility.GooVials += Value;
+                PlayerCallerOfAbility.GooVials += Value;
+            }
         }
 
         protected override void VFXAnimationEndedHandler()
