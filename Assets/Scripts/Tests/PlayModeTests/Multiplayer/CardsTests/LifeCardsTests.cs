@@ -520,54 +520,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         [UnityTest]
         [Timeout(int.MaxValue)]
         [Category("QuickSubset")]
-        public IEnumerator Bark()
-        {
-            return AsyncTest(async () =>
-            {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    new DeckCardData("Bark", 10)
-                );
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    new DeckCardData("Bark", 10)
-                );
-
-                PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
-                {
-                    Player1HasFirstTurn = true
-                };
-
-                InstanceId playerBarkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bark", 1);
-                InstanceId opponentBarkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bark", 1);
-
-                IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
-                       player => {},
-                       opponent => {},
-                       player =>
-                       {
-                           player.CardPlay(playerBarkId, ItemPosition.Start);
-                       },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentBarkId, ItemPosition.Start);
-                       },
-                       player => {},
-                       opponent => {}
-                };
-
-                Action validateEndState = () =>
-                {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerBarkId)).HasHeavy);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentBarkId)).HasHeavy);
-                };
-
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            }, 300);
-        }
-
-        [UnityTest]
-        [Timeout(int.MaxValue)]
-        [Category("QuickSubset")]
         public IEnumerator PreZerver()
         {
             return AsyncTest(async () =>
@@ -857,11 +809,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
-                    new DeckCardData("EverlaZting", 1),
+                    new DeckCardData("Everlazting", 1),
                     new DeckCardData("Igloo", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
-                    new DeckCardData("EverlaZting", 1),
+                    new DeckCardData("Everlazting", 1),
                     new DeckCardData("Igloo", 10)
                 );
 
@@ -870,9 +822,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerEverlaztingId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "EverlaZting", 1);
+                InstanceId playerEverlaztingId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Everlazting", 1);
                 InstanceId playerIglooId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Igloo", 1);
-                InstanceId opponentEverlaztingId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "EverlaZting", 1);
+                InstanceId opponentEverlaztingId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Everlazting", 1);
                 InstanceId opponentIglooId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Igloo", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
@@ -906,38 +858,38 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     bool playerHasEverlazting = false;
                     bool opponentHasEverlazting = false;
 
-                    string cardToFind = "EverlaZting";
+                    string cardToFind = "Everlazting";
 
-                    foreach (DeckCardData card in TestHelper.GameplayManager.CurrentPlayerDeck.Cards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.CurrentPlayer.CardsInDeck)
                     {
-                        if (card.CardName == cardToFind)
+                        if (card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
                             break;
                         }
                     }
 
-                    foreach (BoardCardView card in TestHelper.BattlegroundController.PlayerHandCards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.CurrentPlayer.CardsInHand)
                     {
-                        if (card.Model.Card.Prototype.Name == cardToFind)
+                        if (card.Card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
                             break;
                         }
                     }
 
-                    foreach (DeckCardData card in TestHelper.GameplayManager.OpponentPlayerDeck.Cards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.OpponentPlayer.CardsInDeck)
                     {
-                        if (card.CardName == cardToFind)
+                        if (card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
                             break;
                         }
                     }
 
-                    foreach (OpponentHandCard card in TestHelper.BattlegroundController.OpponentHandCards)
+                    foreach (BoardUnitModel card in TestHelper.GameplayManager.OpponentPlayer.CardsInHand)
                     {
-                        if (card.Model.Card.Prototype.Name == cardToFind)
+                        if (card.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
                             break;
