@@ -1176,6 +1176,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.CHANGE_COST:
                     ability = new ChangeCostAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }
