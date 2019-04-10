@@ -1163,6 +1163,18 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.GET_GOO_THIS_TURN:
                     ability = new GetGooThisTurnAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.COSTS_LESS:
+                    ability = new CostsLessAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FILL_BOARD_BY_UNITS:
+                    ability = new FillBoardByUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS:
+                    ability = new DealDamageToTargetThatAttackThisAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CARD_COST:
+                    ability = new CardCostAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }

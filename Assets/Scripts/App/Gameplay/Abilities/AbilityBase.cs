@@ -509,6 +509,17 @@ namespace Loom.ZombieBattleground
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
         }
 
+        protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
+        {
+            return InternalTools.GetRandomElementsFromList(units, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+        }
+
+        protected List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count);
+        }
+
         public void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);

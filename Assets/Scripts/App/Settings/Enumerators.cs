@@ -24,7 +24,8 @@ namespace Loom.ZombieBattleground.Common
             AT_DEFENCE,
             IN_HAND,
             KILL_UNIT,
-            RAGE
+            RAGE,
+            AURA
         }
 
         public enum AbilityEffect
@@ -159,7 +160,11 @@ namespace Loom.ZombieBattleground.Common
             CHANGE_STAT_OF_CARDS_IN_HAND,
             GIVE_BUFFS_TO_UNIT,
             DISCARD_CARD_FROM_HAND,
-            GET_GOO_THIS_TURN
+            GET_GOO_THIS_TURN,
+            COSTS_LESS,
+            CARD_COST,
+            FILL_BOARD_BY_UNITS,
+            DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS
         }
 
         public enum ActionType
@@ -688,6 +693,7 @@ namespace Loom.ZombieBattleground.Common
             HasChangesInParameters,
             LessDefThanInOpponent,
             OverlordDefenseEqualOrLess,
+            OnlyThisCardInHand
         }
 
         public enum UniqueAnimation

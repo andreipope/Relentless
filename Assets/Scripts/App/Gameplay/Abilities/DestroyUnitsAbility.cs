@@ -12,9 +12,12 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnitModel> _units;
 
+        private int Count { get; }
+
         public DestroyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Count = ability.Count;
         }
 
         public override void Activate()
@@ -74,6 +77,11 @@ namespace Loom.ZombieBattleground
                         }
                         break;
                 }
+            }
+
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                _units = GetRandomUnits(_units, Count);
             }
 
             InvokeActionTriggered(_units);
