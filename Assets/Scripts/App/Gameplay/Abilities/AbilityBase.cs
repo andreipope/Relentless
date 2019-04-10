@@ -219,6 +219,7 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
 
             VFXAnimationEnded += VFXAnimationEndedHandler;
 
@@ -263,6 +264,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
                 PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
             }
             
             VFXAnimationEnded -= VFXAnimationEndedHandler;
@@ -479,6 +481,11 @@ namespace Loom.ZombieBattleground
 
         }
 
+        protected virtual void BoardChangedHandler(int count)
+        {
+
+        }
+
         protected virtual void PrepairingToDieHandler(BoardObject from)
         {
             AbilitiesController.DeactivateAbility(ActivityId);
@@ -517,13 +524,13 @@ namespace Loom.ZombieBattleground
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
             return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
-                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
         {
             return InternalTools.GetRandomElementsFromList(units, count)
-                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<T> GetRandomElements<T>(List<T> elements, int count)

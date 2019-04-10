@@ -165,7 +165,8 @@ namespace Loom.ZombieBattleground.Common
             CARD_COST,
             FILL_BOARD_BY_UNITS,
             DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS,
-            CHANGE_COST
+            CHANGE_COST,
+            GAIN_STATS_OF_ADJACENT_UNITS
         }
 
         public enum ActionType
