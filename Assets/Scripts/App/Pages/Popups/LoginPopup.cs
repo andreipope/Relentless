@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(LoginPopup));
 
+        public static Action OnShowPopupEvent;
         public static Action OnHidePopupEvent;
         public static Action OnLoginSuccess;
 
@@ -222,6 +223,8 @@ namespace Loom.ZombieBattleground
 
             _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
                 (int)KeyCode.Return, null, OnInputDownEnterButton);
+                
+            OnShowPopupEvent?.Invoke();
         }
 
         public void Show(object data)

@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private BackendDataControlMediator _backendDataControlMediator;
 
+        public Action<bool> OnLoginButtonDisplayUpdate;
+
         private GameObject _panelVideoSettings,
                            _groupLogin;
 
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             Self = null;
 
             _gameplayManager.IsGameplayInputBlocked = false;
+            OnLoginButtonDisplayUpdate?.Invoke(false);
         }
 
         public void SetMainPriority()
@@ -143,6 +146,8 @@ namespace Loom.ZombieBattleground
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
             FillInfo();
+            
+            OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
         public void Show(object data)
@@ -166,6 +171,7 @@ namespace Loom.ZombieBattleground
                 {
                     _buttonLogin.gameObject.SetActive(true);
                     _buttonLogout.gameObject.SetActive(false);
+                    OnLoginButtonDisplayUpdate?.Invoke(true);
                 }
             }
             else
@@ -174,6 +180,7 @@ namespace Loom.ZombieBattleground
                 {
                     _buttonLogin.gameObject.SetActive(false);
                     _buttonLogout.gameObject.SetActive(true);    
+                    OnLoginButtonDisplayUpdate?.Invoke(false);  
                 }
             }         
         }
