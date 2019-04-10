@@ -105,7 +105,9 @@ namespace Loom.ZombieBattleground
 
         public OverlordModel CurrentEditOverlord;
 
-        public bool IsEditingNewDeck;        
+        public bool IsEditingNewDeck;    
+        
+        public bool IsRenameWhileEditing;    
         
         private int _deckPageIndex;
 
@@ -436,6 +438,12 @@ namespace Loom.ZombieBattleground
             CurrentEditDeck = GetSelectedDeck().Clone();
             CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
             IsEditingNewDeck = false;
+        }
+
+        public void AssignCurrentDeck(int deckIndex)
+        {
+            SelectDeckIndex = deckIndex;
+            AssignCurrentDeck();
         }
         
         public void AssignNewDeck()
