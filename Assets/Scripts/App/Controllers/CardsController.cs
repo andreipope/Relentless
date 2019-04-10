@@ -498,7 +498,8 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
+                            if(Constants.RankSystemEnabled)
+                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
 
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
