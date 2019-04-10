@@ -69,6 +69,10 @@ namespace Loom.ZombieBattleground
                         unit.SetAsFeralUnit();
                         actionEffectType = Enumerators.ActionEffectType.Feral;
                         break;
+                    case Enumerators.GameMechanicDescription.SwingX:
+                        unit.AddBuffSwing();
+                        actionEffectType = Enumerators.ActionEffectType.Swing;
+                        break;
                 }
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
