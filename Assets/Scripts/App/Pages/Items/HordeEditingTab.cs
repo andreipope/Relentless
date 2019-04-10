@@ -355,10 +355,12 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
             _myDeckPage.IsEditingNewDeck = false;
-            _myDeckPage.AssignCurrentDeck
-            (
-                _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck)
-            );
+
+            List<Deck> cacheDeckList = _myDeckPage.GetDeckList();
+            _myDeckPage.SelectDeckIndex = cacheDeckList.IndexOf(_myDeckPage.CurrentEditDeck);
+            _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, cacheDeckList.Count-1);
+            
+            _myDeckPage.AssignCurrentDeck(_myDeckPage.SelectDeckIndex);
             _myDeckPage.ChangeTab(_nextTab);
         }
         
@@ -1074,7 +1076,8 @@ namespace Loom.ZombieBattleground
 
         private void MoveDeckPageIndex(int direction)
         {
-            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1);
+            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, Mathf.Max(0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1));
+
             if (newIndex == _deckPageIndex)
                 return;
                 
