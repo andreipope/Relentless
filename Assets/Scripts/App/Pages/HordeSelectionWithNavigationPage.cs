@@ -408,6 +408,9 @@ namespace Loom.ZombieBattleground
         private void FinishDeleteDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
+
+            _cacheDeckListToDisplay = GetDeckList();
+            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
             ChangeTab(Tab.SelectDeck);
         }
 
