@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             return gameAction;
         }
 
-        public GameplayQueueAction<object> GenerateActionForQueue(
+        private GameplayQueueAction<object> GenerateActionForQueue(
             Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
             _nextActionId++;
@@ -129,7 +129,7 @@ namespace Loom.ZombieBattleground
             return new GameplayQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
         }
 
-        public void MoveActionBeforeAction(GameplayQueueAction<object> actionToInsert, Enumerators.QueueActionType actionBefore)
+        private void MoveActionBeforeAction(GameplayQueueAction<object> actionToInsert, Enumerators.QueueActionType actionBefore)
         {
             if (_actionsToDo.Contains(actionToInsert))
             {
@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
             _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
         }
 
-        public void StopAllActions()
+        private void StopAllActions()
         {
             ClearActions();
         }

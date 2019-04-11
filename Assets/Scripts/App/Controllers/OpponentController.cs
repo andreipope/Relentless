@@ -346,11 +346,6 @@ namespace Loom.ZombieBattleground
             return boardUnitView;
         }
 
-        private void OnPlayerLeftGameActionHandler()
-        {
-            _gameplayManager.OpponentPlayer.PlayerDie();
-        }
-
         #region event handlers
 
         private void OnCardPlayedHandler(PlayerActionCardPlay cardPlay)
@@ -407,20 +402,6 @@ namespace Loom.ZombieBattleground
         #endregion
 
         #region Actions
-
-        private void GotActionEndTurn(EndTurnModel model)
-        {
-            if (_gameplayManager.IsGameEnded)
-                return;
-
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
-            {
-                _battlegroundController.EndTurn();
-
-                completeCallback?.Invoke();
-
-            }, Enumerators.QueueActionType.StopTurn);
-        }
 
         private void GotActionPlayCard(InstanceId cardId, ItemPosition position)
         {
@@ -698,27 +679,8 @@ namespace Loom.ZombieBattleground
 
     }
 
+
     #region models
-    public class EndTurnModel
-    {
-        public InstanceId CallerId;
-    }
-
-    public class MulliganModel
-    {
-        public InstanceId CallerId;
-        public List<InstanceId> CardsIds;
-    }
-
-    public class DrawCardModel
-    {
-        public string CardName;
-        public InstanceId CallerId;
-        public InstanceId FromDeckOfPlayerId;
-        public InstanceId TargetId;
-        public Enumerators.AffectObjectType AffectObjectType;
-    }
-
 
     public class UseOverlordSkillModel
     {
@@ -737,12 +699,6 @@ namespace Loom.ZombieBattleground
     {
         public InstanceId CardId;
         public InstanceId TargetId;
-    }
-
-    public class TargetUnitModel
-    {
-        public InstanceId Target;
-        public Enumerators.AffectObjectType AffectObjectType;
     }
 
     #endregion
