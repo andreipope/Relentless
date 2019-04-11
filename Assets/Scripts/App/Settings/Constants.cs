@@ -189,6 +189,8 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
+        public const bool RankSystemEnabled = false;
+
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
