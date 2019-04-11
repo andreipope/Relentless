@@ -175,16 +175,16 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator ZeuZ()
+        public IEnumerator Zeuz()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("ZeuZ", 1),
+                    new DeckCardData("Zeuz", 1),
                     new DeckCardData("Igloo", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("ZeuZ", 1),
+                    new DeckCardData("Zeuz", 1),
                     new DeckCardData("Igloo", 20)
                 );
 
@@ -193,9 +193,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerZeuzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "ZeuZ", 1);
+                InstanceId playerZeuzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeuz", 1);
                 InstanceId playerIglooId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Igloo", 1);
-                InstanceId opponentZeuzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "ZeuZ", 1);
+                InstanceId opponentZeuzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zeuz", 1);
                 InstanceId opponentIglooId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Igloo", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
@@ -208,6 +208,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardPlay(opponentIglooId, ItemPosition.Start);
                            opponent.CardPlay(opponentZeuzId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(opponentZeuzId, Enumerators.AbilityType.MASSIVE_DAMAGE, new List<ParametrizedAbilityInstanceId>());
                        },
                        player => 
                        {
@@ -223,15 +224,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     BoardUnitModel playerIglooUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerIglooId));
                     BoardUnitModel opponentZeuzUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZeuzId));
                     BoardUnitModel opponentIglooUnit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentIglooId));
-                    Assert.AreEqual(playerZeuzUnit.Card.Prototype.Defense, playerZeuzUnit.CurrentDefense);
-                    Assert.AreEqual(playerIglooUnit.Card.Prototype.Defense-3, playerIglooUnit.CurrentDefense);
-                    Assert.AreEqual(opponentZeuzUnit.Card.Prototype.Defense-3, opponentZeuzUnit.CurrentDefense);
-                    Assert.AreEqual(opponentIglooUnit.Card.Prototype.Defense-3, opponentIglooUnit.CurrentDefense);
-                    Assert.AreEqual(TestHelper.GetCurrentPlayer().InitialDefense-3, TestHelper.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(TestHelper.GetOpponentPlayer().InitialDefense-3, TestHelper.GetOpponentPlayer().Defense);
+                    Assert.IsNull(playerIglooUnit);
+                    Assert.IsNull(opponentIglooUnit);
+                    Assert.AreEqual(playerZeuzUnit.Card.Prototype.Defense - 6, playerZeuzUnit.CurrentDefense);
+                    Assert.AreEqual(opponentZeuzUnit.Card.Prototype.Defense - 6, opponentZeuzUnit.CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             }, 400);
         }
 

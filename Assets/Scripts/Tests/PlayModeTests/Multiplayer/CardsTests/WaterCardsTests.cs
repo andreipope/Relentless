@@ -839,48 +839,45 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        public IEnumerator Izicle()
+        public IEnumerator Icicle()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Izicle", 1),
-                    new DeckCardData("Znowy", 20));
+                    new DeckCardData("Icicle", 1),
+                    new DeckCardData("Cerberuz", 5));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Izicle", 1),
-                    new DeckCardData("Znowy", 20));
+                    new DeckCardData("Icicle", 1),
+                    new DeckCardData("Cerberuz", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
                 {
                     Player1HasFirstTurn = true
                 };
 
-                InstanceId playerIzicleId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Izicle", 1);
-                InstanceId playerZnowyId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowy", 1);
-                InstanceId opponentIzicleId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Izicle", 1);
-                InstanceId opponentZnowyId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowy", 1);
-
-                int difference = 2;
+                InstanceId playerIcicleId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Icicle", 1);
+                InstanceId playerCerberuzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cerberuz", 1);
+                InstanceId opponentIcicleId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Icicle", 1);
+                InstanceId opponentCerberuzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cerberuz", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                     player => {},
                     opponent => {},
-                    player => {},
+                    player => player.CardPlay(playerCerberuzId, ItemPosition.Start),
                     opponent =>
                     {
-                        opponent.CardPlay(opponentZnowyId, ItemPosition.Start);
-                        opponent.CardPlay(opponentIzicleId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentIzicleId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
+                        opponent.CardPlay(opponentCerberuzId, ItemPosition.Start);
+                        opponent.CardPlay(opponentIcicleId, ItemPosition.Start);
+                        opponent.CardAbilityUsed(opponentIcicleId, Enumerators.AbilityType.DESTROY_UNIT_BY_COST, new List<ParametrizedAbilityInstanceId>()
                         {
-                            new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
+                            new ParametrizedAbilityInstanceId(playerCerberuzId)
                         });
                     },
                     player =>
                     {
-                        player.CardPlay(playerZnowyId, ItemPosition.Start);
-                        player.CardPlay(playerIzicleId, ItemPosition.Start, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardPlay(playerIcicleId, ItemPosition.Start, opponentCerberuzId);
                     },
                     player => {},
                     opponent => {},
@@ -888,8 +885,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense - difference, pvpTestContext.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - difference, pvpTestContext.GetOpponentPlayer().Defense);
+                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCerberuzId));
+                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCerberuzId));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
