@@ -690,10 +690,6 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
-#if USE_REBALANCE_BACKEND
-                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
@@ -743,7 +739,6 @@ namespace Loom.ZombieBattleground
                         _tutorialManager.StartTutorial();
                     }
                 }
-#endif
             }
             else
             {

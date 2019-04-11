@@ -78,11 +78,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-#if USE_REBALANCE_BACKEND
         internal const int DefaultPlayerHp = 50;
-#else
-        internal const int DefaultPlayerHp = 20;
-#endif
 
         internal const int DefaultPlayerGoo = 0;
 

@@ -107,8 +107,6 @@ namespace Loom.ZombieBattleground
             const BackendPurpose backend = BackendPurpose.Production;
 #elif USE_BRANCH_TESTING_BACKEND
             const BackendPurpose backend = BackendPurpose.BranchTesting;
-#elif USE_REBALANCE_BACKEND
-            const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
