@@ -303,8 +303,7 @@ namespace Loom.ZombieBattleground
                 new BoardController(),
                 new OverlordsTalkingController(),
                 new HandPointerController(),
-                new DeckGeneratorController(),
-                new SystemRequirementController()
+                new DeckGeneratorController()
             };
 
             foreach (IController controller in _controllers)

@@ -184,8 +184,7 @@ namespace Loom.ZombieBattleground
 
         private void CheckForMinimumSystemRequirement()
         {
-            if (!GameClient.Get<IGameplayManager>().GetController<SystemRequirementController>()
-                .CheckIfMeetMinimumSystemRequirement())
+            if (!SystemRequirementTool.CheckIfMeetMinimumSystemRequirement())
             {
                 OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");
             }
@@ -193,16 +192,16 @@ namespace Loom.ZombieBattleground
         
         private void CheckForInternetConnection()
         {
-            if (Application.internetReachability == NetworkReachability.NotReachable)
+            if (SystemRequirementTool.CheckInternetConnectionReachability())
+            {
+                _isHasInternetConnection = true;
+            }
+            else
             {
                 _isHasInternetConnection = false;
                 InternetConnectionPopup popup = _uiManager.GetPopup<InternetConnectionPopup>();
                 popup.ConfirmationReceived += ConfirmRetryIfNoConnection;
-                popup.Show("Internet connection required. Please check your internet connection and try again.");
-            }
-            else
-            {
-                _isHasInternetConnection = true;
+                popup.Show("Internet connection required. Please check your internet connection and try again.");            
             }
         }
 
