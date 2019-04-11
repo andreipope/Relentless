@@ -160,11 +160,8 @@ namespace Loom.ZombieBattleground
 
             _progressBar.gameObject.SetActive(false);
 
-<<<<<<< HEAD
             CheckForMinimumSystemRequirement();
-=======
-            CheckForInternetConnection();            
->>>>>>> ee2f78a6682c028929bb8ab9f62a78076d26544e
+            CheckForInternetConnection();          
         }
 
         public void Hide()
@@ -184,15 +181,16 @@ namespace Loom.ZombieBattleground
         {
 
         }
-        
-<<<<<<< HEAD
+
         private void CheckForMinimumSystemRequirement()
         {
             if (!GameClient.Get<IGameplayManager>().GetController<SystemRequirementController>()
                 .CheckIfMeetMinimumSystemRequirement())
             {
-                OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");          
-=======
+                OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");
+            }
+        }
+        
         private void CheckForInternetConnection()
         {
             if (Application.internetReachability == NetworkReachability.NotReachable)
@@ -220,7 +218,6 @@ namespace Loom.ZombieBattleground
             else
             {
                 GameClient.Get<IAppStateManager>().QuitApplication();
->>>>>>> ee2f78a6682c028929bb8ab9f62a78076d26544e
             }
         }
 
