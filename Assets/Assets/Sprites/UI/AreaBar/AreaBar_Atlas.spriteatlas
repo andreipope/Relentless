@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: AreaBar_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 5b3bdab3af6eb4c1399fcd7fcd31484f, type: 3}
+    - {fileID: 2800000, guid: 996e6ecad89264b40b4929c7141a6edf, type: 3}
+    - {fileID: 2800000, guid: fadcab608a4b545ecb799267c44128a9, type: 3}
+    - {fileID: 2800000, guid: 3c70b13bb744dd04c9fed5ea434bfb12, type: 3}
+    - {fileID: 2800000, guid: bb0fef663cc144196a4e69fd9284081d, type: 3}
+    - {fileID: 2800000, guid: 903ab09d48db549f6b96af3663209899, type: 3}
+    - {fileID: 2800000, guid: 910e41677b7d1445094b84585a64a84e, type: 3}
+    - {fileID: 2800000, guid: 2bc49b0180c294789be3c7fb08459c80, type: 3}
+    - {fileID: 2800000, guid: 35018279036f544a7af303ac36a1ef9b, type: 3}
+    - {fileID: 2800000, guid: 84b1180c290e34ab08cd2d2e81453b8f, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: fadcab608a4b545ecb799267c44128a9, type: 3}
+  - {fileID: 21300000, guid: 2bc49b0180c294789be3c7fb08459c80, type: 3}
+  - {fileID: 21300000, guid: 5b3bdab3af6eb4c1399fcd7fcd31484f, type: 3}
+  - {fileID: 21300000, guid: bb0fef663cc144196a4e69fd9284081d, type: 3}
+  - {fileID: 21300000, guid: 910e41677b7d1445094b84585a64a84e, type: 3}
+  - {fileID: 21300000, guid: 35018279036f544a7af303ac36a1ef9b, type: 3}
+  - {fileID: 21300000, guid: 996e6ecad89264b40b4929c7141a6edf, type: 3}
+  - {fileID: 21300000, guid: 3c70b13bb744dd04c9fed5ea434bfb12, type: 3}
+  - {fileID: 21300000, guid: 84b1180c290e34ab08cd2d2e81453b8f, type: 3}
+  - {fileID: 21300000, guid: 903ab09d48db549f6b96af3663209899, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - area_bar_tray
+  - settings_btn_normal
+  - area_bar_empty
+  - goo_counter
+  - sample_avatar
+  - settings_btn_pressed
+  - area_bar_full
+  - exp_lock
+  - xp_trophy_icon
+  - login_avatar
+  m_Tag: AreaBar_Atlas
+  m_IsVariant: 0
