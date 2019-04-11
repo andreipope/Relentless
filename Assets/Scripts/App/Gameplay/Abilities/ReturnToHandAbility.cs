@@ -32,6 +32,19 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+            {
+                ReturnTargetToHand(AbilityUnitOwner);
+            }
+        }
+
         private void ReturnTargetToHand(BoardUnitModel unit)
         {
             Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position;

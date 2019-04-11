@@ -162,11 +162,15 @@ namespace Loom.ZombieBattleground.Common
             DISCARD_CARD_FROM_HAND,
             GET_GOO_THIS_TURN,
             COSTS_LESS,
-            CARD_COST,
             FILL_BOARD_BY_UNITS,
             DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS,
             CHANGE_COST,
-            GAIN_STATS_OF_ADJACENT_UNITS
+            GAIN_STATS_OF_ADJACENT_UNITS,
+            DISTRACT_AND_CHANGE_STAT,
+            DAMAGE_AND_DISTRACT,
+            PUT_UNITS_FROM_DISCARD_INTO_PLAY,
+            PUT_UNITS_FRON_LIBRARY_INTO_PLAY,
+            BLOCK_TAKE_DAMAGE
         }
 
         public enum ActionType
@@ -695,7 +699,11 @@ namespace Loom.ZombieBattleground.Common
             LessDefThanInOpponent,
             OverlordDefenseEqualOrLess,
             OnlyThisCardInHand,
-            AllCardsInHand
+            AllCardsInHand,
+            CardCostMoreThanCostOfThis,
+            ForEachEnemyUnitInPlay,
+            ForEachAllyUnitInPlay,
+            IfHaveFewerUnitsInPlay
         }
 
         public enum UniqueAnimation
