@@ -24,6 +24,23 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+            {
+                CardsController.SetGooCostOfCardInHand(
+                        PlayerCallerOfAbility,
+                        BoardUnitModel,
+                        BoardUnitModel.Card.InstanceCard.Cost + Cost
+                    );
+            }
+        }
+
         protected override void ChangeAuraStatusAction(bool status)
         {
             base.ChangeAuraStatusAction(status);
