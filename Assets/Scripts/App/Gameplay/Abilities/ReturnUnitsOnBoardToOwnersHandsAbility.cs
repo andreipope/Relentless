@@ -51,6 +51,11 @@ namespace Loom.ZombieBattleground
                 Units = Units.Where(x => x.Card.InstanceCard.Cost <= Value).ToList();
             }
 
+            foreach(BoardUnitModel unit in Units)
+            {
+                unit.SetUnitActiveStatus(false);
+            }
+
             InvokeActionTriggered(Units);
         }
 

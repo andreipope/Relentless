@@ -105,7 +105,9 @@ namespace Loom.ZombieBattleground
 
         public OverlordModel CurrentEditOverlord;
 
-        public bool IsEditingNewDeck;        
+        public bool IsEditingNewDeck;    
+        
+        public bool IsRenameWhileEditing;    
         
         private int _deckPageIndex;
 
@@ -408,6 +410,9 @@ namespace Loom.ZombieBattleground
         private void FinishDeleteDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
+
+            _cacheDeckListToDisplay = GetDeckList();
+            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
             ChangeTab(Tab.SelectDeck);
         }
 
@@ -437,6 +442,12 @@ namespace Loom.ZombieBattleground
             CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
             IsEditingNewDeck = false;
         }
+
+        public void AssignCurrentDeck(int deckIndex)
+        {
+            SelectDeckIndex = deckIndex;
+            AssignCurrentDeck();
+        }
         
         public void AssignNewDeck()
         {
@@ -460,7 +471,6 @@ namespace Loom.ZombieBattleground
         public void ChangeTab(Tab newTab)
         {
             Tab oldTabl = _tab;
-
             _tab = newTab;            
             
             for (int i = 0; i < _tabObjects.Length;++i)
@@ -821,7 +831,7 @@ namespace Loom.ZombieBattleground
                 _deckPageIndex = (deckIndexAfterSubtractFistPage / _deckInfoAmountPerPage) + 1;
                 indexInPage = deckIndexAfterSubtractFistPage % _deckInfoAmountPerPage;
             }
-            
+
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(indexInPage);
         }

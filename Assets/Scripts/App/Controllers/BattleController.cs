@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
                 int additionalDamageAttacked =
                     _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
-                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker;
+                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
@@ -215,9 +215,9 @@ namespace Loom.ZombieBattleground
                 if (skill.Skill.Skill != Enumerators.Skill.HARDEN &&
                     skill.Skill.Skill != Enumerators.Skill.ICE_WALL)
                 {
-                    if (healingPlayer.Defense > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Defense > healingPlayer.MaxCurrentDefense)
                     {
-                        healingPlayer.Defense = Constants.DefaultPlayerHp;
+                        healingPlayer.Defense = healingPlayer.MaxCurrentDefense;
                     }
                 }
             }
@@ -292,9 +292,9 @@ namespace Loom.ZombieBattleground
             if (healedPlayer != null)
             {
                 healedPlayer.Defense += healValue;
-                if (healedPlayer.Defense > Constants.DefaultPlayerHp)
+                if (healedPlayer.Defense > healedPlayer.MaxCurrentDefense)
                 {
-                    healedPlayer.Defense = Constants.DefaultPlayerHp;
+                    healedPlayer.Defense = healedPlayer.MaxCurrentDefense;
                 }
             }
         }

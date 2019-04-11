@@ -71,8 +71,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnDestroy()
+        private async void OnDestroy()
         {
+            await GameClient.Get<IAppStateManager>().SendLeaveMatchIfInPlay();
+
             if (Instance == this)
             {
                 GameClient.Instance.Dispose();

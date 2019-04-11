@@ -157,4 +157,36 @@ namespace Loom.ZombieBattleground
             Hide();
         }
     }
+    
+    public class CreditView
+    {
+        public GameObject SelfObject;
+
+        public TextMeshProUGUI FullNameText;
+
+        public CreditView(GameObject prefab, Transform parent, string name)
+        {
+            SelfObject = Object.Instantiate(prefab, parent, false);
+            FullNameText = SelfObject.transform.Find("Text_Name").GetComponent<TextMeshProUGUI>();
+            FullNameText.text = name;
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                FullNameText.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    public class CreditSubSectionView
+    {
+        public GameObject SelfObject;
+
+        public TextMeshProUGUI SectionText;
+
+        public CreditSubSectionView(GameObject prefab, Transform parent, string section)
+        {
+            SelfObject = Object.Instantiate(prefab, parent, false);
+            SectionText = SelfObject.transform.Find("Text_Section").GetComponent<TextMeshProUGUI>();
+            SectionText.text = section;
+        }
+    }
 }

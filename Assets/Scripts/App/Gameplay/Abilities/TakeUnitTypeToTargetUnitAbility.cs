@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Random = UnityEngine.Random;
+using Loom.ZombieBattleground.Helpers;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -11,70 +12,93 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.CardType UnitType;
 
+        public int Count { get; }
+
         public TakeUnitTypeToTargetUnitAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             UnitType = ability.TargetUnitType;
+            Count = Mathf.Clamp(ability.Count, 1, ability.Count);
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
-                return;
-
-            Action();
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                HandleTargets();
+            }
         }
 
-        public override void Action(object info = null)
+        protected override void InputEndedHandler()
         {
-            base.Action(info);
+            base.InputEndedHandler();
 
-            List<BoardUnitModel> allies;
+            if (IsAbilityResolved)
+            {
+                TakeTypeToUnits(new List<BoardUnitModel>() { TargetUnit });
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(TargetUnit)
+                    }
+                );
+            }
+        }
 
-            BoardUnitModel target = null;
+        private void HandleTargets()
+        {
+            List<BoardUnitModel> units;
+
             if (PredefinedTargets != null)
             {
-                allies = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
-
-                if (allies.Count > 0)
-                {
-                    target = allies[0];
-                }
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<BoardUnitModel>().ToList();
             }
             else
             {
-                allies = PlayerCallerOfAbility.CardsOnBoard
-                    .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
-                    .ToList();
+                units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard
+               .Where(unit => unit != AbilityUnitOwner && !unit.HasFeral && unit.NumTurnsOnBoard == 0)
+               .ToList();
 
-                if (allies.Count > 0)
+                if (AbilityData.SubTrigger != Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                 {
-                    target = allies[Random.Range(0, allies.Count)];
+                    units = InternalTools.GetRandomElementsFromList(units, Count);
                 }
             }
 
-            if (target == null)
+            if (units.Count > 0)
             {
-                TakeTypeToUnit(target);
+                TakeTypeToUnits(units);
+
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>(
+                    units.Select(item => new ParametrizedAbilityBoardObject(item)))
+                );
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnits(List<BoardUnitModel> units)
         {
-            switch (UnitType)
+            foreach (BoardUnitModel unit in units)
             {
-                case Enumerators.CardType.HEAVY:
-                    unit.SetAsHeavyUnit();
-                    break;
-                case Enumerators.CardType.FERAL:
-                    unit.SetAsFeralUnit();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
+                switch (UnitType)
+                {
+                    case Enumerators.CardType.HEAVY:
+                        unit.SetAsHeavyUnit();
+                        break;
+                    case Enumerators.CardType.FERAL:
+                        unit.SetAsFeralUnit();
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
+                }
             }
 
+ 			PostGameActionReport(units);
+        }
+
+        private void PostGameActionReport(List<BoardUnitModel> targets)
+        {
             Enumerators.ActionEffectType effectType = Enumerators.ActionEffectType.None;
 
             if (UnitType == Enumerators.CardType.FERAL)
@@ -86,26 +110,23 @@ namespace Loom.ZombieBattleground
                 effectType = Enumerators.ActionEffectType.Heavy;
             }
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            foreach (BoardUnitModel target in targets)
+            {
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = effectType,
+                    Target = target
+                });
+            }
+
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = effectType,
-                        Target = unit
-                    }
-                }
+                TargetEffects = TargetEffects
             });
-
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(unit)
-                }
-            );
         }
     }
 }

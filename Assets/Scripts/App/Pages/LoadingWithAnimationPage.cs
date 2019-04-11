@@ -38,7 +38,8 @@ namespace Loom.ZombieBattleground
 
         private float _percentage;
 
-        private bool _isLoaded;
+        private bool _isLoaded,
+                     _isHasInternetConnection;
 
         private IDataManager _dataManager;
 
@@ -71,6 +72,9 @@ namespace Loom.ZombieBattleground
             //this makes us skip the initial "bar fill"
             _percentage = 100f;
 #endif
+
+            if(!_isHasInternetConnection)
+                return;
 
             if (!_isLoaded)
             {
@@ -156,7 +160,11 @@ namespace Loom.ZombieBattleground
 
             _progressBar.gameObject.SetActive(false);
 
+<<<<<<< HEAD
             CheckForMinimumSystemRequirement();
+=======
+            CheckForInternetConnection();            
+>>>>>>> ee2f78a6682c028929bb8ab9f62a78076d26544e
         }
 
         public void Hide()
@@ -177,12 +185,42 @@ namespace Loom.ZombieBattleground
 
         }
         
+<<<<<<< HEAD
         private void CheckForMinimumSystemRequirement()
         {
             if (!GameClient.Get<IGameplayManager>().GetController<SystemRequirementController>()
                 .CheckIfMeetMinimumSystemRequirement())
             {
                 OpenAlertDialog("Your device does not meet with the minimum system requirements. If you choose to continue with game you may face difficulties or may not be able to play");          
+=======
+        private void CheckForInternetConnection()
+        {
+            if (Application.internetReachability == NetworkReachability.NotReachable)
+            {
+                _isHasInternetConnection = false;
+                InternetConnectionPopup popup = _uiManager.GetPopup<InternetConnectionPopup>();
+                popup.ConfirmationReceived += ConfirmRetryIfNoConnection;
+                popup.Show("Internet connection required. Please check your internet connection and try again.");
+            }
+            else
+            {
+                _isHasInternetConnection = true;
+            }
+        }
+
+        private async void ConfirmRetryIfNoConnection(bool status)
+        {
+            _uiManager.GetPopup<InternetConnectionPopup>().ConfirmationReceived -= ConfirmRetryIfNoConnection;
+            _uiManager.HidePopup<InternetConnectionPopup>();
+            if(status)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(1));
+                CheckForInternetConnection();
+            }
+            else
+            {
+                GameClient.Get<IAppStateManager>().QuitApplication();
+>>>>>>> ee2f78a6682c028929bb8ab9f62a78076d26544e
             }
         }
 

@@ -34,6 +34,15 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action(TargetUnit);
+            }
+        }
 
         protected override void UnitDiedHandler()
         {
@@ -51,18 +60,25 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            foreach (Enumerators.Target targetType in AbilityTargets)
+            if (info != null)
             {
-                switch (targetType)
+                _boardUnits.Add((BoardUnitModel)info);
+            }
+            else
+            {
+                foreach (Enumerators.Target targetType in AbilityTargets)
                 {
-                    case Enumerators.Target.PLAYER_ALL_CARDS:
-                    case Enumerators.Target.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
-                        break;
-                    case Enumerators.Target.OPPONENT_ALL_CARDS:
-                    case Enumerators.Target.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
-                        break;
+                    switch (targetType)
+                    {
+                        case Enumerators.Target.PLAYER_ALL_CARDS:
+                        case Enumerators.Target.PLAYER_CARD:
+                            _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                            break;
+                        case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        case Enumerators.Target.OPPONENT_CARD:
+                            _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
+                            break;
+                    }
                 }
             }
 

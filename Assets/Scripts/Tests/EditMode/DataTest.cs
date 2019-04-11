@@ -207,7 +207,9 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,
                     7,
-                    8
+                    8,
+                    Enumerators.CardKind.UNDEFINED,
+                    new List<Enumerators.GameMechanicDescription>()
                 );
         }
     }
