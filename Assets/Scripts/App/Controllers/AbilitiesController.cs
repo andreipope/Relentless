@@ -1176,6 +1176,21 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS:
                     ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DISTRACT_AND_CHANGE_STAT:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_AND_DISTRACT:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.PUT_UNITS_FROM_DISCARD_INTO_PLAY:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.PUT_UNITS_FRON_LIBRARY_INTO_PLAY:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }
