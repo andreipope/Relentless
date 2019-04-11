@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
 
             if (units != null && units.Count > 0)
             {
-                return InternalTools.GetRandomElementsFromList(units, 1)[0];
+                return GetRandomUnits(units, 1)[0];
             }
 
             return null;

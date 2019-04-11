@@ -401,6 +401,50 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
+        public bool HasUnitsOnBoardThatCostMoreThan(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            if (ability.Targets.Count == 0)
+            {
+                return false;
+            }
+
+            Player opponent = boardUnitModel.Owner == _gameplayManager.CurrentPlayer ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
+            Player player = boardUnitModel.Owner;
+
+            foreach (Enumerators.Target target in ability.Targets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.PLAYER_CARD:
+                        {
+                            IReadOnlyList<BoardUnitModel> units =
+                                player.CardsOnBoard.FindAll(item => item.Card.InstanceCard.Cost > boardUnitModel.Card.InstanceCard.Cost);
+
+                            if (units.Count > 0)
+                                return true;
+
+                            break;
+                        }
+                    case Enumerators.Target.OPPONENT_CARD:
+                        {
+                            IReadOnlyList<BoardUnitModel> units =
+                                opponent.CardsOnBoard.FindAll(item => item.Card.InstanceCard.Cost > boardUnitModel.Card.InstanceCard.Cost);
+
+                            if (units.Count > 0)
+                                return true;
+
+                            break;
+                        }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                }
+            }
+
+            return false;
+        }
+
         private ActiveAbility _activeAbility;
         public ActiveAbility CurrentActiveAbility
         {
@@ -464,7 +508,9 @@ namespace Loom.ZombieBattleground
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
                                ability.TargetFaction != Enumerators.Faction.Undefined &&
                                !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
-                               !CanTakeControlUnit(boardUnitModel, ability))
+                               !CanTakeControlUnit(boardUnitModel, ability) ||
+                               (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
+                               HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)))
 
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
@@ -1175,6 +1221,9 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS:
                     ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT:
+                    ability = new TakeUnitTypeToTargetUnitAbility(cardKind, abilityData);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
