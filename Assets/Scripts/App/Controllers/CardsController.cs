@@ -856,6 +856,15 @@ namespace Loom.ZombieBattleground
 
             CardForAbilityChoosed?.Invoke(choosableAbility);
         }
+
+        public void DiscardCardFromHand(BoardUnitModel boardUnitModel)
+        {
+            BoardCardView card = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
+
+            _battlegroundController.PlayerHandCards.Remove(card);
+            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
+            card.Dispose();
+        }
     }
 
 

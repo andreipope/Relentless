@@ -860,24 +860,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                    player =>  player.CardPlay(playerCerberuzId, ItemPosition.Start),
+                    opponent => opponent.CardPlay(opponentCerberuzId, ItemPosition.Start),
+                    player => player.CardPlay(playerIcicleId, ItemPosition.Start, opponentCerberuzId),
+                    opponent =>opponent.CardPlay(opponentIcicleId, ItemPosition.Start, playerCerberuzId),
                     player => {},
-                    opponent => {},
-                    player => player.CardPlay(playerCerberuzId, ItemPosition.Start),
-                    opponent =>
-                    {
-                        opponent.CardPlay(opponentCerberuzId, ItemPosition.Start);
-                        opponent.CardPlay(opponentIcicleId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentIcicleId, Enumerators.AbilityType.DESTROY_UNIT_BY_COST, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(playerCerberuzId)
-                        });
-                    },
-                    player =>
-                    {
-                        player.CardPlay(playerIcicleId, ItemPosition.Start, opponentCerberuzId);
-                    },
-                    player => {},
-                    opponent => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
