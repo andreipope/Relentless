@@ -26,8 +26,11 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
+            UnityEngine.Debug.LogWarning(1111);
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
+            UnityEngine.Debug.LogWarning(2222);
 
             Action();
         }
@@ -60,9 +63,12 @@ namespace Loom.ZombieBattleground
 
             foreach (Enumerators.Target target in AbilityTargets)
             {
+                UnityEngine.Debug.LogWarning(target);
+
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
+
                         _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
@@ -81,26 +87,31 @@ namespace Loom.ZombieBattleground
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
+            UnityEngine.Debug.LogWarning(3333);
                 _units = GetRandomUnits(_units, Count);
             }
 
             InvokeActionTriggered(_units);
         }
 
-        public void DestroyUnit(BoardUnitView unit)
+        public void DestroyUnit(BoardUnitModel unit)
         {
-            if(!unit.Model.HasBuffShield)
-            {
-                unit.ChangeModelVisibility(false);
-            }
-            BattlegroundController.DestroyBoardUnit(unit.Model, false);
+            BattlegroundController.DestroyBoardUnit(unit, false);
+            _units.Remove(unit);
         }
 
         protected override void VFXAnimationEndedHandler()
         {
+            UnityEngine.Debug.LogWarning("VFXAnimationEndedHandler");
+
             base.VFXAnimationEndedHandler();
 
             OnUpdateEvent = null;
+
+            for (int i = 0; i < _units.Count; i++)
+            {
+                DestroyUnit(_units[i]);
+            }
 
             if (_units.Count > 0)
             {
