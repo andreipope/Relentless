@@ -88,9 +88,11 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
                         _targets.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
                         _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
 
                         if (exceptCaller && _targets.Contains(AbilityUnitOwner))

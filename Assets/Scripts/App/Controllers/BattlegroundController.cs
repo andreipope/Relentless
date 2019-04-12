@@ -973,6 +973,7 @@ namespace Loom.ZombieBattleground
             boardUnit.TakeFreezeToAttacked = false;
             boardUnit.HasBuffRush = false;
             boardUnit.HasBuffHeavy = false;
+            boardUnit.SetMaximumDamageToUnit(999);
             boardUnit.SetAsWalkerUnit();
             boardUnit.UseShieldFromBuff();
             boardUnit.AttackRestriction = Enumerators.AttackRestriction.ANY;

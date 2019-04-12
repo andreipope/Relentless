@@ -629,7 +629,9 @@ namespace Loom.ZombieBattleground.Common
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
             Swing,
-            Devour
+            Devour,
+
+            CardDiscard
         }
         public enum ScreenMode
         {
@@ -708,7 +710,9 @@ namespace Loom.ZombieBattleground.Common
             ForEachEnemyUnitInPlay,
             ForEachAllyUnitInPlay,
             IfHaveFewerUnitsInPlay,
-            ToOpponentOverlord
+            ToOpponentOverlord,
+            UntilStartOfNextPlayerTurn,
+            DuringCardInHand
         }
 
         public enum UniqueAnimation
