@@ -817,7 +817,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                          player.CardPlay(playerBreezee2Id, ItemPosition.Start);
                          player.CardPlay(playerHotId, ItemPosition.Start);
                          player.CardPlay(playerZoothsayerId, ItemPosition.Start);
-                         //player.CardAbilityUsed(playerZoothsayerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
                          player.LetsThink(2);
 
                      },

@@ -847,6 +847,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                    player => { },
+                    opponent => { },
                     player =>
                     {
                         player.CardPlay(playerHotId, ItemPosition.Start);
