@@ -516,18 +516,20 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                       player => {},
+                       opponent => {},
                        player => player.CardPlay(playerBouncerId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentBouncerId, ItemPosition.Start),
                        player => player.CardPlay(playerGaleId, ItemPosition.Start, opponentBouncerId),
                        opponent => opponent.CardPlay(opponentGaleId, ItemPosition.Start, playerBouncerId),
                        player => {},
-                       opponent => {
-                           Assert.AreEqual(1, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
-                           Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
-                       },
+                       opponent => {},
                 };
 
-                Action validateEndState = () => {};
+                Action validateEndState = () => {
+                    Assert.AreEqual(1, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
+                };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             }, 300);
@@ -736,6 +738,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                   IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                   {
+                        player => {},
+                        opponent => {},
                         player =>
                         {
                             player.CardPlay(playerWheezyId, ItemPosition.Start, skipEntryAbilities: true);
@@ -761,8 +765,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                                          }
                                      )
                             });
-                            opponent.LetsThink(2);
-                        }
+                        },
+                        player => {},
+                        opponent => {},
                   };
 
                   Action validateEndState = () =>
