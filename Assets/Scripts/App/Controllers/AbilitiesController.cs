@@ -510,7 +510,7 @@ namespace Loom.ZombieBattleground
                                !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
                                !CanTakeControlUnit(boardUnitModel, ability) ||
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
-                               HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)))
+                               !HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)))
 
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
