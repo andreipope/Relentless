@@ -9,9 +9,10 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.Faction Faction { get; }
         public Enumerators.UnitSpecialStatus UnitSpecialStatusType { get; }
+        public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
         public int Count { get; }
 
-        public Player ToPlayer { get; }
+        public Player ToPlayer { get; private set; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -19,13 +20,13 @@ namespace Loom.ZombieBattleground
             Faction = ability.Faction;
             UnitSpecialStatusType = ability.TargetUnitSpecialStatus;
             Count = ability.Count;
-
-            ToPlayer = ability.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            ToPlayer = AbilitySubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
 
             InvokeUseAbilityEvent();
 
