@@ -480,7 +480,7 @@ namespace Loom.ZombieBattleground.Test
             if (IsTestFailed)
                 return;
 
-            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 WaitStart(5);
 
@@ -2241,14 +2241,7 @@ namespace Loom.ZombieBattleground.Test
                 matchConfirmed = true;
             }
 
-            client.DebugCheats = new DebugCheatsConfiguration
-            {
-                Enabled = DebugCheats.Enabled,
-                CustomRandomSeed = DebugCheats.CustomRandomSeed,
-                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId,
-                DisableDeckShuffle = DebugCheats.DisableDeckShuffle,
-                IgnoreGooRequirements = DebugCheats.IgnoreGooRequirements
-            };
+            client.DebugCheats = new DebugCheatsConfiguration(DebugCheats);
 
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 
