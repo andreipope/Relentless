@@ -170,6 +170,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
             TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
+            TargettingArrow.SubTrigger = AbilityData.SubTrigger;
+            TargettingArrow.OwnerOfThis = this;
 
             switch (CardKind)
             {
@@ -220,6 +222,7 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
 
             VFXAnimationEnded += VFXAnimationEndedHandler;
 
@@ -265,6 +268,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
                 PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
                 PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             }
             
             VFXAnimationEnded -= VFXAnimationEndedHandler;
@@ -482,6 +486,11 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void BoardChangedHandler(int count)
+        {
+
+        }
+
+        protected virtual void HandChangedHandler(int count)
         {
 
         }
