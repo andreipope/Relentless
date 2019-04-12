@@ -216,7 +216,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     {
                         opponent.CardPlay(opponenZlabId, ItemPosition.Start);
                         opponent.CardPlay(opponentBoulderId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentBoulderId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>()
+                        opponent.CardAbilityUsed(opponentBoulderId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT, new List<ParametrizedAbilityInstanceId>()
                         {
                             new ParametrizedAbilityInstanceId(opponenZlabId)
                         });
