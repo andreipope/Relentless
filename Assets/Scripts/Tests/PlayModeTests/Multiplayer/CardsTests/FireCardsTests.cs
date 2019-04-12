@@ -1132,7 +1132,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                    new DeckCardData("Cerberuz", 9),
+                    new DeckCardData("Cerberuz", 1),
                     new DeckCardData("Zlab", 20)
                 );
 
