@@ -2,21 +2,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using Loom.ZombieBattleground.Helpers;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class PutUnitsFromDiscardIntoPlayAbility : AbilityBase
     {
-        private int Count { get; }
-        private Enumerators.Faction Faction { get; }
+        public int Count { get; }
 
         public PutUnitsFromDiscardIntoPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Count = ability.Count;
-            Faction = ability.Faction;
         }
 
         public override void Activate()
@@ -29,62 +25,96 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            Action();
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
 
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            if (PredefinedTargets != null)
             {
-                List<BoardUnitModel> units = new List<BoardUnitModel>();
-
-                if (PredefinedTargets != null)
-                {
-                    units = PredefinedTargets.Select(target => target.BoardObject).Cast<BoardUnitModel>().ToList();
-                }
-                else
-                {
-                    foreach (Enumerators.Target targetType in AbilityTargets)
-                    {
-                        switch (targetType)
-                        {
-                            case Enumerators.Target.OPPONENT_CARD:
-                                units.AddRange(GetOpponentOverlord().CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
-                                break;
-                            case Enumerators.Target.PLAYER_CARD:
-                                units.AddRange(PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.InstanceId != AbilityUnitOwner.InstanceId && x.Card.Prototype.Faction == Faction));
-                                break;
-                        }
-                    }
-
-                    units = InternalTools.GetRandomElementsFromList(units, Count);
-                }
-
-                foreach (BoardUnitModel unit in units)
-                {
-                    TakeBlitzToUnit(unit);
-                }
-
-                InvokeUseAbilityEvent(
-                    units
-                        .Select(x => new ParametrizedAbilityBoardObject(x))
-                        .ToList()
-                );
+                targets.AddRange(PredefinedTargets.Select(x => x.BoardObject as BoardUnitModel).ToList());                
             }
             else
             {
-                TakeBlitzToUnit(AbilityUnitOwner);
-                InvokeUseAbilityEvent(
-                    new List<ParametrizedAbilityBoardObject>
+                Player playerOwner = null;
+                
+                foreach (Enumerators.Target targetType in AbilityData.Targets)
+                {
+                    switch (targetType)
                     {
-                        new ParametrizedAbilityBoardObject(AbilityUnitOwner)
+                        case Enumerators.Target.PLAYER:
+                            playerOwner = PlayerCallerOfAbility;
+                            break;
+                        case Enumerators.Target.OPPONENT:
+                            playerOwner = GetOpponentOverlord();
+                            break;
                     }
+
+                    List<BoardUnitModel> elements = playerOwner.PlayerCardsController.CardsInGraveyard.
+                                        FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE);
+
+                    if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+                    {
+                        elements = GetRandomElements(elements, Count);
+                    }
+   
+                    if (HasEmptySpaceOnBoard(playerOwner, out int emptyFields) && elements.Count > 0)
+                    {
+                        for (int i = 0; i < emptyFields; i++)
+                        {
+                            if (i >= elements.Count)
+                                break;
+
+                            targets.Add(elements[i]);
+                        }
+                    }
+                }
+            }
+
+            if (targets.Count > 0)
+            {
+                foreach (BoardUnitModel target in targets)
+                {
+                    PutCardOnBoard(target.OwnerPlayer, target, ref targetEffects);
+                }
+
+                InvokeUseAbilityEvent(
+                    targets
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
+                        .ToList()
                 );
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = GetCaller(),
+                    TargetEffects = targetEffects
+                });
             }
         }
 
-        private void TakeBlitzToUnit(BoardUnitModel unit)
+        private void PutCardOnBoard(Player owner, BoardUnitModel boardUnitModel, ref List<PastActionsPopup.TargetEffectParam> targetEffects)
         {
-            unit.ApplyBuff(Enumerators.BuffType.BLITZ);
+            owner.PlayerCardsController.RemoveCardFromGraveyard(boardUnitModel);
+            owner.PlayerCardsController.SpawnUnitOnBoard(boardUnitModel, ItemPosition.End, IsPVPAbility);
+
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
+                Target = boardUnitModel
+            });
         }
     }
 }
