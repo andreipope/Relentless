@@ -225,6 +225,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset2")]
         public IEnumerator BlaZter()
         {
             return AsyncTest(async () =>
@@ -1050,6 +1051,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
+        [Category("QuickSubset2")]
         public IEnumerator Cerberuz()
         {
             return AsyncTest(async () =>

@@ -291,7 +291,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerActionReceivedHandler(byte[] data)
+        private async void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
             {
@@ -447,6 +447,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
+            await new WaitForUpdate();
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
         }
 
