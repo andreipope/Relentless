@@ -40,8 +40,6 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            base.UnitDiedHandler();
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
@@ -98,6 +96,11 @@ namespace Loom.ZombieBattleground
 
                 if(!PvPManager.UseBackendGameLogic)
                     BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
+            }
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
+            {
+                base.UnitDiedHandler();
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
