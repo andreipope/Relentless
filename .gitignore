@@ -1,4 +1,4 @@
-# Ignore everything under root
+# Ignore everything under root1
 /*
 # But descend into directories
 !*/
