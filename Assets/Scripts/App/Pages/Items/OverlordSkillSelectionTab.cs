@@ -317,7 +317,9 @@ namespace Loom.ZombieBattleground
 
             private readonly Button _selectButton;
 
-            private readonly GameObject _glowObj;
+            private readonly GameObject _glowObj,
+                                        _frameObj,
+                                        _lockObj;
 
             private readonly Image _abilityIconImage;
 
@@ -340,6 +342,8 @@ namespace Loom.ZombieBattleground
 
                 _selfObject.SetActive(true);
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
+                _frameObj = _selfObject.transform.Find("Frame").gameObject;
+                _lockObj = _selfObject.transform.Find("Image_Lock").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();
 
@@ -347,9 +351,13 @@ namespace Loom.ZombieBattleground
 
                 IsUnlocked = Skill != null ? Skill.Unlocked : false;
 
-                _abilityIconImage.sprite = IsUnlocked ?
-                    _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :
-                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                if(IsUnlocked)
+                {
+                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
+                }
+
+                _frameObj.SetActive(IsUnlocked);
+                _lockObj.SetActive(!IsUnlocked);
 
                 _selectButton.interactable = IsUnlocked;
 

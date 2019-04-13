@@ -964,7 +964,8 @@ namespace Loom.ZombieBattleground
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
 
-                        _gameplayManager.GetController<RanksController>().UpdateRanksByElements(cardModel.Owner.CardsOnBoard, cardModel, ranksBuffAction);
+                        if (Constants.RankSystemEnabled)
+                            _gameplayManager.GetController<RanksController>().UpdateRanksByElements(cardModel.Owner.CardsOnBoard, cardModel, ranksBuffAction);
 
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 

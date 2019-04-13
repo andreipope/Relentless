@@ -109,6 +109,8 @@ namespace Loom.ZombieBattleground
                     break;
                 default:
                     Log.Warn($"Error occured. Tried to buff unit with faction: {originUnit.Prototype.Faction}. card id: {originUnit.InstanceId}");
+                    _ranksUpgradeCompleteAction?.Invoke();
+                    _ranksUpgradeCompleteAction = null;
                     break;
             }
         }

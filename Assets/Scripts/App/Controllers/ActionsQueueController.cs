@@ -156,7 +156,6 @@ namespace Loom.ZombieBattleground
             if (ActionInProgress != null)
             {
                 ActionInProgress.Action = null;
-                ActionInProgress.ForceActionDone();
                 ActionInProgress = null;
             }
 

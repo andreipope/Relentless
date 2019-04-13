@@ -27,13 +27,6 @@ namespace Loom.ZombieBattleground
         private ButtonShiftingContent _gotItButton;
 
         public GameObject Self { get; private set; }
-        
-        private const float _timeBeforeRetry = 5;
-        private float _currentTimerCounter;
-
-        private const int _totalAttemptsBeforeAutomaticWin = 5;
-        private int _currentAttempts;
-
 
         public void Init()
         {
@@ -79,10 +72,6 @@ namespace Loom.ZombieBattleground
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
             _text.text = "Waiting for the opponent...";
 
-            _currentTimerCounter = _timeBeforeRetry;
-
-            _currentAttempts = 0;
-
             Update();
         }
 
@@ -95,7 +84,7 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (Self != null) 
+            if (Self != null && Self.activeSelf) 
             {
                 if (_appStateManager.AppState != Enumerators.AppState.GAMEPLAY)
                 {
@@ -105,40 +94,12 @@ namespace Loom.ZombieBattleground
                 
                 if (_gameplayManager.OpponentHasDoneMulligan)
                 {
-                    SendMulliganEvent();
                     _cardsController.EndCardDistribution();
                     Hide();
 
                     return;
                 }
-
-                _currentTimerCounter += Time.deltaTime;
-
-                if (_currentTimerCounter >= _timeBeforeRetry)
-                {
-                    _currentTimerCounter = 0;
-                    _currentAttempts++;
-
-                    if (_currentAttempts > _totalAttemptsBeforeAutomaticWin)
-                    {
-                        _gameplayManager.OpponentPlayer.PlayerDie();
-                        Hide();
-
-                        return;
-                    }
-                    else
-                    {
-                        SendMulliganEvent ();
-
-                        return;
-                    }
-                }
             }
-        }
-
-        private void SendMulliganEvent () 
-        {
-            _uiManager.GetPopup<MulliganPopup>().InvokeMulliganCardsEvent(_gameplayManager.CurrentPlayer.MulliganCards.ToList());
         }
     }
 }

@@ -675,17 +675,19 @@ namespace Loom.ZombieBattleground
         {
             yield return new WaitForSeconds(0.3f);
 
+            CardModel cardModel = target.Model;
+            CardModel previewModel = new CardModel(new WorkingCard(cardModel.Prototype, cardModel.Prototype, cardModel.OwnerPlayer, cardModel.InstanceId));
             BoardCardView boardCardView;
-            switch (target.Model.Card.Prototype.Kind)
+            switch (cardModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     CurrentBoardCard = Object.Instantiate(_cardsController.CreatureCardViewPrefab);
-                    boardCardView = new UnitBoardCardView(CurrentBoardCard, target.Model);
-                    (boardCardView as UnitBoardCardView).DrawOriginalStats();
+                    boardCardView = new UnitBoardCardView(CurrentBoardCard, previewModel);
+                    ((UnitBoardCardView) boardCardView).DrawOriginalStats();
                     break;
                 case Enumerators.CardKind.ITEM:
                     CurrentBoardCard = Object.Instantiate(_cardsController.ItemCardViewPrefab);
-                    boardCardView = new ItemBoardCardView(CurrentBoardCard, target.Model);
+                    boardCardView = new ItemBoardCardView(CurrentBoardCard, previewModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -927,25 +929,7 @@ namespace Loom.ZombieBattleground
         {
             BoardUnitView view = GetCardViewByModel<BoardUnitView>(unit);
 
-            if (unit.OwnerPlayer.IsLocalPlayer)
-            {
-
-                UnregisterCardView(view, _gameplayManager.CurrentPlayer);
-                RegisterCardView(view, _gameplayManager.OpponentPlayer);
-            }
-            else
-            {
-                UnregisterCardView(view, _gameplayManager.OpponentPlayer);
-                RegisterCardView(view, _gameplayManager.CurrentPlayer);
-            }
-
-            foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
-            {
-                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
-            }
-
-
-            UnregisterCardView(view,unit.OwnerPlayer);
+            UnregisterCardView(view, unit.OwnerPlayer);
             newPlayerOwner.PlayerCardsController.TakeControlOfUnit(unit);
             RegisterCardView(view, newPlayerOwner);
 
@@ -955,7 +939,7 @@ namespace Loom.ZombieBattleground
 
             foreach (AbilityBase ability in _abilitiesController.GetAbilitiesConnectedToUnit(unit))
             {
-                ability.PlayerCallerOfAbility = newPlayerOwner;
+                ability.ChangePlayerCallerOfAbility(newPlayerOwner);
             }
         }
 
@@ -1108,17 +1092,20 @@ namespace Loom.ZombieBattleground
             return cardModel;
         }
 
-        public IBoardObject GetBoardObjectByInstanceId(InstanceId id)
+        public IBoardObject GetBoardObjectByInstanceId(InstanceId id, bool handlePlayers = true)
         {
             CardModel cardModel = GetCardModelByInstanceId(id, true);
             if(cardModel != null)
                 return cardModel;
 
-            List<IBoardObject> boardObjects = new List<IBoardObject>
+            List<IBoardObject> boardObjects = new List<IBoardObject>();
+
+            if(handlePlayers)
             {
-                _gameplayManager.CurrentPlayer,
-                _gameplayManager.OpponentPlayer,
-            };
+                boardObjects.Add(_gameplayManager.CurrentPlayer);
+                boardObjects.Add(_gameplayManager.OpponentPlayer);
+            }
+
 
             IBoardObject foundObject = boardObjects.Find(boardObject =>
             {

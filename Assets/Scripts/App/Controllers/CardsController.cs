@@ -208,6 +208,7 @@ namespace Loom.ZombieBattleground
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
+                    highestInstanceId = cards.Count();
                 }
                 else
                 {
@@ -494,7 +495,8 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
+                            if(Constants.RankSystemEnabled)
+                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
 
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
@@ -517,7 +519,7 @@ namespace Loom.ZombieBattleground
                                                 rankBuffAction.ForceActionDone();
 
                                                 boardUnitView.DisposeGameObject();
-                                                boardUnitView.Model.Die(true);
+                                                boardUnitView.Model.Die(true, isDead: false);
 
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }

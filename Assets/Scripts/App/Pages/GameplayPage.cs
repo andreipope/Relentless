@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
         {
             get
             {
-                return _playerManaBar;
+                return _opponentManaBar;
             }
         }
 

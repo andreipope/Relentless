@@ -309,6 +309,7 @@ namespace Loom.ZombieBattleground
         {
             _hasDestroyed = true;
             Object.Destroy(GameObject);
+            Model.CardPictureWasUpdated -= PictureUpdatedEvent;
         }
 
         // editing deck page

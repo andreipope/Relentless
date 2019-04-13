@@ -63,6 +63,40 @@ namespace Loom.ZombieBattleground
              }
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+            {
+                _targets.Add(PlayerCallerOfAbility);
+
+                _vfxAnimationEndedCallback = HealOverlord;
+                InvokeActionTriggered(_targets);
+            }
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.END)
+                return;
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            {
+                _targets.Clear();
+
+                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+
+                _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                InvokeActionTriggered(_targets);
+            }
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
@@ -148,7 +182,7 @@ namespace Loom.ZombieBattleground
         {
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
+                _targets = PredefinedTargets.Select(x => x.IBoardObject).ToList();
             }
             else
             {

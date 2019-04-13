@@ -21,10 +21,14 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private GameObject _panelVideoSettings;
+        public Action<bool> OnLoginButtonDisplayUpdate;
+
+        private GameObject _panelVideoSettings,
+                           _groupLogin;
 
         private Button _buttonClose,
-                       _buttonQuit,
+                       _buttonLogin,
+                       _buttonLogout,
                        _buttonQuitToMainMenu,
                        _buttonQuitToDesktop,
                        _buttonLeaveMatch,
@@ -72,6 +76,7 @@ namespace Loom.ZombieBattleground
             Self = null;
 
             _gameplayManager.IsGameplayInputBlocked = false;
+            OnLoginButtonDisplayUpdate?.Invoke(false);
         }
 
         public void SetMainPriority()
@@ -86,11 +91,17 @@ namespace Loom.ZombieBattleground
             _buttonClose = Self.transform.Find("Button_Close").GetComponent<Button>();
             _buttonClose.onClick.AddListener(ButtonCloseHandler);
             
-            _buttonQuit = Self.transform.Find("Tray_Right/Button_Quit").GetComponent<Button>();
-            _buttonQuit.onClick.AddListener(ButtonQuitHandler);
+            _groupLogin = Self.transform.Find("Group_Login").gameObject;
+            
+            _buttonLogin = Self.transform.Find("Group_Login/Button_Login").GetComponent<Button>();
+            _buttonLogin.onClick.AddListener(ButtonLoginHandler);
+            
+            _buttonLogout = Self.transform.Find("Group_Login/Button_Logout").GetComponent<Button>();
+            _buttonLogout.onClick.AddListener(ButtonLogoutHandler);
             
             _buttonQuitToMainMenu = Self.transform.Find("Button_QuitToMainMenu").GetComponent<Button>();
             _buttonQuitToMainMenu.onClick.AddListener(ButtonQuitToMainMenuHandler);
+            _buttonQuitToMainMenu.gameObject.SetActive(false);
             
             _buttonQuitToDesktop = Self.transform.Find("Button_QuitToDeskTop").GetComponent<Button>();
             _buttonQuitToDesktop.onClick.AddListener(ButtonQuitToDesktopHandler);
@@ -121,8 +132,8 @@ namespace Loom.ZombieBattleground
             }
             
             _buttonLeaveMatch.gameObject.SetActive(_appStateManager.AppState == Enumerators.AppState.GAMEPLAY);
-            _buttonQuit.gameObject.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
-            
+            _groupLogin.SetActive(_appStateManager.AppState != Enumerators.AppState.GAMEPLAY);
+          
             _panelVideoSettings = Self.transform.Find("Panel_Group/GroupVideo").gameObject;
             
 #if UNITY_ANDROID || UNITY_IOS
@@ -135,6 +146,8 @@ namespace Loom.ZombieBattleground
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
             FillInfo();
+            
+            OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
         public void Show(object data)
@@ -143,7 +156,33 @@ namespace Loom.ZombieBattleground
         }
 
         public void Update()
-        {           
+        {  
+            if (Self == null)
+                return;
+
+            if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+                return;
+            
+            if (!Constants.AlwaysGuestLogin && 
+                _backendDataControlMediator.UserDataModel != null && 
+                (!_backendDataControlMediator.UserDataModel.IsRegistered || !_backendDataControlMediator.UserDataModel.IsValid))
+            {
+                if (!_buttonLogin.gameObject.activeSelf)
+                {
+                    _buttonLogin.gameObject.SetActive(true);
+                    _buttonLogout.gameObject.SetActive(false);
+                    OnLoginButtonDisplayUpdate?.Invoke(true);
+                }
+            }
+            else
+            {
+                if (_buttonLogin.gameObject.activeSelf)
+                {
+                    _buttonLogin.gameObject.SetActive(false);
+                    _buttonLogout.gameObject.SetActive(true);    
+                    OnLoginButtonDisplayUpdate?.Invoke(false);  
+                }
+            }         
         }
 
 
@@ -207,20 +246,42 @@ namespace Loom.ZombieBattleground
         }
 #endif
         
-        private void ButtonQuitHandler()
+        private void ButtonLoginHandler()
         {
             PlayClickSound();
-            _appStateManager.QuitApplication();
+            Hide();
+            LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+            popup.Show();
+        }
+        
+        private void ButtonLogoutHandler()
+        {
+            PlayClickSound();
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmLogout;
+            _uiManager.DrawPopup<QuestionPopup>("Do you want to logout?"); 
+        }
+        
+        private void ConfirmLogout(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmLogout;
+            if(status)
+            {
+                Hide();
+                LoginPopup popup = _uiManager.GetPopup<LoginPopup>();
+                popup.Logout();
+            }
         }
         
         private void ButtonQuitToMainMenuHandler()
         {
             PlayClickSound();
+            HandleQuitToMainMenu();          
         }
         
         private void ButtonQuitToDesktopHandler()
         {
             PlayClickSound();
+            _appStateManager.QuitApplication();
         }
 
         private void ButtonCloseHandler()

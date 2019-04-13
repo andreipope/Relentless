@@ -161,11 +161,8 @@ namespace Loom.ZombieBattleground
                     MaxCardsInPlay = (uint) InitialPvPPlayerState.MaxCardsInPlay;
                     MaxGooVials = (uint) InitialPvPPlayerState.MaxGooVials;
 
-#if USE_REBALANCE_BACKEND
-                    Defense = Constants.DefaultPlayerHp;
-#else
                     Defense = InitialPvPPlayerState.Defense;
-#endif
+
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
 

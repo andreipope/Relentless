@@ -281,22 +281,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
-        }
-        
-        private void ConfirmSaveDeckHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
-            
-            if (status)
-            {                
-                SaveDeck(HordeSelectionWithNavigationPage.Tab.Rename);
-            }
-            else
-            {                
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);        
-            }  
+            _myDeckPage.IsRenameWhileEditing = true;
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename); 
         }
 
         private void ButtonEditDeckFilterHandler()
@@ -360,6 +346,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
 
+            _buttonSaveDeck.enabled = false;
+
             PlayClickSound();
 
             SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -367,15 +355,23 @@ namespace Loom.ZombieBattleground
         
         private void FinishAddDeck(bool success, Deck deck)
         {
+            _buttonSaveDeck.enabled = true;
+
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
             _myDeckPage.IsEditingNewDeck = false;
-            _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
-            _myDeckPage.AssignCurrentDeck();
+
+            List<Deck> cacheDeckList = _myDeckPage.GetDeckList();
+            _myDeckPage.SelectDeckIndex = cacheDeckList.IndexOf(_myDeckPage.CurrentEditDeck);
+            _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, cacheDeckList.Count-1);
+            
+            _myDeckPage.AssignCurrentDeck(_myDeckPage.SelectDeckIndex);
             _myDeckPage.ChangeTab(_nextTab);
         }
         
         private void FinishEditDeck(bool success, Deck deck)
         {
+            _buttonSaveDeck.enabled = true;
+
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
             _myDeckPage.ChangeTab(_nextTab);
         }
@@ -582,6 +578,9 @@ namespace Loom.ZombieBattleground
             int count = 0;
             foreach(Card card in _cacheCollectionCardsList)
             {
+                if (_cacheCollectionPageIndexDictionary.ContainsKey(card.Name))
+                    continue;
+                    
                 _cacheCollectionPageIndexDictionary.Add(card.Name, page);
 
                 ++count;
@@ -1083,7 +1082,8 @@ namespace Loom.ZombieBattleground
 
         private void MoveDeckPageIndex(int direction)
         {
-            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1);
+            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, Mathf.Max(0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1));
+
             if (newIndex == _deckPageIndex)
                 return;
                 
@@ -1425,7 +1425,11 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);            
+                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsRenameWhileEditing ?
+                    HordeSelectionWithNavigationPage.Tab.Editing :
+                    HordeSelectionWithNavigationPage.Tab.SelectDeck;
+                SaveDeck(tab);
+                _myDeckPage.IsRenameWhileEditing = false;            
             }
         }
 

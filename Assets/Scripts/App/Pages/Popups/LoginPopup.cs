@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(LoginPopup));
 
+        public static Action OnShowPopupEvent;
         public static Action OnHidePopupEvent;
         public static Action OnLoginSuccess;
 
@@ -222,6 +223,8 @@ namespace Loom.ZombieBattleground
 
             _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
                 (int)KeyCode.Return, null, OnInputDownEnterButton);
+                
+            OnShowPopupEvent?.Invoke();
         }
 
         public void Show(object data)
@@ -687,10 +690,6 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
-#if USE_REBALANCE_BACKEND
-                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
@@ -740,7 +739,6 @@ namespace Loom.ZombieBattleground
                         _tutorialManager.StartTutorial();
                     }
                 }
-#endif
             }
             else
             {
@@ -855,8 +853,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case LoginState.ValidationFailed:
                     WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                    string msgToShow = "The process could not be completed with error:" + _lastErrorMessage +
-                                       "\nPlease try again.";
+                    string msgToShow = "We were unable to verify your login credentials at this time. Please restart the game and try again later.";
 
                     if (!string.IsNullOrEmpty(errorMsg))
                         msgToShow = errorMsg;

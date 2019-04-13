@@ -467,8 +467,8 @@ namespace Loom.ZombieBattleground
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);
-                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 break;
                         }
 
@@ -520,7 +520,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            IBoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
+            IBoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card, false);
 
             // HACK for items in use
             if (boardObjectCaller == null)
@@ -627,7 +627,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to CardModel"));
+                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] IBoardObject {boardObject} is null or not equal to CardModel"));
                 }
             }
 
@@ -635,7 +635,8 @@ namespace Loom.ZombieBattleground
             if (cardModel == null)
                 ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
-            _ranksController.BuffAllyManually(units, cardModel);
+            if (Constants.RankSystemEnabled)
+                _ranksController.BuffAllyManually(units, cardModel);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

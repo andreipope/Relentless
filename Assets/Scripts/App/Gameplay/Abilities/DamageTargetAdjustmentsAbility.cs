@@ -99,6 +99,11 @@ namespace Loom.ZombieBattleground
                 _targetUnits.Add(rightAdjustment);
             }
 
+            foreach(CardModel target in _targetUnits)
+            {
+                target.HandleDefenseBuffer(Value);
+            }
+
             InvokeActionTriggered(_targetUnits);
         }
 

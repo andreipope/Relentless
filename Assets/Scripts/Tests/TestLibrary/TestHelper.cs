@@ -1204,7 +1204,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (skill.Skill.CanSelectTarget)
                 {
-                    IBoardObject target = targets[0].BoardObject;
+                    IBoardObject target = targets[0].IBoardObject;
 
                     Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                     await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
@@ -1594,7 +1594,7 @@ namespace Loom.ZombieBattleground.Test
 
             await SetDeckTitle("Kalile");
 
-            await AddCardToHorde("Air", "Whizpar", 4);
+            await AddCardToHorde("Air", "Whizper", 4);
             await AddCardToHorde("Air", "Soothsayer", 4);
             await AddCardToHorde("Air", "FumeZ", 4);
             await AddCardToHorde("Air", "Breezee", 4);
@@ -1865,7 +1865,8 @@ namespace Loom.ZombieBattleground.Test
 
                 for (int counter = 0; counter < count; counter++)
                 {
-                    _uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
+                    //FIXME since HordeEditingPage is outdated and removed, have to fix this method
+                    //_uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
 
                     await LetsThink();
                 }

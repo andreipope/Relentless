@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: LoadingBar_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: b6beb40008f8e450ca1990684afd444a, type: 3}
+    - {fileID: 2800000, guid: fbb54ec61520d426b98380128bac8efe, type: 3}
+    - {fileID: 2800000, guid: 832a6c04fd683448a9fa1b3f5dd20755, type: 3}
+    - {fileID: 2800000, guid: 3a9ea838cd8274bb2b6f61165e249fbb, type: 3}
+    - {fileID: 2800000, guid: 46c931f42d986468bb7b455e1c3ac7c5, type: 3}
+    - {fileID: 2800000, guid: 0b6c9874cc4f74adf8ab880d5483358c, type: 3}
+    - {fileID: 2800000, guid: d2f88a74748804b2dad6eae5c170b9ff, type: 3}
+    - {fileID: 2800000, guid: 1bfd8975c354b4f758941200240b9835, type: 3}
+    - {fileID: 2800000, guid: ce1ecf8980a028f429a0bc78eebfebf6, type: 3}
+    - {fileID: 2800000, guid: 78b617742ceb19746a3bbb982ddf7a3c, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: b6beb40008f8e450ca1990684afd444a, type: 3}
+  - {fileID: 21300000, guid: 832a6c04fd683448a9fa1b3f5dd20755, type: 3}
+  - {fileID: 21300000, guid: 78b617742ceb19746a3bbb982ddf7a3c, type: 3}
+  - {fileID: 21300000, guid: 0b6c9874cc4f74adf8ab880d5483358c, type: 3}
+  - {fileID: 21300000, guid: d2f88a74748804b2dad6eae5c170b9ff, type: 3}
+  - {fileID: 21300000, guid: 46c931f42d986468bb7b455e1c3ac7c5, type: 3}
+  - {fileID: 21300000, guid: 1bfd8975c354b4f758941200240b9835, type: 3}
+  - {fileID: 21300000, guid: fbb54ec61520d426b98380128bac8efe, type: 3}
+  - {fileID: 21300000, guid: 3a9ea838cd8274bb2b6f61165e249fbb, type: 3}
+  - {fileID: 21300000, guid: ce1ecf8980a028f429a0bc78eebfebf6, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - loading_orb_1
+  - loading_orb_3
+  - loading_bar
+  - loading_orb_6
+  - loading_panel
+  - loading_orb_5
+  - loading_ring
+  - loading_orb_2
+  - loading_orb_4
+  - loading_bar_frame
+  m_Tag: LoadingBar_Atlas
+  m_IsVariant: 0

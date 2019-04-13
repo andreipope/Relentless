@@ -371,6 +371,9 @@ namespace Loom.ZombieBattleground {
             await SetState(MatchMakingState.Confirmed);
 
             Log.Debug("MatchConfirmed");
+            
+            MTwister.RandomInit((uint)findMatchResponse.Match.RandomSeed);
+
             MatchConfirmed?.Invoke(_matchMetadata);
         }
 
