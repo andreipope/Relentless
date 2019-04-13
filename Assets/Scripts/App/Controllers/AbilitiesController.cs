@@ -801,7 +801,7 @@ namespace Loom.ZombieBattleground
 
             if (targets.Count > 0 && activeAbility.Ability.AbilityActivity == Enumerators.AbilityActivity.ACTIVE)
             {
-                switch (targets[0].IBoardObject)
+                switch (targets[0].BoardObject)
                 {
                     case CardModel unit:
                         activeAbility.Ability.TargetUnit = unit;
@@ -829,9 +829,9 @@ namespace Loom.ZombieBattleground
                     _boardController.UpdateWholeBoard(null);
                 };
 
-                if (from != null && targets[0].IBoardObject != null)
+                if (from != null && targets[0].BoardObject != null)
                 {
-                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(from, targets[0].IBoardObject, action: callback);
+                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(from, targets[0].BoardObject, action: callback);
                 }
                 else
                 {

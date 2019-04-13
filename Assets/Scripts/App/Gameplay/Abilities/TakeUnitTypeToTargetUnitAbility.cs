@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
 
             if (PredefinedTargets != null)
             {
-                units = PredefinedTargets.Select(x => x.IBoardObject).Cast<CardModel>().ToList();
+                units = PredefinedTargets.Select(x => x.BoardObject).Cast<CardModel>().ToList();
             }
             else
             {

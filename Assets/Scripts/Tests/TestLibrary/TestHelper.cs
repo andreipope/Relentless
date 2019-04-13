@@ -1204,7 +1204,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (skill.Skill.CanSelectTarget)
                 {
-                    IBoardObject target = targets[0].IBoardObject;
+                    IBoardObject target = targets[0].BoardObject;
 
                     Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                     await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);

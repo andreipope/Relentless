@@ -347,7 +347,7 @@ namespace Loom.ZombieBattleground
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
-                        targets[0].IBoardObject,
+                        targets[0].BoardObject,
                         (x) =>
                         {
                             DoActionByType(skill, targets, completeCallback);
@@ -682,7 +682,7 @@ namespace Loom.ZombieBattleground
         {
             owner.CurrentGoo = 0;
 
-            CardModel targetUnit = (CardModel) targets[0].IBoardObject;
+            CardModel targetUnit = (CardModel) targets[0].BoardObject;
 
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX"),
                 targetUnit);
@@ -704,7 +704,7 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Push,
-                        Target = targets[0].IBoardObject
+                        Target = targets[0].BoardObject
                     }
                 }
             });
@@ -735,7 +735,7 @@ namespace Loom.ZombieBattleground
             List<CardModel> units;
             if (!boardSkill.IsLocal && targets != null)
             {
-                units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                units = targets.Select(target => target.BoardObject as CardModel).ToList();
             }
             else
             {
@@ -875,7 +875,7 @@ namespace Loom.ZombieBattleground
 
         private void ToxicPowerAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
@@ -906,10 +906,10 @@ namespace Loom.ZombieBattleground
 
         private void PoisonDartAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            AttackWithModifiers(owner, boardSkill, targets[0].IBoardObject);
+            AttackWithModifiers(owner, boardSkill, targets[0].BoardObject);
             _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PoisonDart_ImpactVFX"),
-                targets[0].IBoardObject, isIgnoreCastVfx: true);
+                targets[0].BoardObject, isIgnoreCastVfx: true);
             _soundManager.PlaySound(
                 Enumerators.SoundType.OVERLORD_ABILITIES,
                 skill.Skill.ToString().ToLowerInvariant() + "_Impact",
@@ -918,7 +918,7 @@ namespace Loom.ZombieBattleground
 
             Enumerators.ActionType actionType;
 
-            switch (targets[0].IBoardObject)
+            switch (targets[0].BoardObject)
             {
                 case Player _:
                     actionType = Enumerators.ActionType.UseOverlordPowerOnOverlord;
@@ -927,7 +927,7 @@ namespace Loom.ZombieBattleground
                     actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(targets), targets[0].IBoardObject, null);
+                    throw new ArgumentOutOfRangeException(nameof(targets), targets[0].BoardObject, null);
             }
 
             _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -939,7 +939,7 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = targets[0].IBoardObject,
+                        Target = targets[0].BoardObject,
                         HasValue = true,
                         Value = -skill.Value
                     }
@@ -956,7 +956,7 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal && targets != null)
             {
-                sortedTargets = targets.ToDictionary(target => target.IBoardObject, target => target.Parameters.Attack);
+                sortedTargets = targets.ToDictionary(target => target.BoardObject, target => target.Parameters.Attack);
             }
             else
             {
@@ -1034,13 +1034,13 @@ namespace Loom.ZombieBattleground
 
         private void InfectAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 int unitAtk = unit.CurrentDamage;
 
                 _vfxController.CreateVfx(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/InfectVFX"),
-                targets[0].IBoardObject, delay: 8f, isIgnoreCastVfx:true);
+                targets[0].BoardObject, delay: 8f, isIgnoreCastVfx:true);
 
                 CardModel targetUnit;
                 if (boardSkill.IsLocal)
@@ -1059,7 +1059,7 @@ namespace Loom.ZombieBattleground
                     if (targets.Count == 1)
                         return;
 
-                    targetUnit = targets[1].IBoardObject as CardModel;
+                    targetUnit = targets[1].BoardObject as CardModel;
                 }
 
                 InternalTools.DoActionDelayed(() =>
@@ -1159,7 +1159,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    unitModel = (CardModel) targets[i].IBoardObject;
+                    unitModel = (CardModel) targets[i].BoardObject;
                     unitAtk = unitModel.CurrentDamage;
                     opponentUnitModel = _gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard.FirstOrDefault(card => card.InstanceId.Id.ToString() == targets[i].Parameters.CardName);
                 }
@@ -1254,7 +1254,7 @@ namespace Loom.ZombieBattleground
         {
             if (targets.Count > 0)
             {
-                if (targets[0].IBoardObject is Player player)
+                if (targets[0].BoardObject is Player player)
                 {
                     _battleController.HealPlayerBySkill(owner, boardSkill, player);
 
@@ -1269,7 +1269,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    CardModel unit = (CardModel)targets[0].IBoardObject;
+                    CardModel unit = (CardModel)targets[0].BoardObject;
 
                     _battleController.HealUnitBySkill(owner, boardSkill, unit);
 
@@ -1292,7 +1292,7 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                            Target = targets[0].IBoardObject,
+                            Target = targets[0].BoardObject,
                             HasValue = true,
                             Value = skill.Value
                         }
@@ -1425,7 +1425,7 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal && targets != null)
             {
-                boardObjects = targets.Select(target => target.IBoardObject).ToList();
+                boardObjects = targets.Select(target => target.BoardObject).ToList();
             }
             else
             {
@@ -1605,7 +1605,7 @@ namespace Loom.ZombieBattleground
             {
                 Enumerators.ActionType actionType;
 
-                switch (targets[0].IBoardObject)
+                switch (targets[0].BoardObject)
                 {
                     case CardModel unit:
                         unit.Stun(Enumerators.StunType.FREEZE, skill.Value);
@@ -1651,7 +1651,7 @@ namespace Loom.ZombieBattleground
                     new PastActionsPopup.TargetEffectParam()
                     {
                         ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                        Target = targets[0].IBoardObject
+                        Target = targets[0].BoardObject
                     }
                 }
                 });
@@ -1660,7 +1660,7 @@ namespace Loom.ZombieBattleground
 
         private void IceBoltAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
@@ -1705,7 +1705,7 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0)
             {
-                IBoardObject target = targets[0].IBoardObject;
+                IBoardObject target = targets[0].BoardObject;
 
                 Enumerators.ActionType actionType;
 
@@ -1758,7 +1758,7 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0)
             {
-                IBoardObject target = targets[0].IBoardObject;
+                IBoardObject target = targets[0].BoardObject;
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/Shatter_ImpactVFX"), target, isIgnoreCastVfx: true);
 
                 if (target is CardModel cardModel)
@@ -1797,7 +1797,7 @@ namespace Loom.ZombieBattleground
 
             if (targets != null && !boardSkill.IsLocal)
             {
-                units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                units = targets.Select(target => target.BoardObject as CardModel).ToList();
             }
             else
             {
@@ -1850,7 +1850,7 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0)
             {
-                IBoardObject target = targets[0].IBoardObject;
+                IBoardObject target = targets[0].BoardObject;
                 AttackWithModifiers(owner, boardSkill, target);
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBolt_ImpactVFX"), target);
                 _soundManager.PlaySound(
@@ -1893,7 +1893,7 @@ namespace Loom.ZombieBattleground
 
         private void RabiesAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 unit.SetAsFeralUnit();
 
@@ -1926,7 +1926,7 @@ namespace Loom.ZombieBattleground
         {
             if (targets != null && targets.Count > 0)
             {
-                IBoardObject target = targets[0].IBoardObject;
+                IBoardObject target = targets[0].BoardObject;
                 AttackWithModifiers(owner, boardSkill, target);
 
                 _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/FireBall_ImpactVFX"), target, isIgnoreCastVfx: true); // vfx Fireball
@@ -1976,9 +1976,9 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal)
             {
-                if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel)
+                if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel)
                 {
-                    units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                    units = targets.Select(target => target.BoardObject as CardModel).ToList();
                 }
             }
             else
@@ -2030,7 +2030,7 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal && targets != null)
             {
-                units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                units = targets.Select(target => target.BoardObject as CardModel).ToList();
             }
             else
             {
@@ -2111,7 +2111,7 @@ namespace Loom.ZombieBattleground
 
         private void StoneskinAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 unit.BuffedDefense += skill.Value;
                 unit.CurrentDefense += skill.Value;
@@ -2175,7 +2175,7 @@ namespace Loom.ZombieBattleground
 
         private void FortifyAction(Player owner, BoardSkill boardSkill, OverlordSkillData skill, List<ParametrizedAbilityBoardObject> targets)
         {
-            if (targets != null && targets.Count > 0 && targets[0].IBoardObject is CardModel unit)
+            if (targets != null && targets.Count > 0 && targets[0].BoardObject is CardModel unit)
             {
                 unit.SetAsHeavyUnit();
 
@@ -2213,7 +2213,7 @@ namespace Loom.ZombieBattleground
 
             if (!boardSkill.IsLocal && targets != null)
             {
-                units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                units = targets.Select(target => target.BoardObject as CardModel).ToList();
             }
             else
             {
@@ -2263,7 +2263,7 @@ namespace Loom.ZombieBattleground
             List<CardModel> units;
             if (!boardSkill.IsLocal && targets != null)
             {
-                units = targets.Select(target => target.IBoardObject as CardModel).ToList();
+                units = targets.Select(target => target.BoardObject as CardModel).ToList();
             }
             else
             {

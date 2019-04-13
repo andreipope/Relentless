@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
         {
             if (PredefinedTargets != null)
             {
-                _targets = PredefinedTargets.Select(x => x.IBoardObject).ToList();
+                _targets = PredefinedTargets.Select(x => x.BoardObject).ToList();
             }
             else
             {

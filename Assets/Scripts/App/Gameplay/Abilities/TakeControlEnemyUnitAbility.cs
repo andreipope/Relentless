@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
             {
                 if (PredefinedTargets != null)
                 {
-                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.IBoardObject as CardModel).ToList()
+                    TakeControlEnemyUnit(PredefinedTargets.Select(x => x.BoardObject as CardModel).ToList()
                         .FindAll(card => card.CurrentDefense > 0 && !card.IsDead));
                 }
                 else
