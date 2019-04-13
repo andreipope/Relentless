@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
         {
             CardDistribution = true;
 
-            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 

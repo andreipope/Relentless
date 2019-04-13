@@ -36,6 +36,7 @@ namespace Loom.ZombieBattleground
                 GUI.enabled = _pvpManager.DebugCheats.Enabled;
                 _pvpManager.DebugCheats.DisableDeckShuffle = GUILayout.Toggle(_pvpManager.DebugCheats.DisableDeckShuffle, "Disable Deck Shuffle");
                 _pvpManager.DebugCheats.IgnoreGooRequirements = GUILayout.Toggle(_pvpManager.DebugCheats.IgnoreGooRequirements, "Ignore Goo Requirements");
+                _pvpManager.DebugCheats.SkipMulligan = GUILayout.Toggle(_pvpManager.DebugCheats.SkipMulligan, "Skip Mulligan");
 
                 GUILayout.BeginHorizontal();
                 {

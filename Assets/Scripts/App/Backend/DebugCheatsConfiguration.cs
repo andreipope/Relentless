@@ -18,6 +18,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public bool IgnoreGooRequirements { get; set; }
 
+        public bool SkipMulligan { get; set; }
+
+        public DebugCheatsConfiguration()
+        {
+        }
+
+        public DebugCheatsConfiguration(DebugCheatsConfiguration other)
+        {
+            CopyFrom(other);
+        }
+
         public void CopyFrom(DebugCheatsConfiguration other)
         {
             Enabled = other.Enabled;
@@ -27,6 +38,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DisableDeckShuffle = other.DisableDeckShuffle;
             ForceFirstTurnUserId = other.ForceFirstTurnUserId;
             IgnoreGooRequirements = other.IgnoreGooRequirements;
+            SkipMulligan = other.SkipMulligan;
         }
     }
 }
