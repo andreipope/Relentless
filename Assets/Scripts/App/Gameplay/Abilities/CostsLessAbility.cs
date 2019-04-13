@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -24,7 +25,6 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.IN_HAND)
                 return;
 
-            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
             InternalTools.DoActionDelayed(() =>
@@ -33,12 +33,22 @@ namespace Loom.ZombieBattleground
             }, 0.5f);
         }
 
+        protected override void TurnStartedHandler()
+        {
+            base.TurnStartedHandler();
+
+            Action();
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
 
             if (!PlayerCallerOfAbility.CardsInHand.Contains(CardModel))
+            {
+                Deactivate();
                 return;
+            }
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisCardInHand)
             {
@@ -56,6 +66,15 @@ namespace Loom.ZombieBattleground
                     BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
                 );
             }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.DuringCardInHand)
+            {
+                CardsController.SetGooCostOfCardInHand(
+                       PlayerCallerOfAbility,
+                       CardModel,
+                       Mathf.Max(CardModel.Card.InstanceCard.Cost - Cost, 0),
+                       BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
+                   );
+            }
         }
         
         private void CardPlayedHandler(CardModel cardModel, int position)
@@ -63,13 +82,15 @@ namespace Loom.ZombieBattleground
             if (cardModel != CardModel)
                 return;
 
-            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private void HandChangedHandler(int obj)
+        protected override void HandChangedHandler(int obj)
         {
-            Action();
+            if (AbilityData.SubTrigger != Enumerators.AbilitySubTrigger.DuringCardInHand)
+            {
+                Action();
+            }
         }
     }
 }

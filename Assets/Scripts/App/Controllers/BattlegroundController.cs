@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
         {
             if (cardModel == null)
             {
-                Log.Warn("GetBoardUnitViewByModel: Input cardModel == null, returning null");
+                Log.Warn("GetCardViewByModel: Input cardModel == null, returning null");
                 return default(T);
                 //throw new ArgumentNullException(nameof(cardModel));
             }
@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground
 
             if (view == null)
             {
-                Log.Warn($"GetBoardUnitViewByModel: View of type {typeof(T).Name} not found for model {cardModel}");
+                Log.Warn($"GetCardViewByModel: View of type {typeof(T).Name} not found for model {cardModel}");
                 //throw new Exception($"No view found for model {cardModel}");
             }
 
@@ -953,6 +953,7 @@ namespace Loom.ZombieBattleground
             card.TakeFreezeToAttacked = false;
             card.HasBuffRush = false;
             card.HasBuffHeavy = false;
+            card.SetMaximumDamageToUnit(999);
             card.SetAsWalkerUnit();
             card.UseShieldFromBuff();
             card.AttackRestriction = Enumerators.AttackRestriction.ANY;

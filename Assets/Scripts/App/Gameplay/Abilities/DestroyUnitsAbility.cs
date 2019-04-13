@@ -63,6 +63,7 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
+
                         _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
@@ -87,13 +88,10 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(_units);
         }
 
-        public void DestroyUnit(BoardUnitView unit)
+        public void DestroyUnit(CardModel unit)
         {
-            if(!unit.Model.HasBuffShield)
-            {
-                unit.ChangeModelVisibility(false);
-            }
-            BattlegroundController.DestroyBoardUnit(unit.Model, false);
+            BattlegroundController.DestroyBoardUnit(unit, false);
+            _units.Remove(unit);
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -101,6 +99,11 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             OnUpdateEvent = null;
+
+            for (int i = 0; i < _units.Count; i++)
+            {
+                DestroyUnit(_units[i]);
+            }
 
             if (_units.Count > 0)
             {

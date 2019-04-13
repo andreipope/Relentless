@@ -232,6 +232,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsUnitActive { get; private set; } = true;
 
+        public int MaximumDamageFromAnySource { get; private set; } = 999;
 
         // =================== REMOVE HARD
 
@@ -642,6 +643,11 @@ namespace Loom.ZombieBattleground
             AgileEnabled = status;
         }
 
+        public void SetMaximumDamageToUnit(int maximumDamage)
+        {
+            MaximumDamageFromAnySource = maximumDamage;
+        }
+
         public void UpdateVisualStateOfDistract(bool status)
         {
             UnitDistractEffectStateChanged?.Invoke(status);
@@ -1008,6 +1014,7 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
+            MaximumDamageFromAnySource = 999;
         }
 
         public override string ToString()

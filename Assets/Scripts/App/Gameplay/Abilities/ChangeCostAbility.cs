@@ -10,11 +10,16 @@ namespace Loom.ZombieBattleground
         public int Cost;
         public Enumerators.CardKind TargetCardKind;
 
+
+        private List<CardModel> _updatedCostUnits;
+
         public ChangeCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Cost = ability.Cost;
             TargetCardKind = ability.TargetKind;
+
+            _updatedCostUnits = new List<CardModel>();
         }
 
         public override void Activate()
@@ -62,14 +67,31 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void HandChangedHandler(int count)
+        {
+            base.HandChangedHandler(count);
+
+            ChangeAuraStatusAction(false);
+            ChangeAuraStatusAction(true);
+        }
+
         private void ChangeCostByStatus(Player player, bool status)
         {
             IEnumerable<CardModel> units = null;
 
-            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllCardsInHand)
+            if (!status)
             {
-                units = player.PlayerCardsController.CardsInHand.
-                                  Where(unit => unit.Card.Prototype.Kind == TargetCardKind);
+                units = _updatedCostUnits;
+            }
+            else
+            {
+                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllCardsInHand)
+                {
+                    units = player.PlayerCardsController.CardsInHand.
+                                      Where(unit => unit.Card.Prototype.Kind == TargetCardKind);
+                }
+
+                _updatedCostUnits = units.ToList();
             }
 
             if (units != null)

@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerActionReceivedHandler(byte[] data)
+        private async void OnPlayerActionReceivedHandler(byte[] data)
         {
             Func<Task> taskFunc = async () =>
             {
@@ -346,7 +346,7 @@ namespace Loom.ZombieBattleground
 
                         if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                List<CardModel> finalCardsInHand = new List<CardModel>();
                                int cardsRemoved = 0;
@@ -389,7 +389,7 @@ namespace Loom.ZombieBattleground
                                 return;
                             }
                         } else {
-                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                            if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
                                List<CardModel> cardsToRemove = new List<CardModel>();
                                bool found;
@@ -449,6 +449,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
+            await new WaitForUpdate();
             GameClient.Get<IQueueManager>().AddTask(taskFunc);
         }
 

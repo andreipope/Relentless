@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
         {
             CardDistribution = true;
 
-            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
@@ -823,6 +823,15 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CanDoDragActions = true;
 
             CardForAbilityChoosed?.Invoke(choosableAbility);
+        }
+
+        public void DiscardCardFromHand(CardModel cardModel)
+        {
+            BoardCardView card = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
+
+            _battlegroundController.UnregisterCardView(card);
+            cardModel.Owner.PlayerCardsController.RemoveCardFromHand(cardModel);
+            card.Dispose();
         }
     }
 

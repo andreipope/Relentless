@@ -921,17 +921,7 @@ namespace Loom.ZombieBattleground
         private void GenerateKeysAndUserFromUserID(
             string userId, out byte[] privateKey, out byte[] publicKey)
         {
-            userId = "ZombieSlayer_" + userId;
-
-            string seedString =
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId))) +
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
-
-            byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
-
-            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
+            privateKey = CryptoUtils.GeneratePrivateKey();
 
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }

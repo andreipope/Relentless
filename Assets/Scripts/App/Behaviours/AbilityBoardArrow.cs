@@ -20,6 +20,10 @@ namespace Loom.ZombieBattleground
 
         public int UnitCost = 0;
 
+        public AbilityBase OwnerOfThis;
+
+        public Enumerators.AbilitySubTrigger SubTrigger;
+
         private IInputManager _inputManager;
 
         private int _onMouseDownInputIndex;
@@ -60,6 +64,12 @@ namespace Loom.ZombieBattleground
                 unit.GameObject.CompareTag(SRTags.OpponentOwned) ||
                 PossibleTargets.Contains(Enumerators.Target.ALL))
             {
+                if(SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis)
+                {
+                    if (unit.Model.Card.InstanceCard.Cost <= OwnerOfThis.CardModel.InstanceCard.Cost)
+                        return;
+                }
+
                 if (TargetUnitType == Enumerators.CardType.UNDEFINED || unit.Model.InitialUnitType == TargetUnitType)
                 {
                     if (TargetUnitSpecialStatusType == Enumerators.UnitSpecialStatus.NONE ||

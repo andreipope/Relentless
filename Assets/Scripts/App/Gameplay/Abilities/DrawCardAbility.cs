@@ -9,7 +9,10 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.Faction Faction { get; }
         public Enumerators.UnitSpecialStatus UnitSpecialStatusType { get; }
+        public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
         public int Count { get; }
+
+        public Player ToPlayer { get; private set; }
 
         public DrawCardAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -22,6 +25,8 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
+
+            ToPlayer = AbilitySubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
 
             InvokeUseAbilityEvent();
 
@@ -75,11 +80,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && PlayerCallerOfAbility
+            if (UnitSpecialStatusType != Enumerators.UnitSpecialStatus.NONE && ToPlayer
                     .CardsOnBoard.FindAll(x => x.UnitSpecialStatus == UnitSpecialStatusType && x != AbilityUnitOwner)
                     .Count <= 0)
                 return;
-            else if (Faction != 0 && PlayerCallerOfAbility.CardsOnBoard
+            else if (Faction != 0 && ToPlayer.CardsOnBoard
                     .FindAll(card => card.Card.Prototype.Faction == Faction &&
                         card != AbilityUnitOwner &&
                         card.CurrentDefense > 0 &&
@@ -91,11 +96,11 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                cardsCount = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != CardModel.Card).Count;
+                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != CardModel.Card).Count;
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
             {
-                cardsCount = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
+                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
             }
 
             if (AbilityTargets.Count > 0)
@@ -105,10 +110,10 @@ namespace Loom.ZombieBattleground
                     switch (abilityTargetType)
                     {
                         case Enumerators.Target.PLAYER:
-                            AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, false, cardsCount);
+                            AddCardToHand(ToPlayer, ToPlayer, false, cardsCount);
                             break;
                         case Enumerators.Target.OPPONENT:
-                            AddCardToHand(PlayerCallerOfAbility, PlayerCallerOfAbility, true, cardsCount);
+                            AddCardToHand(ToPlayer, ToPlayer, true, cardsCount);
                             break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(abilityTargetType), abilityTargetType, null);
@@ -117,8 +122,8 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                PlayerCallerOfAbility.PlayDrawCardVFX();
-                PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                ToPlayer.PlayDrawCardVFX();
+                ToPlayer.PlayerCardsController.AddCardFromDeckToHand();
             }
         }
 
@@ -128,11 +133,11 @@ namespace Loom.ZombieBattleground
             {
                 if (fromOtherPlayerDeck)
                 {
-                    PlayerCallerOfAbility.PlayerCardsController.AddCardToHandFromOtherPlayerDeck();
+                    ToPlayer.PlayerCardsController.AddCardToHandFromOtherPlayerDeck();
                 }
                 else
                 {
-                    PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
+                    ToPlayer.PlayerCardsController.AddCardFromDeckToHand();
                 }
             }
         }

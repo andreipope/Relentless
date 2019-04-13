@@ -145,6 +145,7 @@ namespace Loom.ZombieBattleground
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }
+
 #if UNITY_EDITOR
             const string envVarConfigFileFilePath = "ZB_CONFIG_FILE_PATH";
             configDataFilePath = Environment.GetEnvironmentVariable(envVarConfigFileFilePath);

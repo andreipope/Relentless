@@ -170,7 +170,8 @@ namespace Loom.ZombieBattleground.Common
             DAMAGE_AND_DISTRACT,
             PUT_UNITS_FROM_DISCARD_INTO_PLAY,
             PUT_UNITS_FRON_LIBRARY_INTO_PLAY,
-            BLOCK_TAKE_DAMAGE
+            BLOCK_TAKE_DAMAGE,
+            TAKE_UNIT_TYPE_TO_TARGET_UNIT
         }
 
         public enum ActionType
@@ -327,6 +328,9 @@ namespace Loom.ZombieBattleground.Common
 
             [EnumMember(Value = "SUPER_SERUM")]
             SuperSerum,
+
+            [EnumMember(Value = "AURA")]
+            Aura
         }
 
         public enum BuffType
@@ -625,7 +629,9 @@ namespace Loom.ZombieBattleground.Common
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
             Swing,
-            Devour
+            Devour,
+
+            CardDiscard
         }
         public enum ScreenMode
         {
@@ -703,7 +709,10 @@ namespace Loom.ZombieBattleground.Common
             CardCostMoreThanCostOfThis,
             ForEachEnemyUnitInPlay,
             ForEachAllyUnitInPlay,
-            IfHaveFewerUnitsInPlay
+            IfHaveFewerUnitsInPlay,
+            ToOpponentOverlord,
+            UntilStartOfNextPlayerTurn,
+            DuringCardInHand
         }
 
         public enum UniqueAnimation
