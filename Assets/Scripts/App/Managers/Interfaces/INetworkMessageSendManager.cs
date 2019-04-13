@@ -4,11 +4,10 @@ using Loom.Google.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
-    public interface IQueueManager
+    public interface INetworkMessageSendManager
     {
         bool Active { get; set; }
-        void AddTask(Func<Task> taskFunc);
-        void AddAction(IMessage request);
+        void EnqueueMessage(IMessage request);
         void Clear();
     }
 }

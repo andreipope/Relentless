@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
-        private IQueueManager _queueManager;
+        private INetworkMessageSendManager _networkMessageSendManager;
 
         private bool _isCheckPlayerAvailableTimerStart;
         private float _checkPlayerTimer;
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _backendFacade = GameClient.Get<BackendFacade>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkMessageSendManager = GameClient.Get<INetworkMessageSendManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
@@ -212,7 +212,7 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                _queueManager.Active = false;
+                _networkMessageSendManager.Active = false;
                 _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground
                     );
                 }
 
-                _queueManager.Clear();
+                _networkMessageSendManager.Clear();
             }
             catch(Exception e)
             {
@@ -243,8 +243,8 @@ namespace Loom.ZombieBattleground
         {
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
-            _queueManager.Active = false;
-            _queueManager.Clear();
+            _networkMessageSendManager.Active = false;
+            _networkMessageSendManager.Clear();
 
             InitialGameState = null;
 
@@ -262,7 +262,7 @@ namespace Loom.ZombieBattleground
 
             _isCheckPlayerAvailableTimerStart = true;
 
-            _queueManager.Active = true;
+            _networkMessageSendManager.Active = true;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
@@ -294,163 +294,171 @@ namespace Loom.ZombieBattleground
 
         private async void OnPlayerActionReceivedHandler(byte[] data)
         {
-            Func<Task> taskFunc = async () =>
-            {
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
-                CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
+            // Return to main thread
+            await new WaitForUpdate();
+            PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+            CurrentActionIndex = (int) playerActionEvent.CurrentActionIndex;
+            Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
 
-                if (playerActionEvent.Block != null)
+            if (playerActionEvent.Block != null)
+            {
+                foreach (HistoryData historyData in playerActionEvent.Block.List)
                 {
-                    foreach (HistoryData historyData in playerActionEvent.Block.List)
+                    HistoryEndGame endGameData = historyData.EndGame;
+                    if (endGameData != null)
                     {
-                        HistoryEndGame endGameData = historyData.EndGame;
-                        if (endGameData != null)
+                        Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                        await _backendFacade.UnsubscribeEvent();
+                        return;
+                    }
+                }
+            }
+
+            switch (playerActionEvent.Match.Status)
+            {
+                case Match.Types.Status.Created:
+                    MatchCreatedActionReceived?.Invoke();
+                    break;
+                case Match.Types.Status.Matching:
+                    bool matchCanStart = true;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
                         {
-                            Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                            await _backendFacade.UnsubscribeEvent();
+                            matchCanStart = false;
+                            break;
+                        }
+                    }
+
+                    if (matchCanStart)
+                    {
+                        MatchingStartedActionReceived?.Invoke();
+                    }
+
+                    break;
+                case Match.Types.Status.Started:
+
+                    //Should not handle this anymore through events for now
+                    break;
+                case Match.Types.Status.Playing:
+                    foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
+                    {
+                        Log.Info(playerActionOutcome.ToString());
+                        PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
+                    }
+
+                    if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+                    {
+                        if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan &&
+                            playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                        {
+                            List<CardModel> finalCardsInHand = new List<CardModel>();
+                            int cardsRemoved = 0;
+                            bool found;
+                            foreach (CardModel cardInHand in _gameplayManager.CurrentPlayer.MulliganCards)
+                            {
+                                found = false;
+                                foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
+                                {
+                                    if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
+                                    {
+                                        finalCardsInHand.Add(cardInHand);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found)
+                                {
+                                    _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                    cardsRemoved++;
+                                }
+                            }
+
+                            for (int i = 0; i < cardsRemoved; i++)
+                            {
+                                finalCardsInHand.Add(_gameplayManager.CurrentPlayer.CardsInDeck[i]);
+                            }
+
+                            _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
+
+                            GameClient.Get<IUIManager>().GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
+
+                            return;
+                        }
+                        else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
+                        {
+                            OnReceivePlayerActionType(playerActionEvent);
+                        }
+                        else
+                        {
                             return;
                         }
                     }
-                }
-
-                switch (playerActionEvent.Match.Status)
-                {
-                    case Match.Types.Status.Created:
-                        MatchCreatedActionReceived?.Invoke();
-                        break;
-                    case Match.Types.Status.Matching:
-                        bool matchCanStart = true;
-                        for (int i = 0; i < 2; i++)
+                    else
+                    {
+                        if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan &&
+                            playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                         {
-                            if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
+                            List<CardModel> cardsToRemove = new List<CardModel>();
+                            bool found;
+                            foreach (CardModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
                             {
-                                matchCanStart = false;
-                                break;
+                                found = false;
+                                foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
+                                {
+                                    if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
+                                    {
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found)
+                                {
+                                    cardsToRemove.Add(cardInHand);
+                                }
+                            }
+
+                            BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
+                            foreach (CardModel card in cardsToRemove)
+                            {
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
+
+                                OpponentHandCardView opponentHandCardView =
+                                    battlegroundController.GetCardViewByModel<OpponentHandCardView>(card);
+                                battlegroundController.UnregisterCardView(opponentHandCardView);
+                                opponentHandCardView.Dispose();
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
+                            }
+
+                            for (int i = 0; i < cardsToRemove.Count; i++)
+                            {
+                                _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer
+                                    .CardsInDeck[0]);
                             }
                         }
-                        if (matchCanStart)
-                        {
-                            MatchingStartedActionReceived?.Invoke();
-                        }
-                        break;
-                    case Match.Types.Status.Started:
-                        //Should not handle this anymore through events for now
-                        break;
-                    case Match.Types.Status.Playing:
-                        foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
-                        {
-                            Log.Info(playerActionOutcome.ToString());
-                            PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
-                        }
+                    }
 
-                        if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
-                        {
-                            if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
-                            {
-                               List<CardModel> finalCardsInHand = new List<CardModel>();
-                               int cardsRemoved = 0;
-                               bool found;
-                               foreach (CardModel cardInHand in _gameplayManager.CurrentPlayer.MulliganCards)
-                               {
-                                   found = false;
-                                   foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
-                                   {
-                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
-                                       {
-                                           finalCardsInHand.Add(cardInHand);
-                                           found = true;
-                                           break;
-                                       }
-                                   }
-                                   if (!found) 
-                                   {
-                                       _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
-                                       cardsRemoved++;
-                                   }
-                               }
-
-                               for (int i = 0; i < cardsRemoved; i++)
-                               {
-                                   finalCardsInHand.Add(_gameplayManager.CurrentPlayer.CardsInDeck[i]);
-                               }
-
-                               _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
-
-                               GameClient.Get<IUIManager>().GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
-
-                               return;
-                            } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
-                            {
-                                OnReceivePlayerActionType(playerActionEvent);
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        } else {
-                            if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
-                            {
-                               List<CardModel> cardsToRemove = new List<CardModel>();
-                               bool found;
-                               foreach (CardModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
-                               {
-                                   found = false;
-                                   foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
-                                   {
-                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
-                                       {
-                                           found = true;
-                                           break;
-                                       }
-                                   }
-                                   if (!found) 
-                                   {
-                                       cardsToRemove.Add(cardInHand);
-                                   }
-                               }
-
-                               BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-                               foreach (CardModel card in cardsToRemove)
-                               {
-                                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
-
-                                    OpponentHandCardView opponentHandCardView = battlegroundController.GetCardViewByModel<OpponentHandCardView>(card);
-                                    battlegroundController.UnregisterCardView(opponentHandCardView);
-                                    opponentHandCardView.Dispose();
-                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
-                               }
-
-                               for (int i = 0; i < cardsToRemove.Count; i++)
-                               {
-                                   _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer.CardsInDeck[0]);
-                               }
-                            }
-                        }
-
-                        OnReceivePlayerActionType(playerActionEvent);
-                        break;
-                    case Match.Types.Status.PlayerLeft:
-                        OnReceivePlayerLeftAction(playerActionEvent);
-                        break;
-                    case Match.Types.Status.Ended:
-                        GameEndedActionReceived?.Invoke();
-                        break;
-                    case Match.Types.Status.Canceled:
-                        break;
-                    case Match.Types.Status.Timedout:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(
-                            nameof(playerActionEvent.Match.Status),
-                            playerActionEvent.Match.Status + " not found"
-                        );
-                }
-            };
-
-            await new WaitForUpdate();
-            GameClient.Get<IQueueManager>().AddTask(taskFunc);
+                    OnReceivePlayerActionType(playerActionEvent);
+                    break;
+                case Match.Types.Status.PlayerLeft:
+                    OnReceivePlayerLeftAction(playerActionEvent);
+                    break;
+                case Match.Types.Status.Ended:
+                    GameEndedActionReceived?.Invoke();
+                    break;
+                case Match.Types.Status.Canceled:
+                    break;
+                case Match.Types.Status.Timedout:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(playerActionEvent.Match.Status),
+                        playerActionEvent.Match.Status + " not found"
+                    );
+            }
         }
 
         private async Task LoadInitialGameState()

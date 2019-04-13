@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             private readonly BackendFacade _backendFacade;
 
-            private readonly IQueueManager _queueManager;
+            private readonly INetworkMessageSendManager _networkMessageSendManager;
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -123,7 +123,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
-                _queueManager = GameClient.Get<IQueueManager>();
+                _networkMessageSendManager = GameClient.Get<INetworkMessageSendManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -288,7 +288,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void AddAction(PlayerAction playerAction)
             {
-                _queueManager.AddAction(GetPlayerActionRequest(playerAction));
+                _networkMessageSendManager.EnqueueMessage(GetPlayerActionRequest(playerAction));
             }
 
             private PlayerActionRequest GetPlayerActionRequest(PlayerAction playerAction)

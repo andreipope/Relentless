@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Test
 
         private readonly TestHelper _testHelper;
         private readonly IPvPManager _pvpManager;
-        private readonly IQueueManager _queueManager;
+        private readonly INetworkMessageSendManager _networkMessageSendManager;
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
         private readonly Queue<CardAbilityRequest> _cardAbilityRequestsQueue = new Queue<CardAbilityRequest>();
@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground.Test
             _testHelper = testHelper;
 
             _pvpManager = GameClient.Get<IPvPManager>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkMessageSendManager = GameClient.Get<INetworkMessageSendManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
@@ -134,7 +134,7 @@ namespace Loom.ZombieBattleground.Test
             MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
             PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
             PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(targets);
-            _queueManager.AddAction(matchRequestFactory.CreateAction(action));
+            _networkMessageSendManager.EnqueueMessage(matchRequestFactory.CreateAction(action));
 
             return Task.CompletedTask;
         }

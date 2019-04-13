@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             FindOpponentTime.StartTimer();
-                            GameClient.Get<IQueueManager>().Clear();
+                            GameClient.Get<INetworkMessageSendManager>().Clear();
 
                             MatchMakingPopup matchMakingPopup = _uiManager.GetPopup<MatchMakingPopup>();
                             matchMakingPopup.CancelMatchmakingClicked += MatchMakingPopupOnCancelMatchmakingClicked;

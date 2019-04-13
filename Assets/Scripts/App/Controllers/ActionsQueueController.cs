@@ -21,7 +21,7 @@ namespace Loom.ZombieBattleground
 
         public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
 
-        public int ActionsInQueue { get { return _actionsToDo.Count + (ActionInProgress == null ? 0 : 1); } }
+        public int ActionsInQueue => _actionsToDo.Count + (ActionInProgress == null ? 0 : 1);
 
         public GameplayQueueAction<object> ActionInProgress { get; private set; }
 
