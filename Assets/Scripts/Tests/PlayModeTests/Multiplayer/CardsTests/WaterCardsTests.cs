@@ -971,63 +971,66 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new DeckCardData("Zplash", 1),
-                    new DeckCardData("Brook", 4),
-                    new DeckCardData("Zlab", 12));
-
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
+                    new DeckCardData("Trunk", 10)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Zplash", 1),
-                    new DeckCardData("Brook", 2),
-                    new DeckCardData("Zlab", 14));
+                    new DeckCardData("Trunk", 10)
+                );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
-
+                
                 InstanceId playerZplashId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zplash", 1);
-                InstanceId playerZlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
-                InstanceId playerZlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 2);
+                InstanceId playerTrunk1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
+                InstanceId playerTrunk2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 2);
 
                 InstanceId opponentZplashId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zplash", 1);
-                InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
+                InstanceId opponentTrunk1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
+                InstanceId opponentTrunk2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 2);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player =>
-                    {
-                        player.CardPlay(playerZlabId, ItemPosition.Start);
-                        player.CardPlay(playerZlab2Id, ItemPosition.Start);
-                    },
-                    opponent => {},
-                    player =>
-                    {
-                        player.CardPlay(playerZplashId, ItemPosition.Start);
-                    },
-                    opponent =>
-                    {
-                        opponent.CardPlay(opponentZplashId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentZplashId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
-                    },
-                    player => {},
-                    opponent => {},
-                };
+                   {
+                       player => {},
+                       opponent => {},
+                       player =>
+                       {
+                           player.CardPlay(playerTrunk1Id, ItemPosition.Start);
+                           player.CardPlay(playerTrunk2Id, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentTrunk1Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentTrunk2Id, ItemPosition.Start);
+                       },
+                       player =>
+                       {
+                           player.CardPlay(playerZplashId, ItemPosition.Start);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentZplashId, ItemPosition.Start);
+                       },
+                       player => {},
+                       opponent => {}
+                   };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerZlabId));
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - 4, pvpTestContext.GetOpponentPlayer().Defense);
+                    int damageValue = 2;
+                    BoardUnitModel trunk1OpponentModel  = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk1Id));
+                    Assert.AreEqual(trunk1OpponentModel.MaxCurrentDefense-damageValue, trunk1OpponentModel.CurrentDefense);
+                    BoardUnitModel trunk2OpponentModel  = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunk2Id));
+                    Assert.AreEqual(trunk2OpponentModel.MaxCurrentDefense-damageValue, trunk2OpponentModel.CurrentDefense);
+
+                    BoardUnitModel trunk1PlayerModel  = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk1Id));
+                    Assert.AreEqual(trunk1PlayerModel.MaxCurrentDefense-damageValue, trunk1PlayerModel.CurrentDefense);
+                    BoardUnitModel trunk2PlayerModel  = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunk2Id));
+                    Assert.AreEqual(trunk2PlayerModel.MaxCurrentDefense-damageValue, trunk2PlayerModel.CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -1039,67 +1042,53 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
                     new DeckCardData("Zub-Zero", 1),
-                    new DeckCardData("Zlab", 15));
+                    new DeckCardData("Trunk", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
                     new DeckCardData("Zub-Zero", 1),
-                    new DeckCardData("Zlab", 15));
+                    new DeckCardData("Trunk", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerZlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
-                InstanceId playerZlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 2);
                 InstanceId playerZubZeroId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zub-Zero", 1);
 
-                InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
-                InstanceId opponentZubZeroId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zub-Zero", 1);
-
-                int difference = 3;
+                InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
+                InstanceId opponentZubZeroId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zub-Zero", 1);;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerZlabId, ItemPosition.Start);
-                           player.CardPlay(playerZlab2Id, ItemPosition.Start);
+                           player.CardPlay(playerZubZeroId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentZlabId, ItemPosition.Start);
+                           opponent.CardPlay(opponentTrunkId, ItemPosition.Start);
                        },
-                       player =>
-                       {
-                           player.CardPlay(playerZubZeroId, ItemPosition.Start, opponentZlabId);
-                       },
+                       player => {},
                        opponent =>
                        {
                            opponent.CardPlay(opponentZubZeroId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentZubZeroId, Enumerators.AbilityType.DAMAGE_TARGET_FREEZE_IT_IF_SURVIVES, new List<ParametrizedAbilityInstanceId>()
-                           {
-                               new ParametrizedAbilityInstanceId(playerZlabId)
-                           });
                        },
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlabId);
-                    BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlabId);
+                    BoardUnitModel playerUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZubZeroId);
+                    BoardUnitModel opponentUnit1 = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZubZeroId);
 
-                    Assert.IsTrue(playerUnit1.IsStun);
-                    Assert.AreEqual(playerUnit1.Card.Prototype.Defense - difference, playerUnit1.CurrentDefense);
+                    Assert.IsTrue(playerUnit1.IsHeavyUnit);
+                    Assert.IsTrue(playerUnit1.HasBuffShield);
 
-                    Assert.IsTrue(opponentUnit1.IsStun);
-                    Assert.AreEqual(opponentUnit1.Card.Prototype.Defense - difference, opponentUnit1.CurrentDefense);
+                    Assert.IsFalse(opponentUnit1.IsHeavyUnit);
+                    Assert.IsFalse(opponentUnit1.HasBuffHeavy);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
