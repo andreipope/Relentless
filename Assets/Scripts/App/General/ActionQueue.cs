@@ -12,14 +12,14 @@ namespace Loom.ZombieBattleground
 
         public ActionQueueAction Action { get; }
 
-        public ActionQueue ParentQueue { get; }
+        public ActionQueue Parent { get; }
 
         public IReadOnlyCollection<ActionQueue> InnerQueues => _innerQueues;
 
-        public ActionQueue(ActionQueueAction action, ActionQueue parentQueue)
+        public ActionQueue(ActionQueueAction action, ActionQueue parent)
         {
             Action = action ?? throw new ArgumentNullException(nameof(action));
-            ParentQueue = parentQueue;
+            Parent = parent;
         }
 
         public ActionQueue Enqueue(ActionQueueAction action)
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             return actionQueue;
         }
 
-        public async Task Traverse()
+        public void Traverse()
         {
             if (_innerQueues.Count == 0)
                 return;
@@ -47,14 +47,14 @@ namespace Loom.ZombieBattleground
 
                 if (!currentQueue.Action.IsStarted)
                 {
-                    await currentQueue.Action.Execute(currentQueue);
+                    currentQueue.Action.Execute(currentQueue);
                 }
 
                 if (currentQueue.Action.IsCompleted)
                 {
                     if (currentQueue._innerQueues.Count == 0)
                     {
-                        currentQueue = currentQueue.ParentQueue;
+                        currentQueue = currentQueue.Parent;
                         currentQueue._innerQueues.Dequeue();
                     }
                     else
@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground
 
         private static string DefaultFormat(ActionQueue queue)
         {
-            return $"Action: {queue.Action}, Parent: {(queue.ParentQueue == null ? "null" : queue.ParentQueue.Action.ToString())}";
+            return $"Action: {queue.Action}, Parent: ({(queue.Parent == null ? "null" : queue.Parent.Action.ToString())})";
         }
 
         private static void FormatActionQueue(ActionQueue queue, int depth, Func<ActionQueue, string> actionFormatFunc, StringBuilder stringBuilder)

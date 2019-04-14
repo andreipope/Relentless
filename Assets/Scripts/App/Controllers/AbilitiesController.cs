@@ -817,8 +817,14 @@ namespace Loom.ZombieBattleground
 
         private bool _PvPToggleFirstLastAbility = true;
 
-        public void PlayAbilityFromEvent(Enumerators.AbilityType ability, IBoardObject abilityCaller,
-                                         List<ParametrizedAbilityBoardObject> targets, CardModel cardModel, Player owner)
+        public void PlayAbilityFromEvent(
+            Enumerators.AbilityType ability,
+            IBoardObject abilityCaller,
+            List<ParametrizedAbilityBoardObject> targets,
+            CardModel cardModel,
+            Player owner,
+            Action completeCallback = null
+            )
         {
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
@@ -845,7 +851,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (abilityData == null || (abilityData is default(AbilityData)))
+            if (abilityData == null)
             {
                 Log?.Warn($"abilityData: '{abilityData}' is null or default when trying to play it from event.");
                 return;
@@ -884,6 +890,7 @@ namespace Loom.ZombieBattleground
                     activeAbility.Ability.SelectedTargetAction(true);
 
                     _boardController.UpdateWholeBoard(null);
+                    completeCallback?.Invoke();
                 };
 
                 if (from != null && targets[0].BoardObject != null)

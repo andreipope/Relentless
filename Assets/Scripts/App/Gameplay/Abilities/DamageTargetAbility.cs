@@ -56,32 +56,29 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
             {
-                if (AbilityUnitOwner == AbilityUnitOwner)
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+
+                InvokeUseAbilityEvent();
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
-                    AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
-
-                    InvokeUseAbilityEvent();
-
-                    ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
-                        ActionType = Enumerators.ActionType.CardAffectingCard,
-                        Caller = AbilityUnitOwner,
-                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        new PastActionsPopup.TargetEffectParam()
                         {
-                            new PastActionsPopup.TargetEffectParam()
-                            {
-                                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                                Target = AbilityUnitOwner,
-                                HasValue = true,
-                                Value = -AbilityData.Value
-                            }
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = AbilityUnitOwner,
+                            HasValue = true,
+                            Value = -AbilityData.Value
                         }
-                    });
+                    }
+                });
 
-                    AbilityProcessingAction?.ForceActionDone();
-                } 
+                AbilityProcessingAction?.ForceActionDone();
             }
         }
 

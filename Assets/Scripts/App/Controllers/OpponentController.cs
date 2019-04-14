@@ -578,9 +578,10 @@ namespace Loom.ZombieBattleground
                     boardObjectCaller,
                     parametrizedAbilityObjects,
                     cardModel,
-                    _gameplayManager.OpponentPlayer);
+                    _gameplayManager.OpponentPlayer,
+                    completeCallback);
 
-                completeCallback?.Invoke();
+                //completeCallback?.Invoke();
 
             }, Enumerators.QueueActionType.AbilityUsage);
         }
@@ -634,7 +635,9 @@ namespace Loom.ZombieBattleground
                 ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
             if (Constants.RankSystemEnabled)
+            {
                 _ranksController.BuffAllyManually(units, cardModel);
+            }
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

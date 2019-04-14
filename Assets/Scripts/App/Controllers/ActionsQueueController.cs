@@ -31,9 +31,9 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public async void Update()
+        public void Update()
         {
-            await _rootQueue.Traverse();
+            _rootQueue.Traverse();
         }
 
         public void ResetAll()
@@ -51,9 +51,16 @@ namespace Loom.ZombieBattleground
         public GameplayActionQueueAction<object> AddNewActionInToQueue(
             GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
-            GameplayActionQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue);
-            if (actionType == Enumerators.QueueActionType.StopTurn ||
-                actionType == Enumerators.QueueActionType.EndMatch)
+            bool onlyManualComplete = actionType == Enumerators.QueueActionType.AbilityUsageBlocker;
+            bool isUserInputAction =
+                actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.EndMatch ||
+                actionType == Enumerators.QueueActionType.CardPlay ||
+                actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
+                actionType == Enumerators.QueueActionType.LeaveMatch;
+
+            GameplayActionQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue, onlyManualComplete);
+            if (isUserInputAction)
             {
                 RootQueue.Enqueue(gameAction);
             }
@@ -66,7 +73,7 @@ namespace Loom.ZombieBattleground
         }
 
         private GameplayActionQueueAction<object> GenerateActionForQueue(
-            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false, bool onlyManualComplete = false)
         {
             _nextActionId++;
 
@@ -76,7 +83,7 @@ namespace Loom.ZombieBattleground
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
-            return new GameplayActionQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
+            return new GameplayActionQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue, onlyManualComplete);
         }
 
         private void StopAllActions()
@@ -102,7 +109,7 @@ namespace Loom.ZombieBattleground
 
     public class GameplayActionQueueAction<T> : ActionQueueAction
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
+        private static readonly ILog Log = Logging.GetLog(nameof(GameplayActionQueueAction<T>));
 
         private bool _actionDone;
 
@@ -112,23 +119,44 @@ namespace Loom.ZombieBattleground
 
         public T Parameter;
 
+        public bool ManualCompleteTriggered { get; private set; }
+
         public Enumerators.QueueActionType ActionType { get; }
 
         public long Id { get; }
 
-        public bool BlockedInQueue { get; set; }
+        public bool BlockedInQueue { get; }
 
-        public GameplayActionQueueAction(ExecutedActionDelegate action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
+        public bool OnlyManualComplete { get; }
+
+        public GameplayActionQueueAction(
+            ExecutedActionDelegate executedAction,
+            T parameter,
+            long id,
+            Enumerators.QueueActionType actionType,
+            bool blockQueue,
+            bool onlyManualComplete)
         {
-            ExecutedAction = action;
+            ExecutedAction = executedAction;
             Parameter = parameter;
             Id = id;
             ActionType = actionType;
             BlockedInQueue = blockQueue;
+            OnlyManualComplete = onlyManualComplete;
         }
 
-        protected override Task Action(ActionQueue queue)
+        protected override void Action(ActionQueue queue)
         {
+            DebugLog($"{nameof(Action)}, Parent Queue: ({queue.Parent})");
+            if (!OnlyManualComplete || OnlyManualComplete && ManualCompleteTriggered)
+            {
+                ExecuteAction();
+            }
+        }
+
+        private void ExecuteAction()
+        {
+            DebugLog(nameof(ExecutedAction));
             try
             {
                 if (ExecutedAction == null)
@@ -142,28 +170,48 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception ex)
             {
-                ActionSystemException actionSystemException = new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
+                ActionSystemException actionSystemException =
+                    new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
                 Log.Error(actionSystemException.ToString());
                 Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
                 SetCompleted();
                 throw actionSystemException;
             }
-
-            return Task.CompletedTask;
         }
 
         public override string ToString()
         {
-            return $"({nameof(ActionType)}: {ActionType}, {nameof(Parameter)}: {(Parameter == null ? "null" : Parameter.ToString())}, {nameof(Id)}: {Id}, {nameof(BlockedInQueue)}: {BlockedInQueue})";
+            return
+                $"{nameof(ActionType)}: {ActionType}, " +
+                $"{nameof(IsStarted)}: {IsStarted}, " +
+                $"{nameof(IsCompleted)}: {IsCompleted}, " +
+                $"{nameof(OnlyManualComplete)}: {OnlyManualComplete}, " +
+                $"{nameof(ManualCompleteTriggered)}: {ManualCompleteTriggered}, " +
+                $"{nameof(Parameter)}: {(Parameter == null ? "null" : Parameter.ToString())}, " +
+                $"{nameof(Id)}: {Id}, " +
+                $"{nameof(BlockedInQueue)}: {BlockedInQueue}";
         }
 
         public void ForceActionDone()
         {
-            if (IsCompleted)
+            DebugLog(nameof(ForceActionDone));
+            if (IsCompleted || ManualCompleteTriggered)
                 return;
 
-            SetCompleted();
+            if (IsStarted)
+            {
+                ExecuteAction();
+            }
+            else
+            {
+                ManualCompleteTriggered = true;
+            }
+        }
+
+        private void DebugLog(string text)
+        {
+            Log.Debug($"{text} ({this})");
         }
     }
 }

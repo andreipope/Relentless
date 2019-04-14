@@ -12,18 +12,18 @@ namespace Loom.ZombieBattleground {
 
         public bool IsCompleted { get; private set; }
 
-        public Task Execute(ActionQueue queue)
+        public void Execute(ActionQueue queue)
         {
             IsStarted = true;
-            return Action(queue);
+            Action(queue);
         }
 
-        protected abstract Task Action(ActionQueue queue);
+        protected abstract void Action(ActionQueue queue);
 
         protected void SetCompleted()
         {
             if (!IsStarted)
-                throw new InvalidOperationException("Can't set state to completed before starting");
+                throw new InvalidOperationException($"Can't set state to completed before starting ({ToString()})");
 
             bool oldIsCompleted = IsCompleted;
             IsCompleted = true;
@@ -46,14 +46,13 @@ namespace Loom.ZombieBattleground {
 
         private class RootActionQueueAction : ActionQueueAction
         {
-            protected override Task Action(ActionQueue queue)
+            protected override void Action(ActionQueue queue)
             {
-                return Task.CompletedTask;
             }
 
             public override string ToString()
             {
-                return "(Root Action)";
+                return "Root Action";
             }
         }
     }

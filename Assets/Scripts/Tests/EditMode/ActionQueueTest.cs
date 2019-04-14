@@ -4,8 +4,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-#pragma warning disable 4014
-
 namespace Loom.ZombieBattleground.Test
 {
     [Category("EditQuickSubset")]
@@ -15,7 +13,7 @@ namespace Loom.ZombieBattleground.Test
         public void Empty()
         {
             ActionQueue root = new ActionQueue(new TestActionQueueAction("Root"), null);
-            Assert.AreEqual(null, root.ParentQueue);
+            Assert.AreEqual(null, root.Parent);
             Assert.False(root.Action.IsStarted);
             Assert.False(root.Action.IsCompleted);
 
@@ -87,10 +85,10 @@ namespace Loom.ZombieBattleground.Test
             ActionQueue action1SubAction1 = root.InnerQueues.Skip(0).First().Enqueue(new TestActionQueueAction("Action 1-1", SetCompleted));
             ActionQueue action1SubAction2 = root.InnerQueues.Skip(0).First().Enqueue(new TestActionQueueAction("Action 1-2", SetCompleted));
 
-            Assert.AreEqual(null, root.ParentQueue);
-            Assert.AreEqual(root, action1.ParentQueue);
-            Assert.AreEqual(root, action2.ParentQueue);
-            Assert.AreEqual(action1, action1SubAction1.ParentQueue);
+            Assert.AreEqual(null, root.Parent);
+            Assert.AreEqual(root, action1.Parent);
+            Assert.AreEqual(root, action2.Parent);
+            Assert.AreEqual(action1, action1SubAction1.Parent);
 
             Assert.False(root.Action.IsStarted);
             Assert.False(root.Action.IsCompleted);
@@ -124,10 +122,10 @@ namespace Loom.ZombieBattleground.Test
             ActionQueue action1SubAction1 = root.InnerQueues.Skip(0).First().Enqueue(new TestActionQueueAction("Action 1-1"));
             ActionQueue action1SubAction2 = root.InnerQueues.Skip(0).First().Enqueue(new TestActionQueueAction("Action 1-2"));
 
-            Assert.AreEqual(null, root.ParentQueue);
-            Assert.AreEqual(root, action1.ParentQueue);
-            Assert.AreEqual(root, action2.ParentQueue);
-            Assert.AreEqual(action1, action1SubAction1.ParentQueue);
+            Assert.AreEqual(null, root.Parent);
+            Assert.AreEqual(root, action1.Parent);
+            Assert.AreEqual(root, action2.Parent);
+            Assert.AreEqual(action1, action1SubAction1.Parent);
 
             Assert.False(root.Action.IsStarted);
             Assert.False(root.Action.IsCompleted);
@@ -220,7 +218,7 @@ namespace Loom.ZombieBattleground.Test
 
         private static string FormatTestActionQueue(ActionQueue queue)
         {
-            return $"{queue.Action}, Parent: {(queue.ParentQueue == null ? "null" : ((TestActionQueueAction) queue.ParentQueue.Action).Name)}";
+            return $"{queue.Action}, Parent Queue: ({(queue.Parent == null ? "null" : ((TestActionQueueAction) queue.Parent.Action).Name)})";
         }
 
         public class TestActionQueueAction : ActionQueueAction
@@ -239,11 +237,10 @@ namespace Loom.ZombieBattleground.Test
                 base.SetCompleted();
             }
 
-            protected override Task Action(ActionQueue queue)
+            protected override void Action(ActionQueue queue)
             {
                 _onAction?.Invoke(queue, this);
                 Console.WriteLine("Executing: " + Name);
-                return Task.CompletedTask;
             }
 
             public string Name { get; }

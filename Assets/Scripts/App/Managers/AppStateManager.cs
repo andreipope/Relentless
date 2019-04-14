@@ -205,7 +205,7 @@ namespace Loom.ZombieBattleground
 
         public async Task SendLeaveMatchIfInPlay()
         {
-            if (GameClient.Get<IGameplayManager>().IsGameStarted)
+            if (!UnitTestDetector.IsRunningUnitTests && GameClient.Get<IGameplayManager>().IsGameStarted)
             {
                 await GameClient.Get<BackendFacade>().SendPlayerAction(
                  GameClient.Get<ActionCollectorUploader>().GetLeaveMatchRequest());
