@@ -9,6 +9,7 @@ using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
 using UnityEngine;
 using Player = Loom.ZombieBattleground.Player;
+using Rect = UnityEngine.Rect;
 
 namespace Editor
 {
@@ -81,6 +82,7 @@ namespace Editor
 
             BattlegroundController battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
             OpponentController opponentController = GameClient.Get<IGameplayManager>().GetController<OpponentController>();
+            ActionsQueueController actionsQueueController = GameClient.Get<IGameplayManager>().GetController<ActionsQueueController>();
 
             GUILayout.Label("Match Type: " + matchManager.MatchType);
 
@@ -161,9 +163,24 @@ namespace Editor
                     GameStateGUI.DrawGameState(currentGameState, userId, "Current Game State", null, AfterPlayerDrawnHandlerCallback, ref isExpanded);
 
                     DrawViewList("BattlegroundController: All Registered Views", battlegroundController.CardViews, true);
+
+                    DrawSeparator();
+
+                    GUILayout.Label("<b>Main Queue State</b>", GameStateGUI.Styles.RichLabel);
+
+                    GUILayout.Label(actionsQueueController.RootQueue.ToString());
                 }
                 EditorGUILayout.EndVertical();
             }
+        }
+
+        private static void DrawSeparator()
+        {
+            EditorGUILayout.Space();
+            Rect rect = EditorGUILayout.GetControlRect(false, 2);
+            rect.height = 1;
+            EditorGUI.DrawRect(rect, Color.black);
+            EditorGUILayout.Space();
         }
     }
 }

@@ -448,8 +448,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
-                GameplayQueueAction<object> rankBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
+                GameplayActionQueueAction<object> callAbilityAction = null;
+                GameplayActionQueueAction<object> ranksBuffAction = null;
 
                 switch (card.Model.Card.Prototype.Kind)
                 {
@@ -495,15 +495,17 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            if(Constants.RankSystemEnabled)
-                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
+                            if (Constants.RankSystemEnabled)
+                            {
+                                ranksBuffAction = _ranksController.AddUpdateRanksByElementsAction(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model);
+                            }
 
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
                                 {
                                     card.HandBoardCard.GameObject.SetActive(false);
 
-                                    _abilitiesController.CallAbility(card, card.Model,
+                                    callAbilityAction = _abilitiesController.CallAbility(card, card.Model,
                                         Enumerators.CardKind.CREATURE, boardUnitView.Model, CallCardPlay, true, (status) =>
                                         {
                                             UpdateCardsStatusEvent?.Invoke(player);
@@ -515,8 +517,8 @@ namespace Loom.ZombieBattleground
                                             }
                                             else
                                             {
-                                                rankBuffAction.Action = null;
-                                                rankBuffAction.ForceActionDone();
+                                                //rankBuffAction.Action = null;
+                                                ranksBuffAction?.ForceActionDone();
 
                                                 boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true, isDead: false);
@@ -524,7 +526,7 @@ namespace Loom.ZombieBattleground
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
 
-                                        }, callAbilityAction, target, handCard, skipEntryAbilities);
+                                        }, target, handCard, skipEntryAbilities);
 
                                     _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 });
@@ -546,7 +548,7 @@ namespace Loom.ZombieBattleground
 
                             InternalTools.DoActionDelayed(() =>
                             {
-                                _abilitiesController.CallAbility(
+                                callAbilityAction = _abilitiesController.CallAbility(
                                     card,
                                     card.Model,
                                     Enumerators.CardKind.ITEM,
@@ -560,8 +562,8 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
-                                        rankBuffAction.ForceActionDone();
-                                    }, callAbilityAction, target, handCard, skipEntryAbilities);
+                                        ranksBuffAction?.ForceActionDone();
+                                    }, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             }, 0.75f);
@@ -576,8 +578,6 @@ namespace Loom.ZombieBattleground
                 card.HandBoardCard.ResetToInitialPosition();
             }
         }
-
-
 
         public void PlayOpponentCard(
             Player player,

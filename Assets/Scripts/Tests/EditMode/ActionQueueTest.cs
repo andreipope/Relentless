@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground.Test
 
             Assert.False(root.InnerQueues.Contains(action1));
 
-            Console.WriteLine(FormatMultiQueue(root));
+            Console.WriteLine(root.ToString(FormatTestActionQueue));
         }
 
         [Test]
@@ -112,7 +112,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(root.InnerQueues.Contains(action1));
             Assert.False(root.InnerQueues.Contains(action2));
 
-            Console.WriteLine(FormatMultiQueue(root));
+            Console.WriteLine(root.ToString(FormatTestActionQueue));
         }
 
         [Test]
@@ -215,29 +215,12 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(root.InnerQueues.Contains(action2));
             Assert.AreEqual(root, root.GetDeepestQueue());
 
-            Console.WriteLine(FormatMultiQueue(root));
+            Console.WriteLine(root.ToString(FormatTestActionQueue));
         }
 
-        private static string FormatMultiQueue(ActionQueue queue, int depth = 0)
+        private static string FormatTestActionQueue(ActionQueue queue)
         {
-            StringBuilder sb = new StringBuilder();
-            if (depth > 0)
-            {
-                sb.Append(new String(' ', depth * 4));
-
-                //sb.Append('-');
-                sb.Append(" ");
-            }
-
-            sb.Append($"{queue.Action}, Parent: {(queue.ParentQueue == null ? "null" : ((TestActionQueueAction) queue.ParentQueue.Action).Name)}");
-            sb.AppendLine();
-            depth++;
-            foreach (ActionQueue subQueue in queue.InnerQueues)
-            {
-                sb.Append(FormatMultiQueue(subQueue, depth));
-            }
-
-            return sb.ToString();
+            return $"{queue.Action}, Parent: {(queue.ParentQueue == null ? "null" : ((TestActionQueueAction) queue.ParentQueue.Action).Name)}";
         }
 
         public class TestActionQueueAction : ActionQueueAction

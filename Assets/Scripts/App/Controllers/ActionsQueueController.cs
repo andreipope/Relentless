@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -11,34 +12,33 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
 
-        private long _nextActionId = 0;
+        private long _nextActionId;
 
-        private List<GameplayQueueAction<object>> _actionsToDo;
+        private ActionQueue _rootQueue;
 
         private bool _isDebugMode = false;
 
-        public int ActionsInQueue => _actionsToDo.Count + (ActionInProgress == null ? 0 : 1);
+        public int ActionsInQueue => _rootQueue.InnerQueues.Count;
 
-        public GameplayQueueAction<object> ActionInProgress { get; private set; }
+        public ActionQueue RootQueue => _rootQueue;
 
         public void Init()
         {
-            _actionsToDo = new List<GameplayQueueAction<object>>();
-            ActionInProgress = null;
+            _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
         public void Dispose()
         {
         }
 
-        public void Update()
+        public async void Update()
         {
+            await _rootQueue.Traverse();
         }
 
         public void ResetAll()
         {
             StopAllActions();
-
             _nextActionId = 0;
         }
 
@@ -48,51 +48,35 @@ namespace Loom.ZombieBattleground
         /// <param name="actionToDo">action to do, parameter + callback action</param>
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
-        public GameplayQueueAction<object> AddNewActionInToQueue(
-            Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+        public GameplayActionQueueAction<object> AddNewActionInToQueue(
+            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
-            GameplayQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue);
-            gameAction.OnActionDoneEvent += OnActionDoneEvent;
-            _actionsToDo.Add(gameAction);
-
-            if (_actionsToDo.Find(x => x.ActionType == Enumerators.QueueActionType.StopTurn) != null &&
-                gameAction.ActionType != Enumerators.QueueActionType.StopTurn)
+            GameplayActionQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue);
+            if (actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.EndMatch)
             {
-                MoveActionBeforeAction(gameAction, Enumerators.QueueActionType.StopTurn);
+                RootQueue.Enqueue(gameAction);
             }
-
-            if (ActionInProgress == null && _actionsToDo.Count < 2)
+            else
             {
-                TryCallNewActionFromQueue();
+                RootQueue.GetDeepestQueue().Enqueue(gameAction);
             }
 
             return gameAction;
         }
 
-        private GameplayQueueAction<object> GenerateActionForQueue(
-            Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+        private GameplayActionQueueAction<object> GenerateActionForQueue(
+            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
             _nextActionId++;
 
             if (_isDebugMode)
             {
-                Log.Warn(_actionsToDo.Count + " was actions; add <color=yellow>generated action " +
+                Log.Warn(ActionsInQueue + " was actions; add <color=yellow>generated action " +
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
-            return new GameplayQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
-        }
-
-        private void MoveActionBeforeAction(GameplayQueueAction<object> actionToInsert, Enumerators.QueueActionType actionBefore)
-        {
-            if (_actionsToDo.Contains(actionToInsert))
-            {
-                _actionsToDo.Remove(actionToInsert);
-            }
-
-            int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore)-1;
-
-            _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
+            return new GameplayActionQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue);
         }
 
         private void StopAllActions()
@@ -104,121 +88,27 @@ namespace Loom.ZombieBattleground
         {
             if (_isDebugMode)
             {
-                Log.Warn(_actionsToDo.Count + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+                Log.Warn(ActionsInQueue + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
             }
 
-            if (ActionInProgress != null)
-            {
-                ActionInProgress.Action = null;
-                ActionInProgress = null;
-            }
-
-            _actionsToDo.Clear();
+            _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
-        public void ForceContinueAction(GameplayQueueAction<object> action)
+        public void ForceContinueAction(GameplayActionQueueAction<object> modelActionForDying)
         {
-            if (action == null)
-            {
-                TryCallNewActionFromQueue();
-            }
-            else
-            {
-                if (_isDebugMode)
-                {
-                    Log.Warn(_actionsToDo.Count + " was actions; action <color=orange>" +
-                    action.ActionType + " : " + action.Id + " force block disable and try run </color> from >>>> ");
-                }
-
-                action.BlockedInQueue = false;
-
-                if (ActionInProgress == null)
-                {
-                    TryCallNewActionFromQueue();
-                }
-            }
-        }
-
-        private void OnActionDoneEvent(GameplayQueueAction<object> previousAction)
-        {
-            if (_isDebugMode)
-            {
-                Log.Warn(_actionsToDo.Count + " was actions; action <color=cyan>" +
-                previousAction.ActionType + " : " + previousAction.Id + " DONE </color> from >>>> ");
-            }
-
-            if (_actionsToDo.Contains(previousAction))
-            {
-                if (_actionsToDo.IndexOf(previousAction) == 0)
-                {
-                    _actionsToDo.Remove(previousAction);
-
-                    if (ActionInProgress == previousAction || ActionInProgress == null)
-                    {
-                        TryCallNewActionFromQueue();
-                    }
-                    else
-                    {
-                        ActionInProgress = null;
-                    }
-                }
-                else
-                {
-                    _actionsToDo.Remove(previousAction);
-                }
-            }
-            else
-            {
-                TryCallNewActionFromQueue();
-            }
-        }
-
-        private void TryCallNewActionFromQueue()
-        {
-            if (_actionsToDo.Count > 0)
-            {
-                GameplayQueueAction<object> actionToStart = _actionsToDo[0];
-
-                if (actionToStart.BlockedInQueue)
-                {
-                    if (_isDebugMode)
-                    {
-                        Log.Warn(_actionsToDo.Count + " was actions; <color=brown> action blocked " +
-                        actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
-                    }
-
-                    ActionInProgress = null;
-
-                    return;
-                }
-
-                _actionsToDo.Remove(actionToStart);
-
-                if (_isDebugMode)
-                {
-                    Log.Warn(_actionsToDo.Count + " was actions; <color=white> Dooooooo action " +
-                    actionToStart.ActionType + " : " + actionToStart.Id + ";  </color> from >>>> ");
-                }
-
-                ActionInProgress = actionToStart;
-                ActionInProgress.DoAction();
-            }
-            else
-            {
-                ActionInProgress = null;
-            }
+            // does nothing now?
         }
     }
 
-    public class GameplayQueueAction<T>
+    public class GameplayActionQueueAction<T> : ActionQueueAction
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
 
-        private readonly ITimerManager _timerManager;
-
         private bool _actionDone;
 
-        public Action<T, Action> Action;
+        public delegate void ExecutedActionDelegate(T parameter, Action completedCallback);
+
+        public ExecutedActionDelegate ExecutedAction;
 
         public T Parameter;
 
@@ -228,30 +118,26 @@ namespace Loom.ZombieBattleground
 
         public bool BlockedInQueue { get; set; }
 
-        public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
+        public GameplayActionQueueAction(ExecutedActionDelegate action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
-            _timerManager = GameClient.Get<ITimerManager>();
-
-            Action = action;
+            ExecutedAction = action;
             Parameter = parameter;
             Id = id;
             ActionType = actionType;
             BlockedInQueue = blockQueue;
         }
 
-        public event Action<GameplayQueueAction<T>> OnActionDoneEvent;
-
-        public void DoAction()
+        protected override Task Action(ActionQueue queue)
         {
             try
             {
-                if (Action == null)
+                if (ExecutedAction == null)
                 {
-                    ActionDoneCallback();
+                    SetCompleted();
                 }
                 else
                 {
-                    Action?.Invoke(Parameter, ActionDoneCallback);
+                    ExecutedAction?.Invoke(Parameter, SetCompleted);
                 }
             }
             catch (Exception ex)
@@ -260,28 +146,24 @@ namespace Loom.ZombieBattleground
                 Log.Error(actionSystemException.ToString());
                 Helpers.ExceptionReporter.SilentReportException(actionSystemException);
 
-                ActionDoneCallback();
+                SetCompleted();
                 throw actionSystemException;
             }
+
+            return Task.CompletedTask;
+        }
+
+        public override string ToString()
+        {
+            return $"({nameof(ActionType)}: {ActionType}, {nameof(Parameter)}: {(Parameter == null ? "null" : Parameter.ToString())}, {nameof(Id)}: {Id}, {nameof(BlockedInQueue)}: {BlockedInQueue})";
         }
 
         public void ForceActionDone()
         {
-            if (_actionDone)
+            if (IsCompleted)
                 return;
 
-            _actionDone = true;
-            BlockedInQueue = false;
-
-            OnActionDoneEvent?.Invoke(this);
-        }
-
-        private void ActionDoneCallback()
-        {
-            if (_actionDone)
-                return;
-
-            ForceActionDone();
+            SetCompleted();
         }
     }
 }

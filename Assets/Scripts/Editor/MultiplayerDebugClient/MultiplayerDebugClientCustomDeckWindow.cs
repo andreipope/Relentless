@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Test;
+using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,10 +19,11 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         public MultiplayerDebugClient Client => _ownerWindow.DebugClient;
 
-        private Dictionary<string, string> _cardNameToDescription;
+        private Dictionary<string, (string metaDescription, string cardText)> _cardNameToDescription;
         private bool _visible;
         private Vector2 _customDeckScrollPosition;
         private Vector2 _cardLibraryScrollPosition;
+        private string _nameFilterString = "";
 
         public void Init(MultiplayerDebugClientWindow ownerWindow)
         {
@@ -48,11 +51,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (_cardNameToDescription == null)
             {
-                _cardNameToDescription = new Dictionary<string, string>();
+                _cardNameToDescription = new Dictionary<string, (string metaDescription, string cardText)>();
                 foreach (Card card in cardLibrary)
                 {
                     _cardNameToDescription[card.Name] =
-                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
+                    (
+                        $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})",
+                        card.Description
+                    );
                 }
             }
 
@@ -104,13 +110,24 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     EditorGUILayout.LabelField("Card Library", EditorStyles.boldLabel);
                     EditorGUILayout.BeginVertical();
                     {
+                        EditorGUILayout.BeginHorizontal();
+                        {
+                            GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
+                            _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
+                        }
+                        EditorGUILayout.EndHorizontal();
+
                         _cardLibraryScrollPosition = EditorGUILayout.BeginScrollView(_cardLibraryScrollPosition, GUILayout.MaxHeight(300f));
                         {
                             foreach (Card card in cardLibrary.OrderBy(card => card.Faction).ThenBy(card => card.Name))
                             {
+                                if (!String.IsNullOrWhiteSpace(_nameFilterString) && card.Name.IndexOf(_nameFilterString, StringComparison.InvariantCultureIgnoreCase) == -1)
+                                    continue;
+
                                 EditorGUILayout.BeginHorizontal();
                                 {
-                                    GUILayout.Label(_cardNameToDescription[card.Name]);
+                                    (string metaDescription, string cardText) = _cardNameToDescription[card.Name];
+                                    GUILayout.Label(new GUIContent(metaDescription, cardText));
 
                                     GUILayout.FlexibleSpace();
                                     if (GUILayout.Button("Add", GUILayout.Width(70)))
@@ -176,7 +193,9 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             EditorGUILayout.BeginHorizontal();
             {
-                GUILayout.Label(_cardNameToDescription[deckCard.CardName]);
+                (string metaDescription, string cardText) = _cardNameToDescription[deckCard.CardName];
+                GUILayout.Label(new GUIContent(metaDescription, cardText));
+
                 GUILayout.FlexibleSpace();
                 string amountString = EditorGUILayout.TextField(deckCard.Amount.ToString(), GUILayout.Width(35));
                 if (int.TryParse(amountString, out int newAmount))

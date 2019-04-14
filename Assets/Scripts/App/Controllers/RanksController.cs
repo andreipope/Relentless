@@ -17,6 +17,7 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
         private BattlegroundController _battlegroundController;
+        private ActionsQueueController _actionsQueueController;
 
         private Action _ranksUpgradeCompleteAction;
 
@@ -31,6 +32,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _unitsForIgnoreRankBuff = new List<CardModel>();
         }
 
@@ -42,47 +44,49 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void UpdateRanksByElements(IReadOnlyList<CardModel> units, CardModel cardModel, GameplayQueueAction<object> actionInQueue)
+        public GameplayActionQueueAction<object> AddUpdateRanksByElementsAction(IReadOnlyList<CardModel> units, CardModel cardModel)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
                 if (!cardModel.Owner.IsLocalPlayer)
-                    return;
+                    return null;
             }
 
-            actionInQueue.Action = (parameter, completeCallback) =>
-                   {
-                       _ranksUpgradeCompleteAction = completeCallback;
+            GameplayActionQueueAction<object>.ExecutedActionDelegate action = (parameter, completeCallback) =>
+            {
+                _ranksUpgradeCompleteAction = completeCallback;
 
-                       List<CardModel> filter = units.Where(unit =>
-                                    unit.Card.Prototype.Faction == cardModel.Prototype.Faction &&
-                                    (int)unit.Card.Prototype.Rank < (int)cardModel.Prototype.Rank &&
-                                    !_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).WasDestroyed &&
-                                    !unit.IsDead &&
-                                    !_unitsForIgnoreRankBuff.Contains(unit) &&
-                                      unit.Card.Prototype.Faction != Enumerators.Faction.ITEM &&
-                                      unit.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
-                                    .ToList();
+                List<CardModel> filter = units.Where(unit =>
+                        unit.Card.Prototype.Faction == cardModel.Prototype.Faction &&
+                        (int)unit.Card.Prototype.Rank < (int)cardModel.Prototype.Rank &&
+                        !_battlegroundController.GetCardViewByModel<BoardUnitView>(unit).WasDestroyed &&
+                        !unit.IsDead &&
+                        !_unitsForIgnoreRankBuff.Contains(unit) &&
+                        unit.Card.Prototype.Faction != Enumerators.Faction.ITEM &&
+                        unit.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
+                    .ToList();
 
-                       _unitsForIgnoreRankBuff.Clear();
+                _unitsForIgnoreRankBuff.Clear();
 
-                       if (filter.Count > 0 && (!_tutorialManager.IsTutorial ||
-                           (_tutorialManager.IsTutorial &&
-                           _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.RankSystemHasEnabled)))
-                       {
-                           DoRankUpgrades(filter, cardModel);
+                if (filter.Count > 0 && (!_tutorialManager.IsTutorial ||
+                    (_tutorialManager.IsTutorial &&
+                        _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.RankSystemHasEnabled)))
+                {
+                    DoRankUpgrades(filter, cardModel);
 
-                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfOverlord,
-                            Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfOverlord,
+                        Common.Enumerators.ExperienceActionType.ActivateRankAbility);
 
-                           _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
-                       }
-                       else
-                       {
-                           _ranksUpgradeCompleteAction?.Invoke();
-                           _ranksUpgradeCompleteAction = null;
-                       }
-                   };
+                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
+                }
+                else
+                {
+                    _ranksUpgradeCompleteAction?.Invoke();
+                    _ranksUpgradeCompleteAction = null;
+                }
+            };
+
+            return _actionsQueueController.AddNewActionInToQueue(action, Enumerators.QueueActionType.RankBuff);
         }
 
         public void DoRankUpgrades(List<CardModel> targetUnits, CardModel originUnit, bool randomly = true)

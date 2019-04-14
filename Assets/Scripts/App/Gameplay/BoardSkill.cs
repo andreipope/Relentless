@@ -243,7 +243,7 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
+        public GameplayActionQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
+using UnityEditor;
 
 namespace Loom.ZombieBattleground
 {
@@ -86,6 +88,42 @@ namespace Loom.ZombieBattleground
             }
 
             return currentQueue;
+        }
+
+        public override string ToString()
+        {
+            return ToString(DefaultFormat);
+        }
+
+        public virtual string ToString(Func<ActionQueue, string> actionFormatFunc)
+        {
+            if (actionFormatFunc == null)
+                throw new ArgumentNullException(nameof(actionFormatFunc));
+
+            StringBuilder stringBuilder = new StringBuilder();
+            FormatActionQueue(this, 0, actionFormatFunc, stringBuilder);
+            return stringBuilder.ToString();
+        }
+
+        private static string DefaultFormat(ActionQueue queue)
+        {
+            return $"Action: {queue.Action}, Parent: {(queue.ParentQueue == null ? "null" : queue.ParentQueue.Action.ToString())}";
+        }
+
+        private static void FormatActionQueue(ActionQueue queue, int depth, Func<ActionQueue, string> actionFormatFunc, StringBuilder stringBuilder)
+        {
+            if (depth > 0)
+            {
+                stringBuilder.Append(new String(' ', depth * 4));
+            }
+
+            stringBuilder.Append(actionFormatFunc?.Invoke(queue) ?? queue.ToString());
+            stringBuilder.AppendLine();
+            depth++;
+            foreach (ActionQueue subQueue in queue.InnerQueues)
+            {
+                FormatActionQueue(subQueue, depth, actionFormatFunc, stringBuilder);
+            }
         }
     }
 }

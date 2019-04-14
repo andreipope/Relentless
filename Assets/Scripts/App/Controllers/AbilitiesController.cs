@@ -450,7 +450,7 @@ namespace Loom.ZombieBattleground
             get { return _activeAbility; }
         }
 
-        public void CallAbility(
+        public GameplayActionQueueAction<object> CallAbility(
             BoardCardView card,
             CardModel cardModel,
             Enumerators.CardKind kind,
@@ -458,7 +458,6 @@ namespace Loom.ZombieBattleground
             Action<BoardCardView> action,
             bool isPlayer,
             Action<bool> onCompleteCallback,
-            GameplayQueueAction<object> actionInQueue,
             IBoardObject target = null,
             HandBoardCard handCard = null,
             bool skipEntryAbilities = false)
@@ -467,9 +466,9 @@ namespace Loom.ZombieBattleground
 
             CardInstanceSpecificData instance = cardModel.Card.InstanceCard;
 
-            GameplayQueueAction<object> abilityHelperAction = null;
+            GameplayActionQueueAction<object> abilityHelperAction = null;
 
-            actionInQueue.Action = (parameter, completeCallback) =>
+            GameplayActionQueueAction<object>.ExecutedActionDelegate callAbilityAction = (parameter, completeCallback) =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
 
@@ -768,6 +767,8 @@ namespace Loom.ZombieBattleground
                        abilityEndAction.Invoke();
                    }
                };
+
+            return _actionsQueueController.AddNewActionInToQueue(callAbilityAction, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
         }
 
         public void InvokeUseAbilityEvent(

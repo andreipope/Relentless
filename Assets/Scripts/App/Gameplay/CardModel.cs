@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; } = new List<Enumerators.GameMechanicDescription>();
 
-        public GameplayQueueAction<object> ActionForDying;
+        public GameplayActionQueueAction<object> ActionForDying;
 
         public bool WasDistracted { get; private set; }
 
