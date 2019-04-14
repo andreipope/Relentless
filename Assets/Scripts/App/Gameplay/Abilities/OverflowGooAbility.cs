@@ -49,7 +49,7 @@ namespace Loom.ZombieBattleground
 
                 PlayerCallerOfAbility.CurrentGoo += Value;
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingOverlord,
                     Caller = AbilityUnitOwner,

@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private ActionsReportController _actionsReportController;
+
         private AbilitiesController _abilitiesController;
 
         private SkillsController _skillsController;
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _boardController = _gameplayManager.GetController<BoardController>();
@@ -957,7 +960,7 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
                         _battlegroundController.RegisterCardView(boardUnitViewElement, _gameplayManager.OpponentPlayer, ItemPosition.End);
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
                             Caller = boardUnitViewElement.Model,
@@ -1022,7 +1025,7 @@ namespace Loom.ZombieBattleground
                         CurrentItemCard.SetHighlightingEnabled(false);
                         itemCard.gameObject.SetActive(false);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
                             Caller = cardModel,

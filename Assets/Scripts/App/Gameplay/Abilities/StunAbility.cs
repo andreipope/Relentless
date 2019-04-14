@@ -54,7 +54,7 @@ namespace Loom.ZombieBattleground
                     });
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                     Caller = AbilityUnitOwner,
@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
             {
                 StunUnit(unit);
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
                     Caller = AbilityUnitOwner,

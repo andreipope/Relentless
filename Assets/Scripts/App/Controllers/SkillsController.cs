@@ -34,6 +34,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private ActionsReportController _actionsReportController;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battleController = _gameplayManager.GetController<BattleController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
@@ -695,7 +698,7 @@ namespace Loom.ZombieBattleground
 
             _cardsController.ReturnCardToHand(targetUnit);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
@@ -721,7 +724,7 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
@@ -760,7 +763,7 @@ namespace Loom.ZombieBattleground
 
             if (targetEffects.Count > 0)
             {
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -808,7 +811,7 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                 Caller = boardSkill,
@@ -862,7 +865,7 @@ namespace Loom.ZombieBattleground
             }, 2f);
             InternalTools.DoActionDelayed(() =>
             {
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                     Caller = boardSkill,
@@ -886,7 +889,7 @@ namespace Loom.ZombieBattleground
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),
                     unit, isIgnoreCastVfx: true);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -930,7 +933,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(targets), targets[0].BoardObject, null);
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
                 Caller = boardSkill,
@@ -1024,7 +1027,7 @@ namespace Loom.ZombieBattleground
                 }, true);
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCardsWithOverlord,
                 Caller = boardSkill,
@@ -1080,7 +1083,7 @@ namespace Loom.ZombieBattleground
                         targetUnit, isIgnoreCastVfx: true);
                         _battleController.AttackUnitBySkill(owner, boardSkill, targetUnit, 0, unitAtk);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                             Caller = boardSkill,
@@ -1210,7 +1213,7 @@ namespace Loom.ZombieBattleground
                 EpidemicUnit(owner, boardSkill, skill, unitModel, opponentUnitModel, callback);
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -1283,7 +1286,7 @@ namespace Loom.ZombieBattleground
                         Enumerators.CardSoundType.NONE);
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -1316,7 +1319,7 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
@@ -1409,7 +1412,7 @@ namespace Loom.ZombieBattleground
                 owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -1479,7 +1482,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnCardsWithOverlord,
                 Caller = boardSkill,
@@ -1548,7 +1551,7 @@ namespace Loom.ZombieBattleground
                 ReanimateUnit(units);
             });
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -1642,7 +1645,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(targets), targets, null);
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
                     Caller = boardSkill,
@@ -1678,7 +1681,7 @@ namespace Loom.ZombieBattleground
                     Constants.OverlordAbilitySoundVolume,
                     Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -1735,7 +1738,7 @@ namespace Loom.ZombieBattleground
                         Enumerators.CardSoundType.NONE);
 
 
-                    _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                         ActionType = actionType,
                         Caller = boardSkill,
@@ -1773,7 +1776,7 @@ namespace Loom.ZombieBattleground
                         Enumerators.CardSoundType.NONE);
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -1836,7 +1839,7 @@ namespace Loom.ZombieBattleground
                 Constants.OverlordAbilitySoundVolume,
                 Enumerators.CardSoundType.NONE);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -1873,7 +1876,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
                     Caller = boardSkill,
@@ -1906,7 +1909,7 @@ namespace Loom.ZombieBattleground
                     Constants.OverlordAbilitySoundVolume,
                     Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -1950,7 +1953,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
                     Caller = boardSkill,
@@ -2014,7 +2017,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -2070,7 +2073,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -2128,7 +2131,7 @@ namespace Loom.ZombieBattleground
                     Constants.OverlordAbilitySoundVolume,
                     Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -2156,7 +2159,7 @@ namespace Loom.ZombieBattleground
             _vfxController.CreateVfx(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/HardenStoneSkinVFX"),
                 position, isIgnoreCastVfx: true);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPower,
                 Caller = boardSkill,
@@ -2189,7 +2192,7 @@ namespace Loom.ZombieBattleground
                     Constants.OverlordAbilitySoundVolume,
                     Enumerators.CardSoundType.NONE);
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
                     Caller = boardSkill,
@@ -2248,7 +2251,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,
@@ -2292,7 +2295,7 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.UseOverlordPowerOnMultilpleCards,
                 Caller = boardSkill,

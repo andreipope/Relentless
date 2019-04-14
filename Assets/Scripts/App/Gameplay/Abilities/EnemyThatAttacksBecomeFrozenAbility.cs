@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
 
             ((CardModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = AbilityUnitOwner,

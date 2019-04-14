@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
         private BattleController _battleController;
         private BoardArrowController _boardArrowController;
         private AbilitiesController _abilitiesController;
-        private ActionsQueueController _actionsQueueController;
+        private ActionsReportController _actionsReportController;
         private RanksController _ranksController;
 
         public IReadOnlyList<CardModel> BoardItemsInUse => _boardItemsInUse;
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
             _battleController = _gameplayManager.GetController<BattleController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _boardController = _gameplayManager.GetController<BoardController>();
 
@@ -434,7 +434,7 @@ namespace Loom.ZombieBattleground
                                     InternalTools.GetSafePositionToInsert(position, _gameplayManager.OpponentPlayer.CardsOnBoard)
                                     );
 
-                                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
+                                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
                                     Caller = boardUnitViewElement.Model,
@@ -450,7 +450,7 @@ namespace Loom.ZombieBattleground
                                 AddBoardItemInUse(cardModel);
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
-                                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
+                                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
                                     Caller = cardModel,

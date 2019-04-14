@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
                 }
             );
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
                 Caller = AbilityUnitOwner,
@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
                 }
             );
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
                 Caller = AbilityUnitOwner,
@@ -237,7 +237,7 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCardsWithOverlord,
                 Caller = AbilityUnitOwner,

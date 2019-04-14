@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ActionsQueueController _actionsQueueController;
 
+        private readonly ActionsReportController _actionsReportController;
+
         private readonly AnimationsController _animationsController;
 
         private readonly BoardController _boardController;
@@ -91,6 +93,7 @@ namespace Loom.ZombieBattleground
             _vfxController = _gameplayManager.GetController<VfxController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _boardController = _gameplayManager.GetController<BoardController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -594,7 +597,7 @@ namespace Loom.ZombieBattleground
 
             card.RemoveCardParticle.Play();
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = boardUnitView.Model,

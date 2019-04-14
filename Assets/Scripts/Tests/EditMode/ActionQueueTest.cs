@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 namespace Loom.ZombieBattleground.Test
 {
+    [Category("EditQuickSubset")]
     public class ActionQueueTest
     {
         [Test]
@@ -25,7 +26,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(root.Action.IsStarted);
             Assert.False(root.Action.IsCompleted);
             Assert.AreEqual(0, root.InnerQueues.Count);
-            Assert.AreEqual(null, root.GetDeepestQueue());
+            Assert.AreEqual(root, root.GetDeepestQueue());
         }
 
         [Test]
@@ -212,7 +213,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(action2.Action.IsCompleted);
             Assert.False(root.InnerQueues.Contains(action1));
             Assert.False(root.InnerQueues.Contains(action2));
-            Assert.AreEqual(null, root.GetDeepestQueue());
+            Assert.AreEqual(root, root.GetDeepestQueue());
 
             Console.WriteLine(FormatMultiQueue(root));
         }

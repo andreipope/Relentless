@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
-        private ActionsQueueController _actionsQueueController;
+        private ActionsReportController _actionsReportController;
 
         private AbilitiesController _abilitiesController;
 
@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
 
-            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _vfxController = _gameplayManager.GetController<VfxController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.BattleframeAttacked, attackingUnitModel.TutorialObjectId);
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAttackOverlord,
                 Caller = attackingUnitModel,
@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                     ActionType = Enumerators.ActionType.CardAttackCard,
                     Caller = attackingUnitModel,

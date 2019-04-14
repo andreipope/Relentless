@@ -64,7 +64,7 @@ namespace Loom.ZombieBattleground
 
                     InvokeUseAbilityEvent();
 
-                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                         ActionType = Enumerators.ActionType.CardAffectingCard,
                         Caller = AbilityUnitOwner,
@@ -137,7 +137,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(_targetObject), _targetObject, null);
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
                 Caller = AbilityUnitOwner,

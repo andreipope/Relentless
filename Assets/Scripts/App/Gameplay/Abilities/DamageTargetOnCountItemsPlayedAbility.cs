@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
 
             if (_targets.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingOverlord,
                     Caller = AbilityUnitOwner,

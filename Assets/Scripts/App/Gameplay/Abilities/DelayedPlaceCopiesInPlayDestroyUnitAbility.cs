@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DestroyBoardUnit(AbilityUnitOwner, false, true);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = AbilityUnitOwner,

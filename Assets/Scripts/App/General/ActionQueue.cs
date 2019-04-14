@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
         public ActionQueue GetDeepestQueue()
         {
             if (_innerQueues.Count == 0)
-                return null;
+                return this;
 
             ActionQueue currentQueue = _innerQueues.Peek();
             while (true)
@@ -88,5 +88,4 @@ namespace Loom.ZombieBattleground
             return currentQueue;
         }
     }
-
 }

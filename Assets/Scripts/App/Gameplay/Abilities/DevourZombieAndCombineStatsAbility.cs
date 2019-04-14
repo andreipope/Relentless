@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             BoardController.UpdateCurrentBoardOfPlayer(PlayerCallerOfAbility, null);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = AbilityUnitOwner,

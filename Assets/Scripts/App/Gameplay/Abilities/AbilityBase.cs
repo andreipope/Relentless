@@ -58,6 +58,8 @@ namespace Loom.ZombieBattleground
 
         protected ActionsQueueController ActionsQueueController;
 
+        protected ActionsReportController ActionsReportController;
+
         protected BattlegroundController BattlegroundController;
 
         protected RanksController RanksController;
@@ -122,6 +124,7 @@ namespace Loom.ZombieBattleground
             ParticlesController = GameplayManager.GetController<ParticlesController>();
             BattleController = GameplayManager.GetController<BattleController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            ActionsReportController = GameplayManager.GetController<ActionsReportController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();

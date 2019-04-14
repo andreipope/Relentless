@@ -288,6 +288,7 @@ namespace Loom.ZombieBattleground
                 new ParticlesController(),
                 new AbilitiesController(),
                 new ActionsQueueController(),
+                new ActionsReportController(),
                 new PlayerController(),
                 new AIController(),
                 new CardsController(),

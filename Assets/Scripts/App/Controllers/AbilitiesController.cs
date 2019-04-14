@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private ActionsReportController _actionsReportController;
+
         private BoardArrowController _boardArrowController;
 
         private BoardController _boardController;
@@ -60,6 +62,7 @@ namespace Loom.ZombieBattleground
             _playerController = _gameplayManager.GetController<PlayerController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _boardController = _gameplayManager.GetController<BoardController>();
         }
@@ -1325,7 +1328,7 @@ namespace Loom.ZombieBattleground
         {
             card.Card.Owner.GraveyardCardsCount++;
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = card,

@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
         {
             BattleController.AttackUnitByAbility(CardModel, AbilityData, unit, Damage);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAttackCard,
                 Caller = AbilityUnitOwner,

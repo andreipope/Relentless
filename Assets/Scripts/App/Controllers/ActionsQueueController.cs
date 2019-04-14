@@ -11,27 +11,19 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
 
-        public event Action<PastActionsPopup.PastActionParam> GotNewActionReportEvent;
-
         private long _nextActionId = 0;
 
         private List<GameplayQueueAction<object>> _actionsToDo;
 
         private bool _isDebugMode = false;
 
-        public List<PastActionsPopup.PastActionParam> ActionsReports { get; private set; }
-
         public int ActionsInQueue => _actionsToDo.Count + (ActionInProgress == null ? 0 : 1);
 
         public GameplayQueueAction<object> ActionInProgress { get; private set; }
 
-        private List<PastActionsPopup.PastActionParam> _bufferActionsReports;
-
         public void Init()
         {
             _actionsToDo = new List<GameplayQueueAction<object>>();
-            ActionsReports = new List<PastActionsPopup.PastActionParam>();
-            _bufferActionsReports = new List<PastActionsPopup.PastActionParam>();
             ActionInProgress = null;
         }
 
@@ -47,45 +39,7 @@ namespace Loom.ZombieBattleground
         {
             StopAllActions();
 
-            ActionsReports.Clear();
-            _bufferActionsReports.Clear();
-
             _nextActionId = 0;
-        }
-
-        public void PostGameActionReport(PastActionsPopup.PastActionParam report)
-        {
-            if (report != null)
-            {
-                if (report.CheckForCardOwner && !ActionsReports.Exists(x => x.Model == report.Model))
-                {
-                    _bufferActionsReports.Add(report);
-                }
-                else
-                {
-                    AddNewPostGameActionReport(report, !report.CheckForCardOwner);
-                }
-            }
-        }
-
-        private void AddNewPostGameActionReport(PastActionsPopup.PastActionParam report, bool checkBuffer = false)
-        {
-            ActionsReports.Add(report);
-            GotNewActionReportEvent?.Invoke(report);
-            if(checkBuffer)
-            {
-                CheckReportsInBuffer(report);
-            }
-        }
-
-        private void CheckReportsInBuffer(PastActionsPopup.PastActionParam report)
-        {
-            foreach (PastActionsPopup.PastActionParam sortingReport in _bufferActionsReports)
-            {
-                ActionsReports.Add(sortingReport);
-                GotNewActionReportEvent?.Invoke(sortingReport);
-            }
-            _bufferActionsReports.Clear();
         }
 
         /// <summary>
