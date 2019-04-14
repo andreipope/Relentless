@@ -902,6 +902,10 @@ namespace Loom.ZombieBattleground
                     callback();
                 }
             }
+            else
+            {
+                completeCallback?.Invoke();
+            }
 
             activeAbility.Ability.Activate();
         }
