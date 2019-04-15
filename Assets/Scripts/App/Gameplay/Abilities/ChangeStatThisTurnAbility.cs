@@ -63,15 +63,19 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ChangeStatsOfUnits(List<BoardUnitModel> units, int defense, int damage)
+        private void SettatsOfUnits(List<BoardUnitModel> units, int defense, int damage)
         {
+            ChangedStatInfo changedStatInfo;
             foreach (BoardUnitModel unit in units)
             {
-                unit.CurrentDefense += defense;
-                unit.BuffedDefense += defense;
+                changedStatInfo = new ChangedStatInfo()
+                {
+                    BoardUnitModel = unit,
+                    RemovedAttack = unit.CurrentDamage
+                }
 
-                unit.CurrentDamage += damage;
-                unit.BuffedDamage += damage;
+                unit.CurrentDefense = defense;
+                unit.CurrentDamage = damage;
             }
         }
 
