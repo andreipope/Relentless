@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => {
                            player.CardPlay(playerZnowmanId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZnowmanId, Enumerators.AbilityType.ENEMY_THAT_ATTACKS_BECOME_FROZEN, new List<ParametrizedAbilityInstanceId>());
+                           player.CardAbilityUsed(playerZnowmanId, Enumerators.AbilityType.STUN, new List<ParametrizedAbilityInstanceId>());
                            player.CardPlay(playerZlabId, ItemPosition.Start);
                            player.CardPlay(playerZlab2Id, ItemPosition.Start);
                        },
@@ -79,7 +81,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () => { };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -149,7 +151,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 };
 
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -243,10 +245,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                       player => {},
+                       opponent => {},
                        player =>
                        {
                            player.CardPlay(playerZlab, ItemPosition.Start);
                            player.CardPlay(playerIce1, ItemPosition.Start);
+                           player.CardAbilityUsed(playerIce1, Enumerators.AbilityType.STUN, new List<ParametrizedAbilityInstanceId>());
+
                        },
                        opponent =>
                        {
@@ -261,8 +267,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardAttack(opponentIce1, playerZlab);
-                           
                        },
+                       player => {},
                 };
 
                 Action validateEndState = () =>
@@ -271,7 +277,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab)).IsStun);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -314,7 +320,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().MaxCurrentDefense - 3, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -425,7 +431,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentHoZer2Model.Card.Prototype.Damage + 1, opponentHoZer2Model.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -575,7 +581,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentUnit.Card.Prototype.Damage + delayedDamage, opponentUnit.CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -723,7 +729,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.Null((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlabId));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -891,7 +897,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () => {};
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -1079,8 +1085,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentTzunamyId, ItemPosition.Start, skipEntryAbilities:true);
-                           opponent.CardAbilityUsed(opponentTzunamyId, Enumerators.AbilityType.MASSIVE_DAMAGE, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardPlay(opponentTzunamyId, ItemPosition.Start);
                        },
                        player => {},
                        opponent => {}
@@ -1092,7 +1097,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -1189,7 +1194,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "Brook"));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false, true, true);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 

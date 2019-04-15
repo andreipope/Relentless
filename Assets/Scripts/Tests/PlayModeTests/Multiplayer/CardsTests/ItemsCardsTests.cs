@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                             opponent.CardAttack(opponentTinyId, playerTinyId);
-                            opponent.CardPlay(opponentShovelId, ItemPosition.Start, null, true);
+                            opponent.CardPlay(opponentShovelId, ItemPosition.Start, pvpTestContext.GetCurrentPlayer().InstanceId);
                             opponent.CardAbilityUsed(opponentShovelId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
                             {
                                 new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
@@ -441,8 +441,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentZlabId, ItemPosition.Start);
                            opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
                            opponent.LetsThink(2);
-                           opponent.CardPlay(opponentBulldozerId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentBulldozerId, Enumerators.AbilityType.DESTROY_UNITS, new List<ParametrizedAbilityInstanceId>(){});
+                           opponent.CardPlay(opponentBulldozerId, ItemPosition.Start);
                            opponent.LetsThink(4);
                            opponent.CardPlay(opponentZlab3Id, ItemPosition.Start);
                            opponent.CardPlay(opponentZlab4Id, ItemPosition.Start);
@@ -512,10 +511,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentLeashId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentLeashId, Enumerators.AbilityType.TAKE_CONTROL_ENEMY_UNIT, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(playerZlab2Id)
-                           });
+                           opponent.CardPlay(opponentLeashId, ItemPosition.Start, playerZlab2Id);
                        },
                        player => {},
                        opponent => {},
@@ -533,7 +529,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsOnBoard.Contains(playerZlab2Unit));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -653,8 +649,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.LetsThink(2);
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_GOO_VIAL, new List<ParametrizedAbilityInstanceId>());
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start);
                         opponent.LetsThink(2);
                         opponent.AssertInQueue(() => {
                             Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().GooVials);
@@ -1074,45 +1069,27 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId playerZlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
                 InstanceId playerZlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 2);
                 InstanceId playerZlab3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 3);
-                InstanceId playerZlab4Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 4);
-                InstanceId playerZlab5Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 5);
                 InstanceId playerMolotovId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Molotov", 1);
 
                 InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
                 InstanceId opponentZlab2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 2);
                 InstanceId opponentZlab3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 3);
-                InstanceId opponentZlab4Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 4);
-                InstanceId opponentZlab5Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 5);
                 InstanceId opponentMolotovId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Molotov", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
                        player =>
                        {
                            player.CardPlay(playerZlabId, ItemPosition.Start);
-                           player.LetsThink();
                            player.CardPlay(playerZlab2Id, ItemPosition.Start);
-                           player.LetsThink();
                            player.CardPlay(playerZlab3Id, ItemPosition.Start);
-                           player.LetsThink();
-                           player.CardPlay(playerZlab4Id, ItemPosition.Start);
-                           player.LetsThink();
-                           player.CardPlay(playerZlab5Id, ItemPosition.Start);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentZlabId, ItemPosition.Start);
-                           opponent.LetsThink();
                            opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
-                           opponent.LetsThink();
                            opponent.CardPlay(opponentZlab3Id, ItemPosition.Start);
-                           opponent.LetsThink();
-                           opponent.CardPlay(opponentZlab4Id, ItemPosition.Start);
-                           opponent.LetsThink();
-                           opponent.CardPlay(opponentZlab5Id, ItemPosition.Start);
                            opponent.LetsThink(2);
                        },
                        player =>
