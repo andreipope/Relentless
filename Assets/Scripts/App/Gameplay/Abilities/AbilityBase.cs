@@ -451,15 +451,21 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            if (!UnitOwnerIsInRage)
+            if(AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
             {
-                UnitOwnerIsInRage = true;
-                ChangeRageStatusAction(UnitOwnerIsInRage);
+                if (!UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = true;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
             }
             else
             {
-                UnitOwnerIsInRage = false;
-                ChangeRageStatusAction(UnitOwnerIsInRage);
+                if (UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = false;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
             }
         }
 
@@ -521,6 +527,13 @@ namespace Loom.ZombieBattleground
         public Player GetOpponentOverlord()
         {
             return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+                GameplayManager.OpponentPlayer :
+                GameplayManager.CurrentPlayer;
+        }
+
+        public Player GetOpponentOverlord(Player player)
+        {
+            return player.Equals(GameplayManager.CurrentPlayer) ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }

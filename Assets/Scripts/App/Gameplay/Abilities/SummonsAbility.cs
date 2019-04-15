@@ -40,6 +40,12 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
+            {
+                if (PlayerCallerOfAbility.Defense >= GetOpponentOverlord().Defense)
+                    return;
+            }
+
             foreach (Enumerators.Target target in TargetTypes)
             {
                 switch (target)

@@ -712,7 +712,10 @@ namespace Loom.ZombieBattleground.Common
             IfHaveFewerUnitsInPlay,
             ToOpponentOverlord,
             UntilStartOfNextPlayerTurn,
-            DuringCardInHand
+            DuringCardInHand,
+            ForEachUnitInPlay,
+            HighestCost,
+            EqualToUnitAttack
         }
 
         public enum UniqueAnimation

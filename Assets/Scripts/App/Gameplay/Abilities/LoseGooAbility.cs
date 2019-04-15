@@ -26,6 +26,16 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            Action();
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);

@@ -102,6 +102,10 @@ namespace Loom.ZombieBattleground
             {
                 cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card.InstanceCard.Faction == Faction).Count;
             }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
+            {
+                cardsCount = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+            }
 
             if (AbilityTargets.Count > 0)
             {

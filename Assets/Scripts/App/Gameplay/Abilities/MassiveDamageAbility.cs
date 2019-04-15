@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbility : AbilityBase
     {
-        public int Value;
+        private int Damage;
 
         public event Action OnUpdateEvent;
 
@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Value;
         }
 
         public override void Activate()
@@ -111,6 +111,11 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.EqualToUnitAttack)
+            {
+                Damage = BoardUnitModel.InstanceCard.Damage;
+            }
+
             InvokeActionTriggered(_targets);
         }
 
@@ -119,10 +124,10 @@ namespace Loom.ZombieBattleground
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player);
+                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, Damage);
                     break;
                 case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit);
+                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, Damage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

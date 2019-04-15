@@ -31,16 +31,28 @@ namespace Loom.ZombieBattleground
             {
                 InvokeUseAbilityEvent();
 
-                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
                 {
-                    if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                    if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                     {
-                        ChangeStatsToItself();
+                        if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                        {
+                            ChangeStatsToItself();
+                        }
+                        else if (AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
+                        {
+                            GetParameters(out int defense, out int attack);
+                            ChangeStatsOfPlayerAllyCards(defense, attack, false);
+                        }
                     }
-                    else if(AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
+                    else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
                     {
-                        GetParameters(out int defense, out int attack);
-                        ChangeStatsOfPlayerAllyCards(defense, attack, false);
+                        if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                        {
+                            ChangeStatsToItself();
+                        }
                     }
                 }
             }
@@ -85,7 +97,8 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             ChangeStatsToItself();
@@ -110,7 +123,37 @@ namespace Loom.ZombieBattleground
 
         private void ChangeStatsToItself()
         {
-            GetParameters(out int defense, out int attack);
+            int defense;
+            int attack;
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
+            {
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
+                                item => item != BoardUnitModel).Count +
+                            GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
+            {
+                int count = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
+            {
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else
+            {
+                GetParameters(out defense, out attack);
+            }
+
             ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
         }
 

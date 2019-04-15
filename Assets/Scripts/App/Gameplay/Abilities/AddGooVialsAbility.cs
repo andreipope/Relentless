@@ -7,15 +7,18 @@ namespace Loom.ZombieBattleground
 {
     public class AddGooVialsAbility : AbilityBase
     {
-        public int Value = 1;
+        private  int Value { get; } = 1;
 
-        public int Count;
+        private int Count { get; }
+
+        private int Defense { get; }
 
         public AddGooVialsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
+            Defense = ability.Defense;
         }
 
         public override void Activate()
@@ -43,26 +46,89 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.None ||
-                AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
-            {
-                if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials)
-                {
-                    for (int i = 0; i < Count; i++)
-                    {
-                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
-                    }
-                }
-                else if (PlayerCallerOfAbility.GooVials == PlayerCallerOfAbility.MaxGooVials - 1)
-                {
-                    for (int i = 0; i < Count - 1; i++)
-                    {
-                        PlayerCallerOfAbility.PlayerCardsController.AddCardFromDeckToHand();
-                    }
-                }
+            List<Player> players = new List<Player>();
 
-                PlayerCallerOfAbility.GooVials += Value;
+            foreach (Enumerators.Target target in AbilityTargets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.PLAYER:
+                        players.Add(PlayerCallerOfAbility);
+                        break;
+                    case Enumerators.Target.OPPONENT:
+                        players.Add(GetOpponentOverlord());
+                        break;
+                }
             }
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.None)
+            {
+                foreach (Player player in players)
+                {
+                    AddGooVials(player);
+                }
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
+            {
+                foreach (Player player in players)
+                {
+                    if (player.PlayerCardsController.CardsOnBoard.Count == 1 &&
+                        player.PlayerCardsController.CardsOnBoard[0] == BoardUnitModel)
+                    {
+                        AddGooVials(player);
+                    }
+                }
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
+            {
+                foreach (Player player in players)
+                {
+                    if(player.Defense < GetOpponentOverlord(player).Defense)
+                    {
+                        AddGooVials(player);
+                    }
+                }
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess)
+            {
+                foreach (Player player in players)
+                {
+                    if (player.Defense <= Defense)
+                    {
+                        AddGooVials(player);
+                    }
+                }
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
+            {
+                foreach (Player player in players)
+                {
+                    if (player.PlayerCardsController.CardsOnBoard.Count < GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.Count)
+                    {
+                        AddGooVials(player);
+                    }
+                }
+            }
+        }
+
+        private void AddGooVials(Player player)
+        {
+            if (player.GooVials == player.MaxGooVials)
+            {
+                for (int i = 0; i < Count; i++)
+                {
+                    player.PlayerCardsController.AddCardFromDeckToHand();
+                }
+            }
+            else if (player.GooVials == player.MaxGooVials - 1)
+            {
+                for (int i = 0; i < Count - 1; i++)
+                {
+                    player.PlayerCardsController.AddCardFromDeckToHand();
+                }
+            }
+
+            player.GooVials += Value;
         }
 
         protected override void VFXAnimationEndedHandler()
