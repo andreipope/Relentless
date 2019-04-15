@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,6 +36,8 @@ namespace Loom.ZombieBattleground
                 _targets = new List<IBoardObject> {
                     AffectObjectType == Enumerators.AffectObjectType.Player ? (IBoardObject)TargetPlayer : TargetUnit
                 };
+                _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != CardModel).Count;
+
                 DamageTargets();
             }
         }
