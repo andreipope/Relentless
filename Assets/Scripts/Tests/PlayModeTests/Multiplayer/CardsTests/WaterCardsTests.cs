@@ -184,12 +184,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
                        player =>
                        {
                            player.CardPlay(playerWhizperId1, ItemPosition.Start);
@@ -202,18 +196,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.CardAttack(playerWhizperId1, opponentWhizperId1);
                            player.CardPlay(playerMaelstromId, ItemPosition.Start);
                        },
                        opponent =>
                        {
+                           opponent.CardPlay(opponentWhizperId1, ItemPosition.Start);
                            opponent.CardPlay(opponentWhizperId2, ItemPosition.Start);
                        },
                        player => {},
                        opponent => {
                            opponent.CardPlay(opponentMaelstromrId, ItemPosition.Start);
                        },
-                        player => {},
+                       player => {},
                        opponent => {}
                    };
 
@@ -223,7 +217,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(1, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
