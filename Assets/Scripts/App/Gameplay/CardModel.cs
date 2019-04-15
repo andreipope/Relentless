@@ -226,7 +226,7 @@ namespace Loom.ZombieBattleground
 
         public List<Enumerators.GameMechanicDescription> GameMechanicDescriptionsOnUnit { get; } = new List<Enumerators.GameMechanicDescription>();
 
-        public GameplayActionQueueAction<object> ActionForDying;
+        public GameplayActionQueueAction ActionForDying;
 
         public bool WasDistracted { get; private set; }
 
@@ -703,7 +703,7 @@ namespace Loom.ZombieBattleground
                     AttackedThisTurn = true;
 
                     _actionsQueueController.AddNewActionInToQueue(
-                        (parameter, completeCallback) =>
+                        completeCallback =>
                         {
                             if (targetPlayer.Defense <= 0)
                             {
@@ -759,7 +759,7 @@ namespace Loom.ZombieBattleground
                     AttackedThisTurn = true;
 
                     _actionsQueueController.AddNewActionInToQueue(
-                        (parameter, completeCallback) =>
+                        completeCallback =>
                         {
                             if(targetCardModel.CurrentDefense <= 0 || targetCardModel.IsDead)
                             {

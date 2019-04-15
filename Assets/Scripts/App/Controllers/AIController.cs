@@ -847,7 +847,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayCardOnBoard(CardModel cardModel, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
-            _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+            _actionsQueueController.AddNewActionInToQueue(completeCallback =>
             {
                 if(!CardCanBePlayable(cardModel) && !ignorePlayAbility)
                 {
@@ -945,8 +945,8 @@ namespace Loom.ZombieBattleground
             if ( cardModel == null)
                 return;
 
-            GameplayActionQueueAction<object> callAbilityAction = null;
-            GameplayActionQueueAction<object> ranksBuffAction = null;
+            GameplayActionQueueAction callAbilityAction = null;
+            GameplayActionQueueAction ranksBuffAction = null;
 
             _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.InstanceCard.Cost;
 
@@ -999,8 +999,6 @@ namespace Loom.ZombieBattleground
                                                 ranksBuffAction?.ForceActionDone();
                                             }
                                         }, target);
-
-                                        _actionsQueueController.ForceContinueAction(callAbilityAction);
                                     };
 
                                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
@@ -1009,8 +1007,6 @@ namespace Loom.ZombieBattleground
                                 {
                                     callAbilityAction = _abilitiesController.CallAbility(null, cardModel,
                                         Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null);
-
-                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 }
                             });
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);

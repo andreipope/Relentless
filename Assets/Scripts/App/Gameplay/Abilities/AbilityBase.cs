@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _opponentAvatar;
 
-        protected GameplayActionQueueAction<object> AbilityProcessingAction;
+        protected GameplayActionQueueAction AbilityProcessingAction;
 
         protected bool UnitOwnerIsInRage;
         

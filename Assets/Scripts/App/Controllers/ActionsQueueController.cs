@@ -46,34 +46,36 @@ namespace Loom.ZombieBattleground
         ///     AddNewActionInToQueue
         /// </summary>
         /// <param name="actionToDo">action to do, parameter + callback action</param>
-        /// <param name="parameter">parameters for action if ot needs</param>
-        /// <param name="report">report that will be added into reports list</param>
-        public GameplayActionQueueAction<object> AddNewActionInToQueue(
-            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+        public GameplayActionQueueAction AddNewActionInToQueue(
+            GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false)
         {
-            bool onlyManualComplete = actionType == Enumerators.QueueActionType.AbilityUsageBlocker;
-            bool isUserInputAction =
-                actionType == Enumerators.QueueActionType.StopTurn ||
-                actionType == Enumerators.QueueActionType.EndMatch ||
-                actionType == Enumerators.QueueActionType.CardPlay ||
-                actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
-                actionType == Enumerators.QueueActionType.LeaveMatch;
-
-            GameplayActionQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue, onlyManualComplete);
-            if (isUserInputAction)
+            GameplayActionQueueAction action = GenerateActionForQueue(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
+            if (IsUserInputAction(actionType))
             {
-                RootQueue.Enqueue(gameAction);
+                RootQueue.Enqueue(action);
             }
             else
             {
-                RootQueue.GetDeepestQueue().Enqueue(gameAction);
+                ActionQueue deepestQueue = RootQueue.GetDeepestQueue();
+                if (deepestQueue.Action is GameplayActionQueueAction gameplayActionQueueAction)
+                {
+                    if (IsStrictlyChildlessAction(gameplayActionQueueAction.ActionType))
+                        throw new Exception($"Attempted to add action ({action}) to a strictly childless action ({deepestQueue.Action})");
+                }
+
+                deepestQueue.Enqueue(action);
             }
 
-            return gameAction;
+            return action;
         }
 
-        private GameplayActionQueueAction<object> GenerateActionForQueue(
-            GameplayActionQueueAction<object>.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false, bool onlyManualComplete = false)
+        public void ForceContinueAction(GameplayActionQueueAction modelActionForDying)
+        {
+            // does nothing now?
+        }
+
+        private GameplayActionQueueAction GenerateActionForQueue(
+            GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete = false)
         {
             _nextActionId++;
 
@@ -83,7 +85,7 @@ namespace Loom.ZombieBattleground
                                             actionType + " : " + _nextActionId + "; </color> from >>>> ");
             }
 
-            return new GameplayActionQueueAction<object>(actionToDo, parameter, _nextActionId, actionType, blockQueue, onlyManualComplete);
+            return new GameplayActionQueueAction(actionToDo, _nextActionId, actionType, onlyManualComplete);
         }
 
         private void StopAllActions()
@@ -101,117 +103,27 @@ namespace Loom.ZombieBattleground
             _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
-        public void ForceContinueAction(GameplayActionQueueAction<object> modelActionForDying)
-        {
-            // does nothing now?
-        }
-    }
-
-    public class GameplayActionQueueAction<T> : ActionQueueAction
-    {
-        private static readonly ILog Log = Logging.GetLog(nameof(GameplayActionQueueAction<T>));
-
-        private bool _actionDone;
-
-        public delegate void ExecutedActionDelegate(T parameter, Action completedCallback);
-
-        public ExecutedActionDelegate ExecutedAction;
-
-        public T Parameter;
-
-        public bool ManualCompleteTriggered { get; private set; }
-
-        public Enumerators.QueueActionType ActionType { get; }
-
-        public long Id { get; }
-
-        public bool BlockedInQueue { get; }
-
-        public bool OnlyManualComplete { get; }
-
-        public GameplayActionQueueAction(
-            ExecutedActionDelegate executedAction,
-            T parameter,
-            long id,
-            Enumerators.QueueActionType actionType,
-            bool blockQueue,
-            bool onlyManualComplete)
-        {
-            ExecutedAction = executedAction;
-            Parameter = parameter;
-            Id = id;
-            ActionType = actionType;
-            BlockedInQueue = blockQueue;
-            OnlyManualComplete = onlyManualComplete;
-        }
-
-        protected override void Action(ActionQueue queue)
-        {
-            DebugLog($"{nameof(Action)}, Parent Queue: ({queue.Parent})");
-            if (!OnlyManualComplete || OnlyManualComplete && ManualCompleteTriggered)
-            {
-                ExecuteAction();
-            }
-        }
-
-        private void ExecuteAction()
-        {
-            DebugLog(nameof(ExecutedAction));
-            try
-            {
-                if (ExecutedAction == null)
-                {
-                    SetCompleted();
-                }
-                else
-                {
-                    ExecutedAction?.Invoke(Parameter, SetCompleted);
-                }
-            }
-            catch (Exception ex)
-            {
-                ActionSystemException actionSystemException =
-                    new ActionSystemException($"[ACTION SYSTEM ISSUE REPORTER]: <color=red>Action {ActionType} with id {Id} got error;</color>", ex);
-                Log.Error(actionSystemException.ToString());
-                Helpers.ExceptionReporter.SilentReportException(actionSystemException);
-
-                SetCompleted();
-                throw actionSystemException;
-            }
-        }
-
-        public override string ToString()
+        private static bool IsUserInputAction(Enumerators.QueueActionType actionType)
         {
             return
-                $"{nameof(ActionType)}: {ActionType}, " +
-                $"{nameof(IsStarted)}: {IsStarted}, " +
-                $"{nameof(IsCompleted)}: {IsCompleted}, " +
-                $"{nameof(OnlyManualComplete)}: {OnlyManualComplete}, " +
-                $"{nameof(ManualCompleteTriggered)}: {ManualCompleteTriggered}, " +
-                $"{nameof(Parameter)}: {(Parameter == null ? "null" : Parameter.ToString())}, " +
-                $"{nameof(Id)}: {Id}, " +
-                $"{nameof(BlockedInQueue)}: {BlockedInQueue}";
+                actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.EndMatch ||
+                actionType == Enumerators.QueueActionType.CardPlay ||
+                actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
+                actionType == Enumerators.QueueActionType.LeaveMatch;
         }
 
-        public void ForceActionDone()
+        private static bool IsOnlyManualCompleteAction(Enumerators.QueueActionType actionType)
         {
-            DebugLog(nameof(ForceActionDone));
-            if (IsCompleted || ManualCompleteTriggered)
-                return;
-
-            if (IsStarted)
-            {
-                ExecuteAction();
-            }
-            else
-            {
-                ManualCompleteTriggered = true;
-            }
+            return actionType == Enumerators.QueueActionType.AbilityUsageBlocker;
         }
 
-        private void DebugLog(string text)
+        private static bool IsStrictlyChildlessAction(Enumerators.QueueActionType actionType)
         {
-            Log.Debug($"{text} ({this})");
+            return
+                actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.EndMatch ||
+                actionType == Enumerators.QueueActionType.LeaveMatch;
         }
     }
 }

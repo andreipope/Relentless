@@ -558,7 +558,7 @@ namespace Loom.ZombieBattleground
             TurnWaitingForEnd = true;
 
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
-                 (parameter, completeCallback) =>
+                 completeCallback =>
                  {
                      float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
                      InternalTools.DoActionDelayed(() =>

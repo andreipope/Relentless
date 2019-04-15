@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public GameplayActionQueueAction<object> AddUpdateRanksByElementsAction(IReadOnlyList<CardModel> units, CardModel cardModel)
+        public GameplayActionQueueAction AddUpdateRanksByElementsAction(IReadOnlyList<CardModel> units, CardModel cardModel)
         {
             if (GameClient.Get<IMatchManager>().MatchType == Enumerators.MatchType.PVP)
             {
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                     return null;
             }
 
-            GameplayActionQueueAction<object>.ExecutedActionDelegate action = (parameter, completeCallback) =>
+            GameplayActionQueueAction.ExecutedActionDelegate action = completeCallback =>
             {
                 _ranksUpgradeCompleteAction = completeCallback;
 
@@ -329,7 +329,7 @@ namespace Loom.ZombieBattleground
         public void BuffAllyManually(List<CardModel> units, CardModel card)
         {
             _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
-                 (parameter, completeCallback) =>
+                 completeCallback =>
                  {
                      _ranksUpgradeCompleteAction = completeCallback;
 

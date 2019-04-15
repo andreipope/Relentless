@@ -243,7 +243,7 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayActionQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
+        public GameplayActionQueueAction EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;
@@ -253,7 +253,7 @@ namespace Loom.ZombieBattleground
             return _gameplayManager
                 .GetController<ActionsQueueController>()
                 .AddNewActionInToQueue(
-                    (parameter, completeCallback) =>
+                    completeCallback =>
                     {
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;

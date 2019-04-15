@@ -448,8 +448,8 @@ namespace Loom.ZombieBattleground
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
                     Constants.CardsMoveSoundVolume);
 
-                GameplayActionQueueAction<object> callAbilityAction = null;
-                GameplayActionQueueAction<object> ranksBuffAction = null;
+                GameplayActionQueueAction callAbilityAction = null;
+                GameplayActionQueueAction ranksBuffAction = null;
 
                 switch (card.Model.Card.Prototype.Kind)
                 {
@@ -517,7 +517,6 @@ namespace Loom.ZombieBattleground
                                             }
                                             else
                                             {
-                                                //rankBuffAction.Action = null;
                                                 ranksBuffAction?.ForceActionDone();
 
                                                 boardUnitView.DisposeGameObject();

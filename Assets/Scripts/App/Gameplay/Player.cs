@@ -485,7 +485,7 @@ namespace Loom.ZombieBattleground
                     {
                         _actionsQueueController.ClearActions();
 
-                        _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                        _actionsQueueController.AddNewActionInToQueue(completeCallback =>
                         {
                             _networkMessageSendManager.EnqueueMessage(
                                 new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
@@ -564,7 +564,7 @@ namespace Loom.ZombieBattleground
         {
             _actionsQueueController.ClearActions();
 
-            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+            _actionsQueueController.AddNewActionInToQueue(completeCallback =>
             {
                 LeaveMatch?.Invoke();
 

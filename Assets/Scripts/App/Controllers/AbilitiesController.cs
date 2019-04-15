@@ -450,7 +450,7 @@ namespace Loom.ZombieBattleground
             get { return _activeAbility; }
         }
 
-        public GameplayActionQueueAction<object> CallAbility(
+        public GameplayActionQueueAction CallAbility(
             BoardCardView card,
             CardModel cardModel,
             Enumerators.CardKind kind,
@@ -466,9 +466,9 @@ namespace Loom.ZombieBattleground
 
             CardInstanceSpecificData instance = cardModel.Card.InstanceCard;
 
-            GameplayActionQueueAction<object> abilityHelperAction = null;
+            GameplayActionQueueAction abilityHelperAction = null;
 
-            GameplayActionQueueAction<object>.ExecutedActionDelegate callAbilityAction = (parameter, completeCallback) =>
+            GameplayActionQueueAction.ExecutedActionDelegate callAbilityAction = completeCallback =>
                {
                    ResolveAllAbilitiesOnUnit(boardObject, false);
 
@@ -744,9 +744,7 @@ namespace Loom.ZombieBattleground
                                };
 
 
-                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null,
-                                                                                   Enumerators.QueueActionType.AbilityUsageBlocker,
-                                                                                   blockQueue: true);
+                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, cardModel);
@@ -765,7 +763,7 @@ namespace Loom.ZombieBattleground
                    }
                };
 
-            return _actionsQueueController.AddNewActionInToQueue(callAbilityAction, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
+            return _actionsQueueController.AddNewActionInToQueue(callAbilityAction, Enumerators.QueueActionType.AbilityUsage);
         }
 
         public void InvokeUseAbilityEvent(

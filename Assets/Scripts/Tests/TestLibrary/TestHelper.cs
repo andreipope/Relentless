@@ -1197,7 +1197,7 @@ namespace Loom.ZombieBattleground.Test
             BoardSkill skill,
             List<ParametrizedAbilityBoardObject> targets = null)
         {
-            TaskCompletionSource<GameplayActionQueueAction<object>> taskCompletionSource = new TaskCompletionSource<GameplayActionQueueAction<object>>();
+            TaskCompletionSource<GameplayActionQueueAction> taskCompletionSource = new TaskCompletionSource<GameplayActionQueueAction>();
             skill.StartDoSkill();
 
             if (targets != null && targets.Count > 0)
@@ -1211,11 +1211,11 @@ namespace Loom.ZombieBattleground.Test
                 }
             }
 
-            GameplayActionQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
+            GameplayActionQueueAction gameplayQueueAction = skill.EndDoSkill(targets);
             ActionQueueAction.ActionCompletedHandler onDone = null;
             onDone = gameplayQueueAction2 =>
             {
-                taskCompletionSource.SetResult((GameplayActionQueueAction<object>) gameplayQueueAction2);
+                taskCompletionSource.SetResult((GameplayActionQueueAction) gameplayQueueAction2);
                 gameplayQueueAction.Completed -= onDone;
             };
             gameplayQueueAction.Completed += onDone;
