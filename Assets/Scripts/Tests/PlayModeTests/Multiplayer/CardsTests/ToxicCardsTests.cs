@@ -398,8 +398,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense - 2, pvpTestContext.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - 2, pvpTestContext.GetOpponentPlayer().Defense);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.CurrentPlayer.CardsInHand.FindAll(card => card.WasDistracted).Count);
+                    Assert.AreEqual(1, TestHelper.GameplayManager.OpponentPlayer.CardsInHand.FindAll(card => card.WasDistracted).Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -556,36 +556,53 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    new DeckCardData("Germ", 10)
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
+                    new DeckCardData("Germ", 1),
+                    new DeckCardData("Hot", 20)
                 );
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    new DeckCardData("Germ", 10)
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
+                    new DeckCardData("Germ", 1),
+                    new DeckCardData("Hot", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Germ", 1);
+                InstanceId playerHotId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 1);
                 InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Germ", 1);
+                InstanceId opponentHotId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 1);
+
+                int damage = 2;
+                int defence = -1;
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                   {
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => player.CardPlay(playerCardId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start)
-                   };
+                {
+                    player => { },
+                    opponent => { },
+                    player =>
+                    {
+                        player.CardPlay(playerHotId, ItemPosition.Start);
+                        player.CardPlay(playerCardId, ItemPosition.Start, playerHotId);
+                    },
+                    opponent =>
+                    {
+                        opponent.CardPlay(opponentHotId, ItemPosition.Start);
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start, opponentHotId);
+                    },
+                };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(card => card.Card.Prototype.MouldId == 155).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(card => card.Card.Prototype.MouldId == 155).Count > 0);
+                    BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHotId);
+                    BoardUnitModel opponentUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId);
+                    Assert.AreEqual(damage, playerUnit.BuffedDamage);
+                    Assert.AreEqual(defence, playerUnit.BuffedDefense);
+                    Assert.AreEqual(damage, opponentUnit.BuffedDamage);
+                    Assert.AreEqual(defence, opponentUnit.BuffedDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
-            });
+            }, 400);
         }
 
         [UnityTest]
