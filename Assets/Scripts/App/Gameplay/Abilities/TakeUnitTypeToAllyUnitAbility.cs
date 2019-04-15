@@ -160,6 +160,18 @@ namespace Loom.ZombieBattleground
                         }
                     }
                     break;
+                case Enumerators.AbilitySubTrigger.None:
+                    if(TargetUnit != null)
+                    {
+                        TakeTypeToUnit(TargetUnit);
+                        targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = effectType,
+                            Target = TargetUnit
+                        });
+                    }
+                    
+                    break;
             }
 
 
@@ -178,6 +190,16 @@ namespace Loom.ZombieBattleground
                     Caller = GetCaller(),
                     TargetEffects = targetEffects
                 });
+            }
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action();
             }
         }
 

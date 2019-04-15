@@ -268,7 +268,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardAttack(opponentIce1, playerZlab);
                        },
-                       player => {},
                 };
 
                 Action validateEndState = () =>
