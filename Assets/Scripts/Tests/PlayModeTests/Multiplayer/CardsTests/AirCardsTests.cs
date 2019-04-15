@@ -437,25 +437,38 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3, new DeckCardData("Bouncer", 10));
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3, new DeckCardData("Bouncer", 10));
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 3, 
+                    new DeckCardData("Bouncer", 1),
+                    new DeckCardData("Trunk", 20)
+                );
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 3, 
+                    new DeckCardData("Bouncer", 1),
+                    new DeckCardData("Trunk", 20)
+                );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bouncer", 1);
-                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bouncer", 1);
+                InstanceId playerBouncerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Bouncer", 1);
+                InstanceId playerTrunkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
+                InstanceId opponentBouncerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Bouncer", 1);
+                InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => player.CardPlay(playerCardId, ItemPosition.Start),
-                    opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
-                    player => {}
+                    player => {},
+                    opponent => {},
+                    player => player.CardPlay(playerTrunkId, ItemPosition.Start),
+                    opponent => opponent.CardPlay(opponentTrunkId, ItemPosition.Start),
+                    player => player.CardPlay(playerBouncerId, ItemPosition.Start, playerTrunkId),
+                    opponent => opponent.CardPlay(opponentBouncerId, ItemPosition.Start, opponentTrunkId),
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).IsHeavyUnit);
-                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).IsHeavyUnit);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunkId)).HasBuffShield);
+                    Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId)).HasBuffShield);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -653,14 +666,16 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                    player => {},
+                    opponent => {},
                     player => player.CardPlay(playerCardId, ItemPosition.Start),
                     opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 156).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 156).Count > 0);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).HasBuffShield);
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId)).HasBuffShield);
                 };

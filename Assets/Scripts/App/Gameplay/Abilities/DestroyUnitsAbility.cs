@@ -100,7 +100,7 @@ namespace Loom.ZombieBattleground
 
             OnUpdateEvent = null;
 
-            for (int i = 0; i < _units.Count; i++)
+            for (int i = _units.Count -1; i >= 0; i--)
             {
                 DestroyUnit(_units[i]);
             }
