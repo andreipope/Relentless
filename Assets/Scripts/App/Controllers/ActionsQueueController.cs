@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using Loom.ZombieBattleground.Helpers;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -45,10 +41,11 @@ namespace Loom.ZombieBattleground
         /// <summary>
         ///     AddNewActionInToQueue
         /// </summary>
-        /// <param name="actionToDo">action to do, parameter + callback action</param>
+        /// <param name="actionToDo">action to do, callback action</param>
         public GameplayActionQueueAction AddNewActionInToQueue(
             GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false)
         {
+            Log.Debug($"{nameof(AddNewActionInToQueue)}(GameplayActionQueueAction.ExecutedActionDelegate actionToDo = {(actionToDo == null ? "null" : actionToDo.ToString())}, Enumerators.QueueActionType actionType = {actionType}, bool blockQueue = {blockQueue})");
             GameplayActionQueueAction action = GenerateActionForQueue(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
             if (IsUserInputAction(actionType))
             {
@@ -71,7 +68,7 @@ namespace Loom.ZombieBattleground
 
         public void ForceContinueAction(GameplayActionQueueAction modelActionForDying)
         {
-            // does nothing now?
+            Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction modelActionForDying = {modelActionForDying})");
         }
 
         private GameplayActionQueueAction GenerateActionForQueue(
