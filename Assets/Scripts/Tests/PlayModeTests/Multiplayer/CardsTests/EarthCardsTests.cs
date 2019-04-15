@@ -202,11 +202,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponenZlabId, ItemPosition.Start);
-                        opponent.CardPlay(opponentBoulderId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentBoulderId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(opponenZlabId)
-                        });
+                        opponent.CardPlay(opponentBoulderId, ItemPosition.Start, opponenZlabId);
                         opponent.LetsThink(2);
                     },
                 };
@@ -217,7 +213,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponenZlabId)).HasHeavy);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -1095,6 +1091,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerYggdrazilId, ItemPosition.Start);
                            player.CardPlay(playerZpikeId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZpikeId, Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
@@ -1121,7 +1118,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsNull(opponentUnit);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
     }

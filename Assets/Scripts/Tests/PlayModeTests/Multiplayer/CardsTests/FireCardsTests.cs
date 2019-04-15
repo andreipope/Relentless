@@ -40,10 +40,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentHotId, ItemPosition.Start);
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start, null, true);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(playerHotId)
-                        });
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start, playerHotId);
                     },
                     player =>
                     {
@@ -62,7 +59,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentHotUnit.MaxCurrentDefense - value, opponentHotUnit.CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -384,7 +381,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(opponentIglooUnit.Card.Prototype.Defense - 2, opponentIglooUnit.CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             }, 400);
         }
 
@@ -1055,6 +1052,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.CardPlay(playerZlab2Id, ItemPosition.Start);
                            player.CardPlay(playerZlab3Id, ItemPosition.Start);
                            player.CardPlay(playerMountainId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerMountainId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
@@ -1085,7 +1083,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab3Id));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
     }
