@@ -551,6 +551,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                     debugCheats.DisableDeckShuffle = EditorGUILayout.ToggleLeft("Disable Deck Shuffling", debugCheats.DisableDeckShuffle);
                     debugCheats.IgnoreGooRequirements = EditorGUILayout.ToggleLeft("Ignore Goo Requirements", debugCheats.IgnoreGooRequirements);
+                    debugCheats.SkipMulligan = EditorGUILayout.ToggleLeft("Skip Mulligan", debugCheats.SkipMulligan);
                 }
                 EditorGUI.EndDisabledGroup();
             }

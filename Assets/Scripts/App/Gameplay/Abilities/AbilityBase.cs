@@ -547,6 +547,14 @@ namespace Loom.ZombieBattleground
             return InternalTools.GetRandomElementsFromList(elements, count);
         }
 
+        protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)
+        {
+            emptyFields = player.PlayerCardsController.CardsOnBoard.
+                FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive).Count;
+
+            return emptyFields < player.MaxCardsInPlay;
+        }
+
         public void InvokeActionTriggered(object info = null)
         {
             ActionTriggered?.Invoke(info);

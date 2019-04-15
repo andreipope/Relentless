@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -105,7 +106,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.CurrentDefense -= damageAttacking;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -132,7 +133,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        attackingUnitModel.CurrentDefense -= damageAttacked;
+                        attackingUnitModel.CurrentDefense -= Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource);
 
                         if (attackingUnitModel.CurrentDefense <= 0)
                         {
@@ -187,7 +188,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.CurrentDefense -= damage;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -260,7 +261,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.CurrentDefense -= damage;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }

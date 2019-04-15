@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             Action();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
         }
     }
 }

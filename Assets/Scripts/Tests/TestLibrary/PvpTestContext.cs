@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground.Test
     public class PvpTestContext {
         public readonly Deck Player1Deck;
         public readonly Deck Player2Deck;
-        public bool Player1HasFirstTurn;
+        public bool Player1HasFirstTurn = true;
         public bool UseBackendLogic;
         public bool IsReversed;
 
