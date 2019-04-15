@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCollection<ActionQueue> InnerQueues => _innerQueues;
 
+        public event Action<ActionQueue> Changed;
+
         public ActionQueue(ActionQueueAction action, ActionQueue parent)
         {
             Action = action ?? throw new ArgumentNullException(nameof(action));
@@ -26,6 +28,7 @@ namespace Loom.ZombieBattleground
         {
             ActionQueue actionQueue = new ActionQueue(action, this);
             _innerQueues.Enqueue(actionQueue);
+            InvokeStateChanged();
             return actionQueue;
         }
 
@@ -48,6 +51,7 @@ namespace Loom.ZombieBattleground
                 if (!currentQueue.Action.IsStarted)
                 {
                     currentQueue.Action.Execute(currentQueue);
+                    InvokeStateChanged();
                 }
 
                 if (currentQueue.Action.IsCompleted)
@@ -56,6 +60,7 @@ namespace Loom.ZombieBattleground
                     {
                         currentQueue = currentQueue.Parent;
                         currentQueue._innerQueues.Dequeue();
+                        InvokeStateChanged();
                     }
                     else
                     {
@@ -67,6 +72,11 @@ namespace Loom.ZombieBattleground
                     break;
                 }
             }
+        }
+
+        private void InvokeStateChanged()
+        {
+            Changed?.Invoke(this);
         }
 
         public ActionQueue GetDeepestQueue()
@@ -114,11 +124,11 @@ namespace Loom.ZombieBattleground
         {
             if (depth > 0)
             {
+                stringBuilder.AppendLine();
                 stringBuilder.Append(new String(' ', depth * 4));
             }
 
             stringBuilder.Append(actionFormatFunc?.Invoke(queue) ?? queue.ToString());
-            stringBuilder.AppendLine();
             depth++;
             foreach (ActionQueue subQueue in queue.InnerQueues)
             {

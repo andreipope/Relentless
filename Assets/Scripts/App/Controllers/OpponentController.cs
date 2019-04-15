@@ -581,8 +581,6 @@ namespace Loom.ZombieBattleground
                     _gameplayManager.OpponentPlayer,
                     completeCallback);
 
-                //completeCallback?.Invoke();
-
             }, Enumerators.QueueActionType.AbilityUsage);
         }
 

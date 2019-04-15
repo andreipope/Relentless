@@ -748,9 +748,6 @@ namespace Loom.ZombieBattleground
                                                                                    Enumerators.QueueActionType.AbilityUsageBlocker,
                                                                                    blockQueue: true);
 
-
-                              
-
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, cardModel);
                            }
@@ -862,6 +859,7 @@ namespace Loom.ZombieBattleground
             activeAbility.Ability.PredefinedTargets = targets;
             activeAbility.Ability.IsPVPAbility = true;
 
+            bool isCompleteCallbackInvokeDelayed = false;
             if (targets.Count > 0 && activeAbility.Ability.AbilityActivity == Enumerators.AbilityActivity.ACTIVE)
             {
                 switch (targets[0].BoardObject)
@@ -890,11 +888,18 @@ namespace Loom.ZombieBattleground
                     activeAbility.Ability.SelectedTargetAction(true);
 
                     _boardController.UpdateWholeBoard(null);
-                    completeCallback?.Invoke();
+
                 };
 
                 if (from != null && targets[0].BoardObject != null)
                 {
+                    isCompleteCallbackInvokeDelayed = true;
+                    Action originalCallback = callback;
+                    callback = () =>
+                    {
+                        originalCallback();
+                        completeCallback?.Invoke();
+                    };
                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(from, targets[0].BoardObject, action: callback);
                 }
                 else
@@ -902,12 +907,12 @@ namespace Loom.ZombieBattleground
                     callback();
                 }
             }
-            else
+
+            activeAbility.Ability.Activate();
+            if (!isCompleteCallbackInvokeDelayed)
             {
                 completeCallback?.Invoke();
             }
-
-            activeAbility.Ability.Activate();
         }
 
         public void ActivateAbilitiesOnCard(IBoardObject abilityCaller, CardModel cardModel, Player owner)
