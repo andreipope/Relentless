@@ -69,10 +69,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardAttack(playerZnowmanId, opponentZlabId);
+                           
+                       },
+                       opponent =>
+                       {
                            Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlabId)).IsStun);
                            Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlab2Id)).IsStun);
                        },
-                       opponent =>
+                       player =>
                        {
                            Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlabId)).IsStun);
                            Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id)).IsStun);
@@ -81,7 +85,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () => { };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
@@ -1232,13 +1236,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player => 
                        {
-                           player.CardPlay(playerBrookId, ItemPosition.Start);
+                           player.CardPlay(playerBrookId, ItemPosition.Start, opponentTrunkId);
                        },
                        opponent => 
                        {
-                           opponent.CardPlay(opponentBrookId, ItemPosition.Start);
+                           opponent.CardPlay(opponentBrookId, ItemPosition.Start, playerTrunkId);
                        },
-                       player => {}
                    };
 
                 Action validateEndState = () =>

@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
+                       player => {},
+                       opponent => {},
                        player => player.CardPlay(playerTinyId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentTinyId, ItemPosition.Start),
                        player =>
@@ -50,7 +52,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                             opponent.CardAttack(opponentTinyId, playerTinyId);
-                            opponent.CardPlay(opponentShovelId, ItemPosition.Start, pvpTestContext.GetCurrentPlayer().InstanceId);
+                            opponent.CardPlay(opponentShovelId, ItemPosition.Start, null, true);
                             opponent.CardAbilityUsed(opponentShovelId, Enumerators.AbilityType.DAMAGE_TARGET, new List<ParametrizedAbilityInstanceId>()
                             {
                                 new ParametrizedAbilityInstanceId(pvpTestContext.GetCurrentPlayer().InstanceId)
@@ -1104,7 +1106,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(8, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count + pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(4, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count + pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
