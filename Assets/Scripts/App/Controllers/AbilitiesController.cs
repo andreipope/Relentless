@@ -1280,6 +1280,9 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
                     ability = new BlockTakeDamageAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
+                    ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
+                    break; 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }

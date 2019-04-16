@@ -7,9 +7,9 @@ namespace Loom.ZombieBattleground
     public class ChangeStatThisTurnAbility : AbilityBase
     {
         private List<ChangedStatInfo> _affectedUnits;
-        public int Attack { get; }
+        private int Attack { get; }
 
-        public int Defense { get; }
+        private int Defense { get; }
 
         public ChangeStatThisTurnAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -25,6 +25,11 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             InvokeUseAbilityEvent();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            HandleTargets();
         }
 
         protected override void TurnStartedHandler()
@@ -39,31 +44,38 @@ namespace Loom.ZombieBattleground
 
         private void HandleTargets()
         {
-            foreach(Enumerators.Target target in AbilityTargets)
+            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+
+            foreach (Enumerators.Target target in AbilityTargets)
             {
-                switch(target)
+                switch (target)
                 {
-                    case Enumerators.Target.PLAYER:
+                    case Enumerators.Target.PLAYER_CARD:
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                        targets.AddRange(GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard));
                         break;
-                    case Enumerators.Target.OPPONENT:
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
+                        targets.AddRange(GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard));
                         break;
                 }
             }
+
+            SetStatsOfUnits(targets, Defense, Attack);
         }
 
         private void RestoreAffectedUnits()
         {
             foreach(ChangedStatInfo changedStatInfo in _affectedUnits)
             {
-                changedStatInfo.BoardUnitModel.CurrentDefense -= changedStatInfo.RemovedDefense;
-                changedStatInfo.BoardUnitModel.BuffedDefense -= changedStatInfo.RemovedDefense;
-
-                changedStatInfo.BoardUnitModel.CurrentDamage -= changedStatInfo.RemovedAttack;
-                changedStatInfo.BoardUnitModel.BuffedDamage -= changedStatInfo.RemovedAttack;
+                changedStatInfo.BoardUnitModel.CurrentDefense += changedStatInfo.RemovedDefense;
+                changedStatInfo.BoardUnitModel.CurrentDamage += changedStatInfo.RemovedAttack;
             }
+
+            _affectedUnits.Clear();
         }
 
-        private void SettatsOfUnits(List<BoardUnitModel> units, int defense, int damage)
+        private void SetStatsOfUnits(List<BoardUnitModel> units, int defense, int damage)
         {
             ChangedStatInfo changedStatInfo;
             foreach (BoardUnitModel unit in units)
@@ -71,11 +83,14 @@ namespace Loom.ZombieBattleground
                 changedStatInfo = new ChangedStatInfo()
                 {
                     BoardUnitModel = unit,
-                    RemovedAttack = unit.CurrentDamage
-                }
+                    RemovedAttack = unit.CurrentDamage - damage,
+                    RemovedDefense = unit.CurrentDefense - defense
+                };
 
                 unit.CurrentDefense = defense;
                 unit.CurrentDamage = damage;
+
+                _affectedUnits.Add(changedStatInfo);
             }
         }
 

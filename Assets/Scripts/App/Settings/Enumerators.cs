@@ -171,7 +171,8 @@ namespace Loom.ZombieBattleground.Common
             PUT_UNITS_FROM_DISCARD_INTO_PLAY,
             PUT_UNITS_FRON_LIBRARY_INTO_PLAY,
             BLOCK_TAKE_DAMAGE,
-            TAKE_UNIT_TYPE_TO_TARGET_UNIT
+            TAKE_UNIT_TYPE_TO_TARGET_UNIT,
+            CHANGE_STAT_THIS_TURN
         }
 
         public enum ActionType
@@ -715,7 +716,8 @@ namespace Loom.ZombieBattleground.Common
             DuringCardInHand,
             ForEachUnitInPlay,
             HighestCost,
-            EqualToUnitAttack
+            EqualToUnitAttack,
+            NumberOfUnspentGoo
         }
 
         public enum UniqueAnimation

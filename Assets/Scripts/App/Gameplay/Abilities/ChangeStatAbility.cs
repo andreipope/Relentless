@@ -6,6 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatAbility : AbilityBase
     {
+        private List<CardStatInfo> _affectedUnits;
         public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
@@ -21,6 +22,8 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
             Attack = ability.Damage;
             Defense = ability.Defense;
+
+            _affectedUnits = new List<CardStatInfo>();
         }
 
         public override void Activate()
@@ -47,7 +50,8 @@ namespace Loom.ZombieBattleground
                     }
                     else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay ||
                              AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay ||
-                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
                     {
                         if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
                         {
@@ -121,11 +125,21 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerCurrentGooChangedHandler(int goo)
+        {
+            base.PlayerCurrentGooChangedHandler(goo);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                ResetAffectedUnits();
+                ChangeStatsToItself();
+            }
+        }
+
         private void ChangeStatsToItself()
         {
             int defense;
             int attack;
-
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
             {
                 int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
@@ -148,6 +162,19 @@ namespace Loom.ZombieBattleground
 
                 defense = Defense * count;
                 attack = Attack * count;
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                int unspentGoo = PlayerCallerOfAbility.CurrentGoo;
+                defense = unspentGoo;
+                attack =  unspentGoo;
+
+                _affectedUnits.Add(new CardStatInfo()
+                {
+                    BoardUnitModel = AbilityUnitOwner,
+                    ModifiedDamage = attack,
+                    ModifiedDefense = defense
+                });
             }
             else
             {
@@ -188,6 +215,26 @@ namespace Loom.ZombieBattleground
                 defense = Defense;
                 attack = Attack;
             }
+        }
+
+        private void ResetAffectedUnits()
+        {
+            foreach(CardStatInfo cardStat in _affectedUnits)
+            {
+                cardStat.BoardUnitModel.BuffedDefense -= cardStat.ModifiedDefense;
+                cardStat.BoardUnitModel.CurrentDefense -= cardStat.ModifiedDefense;
+                cardStat.BoardUnitModel.BuffedDamage -= cardStat.ModifiedDamage;
+                cardStat.BoardUnitModel.CurrentDamage -= cardStat.ModifiedDamage;
+            }
+
+            _affectedUnits.Clear();
+        }
+
+        class CardStatInfo
+        {
+            public BoardUnitModel BoardUnitModel;
+            public int ModifiedDamage;
+            public int ModifiedDefense;
         }
     }
 }
