@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -222,6 +223,7 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
             PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
             VFXAnimationEnded += VFXAnimationEndedHandler;
 
@@ -264,6 +266,7 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
                 PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
                 PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+                PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
             }
             
             VFXAnimationEnded -= VFXAnimationEndedHandler;
@@ -446,15 +449,21 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            if (!UnitOwnerIsInRage)
+            if(AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
             {
-                UnitOwnerIsInRage = true;
-                ChangeRageStatusAction(UnitOwnerIsInRage);
+                if (!UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = true;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
             }
             else
             {
-                UnitOwnerIsInRage = false;
-                ChangeRageStatusAction(UnitOwnerIsInRage);
+                if (UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = false;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
             }
         }
 
@@ -489,6 +498,10 @@ namespace Loom.ZombieBattleground
         {
 
         }
+        protected virtual void PlayerCurrentGooChangedHandler(int goo)
+        {
+            
+        }
 
         protected virtual void PrepairingToDieHandler(IBoardObject from)
         {
@@ -505,7 +518,12 @@ namespace Loom.ZombieBattleground
 
         public Player GetOpponentOverlord()
         {
-            return PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
+            return GetOpponentOverlord(PlayerCallerOfAbility);
+        }
+
+        public Player GetOpponentOverlord(Player player)
+        {
+            return player == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }
@@ -517,19 +535,24 @@ namespace Loom.ZombieBattleground
 
         protected List<CardModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count, true)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<CardModel> GetRandomUnits(List<CardModel> units,int count)
         {
-            return InternalTools.GetRandomElementsFromList(units, count)
+            return InternalTools.GetRandomElementsFromList(units, count, true)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<T> GetRandomElements<T>(List<T> elements, int count)
         {
-            return InternalTools.GetRandomElementsFromList(elements, count);
+            return InternalTools.GetRandomElementsFromList(elements, count, true);
+        }
+
+        protected IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
+        {
+            return units.Where(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)

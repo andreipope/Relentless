@@ -705,7 +705,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         completeCallback =>
                         {
-                            if (targetPlayer.Defense <= 0)
+                            if (targetPlayer.Defense <= 0 || !IsUnitActive)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
@@ -761,7 +761,10 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         completeCallback =>
                         {
-                            if(targetCardModel.CurrentDefense <= 0 || targetCardModel.IsDead)
+                            if(targetCardModel.CurrentDefense <= 0 ||
+                                targetCardModel.IsDead ||
+                                !IsUnitActive ||
+                                !targetCardModel.IsUnitActive)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;

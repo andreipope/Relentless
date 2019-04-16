@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -12,18 +13,12 @@ namespace Loom.ZombieBattleground
         public int Count { get; }
         public Enumerators.Faction Faction { get; }
 
-        private IGameplayManager _gameplayManager;
-        private AbilitiesController _abilitiesController;
-
         public SummonFromHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
             Faction = ability.Faction;
-
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
@@ -59,31 +54,36 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
+            if (HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
                 return;
 
-            IReadOnlyList<CardModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
-                x => x.Card.InstanceCard.Cost <= Value &&
-                    x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
-            );
+            List<CardModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
+                FindAll(card => card.Prototype.Kind == Enumerators.CardKind.CREATURE);
 
-            if (Faction != Enumerators.Faction.Undefined)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HighestCost)
             {
-                cards = cards.FindAll(x => x.Card.Prototype.Faction == Faction);
+                cards = cards.OrderByDescending(item => item.Card.InstanceCard.Cost).ToList();
+                cards = cards.GetRange(0, Mathf.Clamp(Count, Mathf.Min(cards.Count, Count), cards.Count));
             }
+            else
+            {
+                cards = cards.FindAll(x => x.Card.InstanceCard.Cost <= Value);
 
-            cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
+                if (Faction != Enumerators.Faction.Undefined)
+                {
+                    cards = cards.FindAll(x => x.Card.Prototype.Faction == Faction);
+                }
+
+                cards = GetRandomElements(cards, Count);
+            }
 
             if (cards.Count == 0)
                 return;
 
             List<IBoardObject> targets = new List<IBoardObject>();
 
-            for (int i = 0; i < cards.Count; i++)
+            for (int i = 0; i < Mathf.Min(emptyFields, cards.Count); i++)
             {
-                if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
-                    break;
-
                 BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(cards[i]);
                 PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
             }

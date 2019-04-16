@@ -75,6 +75,7 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case CardModel boardUnit:
+                        BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, _damage);
                         break;
                     case Player player:
                         BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, _damage);

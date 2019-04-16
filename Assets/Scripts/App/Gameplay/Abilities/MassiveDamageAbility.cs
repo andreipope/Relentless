@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbility : AbilityBase
     {
-        public int Value;
+        private int Damage;
 
         public event Action OnUpdateEvent;
 
@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Value;
         }
 
         public override void Activate()
@@ -89,11 +89,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
                     case Enumerators.Target.OPPONENT_CARD:
-                        _targets.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
+                        _targets.AddRange(GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard));
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
                     case Enumerators.Target.PLAYER_CARD:
-                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        _targets.AddRange(GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard));
 
                         if (exceptCaller && _targets.Contains(AbilityUnitOwner))
                         {
@@ -111,6 +111,16 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.EqualToUnitAttack)
+            {
+                Damage = CardModel.InstanceCard.Damage;
+            }
+
+            foreach(CardModel boardUnit in _targets)
+            {
+                boardUnit.HandleDefenseBuffer(Damage);
+            }
+
             InvokeActionTriggered(_targets);
         }
 
@@ -119,10 +129,10 @@ namespace Loom.ZombieBattleground
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, Damage);
                     break;
                 case CardModel unit:
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, Damage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

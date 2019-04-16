@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -8,76 +9,87 @@ namespace Loom.ZombieBattleground
     {
         public int Damage { get; }
 
+        public int Count { get; }
+
         public DamageAndDistractAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Damage = ability.Damage;
+            Count = ability.Count;
         }
 
         public override void Activate()
         {
             base.Activate();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            HandleSubTriggers();
         }
 
-        protected override void InputEndedHandler()
+        private void HandleSubTriggers()
         {
-            base.InputEndedHandler();
+            List<CardModel> units = new List<CardModel>();
 
-            if (IsAbilityResolved)
+            foreach(Enumerators.Target target in AbilityTargets)
             {
-                SendAction();
-                InvokeActionTriggered();
-            }
-        }
-
-        private void SendAction()
-        {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
+                switch(target)
                 {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        units.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
+                        break;
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                        units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        break;
                 }
-            );
+            }
+
+            if (units.Count == 0)
+                return;
+
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                units = GetRandomUnits(units, Count);
+            }
+
+            DamageAndDistract(units);
+
+            InvokeUseAbilityEvent(units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
         }
 
-        public override void Action(object info = null)
+        private void DamageAndDistract(List<CardModel> units)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, TargetUnit, Damage);
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            BattlegroundController.DistractUnit(TargetUnit);
+            foreach (CardModel boardUnit in units)
+            {
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
+
+                BattlegroundController.DistractUnit(boardUnit);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = boardUnit,
+                    HasValue = true,
+                    Value = -Damage
+                });
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Distract,
+                    Target = boardUnit,
+                });
+            }
 
             ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = AbilityUnitOwner,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                        Target = TargetUnit,
-                        HasValue = true,
-                        Value = -AbilityData.Value
-                    },
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.Distract,
-                        Target = TargetUnit,
-                    }
-                }
+                TargetEffects = TargetEffects
             });
             AbilityProcessingAction?.ForceCompleteAction();
-        }
-
-        protected override void VFXAnimationEndedHandler()
-        {
-            base.VFXAnimationEndedHandler();
-
-            Action();
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
-                return;
         }
     }
 }

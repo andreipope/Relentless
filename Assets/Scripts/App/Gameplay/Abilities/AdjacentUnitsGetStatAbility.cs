@@ -24,11 +24,30 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit), Defense, Damage);
+
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
+            }
         }
 
         protected override void UnitDiedHandler()
@@ -37,13 +56,6 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
-
-            Action();
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
 
             ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
         }

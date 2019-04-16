@@ -6,6 +6,7 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatAbility : AbilityBase
     {
+        private List<CardStatInfo> _affectedUnits;
         public Enumerators.Stat StatType { get; }
 
         public int Value { get; }
@@ -21,6 +22,8 @@ namespace Loom.ZombieBattleground
             Value = ability.Value;
             Attack = ability.Damage;
             Defense = ability.Defense;
+
+            _affectedUnits = new List<CardStatInfo>();
         }
 
         public override void Activate()
@@ -31,16 +34,29 @@ namespace Loom.ZombieBattleground
             {
                 InvokeUseAbilityEvent();
 
-                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
                 {
-                    if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                    if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
                     {
-                        ChangeStatsToItself();
+                        if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                        {
+                            ChangeStatsToItself();
+                        }
+                        else if (AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
+                        {
+                            GetParameters(out int defense, out int attack);
+                            ChangeStatsOfPlayerAllyCards(defense, attack, false);
+                        }
                     }
-                    else if(AbilityTargets.Contains(Enumerators.Target.PLAYER_ALL_CARDS))
+                    else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay ||
+                             AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
                     {
-                        GetParameters(out int defense, out int attack);
-                        ChangeStatsOfPlayerAllyCards(defense, attack, false);
+                        if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+                        {
+                            ChangeStatsToItself();
+                        }
                     }
                 }
             }
@@ -85,7 +101,8 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             ChangeStatsToItself();
@@ -108,9 +125,62 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void PlayerCurrentGooChangedHandler(int goo)
+        {
+            base.PlayerCurrentGooChangedHandler(goo);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                ResetAffectedUnits();
+                ChangeStatsToItself();
+            }
+        }
+
         private void ChangeStatsToItself()
         {
-            GetParameters(out int defense, out int attack);
+            int defense;
+            int attack;
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachUnitInPlay)
+            {
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(
+                                item => item != CardModel).Count +
+                            GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachEnemyUnitInPlay)
+            {
+                int count = GetOpponentOverlord().PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
+            {
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Count;
+
+                defense = Defense * count;
+                attack = Attack * count;
+            }
+            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                int unspentGoo = PlayerCallerOfAbility.CurrentGoo;
+                defense = unspentGoo;
+                attack =  unspentGoo;
+
+                _affectedUnits.Add(new CardStatInfo()
+                {
+                    CardModel = AbilityUnitOwner,
+                    ModifiedDamage = attack,
+                    ModifiedDefense = defense
+                });
+            }
+            else
+            {
+                GetParameters(out defense, out attack);
+            }
+
             ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
         }
 
@@ -145,6 +215,26 @@ namespace Loom.ZombieBattleground
                 defense = Defense;
                 attack = Attack;
             }
+        }
+
+        private void ResetAffectedUnits()
+        {
+            foreach(CardStatInfo cardStat in _affectedUnits)
+            {
+                cardStat.CardModel.BuffedDefense -= cardStat.ModifiedDefense;
+                cardStat.CardModel.CurrentDefense -= cardStat.ModifiedDefense;
+                cardStat.CardModel.BuffedDamage -= cardStat.ModifiedDamage;
+                cardStat.CardModel.CurrentDamage -= cardStat.ModifiedDamage;
+            }
+
+            _affectedUnits.Clear();
+        }
+
+        class CardStatInfo
+        {
+            public CardModel CardModel;
+            public int ModifiedDamage;
+            public int ModifiedDefense;
         }
     }
 }

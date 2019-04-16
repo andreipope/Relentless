@@ -526,8 +526,6 @@ namespace Loom.ZombieBattleground
         public void ReturnToHandBoardUnit(CardModel cardModel, Vector3 cardPosition)
         {
             CallLog($"{nameof(ReturnToHandBoardUnit)}(CardModel cardModel = {cardModel}, Vector3 cardPosition = {cardPosition})");
-            if (CheckIsMoreThanMaxCards(cardModel))
-                return;
 
             IView cardView = AddCardToHand(cardModel, true);
             cardView.GameObject.transform.position = cardPosition;
@@ -536,6 +534,11 @@ namespace Loom.ZombieBattleground
             if (Player.IsLocalPlayer)
             {
                 cardView.GameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
+            }
+
+            if (CheckIsMoreThanMaxCards())
+            {
+                _cardsController.DiscardCardFromHand(cardModel);
             }
         }
 
@@ -797,7 +800,7 @@ namespace Loom.ZombieBattleground
             _cardsOnBoard.Insert(ItemPosition.End, unit);
         }
 
-        public bool CheckIsMoreThanMaxCards(CardModel cardModel)
+        public bool CheckIsMoreThanMaxCards(CardModel cardModel = null)
         {
             if (CardsInHand.Count >= Player.MaxCardsInHand)
             {

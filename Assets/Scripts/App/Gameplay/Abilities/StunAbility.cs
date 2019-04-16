@@ -63,6 +63,33 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void UnitDamagedHandler(IBoardObject info)
+        {
+            base.UnitDamagedHandler(info);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
+                return;
+
+            if (info is CardModel unit)
+            {
+                StunUnit(unit);
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                            Target = unit,
+                        }
+                    }
+                });
+            }
+        }
+
         protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);

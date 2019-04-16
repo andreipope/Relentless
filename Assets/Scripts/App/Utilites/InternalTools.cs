@@ -69,9 +69,30 @@ namespace Loom.ZombieBattleground.Helpers
             }
         }
 
-        public static List<T> GetRandomElementsFromList<T>(IReadOnlyList<T> list, int count)
+        public static List<T> GetRandomElementsFromList<T>(IReadOnlyList<T> list, int count, bool deterministicRNG = false)
         {
-            return list.GetRandomElementsFromList(count);
+            if (list == null || list.Count == 0)
+                return list.ToList();
+
+            if (deterministicRNG)
+            {
+                count = Mathf.Max(0, count);
+                List<T> elements = list.ToList();
+                List<T> export = new List<T>();
+
+                while (count > 0 && elements.Count > 0)
+                {
+                    int chosenIndex = MTwister.IRandom(0, elements.Count - 1);
+                    export.Add(elements[chosenIndex]);
+                    elements.RemoveAt(chosenIndex);
+                    count--;
+                }
+                return export;
+            }
+            else
+            {
+                return list.GetRandomElementsFromList(count);
+            }
         }
 
         public static float DeviceDiagonalSizeInInches()
