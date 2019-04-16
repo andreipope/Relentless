@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
                 List<Card> elements = DataManager.CachedCardsLibraryData.Cards.ToList();
 
+                elements = elements.FindAll(item => item.Faction != Enumerators.Faction.ITEM);
+
                 if(Cost > 0)
                 {
                     elements = elements.FindAll(item => item.Cost == Cost);

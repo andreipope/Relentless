@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
         {
             long maxUnits = targetPlayer.MaxCardsInPlay - targetPlayer.PlayerCardsController.CardsOnBoard.Count;
 
-            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost);
+            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Faction != Enumerators.Faction.ITEM);
 
             cards = cards.OrderByDescending(x => x.MouldId).ToList();
 
