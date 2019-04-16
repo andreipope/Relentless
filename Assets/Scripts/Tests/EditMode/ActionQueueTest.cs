@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(root.Action.IsStarted);
             Assert.False(root.Action.IsCompleted);
             Assert.AreEqual(0, root.InnerQueues.Count);
-            Assert.AreEqual(root, root.GetDeepestQueue());
+            Assert.AreEqual(root, root.GetCurrentlyExecutingAction());
         }
 
         [Test]
@@ -103,7 +103,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(root.InnerQueues.Contains(action1));
             Assert.True(root.InnerQueues.Contains(action2));
 
-            Assert.AreEqual(action1, root.GetDeepestQueue());
+            Assert.AreEqual(action1, root.GetCurrentlyExecutingAction());
 
             root.Traverse();
 
@@ -153,7 +153,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(action2.Action.IsCompleted);
             Assert.True(root.InnerQueues.Contains(action1));
             Assert.True(root.InnerQueues.Contains(action2));
-            Assert.AreEqual(action1, root.GetDeepestQueue());
+            Assert.AreEqual(action1, root.GetCurrentlyExecutingAction());
 
             ((TestActionQueueAction) action1.Action).SetCompleted();
             root.Traverse();
@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(action2.Action.IsStarted);
             Assert.False(action2.Action.IsCompleted);
             Assert.True(root.InnerQueues.Contains(action1));
-            Assert.AreEqual(action1SubAction1, root.GetDeepestQueue());
+            Assert.AreEqual(action1SubAction1, root.GetCurrentlyExecutingAction());
 
             ((TestActionQueueAction) action1SubAction1.Action).SetCompleted();
             root.Traverse();
@@ -185,7 +185,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(action1.InnerQueues.Contains(action1SubAction1));
             Assert.True(action1.InnerQueues.Contains(action1SubAction2));
             Assert.True(root.InnerQueues.Contains(action1));
-            Assert.AreEqual(action1SubAction2, root.GetDeepestQueue());
+            Assert.AreEqual(action1SubAction2, root.GetCurrentlyExecutingAction());
 
             ((TestActionQueueAction) action1SubAction2.Action).SetCompleted();
             root.Traverse();
@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.False(action1.InnerQueues.Contains(action1SubAction2));
             Assert.False(root.InnerQueues.Contains(action1));
             Assert.True(root.InnerQueues.Contains(action2));
-            Assert.AreEqual(action2, root.GetDeepestQueue());
+            Assert.AreEqual(action2, root.GetCurrentlyExecutingAction());
 
             ((TestActionQueueAction) action2.Action).SetCompleted();
             root.Traverse();
@@ -211,7 +211,7 @@ namespace Loom.ZombieBattleground.Test
             Assert.True(action2.Action.IsCompleted);
             Assert.False(root.InnerQueues.Contains(action1));
             Assert.False(root.InnerQueues.Contains(action2));
-            Assert.AreEqual(root, root.GetDeepestQueue());
+            Assert.AreEqual(root, root.GetCurrentlyExecutingAction());
 
             Console.WriteLine(root.ToString(FormatTestActionQueue));
         }

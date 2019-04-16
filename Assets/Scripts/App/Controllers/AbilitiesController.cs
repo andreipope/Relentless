@@ -519,7 +519,7 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
-                               abilityHelperAction?.ForceActionDone();
+                               abilityHelperAction?.ForceCompleteAction();
                                abilityHelperAction = null;
 
                                completeCallback?.Invoke();
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
 
-                                       abilityHelperAction?.ForceActionDone();
+                                       abilityHelperAction?.ForceCompleteAction();
                                        abilityHelperAction = null;
 
                                        completeCallback?.Invoke();
@@ -609,7 +609,7 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                                           abilityHelperAction?.ForceActionDone();
+                                           abilityHelperAction?.ForceCompleteAction();
                                            abilityHelperAction = null;
 
                                            completeCallback?.Invoke();
@@ -646,7 +646,7 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                                           abilityHelperAction?.ForceActionDone();
+                                           abilityHelperAction?.ForceCompleteAction();
                                            abilityHelperAction = null;
 
                                            completeCallback?.Invoke();
@@ -681,7 +681,7 @@ namespace Loom.ZombieBattleground
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
 
-                                       abilityHelperAction?.ForceActionDone();
+                                       abilityHelperAction?.ForceCompleteAction();
                                        abilityHelperAction = null;
 
                                        completeCallback?.Invoke();
@@ -695,7 +695,7 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
-                               abilityHelperAction?.ForceActionDone();
+                               abilityHelperAction?.ForceCompleteAction();
                                abilityHelperAction = null;
 
                                completeCallback?.Invoke();
@@ -708,7 +708,7 @@ namespace Loom.ZombieBattleground
 
                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                           abilityHelperAction?.ForceActionDone();
+                           abilityHelperAction?.ForceCompleteAction();
                            abilityHelperAction = null;
 
                            completeCallback?.Invoke();

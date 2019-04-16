@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                ActionQueue deepestQueue = RootQueue.GetDeepestQueue();
+                ActionQueue deepestQueue = RootQueue.GetCurrentlyExecutingAction();
                 if (deepestQueue.Action is GameplayActionQueueAction gameplayActionQueueAction)
                 {
                     if (IsStrictlyChildlessAction(gameplayActionQueueAction.ActionType))
@@ -100,6 +100,12 @@ namespace Loom.ZombieBattleground
             _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
+        /// <summary>
+        /// Returns whether the action is an action that can happen anytime, such as user action.
+        /// Those actions will be enqueued directly to the root queue.
+        /// </summary>
+        /// <param name="actionType"></param>
+        /// <returns></returns>
         private static bool IsUserInputAction(Enumerators.QueueActionType actionType)
         {
             return
@@ -110,11 +116,21 @@ namespace Loom.ZombieBattleground
                 actionType == Enumerators.QueueActionType.LeaveMatch;
         }
 
+        /// <summary>
+        /// Returns whether the action can only be completed by manually triggering the completion from code.
+        /// </summary>
+        /// <param name="actionType"></param>
+        /// <returns></returns>
         private static bool IsOnlyManualCompleteAction(Enumerators.QueueActionType actionType)
         {
             return actionType == Enumerators.QueueActionType.AbilityUsageBlocker;
         }
 
+        /// <summary>
+        /// Returns whether the action can't have child actions under any circumstances.
+        /// </summary>
+        /// <param name="actionType"></param>
+        /// <returns></returns>
         private static bool IsStrictlyChildlessAction(Enumerators.QueueActionType actionType)
         {
             return

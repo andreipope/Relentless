@@ -6,6 +6,10 @@ using UnityEditor;
 
 namespace Loom.ZombieBattleground
 {
+    /// <summary>
+    /// Implements a nested action queue. Each action is a queue in itself, that way, if during the action execution, new actions are added,
+    /// they can be added to the parent queue, maintaining correct of execution.
+    /// </summary>
     public class ActionQueue
     {
         private readonly Queue<ActionQueue> _innerQueues = new Queue<ActionQueue>();
@@ -16,6 +20,9 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCollection<ActionQueue> InnerQueues => _innerQueues;
 
+        /// <summary>
+        /// Invoked when the state of the queue or any of the child queue is changed.
+        /// </summary>
         public event Action<ActionQueue> Changed;
 
         public ActionQueue(ActionQueueAction action, ActionQueue parent)
@@ -32,6 +39,9 @@ namespace Loom.ZombieBattleground
             return actionQueue;
         }
 
+        /// <summary>
+        /// Traverses the queue hierarchy, starts action execution, cleans up completed actions.
+        /// </summary>
         public void Traverse()
         {
             if (_innerQueues.Count == 0)
@@ -74,13 +84,10 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void InvokeStateChanged()
-        {
-            Changed?.Invoke(this);
-            Parent?.InvokeStateChanged();
-        }
-
-        public ActionQueue GetDeepestQueue()
+        /// <summary>
+        /// Gets the action that is currently being executed.
+        /// </summary>
+        public ActionQueue GetCurrentlyExecutingAction()
         {
             if (_innerQueues.Count == 0)
                 return this;
@@ -114,6 +121,12 @@ namespace Loom.ZombieBattleground
             StringBuilder stringBuilder = new StringBuilder();
             FormatActionQueue(this, 0, actionFormatFunc, stringBuilder);
             return stringBuilder.ToString();
+        }
+
+        private void InvokeStateChanged()
+        {
+            Changed?.Invoke(this);
+            Parent?.InvokeStateChanged();
         }
 
         private static string DefaultFormat(ActionQueue queue)

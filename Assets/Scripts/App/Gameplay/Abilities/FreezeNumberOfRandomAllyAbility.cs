@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.ForceCompleteAction();
         }
     }
 }

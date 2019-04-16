@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.ForceCompleteAction();
         }
 
         private void TakeDamageToUnit(CardModel unit)

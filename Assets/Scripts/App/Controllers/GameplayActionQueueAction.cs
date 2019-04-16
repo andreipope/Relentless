@@ -3,21 +3,43 @@ using log4net;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground {
+    /// <summary>
+    /// A game-specific variant of <see cref="ActionQueueAction"/>, for quick migration from the old system.
+    /// </summary>
     public class GameplayActionQueueAction : ActionQueueAction
     {
         private static readonly ILog Log = Logging.GetLog(nameof(GameplayActionQueueAction));
 
+        /// <summary>
+        /// Delegate for the executed action.
+        /// </summary>
+        /// <param name="completedCallback">The callback that must be called by the delegate to mark the action as completed.</param>
         public delegate void ExecutedActionDelegate(Action completedCallback);
 
+        /// <summary>
+        /// Delegate to be executed when action is started.
+        /// </summary>
         public ExecutedActionDelegate ExecutedAction { get; }
 
+        /// <summary>
+        /// Whether the action can only be completed by calling <see cref="ForceCompleteAction"/>.
+        /// </summary>
+        public bool OnlyManualComplete { get; }
+
+        /// <summary>
+        /// Whether <see cref="ForceCompleteAction"/> was already called on this action, and the action will be completed ASAP.
+        /// </summary>
         public bool ManualCompleteTriggered { get; private set; }
 
+        /// <summary>
+        /// Information-only action type.
+        /// </summary>
         public Enumerators.QueueActionType ActionType { get; }
 
+        /// <summary>
+        /// Incrementing ID. Only used as a debugging aid.
+        /// </summary>
         public long Id { get; }
-
-        public bool OnlyManualComplete { get; }
 
         public GameplayActionQueueAction(
             ExecutedActionDelegate executedAction,
@@ -31,9 +53,44 @@ namespace Loom.ZombieBattleground {
             OnlyManualComplete = onlyManualComplete;
         }
 
+        /// <summary>
+        /// Schedules the action for to be executed, unconditionally.
+        /// If the action is already started, will execute the action.
+        /// If the action isn't already started, will schedule for it to be executed immediately after start.
+        /// This a big hack and potentially dangerous.
+        /// </summary>
+        public void ForceCompleteAction()
+        {
+            DebugLog(nameof(ForceCompleteAction));
+            if (IsCompleted || ManualCompleteTriggered)
+                return;
+
+            if (IsStarted)
+            {
+                ExecuteAction();
+            }
+            else
+            {
+                ManualCompleteTriggered = true;
+            }
+        }
+
+        public override string ToString()
+        {
+            return
+                $"{nameof(ActionType)}: {ActionType}, " +
+                $"{nameof(IsStarted)}: {IsStarted}, " +
+                $"{nameof(IsCompleted)}: {IsCompleted}, " +
+                $"{nameof(OnlyManualComplete)}: {OnlyManualComplete}, " +
+                $"{nameof(ManualCompleteTriggered)}: {ManualCompleteTriggered}, " +
+                $"{nameof(Id)}: {Id}";
+        }
+
         protected override void Action(ActionQueue queue)
         {
             DebugLog($"{nameof(Action)}, Parent Queue: ({queue.Parent})");
+
+            // Don't execute manually completed actions automatically, those will wait for ForceCompleteAction()
             if (!OnlyManualComplete || OnlyManualComplete && ManualCompleteTriggered)
             {
                 ExecuteAction();
@@ -63,33 +120,6 @@ namespace Loom.ZombieBattleground {
 
                 SetCompleted();
                 throw actionSystemException;
-            }
-        }
-
-        public override string ToString()
-        {
-            return
-                $"{nameof(ActionType)}: {ActionType}, " +
-                $"{nameof(IsStarted)}: {IsStarted}, " +
-                $"{nameof(IsCompleted)}: {IsCompleted}, " +
-                $"{nameof(OnlyManualComplete)}: {OnlyManualComplete}, " +
-                $"{nameof(ManualCompleteTriggered)}: {ManualCompleteTriggered}, " +
-                $"{nameof(Id)}: {Id}";
-        }
-
-        public void ForceActionDone()
-        {
-            DebugLog(nameof(ForceActionDone));
-            if (IsCompleted || ManualCompleteTriggered)
-                return;
-
-            if (IsStarted)
-            {
-                ExecuteAction();
-            }
-            else
-            {
-                ManualCompleteTriggered = true;
             }
         }
 

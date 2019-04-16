@@ -517,7 +517,7 @@ namespace Loom.ZombieBattleground
                                             }
                                             else
                                             {
-                                                ranksBuffAction?.ForceActionDone();
+                                                ranksBuffAction?.ForceCompleteAction();
 
                                                 boardUnitView.DisposeGameObject();
                                                 boardUnitView.Model.Die(true, isDead: false);
@@ -561,7 +561,7 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
-                                        ranksBuffAction?.ForceActionDone();
+                                        ranksBuffAction?.ForceCompleteAction();
                                     }, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
