@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
@@ -303,12 +303,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentHotId, ItemPosition.Start);
                            opponent.CardPlay(opponentCardId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.REANIMATE_UNIT, new List<ParametrizedAbilityInstanceId>());
-                           opponent.CardAttack(opponentCardId, playerHotId);
                        },
                        player =>
                        {
-                           player.CardAttack(playerCardId, opponentHotId);
-                           player.LetsThink(2);
+                           player.CardAttack(playerHotId, opponentCardId);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardAttack(opponentHotId, playerCardId);
                        },
                 };
 
@@ -616,12 +618,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {}
                 };
 
+                int cost = 2;
+
                 Action validateEndState = () =>
                 {
-                    string cardToFind = "Ember";
-
-                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
-                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.Card.Prototype.Name == cardToFind));
+                    Assert.NotNull(TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Select(card => card.InstanceId != playerKeeperId &&
+                        card.Card.InstanceCard.Cost <= cost));
+                    Assert.NotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(card => card.InstanceId != opponentKeeperId &&
+                        card.Card.InstanceCard.Cost <= cost));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

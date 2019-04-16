@@ -1354,7 +1354,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(defence, opponentUnit.BuffedDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             }, 400);
         }
     }
