@@ -495,10 +495,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.CardPlay(opponentZlabId, ItemPosition.Start);
                            opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
                            opponent.LetsThink(1);
-                           opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.GIVE_BUFFS_TO_UNIT, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(opponentZlab2Id),
-                           });
+                           opponent.CardPlay(opponentCardId, ItemPosition.Start, opponentZlab2Id);
                        }
                 };
 
@@ -510,7 +507,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         .BuffsOnUnit.Contains(Enumerators.BuffType.DESTROY));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -741,7 +738,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     }
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -950,11 +947,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     opponent =>
                     {
                         opponent.CardPlay(opponentHotId, ItemPosition.Start);
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>()
-                        {
-                            new ParametrizedAbilityInstanceId(opponentHotId),
-                        });
+                        opponent.CardPlay(opponentCardId, ItemPosition.Start, opponentHotId);
                     },
                 };
 
@@ -968,7 +961,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.AreEqual(-value, opponentUnit.BuffedDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             }, 400);
         }
 
