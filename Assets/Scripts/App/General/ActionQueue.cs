@@ -77,6 +77,7 @@ namespace Loom.ZombieBattleground
         private void InvokeStateChanged()
         {
             Changed?.Invoke(this);
+            Parent?.InvokeStateChanged();
         }
 
         public ActionQueue GetDeepestQueue()

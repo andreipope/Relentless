@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground {
 
         private void ExecuteAction()
         {
-            DebugLog(nameof(ExecutedAction));
+            DebugLog(nameof(ExecuteAction));
             try
             {
                 if (ExecutedAction == null)
