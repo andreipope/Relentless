@@ -2,6 +2,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -14,6 +15,19 @@ namespace Loom.ZombieBattleground
             TargetUnitSpecialStatus = ability.TargetUnitSpecialStatus;
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            if (AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
+                return;
+
+            HandleSubTriggers();
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
@@ -24,32 +38,70 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void HandleSubTriggers()
+        {
+            List<BoardUnitModel> targets = new List<BoardUnitModel>();
+
+            foreach(Enumerators.Target target in AbilityTargets)
+            {
+                switch(target)
+                {
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
+                        targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        break;
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
+                        targets.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
+                        break;
+                }
+            }
+
+            if(TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE)
+            {
+                targets = targets.FindAll(card => card.UnitSpecialStatus == TargetUnitSpecialStatus);
+            }
+
+            DestroyFrozenUnits(targets);
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-        
-            BattlegroundController.DestroyBoardUnit(TargetUnit, false);
+
+            if (TargetUnit != null)
+            {
+                DestroyFrozenUnits(new List<BoardUnitModel>() { TargetUnit });
+            }
+        }
+
+        private void DestroyFrozenUnits(List<BoardUnitModel> boardUnits)
+        {
+            if (boardUnits == null || boardUnits.Count == 0)
+                return;
+
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            foreach (BoardUnitModel unit in boardUnits)
+            {
+                BattlegroundController.DestroyBoardUnit(TargetUnit, false);
+
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                    Target = TargetUnit
+                });
+            }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
-                            Target = TargetUnit
-                        }
-                    }
+                TargetEffects = targetEffects
             });
 
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
-                }
-            );
+
+            InvokeUseAbilityEvent(boardUnits.Select(card => new ParametrizedAbilityBoardObject(card)).ToList());
         }
     }
 }

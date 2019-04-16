@@ -59,6 +59,19 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
         protected override void ChangeRageStatusAction(bool status)
         {
             base.ChangeRageStatusAction(status);
