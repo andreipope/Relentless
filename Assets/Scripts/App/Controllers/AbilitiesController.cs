@@ -628,6 +628,7 @@ namespace Loom.ZombieBattleground
                                            cardModel.SetPicture();
 
                                            cardModel.Owner.PlayerCardsController.AddCardFromBoardToHand(card.Model);
+                                           _battlegroundController.RegisterCardView(card);
 
                                            BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
                                            if (boardUnitView != null)
