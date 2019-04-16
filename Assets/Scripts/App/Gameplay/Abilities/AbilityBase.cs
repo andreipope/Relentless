@@ -550,19 +550,19 @@ namespace Loom.ZombieBattleground
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count, true)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
         {
-            return InternalTools.GetRandomElementsFromList(units, count)
+            return InternalTools.GetRandomElementsFromList(units, count, true)
                 .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
         }
 
         protected List<T> GetRandomElements<T>(List<T> elements, int count)
         {
-            return InternalTools.GetRandomElementsFromList(elements, count);
+            return InternalTools.GetRandomElementsFromList(elements, count, true);
         }
 
         protected IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)

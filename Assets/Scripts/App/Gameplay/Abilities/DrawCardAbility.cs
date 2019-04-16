@@ -9,7 +9,6 @@ namespace Loom.ZombieBattleground
     {
         public Enumerators.Faction Faction { get; }
         public Enumerators.UnitSpecialStatus UnitSpecialStatusType { get; }
-        public Enumerators.AbilitySubTrigger AbilitySubTrigger { get; private set; }
         public int Count { get; }
 
         public Player ToPlayer { get; private set; }
@@ -26,7 +25,7 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            ToPlayer = AbilitySubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
+            ToPlayer = AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ToOpponentOverlord ? GetOpponentOverlord() : PlayerCallerOfAbility;
 
             InvokeUseAbilityEvent();
 
