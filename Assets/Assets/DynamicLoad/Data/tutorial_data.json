@@ -100,7 +100,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I will melt you!"
+              "Description": "I will burn you to ash!"
             }
           ]
         },
@@ -310,7 +310,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Melt him!",
+              "Description": "Turn him to ash!",
               "AppearDelay": 2.5
             }
           ],
@@ -487,7 +487,7 @@
       ],
       "SpecificBattlegroundInfo": {
         "PlayerInfo": {
-          "OverlordId": 4,
+          "OverlordId": 1,
           "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 0,
@@ -1414,7 +1414,7 @@
         }
       ],
       "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
+        "MainSet": "FIRE",
         "MaximumCardsCount": 20,
         "CardsForArmy": [
           {
@@ -1611,7 +1611,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "EnemyOverlord",
-              "Description": "I'll melt you!"
+              "Description": "I'll melt you with my flames!"
             }
           ]
         },
@@ -1721,11 +1721,9 @@
           "ActionToEndThisStep": "TapOnScreen",
           "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
-            4,
-            7
+            4
           ],
-          "ConnectedTurnIndex": 4,
-          "PlayerOverlordAbilityShouldBeUnlocked": true
+          "ConnectedTurnIndex": 4
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
@@ -1734,7 +1732,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Time to end this.",
+              "Description": "Play the feral, first!",
               "AppearDelay": 1
             }
           ],
@@ -1756,8 +1754,7 @@
                 "Y": -0.25,
                 "Z": 0
               },
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 10
+              "TutorialHandPointerType": "Animated"
             }
           ]
         },
@@ -1790,7 +1787,6 @@
           "TutorialObjectIdStepOwner": 2,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
-            "OPPONENT",
             "OPPONENT_CARD"
           ],
           "UnitsCanAttack": true,
@@ -1807,7 +1803,6 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 2,
               "TargetTutorialObjectId": 52
             }
@@ -1823,8 +1818,7 @@
           "TutorialObjectIdStepOwner": 1,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
-            "OPPONENT",
-            "OPPONENT_CARD"
+            "OPPONENT"
           ],
           "UnitsCanAttack": true,
           "HandPointers": [
@@ -1847,7 +1841,8 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep"
+          "TutorialStepType": "GameplayStep",
+          "CanEndTurn": true
         },
         {
           "ActionToEndThisStep": "BattleframeAttacked",
@@ -1864,7 +1859,8 @@
         },
         {
           "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep"
+          "TutorialStepType": "GameplayStep",
+          "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
@@ -1874,7 +1870,8 @@
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
             "OPPONENT"
-          ]
+          ],
+          "UnitsCanAttack": true
         },
         {
           "ActionToEndThisStep": "PlayerOverlordAbilityUsed",
@@ -1883,7 +1880,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My Poison Dart will end him."
+              "Description": "My fireball will end him."
             }
           ],
           "ConnectedTurnIndex": 6,
@@ -1891,6 +1888,8 @@
           "SelectableTargets": [
             "OPPONENT"
           ],
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "UnitsCanAttack": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -1936,7 +1935,7 @@
       ],
       "SpecificBattlegroundInfo": {
         "PlayerInfo": {
-          "OverlordId": 4,
+          "OverlordId": 1,
           "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 4,
@@ -1955,7 +1954,7 @@
               "TutorialObjectId": 3
             }
           ],
-          "PrimarySkill": "POISON_DART",
+          "PrimarySkill": "FIREBALL",
           "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
@@ -2443,7 +2442,7 @@
         }
       ],
       "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
+        "MainSet": "FIRE",
         "MaximumCardsCount": 30,
         "CardsForArmy": [
           {
@@ -2496,7 +2495,7 @@
           },
           {
             "Amount": 2,
-            "CardName": "Frozen"
+            "CardName": "Zhampion"
           },
           {
             "Amount": 2,
