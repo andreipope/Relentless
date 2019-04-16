@@ -223,52 +223,47 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new DeckCardData("Chainsaw", 1),
-                    new DeckCardData("Earthshaker", 10)
+                    new DeckCardData("Trunk", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Chainsaw", 1),
-                    new DeckCardData("Earthshaker", 10)
+                    new DeckCardData("Trunk", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerEarthshakerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Earthshaker", 1);
+                InstanceId playerTrunkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
                 InstanceId playerChainsawId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Chainsaw", 1);
 
-                InstanceId opponentEarthshakerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Earthshaker", 1);
+                InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
                 InstanceId opponentChainsawId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Chainsaw", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => player.CardPlay(playerEarthshakerId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentEarthshakerId, ItemPosition.Start),
+                       player => player.CardPlay(playerTrunkId, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentTrunkId, ItemPosition.Start),
                        player =>
                        {
-                           player.CardPlay(playerChainsawId, ItemPosition.Start, playerEarthshakerId);
-                           player.CardAttack(playerEarthshakerId, TestHelper.GetOpponentPlayer().InstanceId);
+                           player.CardPlay(playerChainsawId, ItemPosition.Start, opponentTrunkId);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentChainsawId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentChainsawId, Enumerators.AbilityType.UNIT_WEAPON, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(opponentEarthshakerId)
-                           });
-                           opponent.CardAttack(opponentEarthshakerId, TestHelper.GetCurrentPlayer().InstanceId);
+                           opponent.CardPlay(opponentChainsawId, ItemPosition.Start, playerTrunkId);
                        },
+                       player => {},
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDefense);
-                    Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDefense);
-                    Assert.AreEqual(TestHelper.GetCurrentPlayer().InitialDefense - 8, TestHelper.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(TestHelper.GetOpponentPlayer().InitialDefense - 8, TestHelper.GetOpponentPlayer().Defense);
+                    Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunkId)).CurrentDefense);
+                    Assert.AreEqual(1, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId)).CurrentDefense);
+                    Assert.AreEqual(13, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunkId)).CurrentDamage);
+                    Assert.AreEqual(13, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId)).CurrentDamage);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
@@ -683,62 +678,46 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new DeckCardData("Super Serum", 1),
-                    new DeckCardData("Earthshaker", 10)
+                    new DeckCardData("Trunk", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Super Serum", 1),
-                    new DeckCardData("Earthshaker", 10)
+                    new DeckCardData("Trunk", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerEarthshakerId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Earthshaker", 1);
                 InstanceId playerSuperSerumId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Super Serum", 1);
+                InstanceId playerTrunkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
 
-                InstanceId opponentEarthshakerId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Earthshaker", 1);
                 InstanceId opponentSuperSerumId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Super Serum", 1);
+                InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerEarthshakerId, ItemPosition.Start),
-                       opponent => opponent.CardPlay(opponentEarthshakerId, ItemPosition.Start),
+                       player => player.CardPlay(playerTrunkId, ItemPosition.Start),
+                       opponent => {
+                           opponent.CardPlay(opponentTrunkId, ItemPosition.Start);
+                           opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, opponentTrunkId);
+                       },
                        player =>
                        {
-                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerEarthshakerId);
-                           player.LetsThink(6);
-                           player.AssertInQueue(() => {
-                                Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDefense);
-                                Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDamage);
-                           });
-                           player.CardAttack(playerEarthshakerId, TestHelper.GetOpponentPlayer().InstanceId);
+                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, opponentTrunkId);
+                           player.LetsThink(10);
+                           player.CardAttack(playerTrunkId, opponentTrunkId);
                        },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, null, true);
-                           opponent.CardAbilityUsed(opponentSuperSerumId, Enumerators.AbilityType.UNIT_WEAPON, new List<ParametrizedAbilityInstanceId>(){
-                               new ParametrizedAbilityInstanceId(opponentEarthshakerId)
-                           });
-                           opponent.LetsThink(6);
-                           opponent.AssertInQueue(() => {
-                                Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDefense);
-                                Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDamage);
-                           });
-                           opponent.CardAttack(opponentEarthshakerId, TestHelper.GetCurrentPlayer().InstanceId);
-                       },
+                       opponent => {},
+                       player => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDefense);
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDamage);
-                    Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDefense);
-                    Assert.AreEqual(7, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDamage);
-                    Assert.AreEqual(TestHelper.GetCurrentPlayer().InitialDefense - 7, TestHelper.GetCurrentPlayer().Defense);
-                    Assert.AreEqual(TestHelper.GetOpponentPlayer().InitialDefense - 7, TestHelper.GetOpponentPlayer().Defense);
+                    Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunkId)).CurrentDefense);
+                    Assert.AreEqual(8, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId)).CurrentDefense);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             });
         }
 
