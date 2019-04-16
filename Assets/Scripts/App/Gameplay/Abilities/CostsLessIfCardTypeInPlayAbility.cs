@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private void BoardChangedHandler(int obj)
+        private new void BoardChangedHandler(int obj)
         {
             Action();
         }
