@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground
             GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false)
         {
             Log.Debug($"{nameof(AddNewActionInToQueue)}(GameplayActionQueueAction.ExecutedActionDelegate actionToDo = {(actionToDo == null ? "null" : actionToDo.ToString())}, Enumerators.QueueActionType actionType = {actionType}, bool blockQueue = {blockQueue})");
-            GameplayActionQueueAction action = GenerateActionForQueue(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
+            GameplayActionQueueAction action = CreateAction(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
             if (IsUserInputAction(actionType))
             {
                 RootQueue.Enqueue(action);
@@ -71,8 +71,7 @@ namespace Loom.ZombieBattleground
             Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction modelActionForDying = {modelActionForDying})");
         }
 
-        private GameplayActionQueueAction GenerateActionForQueue(
-            GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete = false)
+        private GameplayActionQueueAction CreateAction(GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete = false)
         {
             _nextActionId++;
 
@@ -123,7 +122,9 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         private static bool IsOnlyManualCompleteAction(Enumerators.QueueActionType actionType)
         {
-            return actionType == Enumerators.QueueActionType.AbilityUsageBlocker;
+            return 
+                actionType == Enumerators.QueueActionType.AbilityUsageBlocker ||
+                actionType == Enumerators.QueueActionType.AbilityTargetingBlocker;
         }
 
         /// <summary>

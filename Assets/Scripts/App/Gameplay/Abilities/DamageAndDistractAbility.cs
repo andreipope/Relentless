@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
                 Caller = AbilityUnitOwner,
                 TargetEffects = TargetEffects
             });
-            AbilityProcessingAction?.ForceCompleteAction();
+            AbilityProcessingAction?.TriggerActionManually();
         }
     }
 }

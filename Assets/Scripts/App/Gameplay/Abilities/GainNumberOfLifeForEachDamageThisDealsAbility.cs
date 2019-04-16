@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
         {
             Action(_damage);
 
-            AbilityProcessingAction?.ForceCompleteAction();
+            AbilityProcessingAction?.TriggerActionManually();
         }
     }
 }

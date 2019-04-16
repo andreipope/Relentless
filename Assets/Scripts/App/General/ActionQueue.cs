@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -20,6 +21,8 @@ namespace Loom.ZombieBattleground
 
         public IReadOnlyCollection<ActionQueue> InnerQueues => _innerQueues;
 
+        public bool IsRemoved { get; private set; }
+
         /// <summary>
         /// Invoked when the state of the queue or any of the child queue is changed.
         /// </summary>
@@ -33,6 +36,9 @@ namespace Loom.ZombieBattleground
 
         public ActionQueue Enqueue(ActionQueueAction action)
         {
+            if (IsRemoved)
+                throw new ActionQueueException($"Can't add action ({action}) to a removed action queue ({this})");
+
             ActionQueue actionQueue = new ActionQueue(action, this);
             _innerQueues.Enqueue(actionQueue);
             InvokeStateChanged();
@@ -68,6 +74,7 @@ namespace Loom.ZombieBattleground
                 {
                     if (currentQueue._innerQueues.Count == 0)
                     {
+                        currentQueue.MarkAsRemoved();
                         currentQueue = currentQueue.Parent;
                         currentQueue._innerQueues.Dequeue();
                         InvokeStateChanged();
@@ -106,6 +113,11 @@ namespace Loom.ZombieBattleground
             }
 
             return currentQueue;
+        }
+
+        public void MarkAsRemoved()
+        {
+            IsRemoved = true;
         }
 
         public override string ToString()

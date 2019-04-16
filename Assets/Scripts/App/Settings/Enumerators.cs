@@ -765,6 +765,7 @@ namespace Loom.ZombieBattleground.Common
             UnitDeath,
             OverlordSkillUsage,
             AbilityUsageBlocker,
+            AbilityTargetingBlocker,
             StopTurn,
             EndMatch,
             UnitCombat,

@@ -22,12 +22,12 @@ namespace Loom.ZombieBattleground {
         public ExecutedActionDelegate ExecutedAction { get; }
 
         /// <summary>
-        /// Whether the action can only be completed by calling <see cref="ForceCompleteAction"/>.
+        /// Whether the action can only be completed by calling <see cref="TriggerActionManually"/>.
         /// </summary>
         public bool OnlyManualComplete { get; }
 
         /// <summary>
-        /// Whether <see cref="ForceCompleteAction"/> was already called on this action, and the action will be completed ASAP.
+        /// Whether <see cref="TriggerActionManually"/> was already called on this action, and the action will be completed ASAP.
         /// </summary>
         public bool ManualCompleteTriggered { get; private set; }
 
@@ -59,9 +59,9 @@ namespace Loom.ZombieBattleground {
         /// If the action isn't already started, will schedule for it to be executed immediately after start.
         /// This a big hack and potentially dangerous.
         /// </summary>
-        public void ForceCompleteAction()
+        public void TriggerActionManually()
         {
-            DebugLog(nameof(ForceCompleteAction));
+            DebugLog(nameof(TriggerActionManually));
             if (IsCompleted || ManualCompleteTriggered)
                 return;
 

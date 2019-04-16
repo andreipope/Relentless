@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
 
             Action();
 
-            AbilityProcessingAction?.ForceCompleteAction();
+            AbilityProcessingAction?.TriggerActionManually();
         }
     }
 }

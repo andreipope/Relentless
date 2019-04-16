@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
-            AbilityProcessingAction?.ForceCompleteAction();
+            AbilityProcessingAction?.TriggerActionManually();
         }
 
         protected override void VFXAnimationEndedHandler()

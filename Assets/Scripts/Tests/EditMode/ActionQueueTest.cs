@@ -114,6 +114,22 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [Test]
+        public void AddToRemovedActionMustFail()
+        {
+            void SetCompleted(ActionQueue queue, TestActionQueueAction action)
+            {
+                action.SetCompleted();
+            }
+
+            ActionQueue root = new ActionQueue(new TestActionQueueAction("Root"), null);
+            ActionQueue action1 = root.Enqueue(new TestActionQueueAction("Action 1", SetCompleted));
+
+            root.Traverse();
+            Assert.False(root.InnerQueues.Contains(action1));
+            Assert.Throws<ActionQueueException>(() => action1.Enqueue(new TestActionQueueAction("Action 1-1", SetCompleted)));
+        }
+
+        [Test]
         public void Basic1()
         {
             ActionQueue root = new ActionQueue(new TestActionQueueAction("Root"), null);

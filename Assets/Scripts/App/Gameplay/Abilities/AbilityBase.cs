@@ -99,6 +99,8 @@ namespace Loom.ZombieBattleground
 
         protected GameplayActionQueueAction AbilityProcessingAction;
 
+        protected GameplayActionQueueAction AbilityTargetingAction;
+
         protected bool UnitOwnerIsInRage;
         
         public AbilityBase()
@@ -196,7 +198,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityTargetingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityTargetingBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -320,6 +322,7 @@ namespace Loom.ZombieBattleground
             if (callInputEndBefore)
             {
                 PermanentInputEndEvent?.Invoke();
+                CompleteTargetingAction();
                 return;
             }
 
@@ -348,6 +351,8 @@ namespace Loom.ZombieBattleground
                 OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectFailedByTargettingArrowCallback = null;
             }
+
+            CompleteTargetingAction();
         }
 
         public virtual void Action(object info = null)
@@ -597,6 +602,12 @@ namespace Loom.ZombieBattleground
                 AbilityData.Ability,
                 targets ?? new List<ParametrizedAbilityBoardObject>()
             );
+        }
+
+        private void CompleteTargetingAction()
+        {
+            AbilityTargetingAction?.TriggerActionManually();
+            AbilityTargetingAction = null;
         }
     }
 }
