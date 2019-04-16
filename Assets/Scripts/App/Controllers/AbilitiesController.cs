@@ -78,39 +78,6 @@ namespace Loom.ZombieBattleground
                     item.Ability.Update();
                 }
             }
-
-            if (Input.GetKeyDown(KeyCode.L))
-            {
-                ActiveAbility activeAbility = CreateActiveAbility(
-                    new AbilityData(
-                    Enumerators.AbilityType.DISCARD_CARD_FROM_HAND,
-                    Enumerators.AbilityActivity.PASSIVE,
-                    Enumerators.AbilityTrigger.ENTRY,
-                    new List<Enumerators.Target>() { Enumerators.Target.PLAYER_CARD },
-                    Enumerators.Stat.UNDEFINED,
-                    Enumerators.Faction.Undefined,
-                     Enumerators.AbilityEffect.NONE,
-                     Enumerators.AttackRestriction.ANY,
-                     Enumerators.CardType.UNDEFINED,
-                     Enumerators.UnitSpecialStatus.NONE,
-                     Enumerators.CardType.UNDEFINED,
-                     0, 0, 0, string.Empty, 0, 1, 0,
-                     new List<AbilityData.VisualEffectInfo>(),
-                     Enumerators.GameMechanicDescription.Entry,
-                     Enumerators.Faction.Undefined,
-                     Enumerators.AbilitySubTrigger.RandomUnit,
-                     new List<AbilityData.ChoosableAbility>(),
-                     0,
-                     0,
-                     Enumerators.CardKind.UNDEFINED,
-                     new List<Enumerators.GameMechanicDescription>()
-                ),
-                Enumerators.CardKind.ITEM,
-                null,
-                _gameplayManager.CurrentPlayer,
-                null);
-                activeAbility.Ability.Activate();
-            }
         }
 
         public void Dispose()
