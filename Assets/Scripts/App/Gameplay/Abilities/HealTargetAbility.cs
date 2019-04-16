@@ -50,23 +50,39 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
                 {
-                   if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
-                   {
+                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+                    {
                        InvokeUseAbilityEvent();
                         _targets.Add(PlayerCallerOfAbility);
 
                         _vfxAnimationEndedCallback = HealOverlord;
                         InvokeActionTriggered(_targets);
-                   }
-                   else
-                   {
+                    }
+                    else if (SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                    {
+                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
+                        _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                        InvokeActionTriggered(_targets);
+                    }
+                    else if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+                    {
+                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
+                        _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                        InvokeActionTriggered(_targets);
+                    }
+                    else
+                    {
                         SelectRandomCountOfAllies();
 
                         _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
                         InvokeActionTriggered(_targets);
                     }
                 }
-             }
+            }
         }
 
         protected override void UnitDiedHandler()

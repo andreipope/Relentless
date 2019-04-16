@@ -44,6 +44,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void TurnStartedHandler()
+        {
+            base.TurnStartedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.TURN ||
+        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
+                return;
+            Action();
+        }
+
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
@@ -61,6 +71,16 @@ namespace Loom.ZombieBattleground
             }
 
             Action();
+        }
+
+        protected override void ChangeRageStatusAction(bool status)
+        {
+            base.ChangeRageStatusAction(status);
+
+            if (status)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)

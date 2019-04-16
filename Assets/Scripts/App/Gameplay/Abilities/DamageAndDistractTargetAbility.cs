@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = TargetUnit,
                         HasValue = true,
-                        Value = -AbilityData.Value
+                        Value = -Damage
                     },
                     new PastActionsPopup.TargetEffectParam()
                     {
