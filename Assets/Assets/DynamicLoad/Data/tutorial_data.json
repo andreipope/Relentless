@@ -1611,7 +1611,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "EnemyOverlord",
-              "Description": "I'll melt you with my flames!"
+              "Description": "I'll crush you!"
             }
           ]
         },
@@ -1848,7 +1848,6 @@
           "ActionToEndThisStep": "BattleframeAttacked",
           "TutorialStepType": "GameplayStep",
           "ConnectedTurnIndex": 5,
-          "LaunchGameplayManually": true,
           "LaunchAIBrain": true
         },
         {
@@ -1950,7 +1949,7 @@
               "TutorialObjectId": 2
             },
             {
-              "Name": "Ember",
+              "Name": "Harpoon",
               "TutorialObjectId": 3
             }
           ],
