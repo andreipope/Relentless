@@ -60,17 +60,13 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
-
-            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.None)
+            foreach (Player player in players)
             {
-                foreach (Player player in players)
+                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.None)
                 {
                     AddGooVials(player);
                 }
-            }
-            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
-            {
-                foreach (Player player in players)
+                else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
                 {
                     if (player.PlayerCardsController.CardsOnBoard.Count == 1 &&
                         player.PlayerCardsController.CardsOnBoard[0] == BoardUnitModel)
@@ -78,30 +74,21 @@ namespace Loom.ZombieBattleground
                         AddGooVials(player);
                     }
                 }
-            }
-            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
-            {
-                foreach (Player player in players)
+                else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
                 {
-                    if(player.Defense < GetOpponentOverlord(player).Defense)
+                    if (player.Defense < GetOpponentOverlord(player).Defense)
                     {
                         AddGooVials(player);
                     }
                 }
-            }
-            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess)
-            {
-                foreach (Player player in players)
+                else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess)
                 {
                     if (player.Defense <= Defense)
                     {
                         AddGooVials(player);
                     }
                 }
-            }
-            else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
-            {
-                foreach (Player player in players)
+                else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
                 {
                     if (player.PlayerCardsController.CardsOnBoard.Count < GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.Count)
                     {
