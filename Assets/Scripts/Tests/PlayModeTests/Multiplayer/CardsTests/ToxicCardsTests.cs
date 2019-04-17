@@ -215,11 +215,13 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player => player.CardAttack(playerCardId, pvpTestContext.GetOpponentPlayer().InstanceId),
                        opponent => opponent.CardAttack(opponentCardId, pvpTestContext.GetCurrentPlayer().InstanceId),
+                       player => player.CardAttack(playerCardId, opponentCardId),
+                       opponent => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense - 8, pvpTestContext.GetCurrentPlayer().Defense);
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense - 11, pvpTestContext.GetCurrentPlayer().Defense);
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - 8, pvpTestContext.GetOpponentPlayer().Defense);
                 };
 

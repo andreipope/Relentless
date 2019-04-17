@@ -696,8 +696,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, opponentTrunkId);
-                           player.LetsThink(10);
+                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerTrunkId);
+                           player.LetsThink(20);
                            player.CardAttack(playerTrunkId, opponentTrunkId);
                        },
                        opponent => {},
@@ -1366,9 +1366,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId playerWhistle2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whistle", 2);
                 InstanceId playerWhistle3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Whistle", 3);
                 InstanceId playerJunkSpearId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Junk Spear", 1);
-                InstanceId opponentWhistleId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whistle", 1);
-                InstanceId opponentWhistle2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whistle", 2);
-                InstanceId opponentWhistle3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Whistle", 3);
                 InstanceId opponentJunkSpearId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Junk Spear", 1);
                 InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
@@ -1386,18 +1383,22 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentWhistleId, ItemPosition.Start);
-                           opponent.LetsThink(1);
-                           opponent.CardPlay(opponentWhistle2Id, ItemPosition.Start);
-                           opponent.LetsThink(1);
-                           opponent.CardPlay(opponentWhistle3Id, ItemPosition.Start);
                            opponent.LetsThink(1);
                            opponent.CardPlay(opponentTrunkId, ItemPosition.Start);
                            opponent.LetsThink(1);
                        },
                        player =>
                        {
-                           player.CardPlay(playerJunkSpearId, ItemPosition.Start, opponentTrunkId);
+                           player.CardPlay(playerJunkSpearId, ItemPosition.Start, opponentTrunkId, true);
+                           player.CardAbilityUsed(playerJunkSpearId, Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED,
+                               new List<ParametrizedAbilityInstanceId>() {
+                                new ParametrizedAbilityInstanceId(opponentTrunkId,
+                                    new ParametrizedAbilityParameters
+                                    {
+                                        Attack = 3
+                                    })
+                               }
+                           );
                            player.LetsThink(2);
                        },
                        opponent =>

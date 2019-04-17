@@ -35,7 +35,18 @@ namespace Loom.ZombieBattleground
             {
                 _targets = new List<BoardObject>() { AffectObjectType == Enumerators.AffectObjectType.Player ?
                                                     (BoardObject)TargetPlayer : TargetUnit };
+
                 _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != BoardUnitModel).Count;
+
+                if (PredefinedTargets != null)
+                {
+                    _targets.Clear();
+                    foreach (ParametrizedAbilityBoardObject target in PredefinedTargets)
+                    {
+                        _damage = target.Parameters.Attack;
+                        _targets.Add(target.BoardObject);
+                    }
+                }
 
                 DamageTargets();
             }
