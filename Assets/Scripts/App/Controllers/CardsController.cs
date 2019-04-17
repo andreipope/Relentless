@@ -859,11 +859,20 @@ namespace Loom.ZombieBattleground
 
         public void DiscardCardFromHand(BoardUnitModel boardUnitModel)
         {
-            BoardCardView card = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
+            if(boardUnitModel.Owner.IsLocalPlayer)
+            {
+                BoardCardView card = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
+                _battlegroundController.PlayerHandCards.Remove(card);
+                card.Dispose();
+            }
+            else
+            {
+                OpponentHandCard card = _battlegroundController.GetBoardUnitViewByModel<OpponentHandCard>(boardUnitModel);
+                _battlegroundController.OpponentHandCards.Remove(card);
+                card.Dispose();
+            }
 
-            _battlegroundController.PlayerHandCards.Remove(card);
             boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
-            card.Dispose();
         }
     }
 

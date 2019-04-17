@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
         protected override void UnitDiedHandler()
@@ -33,10 +33,10 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
-        private void HndleSubTriggers()
+        private void HandleSubTriggers()
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
             {
@@ -56,10 +56,11 @@ namespace Loom.ZombieBattleground
             if (GameplayManager.CurrentTurnPlayer == player)
             {
                 player.CurrentGoo = Mathf.Clamp(player.CurrentGoo + count, 0, (int)player.MaxGooVials);
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
             }
             else
             {
-                player.CurrentGooModificator += count;
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
             }
         }
     }

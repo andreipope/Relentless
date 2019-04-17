@@ -159,7 +159,7 @@ namespace Loom.ZombieBattleground
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Count;
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(item => item != AbilityUnitOwner).Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
