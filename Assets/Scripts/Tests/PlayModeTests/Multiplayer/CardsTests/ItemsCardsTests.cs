@@ -1412,7 +1412,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     BoardUnitModel trunkOpponentModel  = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId));
-                    //Assert.AreEqual(trunkOpponentModel.MaxCurrentDefense-3, trunkOpponentModel.CurrentDefense);
+                    Assert.AreEqual(trunkOpponentModel.MaxCurrentDefense-3, trunkOpponentModel.CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
