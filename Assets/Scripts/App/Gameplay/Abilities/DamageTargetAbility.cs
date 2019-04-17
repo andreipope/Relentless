@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
                     }
                 });
 
-                AbilityProcessingAction?.TriggerActionManually();
+                AbilityProcessingAction?.TriggerActionExternally();
             }
         }
 
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

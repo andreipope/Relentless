@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
                 ReturnBoardUnitToHand(unit);
             }
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

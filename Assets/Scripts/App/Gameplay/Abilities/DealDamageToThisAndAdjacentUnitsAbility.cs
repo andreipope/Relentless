@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground
                     .ToList()
             );
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         private void TakeDamageToUnit(CardModel unit)

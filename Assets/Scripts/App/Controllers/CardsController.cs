@@ -533,7 +533,7 @@ namespace Loom.ZombieBattleground
                                         }
                                         else
                                         {
-                                            ranksBuffAction?.TriggerActionManually();
+                                            ranksBuffAction?.TriggerActionExternally();
 
                                             boardUnitView.DisposeGameObject();
                                             boardUnitView.Model.Die(true, isDead: false);
@@ -578,7 +578,7 @@ namespace Loom.ZombieBattleground
                                             player.ThrowPlayCardEvent(card.Model, 0);
                                         }
 
-                                        ranksBuffAction?.TriggerActionManually();
+                                        ranksBuffAction?.TriggerActionExternally();
                                     },
                                     target,
                                     handCard,

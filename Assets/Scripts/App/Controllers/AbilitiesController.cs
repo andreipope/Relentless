@@ -519,7 +519,7 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
-                               abilityHelperAction?.TriggerActionManually();
+                               abilityHelperAction?.TriggerActionExternally();
                                abilityHelperAction = null;
 
                                completeCallback?.Invoke();
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
 
-                                       abilityHelperAction?.TriggerActionManually();
+                                       abilityHelperAction?.TriggerActionExternally();
                                        abilityHelperAction = null;
 
                                        completeCallback?.Invoke();
@@ -609,7 +609,7 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                                           abilityHelperAction?.TriggerActionManually();
+                                           abilityHelperAction?.TriggerActionExternally();
                                            abilityHelperAction = null;
 
                                            completeCallback?.Invoke();
@@ -647,7 +647,7 @@ namespace Loom.ZombieBattleground
 
                                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                                           abilityHelperAction?.TriggerActionManually();
+                                           abilityHelperAction?.TriggerActionExternally();
                                            abilityHelperAction = null;
 
                                            completeCallback?.Invoke();
@@ -682,7 +682,7 @@ namespace Loom.ZombieBattleground
 
                                        ResolveAllAbilitiesOnUnit(boardObject);
 
-                                       abilityHelperAction?.TriggerActionManually();
+                                       abilityHelperAction?.TriggerActionExternally();
                                        abilityHelperAction = null;
 
                                        completeCallback?.Invoke();
@@ -696,7 +696,7 @@ namespace Loom.ZombieBattleground
 
                                ResolveAllAbilitiesOnUnit(boardObject);
 
-                               abilityHelperAction?.TriggerActionManually();
+                               abilityHelperAction?.TriggerActionExternally();
                                abilityHelperAction = null;
 
                                completeCallback?.Invoke();
@@ -709,7 +709,7 @@ namespace Loom.ZombieBattleground
 
                            ResolveAllAbilitiesOnUnit(boardObject);
 
-                           abilityHelperAction?.TriggerActionManually();
+                           abilityHelperAction?.TriggerActionExternally();
                            abilityHelperAction = null;
 
                            completeCallback?.Invoke();

@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
 
             base.UnitDiedHandler();
 

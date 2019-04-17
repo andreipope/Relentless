@@ -71,7 +71,7 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unit);
             }
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

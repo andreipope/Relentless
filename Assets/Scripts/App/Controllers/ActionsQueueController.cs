@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
         public void ResetAll()
         {
-            StopAllActions();
+            ClearActions();
             _nextActionId = 0;
         }
 
@@ -66,8 +66,19 @@ namespace Loom.ZombieBattleground
             return action;
         }
 
+        public void ClearActions()
+        {
+            if (_isDebugMode)
+            {
+                Log.Warn(ActionsInQueue + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
+            }
+
+            _rootQueue = ActionQueueAction.CreateRootActionQueue();
+        }
+
         public void ForceContinueAction(GameplayActionQueueAction modelActionForDying)
         {
+            // FIXME: Does nothing now?
             Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction modelActionForDying = {modelActionForDying})");
         }
 
@@ -82,21 +93,6 @@ namespace Loom.ZombieBattleground
             }
 
             return new GameplayActionQueueAction(actionToDo, _nextActionId, actionType, onlyManualComplete);
-        }
-
-        private void StopAllActions()
-        {
-            ClearActions();
-        }
-
-        public void ClearActions()
-        {
-            if (_isDebugMode)
-            {
-                Log.Warn(ActionsInQueue + " was actions; <color=black>clear whole list of actions;</color> from >>>> ");
-            }
-
-            _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
         /// <summary>
@@ -122,7 +118,7 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         private static bool IsOnlyManualCompleteAction(Enumerators.QueueActionType actionType)
         {
-            return 
+            return
                 actionType == Enumerators.QueueActionType.AbilityUsageBlocker ||
                 actionType == Enumerators.QueueActionType.AbilityTargetingBlocker;
         }

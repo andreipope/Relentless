@@ -996,7 +996,7 @@ namespace Loom.ZombieBattleground
                                             if (!status)
                                             {
                                                 //ranksBuffAction.Action = null;
-                                                ranksBuffAction?.TriggerActionManually();
+                                                ranksBuffAction?.TriggerActionExternally();
                                             }
                                         }, target);
                                     };

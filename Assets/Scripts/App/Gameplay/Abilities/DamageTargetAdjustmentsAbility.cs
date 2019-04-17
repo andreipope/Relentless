@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
 
             ActionCompleted();
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         private void ActionCompleted()

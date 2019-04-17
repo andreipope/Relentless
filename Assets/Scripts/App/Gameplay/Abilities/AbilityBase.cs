@@ -606,7 +606,7 @@ namespace Loom.ZombieBattleground
 
         private void CompleteTargetingAction()
         {
-            AbilityTargetingAction?.TriggerActionManually();
+            AbilityTargetingAction?.TriggerActionExternally();
             AbilityTargetingAction = null;
         }
     }

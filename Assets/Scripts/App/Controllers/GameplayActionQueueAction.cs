@@ -22,14 +22,14 @@ namespace Loom.ZombieBattleground {
         public ExecutedActionDelegate ExecutedAction { get; }
 
         /// <summary>
-        /// Whether the action can only be completed by calling <see cref="TriggerActionManually"/>.
+        /// Whether the action can only be completed by calling <see cref="TriggerActionExternally"/>.
         /// </summary>
-        public bool OnlyManualComplete { get; }
+        public bool OnlyExternalComplete { get; }
 
         /// <summary>
-        /// Whether <see cref="TriggerActionManually"/> was already called on this action, and the action will be completed ASAP.
+        /// Whether <see cref="TriggerActionExternally"/> was already called on this action, and the action will be completed as soon as possible.
         /// </summary>
-        public bool ManualCompleteTriggered { get; private set; }
+        public bool ExternalCompleteTriggered { get; private set; }
 
         /// <summary>
         /// Information-only action type.
@@ -45,24 +45,23 @@ namespace Loom.ZombieBattleground {
             ExecutedActionDelegate executedAction,
             long id,
             Enumerators.QueueActionType actionType,
-            bool onlyManualComplete)
+            bool onlyExternalComplete)
         {
             ExecutedAction = executedAction;
             Id = id;
             ActionType = actionType;
-            OnlyManualComplete = onlyManualComplete;
+            OnlyExternalComplete = onlyExternalComplete;
         }
 
         /// <summary>
         /// Schedules the action for to be executed, unconditionally.
         /// If the action is already started, will execute the action.
         /// If the action isn't already started, will schedule for it to be executed immediately after start.
-        /// This a big hack and potentially dangerous.
         /// </summary>
-        public void TriggerActionManually()
+        public void TriggerActionExternally()
         {
-            DebugLog(nameof(TriggerActionManually));
-            if (IsCompleted || ManualCompleteTriggered)
+            DebugLog(nameof(TriggerActionExternally));
+            if (IsCompleted || ExternalCompleteTriggered)
                 return;
 
             if (IsStarted)
@@ -71,7 +70,7 @@ namespace Loom.ZombieBattleground {
             }
             else
             {
-                ManualCompleteTriggered = true;
+                ExternalCompleteTriggered = true;
             }
         }
 
@@ -81,8 +80,8 @@ namespace Loom.ZombieBattleground {
                 $"{nameof(ActionType)}: {ActionType}, " +
                 $"{nameof(IsStarted)}: {IsStarted}, " +
                 $"{nameof(IsCompleted)}: {IsCompleted}, " +
-                $"{nameof(OnlyManualComplete)}: {OnlyManualComplete}, " +
-                $"{nameof(ManualCompleteTriggered)}: {ManualCompleteTriggered}, " +
+                $"{nameof(OnlyExternalComplete)}: {OnlyExternalComplete}, " +
+                $"{nameof(ExternalCompleteTriggered)}: {ExternalCompleteTriggered}, " +
                 $"{nameof(Id)}: {Id}";
         }
 
@@ -90,8 +89,8 @@ namespace Loom.ZombieBattleground {
         {
             DebugLog($"{nameof(Action)}, Parent Queue: ({queue.Parent})");
 
-            // Don't execute manually completed actions automatically, those will wait for ForceCompleteAction()
-            if (!OnlyManualComplete || OnlyManualComplete && ManualCompleteTriggered)
+            // Don't execute externally triggered actions automatically, those will wait for TriggerActionExternally()
+            if (!OnlyExternalComplete || OnlyExternalComplete && ExternalCompleteTriggered)
             {
                 ExecuteAction();
             }

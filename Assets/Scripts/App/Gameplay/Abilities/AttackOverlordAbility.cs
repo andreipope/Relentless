@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.TriggerActionManually();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         public void ActivateAbility(AttackOverlordOutcome outcome)
