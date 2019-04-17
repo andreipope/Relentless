@@ -1112,89 +1112,55 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
                     new DeckCardData("Vortex", 1),
-                    new DeckCardData("Znowy", 15));
+                    new DeckCardData("Hot", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
                     new DeckCardData("Vortex", 1),
-                    new DeckCardData("Znowy", 15));
+                    new DeckCardData("Zlab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerZnowyId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowy", 1);
-                InstanceId playerZnowy2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowy", 2);
-                InstanceId playerZnowy3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowy", 3);
-                InstanceId playerZnowy4Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Znowy", 4);
                 InstanceId playerVortexId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Vortex", 1);
+                InstanceId playerHotId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 1);
 
-                InstanceId opponentZnowyId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowy", 1);
-                InstanceId opponentZnowy2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowy", 2);
-                InstanceId opponentZnowy3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowy", 3);
-                InstanceId opponentZnowy4Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Znowy", 4);
+                InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
                 InstanceId opponentVortexId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Vortex", 1);
+
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerZnowyId, ItemPosition.Start);
-                           player.CardPlay(playerZnowy2Id, ItemPosition.Start);
-                           player.CardPlay(playerZnowy3Id, ItemPosition.Start);
-                           player.CardPlay(playerZnowy4Id, ItemPosition.Start);
+                           player.CardPlay(playerHotId, ItemPosition.Start);
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentZnowy4Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentZnowy3Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentZnowy2Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentZnowyId, ItemPosition.Start);
+                           opponent.CardPlay(opponentZlabId, ItemPosition.Start);
+                       },
+                       player => {},
+                       opponent =>
+                       {
+                           opponent.CardAttack(opponentZlabId, pvpTestContext.GetCurrentPlayer().InstanceId);
                        },
                        player =>
                        {
                            player.CardPlay(playerVortexId, ItemPosition.Start);
+                           player.CardAttack(playerHotId, pvpTestContext.GetOpponentPlayer().InstanceId);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentVortexId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentVortexId, Enumerators.AbilityType.REPLACE_UNITS_WITH_TYPE_ON_STRONGER_ONES, new List<ParametrizedAbilityInstanceId>()
-                           {
-                               new ParametrizedAbilityInstanceId(opponentZnowyId,
-                                   new ParametrizedAbilityParameters()
-                                   {
-                                       CardName = "FroZen"
-                                   }),
-                               new ParametrizedAbilityInstanceId(opponentZnowy2Id,
-                                   new ParametrizedAbilityParameters()
-                                   {
-                                       CardName = "HoZer"
-                                   }),
-                               new ParametrizedAbilityInstanceId(opponentZnowy3Id,
-                                   new ParametrizedAbilityParameters()
-                                   {
-                                       CardName = "Znowman"
-                                   }),
-                               new ParametrizedAbilityInstanceId(opponentZnowy4Id,
-                                   new ParametrizedAbilityParameters()
-                                   {
-                                       CardName = "Brook"
-                                   }),
-                           });
-                       },
-                       player => {},
-                       opponent => {}
+                       }
                    };
+
+                int count = 2;
+                string name = "Frozen";
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "FroZen"));
-                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "HoZer"));
-                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "Znowman"));
-                    Assert.IsNotNull(TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Select(unit => unit.Card.Prototype.Name == "Brook"));
+                    Assert.AreEqual(count, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.FindAll(unit => unit.Card.Prototype.Name == name));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

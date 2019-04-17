@@ -1046,7 +1046,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      Assert.AreEqual(8, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                  };
 
-                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
              }, 300);
          }
 
