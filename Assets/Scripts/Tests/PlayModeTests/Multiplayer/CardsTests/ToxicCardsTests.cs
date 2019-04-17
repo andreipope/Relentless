@@ -906,6 +906,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.AssertInQueue(() => {
                                 Assert.AreEqual(3, TestHelper.GetCurrentPlayer().CurrentGoo);
                            });
+                           player.LetsThink(10);
                        },
                        opponent =>
                        {
@@ -914,6 +915,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            opponent.AssertInQueue(() => {
                                 Assert.AreEqual(3, TestHelper.GetOpponentPlayer().CurrentGoo);
                            });
+                           opponent.LetsThink(10);
                        },
                        player => {},
                        opponent => {}
@@ -923,7 +925,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
             });
         }
 
