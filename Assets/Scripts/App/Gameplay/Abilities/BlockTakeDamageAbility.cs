@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -55,7 +56,7 @@ namespace Loom.ZombieBattleground
 
         private void ApplyMaximumDamageBuff(BoardUnitModel boardUnit, int value)
         {
-            boardUnit.SetMaximumDamageToUnit(value);
+            boardUnit?.SetMaximumDamageToUnit(value);
         }
     }
 }

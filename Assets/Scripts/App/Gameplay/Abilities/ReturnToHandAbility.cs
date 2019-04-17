@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -45,17 +46,38 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        private void ReturnDeadTargetToHand(BoardUnitModel unit)
+        {
+            unit.ResetToInitial();
+
+            unit.Owner.PlayerCardsController.ReturnToHandBoardUnit(unit, new Vector3());               
+
+            GameClient.Get<IGameplayManager>().RearrangeHands();
+        }
+
         private void ReturnTargetToHand(BoardUnitModel unit)
         {
-            Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(TargetUnit).Transform.position;
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+            {
+                Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
 
-            CreateVfx(unitPosition, true, 3f, true);
+                CreateVfx(unitPosition, true, 3f, true);
 
-            CardsController.ReturnCardToHand(TargetUnit);
+                CardsController.ReturnCardToHand(unit);
+            }
+            else
+            {
+                ReturnDeadTargetToHand(unit);
+            }
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
                 unit.Card.InstanceCard.Cost += Cost;
+                
+                if (PlayerCallerOfAbility.IsLocalPlayer)
+                {
+                    BattlegroundController.PlayerHandCards.FirstOrDefault(card => card.Model == BoardUnitModel).UpdateCardCost();
+                }
             }
 
             InvokeUseAbilityEvent(

@@ -575,7 +575,8 @@ namespace Loom.ZombieBattleground
             emptyFields = player.PlayerCardsController.CardsOnBoard.
                 FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive).Count;
 
-            return emptyFields < player.MaxCardsInPlay;
+            emptyFields = (int)player.MaxCardsInPlay-emptyFields;
+            return emptyFields > 0;
         }
 
         public void InvokeActionTriggered(object info = null)

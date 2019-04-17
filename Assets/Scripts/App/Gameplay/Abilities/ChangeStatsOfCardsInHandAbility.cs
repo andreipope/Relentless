@@ -37,6 +37,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY && AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
@@ -83,32 +85,12 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (PredefinedTargets != null)
-            {
-                foreach (ParametrizedAbilityBoardObject boardObject in PredefinedTargets)
-                {
-                    cards.Add(targetCards.Find(x => x.InstanceId.Id == Convert.ToInt32(boardObject.Parameters.CardName)));
-                }
-            }
-            else
-            {
-                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
+            cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
                                                                 TargetCardKind == Enumerators.CardKind.UNDEFINED), Count);
-            }
 
             foreach (BoardUnitModel card in cards)
             {
                 SetStatOfTargetCard(card.Card, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
-
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(AbilityUnitOwner, new ParametrizedAbilityParameters()
-                {
-                    CardName = card.InstanceId.Id.ToString()
-                }));
-            }
-
-            if (parametrizedAbilityBoardObjects.Count > 0)
-            {
-                InvokeUseAbilityEvent(parametrizedAbilityBoardObjects);
             }
         }
 
