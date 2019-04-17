@@ -690,10 +690,6 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
-#if USE_REBALANCE_BACKEND
-                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
@@ -743,7 +739,6 @@ namespace Loom.ZombieBattleground
                         _tutorialManager.StartTutorial();
                     }
                 }
-#endif
             }
             else
             {
@@ -926,17 +921,7 @@ namespace Loom.ZombieBattleground
         private void GenerateKeysAndUserFromUserID(
             string userId, out byte[] privateKey, out byte[] publicKey)
         {
-            userId = "ZombieSlayer_" + userId;
-
-            string seedString =
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId))) +
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
-
-            byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
-
-            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
+            privateKey = CryptoUtils.GeneratePrivateKey();
 
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }

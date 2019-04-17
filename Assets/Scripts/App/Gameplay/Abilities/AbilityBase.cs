@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -102,6 +101,8 @@ namespace Loom.ZombieBattleground
 
         protected GameplayQueueAction<object> AbilityProcessingAction;
 
+        protected bool UnitOwnerIsInRage;
+        
         public AbilityBase()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -170,6 +171,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
             TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
+            TargettingArrow.SubTrigger = AbilityData.SubTrigger;
+            TargettingArrow.OwnerOfThis = this;
 
             switch (CardKind)
             {
@@ -219,6 +222,9 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
             VFXAnimationEnded += VFXAnimationEndedHandler;
 
@@ -247,6 +253,8 @@ namespace Loom.ZombieBattleground
             }
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
+
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -261,6 +269,9 @@ namespace Loom.ZombieBattleground
             {
                 PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
                 PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+                PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
             }
             
             VFXAnimationEnded -= VFXAnimationEndedHandler;
@@ -431,6 +442,8 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
+            ChangeAuraStatusAction(false);
+
             Deactivate();
             Dispose();
         }
@@ -440,6 +453,26 @@ namespace Loom.ZombieBattleground
         }
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            if(AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
+            {
+                if (!UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = true;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
+            else
+            {
+                if (UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = false;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
+        }
+
+        protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
 
@@ -456,6 +489,24 @@ namespace Loom.ZombieBattleground
 
         }
 
+        protected virtual void ChangeAuraStatusAction(bool status)
+        {
+
+        }
+
+        protected virtual void BoardChangedHandler(int count)
+        {
+
+        }
+
+        protected virtual void HandChangedHandler(int count)
+        {
+
+        }
+        protected virtual void PlayerCurrentGooChangedHandler(int goo)
+        {
+            
+        }
 
         protected virtual void PrepairingToDieHandler(BoardObject from)
         {
@@ -482,7 +533,12 @@ namespace Loom.ZombieBattleground
 
         public Player GetOpponentOverlord()
         {
-            return PlayerCallerOfAbility.Equals(GameplayManager.CurrentPlayer) ?
+            return GetOpponentOverlord(PlayerCallerOfAbility);
+        }
+
+        public Player GetOpponentOverlord(Player player)
+        {
+            return player.Equals(GameplayManager.CurrentPlayer) ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }
@@ -494,8 +550,33 @@ namespace Loom.ZombieBattleground
 
         protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
-                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count, true)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
+        {
+            return InternalTools.GetRandomElementsFromList(units, count, true)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        protected List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count, true);
+        }
+
+        protected IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)
+        {
+            return units.Where(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)
+        {
+            emptyFields = player.PlayerCardsController.CardsOnBoard.
+                FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive).Count;
+
+            emptyFields = (int)player.MaxCardsInPlay-emptyFields;
+            return emptyFields > 0;
         }
 
         public void InvokeActionTriggered(object info = null)

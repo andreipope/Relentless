@@ -78,11 +78,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-#if USE_REBALANCE_BACKEND
         internal const int DefaultPlayerHp = 50;
-#else
-        internal const int DefaultPlayerHp = 20;
-#endif
 
         internal const int DefaultPlayerGoo = 0;
 
@@ -189,6 +185,8 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
+        public const bool RankSystemEnabled = false;
+
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR
             true;
@@ -231,5 +229,9 @@ namespace Loom.ZombieBattleground.Common
         internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
 
         internal const string EnvironmentPointText = "%environment_point%";
+              
+        internal const int MinimumMemorySize = 2048;
+        
+        internal const float MinimumMemoryThresholdPercentage = 0.85f;
     }
 }

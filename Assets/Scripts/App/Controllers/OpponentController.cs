@@ -642,7 +642,8 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel == null)
                 ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
-            _ranksController.BuffAllyManually(units, boardUnitModel);
+            if (Constants.RankSystemEnabled)
+                _ranksController.BuffAllyManually(units, boardUnitModel);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

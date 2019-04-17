@@ -198,6 +198,8 @@ namespace Loom.ZombieBattleground
 
         public bool TakeFreezeToAttacked { get; set; }
 
+        public int AdditionalDamage { get; set; }
+
         public int DamageDebuffUntillEndOfTurn { get; set; }
 
         public int HpDebuffUntillEndOfTurn { get; set; }
@@ -209,6 +211,8 @@ namespace Loom.ZombieBattleground
         public bool IsReanimated { get; set; }
 
         public bool AttackAsFirst { get; set; }
+
+        public bool AgileEnabled { get; private set; }
 
         public Enumerators.UnitSpecialStatus UnitSpecialStatus { get; set; }
 
@@ -228,6 +232,7 @@ namespace Loom.ZombieBattleground
 
         public bool IsUnitActive { get; private set; } = true;
 
+        public int MaximumDamageFromAnySource { get; private set; } = 999;
 
         // =================== REMOVE HARD
 
@@ -637,6 +642,16 @@ namespace Loom.ZombieBattleground
             UpdateVisualStateOfDistract(false);
         }
 
+        public void SetAgileStatus(bool status)
+        {
+            AgileEnabled = status;
+        }
+
+        public void SetMaximumDamageToUnit(int maximumDamage)
+        {
+            MaximumDamageFromAnySource = maximumDamage;
+        }
+
         public void UpdateVisualStateOfDistract(bool status)
         {
             UnitDistractEffectStateChanged?.Invoke(status);
@@ -694,7 +709,7 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
-                            if (targetPlayer.Defense <= 0)
+                            if (targetPlayer.Defense <= 0 || !IsUnitActive)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
@@ -750,7 +765,10 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         (parameter, completeCallback) =>
                         {
-                            if(targetCardModel.CurrentDefense <= 0 || targetCardModel.IsDead)
+                            if(targetCardModel.CurrentDefense <= 0 ||
+                                targetCardModel.IsDead ||
+                                !IsUnitActive ||
+                                !targetCardModel.IsUnitActive)
                             {
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
@@ -790,7 +808,7 @@ namespace Loom.ZombieBattleground
                                 targetCardModel,
                                 () =>
                                 {
-                                    _battleController.AttackUnitByUnit(this, targetCardModel);
+                                    _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
 
                                     if (HasSwing)
                                     {
@@ -798,7 +816,7 @@ namespace Loom.ZombieBattleground
 
                                         foreach (BoardUnitModel unit in adjacent)
                                         {
-                                            _battleController.AttackUnitByUnit(this, unit,false);
+                                            _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
                                         }
                                     }
 
@@ -1006,6 +1024,7 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
+            MaximumDamageFromAnySource = 999;
         }
 
         public override string ToString()

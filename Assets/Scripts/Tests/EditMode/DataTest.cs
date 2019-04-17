@@ -13,7 +13,7 @@ using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground.Test
 {
-    [Category("QuickSubset")]
+    [Category("EditQuickSubset")]
     public class DataTest
     {
         [Test]
@@ -207,7 +207,9 @@ namespace Loom.ZombieBattleground.Test
                     Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay,
                     choosableAbilities,
                     7,
-                    8
+                    8,
+                    Enumerators.CardKind.UNDEFINED,
+                    new List<Enumerators.GameMechanicDescription>()
                 );
         }
     }

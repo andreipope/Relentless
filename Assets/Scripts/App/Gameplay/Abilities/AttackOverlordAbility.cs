@@ -38,6 +38,55 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        {
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            InvokeActionTriggered();
+        }
+
+        protected override void ChangeRageStatusAction(bool status)
+        {
+            base.ChangeRageStatusAction(status);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.RAGE)
+                return;
+
+            if (status)
+            {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+                InvokeActionTriggered();
+            }
+        }
+
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
@@ -60,6 +109,11 @@ namespace Loom.ZombieBattleground
 
                 if(!PvPManager.UseBackendGameLogic)
                     BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, targetObject);
+            }
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
+            {
+                base.UnitDiedHandler();
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()

@@ -24,11 +24,30 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
             Action();
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit), Defense, Damage);
+
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
+            }
         }
 
         protected override void UnitDiedHandler()
@@ -38,38 +57,51 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
         }
 
-        public override void Action(object info = null)
+        protected override void ChangeAuraStatusAction(bool status)
         {
-            base.Action(info);
+            base.ChangeAuraStatusAction(status);
 
-            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
 
+            if (status)
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+            }
+            else
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), -Defense, -Damage);
+            }
+        }
+
+        private void ChangeStats(List<BoardUnitModel> units, int defense, int damage)
+        {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in adjacent)
+            foreach (BoardUnitModel unit in units)
             {
                 if (StatType == Enumerators.Stat.DEFENSE)
                 {
-                    unit.BuffedDefense += Defense;
-                    unit.CurrentDefense += Defense;
+                    unit.BuffedDefense += defense;
+                    unit.CurrentDefense += defense;
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        ActionEffectType = defense >= 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
                         Target = unit,
                     });
                 }
                 else if (StatType == Enumerators.Stat.DAMAGE)
                 {
-                    unit.BuffedDamage += Damage;
-                    unit.CurrentDamage += Damage;
+                    unit.BuffedDamage += damage;
+                    unit.CurrentDamage += damage;
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
+                        ActionEffectType = damage >= 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit
                     });
                 }

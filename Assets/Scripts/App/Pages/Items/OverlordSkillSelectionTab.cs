@@ -227,6 +227,7 @@ namespace Loom.ZombieBattleground
             {
                 DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
                 deckGeneratorController.FinishEditDeck += FinishEditDeck;
+                _continueButton.enabled = false;
                 deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
             }
         }
@@ -234,6 +235,12 @@ namespace Loom.ZombieBattleground
         private void FinishEditDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+
+            if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
+                return;
+
+            _continueButton.enabled = true;
+            
             if(success)
             {
                 _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
