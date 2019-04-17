@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
         protected override void UnitDiedHandler()
@@ -33,10 +33,10 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
-        private void HndleSubTriggers()
+        private void HandleSubTriggers()
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
             {
