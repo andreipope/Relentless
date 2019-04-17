@@ -464,6 +464,7 @@ namespace Loom.ZombieBattleground
                                 BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
                                 _gameplayManager.OpponentPlayer.BoardItemsInUse.Insert(ItemPosition.End, item);
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
+                                item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
