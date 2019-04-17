@@ -69,32 +69,82 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
         {
             return AsyncTest(async () =>
             {
-                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1, new DeckCardData("Quazi", 2));
-                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1, new DeckCardData("Quazi", 2));
+                Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
+                    new DeckCardData("Quazi", 1),
+                    new DeckCardData("Pyromaz", 3));
+                Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
+                    new DeckCardData("Quazi", 1),
+                    new DeckCardData("Pyromaz", 3));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerCardId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 1);
-                InstanceId opponentCardId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 1);
+                InstanceId playerQuaziId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Quazi", 1);
+                InstanceId playerPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 1);
+                InstanceId playerPyromaz2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 2);
+                InstanceId playerPyromaz3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Pyromaz", 3);
+                InstanceId opponentQuaziId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Quazi", 1);
+                InstanceId opponentPyromaz1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 1);
+                InstanceId opponentPyromaz2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 2);
+                InstanceId opponentPyromaz3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Pyromaz", 3);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => {},
-                    opponent => {},
-                    player => player.CardPlay(playerCardId, ItemPosition.Start),
+                    player =>
+                    {
+                        player.CardPlay(playerPyromaz1Id, ItemPosition.Start);
+                        player.CardPlay(playerPyromaz2Id, ItemPosition.Start);
+                        player.CardPlay(playerPyromaz3Id, ItemPosition.Start);
+                    },
                     opponent =>
                     {
-                        opponent.CardPlay(opponentCardId, ItemPosition.Start);
+                        opponent.CardPlay(opponentPyromaz1Id, ItemPosition.Start);
+                        opponent.CardPlay(opponentPyromaz2Id, ItemPosition.Start);
+                        opponent.CardPlay(opponentPyromaz3Id, ItemPosition.Start);
                     },
-                    player => { }
+                    player =>
+                    {
+                        player.CardAttack(playerPyromaz1Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz2Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz3Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                    },
+                    opponent =>
+                    {
+                        opponent.CardAttack(opponentPyromaz1Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz2Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz3Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                    },
+                    player =>
+                    {
+                        player.CardAttack(playerPyromaz1Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz2Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz3Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                    },
+                    opponent =>
+                    {
+                        opponent.CardAttack(opponentPyromaz1Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz2Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz3Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                    },
+                    player =>
+                    {
+                        player.CardAttack(playerPyromaz1Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz2Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                        player.CardAttack(playerPyromaz3Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                    },
+                    opponent =>
+                    {
+                        opponent.CardAttack(opponentPyromaz1Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz2Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                        opponent.CardAttack(opponentPyromaz3Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                    },
+                    player => player.CardPlay(playerQuaziId, ItemPosition.Start),
+                    opponent => opponent.CardPlay(opponentQuaziId, ItemPosition.Start)
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 155).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 155).Count > 0);
+                    Assert.AreEqual(7, pvpTestContext.GetCurrentPlayer().GooVials);
+                    Assert.AreEqual(6, pvpTestContext.GetOpponentPlayer().GooVials);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

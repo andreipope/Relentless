@@ -375,34 +375,19 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                       player => {},
-                       opponent => {},
-                       player =>
-                       {
-                           player.CardPlay(playerBloomer1Id, ItemPosition.Start);
-                       },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentBloomer1Id, ItemPosition.Start);
-                       },
-                       player =>
-                       {
-                           player.CardPlay(playerBloomer2Id, ItemPosition.Start);
-                       },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentBloomer2Id, ItemPosition.Start);
-                       },
-                       player => {}
+                       player => player.CardPlay(playerBloomer1Id, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentBloomer1Id, ItemPosition.Start),
+                       player => player.CardPlay(playerBloomer2Id, ItemPosition.Start),
+                       opponent => opponent.CardPlay(opponentBloomer2Id, ItemPosition.Start)
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(6, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
+                    Assert.AreEqual(5, pvpTestContext.GetCurrentPlayer().CardsInHand.Count);
                     Assert.AreEqual(7, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             }, 300);
         }
 

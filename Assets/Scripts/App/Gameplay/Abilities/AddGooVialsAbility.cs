@@ -90,7 +90,8 @@ namespace Loom.ZombieBattleground
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
                 {
-                    if (player.PlayerCardsController.CardsOnBoard.Count < GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.Count)
+                    if (player.PlayerCardsController.CardsOnBoard.FindAll(item => item != BoardUnitModel).Count <
+                        GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.FindAll(item => item != BoardUnitModel).Count)
                     {
                         AddGooVials(player);
                     }

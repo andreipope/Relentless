@@ -83,12 +83,19 @@ namespace Loom.ZombieBattleground
                 changedStatInfo = new ChangedStatInfo()
                 {
                     BoardUnitModel = unit,
-                    RemovedAttack = unit.CurrentDamage - damage,
-                    RemovedDefense = unit.CurrentDefense - defense
+                    RemovedAttack = damage != 0 ? unit.CurrentDamage - damage : 0,
+                    RemovedDefense = defense != 0 ? unit.CurrentDefense - defense : 0
                 };
 
-                unit.CurrentDefense = defense;
-                unit.CurrentDamage = damage;
+                if (defense != 0)
+                {
+                    unit.CurrentDefense = defense;
+                }
+
+                if (damage != 0)
+                {
+                    unit.CurrentDamage = damage;
+                }
 
                 _affectedUnits.Add(changedStatInfo);
             }

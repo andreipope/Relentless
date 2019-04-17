@@ -56,10 +56,11 @@ namespace Loom.ZombieBattleground
             if (GameplayManager.CurrentTurnPlayer == player)
             {
                 player.CurrentGoo = Mathf.Clamp(player.CurrentGoo + count, 0, (int)player.MaxGooVials);
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
             }
             else
             {
-                player.CurrentGooModificator += count;
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
             }
         }
     }
