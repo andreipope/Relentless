@@ -285,7 +285,7 @@ namespace Loom.ZombieBattleground
             if (_tab == Tab.Editing)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
             }
             else
             {
@@ -328,7 +328,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.DrawPopup<WarningPopup>("No available deck exist for selected element!");
+                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
         }
@@ -358,7 +358,7 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.Name + "?");
+                _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
             }
         }
         
@@ -602,7 +602,7 @@ namespace Loom.ZombieBattleground
             
             if(deckListToDisplay.Count <= 0)
             {
-                OpenAlertDialog($"No deck found for keyword '{_inputFieldSearchDeckName.text.Trim()}'");
+                OpenAlertDialog($"No decks found with that search.");
                 return deckList;
             }
 

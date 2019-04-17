@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
             #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
             #endif
         }
         

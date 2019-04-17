@@ -494,7 +494,7 @@ namespace Loom.ZombieBattleground
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryPackBalanceRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += RetryRequestPackBalance;
                 }
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryOpenPackRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += async (x) => await RetryRequestOpenPack(x);
                 }
