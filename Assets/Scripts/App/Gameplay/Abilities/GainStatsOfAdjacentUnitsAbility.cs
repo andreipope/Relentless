@@ -49,8 +49,8 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel boardUnitModel in boardUnits)
             {
-                _addedDefense += BoardUnitModel.CurrentDefense;
-                _addedDamage += BoardUnitModel.CurrentDamage;
+                _addedDefense += boardUnitModel.CurrentDefense;
+                _addedDamage += boardUnitModel.CurrentDamage;
             }
 
             boardUnit.BuffedDefense += _addedDefense;
