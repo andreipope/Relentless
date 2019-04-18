@@ -1190,11 +1190,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardPlay(opponentHotId, ItemPosition.Start);
                            opponent.CardPlay(opponentBlightId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentBlightId, Enumerators.AbilityType.SUMMON_UNIT_FROM_HAND, new List<ParametrizedAbilityInstanceId>()
-                           {
-                               new ParametrizedAbilityInstanceId(opponentHot2Id),
-                               new ParametrizedAbilityInstanceId(opponentHot3Id)
-                           });
+                           opponent.CardAbilityUsed(opponentBlightId, Enumerators.AbilityType.SUMMON_UNIT_FROM_HAND, new List<ParametrizedAbilityInstanceId>());
                        },
                        player =>
                        {
@@ -1203,7 +1199,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardAttack(opponentHotId, playerBlightId);
-                       }
+                       },
+                       player => {}
                 };
 
                 Action validateEndState = () =>
@@ -1214,7 +1211,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.NotNull((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHot3Id));
                 };
 
-                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
             }, 500);
         }
 

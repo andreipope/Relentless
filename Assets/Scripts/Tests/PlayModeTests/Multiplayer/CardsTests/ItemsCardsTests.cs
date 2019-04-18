@@ -669,7 +669,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        player =>
                        {
                            player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerTrunkId);
-                           player.LetsThink(20);
+                           player.LetsThink(10);
                            player.CardAttack(playerTrunkId, opponentTrunkId);
                        },
                        opponent => {},
