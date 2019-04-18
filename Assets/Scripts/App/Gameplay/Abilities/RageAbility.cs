@@ -28,21 +28,15 @@ namespace Loom.ZombieBattleground
             {
                 if (status)
                 {
-                    if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
-                    {
-                        AbilityUnitOwner.BuffedDamage += Value;
-                        AbilityUnitOwner.CurrentDamage += Value;
-                        InvokeActionTriggered(true);
-                    }
+                    AbilityUnitOwner.BuffedDamage += Value;
+                    AbilityUnitOwner.CurrentDamage += Value;
+                    InvokeActionTriggered(true);
                 }
                 else
                 {
-                    if (AbilityUnitOwner.CurrentDefense >= AbilityUnitOwner.MaxCurrentDefense)
-                    {
-                        AbilityUnitOwner.BuffedDamage -= Value;
-                        AbilityUnitOwner.CurrentDamage -= Value;
-                        InvokeActionTriggered(false);
-                    }
+                    AbilityUnitOwner.BuffedDamage -= Value;
+                    AbilityUnitOwner.CurrentDamage -= Value;
+                    InvokeActionTriggered(false);
                 }
             }
         }
