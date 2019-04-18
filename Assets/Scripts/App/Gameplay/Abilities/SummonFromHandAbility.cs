@@ -87,8 +87,8 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    HandBoardCard cardView = BattlegroundController.CreateCustomHandBoardCard(cards[i]).HandBoardCard;
-                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardView.BoardCardView, ref targetEffects, ref boardCards, false);
+                    HandBoardCard cardHand = BattlegroundController.CreateCustomHandBoardCard(cards[i]).HandBoardCard;
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardHand.BoardCardView, ref targetEffects, ref boardCards, false);
                 }
             }
 
