@@ -25,7 +25,18 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            Action();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -39,22 +50,7 @@ namespace Loom.ZombieBattleground
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (PredefinedTargets != null)
-            {
-                IReadOnlyList<HandBoardCard> boardCardsTargets =
-                    PredefinedTargets
-                        .Select(x => x.BoardObject as BoardUnitModel)
-                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
-                        .ToList();
-
-                foreach (HandBoardCard target in boardCardsTargets)
-                {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, false);
-                }
-                return;
-            }
-
-            if (HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
+            if (!HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
                 return;
 
             List<BoardUnitModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
@@ -84,15 +80,17 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < Mathf.Min(emptyFields, cards.Count); i++)
             {
-                BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
-                PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
+                if (PlayerCallerOfAbility.IsLocalPlayer)
+                {
+                    BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
+                }
+                else
+                {
+                    HandBoardCard cardHand = BattlegroundController.CreateCustomHandBoardCard(cards[i]).HandBoardCard;
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardHand.BoardCardView, ref targetEffects, ref boardCards, false);
+                }
             }
-
-            InvokeUseAbilityEvent(
-                boardCards
-                    .Select(target => new ParametrizedAbilityBoardObject(target))
-                    .ToList()
-            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
