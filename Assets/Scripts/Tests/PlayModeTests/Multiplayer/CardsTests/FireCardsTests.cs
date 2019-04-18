@@ -766,19 +766,21 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
                     },
                     player =>
-                    {
-                       player.CardAttack(playerCardId, opponentZlabId);
+                    { 
+                        player.CardAttack(playerCardId, opponentZlabId);
                     },
                     opponent =>
                     {
-                       opponent.CardAttack(opponentCardId, playerZlabId);
-                    }
+                        opponent.CardAttack(opponentCardId, playerZlabId);
+                    },
+                    player => {},
+                    opponent => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(4, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
-                    Assert.AreEqual(3, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(3, pvpTestContext.GetCurrentPlayer().CardsOnBoard.Count);
+                    Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().CardsOnBoard.Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -888,6 +890,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         player.CardPlay(playerHot2Id, ItemPosition.Start);
                         player.CardPlay(playerHot3Id, ItemPosition.Start);
                         player.CardPlay(playerCardId, ItemPosition.Start);
+                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT, new List<ParametrizedAbilityInstanceId>(){
+                            new ParametrizedAbilityInstanceId(playerHotId),
+                            new ParametrizedAbilityInstanceId(playerHot2Id),
+                            new ParametrizedAbilityInstanceId(playerHot3Id)
+                        });
                         player.LetsThink(2, true);
 
                         player.AssertInQueue(() =>
@@ -903,6 +910,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardPlay(opponentHotId, ItemPosition.Start);
                         opponent.CardPlay(opponentHot2Id, ItemPosition.Start);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT, new List<ParametrizedAbilityInstanceId>(){
+                            new ParametrizedAbilityInstanceId(opponentHotId),
+                            new ParametrizedAbilityInstanceId(opponentHot2Id)
+                        });
                         opponent.LetsThink(2, true);
 
                         opponent.AssertInQueue(() =>
@@ -983,6 +994,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
                         opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_DAMAGE_RANDOM_ENEMY, new List<ParametrizedAbilityInstanceId>());
                     },
+                    player => {}
                 };
 
                 Action validateEndState = () =>

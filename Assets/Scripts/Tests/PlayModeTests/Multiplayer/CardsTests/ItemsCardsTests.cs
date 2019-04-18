@@ -914,8 +914,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentLawnmowerId, ItemPosition.Start, null, true);
-                       }
+                           opponent.CardPlay(opponentLawnmowerId, ItemPosition.Start);
+                       },
+                       player => {}
                    };
 
                 Action validateEndState = () =>
