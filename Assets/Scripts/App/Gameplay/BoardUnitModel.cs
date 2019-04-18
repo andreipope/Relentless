@@ -832,6 +832,7 @@ namespace Loom.ZombieBattleground
                                     targetCardModel.ResolveBuffShield();
                                     this.ResolveBuffShield();
 
+                                    targetCardModel.InvokeUnitAttackStateFinished();
                                     InvokeUnitAttackStateFinished();
                                 },
                                 () =>
