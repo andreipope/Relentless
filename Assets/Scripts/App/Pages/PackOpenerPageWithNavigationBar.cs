@@ -514,7 +514,7 @@ namespace Loom.ZombieBattleground
         private async Task RetriveCardsFromPack(int packTypeId)
         {
             _lastOpenPackIdRequest = packTypeId;
-            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             try
             {
                 List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
@@ -544,7 +544,7 @@ namespace Loom.ZombieBattleground
         
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             _cardsToDisplayQueqe.Clear();
             foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
             {

@@ -114,7 +114,7 @@ namespace Loom.ZombieBattleground
         private void BuyButtonHandler( int id )
         {
             #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-            _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
             _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
             #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
@@ -251,8 +251,9 @@ namespace Loom.ZombieBattleground
         
 #if UNITY_IOS || UNITY_ANDROID
         private async void RequestFiatValidationGoogle()
-        {            
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationGoogle)}");
+        {
+            Log.Info($"{nameof(RequestFiatValidationGoogle)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -268,7 +269,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationGoogle)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -289,7 +290,8 @@ namespace Loom.ZombieBattleground
 
         private async void RequestFiatValidationApple()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationApple)}");
+            Log.Info($"{nameof(RequestFiatValidationApple)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -305,7 +307,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationApple)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationApple;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -326,7 +328,8 @@ namespace Loom.ZombieBattleground
         
         private async void RequestFiatTransaction()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatTransaction)}");
+            Log.Info($"{nameof(RequestFiatTransaction)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             List<FiatBackendManager.FiatTransactionResponse> recordList = null;
             try
@@ -336,7 +339,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatTransaction)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -367,7 +370,7 @@ namespace Loom.ZombieBattleground
         
         private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
         {            
-            Log.Debug("<color=green>START REQUEST for packs</color>");
+            Log.Debug("START REQUEST for packs");
             List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
             for (int i = 0; i < sortedRecordList.Count; ++i)
             {
@@ -377,17 +380,18 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < requestList.Count; ++i)
             {
                 FiatBackendManager.FiatTransactionResponse record = requestList[i];
-                
-                _uiManager.DrawPopup<LoadingFiatPopup>($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+
+                Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+                _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
 
                 string eventResponse = "";
 
                 eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
-                Log.Debug($"<color=green>Contract [requestPacks] success call.</color>");
-                Log.Debug($"<color=green>EVENT RESPONSE: {eventResponse}</color>");
+                Log.Debug($"Contract [requestPacks] success call.");
+                Log.Debug($"EVENT RESPONSE: {eventResponse}");
                 if (!string.IsNullOrEmpty(eventResponse))
                 {
-                    Log.Debug("<color=green>FINISH REQUEST for packs</color>");
+                    Log.Debug("FINISH REQUEST for packs");
                     await _fiatBackendManager.CallFiatClaim
                     (
                         record.UserId,
@@ -406,7 +410,7 @@ namespace Loom.ZombieBattleground
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
             await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
-            _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s)");
+            _uiManager.DrawPopup<LoadingFiatPopup>($"Success!");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
