@@ -24,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         public int Count { get;  }
 
+        private bool _lastAuraActive;
+
         public ChangeStatsOfCardsInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -43,7 +45,7 @@ namespace Loom.ZombieBattleground
 
             InvokeUseAbilityEvent();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY && AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
             CheckSubTriggers();
@@ -70,6 +72,32 @@ namespace Loom.ZombieBattleground
             CheckSubTriggers();
         }
 
+        protected override void ChangeAuraStatusAction(bool status)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            _lastAuraActive = status;
+            if (status)
+            {
+                CheckSubTriggers();
+            }
+            else
+            {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+            }
+        }
+
+        protected override void HandChangedHandler(int count)
+        {
+
+            if (_lastAuraActive) 
+            {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                CheckSubTriggers();
+            }
+        }
+
         private void CheckSubTriggers()
         {
             List<BoardUnitModel> cards = new List<BoardUnitModel>();
@@ -93,6 +121,12 @@ namespace Loom.ZombieBattleground
                 cards = GetRandomElements(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
                                                                     TargetCardKind == Enumerators.CardKind.UNDEFINED), Count);
             }
+            else
+            {
+                cards = targetCards;
+            }
+
+            _affectedCards.Clear();
 
             foreach (BoardUnitModel card in cards)
             {
@@ -103,6 +137,7 @@ namespace Loom.ZombieBattleground
 
         private void SetStatOfTargetCard(BoardUnitModel card, bool overrideStats = false)
         {
+            _affectedCards.Add(card);
             if (overrideStats)
             {
                 card.InstanceCard.Damage = Attack;
@@ -115,6 +150,9 @@ namespace Loom.ZombieBattleground
                 card.InstanceCard.Defense += Defense;
                 card.InstanceCard.Cost += Cost;
             }
+
+            BoardCardView boardCardView = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().PlayerHandCards.First(x => x.Model.Card == card.Card);
+            boardCardView?.UpdateCardCost();
         }
 
         private void ResetStatsOfTargetCard(BoardUnitModel card)
@@ -122,6 +160,9 @@ namespace Loom.ZombieBattleground
             card.InstanceCard.Damage = card.Prototype.Damage;
             card.InstanceCard.Defense = card.Prototype.Defense;
             card.InstanceCard.Cost = card.Prototype.Cost;
+
+            BoardCardView boardCardView = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().PlayerHandCards.First(x => x.Model.Card == card.Card);
+            boardCardView?.UpdateCardCost();
         }
     }
 }
