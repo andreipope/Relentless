@@ -41,7 +41,10 @@ namespace Loom.ZombieBattleground
         protected override void UnitDiedHandler()
         {
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+            {
+                base.UnitDiedHandler();
                 return;
+            }
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 

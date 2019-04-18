@@ -341,16 +341,27 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     player => {},
                     opponent => {},
-                    player => player.CardPlay(playerCardId, ItemPosition.Start),
-                    opponent => opponent.CardPlay(opponentCardId, ItemPosition.Start),
-                    player => player.CardAttack(playerCardId, opponentCardId),
+                    player => {
+                        player.CardPlay(playerCardId, ItemPosition.Start);
+                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.MODIFICATOR_STATS, new List<ParametrizedAbilityInstanceId>());
+                    },
+                    opponent => {
+                        opponent.LetsThink(10);
+                        opponent.AssertInQueue(() => {
+                            Assert.AreEqual(5, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
+                        });
+                    },
+                    player => {
+                        player.LetsThink(10);
+                        player.AssertInQueue(() => {
+                            Assert.AreEqual(3, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId)).CurrentDamage);
+                        });
+                    },
                     opponent => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerCardId));
-                    Assert.IsNull(TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentCardId));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -704,22 +715,28 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
-                    player => {},
-                    opponent => {},
-                    player => player.CardPlay(playerCardId, ItemPosition.Start),
+                    player =>
+                    {
+                        player.LetsThink(2);
+                        player.CardPlay(playerCardId, ItemPosition.Start);
+                        player.LetsThink(2);
+                        player.AssertInQueue(() => {
+                            Assert.AreEqual(2, pvpTestContext.GetCurrentPlayer().GooVials);
+                        });
+                    },
                     opponent =>
                     {
+                        opponent.LetsThink(2);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND, new List<ParametrizedAbilityInstanceId>());
+                        opponent.LetsThink(2);
+                        opponent.AssertInQueue(() => {
+                            Assert.AreEqual(2, pvpTestContext.GetOpponentPlayer().GooVials);
+                        });
                     },
-                    player => {},
-                    opponent => {}
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.IsTrue(pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 156).Count > 0);
-                    Assert.IsTrue(pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(x => x.Card.Prototype.MouldId == 156).Count > 0);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

@@ -792,8 +792,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      opponent => {},
                      player =>
                      {
-                         player.CardPlay(playerBreezeeId, ItemPosition.Start);
-                         player.CardPlay(playerBreezee2Id, ItemPosition.Start);
                          player.CardPlay(playerHotId, ItemPosition.Start);
                          player.CardPlay(playerZoothsayerId, ItemPosition.Start);
                          player.LetsThink(2);
@@ -801,7 +799,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      },
                      opponent =>
                      {
-                         opponent.CardPlay(opponentBreezeeId, ItemPosition.Start);
                          opponent.CardPlay(opponentHotId, ItemPosition.Start);
                          opponent.CardPlay(opponentZoothsayerId, ItemPosition.Start);
                          opponent.CardAbilityUsed(opponentZoothsayerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
@@ -1003,12 +1000,15 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      player =>
                      {
                          player.CardPlay(playerZtormcallerId, ItemPosition.Start);
+                         player.CardAbilityUsed(playerZtormcallerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
+                         player.CardAbilityUsed(playerZtormcallerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
                          player.CardPlay(playerZlabId, ItemPosition.Start);
                          player.CardPlay(playerZlab2Id, ItemPosition.Start);
                      },
                      opponent =>
                      {
                          opponent.CardPlay(opponentZtormcallerId, ItemPosition.Start);
+                         opponent.CardAbilityUsed(opponentZtormcallerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
                          opponent.CardAbilityUsed(opponentZtormcallerId, Enumerators.AbilityType.DRAW_CARD, new List<ParametrizedAbilityInstanceId>());
                          opponent.CardPlay(opponentZlabId, ItemPosition.Start);
                          opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
@@ -1032,7 +1032,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                      Assert.AreEqual(8, pvpTestContext.GetOpponentPlayer().CardsInHand.Count);
                  };
 
-                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
+                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
              }, 300);
          }
 
