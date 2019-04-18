@@ -597,7 +597,7 @@ namespace Loom.ZombieBattleground
             TurnEnded?.Invoke();
         }
 
-        public void Stun(Enumerators.StunType stunType, int turns)
+        public void Stun(Enumerators.StunType stunType, int turns = 1)
         {
             if (AttackedThisTurn || NumTurnsOnBoard == 0 || _gameplayManager.CurrentTurnPlayer != OwnerPlayer)
                 turns++;

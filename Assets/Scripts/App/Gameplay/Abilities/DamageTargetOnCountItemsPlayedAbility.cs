@@ -38,6 +38,16 @@ namespace Loom.ZombieBattleground
                 };
                 _damage = PlayerCallerOfAbility.CardsInGraveyard.FindAll(x => x.Prototype.Kind == Enumerators.CardKind.ITEM && x != CardModel).Count;
 
+                if (PredefinedTargets != null)
+                {
+                    _targets.Clear();
+                    foreach (ParametrizedAbilityBoardObject target in PredefinedTargets)
+                    {
+                        _damage = target.Parameters.Attack;
+                        _targets.Add(target.BoardObject);
+                    }
+                }
+
                 DamageTargets();
             }
         }

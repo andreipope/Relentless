@@ -71,26 +71,27 @@ namespace Loom.ZombieBattleground
                     if (player.PlayerCardsController.CardsOnBoard.Count == 1 &&
                         player.PlayerCardsController.CardsOnBoard[0] == CardModel)
                     {
-                        AddGooVials(player);
+                        AddGooVials(PlayerCallerOfAbility);
                     }
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
                 {
                     if (player.Defense < GetOpponentOverlord(player).Defense)
                     {
-                        AddGooVials(player);
+                        AddGooVials(PlayerCallerOfAbility);
                     }
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess)
                 {
                     if (player.Defense <= Defense)
                     {
-                        AddGooVials(player);
+                        AddGooVials(PlayerCallerOfAbility);
                     }
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
                 {
-                    if (player.PlayerCardsController.CardsOnBoard.Count < GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.Count)
+                    if (player.PlayerCardsController.CardsOnBoard.FindAll(item => item != CardModel).Count <
+                        GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.FindAll(item => item != CardModel).Count)
                     {
                         AddGooVials(player);
                     }

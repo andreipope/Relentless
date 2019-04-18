@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -158,7 +159,7 @@ namespace Loom.ZombieBattleground
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.ForEachAllyUnitInPlay)
             {
-                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.Count;
+                int count = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(item => item != AbilityUnitOwner).Count;
 
                 defense = Defense * count;
                 attack = Attack * count;
@@ -188,7 +189,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (CardModel unit in PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard)
             {
-                if (!withCaller && unit.Card == CardModel.Card)
+                if (!withCaller && unit == CardModel)
                     continue;
 
                 ChangeStatsOfTarget(unit, defense, damage);

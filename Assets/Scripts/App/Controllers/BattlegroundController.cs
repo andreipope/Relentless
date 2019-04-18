@@ -289,7 +289,7 @@ namespace Loom.ZombieBattleground
 
                 Action endOfAnimationCallback = () =>
                 {
-                    boardUnitView.DisposeGameObject();
+                    boardUnitView.Dispose();
                     cardModel.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(cardModel);
                     cardModel.OwnerPlayer.PlayerCardsController.AddCardToGraveyard(cardModel);
 

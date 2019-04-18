@@ -38,7 +38,6 @@ namespace Loom.ZombieBattleground.Test
                 typeof(EarthCardsTests),
                 typeof(FireCardsTests),
                 typeof(ToxicCardsTests),
-                typeof(HiddenCardsTests),
                 typeof(LifeCardsTests),
                 typeof(ItemsCardsTests)
             };

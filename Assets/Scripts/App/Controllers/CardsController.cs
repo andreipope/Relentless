@@ -406,7 +406,7 @@ namespace Loom.ZombieBattleground
             InternalTools.DoActionDelayed(() =>
             {
                 cardModel.Die(true);
-                boardUnitView.DisposeGameObject();
+                boardUnitView.Dispose();
 
                 unitOwner.PlayerCardsController.RemoveCardFromBoard(cardModel);
 
@@ -535,7 +535,7 @@ namespace Loom.ZombieBattleground
                                         {
                                             ranksBuffAction?.TriggerActionExternally();
 
-                                            boardUnitView.DisposeGameObject();
+                                            boardUnitView.Dispose();
                                             boardUnitView.Model.Die(true, isDead: false);
 
                                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
@@ -846,11 +846,20 @@ namespace Loom.ZombieBattleground
 
         public void DiscardCardFromHand(CardModel cardModel)
         {
-            BoardCardView card = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
+            ICardView cardView;
+            if(cardModel.Owner.IsLocalPlayer)
+            {
+                cardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
 
-            _battlegroundController.UnregisterCardView(card);
+            }
+            else
+            {
+                cardView = _battlegroundController.GetCardViewByModel<OpponentHandCardView>(cardModel);
+            }
+
+            _battlegroundController.UnregisterCardView(cardView);
+            cardView.Dispose();
             cardModel.Owner.PlayerCardsController.RemoveCardFromHand(cardModel);
-            card.Dispose();
         }
     }
 

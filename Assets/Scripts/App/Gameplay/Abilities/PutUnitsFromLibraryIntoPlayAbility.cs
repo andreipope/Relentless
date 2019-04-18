@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
@@ -45,55 +47,46 @@ namespace Loom.ZombieBattleground
             List<TargetCardInfo> targets = new List<TargetCardInfo>();
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (PredefinedTargets != null)
+            Player playerOwner = null;
+
+            foreach (Enumerators.Target targetType in AbilityData.Targets)
             {
-                targets.AddRange(PredefinedTargets.Select(x => new TargetCardInfo()
+                switch (targetType)
                 {
-                    Owner = x.BoardObject as Player,
-                    Name = x.Parameters.CardName
-                }).ToList());
-            }
-            else
-            {
-                Player playerOwner = null;
+                    case Enumerators.Target.PLAYER:
+                        playerOwner = PlayerCallerOfAbility;
+                        break;
+                    case Enumerators.Target.OPPONENT:
+                        playerOwner = GetOpponentOverlord();
+                        break;
+                }
 
-                foreach (Enumerators.Target targetType in AbilityData.Targets)
+                List<Card> elements = DataManager.CachedCardsLibraryData.Cards.ToList();
+
+                elements = elements.FindAll(item => item.Faction != Enumerators.Faction.ITEM);
+
+                if(Cost > 0)
                 {
-                    switch (targetType)
+                    elements = elements.FindAll(item => item.Cost == Cost);
+                }
+
+                if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+                {
+                    elements = GetRandomElements(elements, Count);
+                }
+
+                if (HasEmptySpaceOnBoard(playerOwner, out int emptyFields) && elements.Count > 0)
+                {
+                    for (int i = 0; i < emptyFields; i++)
                     {
-                        case Enumerators.Target.PLAYER:
-                            playerOwner = PlayerCallerOfAbility;
+                        if (i >= elements.Count)
                             break;
-                        case Enumerators.Target.OPPONENT:
-                            playerOwner = GetOpponentOverlord();
-                            break;
-                    }
 
-                    List<Card> elements = DataManager.CachedCardsLibraryData.Cards.ToList();
-
-                    if(Cost > 0)
-                    {
-                        elements = elements.FindAll(item => item.Cost == Cost);
-                    }
-
-                    if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
-                    {
-                        elements = GetRandomElements(elements, Count);
-                    }
-
-                    if (HasEmptySpaceOnBoard(playerOwner, out int emptyFields) && elements.Count > 0)
-                    {
-                        for (int i = 0; i < emptyFields; i++)
+                        targets.Add(new TargetCardInfo()
                         {
-                            if (i >= elements.Count)
-                                break;
-
-                            targets.Add(new TargetCardInfo()
-                            {
-                                Name = elements[i].Name,
-                                Owner = playerOwner
-                            });
-                        }
+                            Name = elements[i].Name,
+                            Owner = playerOwner
+                        });
                     }
                 }
             }
@@ -104,15 +97,6 @@ namespace Loom.ZombieBattleground
                 {
                     PutCardOnBoard(target.Owner, target.Name, ref targetEffects);
                 }
-
-                InvokeUseAbilityEvent(
-                    targets
-                        .Select(target => new ParametrizedAbilityBoardObject(target.Owner, new ParametrizedAbilityParameters()
-                        {
-                            CardName = target.Name
-                        }))
-                        .ToList()
-                );
 
                 ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {

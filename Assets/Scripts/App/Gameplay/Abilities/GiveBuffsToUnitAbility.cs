@@ -17,6 +17,8 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
+            InvokeUseAbilityEvent();
+
             CheckSubTriggers();
         }
 
@@ -27,6 +29,11 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 GiveBuffsToUnit(TargetUnit);
+
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 

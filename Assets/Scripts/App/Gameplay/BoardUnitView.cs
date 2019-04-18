@@ -181,7 +181,7 @@ namespace Loom.ZombieBattleground
             CheckOnDie();
         }
 
-        public void DisposeGameObject()
+        public void Dispose()
         {
             Log.Info($"GameObject of BoardUnitView was disposed (Model: {Model})");
 
@@ -296,7 +296,7 @@ namespace Loom.ZombieBattleground
 
         private void BoardUnitOnUnitFromDeckRemoved()
         {
-            DisposeGameObject();
+            Dispose();
         }
 
         private void BoardUnitOnCreaturePlayableForceSet()

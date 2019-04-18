@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class ChangeStatsOfCardsInHandAbility : AbilityBase
     {
+        private List<CardModel> _affectedCards;
+
         public Enumerators.Stat StatType { get; }
 
         public Enumerators.CardKind TargetCardKind { get; }
@@ -22,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         public int Count { get;  }
 
+        private bool _lastAuraActive;
+
         public ChangeStatsOfCardsInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -31,13 +35,17 @@ namespace Loom.ZombieBattleground
             Cost = ability.Cost;
 
             Count = Mathf.Clamp(ability.Count, 1, ability.Count);
+
+            _affectedCards = new List<CardModel>();
         }
 
         public override void Activate()
         {
             base.Activate();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY && AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
+            InvokeUseAbilityEvent();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
             CheckSubTriggers();
@@ -56,19 +64,44 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
+            _affectedCards.ForEach(ResetStatsOfTargetCard);
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             CheckSubTriggers();
         }
 
+        protected override void ChangeAuraStatusAction(bool status)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            _lastAuraActive = status;
+            if (status)
+            {
+                CheckSubTriggers();
+            }
+            else
+            {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+            }
+        }
+
+        protected override void HandChangedHandler(int count)
+        {
+
+            if (_lastAuraActive) 
+            {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                CheckSubTriggers();
+            }
+        }
 
         private void CheckSubTriggers()
         {
-
             List<CardModel> cards = new List<CardModel>();
             List<CardModel> targetCards = new List<CardModel>();
-            List<ParametrizedAbilityBoardObject> parametrizedAbilityBoardObjects = new List<ParametrizedAbilityBoardObject>();
 
             foreach (Enumerators.Target type in AbilityData.Targets)
             {
@@ -83,37 +116,28 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (PredefinedTargets != null)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                foreach (ParametrizedAbilityBoardObject boardObject in PredefinedTargets)
-                {
-                    cards.Add(targetCards.Find(x => x.InstanceId.Id == Convert.ToInt32(boardObject.Parameters.CardName)));
-                }
+                cards = GetRandomElements(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
+                                                                    TargetCardKind == Enumerators.CardKind.UNDEFINED), Count);
             }
             else
             {
-                cards = InternalTools.GetRandomElementsFromList(targetCards.FindAll(x => x.Prototype.Kind == TargetCardKind ||
-                                                                TargetCardKind == Enumerators.CardKind.UNDEFINED), Count);
+                cards = targetCards;
             }
+
+            _affectedCards.Clear();
 
             foreach (CardModel card in cards)
             {
-                SetStatOfTargetCard(card.Card, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
-
-                parametrizedAbilityBoardObjects.Add(new ParametrizedAbilityBoardObject(AbilityUnitOwner, new ParametrizedAbilityParameters()
-                {
-                    CardName = card.InstanceId.Id.ToString()
-                }));
+                SetStatOfTargetCard(card, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
             }
 
-            if (parametrizedAbilityBoardObjects.Count > 0)
-            {
-                InvokeUseAbilityEvent(parametrizedAbilityBoardObjects);
-            }
         }
 
-        private void SetStatOfTargetCard(WorkingCard card, bool overrideStats = false)
+        private void SetStatOfTargetCard(CardModel card, bool overrideStats = false)
         {
+            _affectedCards.Add(card);
             if (overrideStats)
             {
                 card.InstanceCard.Damage = Attack;
@@ -126,6 +150,20 @@ namespace Loom.ZombieBattleground
                 card.InstanceCard.Defense += Defense;
                 card.InstanceCard.Cost += Cost;
             }
+
+
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(card);
+            boardCardView?.UpdateCardCost();
+        }
+
+        private void ResetStatsOfTargetCard(CardModel card)
+        {
+            card.InstanceCard.Damage = card.Prototype.Damage;
+            card.InstanceCard.Defense = card.Prototype.Defense;
+            card.InstanceCard.Cost = card.Prototype.Cost;
+
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(card);
+            boardCardView?.UpdateCardCost();
         }
     }
 }

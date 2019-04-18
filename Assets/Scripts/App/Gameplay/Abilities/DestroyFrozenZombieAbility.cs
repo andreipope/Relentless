@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CardModel unit in boardUnits)
             {
-                BattlegroundController.DestroyBoardUnit(TargetUnit, false);
+                BattlegroundController.DestroyBoardUnit(unit, false);
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {

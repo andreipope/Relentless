@@ -31,6 +31,15 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            Action();
+        }
+
 
         public override void Action(object info = null)
         {
@@ -54,7 +63,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            if (HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
+            if (!HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
                 return;
 
             List<CardModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.

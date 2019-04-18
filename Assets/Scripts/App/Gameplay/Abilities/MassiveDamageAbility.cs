@@ -116,9 +116,12 @@ namespace Loom.ZombieBattleground
                 Damage = CardModel.InstanceCard.Damage;
             }
 
-            foreach(CardModel boardUnit in _targets)
+            foreach(IBoardObject boardObject in _targets)
             {
-                boardUnit.HandleDefenseBuffer(Damage);
+                if (boardObject is CardModel boardUnit)
+                {
+                    boardUnit.HandleDefenseBuffer(Damage);
+                }
             }
 
             InvokeActionTriggered(_targets);

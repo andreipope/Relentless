@@ -279,7 +279,7 @@ namespace Loom.ZombieBattleground
             {
                 unit.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit.Model);
 
-                unit.DisposeGameObject();
+                unit.Dispose();
             }
         }
 
@@ -450,6 +450,7 @@ namespace Loom.ZombieBattleground
                                 AddBoardItemInUse(cardModel);
 
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
+                                item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
                                 _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
