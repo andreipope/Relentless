@@ -1136,7 +1136,9 @@ namespace Loom.ZombieBattleground.Test
                     Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
-                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
                         boardCardView.HandBoardCard,
                         playCardOnBoard =>
@@ -1158,7 +1160,9 @@ namespace Loom.ZombieBattleground.Test
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
-                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
                         boardCardView.HandBoardCard,
                         playCardOnBoard =>
@@ -1176,8 +1180,6 @@ namespace Loom.ZombieBattleground.Test
                     break;
                 }
             }
-
-            _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
 
             await new WaitForUpdate();
         }
