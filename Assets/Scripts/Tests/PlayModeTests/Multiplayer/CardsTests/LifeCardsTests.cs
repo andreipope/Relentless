@@ -754,15 +754,16 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            opponent.CardPlay(opponentBarkId, ItemPosition.Start);
                            opponent.CardPlay(opponentZuckerId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(opponentZuckerId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
                        },
                        player =>
                        {
                            player.CardPlay(playerBarkId, ItemPosition.Start);
                            player.CardPlay(playerBark2Id, ItemPosition.Start);
                            player.CardPlay(playerZuckerId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZuckerId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent => {},
-                       player => {}
                 };
 
                 Action validateEndState = () =>

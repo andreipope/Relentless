@@ -365,33 +365,39 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new DeckCardData("Zephyr", 1),
-                    new DeckCardData("Banshee", 20)
+                    new DeckCardData("Trunk", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new DeckCardData("Zephyr", 1),
-                    new DeckCardData("Banshee", 20)
+                    new DeckCardData("Trunk", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerZephyrId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zephyr", 1);
-                InstanceId playerBanshee1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Banshee", 1);
-                InstanceId playerBanshee2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Banshee", 2);
+                InstanceId opponentZephyrId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zephyr", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
-                {
+                {                 
+                       player => {},
+                       opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerBanshee1Id, ItemPosition.Start);
-                           player.CardPlay(playerBanshee2Id, ItemPosition.Start);
+                           player.CardPlay(playerZephyrId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerZephyrId, Enumerators.AbilityType.CHANGE_STAT_OF_CARDS_IN_HAND, new List<ParametrizedAbilityInstanceId>());
                        },
-                       opponent => {},
-                       player => {}
+                       opponent => {
+                           opponent.CardPlay(opponentZephyrId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(opponentZephyrId, Enumerators.AbilityType.CHANGE_STAT_OF_CARDS_IN_HAND, new List<ParametrizedAbilityInstanceId>());
+                       },
                 };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(3, TestHelper.BattlegroundController.PlayerHandCards.FindAll(x => x.Model.Card.InstanceId == playerZephyrId)[0].Model.Card.InstanceCard.Cost);
+                    Assert.AreEqual(pvpTestContext.GetCurrentPlayer().CardsInHand.Count,
+                        pvpTestContext.GetCurrentPlayer().CardsInHand.FindAll(card => card.Card.InstanceCard.Cost == card.Card.Prototype.Cost - 1).Count);
+                    Assert.AreEqual(pvpTestContext.GetOpponentPlayer().CardsInHand.Count,
+                        pvpTestContext.GetOpponentPlayer().CardsInHand.FindAll(card => card.Card.InstanceCard.Cost == card.Card.Prototype.Cost - 1).Count);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);
