@@ -1442,9 +1442,9 @@ namespace Loom.ZombieBattleground
         {
             List<DeckCardData> cards =
                 _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(data => new DeckCardData(_dataManager.CachedCardsLibraryData.GetCardNameFromMouldId(data.MouldId), data.Amount))
+                    .Select(data => new DeckCardData(data.MouldId, data.Amount))
                     .ToList()
-                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).Faction != Enumerators.Faction.FIRE);
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId).Faction != Enumerators.Faction.FIRE);
 
             List<DeckCardData> filteredCards = new List<DeckCardData>();
             int countCards = 0;

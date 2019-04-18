@@ -426,7 +426,7 @@ namespace Loom.ZombieBattleground
                 hasChanges = false;
                 for (int i = 0; i < deck.Cards.Count; i++)
                 {
-                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == deck.Cards[i].CardName);
+                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.MouldId == deck.Cards[i].MouldId);
 
                     if(foundCard == null || foundCard is default(Card))
                     {

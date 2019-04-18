@@ -227,9 +227,9 @@ namespace Loom.ZombieBattleground
                                         GUILayout.Label(_cardNameToDescription[card.Name]);
                                         if (GUILayout.Button("Add", GUILayout.Width(70)))
                                         {
-                                            if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                            if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
                                             {
-                                                DeckCardData deckCardData = new DeckCardData(card.Name, 0);
+                                                DeckCardData deckCardData = new DeckCardData((int)card.MouldId, 0);
                                                 customDeck.Cards.Add(deckCardData);
                                             }
                                         }
@@ -276,20 +276,21 @@ namespace Loom.ZombieBattleground
             private void DrawCustomDeckCard(Deck customDeck, DeckCardData deckCard)
             {
                 int deckCardIndex = customDeck.Cards.IndexOf(deckCard);
-    
+
                 void MoveCard(int direction)
                 {
                     int newDeckCardIndex = deckCardIndex + direction;
                     DeckCardData otherCard = customDeck.Cards[newDeckCardIndex];
                     customDeck.Cards[newDeckCardIndex] = deckCard;
                     customDeck.Cards[deckCardIndex] = otherCard;
-    
+
                     GUIUtility.ExitGUI();
                 }
-    
+
                 GUILayout.BeginHorizontal();
                 {
-                    if (!_cardNameToDescription.TryGetValue(deckCard.CardName, out string cardDescription))
+                    string cardName = _cheatUI._dataManager.CachedCardsLibraryData.GetCardFromMouldId(deckCard.MouldId).Name;
+                    if (!_cardNameToDescription.TryGetValue(cardName, out string cardDescription))
                     {
                         customDeck.Cards.Remove(deckCard);
                         GUIUtility.ExitGUI();

@@ -298,7 +298,7 @@ namespace Loom.ZombieBattleground
 
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
-                deck.AddCard(card.Name);
+                deck.AddCard((int) card.MouldId);
                 availableCardList.Remove(card);
 
                 amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
@@ -391,7 +391,7 @@ namespace Loom.ZombieBattleground
             cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
             foreach(Card card in cardsToAdd)
             {
-                deck.AddCard(card.Name);
+                deck.AddCard((int)card.MouldId);
             }
         }
 

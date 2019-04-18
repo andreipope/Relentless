@@ -56,7 +56,8 @@ namespace Loom.ZombieBattleground.Test
             int count = 0;
             foreach (DeckCardData deckCard in deck.Cards)
             {
-                if (PvPTestUtility.CardNameEqual(name, deckCard.CardName))
+                string cardName = GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardNameFromMouldId(deckCard.MouldId);
+                if (PvPTestUtility.CardNameEqual(name, cardName))
                 {
                     if (deckCard.Amount <= 0)
                         throw new Exception($"deckCard.Amount <= 0 for card {name}");
@@ -113,8 +114,8 @@ namespace Loom.ZombieBattleground.Test
 
         private static void ValidateDeck(Deck deck)
         {
-            IEnumerable<IGrouping<string,DeckCardData>> groupBy = deck.Cards.GroupBy(card => card.CardName);
-            foreach (IGrouping<string,DeckCardData> grouping in groupBy)
+            IEnumerable<IGrouping<int,DeckCardData>> groupBy = deck.Cards.GroupBy(card => card.MouldId);
+            foreach (IGrouping<int,DeckCardData> grouping in groupBy)
             {
                 int count = grouping.Count();
                 if (count > 1)

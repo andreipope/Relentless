@@ -146,8 +146,9 @@ namespace Loom.ZombieBattleground.Data
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
+            // TODO : Replace cardName to MouldId
             return new DeckCardData(
-                card.CardName,
+                (int) card.MouldId,
                 (int) card.Amount
             );
         }

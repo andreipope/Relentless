@@ -769,6 +769,12 @@ namespace Loom.ZombieBattleground
             return new WorkingCard(card, card, owner);
         }
 
+        public WorkingCard CreateWorkingCardFromCardMouldId(int mouldId, Player owner)
+        {
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+            return new WorkingCard(card, card, owner);
+        }
+
         private void GameEndedHandler(Enumerators.EndGameType obj)
         {
             CardDistribution = false;

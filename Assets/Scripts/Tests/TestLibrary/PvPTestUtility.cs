@@ -221,6 +221,11 @@ namespace Loom.ZombieBattleground.Test
             return deck;
         }
 
+        public static string GetCardNameFromMouldId(int mouldId)
+        {
+           return GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardNameFromMouldId(mouldId);
+        }
+
         public static Deck GetDeckWithCards(string name,
                                     int overlordId = 0,
                                     Enumerators.Skill primarySkill = Enumerators.Skill.NONE,
