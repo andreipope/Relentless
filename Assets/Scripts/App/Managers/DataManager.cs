@@ -449,7 +449,7 @@ namespace Loom.ZombieBattleground
             Card foundCard;
             for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
             {
-                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
+                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.MouldId == CachedCollectionData.Cards[i].MouldId);
 
                 if (foundCard == null)
                 {
@@ -569,7 +569,7 @@ namespace Loom.ZombieBattleground
                         new CollectionCardData
                         {
                             Amount = (int) GetMaxCopiesValue(card, set.Name),
-                            CardName = card.Name
+                            MouldId = (int)card.MouldId
                         });
                 }
             }

@@ -125,7 +125,7 @@ namespace Loom.ZombieBattleground
                         .Where(x => x.Rank.ToString() == levelReward.UnitReward.Rank)
                         .ToList();
                     Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
-                    CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
+                    CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.MouldId == card.MouldId);
                     if (foundCard != null)
                     {
                         foundCard.Amount += levelReward.UnitReward.Count;
@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
                         _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
                         {
                             Amount = levelReward.UnitReward.Count,
-                            CardName = card.Name
+                            MouldId = (int)card.MouldId
                         });
                     }
                 }

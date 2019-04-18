@@ -39,6 +39,15 @@ namespace Loom.ZombieBattleground.Data
             return card;
         }
 
+        public string GetCardNameFromMouldId(int mouldId)
+        {
+            Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
+            if (card == null)
+                throw new Exception($"Card '{mouldId}' not found");
+
+            return card.Name;
+        }
+
         private void InitData()
         {
             Cards = Cards.OrderBy(card => card.Cost).ToList();

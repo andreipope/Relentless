@@ -15,7 +15,7 @@ namespace Loom.ZombieBattleground.Data
             return new CollectionCardData
             {
                 Amount = (int) cardCollection.Amount,
-                CardName = cardCollection.CardName
+                MouldId = (int)cardCollection.MouldId
             };
         }
 

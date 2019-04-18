@@ -1292,7 +1292,7 @@ namespace Loom.ZombieBattleground
             if(CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
             {
                 cards = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.CardName))
+                    .Select(cardInfo => _dataManager.CachedCardsLibraryData.GetCardFromMouldId(cardInfo.MouldId))
                     .ToList()
                     .FindAll(card => card.Faction == faction)
                     .OrderBy(sort => sort.Cost)
@@ -1301,13 +1301,13 @@ namespace Loom.ZombieBattleground
             return cards;
         }
 
-        public CollectionCardData GetCardData(string id)
+        public CollectionCardData GetCardData(int id)
         {
             CollectionCardData cardData = null;
             if (CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
             {
                 cardData = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Find(info => info.CardName == id);
+                    .Find(info => info.MouldId == id);
             }
             return cardData;
         }
@@ -1442,7 +1442,7 @@ namespace Loom.ZombieBattleground
         {
             List<DeckCardData> cards =
                 _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(data => new DeckCardData(data.CardName, data.Amount))
+                    .Select(data => new DeckCardData(_dataManager.CachedCardsLibraryData.GetCardNameFromMouldId(data.MouldId), data.Amount))
                     .ToList()
                     .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).Faction != Enumerators.Faction.FIRE);
 

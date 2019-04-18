@@ -1419,43 +1419,43 @@
         "CardsForArmy": [
           {
             "Amount": 2,
-            "CardName": "Whizper"
+            "MouldId": 1
           },
           {
             "Amount": 2,
-            "CardName": "Burn"
+            "MouldId": 11
           },
           {
             "Amount": 2,
-            "CardName": "Poizon"
+            "MouldId": 24
           },
           {
             "Amount": 2,
-            "CardName": "Zlab"
+            "MouldId": 101
           },
           {
             "Amount": 2,
-            "CardName": "Harpoon"
+            "MouldId": 249
           },
           {
             "Amount": 2,
-            "CardName": "Ember"
+            "MouldId": 106
           },
           {
             "Amount": 2,
-            "CardName": "Blocker"
+            "MouldId": 98
           },
           {
             "Amount": 2,
-            "CardName": "Breezee"
+            "MouldId": 91
           },
           {
             "Amount": 2,
-            "CardName": "Pyromaz"
+            "MouldId": 10
           },
           {
             "Amount": 2,
-            "CardName": "Crumbz"
+            "MouldId": 57
           }
         ]
       },
@@ -2446,63 +2446,63 @@
         "CardsForArmy": [
           {
             "Amount": 2,
-            "CardName": "Whizper"
+            "MouldId": 1
           },
           {
             "Amount": 2,
-            "CardName": "Burn"
+            "MouldId": 11
           },
           {
             "Amount": 2,
-            "CardName": "Poizon"
+            "MouldId": 24
           },
           {
             "Amount": 2,
-            "CardName": "Zlab"
+            "MouldId": 101
           },
           {
             "Amount": 2,
-            "CardName": "Harpoon"
+            "MouldId": 249
           },
           {
             "Amount": 2,
-            "CardName": "Ember"
+            "MouldId": 106
           },
           {
             "Amount": 2,
-            "CardName": "Blocker"
+            "MouldId": 98
           },
           {
             "Amount": 2,
-            "CardName": "Breezee"
+            "MouldId": 91
           },
           {
             "Amount": 2,
-            "CardName": "Pyromaz"
+            "MouldId": 10
           },
           {
             "Amount": 2,
-            "CardName": "Crumbz"
+            "MouldId": 57
           },
           {
             "Amount": 2,
-            "CardName": "Boomstick"
+            "MouldId": 154
           },
           {
             "Amount": 2,
-            "CardName": "Molotov"
+            "MouldId": 39
           },
           {
             "Amount": 2,
-            "CardName": "Zhampion"
+            "MouldId": 67
           },
           {
             "Amount": 2,
-            "CardName": "Grower"
+            "MouldId": 73
           },
           {
             "Amount": 2,
-            "CardName": "Bark"
+            "MouldId": 123
           }
         ]
       },
