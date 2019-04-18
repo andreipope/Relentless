@@ -764,7 +764,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.CardAbilityUsed(playerZuckerId, Enumerators.AbilityType.CHANGE_STAT, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent => {},
-                       player => {}
                 };
 
                 Action validateEndState = () =>
