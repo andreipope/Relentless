@@ -102,8 +102,15 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                ResetAffectedUnits();
+            }
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
             ChangeStatsToItself();
@@ -241,10 +248,15 @@ namespace Loom.ZombieBattleground
         {
             foreach(CardStatInfo cardStat in _affectedUnits)
             {
-                cardStat.BoardUnitModel.BuffedDefense -= cardStat.ModifiedDefense;
-                cardStat.BoardUnitModel.CurrentDefense -= cardStat.ModifiedDefense;
-                cardStat.BoardUnitModel.BuffedDamage -= cardStat.ModifiedDamage;
-                cardStat.BoardUnitModel.CurrentDamage -= cardStat.ModifiedDamage;
+                cardStat.BoardUnitModel.BuffedDefense =
+                    Mathf.Clamp(cardStat.BoardUnitModel.BuffedDefense - cardStat.ModifiedDefense, 0, 999);
+                cardStat.BoardUnitModel.CurrentDefense =
+                    Mathf.Clamp(cardStat.BoardUnitModel.CurrentDefense - cardStat.ModifiedDefense, cardStat.BoardUnitModel.Card.Prototype.Defense, 999);
+
+                cardStat.BoardUnitModel.BuffedDamage =
+                    Mathf.Clamp(cardStat.BoardUnitModel.BuffedDamage - cardStat.ModifiedDamage, 0, 999);
+                cardStat.BoardUnitModel.CurrentDamage =
+                    Mathf.Clamp(cardStat.BoardUnitModel.CurrentDamage - cardStat.ModifiedDamage, cardStat.BoardUnitModel.Card.Prototype.Damage, 999);
             }
 
             _affectedUnits.Clear();
