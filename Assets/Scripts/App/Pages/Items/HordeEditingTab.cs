@@ -812,6 +812,11 @@ namespace Loom.ZombieBattleground
                     );
                 }
 
+                if(!_cacheCollectionPageIndexDictionary.ContainsKey(card.Name))
+                {
+                    _cacheCollectionPageIndexDictionary.Add(card.Name, 0);
+                }
+                
                 UpdateCollectionPageIndex
                 (
                     _cacheCollectionPageIndexDictionary[card.Name]

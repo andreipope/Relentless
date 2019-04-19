@@ -118,11 +118,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.CardsOnBoard.Where(
-                            unit => unit != AbilityUnitOwner &&
-                                !unit.IsDead &&
-                                unit.CurrentDefense > 0)
-                        .Count() == 0)
+                    if (GetAliveUnits(PlayerCallerOfAbility.CardsOnBoard).Count() == 1)
                     {
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
@@ -183,11 +179,11 @@ namespace Loom.ZombieBattleground
 
                         if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
                         {
-                            for (int i = 0; i < _affectedUnits.Count; i++)
+                            for (int i = _affectedUnits.Count-1; i >= 0; i--)
                             {
                                 if (!allies.Contains(_affectedUnits[i]))
                                 {
-                                    _affectedUnits.RemoveAt(i--);
+                                    _affectedUnits.RemoveAt(i);
                                 }
                             }
                         }

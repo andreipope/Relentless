@@ -24,7 +24,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity != Enumerators.AbilityActivity.ACTIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
@@ -41,6 +44,10 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 Action(TargetUnit);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 
@@ -82,6 +89,8 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardUnitModel unit in _boardUnits)
             {
                 if (Damage != 0)
@@ -95,13 +104,39 @@ namespace Loom.ZombieBattleground
                     }
 
                     unit.CurrentDamage += Damage;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = Damage
+                    });
                 }
 
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
                     unit.CurrentDefense += Defense;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = Defense
+                    });
                 }
+            }
+
+            if (TargetEffects.Count > 0)
+            {
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
             }
         }
 

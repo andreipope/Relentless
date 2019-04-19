@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -68,7 +69,7 @@ namespace Loom.ZombieBattleground
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
                 {
-                    if (player.PlayerCardsController.CardsOnBoard.Count == 1 &&
+                    if (GetAliveUnits(player.PlayerCardsController.CardsOnBoard).Count() == 1 &&
                         player.PlayerCardsController.CardsOnBoard[0] == BoardUnitModel)
                     {
                         AddGooVials(PlayerCallerOfAbility);
@@ -90,8 +91,8 @@ namespace Loom.ZombieBattleground
                 }
                 else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.IfHaveFewerUnitsInPlay)
                 {
-                    if (player.PlayerCardsController.CardsOnBoard.FindAll(item => item != BoardUnitModel).Count <
-                        GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard.FindAll(item => item != BoardUnitModel).Count)
+                    if (GetAliveUnits(player.PlayerCardsController.CardsOnBoard).Where(item => item != BoardUnitModel).Count() <
+                        GetAliveUnits(GetOpponentOverlord(player).PlayerCardsController.CardsOnBoard).Where(item => item != BoardUnitModel).Count())
                     {
                         AddGooVials(player);
                     }
