@@ -148,11 +148,14 @@ namespace Loom.ZombieBattleground
             {
                 card.InstanceCard.Damage += Attack;
                 card.InstanceCard.Defense += Defense;
-                card.InstanceCard.Cost += Cost;
+                card.InstanceCard.Cost = Mathf.Max(0, card.InstanceCard.Cost+Cost);
             }
 
-            BoardCardView boardCardView = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().PlayerHandCards.First(x => x.Model.Card == card.Card);
-            boardCardView?.UpdateCardCost();
+            if (PlayerCallerOfAbility.IsLocalPlayer)
+            {
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model == card);
+                boardCardView?.UpdateCardCost();
+            }
         }
 
         private void ResetStatsOfTargetCard(BoardUnitModel card)
@@ -161,8 +164,11 @@ namespace Loom.ZombieBattleground
             card.InstanceCard.Defense = card.Prototype.Defense;
             card.InstanceCard.Cost = card.Prototype.Cost;
 
-            BoardCardView boardCardView = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>().PlayerHandCards.First(x => x.Model.Card == card.Card);
-            boardCardView?.UpdateCardCost();
+            if (PlayerCallerOfAbility.IsLocalPlayer)
+            {
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model.Card == card.Card);
+                boardCardView?.UpdateCardCost();
+            }
         }
     }
 }
