@@ -27,21 +27,27 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AT_DEFENCE)
                 return;
 
-            ((BoardUnitModel)from)?.Stun(Enumerators.StunType.FREEZE, Value);
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (from is BoardUnitModel unit) 
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
+                if (unit.HasBuffShield)
+                    return;
+                    
+                unit.Stun(Enumerators.StunType.FREEZE, Value);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         {
-                            ActionEffectType = Enumerators.ActionEffectType.Freeze,
-                            Target = from,
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.Freeze,
+                                Target = unit,
+                            }
                         }
-                    }
-            });
+                });
+            }
         }
     }
 }

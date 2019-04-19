@@ -72,6 +72,9 @@ namespace Loom.ZombieBattleground
 
             if (info is BoardUnitModel unit)
             {
+                if (unit.HasBuffShield)
+                    return;
+
                 StunUnit(unit);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
@@ -98,6 +101,9 @@ namespace Loom.ZombieBattleground
 
             if (info is BoardUnitModel unit)
             {
+                if (unit.HasBuffShield)
+                    return;
+                    
                 StunUnit(unit);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
