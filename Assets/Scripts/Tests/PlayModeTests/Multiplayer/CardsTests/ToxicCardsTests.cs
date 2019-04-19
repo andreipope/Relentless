@@ -1467,24 +1467,21 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         playerZludgeDamage = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZludgeId)).CurrentDamage;
                         opponnentZludgeDamage = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZludgeId)).CurrentDamage;
 
-                        player.CardAttack(playerGrowerId, opponentZludgeId);
+                        player.CardAttack(playerZludgeId, opponentZludgeId);
                     },
-                    opponent => opponent.CardAttack(opponentGrowerId, playerZludgeId),
+                    opponent => opponent.CardAttack(opponentZludgeId, playerZludgeId),
                     player => {},
                     opponent => {},
             };
 
                 Action validateEndState = () =>
-                {
-                    BoardUnitModel playerGrower2Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerGrower2Id));
-                    BoardUnitModel playerGrower3Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerGrower3Id));
-                    BoardUnitModel opponnentGrower2Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentGrower2Id));
-                    BoardUnitModel opponnentGrower3Unit = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentGrower3Id));
-
-                    Assert.AreEqual(playerGrower2Unit.MaxCurrentDefense - playerZludgeDamage, playerGrower2Unit.CurrentDefense);
-                    Assert.AreEqual(playerGrower3Unit.MaxCurrentDefense - playerZludgeDamage, playerGrower3Unit.CurrentDefense);
-                    Assert.AreEqual(opponnentGrower2Unit.MaxCurrentDefense - opponnentZludgeDamage, opponnentGrower2Unit.CurrentDefense);
-                    Assert.AreEqual(opponnentGrower3Unit.MaxCurrentDefense - opponnentZludgeDamage, opponnentGrower3Unit.CurrentDefense);
+                { 
+                    Assert.AreEqual(0, TestHelper.GameplayManager.CurrentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(0, TestHelper.GameplayManager.OpponentPlayer.CardsOnBoard.Count);
+                    Assert.AreEqual(TestHelper.GameplayManager.CurrentPlayer.InitialDefense - (playerZludgeDamage + opponnentZludgeDamage),
+                        TestHelper.GameplayManager.CurrentPlayer.Defense);
+                    Assert.AreEqual(TestHelper.GameplayManager.OpponentPlayer.InitialDefense - (playerZludgeDamage + opponnentZludgeDamage),
+                        TestHelper.GameplayManager.OpponentPlayer.Defense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
