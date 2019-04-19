@@ -61,11 +61,11 @@ namespace Loom.ZombieBattleground
                         actionEffectType = Enumerators.ActionEffectType.Guard;
                         break;
                     case Enumerators.GameMechanicDescription.Destroy:
-                        unit.AddBuff(Enumerators.BuffType.DESTROY);
+                        unit.ApplyBuff(Enumerators.BuffType.DESTROY);
                         actionEffectType = Enumerators.ActionEffectType.DeathMark;
                         break;
                     case Enumerators.GameMechanicDescription.Reanimate:
-                        unit.AddBuff(Enumerators.BuffType.REANIMATE);
+                        unit.ApplyBuff(Enumerators.BuffType.REANIMATE);
                         actionEffectType = Enumerators.ActionEffectType.Reanimate;
                         break;
                     case Enumerators.GameMechanicDescription.Heavy:

@@ -53,29 +53,33 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
                 return;
 
-            foreach (Enumerators.Target target in AbilityData.Targets)
-            {
-                switch (target)
-                {
-                    case Enumerators.Target.PLAYER:
-                        ChangeCostByStatus(PlayerCallerOfAbility, status);
-                        break;
-                    case Enumerators.Target.OPPONENT:
-                        ChangeCostByStatus(GetOpponentOverlord(), status);
-                        break;
-                }
-            }
+            HandleTargets(status);
         }
 
         protected override void HandChangedHandler(int count)
         {
             base.HandChangedHandler(count);
 
-            ChangeAuraStatusAction(false);
-            ChangeAuraStatusAction(true);
+            HandleTargets(true, true);
         }
 
-        private void ChangeCostByStatus(Player player, bool status)
+        private void HandleTargets(bool status, bool refresh = false)
+        {
+            foreach (Enumerators.Target target in AbilityData.Targets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.PLAYER:
+                        ChangeCostByStatus(PlayerCallerOfAbility, status, refresh);
+                        break;
+                    case Enumerators.Target.OPPONENT:
+                        ChangeCostByStatus(GetOpponentOverlord(), status, refresh);
+                        break;
+                }
+            }
+        }
+
+        private void ChangeCostByStatus(Player player, bool status, bool refresh = false)
         {
             IEnumerable<BoardUnitModel> units = null;
 
@@ -90,8 +94,6 @@ namespace Loom.ZombieBattleground
                     units = player.PlayerCardsController.CardsInHand.
                                       Where(unit => unit.Card.Prototype.Kind == TargetCardKind);
                 }
-
-                _updatedCostUnits = units.ToList();
             }
 
             if (units != null)
@@ -100,21 +102,29 @@ namespace Loom.ZombieBattleground
 
                 foreach (BoardUnitModel boardUnit in units)
                 {
-                    if (status)
+                    calculatedCost = boardUnit.Card.InstanceCard.Cost;
+
+                    if (!refresh || !_updatedCostUnits.Contains(boardUnit))
                     {
-                        calculatedCost = boardUnit.Card.InstanceCard.Cost + Cost;
+                        calculatedCost += status ? Cost : - Cost;
                     }
-                    else
-                    {
-                        calculatedCost = boardUnit.Card.InstanceCard.Cost - Cost;
-                    }
+
+                    if (boardUnit.Card.InstanceCard.Cost == calculatedCost)
+                        continue;
 
                     CardsController.SetGooCostOfCardInHand(
                         player,
                         boardUnit,
                         calculatedCost
                     );
+
+                    _updatedCostUnits.Add(boardUnit);
                 }
+            }
+
+            if (!status)
+            {
+                _updatedCostUnits.Clear();
             }
         }
     }

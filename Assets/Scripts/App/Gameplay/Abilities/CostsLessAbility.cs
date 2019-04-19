@@ -54,7 +54,8 @@ namespace Loom.ZombieBattleground
             {
                 int cost = BoardUnitModel.Prototype.Cost;
 
-                if (PlayerCallerOfAbility.PlayerCardsController.CardsInHand.Count == 1)
+                if (PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
+                    FindAll(item => item.Card.Prototype.Kind == Enumerators.CardKind.CREATURE).Count == 1)
                 {
                     cost = Cost;
                 }

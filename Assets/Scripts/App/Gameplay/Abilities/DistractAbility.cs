@@ -9,6 +9,7 @@ namespace Loom.ZombieBattleground
         public DistractAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            TargetCardType = AbilityData.TargetCardType;
         }
 
         public override void Activate()
