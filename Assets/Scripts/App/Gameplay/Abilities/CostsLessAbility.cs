@@ -37,6 +37,9 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
             Action();
         }
 

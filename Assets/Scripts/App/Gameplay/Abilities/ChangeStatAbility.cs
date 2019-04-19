@@ -183,6 +183,25 @@ namespace Loom.ZombieBattleground
             }
 
             ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
+
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = AbilityUnitOwner
+                    },
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = attack > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        Target = AbilityUnitOwner
+                    }
+                }
+            });
         }
 
         private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false)

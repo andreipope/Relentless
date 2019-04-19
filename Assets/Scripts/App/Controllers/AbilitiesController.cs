@@ -337,6 +337,50 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
+        public bool HasUnitsWithoutTargetUnitType(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            if (ability.Targets.Count == 0)
+            {
+                return false;
+            }
+
+            Player opponent = boardUnitModel.Owner == _gameplayManager.CurrentPlayer ?
+                _gameplayManager.OpponentPlayer :
+                _gameplayManager.CurrentPlayer;
+            Player player = boardUnitModel.Owner;
+
+            foreach (Enumerators.Target target in ability.Targets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.PLAYER_CARD:
+                        {
+                            IReadOnlyList<BoardUnitModel> units =
+                                player.CardsOnBoard.FindAll(x => x.InitialUnitType == ability.TargetUnitType);
+
+                            if (units.Count > 0)
+                                return true;
+
+                            break;
+                        }
+                    case Enumerators.Target.OPPONENT_CARD:
+                        {
+                            IReadOnlyList<BoardUnitModel> units =
+                                opponent.CardsOnBoard.FindAll(x => x.InitialUnitType == ability.TargetUnitType);
+
+                            if (units.Count > 0)
+                                return true;
+
+                            break;
+                        }
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                }
+            }
+
+            return false;
+        }
+
         public bool HasSpecialUnitStatusOnBoard(BoardUnitModel boardUnitModel, AbilityData ability)
         {
             if (ability.Targets.Count == 0)
@@ -517,7 +561,11 @@ namespace Loom.ZombieBattleground
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
                                !HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)) ||
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess &&
-                                !OverlordDefenseEqualOrLess(boardUnitModel, ability)))
+                                !OverlordDefenseEqualOrLess(boardUnitModel, ability)) ||
+                                (ability.TargetUnitType != Enumerators.CardType.UNDEFINED &&
+                                 !HasUnitsWithoutTargetUnitType(boardUnitModel, ability) &&
+                                 ability.Activity == Enumerators.AbilityActivity.ACTIVE &&
+                                 ability.Trigger == Enumerators.AbilityTrigger.ENTRY))
 
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);

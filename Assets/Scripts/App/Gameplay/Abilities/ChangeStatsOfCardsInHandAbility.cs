@@ -130,14 +130,25 @@ namespace Loom.ZombieBattleground
 
             _affectedCards.Clear();
 
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             foreach (BoardUnitModel card in cards)
             {
-                SetStatOfTargetCard(card, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
+                SetStatOfTargetCard(card, ref TargetEffects, AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.PermanentChanges);
             }
 
+            if (TargetEffects.Count > 0)
+            {
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
+            }
         }
 
-        private void SetStatOfTargetCard(BoardUnitModel card, bool overrideStats = false)
+        private void SetStatOfTargetCard(BoardUnitModel card, ref List<PastActionsPopup.TargetEffectParam> targetEffects, bool overrideStats = false)
         {
             _affectedCards.Add(card);
             if (overrideStats)
@@ -152,6 +163,24 @@ namespace Loom.ZombieBattleground
                 card.InstanceCard.Defense += Defense;
                 card.InstanceCard.Cost = Mathf.Max(0, card.InstanceCard.Cost+Cost);
             }
+
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Attack > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                Target = card
+            });
+
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                Target = card
+            });
+
+            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Enumerators.ActionEffectType.None,
+                Target = card
+            });
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {

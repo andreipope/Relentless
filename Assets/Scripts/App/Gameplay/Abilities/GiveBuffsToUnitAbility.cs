@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -41,7 +42,7 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
             {
-                if (PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(card => card != AbilityUnitOwner).Count == 0)
+                if (GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard).Where(card => card != AbilityUnitOwner).Count() == 0)
                 {
                     GiveBuffsToUnit(AbilityUnitOwner);
                 }
