@@ -24,7 +24,10 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity != Enumerators.AbilityActivity.ACTIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
@@ -41,6 +44,10 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 Action(TargetUnit);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 
