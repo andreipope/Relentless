@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < Mathf.Min(emptyFields, cards.Count); i++)
             {
-                if (PlayerCallerOfAbility.IsLocalPlayer)
+                if (cards[i].Owner.IsLocalPlayer)
                 {
                     BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
                     PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);

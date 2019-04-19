@@ -873,11 +873,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         player.CardPlay(playerHot2Id, ItemPosition.Start);
                         player.CardPlay(playerHot3Id, ItemPosition.Start);
                         player.CardPlay(playerCardId, ItemPosition.Start);
-                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT, new List<ParametrizedAbilityInstanceId>(){
-                            new ParametrizedAbilityInstanceId(playerHotId),
-                            new ParametrizedAbilityInstanceId(playerHot2Id),
-                            new ParametrizedAbilityInstanceId(playerHot3Id)
-                        });
+                        player.CardAbilityUsed(playerCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
                         player.LetsThink(2, true);
 
                         player.AssertInQueue(() =>
@@ -893,10 +889,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         opponent.CardPlay(opponentHotId, ItemPosition.Start);
                         opponent.CardPlay(opponentHot2Id, ItemPosition.Start);
                         opponent.CardPlay(opponentCardId, ItemPosition.Start);
-                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT, new List<ParametrizedAbilityInstanceId>(){
-                            new ParametrizedAbilityInstanceId(opponentHotId),
-                            new ParametrizedAbilityInstanceId(opponentHot2Id)
-                        });
+                        opponent.CardAbilityUsed(opponentCardId, Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_ALLY_UNIT, new List<ParametrizedAbilityInstanceId>());
                         opponent.LetsThink(2, true);
 
                         opponent.AssertInQueue(() =>

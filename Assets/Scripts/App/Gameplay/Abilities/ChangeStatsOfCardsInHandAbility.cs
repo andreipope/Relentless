@@ -108,10 +108,12 @@ namespace Loom.ZombieBattleground
                 switch (type)
                 {
                     case Enumerators.Target.OPPONENT:
-                        targetCards.AddRange(GetOpponentOverlord().CardsInHand.ToList());
+                        targetCards.AddRange(GetOpponentOverlord().CardsInHand.FindAll(x => x.Prototype.Kind == TargetCardKind ||
+                                                                    TargetCardKind == Enumerators.CardKind.UNDEFINED).ToList());
                         break;
                     case Enumerators.Target.PLAYER:
-                        targetCards.AddRange(PlayerCallerOfAbility.CardsInHand.ToList());
+                        targetCards.AddRange(PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Kind == TargetCardKind ||
+                                                                    TargetCardKind == Enumerators.CardKind.UNDEFINED).ToList());
                         break;
                 }
             }
