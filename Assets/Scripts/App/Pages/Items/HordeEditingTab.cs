@@ -455,7 +455,10 @@ namespace Loom.ZombieBattleground
             List<CollectionCardData> data;
             if (_tutorialManager.IsTutorial)
             {
-                data = _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy;
+                data =
+                    _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
+                        .Select(card => card.ToCollectionCardData(_dataManager))
+                        .ToList();
             }
             else
             {
@@ -464,9 +467,7 @@ namespace Loom.ZombieBattleground
 
             foreach (CollectionCardData card in data)
             {
-                cardData = new CollectionCardData();
-                cardData.Amount = card.Amount;
-                cardData.MouldId = card.MouldId;
+                cardData = new CollectionCardData(card.MouldId, card.Amount);
 
                 _collectionData.Cards.Add(cardData);
             }
@@ -497,11 +498,14 @@ namespace Loom.ZombieBattleground
 
                 if (_tutorialManager.IsTutorial)
                 {
-                    cardData = _tutorialManager.GetCardData((int)card.MouldId);
+                    cardData =
+                        _tutorialManager
+                            .GetCardData(_dataManager.CachedCardsLibraryData.GetCardNameFromMouldId(card.MouldId))
+                            .ToCollectionCardData(_dataManager);
                 }
                 else
                 {
-                    cardData = _dataManager.CachedCollectionData.GetCardData((int)card.MouldId);
+                    cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
                 }
 
                 BoardCardView boardCard = CreateBoardCard
@@ -524,7 +528,7 @@ namespace Loom.ZombieBattleground
                 deckBuilderCard.Card = boardCard.Model.Card.Prototype;
                 deckBuilderCard.IsHordeItem = false;
 
-                collectionCardData = _collectionData.GetCardData((int)card.MouldId);
+                collectionCardData = _collectionData.GetCardData(card.MouldId);
                 UpdateBoardCardAmount
                 (
                     true,
@@ -667,7 +671,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            CollectionCardData collectionCardData = _collectionData.GetCardData((int)card.MouldId);
+            CollectionCardData collectionCardData = _collectionData.GetCardData(card.MouldId);
             if (collectionCardData.Amount == 0)
             {
                 _myDeckPage.OpenAlertDialog(
@@ -695,7 +699,7 @@ namespace Loom.ZombieBattleground
             collectionCardData.Amount--;
             UpdateBoardCardAmount(false, card.Name, collectionCardData.Amount);
             bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.MouldId == card.MouldId);
-            _myDeckPage.CurrentEditDeck.AddCard((int)card.MouldId);
+            _myDeckPage.CurrentEditDeck.AddCard(card.MouldId);
             UpdateDeckPageIndexDictionary();
 
             if (_createdDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
@@ -773,7 +777,7 @@ namespace Loom.ZombieBattleground
 
         public void RemoveCardFromDeck(IReadOnlyCard card, bool animate = false)
         {
-            CollectionCardData collectionCardData = _collectionData.GetCardData((int)card.MouldId);
+            CollectionCardData collectionCardData = _collectionData.GetCardData(card.MouldId);
             collectionCardData.Amount++;
             UpdateBoardCardAmount
             (
@@ -782,7 +786,7 @@ namespace Loom.ZombieBattleground
                 collectionCardData.Amount
             );
 
-            _myDeckPage.CurrentEditDeck.RemoveCard((int)card.MouldId);
+            _myDeckPage.CurrentEditDeck.RemoveCard(card.MouldId);
             UpdateDeckPageIndexDictionary();
 
             if(_createdDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
@@ -837,7 +841,7 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCard;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            int amount = _collectionData.GetCardData((int)card.MouldId).Amount;
+            int amount = _collectionData.GetCardData(card.MouldId).Amount;
 
             switch (card.Kind)
             {

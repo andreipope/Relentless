@@ -132,11 +132,7 @@ namespace Loom.ZombieBattleground
                     }
                     else
                     {
-                        _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
-                        {
-                            Amount = levelReward.UnitReward.Count,
-                            MouldId = (int)card.MouldId
-                        });
+                        _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData(card.MouldId, levelReward.UnitReward.Count));
                     }
                 }
                 else if (levelReward.SkillReward != null)

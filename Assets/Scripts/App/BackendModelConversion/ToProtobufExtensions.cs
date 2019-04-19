@@ -8,11 +8,10 @@ namespace Loom.ZombieBattleground.Data
     {
         public static DeckCard ToProtobuf(this DeckCardData deckCardData)
         {
-            // TODO : Replace cardName to MouldId
             return new DeckCard
             {
                 Amount = deckCardData.Amount,
-                CardName = deckCardData.CardName
+                MouldId = deckCardData.MouldId
             };
         }
 

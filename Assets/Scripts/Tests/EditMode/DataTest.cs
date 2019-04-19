@@ -25,8 +25,8 @@ namespace Loom.ZombieBattleground.Test
                 "deck name",
                 new List<DeckCardData>
                 {
-                    new DeckCardData("card 1", 3),
-                    new DeckCardData("card 2", 4)
+                    new DeckCardData(1, 3),
+                    new DeckCardData(2, 4)
                 },
                 Enumerators.Skill.HEALING_TOUCH,
                 Enumerators.Skill.MEND

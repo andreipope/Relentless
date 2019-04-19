@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     {
         public GameObject selfObject;
 
-        public long MouldId;
+        public int MouldId;
 
         private bool _isFirstActive;
 

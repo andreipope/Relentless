@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Newtonsoft.Json;
 
@@ -377,12 +378,19 @@ namespace Loom.ZombieBattleground
     public class SpecificHordeInfo
     {
         public Enumerators.Faction MainSet;
-        public List<Data.CollectionCardData> CardsForArmy;
+        public List<SpecificHordeCardData> CardsForArmy = new List<SpecificHordeCardData>();
         public int MaximumCardsCount;
+    }
 
-        public SpecificHordeInfo()
+    public class SpecificHordeCardData
+    {
+        public string CardName;
+        public int Amount;
+
+        public CollectionCardData ToCollectionCardData(IDataManager dataManager)
         {
-            CardsForArmy = new List<Data.CollectionCardData>();
+            Card card = dataManager.CachedCardsLibraryData.GetCardFromName(CardName);
+            return new CollectionCardData(card.MouldId, Amount);
         }
     }
 

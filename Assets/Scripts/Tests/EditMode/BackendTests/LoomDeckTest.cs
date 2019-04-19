@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using AIDeck = Loom.ZombieBattleground.Data.AIDeck;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 
 namespace Loom.ZombieBattleground.Test
@@ -35,11 +37,11 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
                 Assert.IsNotNull(listDecksResponse);
+                Assert.IsNotNull(listDecksResponse.Decks);
 
-                DecksData decksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
-                Assert.IsNotNull(decksData);
+                DecksData decksData = listDecksResponse.FromProtobuf();
                 Assert.AreEqual(1, decksData.Decks.Count);
                 Assert.AreEqual("Default", decksData.Decks[0].Name);
             });
@@ -52,7 +54,7 @@ namespace Loom.ZombieBattleground.Test
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
-                Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks(string.Empty));
+                Assert.IsNull(await LoomTestContext.BackendFacade.ListDecks(string.Empty));
             });
         }
 
@@ -61,7 +63,7 @@ namespace Loom.ZombieBattleground.Test
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                Assert.IsNull(await LoomTestContext.BackendFacade.GetDecks("GauravIsGreatWorkingInLoom"));
+                Assert.IsNull(await LoomTestContext.BackendFacade.ListDecks("GauravIsGreatWorkingInLoom"));
             });
         }
 
@@ -73,12 +75,12 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_NoDecks");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
                 Assert.IsNotNull(listDecksResponse);
 
                 await LoomTestContext.BackendFacade.DeleteDeck(user, 1);
 
-                ListDecksResponse newListDecksResponse = await LoomTestContext.BackendFacade.GetDecks(user);
+                ListDecksResponse newListDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
                 Assert.IsNull(newListDecksResponse);
             });
         }
@@ -124,7 +126,7 @@ namespace Loom.ZombieBattleground.Test
                 List<DeckCardData> cards =
                     new List<DeckCardData>
                     {
-                        new DeckCardData("Izze", 100500)
+                        new DeckCardData(1, 100500)
                     };
                 Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
 
@@ -218,6 +220,26 @@ namespace Loom.ZombieBattleground.Test
                     {
                         await LoomTestContext.BackendFacade.DeleteDeck(user, 123);
                     });
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator GetAiDecks()
+        {
+            return LoomTestContext.ContractAsyncTest(async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetAiDeck");
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                GetAIDecksResponse getAIDecksResponse = await LoomTestContext.BackendFacade.GetAiDecks();
+                Assert.IsNotNull(getAIDecksResponse);
+                Assert.IsNotNull(getAIDecksResponse.Decks);
+
+                List<AIDeck> decksData =
+                    getAIDecksResponse.Decks
+                        .Select(d => d.FromProtobuf())
+                        .ToList();
+                Assert.GreaterOrEqual(1, decksData.Count);
             });
         }
     }

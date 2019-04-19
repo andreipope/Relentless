@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Data
         private readonly List<AbilityData> _abilities;
 
         [JsonProperty]
-        public long MouldId { get; set; }
+        public int MouldId { get; set; }
 
         [JsonProperty]
         public string Name { get; protected set; }
@@ -65,7 +65,7 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonConstructor]
         public Card(
-            long mouldId,
+            int mouldId,
             string name,
             int cost,
             string description,

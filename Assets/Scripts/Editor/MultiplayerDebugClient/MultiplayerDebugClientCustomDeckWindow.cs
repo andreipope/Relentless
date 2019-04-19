@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                 _cardMouldIdToDescription = new Dictionary<int, string>();
                 foreach (Card card in cardLibrary)
                 {
-                    _cardMouldIdToDescription[(int)card.MouldId] =
+                    _cardMouldIdToDescription[card.MouldId] =
                         $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})";
                 }
             }
@@ -110,14 +110,14 @@ namespace Loom.ZombieBattleground.Editor.Tools
                             {
                                 EditorGUILayout.BeginHorizontal();
                                 {
-                                    GUILayout.Label(_cardMouldIdToDescription[(int)card.MouldId]);
+                                    GUILayout.Label(_cardMouldIdToDescription[card.MouldId]);
 
                                     GUILayout.FlexibleSpace();
                                     if (GUILayout.Button("Add", GUILayout.Width(70)))
                                     {
                                         if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
                                         {
-                                            DeckCardData deckCardData = new DeckCardData((int)card.MouldId, 0);
+                                            DeckCardData deckCardData = new DeckCardData(card.MouldId, 0);
                                             customDeck.Cards.Add(deckCardData);
                                         }
                                     }

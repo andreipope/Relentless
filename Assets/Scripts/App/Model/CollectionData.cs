@@ -30,5 +30,11 @@ namespace Loom.ZombieBattleground.Data
         public int MouldId;
 
         public int Amount;
+
+        public CollectionCardData(int mouldId, int amount)
+        {
+            MouldId = mouldId;
+            Amount = amount;
+        }
     }
 }

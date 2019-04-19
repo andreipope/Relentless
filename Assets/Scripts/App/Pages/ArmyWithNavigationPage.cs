@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
                     break;
 
                 Card card = cards[i];
-                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData((int)card.MouldId);
+                CollectionCardData cardData = _dataManager.CachedCollectionData.GetCardData(card.MouldId);
 
                 // hack !!!! CHECK IT!!!
                 if (cardData == null)

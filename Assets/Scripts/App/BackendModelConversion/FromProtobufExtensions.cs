@@ -13,10 +13,10 @@ namespace Loom.ZombieBattleground.Data
         public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
             return new CollectionCardData
-            {
-                Amount = (int) cardCollection.Amount,
-                MouldId = (int)cardCollection.MouldId
-            };
+            (
+                (int) cardCollection.MouldId,
+                (int) cardCollection.Amount
+            );
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
@@ -25,6 +25,15 @@ namespace Loom.ZombieBattleground.Data
             {
                 Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
             };
+        }
+
+        public static DecksData FromProtobuf(this ListDecksResponse listDecksResponse)
+        {
+            return new DecksData(
+                listDecksResponse.Decks != null ?
+                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
+                    new List<Deck>()
+            );
         }
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
@@ -146,11 +155,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
-            // TODO : Replace cardName to MouldId
-            return new DeckCardData(
-                (int) card.MouldId,
-                (int) card.Amount
-            );
+            return new DeckCardData((int) card.MouldId, (int) card.Amount);
         }
 
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
@@ -181,7 +186,7 @@ namespace Loom.ZombieBattleground.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card(
-                card.MouldId,
+                (int) card.MouldId,
                 card.Name,
                 card.Cost,
                 card.Description,

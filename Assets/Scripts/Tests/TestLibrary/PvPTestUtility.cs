@@ -7,7 +7,6 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using NUnit.Framework;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Test
 {
@@ -207,13 +206,13 @@ namespace Loom.ZombieBattleground.Test
             return String.Equals(name1, name2, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        public static Deck GetDeckWithCards(string name, int overlordId = 0, params DeckCardData[] cards)
+        public static Deck GetDeckWithCards(string name, int overlordId = 0, params TestCardData[] cards)
         {
             Deck deck = new Deck(
                  0,
                  overlordId,
                  name,
-                 cards.ToList(),
+                 cards.Select(card => card.ToDeckCardData()).ToList(),
                  Enumerators.Skill.NONE,
                  Enumerators.Skill.NONE
              );
@@ -230,7 +229,7 @@ namespace Loom.ZombieBattleground.Test
                                     int overlordId = 0,
                                     Enumerators.Skill primarySkill = Enumerators.Skill.NONE,
                                     Enumerators.Skill secondarySkill = Enumerators.Skill.NONE,
-                                    params DeckCardData[] cards)
+                                    params TestCardData[] cards)
         {
             Deck deck = GetDeckWithCards(name, overlordId, cards);
             deck.PrimarySkill = primarySkill;

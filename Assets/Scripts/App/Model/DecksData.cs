@@ -134,20 +134,9 @@ namespace Loom.ZombieBattleground.Data
             Amount = amount;
         }
 
-        public DeckCardData(string cardName, int amount)
-        {
-            MouldId = (int)GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromName(cardName).MouldId;
-            Amount = amount;
-        }
-
         public DeckCardData Clone()
         {
-            DeckCardData deckCardData = new DeckCardData
-            (
-                MouldId,
-                Amount
-            );
-            return deckCardData;
+            return new DeckCardData(MouldId, Amount);
         }
     }
 }

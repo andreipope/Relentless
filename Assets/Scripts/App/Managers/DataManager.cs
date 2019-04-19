@@ -91,15 +91,6 @@ namespace Loom.ZombieBattleground
 
         public ZbVersion ZbVersion { get; private set; }
 
-        public async Task LoadRemoteConfig()
-        {
-            CachedVersions = new GetVersionsResponse();
-            CachedVersions = await _backendFacade.GetVersions();
-            if (CachedVersions == null)
-                throw new Exception("CachedVersions == null");
-        }
-
-
         public async Task StartLoadCache()
         {
             Log.Info("=== Start loading server ==== ");
@@ -360,7 +351,7 @@ namespace Loom.ZombieBattleground
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
 
-                        await ProcessCardsInCollectionValidation();
+                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
                     }
                     catch (Exception)
                     {
@@ -372,15 +363,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.DECKS_DATA:
                     try
                     {
-                        ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedDecksData =
-                            new DecksData(
-                                listDecksResponse.Decks != null ?
-                                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
-                                    new List<Deck>()
-                            );
-
-                       await ProcessCardsInDeckValidation();
+                        ListDecksResponse listDecksResponse = await _backendFacade.ListDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedDecksData = listDecksResponse.FromProtobuf();
                     }
                     catch (Exception e)
                     {
@@ -415,50 +399,6 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
-        }
-
-        private async Task ProcessCardsInDeckValidation()
-        {
-            bool hasChanges;
-            Card foundCard;
-            foreach (Deck deck in CachedDecksData.Decks)
-            {
-                hasChanges = false;
-                for (int i = 0; i < deck.Cards.Count; i++)
-                {
-                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.MouldId == deck.Cards[i].MouldId);
-
-                    if(foundCard == null || foundCard is default(Card))
-                    {
-                        deck.Cards.Remove(deck.Cards[i]);
-                        i--;
-
-                        hasChanges = true;
-                    }
-                }
-
-                if (hasChanges)
-                {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                }
-            }
-        }
-
-        private async Task ProcessCardsInCollectionValidation()
-        {
-            Card foundCard;
-            for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
-            {
-                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.MouldId == CachedCollectionData.Cards[i].MouldId);
-
-                if (foundCard == null)
-                {
-                    CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
-                    i--;
-                }
-            }
-
-            await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void LoadLocalCachedData()
@@ -567,10 +507,10 @@ namespace Loom.ZombieBattleground
                 {
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData
-                        {
-                            Amount = (int) GetMaxCopiesValue(card, set.Name),
-                            MouldId = (int)card.MouldId
-                        });
+                        (
+                            card.MouldId,
+                            (int) GetMaxCopiesValue(card, set.Name)
+                        ));
                 }
             }
         }
