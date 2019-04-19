@@ -113,8 +113,8 @@ namespace Loom.ZombieBattleground
             BackendPurpose backend = defaultBackend;
 
 #if UNITY_EDITOR
-            const string envVarBackendEndpoint = "ZB_BACKEND_ENDPOINT";
-            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpoint);
+            const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
+            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
             if (!String.IsNullOrEmpty(backendString))
             {
                 backend = (BackendPurpose) Enum.Parse(typeof(BackendPurpose), backendString);
