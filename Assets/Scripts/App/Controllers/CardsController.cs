@@ -862,14 +862,28 @@ namespace Loom.ZombieBattleground
             if(boardUnitModel.Owner.IsLocalPlayer)
             {
                 BoardCardView card = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
-                _battlegroundController.PlayerHandCards.Remove(card);
-                card.Dispose();
+
+                if (card != null && card != default(BoardCardView))
+                {
+                    if (_battlegroundController.PlayerHandCards.Contains(card))
+                    {
+                        _battlegroundController.PlayerHandCards.Remove(card);
+                    }
+                    card.Dispose();
+                }
             }
             else
             {
                 OpponentHandCard card = _battlegroundController.GetBoardUnitViewByModel<OpponentHandCard>(boardUnitModel);
-                _battlegroundController.OpponentHandCards.Remove(card);
-                card.Dispose();
+
+                if (card != null && card != default(OpponentHandCard))
+                {
+                    if (_battlegroundController.OpponentHandCards.Contains(card))
+                    {
+                        _battlegroundController.OpponentHandCards.Remove(card);
+                    }
+                    card.Dispose();
+                }
             }
 
             boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel);

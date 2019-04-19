@@ -118,11 +118,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.CardsOnBoard.Where(
-                            unit => unit != AbilityUnitOwner &&
-                                !unit.IsDead &&
-                                unit.CurrentDefense > 0)
-                        .Count() == 0)
+                    if (GetAliveUnits(PlayerCallerOfAbility.CardsOnBoard).Count() == 1)
                     {
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
