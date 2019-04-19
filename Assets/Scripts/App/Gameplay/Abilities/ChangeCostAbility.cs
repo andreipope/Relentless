@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
 
                     if (!refresh || !_updatedCostUnits.Contains(boardUnit))
                     {
-                        calculatedCost = boardUnit.Card.InstanceCard.Cost + (status ? Cost : - Cost);
+                        calculatedCost += status ? Cost : - Cost;
                     }
 
                     if (boardUnit.Card.InstanceCard.Cost == calculatedCost)
