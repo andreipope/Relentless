@@ -102,13 +102,23 @@ namespace Loom.ZombieBattleground
             }
 
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
+            const BackendPurpose defaultBackend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
+            const BackendPurpose defaultBackend = BackendPurpose.Production;
 #elif USE_BRANCH_TESTING_BACKEND
-            const BackendPurpose backend = BackendPurpose.BranchTesting;
+            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
 #else
-            const BackendPurpose backend = BackendPurpose.Staging;
+            const BackendPurpose defaultBackend = BackendPurpose.Staging;
+#endif
+            BackendPurpose backend = defaultBackend;
+
+#if UNITY_EDITOR
+            const string envVarBackendEndpoint = "ZB_BACKEND_ENDPOINT";
+            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpoint);
+            if (!String.IsNullOrEmpty(backendString))
+            {
+                backend = (BackendPurpose) Enum.Parse(typeof(BackendPurpose), backendString);
+            }
 #endif
 
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
@@ -145,15 +155,6 @@ namespace Loom.ZombieBattleground
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }
-
-#if UNITY_EDITOR
-            const string envVarConfigFileFilePath = "ZB_CONFIG_FILE_PATH";
-            configDataFilePath = Environment.GetEnvironmentVariable(envVarConfigFileFilePath);
-            if (!String.IsNullOrEmpty(configDataFilePath) && File.Exists(configDataFilePath))
-            {
-                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
-            }
-#endif
 
             return new ConfigData();
         }
