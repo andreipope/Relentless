@@ -49,7 +49,8 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                     !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
             TakeDamage();

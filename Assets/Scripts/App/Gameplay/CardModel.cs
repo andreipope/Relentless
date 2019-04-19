@@ -140,6 +140,8 @@ namespace Loom.ZombieBattleground
 
         public event Action CardPictureWasUpdated;
 
+        public event Action UnitAttackStateFinished;
+
         public Enumerators.CardType InitialUnitType { get; private set; }
 
         public int MaxCurrentDamage => Card.Prototype.Damage + BuffedDamage;
@@ -761,7 +763,9 @@ namespace Loom.ZombieBattleground
                     _actionsQueueController.AddNewActionInToQueue(
                         completeCallback =>
                         {
-                            if(targetCardModel.CurrentDefense <= 0 ||
+                            targetCardModel.IsAttacking = true;
+
+                            if (targetCardModel.CurrentDefense <= 0 ||
                                 targetCardModel.IsDead ||
                                 !IsUnitActive ||
                                 !targetCardModel.IsUnitActive)
@@ -769,6 +773,7 @@ namespace Loom.ZombieBattleground
                                 IsPlayable = true;
                                 AttackedThisTurn = false;
                                 IsAttacking = false;
+                                targetCardModel.IsAttacking = false;
                                 completeCallback?.Invoke();
                                 return;
                             }
@@ -786,6 +791,7 @@ namespace Loom.ZombieBattleground
                                     IsPlayable = true;
                                     AttackedThisTurn = false;
                                     IsAttacking = false;
+                                    targetCardModel.IsAttacking = false;
                                     completeCallback?.Invoke();
                                     return;
                                 }
@@ -806,6 +812,9 @@ namespace Loom.ZombieBattleground
                                 {
                                     _battleController.AttackUnitByUnit(this, targetCardModel, AdditionalDamage);
 
+                                    InvokeUnitAttackStateFinished();
+                                    targetCardModel.InvokeUnitAttackStateFinished();
+
                                     if (HasSwing)
                                     {
                                         List<CardModel> adjacent = _battlegroundController.GetAdjacentUnitsToUnit(targetCardModel);
@@ -813,6 +822,7 @@ namespace Loom.ZombieBattleground
                                         foreach (CardModel unit in adjacent)
                                         {
                                             _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
+                                            unit.InvokeUnitAttackStateFinished();
                                         }
                                     }
 
@@ -823,10 +833,11 @@ namespace Loom.ZombieBattleground
                                     }
 
                                     targetCardModel.ResolveBuffShield();
-                                    this.ResolveBuffShield();
+                                    this.ResolveBuffShield();                                
                                 },
                                 () =>
                                 {
+                                    targetCardModel.IsAttacking = false;
                                     IsAttacking = false;
                                     UnitAttackedEnded?.Invoke();
                                 }
@@ -903,6 +914,11 @@ namespace Loom.ZombieBattleground
         public void InvokeKilledUnit(CardModel card)
         {
             KilledUnit?.Invoke(card);
+        }
+
+        public void InvokeUnitAttackStateFinished()
+        {
+            UnitAttackStateFinished?.Invoke(); 
         }
 
         public IReadOnlyList<CardModel> GetEnemyUnitsList(CardModel unit)

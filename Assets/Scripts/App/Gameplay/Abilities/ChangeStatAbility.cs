@@ -102,8 +102,15 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-                !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+            {
+                ResetAffectedUnits();
+            }
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
                 return;
 
             ChangeStatsToItself();
@@ -183,6 +190,25 @@ namespace Loom.ZombieBattleground
             }
 
             ChangeStatsOfTarget(AbilityUnitOwner, defense, attack);
+
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = AbilityUnitOwner,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = AbilityUnitOwner
+                    },
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = attack > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        Target = AbilityUnitOwner
+                    }
+                }
+            });
         }
 
         private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false)
@@ -222,10 +248,15 @@ namespace Loom.ZombieBattleground
         {
             foreach(CardStatInfo cardStat in _affectedUnits)
             {
-                cardStat.CardModel.BuffedDefense -= cardStat.ModifiedDefense;
-                cardStat.CardModel.CurrentDefense -= cardStat.ModifiedDefense;
-                cardStat.CardModel.BuffedDamage -= cardStat.ModifiedDamage;
-                cardStat.CardModel.CurrentDamage -= cardStat.ModifiedDamage;
+                cardStat.CardModel.BuffedDefense =
+                    Mathf.Clamp(cardStat.CardModel.BuffedDefense - cardStat.ModifiedDefense, 0, 999);
+                cardStat.CardModel.CurrentDefense =
+                    Mathf.Clamp(cardStat.CardModel.CurrentDefense - cardStat.ModifiedDefense, cardStat.CardModel.Card.Prototype.Defense, 999);
+
+                cardStat.CardModel.BuffedDamage =
+                    Mathf.Clamp(cardStat.CardModel.BuffedDamage - cardStat.ModifiedDamage, 0, 999);
+                cardStat.CardModel.CurrentDamage =
+                    Mathf.Clamp(cardStat.CardModel.CurrentDamage - cardStat.ModifiedDamage, cardStat.CardModel.Card.Prototype.Damage, 999);
             }
 
             _affectedUnits.Clear();

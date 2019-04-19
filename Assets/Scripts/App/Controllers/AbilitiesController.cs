@@ -287,92 +287,18 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialUnitOnBoard(CardModel cardModel, AbilityData ability)
         {
-            if (ability.Targets.Count == 0)
-            {
-                return false;
-            }
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType &&
+                                                                        item.UnitSpecialStatus == ability.TargetUnitSpecialStatus).Count > 0;
+        }
 
-            Player opponent = cardModel.Owner == _gameplayManager.CurrentPlayer ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
-            Player player = cardModel.Owner;
-
-            foreach (Enumerators.Target target in ability.Targets)
-            {
-                switch (target)
-                {
-                    case Enumerators.Target.PLAYER_CARD:
-                    {
-                        IReadOnlyList<CardModel> units =
-                            player.CardsOnBoard.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    case Enumerators.Target.OPPONENT_CARD:
-                    {
-                        IReadOnlyList<CardModel> units =
-                            opponent.CardsOnBoard.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-            }
-
-            return false;
+        public bool HasUnitsWithoutTargetUnitType(CardModel cardModel, AbilityData ability)
+        {
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType == ability.TargetUnitType).Count > 0;
         }
 
         public bool HasSpecialUnitStatusOnBoard(CardModel cardModel, AbilityData ability)
         {
-            if (ability.Targets.Count == 0)
-            {
-                return false;
-            }
-
-            Player opponent = cardModel.Owner == _gameplayManager.CurrentPlayer ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
-            Player player = cardModel.Owner;
-
-            foreach (Enumerators.Target target in ability.Targets)
-            {
-                switch (target)
-                {
-                    case Enumerators.Target.PLAYER_CARD:
-                    {
-                        IReadOnlyList<CardModel> units =
-                            player.CardsOnBoard.FindAll(x => x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    case Enumerators.Target.OPPONENT_CARD:
-                    {
-                        IReadOnlyList<CardModel> units =
-                            opponent.CardsOnBoard.FindAll(x => x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-            }
-
-            return false;
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.UnitSpecialStatus == ability.TargetUnitSpecialStatus).Count > 0;
         }
 
         public bool HasSpecialUnitFactionOnMainBoard(CardModel cardModel, AbilityData ability)
@@ -397,14 +323,17 @@ namespace Loom.ZombieBattleground
 
         public bool HasUnitsOnBoardThatCostMoreThan(CardModel cardModel, AbilityData ability)
         {
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.Card.InstanceCard.Cost > cardModel.Card.InstanceCard.Cost).Count > 0;
+        }
+
+        public IReadOnlyList<CardModel> GetUnitsFromTargets(CardModel cardModel, AbilityData ability)
+        {
             if (ability.Targets.Count == 0)
-            {
-                return false;
-            }
+                return new List<CardModel>();
 
             Player opponent = cardModel.Owner == _gameplayManager.CurrentPlayer ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
+               _gameplayManager.OpponentPlayer :
+               _gameplayManager.CurrentPlayer;
             Player player = cardModel.Owner;
 
             foreach (Enumerators.Target target in ability.Targets)
@@ -412,31 +341,13 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.Target.PLAYER_CARD:
-                        {
-                            IReadOnlyList<CardModel> units =
-                                player.CardsOnBoard.FindAll(item => item.Card.InstanceCard.Cost > cardModel.Card.InstanceCard.Cost);
-
-                            if (units.Count > 0)
-                                return true;
-
-                            break;
-                        }
+                        return player.CardsOnBoard;
                     case Enumerators.Target.OPPONENT_CARD:
-                        {
-                            IReadOnlyList<CardModel> units =
-                                opponent.CardsOnBoard.FindAll(item => item.Card.InstanceCard.Cost > cardModel.Card.InstanceCard.Cost);
-
-                            if (units.Count > 0)
-                                return true;
-
-                            break;
-                        }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                        return opponent.CardsOnBoard;
                 }
             }
 
-            return false;
+            return new List<CardModel>();
         }
 
         public bool OverlordDefenseEqualOrLess(CardModel cardModel, AbilityData ability)
@@ -510,7 +421,11 @@ namespace Loom.ZombieBattleground
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
                                !HasUnitsOnBoardThatCostMoreThan(cardModel, ability)) ||
                                (ability.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess &&
-                                !OverlordDefenseEqualOrLess(cardModel, ability)))
+                                !OverlordDefenseEqualOrLess(cardModel, ability)) ||
+                                (ability.TargetUnitType != Enumerators.CardType.UNDEFINED &&
+                                 !HasUnitsWithoutTargetUnitType(cardModel, ability) &&
+                                 ability.Activity == Enumerators.AbilityActivity.ACTIVE &&
+                                 ability.Trigger == Enumerators.AbilityTrigger.ENTRY))
 
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);

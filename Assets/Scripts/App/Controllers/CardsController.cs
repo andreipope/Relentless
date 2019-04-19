@@ -847,10 +847,9 @@ namespace Loom.ZombieBattleground
         public void DiscardCardFromHand(CardModel cardModel)
         {
             ICardView cardView;
-            if(cardModel.Owner.IsLocalPlayer)
+            if (cardModel.Owner.IsLocalPlayer)
             {
                 cardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
-
             }
             else
             {

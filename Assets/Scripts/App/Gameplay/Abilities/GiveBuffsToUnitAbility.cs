@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
@@ -41,7 +42,7 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay)
             {
-                if (PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.FindAll(card => card != AbilityUnitOwner).Count == 0)
+                if (GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard).Where(card => card != AbilityUnitOwner).Count() == 0)
                 {
                     GiveBuffsToUnit(AbilityUnitOwner);
                 }
@@ -61,11 +62,11 @@ namespace Loom.ZombieBattleground
                         actionEffectType = Enumerators.ActionEffectType.Guard;
                         break;
                     case Enumerators.GameMechanicDescription.Destroy:
-                        unit.AddBuff(Enumerators.BuffType.DESTROY);
+                        unit.ApplyBuff(Enumerators.BuffType.DESTROY);
                         actionEffectType = Enumerators.ActionEffectType.DeathMark;
                         break;
                     case Enumerators.GameMechanicDescription.Reanimate:
-                        unit.AddBuff(Enumerators.BuffType.REANIMATE);
+                        unit.ApplyBuff(Enumerators.BuffType.REANIMATE);
                         actionEffectType = Enumerators.ActionEffectType.Reanimate;
                         break;
                     case Enumerators.GameMechanicDescription.Heavy:

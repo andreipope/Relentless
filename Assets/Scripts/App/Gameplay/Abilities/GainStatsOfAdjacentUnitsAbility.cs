@@ -14,6 +14,13 @@ namespace Loom.ZombieBattleground
         {
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            InvokeUseAbilityEvent();
+        }
+
         protected override void ChangeAuraStatusAction(bool status)
         {
             base.ChangeAuraStatusAction(status);

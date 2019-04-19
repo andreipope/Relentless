@@ -945,10 +945,12 @@ namespace Loom.ZombieBattleground
 
         public void DistractUnit(CardModel card)
         {
-            card.CurrentDamage -= card.BuffedDamage;
+            int buffedDamage = card.BuffedDamage;
+            int buffedDefense = card.BuffedDefense;
             card.BuffedDamage = 0;
-            card.CurrentDefense -= card.BuffedDefense;
             card.BuffedDefense = 0;
+            card.CurrentDamage -= buffedDamage;
+            card.CurrentDefense -= buffedDefense;
             card.HasSwing = false;
             card.TakeFreezeToAttacked = false;
             card.HasBuffRush = false;

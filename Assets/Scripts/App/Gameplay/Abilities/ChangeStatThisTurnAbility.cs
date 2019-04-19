@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
 
         private void SetStatsOfUnits(List<CardModel> units, int defense, int damage)
         {
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
             ChangedStatInfo changedStatInfo;
             foreach (CardModel unit in units)
             {
@@ -90,14 +92,40 @@ namespace Loom.ZombieBattleground
                 if (defense != 0)
                 {
                     unit.CurrentDefense = defense;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = defense
+                    });
                 }
 
                 if (damage != 0)
                 {
                     unit.CurrentDamage = damage;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = damage
+                    });
                 }
 
                 _affectedUnits.Add(changedStatInfo);
+            }
+
+            if (TargetEffects.Count > 0)
+            {
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = TargetEffects
+                });
             }
         }
 

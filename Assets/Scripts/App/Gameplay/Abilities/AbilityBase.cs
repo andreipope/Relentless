@@ -241,6 +241,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
                         AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
+                        AbilityUnitOwner.UnitAttackStateFinished += UnitAttackStateFinishedHandler;
                     }
                     break;
                 case Enumerators.CardKind.ITEM:
@@ -290,6 +291,7 @@ namespace Loom.ZombieBattleground
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
                 AbilityUnitOwner.UnitAttackedEnded -= UnitAttackedEndedHandler;
+                AbilityUnitOwner.UnitAttackStateFinished -= UnitAttackStateFinishedHandler;
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
@@ -450,25 +452,14 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
+
         }
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
         {
-            if(AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
+            if (!AbilityUnitOwner.IsAttacking)
             {
-                if (!UnitOwnerIsInRage)
-                {
-                    UnitOwnerIsInRage = true;
-                    ChangeRageStatusAction(UnitOwnerIsInRage);
-                }
-            }
-            else
-            {
-                if (UnitOwnerIsInRage)
-                {
-                    UnitOwnerIsInRage = false;
-                    ChangeRageStatusAction(UnitOwnerIsInRage);
-                }
+                CheckRageStatus();
             }
         }
 
@@ -508,9 +499,34 @@ namespace Loom.ZombieBattleground
             
         }
 
+        protected virtual void UnitAttackStateFinishedHandler()
+        {
+            CheckRageStatus();
+        }
+
         protected virtual void PrepairingToDieHandler(IBoardObject from)
         {
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        private void CheckRageStatus()
+        {
+            if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
+            {
+                if (!UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = true;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
+            else
+            {
+                if (UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = false;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
         }
 
         protected void ClearParticles()
