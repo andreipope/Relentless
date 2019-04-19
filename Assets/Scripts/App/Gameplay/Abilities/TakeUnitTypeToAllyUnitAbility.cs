@@ -183,11 +183,11 @@ namespace Loom.ZombieBattleground
 
                         if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
                         {
-                            for (int i = 0; i < _affectedUnits.Count; i++)
+                            for (int i = _affectedUnits.Count-1; i >= 0; i--)
                             {
                                 if (!allies.Contains(_affectedUnits[i]))
                                 {
-                                    _affectedUnits.RemoveAt(i--);
+                                    _affectedUnits.RemoveAt(i);
                                 }
                             }
                         }
