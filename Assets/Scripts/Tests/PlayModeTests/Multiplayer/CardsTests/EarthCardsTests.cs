@@ -1204,17 +1204,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 1,
                     new DeckCardData("Zpike", 1),
-                    new DeckCardData("Yggdrazil", 10));
+                    new DeckCardData("Zquall", 10));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 1,
-                                                                    new DeckCardData("Zpike", 1),
-                                                                    new DeckCardData("Yggdrazil", 10));
+                    new DeckCardData("Zpike", 1),
+                    new DeckCardData("Zquall", 10));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerZpikeId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zpike", 1);
-                InstanceId playerYggdrazilId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Yggdrazil", 1);
+                InstanceId playerZquallId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zquall", 1);
                 InstanceId opponentZpikeId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zpike", 1);
-                InstanceId opponentYggdrazilId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Yggdrazil", 1);
+                InstanceId opponentZquallId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zquall", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -1222,31 +1222,31 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player =>
                        {
-                           player.CardPlay(playerYggdrazilId, ItemPosition.Start);
+                           player.CardPlay(playerZquallId, ItemPosition.Start);
                            player.CardPlay(playerZpikeId, ItemPosition.Start);
                            player.CardAbilityUsed(playerZpikeId, Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentYggdrazilId, ItemPosition.Start);
+                           opponent.CardPlay(opponentZquallId, ItemPosition.Start);
                            opponent.CardPlay(opponentZpikeId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentZpikeId, Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS, new List<ParametrizedAbilityInstanceId>());
                        },
                        player =>
                        {
-                           player.CardAttack(playerYggdrazilId, opponentZpikeId);
+                           player.CardAttack(playerZquallId, opponentZpikeId);
                        },
                        opponent =>
                        {
-                           opponent.CardAttack(opponentYggdrazilId, playerZpikeId);
+                           opponent.CardAttack(opponentZquallId, playerZpikeId);
                            opponent.LetsThink(2);
                        }
                 };
 
                 Action validateEndState = () =>
                 {
-                    BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerYggdrazilId);
-                    BoardUnitModel opponentUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentYggdrazilId);
+                    BoardUnitModel playerUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZquallId);
+                    BoardUnitModel opponentUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZquallId);
                     Assert.IsNull(playerUnit);
                     Assert.IsNull(opponentUnit);
                 };

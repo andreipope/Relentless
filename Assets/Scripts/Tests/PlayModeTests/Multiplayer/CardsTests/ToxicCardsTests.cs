@@ -526,9 +526,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerZlabId))
-                        .BuffsOnUnit.Contains(Enumerators.BuffType.DESTROY));
+                        .GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Destroy));
                     Assert.AreEqual(true, ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentZlab2Id))
-                        .BuffsOnUnit.Contains(Enumerators.BuffType.DESTROY));
+                        .GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Destroy));
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
