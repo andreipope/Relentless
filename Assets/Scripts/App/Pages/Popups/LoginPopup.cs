@@ -363,7 +363,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
             }
         }
 
@@ -391,7 +391,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
             }
         }
 

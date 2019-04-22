@@ -350,7 +350,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {
-                OpenAlertDialog("Sorry, Not able to delete Last Deck.");
+                OpenAlertDialog("Cannot delete. You must have at least one deck.");
                 return;
             }
 
