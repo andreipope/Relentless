@@ -121,7 +121,9 @@ namespace Loom.ZombieBattleground
                 _deckIconPositionList.Add(frame.position);
             }
 
-            ReloadDeckDataAndDisplay();                        
+            ReloadDeckDataAndDisplay();
+
+            ((AppStateManager)GameClient.Get<IAppStateManager>()).ConnectionStatusDidUpdate += ReloadDeckDataAndDisplay;
         }
 
         public void Show(object data)
