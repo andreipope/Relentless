@@ -89,6 +89,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
+        private Material _materialNormal,
+                         _materialGrayscale;
+
         public readonly Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
             new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
@@ -214,6 +217,9 @@ namespace Loom.ZombieBattleground
             };
 
             _imageAbilitiesPanel = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
+            
+            _materialNormal = new Material(Shader.Find("Sprites/Default"));
+            _materialGrayscale = new Material(Shader.Find("Sprites/Grayscale"));
 
             LoadBoardCardComponents();
 
@@ -236,6 +242,9 @@ namespace Loom.ZombieBattleground
                 _draggingObject = null;
                 _isDragging = false;
             }
+
+            Object.Destroy(_materialNormal);
+            Object.Destroy(_materialGrayscale);
 
             _cacheCollectionCardsList.Clear();
             _imageAbilityIcons = null;
@@ -550,11 +559,22 @@ namespace Loom.ZombieBattleground
                         amount,
                         BoardCardView.AmountTrayType.Counter                        
                     );
+                    SetCardFrameMaterial
+                    (
+                        card,
+                        amount > 0 ? _materialNormal : _materialGrayscale
+                    );
                     break;
                 }
             }
         }
         
+        private void SetCardFrameMaterial(BoardCardView card, Material material)
+        {
+            card.GameObject.transform.Find("Frame").GetComponent<SpriteRenderer>().material = material;
+            card.GameObject.transform.Find("Picture").GetComponent<SpriteRenderer>().material = material;
+        }
+
         private void SubtractInitialDeckCardsAmountFromCollections(Deck deck)
         {
             foreach(DeckCardData card in deck.Cards)
