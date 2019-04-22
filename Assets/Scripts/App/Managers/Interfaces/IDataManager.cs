@@ -26,8 +26,6 @@ namespace Loom.ZombieBattleground
 
         UserInfo UserInfo { get; set; }
 
-        GetVersionsResponse CachedVersions { get; set; }
-
         ZbVersion ZbVersion { get; }
 
         Task StartLoadCache();

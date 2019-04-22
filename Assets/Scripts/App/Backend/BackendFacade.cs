@@ -581,19 +581,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 #endregion
 
 
-#region VersionCheck
-
-        private const string GetVersionMethod = "GetVersions";
-
-        public async Task<GetVersionsResponse> GetVersions()
-        {
-            GetVersionsRequest request = new GetVersionsRequest();
-            return await _contractCallProxy.StaticCallAsync<GetVersionsResponse>(GetVersionMethod, request);
-        }
-
-#endregion
-
-
 #region PVP
 
         private const string FindMatchMethod = "FindMatch";

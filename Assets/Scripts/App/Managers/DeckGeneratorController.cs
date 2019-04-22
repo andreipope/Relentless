@@ -325,7 +325,37 @@ namespace Loom.ZombieBattleground
                 cardSortByGooCost[index].Add(card);
             }
 
-            for (int i = 0; i < 7; ++i)
+            int countCardOneToThreeCost = 0;
+            int countCardFourToSevenCost = 0;
+            int countCardEightToTenCost = 0;
+
+            for (int i = 0; i < 10; ++i)
+            {
+                int cost = i + 1;
+                if (cardSortByGooCost[cost].Count > 0)
+                {
+                    List<Card> cardList = cardSortByGooCost[cost];
+                    Card card = cardList[Random.Range(0, cardList.Count)];
+                    cardsToAdd.Add(card);
+                    cardList.Remove(card);
+                    creatureCardList.Remove(card);
+                    
+                    if(cost >= 1 && cost <= 3 )
+                    {
+                        ++countCardOneToThreeCost;
+                    }
+                    else if(cost >= 4 && cost <= 7 )
+                    {
+                        ++countCardFourToSevenCost;
+                    }
+                    else if(cost >= 8 && cost <= 10 )
+                    {
+                        ++countCardEightToTenCost;
+                    }
+                }
+            }
+            
+            for (int i = 0; i < 7 - countCardOneToThreeCost; ++i)
             {
                 int randCost = Random.Range(1, 4);
                 if(cardSortByGooCost[randCost].Count > 0)
@@ -338,7 +368,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            for (int i = 0; i < 12; ++i)
+            for (int i = 0; i < 12 - countCardFourToSevenCost; ++i)
             {
                 int randCost = Random.Range(4, 8);
                 if(cardSortByGooCost[randCost].Count > 0)
@@ -351,7 +381,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            for (int i = 0; i < 4; ++i)
+            for (int i = 0; i < 4 - countCardEightToTenCost; ++i)
             {
                 int randCost = Random.Range(8, 11);
                 if(cardSortByGooCost[randCost].Count > 0)

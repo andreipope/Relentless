@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?");
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
         }
 
         private void ConfirmRedirectMarketplaceLink(bool status)
@@ -393,6 +393,7 @@ namespace Loom.ZombieBattleground
                     {
                         if
                         (
+                            CheckIfSatisfyFactionFilter(card) &&
                             CheckIfSatisfyGooCostFilter(card) &&
                             CheckIfSatisfyRankFilter(card) &&
                             CheckIfSatisfyTypeFilter(card)
@@ -430,6 +431,7 @@ namespace Loom.ZombieBattleground
                     {
                         if
                         (
+                            CheckIfSatisfyFactionFilter(card) &&
                             CheckIfSatisfyGooCostFilter(card) &&
                             CheckIfSatisfyRankFilter(card) &&
                             CheckIfSatisfyTypeFilter(card)
@@ -501,6 +503,11 @@ namespace Loom.ZombieBattleground
         private bool CheckIfSatisfyRankFilter(Card card)
         {
             return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.Rank];
+        }
+
+        private bool CheckIfSatisfyFactionFilter(Card card)
+        {
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.FactionDictionary[card.Faction];
         }
 
         private bool CheckIfSatisfyTypeFilter(Card card)

@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         public bool IsAppPaused { get; private set; }
+        
+        public event Action ConnectionStatusDidUpdate;
 
         public Enumerators.AppState AppState { get; set; }
 
@@ -240,6 +242,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
+                            ConnectionStatusDidUpdate?.Invoke();
                         }
                         catch(Exception e)
                         {
