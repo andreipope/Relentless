@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCardCost()
         {
-            CostText.text = Model.Card.InstanceCard.Cost.ToString();
+            CostText.text = Model.CurrentCost.ToString();
             UpdateColorOfCost();
         }
         public virtual void UpdateAmount(int amount)
@@ -647,11 +647,11 @@ namespace Loom.ZombieBattleground
 
         private void UpdateColorOfCost()
         {
-            if (Model.Card.InstanceCard.Cost > Model.Card.Prototype.Cost)
+            if (Model.CurrentCost > Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.red;
             }
-            else if (Model.Card.InstanceCard.Cost < Model.Card.Prototype.Cost)
+            else if (Model.CurrentCost < Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.green;
             }

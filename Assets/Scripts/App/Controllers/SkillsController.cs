@@ -524,7 +524,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.RESSURECT:
                     state = skill.OwnerPlayer.CardsInGraveyard.FindAll(x => x.Prototype.Faction == Enumerators.Faction.LIFE
                                && x.Prototype.Kind == Enumerators.CardKind.CREATURE
-                               && x.InstanceCard.Cost == skill.Skill.Value
+                               && x.CurrentCost == skill.Skill.Value
                                && !skill.OwnerPlayer.CardsOnBoard.Any(c => c == x)).Count > 0;
                     break;
                 case Enumerators.Skill.PUSH:
@@ -1354,7 +1354,7 @@ namespace Loom.ZombieBattleground
             {
                 boardUnitModels = owner.CardsInGraveyard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.LIFE
                                                        && x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
-                                                       && x.Card.InstanceCard.Cost == skill.Value
+                                                       && x.CurrentCost== skill.Value
                                                        && !owner.CardsOnBoard.Any(c => c.Card == x.Card));
 
                 boardUnitModels = InternalTools.GetRandomElementsFromList(boardUnitModels, skill.Count);

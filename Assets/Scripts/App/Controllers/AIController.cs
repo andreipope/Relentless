@@ -747,8 +747,8 @@ namespace Loom.ZombieBattleground
             BoardUnitModel expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.InstanceCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
-                            x.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
+                        x => x.CurrentCost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.CurrentCost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -808,7 +808,7 @@ namespace Loom.ZombieBattleground
         {
             if (!Constants.DevModeEnabled)
             {
-                return boardUnitModel.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
+                return boardUnitModel.CurrentCost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
             }
             else
@@ -946,7 +946,7 @@ namespace Loom.ZombieBattleground
             GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
             GameplayQueueAction<object> ranksBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
 
-            _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
+            _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.CurrentCost;
 
             switch (boardUnitModel.Prototype.Kind)
             {

@@ -95,6 +95,7 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
 
             CurrentDamageHistory = new List<ValueHistory>();
+            CurrentCostHistory = new List<ValueHistory>();
 
             IsCreatedThisTurn = true;
 
@@ -191,6 +192,28 @@ namespace Loom.ZombieBattleground
 
         public int BuffedDefense { get; set; }
 
+        public int CurrentCost
+        {
+            get {
+                int totalValue;
+                ValueHistory forcedValue = FindFirstForcedValueInValueHistory(CurrentCostHistory);
+
+                if (forcedValue != null)
+                {
+                    totalValue = forcedValue.ValueInteger;
+                }
+                else
+                {
+                    totalValue = GetBackTotalValueFromValueHistory(CurrentCostHistory, Card.Prototype.Cost);
+                }
+
+                totalValue = Mathf.Max(0, totalValue);
+                return totalValue;
+            }
+        }
+
+        public List<ValueHistory> CurrentCostHistory;
+
         public int CurrentDefense
         {
             get => Card.InstanceCard.Defense;
@@ -281,7 +304,6 @@ namespace Loom.ZombieBattleground
         public Enumerators.Faction Faction => Card.Prototype.Faction;
 
         // ===================
-
         public int GetBackTotalValueFromValueHistory (List<ValueHistory> valueHistory, int initValue = 0)
         {
             int totalValue = initValue;
@@ -321,11 +343,17 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason)
+        public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
-            CurrentDamageHistory.Add(new ValueHistory(value, reason));
+            CurrentDamageHistory.Add(new ValueHistory(value, reason, forced: forced));
             UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
+        }
+
+        public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
+        {
+            int oldValue = CurrentDamage;
+            CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
         }
 
         public void HandleDefenseBuffer(int damage)
@@ -756,7 +784,7 @@ namespace Loom.ZombieBattleground
                 if (_gameplayManager.AvoidGooCost)
                     return true;
 
-                return owner.CurrentGoo >= Card.InstanceCard.Cost;
+                return owner.CurrentGoo >= CurrentCost;
             }
             else
             {
@@ -1107,6 +1135,7 @@ namespace Loom.ZombieBattleground
             LastAttackingSetType = Card.Prototype.Faction;
             BuffsOnUnit.Clear();
             CurrentDamageHistory.Clear();
+            CurrentCostHistory.Clear();
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();

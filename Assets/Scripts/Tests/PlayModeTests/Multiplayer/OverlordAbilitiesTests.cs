@@ -1990,8 +1990,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     BoardUnitModel playerCardInHand = TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerWhizperId);
                     BoardUnitModel opponentCardInHand = TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(opponentWhizper2Id);
 
-                    Assert.AreEqual(playerCardInHand.Card.Prototype.Cost - 1, playerCardInHand.Card.InstanceCard.Cost);
-                    Assert.AreEqual(opponentCardInHand.Card.Prototype.Cost - 1, playerCardInHand.Card.InstanceCard.Cost);
+                    Assert.AreEqual(playerCardInHand.Card.Prototype.Cost - 1, playerCardInHand.CurrentCost);
+                    Assert.AreEqual(opponentCardInHand.Card.Prototype.Cost - 1, playerCardInHand.CurrentCost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState, false);

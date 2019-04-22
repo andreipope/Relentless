@@ -477,7 +477,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
+                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.CurrentCost;
                     },
                     (workingCard, boardObject) =>
                     {

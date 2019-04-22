@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         private bool _lastAuraActive;
 
+        private List<ValueHistory> _changedValues;
+
         public ChangeStatsOfCardsInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -37,6 +39,7 @@ namespace Loom.ZombieBattleground
             Count = Mathf.Clamp(ability.Count, 1, ability.Count);
 
             _affectedCards = new List<BoardUnitModel>();
+            _changedValues = new List<ValueHistory>();
         }
 
         public override void Activate()
@@ -159,9 +162,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.InstanceCard.Damage += Attack;
+                card.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+                card.AddToCurrentDamageHistory(Attack, Enumerators.ReasonForValueChange.AbilityBuff);
                 card.InstanceCard.Defense += Defense;
-                card.InstanceCard.Cost = Mathf.Max(0, card.InstanceCard.Cost+Cost);
             }
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -191,9 +194,9 @@ namespace Loom.ZombieBattleground
 
         private void ResetStatsOfTargetCard(BoardUnitModel card)
         {
-            card.InstanceCard.Damage = card.Prototype.Damage;
+            card.AddToCurrentCostHistory(-Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.AddToCurrentDamageHistory(-Attack, Enumerators.ReasonForValueChange.AbilityBuff);
             card.InstanceCard.Defense = card.Prototype.Defense;
-            card.InstanceCard.Cost = card.Prototype.Cost;
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
