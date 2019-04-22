@@ -14,12 +14,14 @@ namespace Loom.ZombieBattleground
         public int ValueInteger;
         public Enumerators.ReasonForValueChange Source;
         public bool Enabled;
+        public bool Forced;
 
-        public ValueHistory(int valueInteger, Enumerators.ReasonForValueChange source, bool enabled = true)
+        public ValueHistory(int valueInteger, Enumerators.ReasonForValueChange source, bool enabled = true, bool forced = false)
         {
             ValueInteger = valueInteger;
             Source = source;
             Enabled = enabled;
+            Forced = forced;
         }
     }
     public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
@@ -166,29 +168,21 @@ namespace Loom.ZombieBattleground
         public int CurrentDamage
         {
             get {
-                int totalValue = Card.Prototype.Damage;
-                for (int i = 0; i < CurrentDamageHistory.Count; i++)
+                int totalValue;
+                ValueHistory forcedValue = FindFirstForcedValueInValueHistory(CurrentDamageHistory);
+
+                if (forcedValue != null)
                 {
-                    if (CurrentDamageHistory[i].Enabled)
-                    {
-                        totalValue += CurrentDamageHistory[i].ValueInteger;
-                    }
+                    totalValue = forcedValue.ValueInteger;
                 }
+                else
+                {
+                    totalValue = GetBackTotalValueFromValueHistory(CurrentDamageHistory, Card.Prototype.Damage);
+                }
+
                 totalValue = Mathf.Max(0, totalValue);
                 return totalValue;
             }
-            /* 
-            set
-            {
-                int oldValue = Card.InstanceCard.Damage;
-                value = Mathf.Max(value, 0);
-                if (oldValue == value)
-                    return;
-
-                Card.InstanceCard.Damage = value;
-                UnitDamageChanged?.Invoke(oldValue, value);
-            }
-            */
         }
 
         public List<ValueHistory> CurrentDamageHistory;
@@ -287,6 +281,34 @@ namespace Loom.ZombieBattleground
         public Enumerators.Faction Faction => Card.Prototype.Faction;
 
         // ===================
+
+        public int GetBackTotalValueFromValueHistory (List<ValueHistory> valueHistory, int initValue = 0)
+        {
+            int totalValue = initValue;
+
+            for (int i = 0; i < valueHistory.Count; i++) 
+            {
+                if (valueHistory[i].Enabled)
+                {
+                    totalValue += valueHistory[i].ValueInteger;
+                }
+            }
+
+            return totalValue;
+        }
+
+        public ValueHistory FindFirstForcedValueInValueHistory (List<ValueHistory> valueHistory)
+        {
+            for (int i = valueHistory.Count-1; i >= 0; i--) 
+            {
+                if (valueHistory[i].Forced && valueHistory[i].Enabled)
+                {
+                    return valueHistory[i];
+                }
+            }
+
+            return null;
+        }
 
         public void DisableBuffsOnValueHistory (List<ValueHistory> valueHistory)
         {
