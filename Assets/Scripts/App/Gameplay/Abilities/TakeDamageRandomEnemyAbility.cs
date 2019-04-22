@@ -78,6 +78,9 @@ namespace Loom.ZombieBattleground
         {
             base.ChangeRageStatusAction(status);
 
+            if (AbilityTrigger != Enumerators.AbilityTrigger.RAGE)
+                return;
+
             if (status)
             {
                 Action();

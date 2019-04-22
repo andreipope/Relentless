@@ -1210,10 +1210,11 @@ namespace Loom.ZombieBattleground
         {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
-            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
+            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList.Select(item => item).ToList();
             OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
             Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
             allAvailableFactionList.Remove(againstFaction);
+
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
                 List<Card> cards;
@@ -1225,12 +1226,12 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    cards = cards = set.Cards.ToList();
+                    cards = set.Cards.ToList();
                 }
 
                 foreach (Card card in cards)
                 {
-                    if (card.Name.ToLower().Contains(keyword))
+                    if (card.Name.Trim().ToLower().Contains(keyword))
                     {
                         resultList.Add(card);
                     }
