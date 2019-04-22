@@ -114,8 +114,8 @@ namespace Loom.ZombieBattleground.Test
 
         private static void ValidateDeck(Deck deck)
         {
-            IEnumerable<IGrouping<int,DeckCardData>> groupBy = deck.Cards.GroupBy(card => card.MouldId);
-            foreach (IGrouping<int,DeckCardData> grouping in groupBy)
+            IEnumerable<IGrouping<MouldId, DeckCardData>> groupBy = deck.Cards.GroupBy(card => card.MouldId);
+            foreach (IGrouping<MouldId, DeckCardData> grouping in groupBy)
             {
                 int count = grouping.Count();
                 if (count > 1)

@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new CollectionCardData
             (
-                (int) cardCollection.MouldId,
+                new MouldId(cardCollection.MouldId),
                 (int) cardCollection.Amount
             );
         }
@@ -90,7 +90,8 @@ namespace Loom.ZombieBattleground.Data
                 ability.Defense2,
                 ability.Cost,
                 (Enumerators.CardKind)ability.TargetCardKind,
-                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList()
+                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList(),
+                new MouldId(ability.MouldId)
             );
         }
 
@@ -155,7 +156,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
-            return new DeckCardData((int) card.MouldId, (int) card.Amount);
+            return new DeckCardData(new MouldId(card.MouldId), (int) card.Amount);
         }
 
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
@@ -186,7 +187,7 @@ namespace Loom.ZombieBattleground.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card(
-                (int) card.MouldId,
+                new MouldId(card.MouldId),
                 card.Name,
                 card.Cost,
                 card.Description,

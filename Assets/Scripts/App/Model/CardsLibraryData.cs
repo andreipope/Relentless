@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground.Data
             return card;
         }
         
-        public Card GetCardFromMouldId(int mouldId)
+        public Card GetCardFromMouldId(MouldId mouldId)
         {
             Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
             if (card == null)
@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Data
             return card;
         }
 
-        public string GetCardNameFromMouldId(int mouldId)
+        public string GetCardNameFromMouldId(MouldId mouldId)
         {
             Card card =  Cards.FirstOrDefault(x => x.MouldId == mouldId);
             if (card == null)

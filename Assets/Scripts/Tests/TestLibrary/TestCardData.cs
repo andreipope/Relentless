@@ -6,7 +6,7 @@ namespace Loom.ZombieBattleground.Test
     {
         public string CardName { get; }
 
-        public int MouldId { get; }
+        public MouldId MouldId { get; }
 
         public int Amount { get; }
 

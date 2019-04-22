@@ -6,11 +6,11 @@ namespace Loom.ZombieBattleground.Data
     {
         public List<CollectionCardData> Cards;
 
-        public CollectionCardData GetCardData(int id)
+        public CollectionCardData GetCardData(MouldId mouldId)
         {
             foreach (CollectionCardData cardData in Cards)
             {
-                if (cardData.MouldId == id)
+                if (cardData.MouldId == mouldId)
                 {
                     return cardData;
                 }
@@ -18,20 +18,15 @@ namespace Loom.ZombieBattleground.Data
 
             return null;
         }
-
-        public void ChangeAmount(int idCard, int amountChangeFactor)
-        {
-            GetCardData(idCard).Amount += amountChangeFactor;
-        }
     }
 
     public class CollectionCardData
     {
-        public int MouldId;
+        public MouldId MouldId;
 
         public int Amount;
 
-        public CollectionCardData(int mouldId, int amount)
+        public CollectionCardData(MouldId mouldId, int amount)
         {
             MouldId = mouldId;
             Amount = amount;

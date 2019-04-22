@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Data
             return new DeckCard
             {
                 Amount = deckCardData.Amount,
-                MouldId = deckCardData.MouldId
+                MouldId = deckCardData.MouldId.Id
             };
         }
 
@@ -66,7 +66,8 @@ namespace Loom.ZombieBattleground.Data
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
                 Defense2 = ability.Defense2,
-                Cost = ability.Cost
+                Cost = ability.Cost,
+                MouldId = ability.MouldId.Id
             };
 
             return abilityData;
@@ -122,7 +123,7 @@ namespace Loom.ZombieBattleground.Data
         {
             Protobuf.Card protoCard = new Protobuf.Card
             {
-                MouldId = card.MouldId,
+                MouldId = card.MouldId.Id,
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,

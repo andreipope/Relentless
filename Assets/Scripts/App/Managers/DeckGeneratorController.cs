@@ -444,7 +444,7 @@ namespace Loom.ZombieBattleground
             deck.Cards.Clear();
         }
 
-        private int GetCardsAmount(int mouldId, CollectionData collectionData)
+        private int GetCardsAmount(MouldId mouldId, CollectionData collectionData)
         {
             return collectionData.GetCardData(mouldId).Amount;
         }

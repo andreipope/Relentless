@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.Data
             SecondarySkill = secondarySkill;
         }
 
-        public void AddCard(int mouldId)
+        public void AddCard(MouldId mouldId)
         {
             bool wasAdded = false;
             foreach (DeckCardData card in Cards)
@@ -80,7 +80,7 @@ namespace Loom.ZombieBattleground.Data
             }
         }
 
-        public void RemoveCard(int mouldId)
+        public void RemoveCard(MouldId mouldId)
         {
             foreach (DeckCardData card in Cards)
             {
@@ -124,11 +124,11 @@ namespace Loom.ZombieBattleground.Data
 
     public class DeckCardData
     {
-        public int MouldId { get; set; }
+        public MouldId MouldId { get; set; }
 
         public int Amount { get; set; }
 
-        public DeckCardData(int mouldId, int amount)
+        public DeckCardData(MouldId mouldId, int amount)
         {
             MouldId = mouldId;
             Amount = amount;

@@ -126,7 +126,7 @@ namespace Loom.ZombieBattleground.Test
                 List<DeckCardData> cards =
                     new List<DeckCardData>
                     {
-                        new DeckCardData(1, 100500)
+                        new DeckCardData(new MouldId(1), 100500)
                     };
                 Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
 
@@ -233,10 +233,10 @@ namespace Loom.ZombieBattleground.Test
 
                 GetAIDecksResponse getAIDecksResponse = await LoomTestContext.BackendFacade.GetAiDecks();
                 Assert.IsNotNull(getAIDecksResponse);
-                Assert.IsNotNull(getAIDecksResponse.Decks);
+                Assert.IsNotNull(getAIDecksResponse.AiDecks);
 
                 List<AIDeck> decksData =
-                    getAIDecksResponse.Decks
+                    getAIDecksResponse.AiDecks
                         .Select(d => d.FromProtobuf())
                         .ToList();
                 Assert.GreaterOrEqual(1, decksData.Count);

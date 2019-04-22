@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground.Test
             return deck;
         }
 
-        public static string GetCardNameFromMouldId(int mouldId)
+        public static string GetCardNameFromMouldId(MouldId mouldId)
         {
            return GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardNameFromMouldId(mouldId);
         }

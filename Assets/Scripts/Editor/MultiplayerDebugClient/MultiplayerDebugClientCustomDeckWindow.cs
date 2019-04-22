@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         public MultiplayerDebugClient Client => _ownerWindow.DebugClient;
 
-        private Dictionary<int, string> _cardMouldIdToDescription;
+        private Dictionary<MouldId, string> _cardMouldIdToDescription;
         private bool _visible;
         private Vector2 _customDeckScrollPosition;
         private Vector2 _cardLibraryScrollPosition;
@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             if (_cardMouldIdToDescription == null)
             {
-                _cardMouldIdToDescription = new Dictionary<int, string>();
+                _cardMouldIdToDescription = new Dictionary<MouldId, string>();
                 foreach (Card card in cardLibrary)
                 {
                     _cardMouldIdToDescription[card.MouldId] =

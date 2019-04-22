@@ -459,13 +459,11 @@ namespace Loom.ZombieBattleground
             InvokeMulliganStarted();
         }
 
-        public BoardUnitModel CreateNewCardByNameAndAddToHand(string name)
+        public BoardUnitModel CreateNewCardAndAddToHand(Card card)
         {
-            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)}(string name = {name})");
+            CallLog($"{nameof(CreateNewCardAndAddToHand)}(Card card = {card})");
 
-            float animationDuration = 1.5f;
-
-            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            const float animationDuration = 1.5f;
             WorkingCard workingCard = new WorkingCard(card, card, Player);
             if (_tutorialManager.IsTutorial)
             {
@@ -476,7 +474,7 @@ namespace Loom.ZombieBattleground
 
             if (CheckIsMoreThanMaxCards(boardUnitModel))
             {
-                CallLog($"{nameof(CreateNewCardByNameAndAddToHand)} CheckIsMoreThanMaxCards == true, returned {boardUnitModel}");
+                CallLog($"{nameof(CreateNewCardAndAddToHand)} CheckIsMoreThanMaxCards == true, returned {boardUnitModel}");
                 return boardUnitModel;
             }
 
@@ -522,8 +520,24 @@ namespace Loom.ZombieBattleground
                     animationDuration);
             }
 
-            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)} returned {boardUnitModel}");
+            CallLog($"{nameof(CreateNewCardAndAddToHand)} returned {boardUnitModel}");
             return boardUnitModel;
+        }
+
+        public BoardUnitModel CreateNewCardByNameAndAddToHand(string name)
+        {
+            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)}(string name = {name})");
+            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+
+            return CreateNewCardAndAddToHand(card);
+        }
+
+        public BoardUnitModel CreateNewCardByMouldIdAndAddToHand(MouldId mouldId)
+        {
+            CallLog($"{nameof(CreateNewCardByMouldIdAndAddToHand)}(MouldId mouldId = {mouldId})");
+            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId));
+
+            return CreateNewCardAndAddToHand(card);
         }
 
         public void ReturnToHandBoardUnit(BoardUnitModel boardUnitModel, Vector3 cardPosition)

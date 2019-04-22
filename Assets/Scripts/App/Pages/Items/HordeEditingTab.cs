@@ -584,7 +584,7 @@ namespace Loom.ZombieBattleground
             foreach(DeckCardData card in deck.Cards)
             {
                 Card fetchedCard = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId);
-                _collectionData.GetCardData((int)fetchedCard.MouldId).Amount -= card.Amount;
+                _collectionData.GetCardData(fetchedCard.MouldId).Amount -= card.Amount;
             }
         }
 

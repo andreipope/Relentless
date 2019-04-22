@@ -995,8 +995,8 @@ namespace Loom.ZombieBattleground
                     ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
                     abilityView = new FreezeNumberOfRandomAllyAbilityView((FreezeNumberOfRandomAllyAbility)ability);
                     break;
-                case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
-                    ability = new AddCardByNameToHandAbility(cardKind, abilityData);
+                case Enumerators.AbilityType.ADD_CARD_BY_MOULD_ID_TO_HAND:
+                    ability = new AddCardByMouldIdToHandAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
                     ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);
@@ -1321,7 +1321,8 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         default(Enumerators.CardKind),
-                        null
+                        null,
+                        default(MouldId)
                         );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
@@ -1352,7 +1353,8 @@ namespace Loom.ZombieBattleground
                         0,
                         0,
                         default(Enumerators.CardKind),
-                        null
+                        null,
+                        default(MouldId)
                     );
                     break;
             }
