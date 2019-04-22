@@ -331,15 +331,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            CachedOverlordData = DeserializeObjectFromPersistentData<OverlordData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                        }
-                        else
-                        {
-                            ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
-                        }
+                        ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                     }
                     catch (Exception)
                     {

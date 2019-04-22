@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 
@@ -13,7 +14,7 @@ namespace Loom.ZombieBattleground
         OverlordExperienceManager.LevelReward GetLevelReward(OverlordModel overlord);
 
         void InitializeExperienceInfoInMatch(OverlordModel overlord);
-        void ApplyExperienceFromMatch(OverlordModel overlord);
+        Task ApplyExperienceFromMatch(OverlordModel overlord);
         void ApplyExperience(OverlordModel overlord, int experience);
     }
 }

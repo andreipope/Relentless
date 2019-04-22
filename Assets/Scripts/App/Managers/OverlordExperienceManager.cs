@@ -4,9 +4,14 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using UnityEngine;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Protobuf;
+using Card = Loom.ZombieBattleground.Data.Card;
+using Deck = Loom.ZombieBattleground.Data.Deck;
+using OverlordSkill = Loom.ZombieBattleground.Data.OverlordSkill;
 
 namespace Loom.ZombieBattleground
 {
@@ -55,19 +60,43 @@ namespace Loom.ZombieBattleground
             MatchExperienceInfo.ExperienceReceived = 0;
         }
 
-        public void ApplyExperienceFromMatch(OverlordModel overlord)
+        public async Task ApplyExperienceFromMatch(OverlordModel overlord)
         {
-            overlord.Experience += MatchExperienceInfo.ExperienceReceived;
-            CheckLevel(overlord);
+            try
+            {
+                SetOverlordExperienceResponse experienceResponse = await _backendFacade.SetOverlordExperience(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    overlord.OverlordId,
+                    MatchExperienceInfo.ExperienceReceived);
+
+                overlord.Experience = experienceResponse.Experience;
+                CheckLevel(overlord);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Not able to save Experience, " + e);
+            }
 
             _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
-        public void ApplyExperience(OverlordModel overlord, int experience)
+        public async void ApplyExperience(OverlordModel overlord, int experience)
         {
-            overlord.Experience += experience;
-            CheckLevel(overlord);
+            try
+            {
+                SetOverlordExperienceResponse experienceResponse = await _backendFacade.SetOverlordExperience(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    overlord.OverlordId,
+                    experience);
+
+                overlord.Experience = experienceResponse.Experience;
+                CheckLevel(overlord);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Not able to save Experience, " + e);
+            }
 
             _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);

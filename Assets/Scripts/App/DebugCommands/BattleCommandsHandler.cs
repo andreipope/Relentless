@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground;
+using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Opencoding.CommandHandlerSystem;
-using UnityEngine;
 
 static class BattleCommandsHandler
 {
@@ -21,6 +22,8 @@ static class BattleCommandsHandler
     private static IDataManager _dataManager;
     private static IOverlordExperienceManager _overlordManager;
     private static IUIManager _uiManager;
+    private static BackendFacade _backendFacade;
+    private static BackendDataControlMediator _backendDataControlMediator;
 
     public static void Initialize()
     {
@@ -30,6 +33,8 @@ static class BattleCommandsHandler
         _dataManager = GameClient.Get<IDataManager>();
         _overlordManager = GameClient.Get<IOverlordExperienceManager>();
         _uiManager = GameClient.Get<IUIManager>();
+        _backendFacade = GameClient.Get<BackendFacade>();
+        _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         _skillController = _gameplayManager.GetController<SkillsController>();
         _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
         _cardsController = _gameplayManager.GetController<CardsController>();
@@ -226,8 +231,8 @@ static class BattleCommandsHandler
         }
     }
 
-    [CommandHandler(Description = "Adds xp to an overlord. ")]
-    private static void SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
+    [CommandHandler(Description = "Adds level to an overlord. ")]
+    private static async Task SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
     {
         OverlordModel overlord = _dataManager.CachedOverlordData.Overlords
             .Find(x => x.Name == overlordName);
@@ -246,6 +251,7 @@ static class BattleCommandsHandler
 
         overlord.Level = level;
 
+        await _backendFacade.SetOverlordLevel(_backendDataControlMediator.UserDataModel.UserId, overlord.OverlordId, overlord.Level);
         _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 
