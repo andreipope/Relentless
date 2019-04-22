@@ -26,8 +26,6 @@ namespace Loom.ZombieBattleground
 
         UserInfo UserInfo { get; set; }
 
-        GetVersionsResponse CachedVersions { get; set; }
-
         ZbVersion ZbVersion { get; }
 
         Task StartLoadCache();
@@ -49,8 +47,6 @@ namespace Loom.ZombieBattleground
         T DeserializeFromJson<T>(string json);
 
         string GetPersistentDataPath(string fileName);
-
-        Task LoadRemoteConfig();
 
         Task LoadZbVersionData();
     }

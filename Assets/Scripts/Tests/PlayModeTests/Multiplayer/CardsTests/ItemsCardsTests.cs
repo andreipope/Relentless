@@ -190,21 +190,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent => {},
                        player => player.CardPlay(playerEarthshakerId, ItemPosition.Start),
                        opponent => opponent.CardPlay(opponentEarthshakerId, ItemPosition.Start),
-                       player =>
-                       {
-                           player.CardAttack(playerEarthshakerId, opponentEarthshakerId);
-                           player.CardPlay(playerStaplerId, ItemPosition.Start, playerEarthshakerId);
-                       },
-                       opponent =>
-                       {
-                           opponent.CardPlay(opponentStaplerId, ItemPosition.Start, opponentEarthshakerId);
-                       }
+                       player => player.CardPlay(playerStaplerId, ItemPosition.Start, playerEarthshakerId),
+                       opponent =>  opponent.CardPlay(opponentStaplerId, ItemPosition.Start, opponentEarthshakerId),
+                       player => {}
                    };
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(5, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId)).CurrentDefense);
-                    Assert.AreEqual(5, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId)).CurrentDefense);
+                    CardModel playerEarthshaker = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId);
+                    CardModel opponentEarthshaker = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId);
+
+                    Assert.AreEqual(playerEarthshaker.Prototype.Defense + 4, playerEarthshaker.CurrentDefense);
+                    Assert.AreEqual(opponentEarthshaker.Prototype.Defense + 4, opponentEarthshaker.CurrentDefense);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

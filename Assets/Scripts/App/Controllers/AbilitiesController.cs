@@ -293,7 +293,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasUnitsWithoutTargetUnitType(CardModel cardModel, AbilityData ability)
         {
-            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType == ability.TargetUnitType).Count > 0;
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType != ability.TargetUnitType).Count > 0;
         }
 
         public bool HasSpecialUnitStatusOnBoard(CardModel cardModel, AbilityData ability)
@@ -834,13 +834,34 @@ namespace Loom.ZombieBattleground
             foreach(AbilityData abilityData in cardModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;
-                if (abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY ||
-                    abilityData.Activity == Enumerators.AbilityActivity.PASSIVE)
+                if ((abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY &&
+                     abilityData.Activity == Enumerators.AbilityActivity.PASSIVE) || CanActivateAbility(abilityData))
                 {
                     activeAbility = CreateActiveAbility(abilityData, cardModel.Prototype.Kind, abilityCaller, owner, cardModel);
                     activeAbility.Ability.Activate();
                 }
             }
+        }
+
+        private bool CanActivateAbility(AbilityData abilityData)
+        {
+            if (abilityData.Trigger == Enumerators.AbilityTrigger.ENTRY &&
+                abilityData.Activity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                switch (abilityData.Ability)
+                {
+                    case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
+                    case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
+                    case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
+                        return true;
+                    case Enumerators.AbilityType.CHANGE_STAT:
+                        if (abilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+                            return true;
+                        break;
+                }
+            }
+
+            return false;
         }
 
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
