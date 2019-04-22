@@ -483,7 +483,7 @@ namespace Loom.ZombieBattleground
 
             if (!AttackedThisTurn && !IsPlayable)
             {
-                IsPlayable = true;
+                ForceSetCreaturePlayable();
             }
 
             CardTypeChanged?.Invoke(InitialUnitType);

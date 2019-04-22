@@ -8,6 +8,7 @@ namespace Loom.ZombieBattleground
     public class BlockTakeDamageAbility : AbilityBase
     {
         private int Damage { get; }
+        private BoardUnitModel _targetedUnit;
 
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
@@ -23,7 +24,9 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.Targets.Contains(Enumerators.Target.ITSELF))
             {
-                ApplyMaximumDamageBuff(AbilityUnitOwner, Damage);
+                _targetedUnit = AbilityUnitOwner;
+
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeUseAbilityEvent();
             }
@@ -35,11 +38,13 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                ApplyMaximumDamageBuff(TargetUnit, Damage);
+                _targetedUnit = TargetUnit;
+
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
+                    new ParametrizedAbilityBoardObject(_targetedUnit)
                 });
             }
         }
@@ -48,9 +53,12 @@ namespace Loom.ZombieBattleground
         {
             base.TurnStartedHandler();
 
+            if (!GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                ApplyMaximumDamageBuff(AbilityUnitOwner, 999);
+                ApplyMaximumDamageBuff(_targetedUnit, 999);
             }
         }
 
