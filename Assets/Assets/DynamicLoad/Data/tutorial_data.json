@@ -2634,7 +2634,9 @@
           ],
           "SelectableTargets": [
             "OPPONENT",
-            "OPPONENT_CARD"
+            "OPPONENT_CARD",
+            "PLAYER",
+            "PLAYER_CARD"
           ],
           "CanEndTurn": true,
           "PlayerOverlordAbilityShouldBeUnlocked": true,
