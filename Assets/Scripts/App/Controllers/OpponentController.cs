@@ -223,7 +223,6 @@ namespace Loom.ZombieBattleground
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;

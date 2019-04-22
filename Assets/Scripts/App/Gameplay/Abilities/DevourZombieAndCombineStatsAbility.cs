@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground
             int damage = unit.Card.Prototype.Damage;
 
             AbilityUnitOwner.BuffedDefense += defense;
-            AbilityUnitOwner.CurrentDefense += defense;
+            AbilityUnitOwner.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
             AbilityUnitOwner.BuffedDamage += damage;
             AbilityUnitOwner.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);

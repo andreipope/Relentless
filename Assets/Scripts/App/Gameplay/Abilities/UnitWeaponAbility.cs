@@ -38,7 +38,7 @@ namespace Loom.ZombieBattleground
             TargetUnit.AddToCurrentDamageHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
             TargetUnit.BuffedDamage += Value;
 
-            TargetUnit.CurrentDefense += Defense;
+            TargetUnit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
             TargetUnit.BuffedDefense += Defense;
 
             _gameMechanicType = Enumerators.GameMechanicDescription.Chainsaw;

@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
                                     break;
                                 case Enumerators.Stat.DEFENSE:
                                     boardUnit.BuffedDefense += revert ? -Value : Value;
-                                    boardUnit.CurrentDefense += revert ? -Value : Value;
+                                    boardUnit.AddToCurrentDefenseHistory(revert ? -Value : Value, Enumerators.ReasonForValueChange.AbilityBuff);
                                     break;
                                 default:
                                     throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);

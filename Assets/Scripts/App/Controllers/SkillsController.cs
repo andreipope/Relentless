@@ -1717,7 +1717,7 @@ namespace Loom.ZombieBattleground
                     {
                         case BoardUnitModel unit:
                             unit.BuffedDefense += skill.Value;
-                            unit.CurrentDefense += skill.Value;
+                            unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
                             actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                             break;
                         case Player player:
@@ -2114,7 +2114,7 @@ namespace Loom.ZombieBattleground
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
                 unit.BuffedDefense += skill.Value;
-                unit.CurrentDefense += skill.Value;
+                unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.6f;
@@ -2225,7 +2225,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitModel unit in units)
             {
                 unit.BuffedDefense += skill.Value;
-                unit.CurrentDefense += skill.Value;
+                unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.65f;

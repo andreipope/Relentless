@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
                     unit.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
                     
                     unit.BuffedDefense += Defense;
-                    unit.CurrentDefense += Defense;
+                    unit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
                 }
             }
         }
