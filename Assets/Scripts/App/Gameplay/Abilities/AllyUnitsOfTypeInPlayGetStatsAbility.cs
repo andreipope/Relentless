@@ -40,8 +40,8 @@ namespace Loom.ZombieBattleground
                 if (unit.Card.Prototype.Faction == Faction && unit != AbilityUnitOwner)
                 {
                     unit.BuffedDamage += Damage;
-                    unit.CurrentDamage += Damage;
-
+                    unit.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
+                    
                     unit.BuffedDefense += Defense;
                     unit.CurrentDefense += Defense;
                 }

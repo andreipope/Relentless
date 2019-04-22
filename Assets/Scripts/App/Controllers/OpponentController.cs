@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                     BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewDamage;
-                    boardUnit.CurrentDamage = rageOutcome.NewDamage;
+                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
@@ -218,7 +218,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         boardUnit.BuffedDamage = changeStatOutcome.NewDamage;
-                        boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
+                        //boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
                     }
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {

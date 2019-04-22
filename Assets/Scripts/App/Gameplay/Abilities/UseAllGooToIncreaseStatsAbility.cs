@@ -41,8 +41,8 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.BuffedDefense += increaseOn;
             AbilityUnitOwner.CurrentDefense += increaseOn;
             AbilityUnitOwner.BuffedDamage += increaseOn;
-            AbilityUnitOwner.CurrentDamage += increaseOn;
-
+            AbilityUnitOwner.AddToCurrentDamageHistory(increaseOn, Enumerators.ReasonForValueChange.AbilityBuff);
+            
             PlayerCallerOfAbility.CurrentGoo = 0;
         }
     }

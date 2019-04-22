@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
                 if (damage != 0)
                 {
                     unit.BuffedDamage += damage;
-                    unit.CurrentDamage += damage;
+                    unit.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {

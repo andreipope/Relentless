@@ -1296,7 +1296,7 @@ namespace Loom.ZombieBattleground
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
                 workingUnitView.Model.CurrentDefense += cardInfo.BuffedDefense;
                 workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
-                workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
+                workingUnitView.Model.AddToCurrentDamageHistory(cardInfo.BuffedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
             }
 

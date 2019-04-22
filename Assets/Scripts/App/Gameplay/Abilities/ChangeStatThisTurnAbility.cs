@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
             foreach(ChangedStatInfo changedStatInfo in _affectedUnits)
             {
                 changedStatInfo.BoardUnitModel.CurrentDefense += changedStatInfo.RemovedDefense;
-                changedStatInfo.BoardUnitModel.CurrentDamage += changedStatInfo.RemovedAttack;
+                changedStatInfo.BoardUnitModel.AddToCurrentDamageHistory(changedStatInfo.RemovedAttack, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             _affectedUnits.Clear();
@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
                 if (damage != 0)
                 {
-                    unit.CurrentDamage = damage;
+                    unit.AddToCurrentDamageHistory(-changedStatInfo.RemovedAttack, Enumerators.ReasonForValueChange.AbilityBuff);;
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {

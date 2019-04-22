@@ -227,7 +227,7 @@ namespace Loom.ZombieBattleground
             unit.BuffedDefense += defense;
             unit.CurrentDefense += defense;
             unit.BuffedDamage += damage;
-            unit.CurrentDamage += damage;
+            unit.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
         private void GetParameters(out int defense, out int attack)
@@ -255,8 +255,7 @@ namespace Loom.ZombieBattleground
 
                 cardStat.BoardUnitModel.BuffedDamage =
                     Mathf.Clamp(cardStat.BoardUnitModel.BuffedDamage - cardStat.ModifiedDamage, 0, 999);
-                cardStat.BoardUnitModel.CurrentDamage =
-                    Mathf.Clamp(cardStat.BoardUnitModel.CurrentDamage - cardStat.ModifiedDamage, cardStat.BoardUnitModel.Card.Prototype.Damage, 999);
+                cardStat.BoardUnitModel.AddToCurrentDamageHistory(-cardStat.ModifiedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             _affectedUnits.Clear();

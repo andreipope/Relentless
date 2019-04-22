@@ -123,8 +123,8 @@ namespace Loom.ZombieBattleground
             AbilityUnitOwner.CurrentDefense += defense;
 
             AbilityUnitOwner.BuffedDamage += damage;
-            AbilityUnitOwner.CurrentDamage += damage;
-
+            AbilityUnitOwner.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);
+            
             RanksController.AddUnitForIgnoreRankBuff(unit);
 
             unit.IsReanimated = true;

@@ -880,7 +880,7 @@ namespace Loom.ZombieBattleground
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
                 unit.BuffedDamage += skill.Damage;
-                unit.CurrentDamage += skill.Damage;
+                unit.AddToCurrentDamageHistory(skill.Damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),

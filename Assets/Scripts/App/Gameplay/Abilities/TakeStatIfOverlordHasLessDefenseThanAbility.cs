@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                 else if (StatType == Enumerators.Stat.DAMAGE)
                 {
                     AbilityUnitOwner.BuffedDamage += Damage;
-                    AbilityUnitOwner.CurrentDamage += Damage;
+                    AbilityUnitOwner.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
                 }
             }
         }

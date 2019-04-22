@@ -653,8 +653,7 @@ static class BattleCommandsHandler
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
             unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Damage;
-            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Damage;
-
+            unit.AddToCurrentDamageHistory(-playOverlordSkill.Skill.Skill.Damage, Enumerators.ReasonForValueChange.AbilityBuff);
             playOverlordSkill.Skill.SetCoolDown(0);
         }
     }
