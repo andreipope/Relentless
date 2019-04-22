@@ -969,7 +969,7 @@ namespace Loom.ZombieBattleground
             int BuffedDefense = boardUnit.BuffedDefense;
             boardUnit.BuffedDamage = 0;
             boardUnit.BuffedDefense = 0;
-            boardUnit.CurrentDamage -= BuffedDamage;
+            boardUnit.DisableBuffsOnValueHistory(boardUnit.CurrentDamageHistory);
             boardUnit.CurrentDefense -= BuffedDefense;          
             boardUnit.HasSwing = false;
             boardUnit.TakeFreezeToAttacked = false;

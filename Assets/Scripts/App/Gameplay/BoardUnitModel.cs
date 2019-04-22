@@ -9,6 +9,19 @@ using Debug = UnityEngine.Debug;
 
 namespace Loom.ZombieBattleground
 {
+    public class ValueHistory
+    {
+        public int ValueInteger;
+        public Enumerators.ReasonForValueChange Source;
+        public bool Enabled;
+
+        public ValueHistory(int valueInteger, Enumerators.ReasonForValueChange source, bool enabled = true)
+        {
+            ValueInteger = valueInteger;
+            Source = source;
+            Enabled = enabled;
+        }
+    }
     public class BoardUnitModel : OwnableBoardObject, IInstanceIdOwner
     {
         private static readonly ILog Log = Logging.GetLog(nameof(BoardUnitModel));
@@ -78,6 +91,8 @@ namespace Loom.ZombieBattleground
 
             BuffsOnUnit = new List<Enumerators.BuffType>();
             AttackedBoardObjectsThisTurn = new UniqueList<BoardObject>();
+
+            CurrentDamageHistory = new List<ValueHistory>();
 
             IsCreatedThisTurn = true;
 
@@ -150,7 +165,19 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDamage
         {
-            get => Card.InstanceCard.Damage;
+            get {
+                int totalValue = Card.Prototype.Damage;
+                for (int i = 0; i < CurrentDamageHistory.Count; i++)
+                {
+                    if (CurrentDamageHistory[i].Enabled)
+                    {
+                        totalValue += CurrentDamageHistory[i].ValueInteger;
+                    }
+                }
+                totalValue = Mathf.Max(0, totalValue);
+                return totalValue;
+            }
+            /* 
             set
             {
                 int oldValue = Card.InstanceCard.Damage;
@@ -161,7 +188,10 @@ namespace Loom.ZombieBattleground
                 Card.InstanceCard.Damage = value;
                 UnitDamageChanged?.Invoke(oldValue, value);
             }
+            */
         }
+
+        public List<ValueHistory> CurrentDamageHistory;
 
         public int MaxCurrentDefense => Card.Prototype.Defense + BuffedDefense;
 
@@ -258,6 +288,24 @@ namespace Loom.ZombieBattleground
 
         // ===================
 
+        public void DisableBuffsOnValueHistory (List<ValueHistory> valueHistory)
+        {
+            for (int i = 0; i < valueHistory.Count; i++)
+            {
+                if (valueHistory[i].Source == Enumerators.ReasonForValueChange.AbilityBuff)
+                {
+                    valueHistory[i].Enabled = false;
+                }
+            }
+        }
+
+        public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason)
+        {
+            int oldValue = CurrentDamage;
+            CurrentDamageHistory.Add(new ValueHistory(value, reason));
+            UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
+        }
+
         public void HandleDefenseBuffer(int damage)
         {
             if(CurrentDefense - damage <= 0 && !HasBuffShield)
@@ -308,7 +356,7 @@ namespace Loom.ZombieBattleground
             switch (type)
             {
                 case Enumerators.BuffType.ATTACK:
-                    CurrentDamage++;
+                    AddToCurrentDamageHistory(1, Enumerators.ReasonForValueChange.AbilityBuff);
                     BuffedDamage++;
                     AddBuff(Enumerators.BuffType.ATTACK);
                     break;
@@ -533,7 +581,6 @@ namespace Loom.ZombieBattleground
         {
             Card = card;
 
-            CurrentDamage = card.Prototype.Damage;
             CurrentDefense = card.Prototype.Defense;
 
             BuffedDamage = 0;
@@ -583,7 +630,7 @@ namespace Loom.ZombieBattleground
                         BuffsOnUnit.RemoveAll(x => x == Enumerators.BuffType.ATTACK);
 
                         BuffedDamage -= attackToRemove;
-                        CurrentDamage -= attackToRemove;
+                        AddToCurrentDamageHistory(-attackToRemove, Enumerators.ReasonForValueChange.Attack);
                     }
                 }
             }
@@ -1037,6 +1084,7 @@ namespace Loom.ZombieBattleground
             AttackRestriction = Enumerators.AttackRestriction.ANY;
             LastAttackingSetType = Card.Prototype.Faction;
             BuffsOnUnit.Clear();
+            CurrentDamageHistory.Clear();
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();

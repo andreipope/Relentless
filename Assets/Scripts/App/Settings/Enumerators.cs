@@ -951,5 +951,12 @@ namespace Loom.ZombieBattleground.Common
             MenuStep,
             GameplayStep
         }
+
+        public enum ReasonForValueChange
+        {
+            Attack,
+            AbilityBuff,
+            AbilityDamage
+        }
     }
 }
