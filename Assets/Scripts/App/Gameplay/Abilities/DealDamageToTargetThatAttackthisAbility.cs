@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                            Target = _targetObject,
+                            Target = unit,
                             HasValue = true,
                             Value = -AbilityData.Value
                         }
