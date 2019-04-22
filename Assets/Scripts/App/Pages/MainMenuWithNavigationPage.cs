@@ -176,7 +176,10 @@ namespace Loom.ZombieBattleground
             waitSequence.AppendCallback(
                 () =>
                 {
-                    _buttonPlay.interactable = true;
+                    if (_buttonPlay != null)
+                    {
+                        _buttonPlay.interactable = true;
+                    }
                 });
         }
         
