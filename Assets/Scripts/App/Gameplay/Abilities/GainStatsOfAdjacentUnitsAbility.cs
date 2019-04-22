@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
             }
 
             boardUnit.BuffedDefense += _addedDefense;
-            boardUnit.CurrentDefense += _addedDefense;
+            boardUnit.AddToCurrentDefenseHistory(_addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
             boardUnit.BuffedDamage += _addedDamage;
             boardUnit.AddToCurrentDamageHistory(_addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
@@ -69,7 +69,7 @@ namespace Loom.ZombieBattleground
         private void RestoreGainedStats(BoardUnitModel boardUnit)
         {
             boardUnit.BuffedDefense -= _addedDefense;
-            boardUnit.CurrentDefense -= _addedDefense;
+            boardUnit.AddToCurrentDefenseHistory(-_addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
             boardUnit.BuffedDamage -= _addedDamage;
             boardUnit.AddToCurrentDamageHistory(-_addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
 

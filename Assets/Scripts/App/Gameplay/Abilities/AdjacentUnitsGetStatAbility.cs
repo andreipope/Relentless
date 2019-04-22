@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
                 if (defense != 0)
                 {
                     unit.BuffedDefense += defense;
-                    unit.CurrentDefense += defense;
+                    unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {

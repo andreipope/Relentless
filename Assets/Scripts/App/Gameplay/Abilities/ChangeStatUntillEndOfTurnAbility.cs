@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
-                    unit.CurrentDefense += Defense;
+                    unit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
 
                 if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentDefense -= unit.HpDebuffUntillEndOfTurn;
+                    unit.AddToCurrentDefenseHistory(-unit.HpDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
                     unit.HpDebuffUntillEndOfTurn = 0;
                 }
             }

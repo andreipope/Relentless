@@ -97,6 +97,8 @@ namespace Loom.ZombieBattleground
             CurrentDamageHistory = new List<ValueHistory>();
             CurrentCostHistory = new List<ValueHistory>();
 
+            CurrentDefenseHistory = new List<ValueHistory>();
+
             IsCreatedThisTurn = true;
 
             CanAttackByDefault = true;
@@ -162,33 +164,18 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardType InitialUnitType { get; private set; }
 
-        public int MaxCurrentDamage => Card.Prototype.Damage + BuffedDamage;
+        public List<ValueHistory> CurrentDamageHistory;
+
+        public List<ValueHistory> CurrentDefenseHistory;
 
         public int BuffedDamage { get; set; }
 
         public int CurrentDamage
         {
-            get {
-                int totalValue;
-                ValueHistory forcedValue = FindFirstForcedValueInValueHistory(CurrentDamageHistory);
-
-                if (forcedValue != null)
-                {
-                    totalValue = forcedValue.ValueInteger;
-                }
-                else
-                {
-                    totalValue = GetBackTotalValueFromValueHistory(CurrentDamageHistory, Card.Prototype.Damage);
-                }
-
-                totalValue = Mathf.Max(0, totalValue);
-                return totalValue;
-            }
+            get => CalculateValueBasedOnHistory(CurrentDamageHistory, Card.Prototype.Damage);
         }
 
-        public List<ValueHistory> CurrentDamageHistory;
-
-        public int MaxCurrentDefense => Card.Prototype.Defense + BuffedDefense;
+        public int MaxCurrentDamage => Card.Prototype.Damage + BuffedDamage;
 
         public int BuffedDefense { get; set; }
 
@@ -216,18 +203,10 @@ namespace Loom.ZombieBattleground
 
         public int CurrentDefense
         {
-            get => Card.InstanceCard.Defense;
-            set
-            {
-                int oldValue = Card.InstanceCard.Defense;
-                value = Mathf.Clamp(value, 0, 99);
-                if (oldValue == value)
-                    return;
-
-                Card.InstanceCard.Defense = value;
-                UnitDefenseChanged?.Invoke(oldValue, value);
-            }
+            get => CalculateValueBasedOnHistory(CurrentDefenseHistory, Card.Prototype.Defense);
         }
+
+        public int MaxCurrentDefense => Card.Prototype.Defense + BuffedDefense;
 
         public bool IsPlayable { get; set; }
 
@@ -304,6 +283,25 @@ namespace Loom.ZombieBattleground
         public Enumerators.Faction Faction => Card.Prototype.Faction;
 
         // ===================
+
+        private int CalculateValueBasedOnHistory(List<ValueHistory> valueHistory, int initValue = 0)
+        {
+            int totalValue;
+            ValueHistory forcedValue = FindFirstForcedValueInValueHistory(valueHistory);
+
+            if (forcedValue != null)
+            {
+                totalValue = forcedValue.ValueInteger;
+            }
+            else
+            {
+                totalValue = GetBackTotalValueFromValueHistory(valueHistory, initValue);
+            }
+
+            totalValue = Mathf.Max(0, totalValue);
+            return totalValue;
+        }
+
         public int GetBackTotalValueFromValueHistory (List<ValueHistory> valueHistory, int initValue = 0)
         {
             int totalValue = initValue;
@@ -350,10 +348,17 @@ namespace Loom.ZombieBattleground
             UnitDamageChanged?.Invoke(oldValue, CurrentDamage);
         }
 
+
         public void AddToCurrentCostHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)
         {
             int oldValue = CurrentDamage;
             CurrentCostHistory.Add(new ValueHistory(value, reason, forced: forced));
+        }
+        public void AddToCurrentDefenseHistory(int value, Enumerators.ReasonForValueChange reason)
+        {
+            int oldValue = CurrentDefense;
+            CurrentDefenseHistory.Add(new ValueHistory(value, reason));
+            UnitDefenseChanged?.Invoke(oldValue, CurrentDefense);
         }
 
         public void HandleDefenseBuffer(int damage)
@@ -413,7 +418,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.DAMAGE:
                     break;
                 case Enumerators.BuffType.DEFENCE:
-                    CurrentDefense++;
+                    AddToCurrentDefenseHistory(1, Enumerators.ReasonForValueChange.AbilityBuff);
                     BuffedDefense++;
                     break;
                 case Enumerators.BuffType.FREEZE:
@@ -630,8 +635,6 @@ namespace Loom.ZombieBattleground
         private void SetObjectInfo(WorkingCard card)
         {
             Card = card;
-
-            CurrentDefense = card.Prototype.Defense;
 
             BuffedDamage = 0;
             BuffedDefense = 0;

@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground
                 if (StatType == Enumerators.Stat.DEFENSE)
                 {
                     AbilityUnitOwner.BuffedDefense += Defense;
-                    AbilityUnitOwner.CurrentDefense += Defense;
+                    AbilityUnitOwner.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
                 }
                 else if (StatType == Enumerators.Stat.DAMAGE)
                 {

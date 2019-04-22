@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             increaseOn = PlayerCallerOfAbility.CurrentGoo * Value;
 
             AbilityUnitOwner.BuffedDefense += increaseOn;
-            AbilityUnitOwner.CurrentDefense += increaseOn;
+            AbilityUnitOwner.AddToCurrentDefenseHistory(increaseOn, Enumerators.ReasonForValueChange.AbilityBuff);
             AbilityUnitOwner.BuffedDamage += increaseOn;
             AbilityUnitOwner.AddToCurrentDamageHistory(increaseOn, Enumerators.ReasonForValueChange.AbilityBuff);
             
