@@ -258,7 +258,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmLogout;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to logout?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to logout?"); 
         }
         
         private void ConfirmLogout(bool status)
@@ -316,7 +316,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectHelpLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to help link?");            
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to help link?");            
         }
         
         private void ConfirmRedirectHelpLink(bool status)
@@ -332,7 +332,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectSupportLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to support link?");
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to support link?");
         }
         
         private void ConfirmRedirectSupportLink(bool status)

@@ -201,7 +201,7 @@ namespace Loom.ZombieBattleground
                 _isHasInternetConnection = false;
                 InternetConnectionPopup popup = _uiManager.GetPopup<InternetConnectionPopup>();
                 popup.ConfirmationReceived += ConfirmRetryIfNoConnection;
-                popup.Show("Internet connection required. Please check your internet connection and try again.");            
+                popup.Show("Please check your internet connection and try again.");            
             }
         }
 

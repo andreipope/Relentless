@@ -191,7 +191,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
         }
         
         private void ConfirmRedirectMarketplaceLink(bool status)
