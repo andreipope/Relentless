@@ -189,7 +189,14 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);            
+            if (_tutorialManager.IsTutorial && _deckList.Count > 0)
+            {
+                _selectDeckIndex = _deckList.IndexOf(deck);
+            }
+            else
+            {
+                _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
+            }
         }
 
         private void UpdateSelectedDeckData(int deckId)
