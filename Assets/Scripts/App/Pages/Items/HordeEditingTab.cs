@@ -363,6 +363,9 @@ namespace Loom.ZombieBattleground
             
             _buttonSaveDeck.enabled = true;
 
+            if (_myDeckPage.CurrentEditDeck.Id < 0)
+                return;
+
             List<Deck> cacheDeckList = _myDeckPage.GetDeckList();
             _myDeckPage.SelectDeckIndex = cacheDeckList.IndexOf(_myDeckPage.CurrentEditDeck);
             _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, cacheDeckList.Count-1);
