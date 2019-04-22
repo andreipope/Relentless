@@ -58,14 +58,15 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
+          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun) || (AbilityUnitOwner != null && AbilityUnitOwner.IsDead) || (AbilityUnitOwner != null && AbilityUnitOwner.CurrentDefense <= 0))
                 return;
             Action();
         }
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) 
+            {
                 base.UnitDiedHandler();
                 return;
             }
@@ -168,6 +169,11 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = targetEffects
             });
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH) 
+            {
+                base.UnitDiedHandler();
+            }
         }
 
         private void ActionCompleted(object target, out int damageWas)
