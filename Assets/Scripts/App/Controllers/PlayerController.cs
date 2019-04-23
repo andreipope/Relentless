@@ -545,6 +545,9 @@ namespace Loom.ZombieBattleground
 
         private void ClickedOnBoardObjectEventHandler(IBoardObject boardObject)
         {
+            if (GameClient.Get<IUIManager>().GetPopup<SettingsWithCreditsPopup>().Self != null)
+                return;
+        
             switch (boardObject)
             {
                 case CardModel unit:
