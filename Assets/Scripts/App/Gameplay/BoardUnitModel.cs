@@ -338,6 +338,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.REANIMATE:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Reanimate))
                     {
+                        AddBuff(Enumerators.BuffType.REANIMATE);
                         _abilitiesController.BuffUnitByAbility(
                             Enumerators.AbilityType.REANIMATE_UNIT,
                             this,
