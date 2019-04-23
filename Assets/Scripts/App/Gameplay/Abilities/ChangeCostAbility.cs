@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
             if (!status)
             {
-                units = _updatedCostUnits;
+                units = new List<BoardUnitModel>(_updatedCostUnits);
             }
             else
             {
