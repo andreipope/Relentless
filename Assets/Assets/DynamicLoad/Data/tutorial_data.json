@@ -2647,15 +2647,14 @@
           "TutorialStepType": "MenuStep",
           "BattleShouldBeWonBlocker": true,
           "BlockedButtons": [
+            "Button_Login",
+            "Button_Setting",
+            "Button_Shop",
+            "Button_MyDecks",
+            "Button_MyPacks",
+            "Button_MyCards",
             "Button_Back",
-            "Button_Army",
-            "Pulse",
-            "Button_Edit",
-            "Button_Delete",
-            "Image_Skill",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_BaackgroundGeneral"
+            "Panel_Battle_Mode"
           ]
         },
         {
