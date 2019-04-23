@@ -373,6 +373,7 @@ namespace Loom.ZombieBattleground
         public void InitializeBattleground()
         {
             CurrentTurn = 0;
+            TurnWaitingForEnd = false;
 
             if (Constants.DevModeEnabled)
             {
