@@ -197,8 +197,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    CardModel playerEarthshaker = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId);
-                    CardModel opponentEarthshaker = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId);
+                    CardModel playerEarthshaker = (CardModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEarthshakerId);
+                    CardModel opponentEarthshaker = (CardModel) TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEarthshakerId);
 
                     Assert.AreEqual(playerEarthshaker.Prototype.Defense + 4, playerEarthshaker.CurrentDefense);
                     Assert.AreEqual(opponentEarthshaker.Prototype.Defense + 4, opponentEarthshaker.CurrentDefense);

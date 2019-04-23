@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
     public class BlockTakeDamageAbility : AbilityBase
     {
         private int Damage { get; }
-        private BoardUnitModel _targetedUnit;
+        private CardModel _targetedUnit;
 
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
