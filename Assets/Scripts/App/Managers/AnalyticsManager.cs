@@ -176,7 +176,7 @@ public class AnalyticsManager : IAnalyticsManager, IService
 
     public void SetEvent(string eventName)
     {
-#if !DISABLE_ANALYTICS
+#if !DISABLE_ANALYTICS || true
         // Mixpanel
         Value props = new Value();
         FillBasicProps(props);

@@ -144,11 +144,6 @@ namespace Loom.ZombieBattleground
             SetUIState(ConnectionState.ConnectionFailedInGameplay);
         }
 
-        public void ShowLookingForMatch()
-        {
-            SetUIState(ConnectionState.LookingForMatch);
-        }
-
         private void PressedQuitHandler()
         {
             Application.Quit();
@@ -214,11 +209,6 @@ namespace Loom.ZombieBattleground
                     _reconnectButton.gameObject.SetActive(true);
                     _quitButton.gameObject.SetActive(true);
                     break;
-                case ConnectionState.LookingForMatch:
-                    _connectingGroup.gameObject.SetActive(false);
-                    _failedGroup.gameObject.SetActive(false);
-                    _matchMakingGroup.gameObject.SetActive(true);
-                    break;
                 case ConnectionState.ConnectionFailedInGameplay:
                     _connectingGroup.gameObject.SetActive(false);
                     _failedGroup.gameObject.SetActive(true);
@@ -241,8 +231,6 @@ namespace Loom.ZombieBattleground
             ConnectionFailed,
 
             ConnectionFailedInGame,
-
-            LookingForMatch,
 
             ConnectionFailedInGameplay
         }

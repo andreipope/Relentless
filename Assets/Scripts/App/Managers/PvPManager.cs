@@ -74,21 +74,20 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
-        private IQueueManager _queueManager;
-
-        private bool _isCheckPlayerAvailableTimerStart;
-        private float _checkPlayerTimer;
-
-        private SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
-
+        private INetworkActionManager _networkActionManager;
         private IGameplayManager _gameplayManager;
+
+        private bool _keepAliveActive;
+        private float _nextKeepAliveSendTimer;
+
+        private readonly SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
 
         private UIMatchMakingFlowController _matchMakingFlowController;
 
         public void Init()
         {
             _backendFacade = GameClient.Get<BackendFacade>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
@@ -98,34 +97,17 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (_keepAliveActive)
             {
-                _checkPlayerTimer += Time.unscaledDeltaTime;
-                if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
+                _nextKeepAliveSendTimer += Time.unscaledDeltaTime;
+                if (_nextKeepAliveSendTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
-                    _checkPlayerTimer = 0f;
+                    _nextKeepAliveSendTimer = 0f;
 
-                    try
+                    _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
-                    }
-                    catch (TimeoutException exception)
-                    {
-                        Helpers.ExceptionReporter.SilentReportException(exception);
-                        Log.Warn(" Time out == " + exception);
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
-                    }
-                    catch (Client.RpcClientException exception)
-                    {
-                        Helpers.ExceptionReporter.SilentReportException(exception);
-                        Log.Warn(" RpcException == " + exception);
-                        GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
-                    }
-                    catch (Exception exception)
-                    {
-                        Helpers.ExceptionReporter.SilentReportException(exception);
-                        Log.Warn(" other == " + exception);
-                    }
+                    });
                 }
             }
 
@@ -164,6 +146,8 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
+            Log.Debug(nameof(GameEndedHandler));
+
             try
             {
                 ResetCheckPlayerStatus();
@@ -208,11 +192,12 @@ namespace Loom.ZombieBattleground
 
         public async Task StopMatchmaking()
         {
+            Log.Debug(nameof(StopMatchmaking));
             await _matchmakingBusySemaphore.WaitAsync();
 
             try
             {
-                _queueManager.Active = false;
+                _networkActionManager.Active = false;
                 _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
@@ -226,7 +211,7 @@ namespace Loom.ZombieBattleground
                     );
                 }
 
-                _queueManager.Clear();
+                _networkActionManager.Clear();
             }
             catch(Exception e)
             {
@@ -241,10 +226,11 @@ namespace Loom.ZombieBattleground
 
         private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
         {
+            Log.Debug($"{nameof(MatchMakingFlowControllerOnMatchConfirmed)}(MatchMetadata matchMetadata = {matchMetadata})");
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
-            _queueManager.Active = false;
-            _queueManager.Clear();
+            _networkActionManager.Active = false;
+            _networkActionManager.Clear();
 
             InitialGameState = null;
 
@@ -260,36 +246,21 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            _isCheckPlayerAvailableTimerStart = true;
-
-            _queueManager.Active = true;
+            _keepAliveActive = true;
+            _networkActionManager.Active = true;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
         {
-            try
-            {
-                await func();
-            }
-            catch (TimeoutException exception)
-            {
-                Helpers.ExceptionReporter.SilentReportException(exception);
-                Log.Warn(" Time out == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
-            }
-            catch (Client.RpcClientException exception)
-            {
-                Helpers.ExceptionReporter.SilentReportException(exception);
-                Log.Warn(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Exception not handled, restarting matchmaking:" + e.Message);
-                await Task.Delay(1000); // avoids endless loop on repeated exceptions
-                await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
-            }
+            _networkActionManager.EnqueueNetworkTask(
+                func,
+                onUnknownExceptionCallbackFunc: async exception =>
+                {
+                    Log.Info("Exception not handled, restarting matchmaking:" + exception.Message);
+                    await Task.Delay(1000); // avoids endless loop on repeated exceptions
+                    await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
+                }
+            );
         }
 
         private async void OnPlayerActionReceivedHandler(byte[] data)
@@ -449,8 +420,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            await new WaitForUpdate();
-            GameClient.Get<IQueueManager>().AddTask(taskFunc);
+            _networkActionManager.EnqueueNetworkTask(taskFunc);
         }
 
         private async Task LoadInitialGameState()
@@ -516,8 +486,9 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            _isCheckPlayerAvailableTimerStart = false;
-            _checkPlayerTimer = 0f;
+            Log.Info($"{nameof(ResetCheckPlayerStatus)} ({nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
+            _keepAliveActive = false;
+            _nextKeepAliveSendTimer = 0f;
         }
     }
 }

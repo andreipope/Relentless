@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -23,16 +24,19 @@ namespace Loom.ZombieBattleground
         
         private IAnalyticsManager _analyticsManager;
 
+        private INetworkActionManager _networkActionManager;
+
         public Action<bool, Deck> FinishAddDeck,
                                   FinishEditDeck,
                                   FinishDeleteDeck;
-    
+
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
         }
         
         public void Update()
@@ -152,45 +156,36 @@ namespace Loom.ZombieBattleground
             FinishEditDeck?.Invoke(success, deck);
         }
         
-        public async void ProcessDeleteDeck(Deck deck)
+        public void ProcessDeleteDeck(Deck deck)
         {
             bool success = false;
-            try
-            {
-                _dataManager.CachedDecksData.Decks.Remove(deck);
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+            _networkActionManager.EnqueueNetworkTask(async () =>
+                {
+                    _dataManager.CachedDecksData.Decks.Remove(deck);
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    deck.Id
-                );
+                    await _backendFacade.DeleteDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        deck.Id
+                    );
 
-                Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
-                success = true;
-            }
-            catch (TimeoutException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("Time out ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Client.RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("RpcException ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Result ===", e);
-                OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + e.Message);
-                return;
-            }
-
-            FinishDeleteDeck?.Invoke(success,deck);
+                    Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
+                    success = true;
+                },
+                leaveCurrentAppState: true,
+                onUnknownExceptionCallbackFunc: exception =>
+                {
+                    OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + exception.Message);
+                    return Task.CompletedTask;
+                },
+                onCompletedCallbackFunc: () =>
+                {
+                    FinishDeleteDeck?.Invoke(success, deck);
+                    return Task.CompletedTask;
+                }
+            );
         }
         
         public bool VerifyDeckName(string deckName, string previousDeckName = null)
