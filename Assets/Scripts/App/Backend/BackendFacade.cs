@@ -445,8 +445,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
             Log.Debug(httpResponseMessage.ReadToEnd());
-            Log.Debug(httpResponseMessage.StatusCode);
-            Log.Debug(httpResponseMessage.Data);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -481,6 +479,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
