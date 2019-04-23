@@ -4,17 +4,14 @@ using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
-    public class AddCardByMouldIdToHandAbility : AbilityBase
+    public class AddCardByNameToHandAbility : AbilityBase
     {
-        public static readonly MouldId TaintedGoo = new MouldId(155);
-        public static readonly MouldId CorruptedGoo = new MouldId(156);
+        public string Name { get; }
 
-        public MouldId MouldId { get; }
-
-        public AddCardByMouldIdToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
+        public AddCardByNameToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            MouldId = ability.MouldId;
+            Name = ability.Name;
         }
 
         public override void Activate()
@@ -32,11 +29,11 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            if (MouldId != CorruptedGoo && MouldId != TaintedGoo ||
-                (MouldId == CorruptedGoo || MouldId == TaintedGoo) &&
+            if (Name != "Corrupted Goo" && Name != "Tainted Goo" ||
+                (Name == "Corrupted Goo" || Name == "Tainted Goo") &&
                 CardOwnerOfAbility.Faction == PlayerCallerOfAbility.SelfOverlord.Faction)
             {
-                BoardUnitModel card = PlayerCallerOfAbility.PlayerCardsController.CreateNewCardByMouldIdAndAddToHand(MouldId);
+                BoardUnitModel card = PlayerCallerOfAbility.PlayerCardsController.CreateNewCardByNameAndAddToHand(Name);
 
                 ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
