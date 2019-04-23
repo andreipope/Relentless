@@ -87,18 +87,7 @@ namespace Loom.ZombieBattleground
 
         public UserInfo UserInfo { get; set; }
 
-        public GetVersionsResponse CachedVersions { get; set; }
-
         public ZbVersion ZbVersion { get; private set; }
-
-        public async Task LoadRemoteConfig()
-        {
-            CachedVersions = new GetVersionsResponse();
-            CachedVersions = await _backendFacade.GetVersions();
-            if (CachedVersions == null)
-                throw new Exception("CachedVersions == null");
-        }
-
 
         public async Task StartLoadCache()
         {
@@ -389,7 +378,7 @@ namespace Loom.ZombieBattleground
                         GetAIDecksResponse decksAiResponse = await _backendFacade.GetAiDecks();
                         CachedAiDecksData = new AIDecksData();
                         CachedAiDecksData.Decks =
-                            decksAiResponse.Decks
+                            decksAiResponse.AiDecks
                                 .Select(d => d.FromProtobuf())
                                 .ToList();
                     }

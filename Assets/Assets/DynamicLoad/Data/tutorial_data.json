@@ -2522,10 +2522,10 @@
             "Name": "Molotov"
           },
           {
-            "Name": "Frozen"
+            "Name": "Zhampion"
           },
           {
-            "Name": "Frozen"
+            "Name": "Zhampion"
           },
           {
             "Name": "Grower"
@@ -2634,7 +2634,9 @@
           ],
           "SelectableTargets": [
             "OPPONENT",
-            "OPPONENT_CARD"
+            "OPPONENT_CARD",
+            "PLAYER",
+            "PLAYER_CARD"
           ],
           "CanEndTurn": true,
           "PlayerOverlordAbilityShouldBeUnlocked": true,
@@ -2724,19 +2726,19 @@
               "Name": "Earthshaker"
             },
             {
-              "Name": "Spiker"
+              "Name": "Zolid"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
               "Name": "Pebble"

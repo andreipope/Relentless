@@ -80,6 +80,10 @@ namespace Loom.ZombieBattleground
                         case Enumerators.Target.PLAYER_ALL_CARDS:
                         case Enumerators.Target.PLAYER_CARD:
                             _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                            if(AbilityUnitOwner != null && _boardUnits.Contains(AbilityUnitOwner))
+                            {
+                                _boardUnits.Remove(AbilityUnitOwner);
+                            }
                             break;
                         case Enumerators.Target.OPPONENT_ALL_CARDS:
                         case Enumerators.Target.OPPONENT_CARD:
