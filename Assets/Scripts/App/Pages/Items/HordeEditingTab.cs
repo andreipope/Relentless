@@ -126,6 +126,8 @@ namespace Loom.ZombieBattleground
         private Dictionary<string, int> _cacheDeckPageIndexDictionary;
         private Dictionary<string, int> _cacheCollectionPageIndexDictionary;
 
+        private Enumerators.Faction _againstFaction;
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -144,7 +146,8 @@ namespace Loom.ZombieBattleground
                 if (tab != HordeSelectionWithNavigationPage.Tab.Editing)
                     return;
 
-                _inputFieldSearchName.text = "";
+                _inputFieldSearchName.text = "";                
+                ResetAvailableFactions();
                 UpdateDeckPageIndexDictionary();
                 FillCollectionData();
                 SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
@@ -525,11 +528,14 @@ namespace Loom.ZombieBattleground
                 );
                 _createdCollectionsBoardCards.Add(boardCard);
 
-                OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
+                if (card.Faction != _againstFaction)
+                {
+                    OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
 
-                eventHandler.DragBegan += BoardCardDragBeganHandler;
-                eventHandler.DragEnded += BoardCardCollectionDragEndedHandler;
-                eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
+                    eventHandler.DragBegan += BoardCardDragBeganHandler;
+                    eventHandler.DragEnded += BoardCardCollectionDragEndedHandler;
+                    eventHandler.DragUpdated += BoardCardDragUpdatedHandler;
+                }
 
                 DeckBuilderCard deckBuilderCard = boardCard.GameObject.AddComponent<DeckBuilderCard>();
                 deckBuilderCard.Page = this;
@@ -537,7 +543,7 @@ namespace Loom.ZombieBattleground
                 deckBuilderCard.IsHordeItem = false;
 
                 collectionCardData = _collectionData.GetCardData(card.Name);
-                UpdateBoardCardAmount
+                UpdateCollectionCardsDisplay
                 (
                     true,
                     card.Name,
@@ -546,7 +552,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void UpdateBoardCardAmount(bool init, string cardId, int amount)
+        public void UpdateCollectionCardsDisplay(bool init, string cardId, int amount)
         {
             foreach (BoardCardView card in _createdCollectionsBoardCards)
             {
@@ -562,7 +568,9 @@ namespace Loom.ZombieBattleground
                     SetCardFrameMaterial
                     (
                         card,
-                        amount > 0 ? _materialNormal : _materialGrayscale
+                        (amount > 0 && card.Model.Faction != _againstFaction) ? 
+                            _materialNormal : 
+                            _materialGrayscale
                     );
                     break;
                 }
@@ -714,7 +722,7 @@ namespace Loom.ZombieBattleground
             }
 
             collectionCardData.Amount--;
-            UpdateBoardCardAmount(false, card.Name, collectionCardData.Amount);
+            UpdateCollectionCardsDisplay(false, card.Name, collectionCardData.Amount);
             bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.CardName == card.Name);
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
             UpdateDeckPageIndexDictionary();
@@ -796,7 +804,7 @@ namespace Loom.ZombieBattleground
         {
             CollectionCardData collectionCardData = _collectionData.GetCardData(card.Name);
             collectionCardData.Amount++;
-            UpdateBoardCardAmount
+            UpdateCollectionCardsDisplay
             (
                 false,
                 card.Name,
@@ -1152,28 +1160,27 @@ namespace Loom.ZombieBattleground
             LoadCollectionsCards();
         }
 
-        private void ResetCollectionPageState()
+        private void ResetAvailableFactions()
         {
-            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
-
-            _availableFaction = _cardFilterPopup.FilterData.GetFilteredFactionList();
-            _availableFaction = ExcludeFactionFromList
-            (
-                _availableFaction,
-                againstFaction
-            );
+            Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.Overlords
+            [
+                _myDeckPage.CurrentEditDeck.OverlordId
+            ].Faction;
             
+            _againstFaction = FactionAgainstDictionary[overlordFaction];
             Enumerators.Faction firstFaction = _tutorialManager.IsTutorial ?
                 _tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MainSet :
-                overlordModel.Faction;
+                overlordFaction;
                 
             _availableFaction = SortFactionList
             (
-                _availableFaction,
+                _cardFilterPopup.AllAvailableFactionList.ToList(),
                 firstFaction
             );
-            
+        }
+
+        private void ResetCollectionPageState()
+        {
             _collectionPageIndex = 0;
             
             UpdateAvailableCollectionCards();
@@ -1231,26 +1238,16 @@ namespace Loom.ZombieBattleground
 
         private void UpdateCollectionCardsByKeyword()
         {
+            List<Card> resultList = new List<Card>(); 
+            List<Card> cards;
+            
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
-            List<Card> resultList = new List<Card>();
-            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList.Select(item => item).ToList();
-            OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
-            Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
-            allAvailableFactionList.Remove(againstFaction);
-
-            foreach (Enumerators.Faction item in allAvailableFactionList)
+            
+            foreach (Enumerators.Faction faction in _availableFaction)
             {
-                List<Card> cards;
-
-                if (_tutorialManager.IsTutorial)
-                {
-                    cards = _tutorialManager.GetSpecificCardsBySet(item);
-                }
-                else
-                {
-                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    cards = set.Cards.ToList();
-                }
+                cards = _tutorialManager.IsTutorial ? 
+                    _tutorialManager.GetSpecificCardsBySet(faction) :
+                    SetTypeUtility.GetCardFaction(_dataManager, faction).Cards.ToList();                
 
                 foreach (Card card in cards)
                 {
@@ -1267,23 +1264,19 @@ namespace Loom.ZombieBattleground
         private void UpdateCollectionCardsByFilter()
         {
             List<Card> resultList = new List<Card>();
+            List<Card> cards;
             foreach (Enumerators.Faction faction in _availableFaction)
             {
-                List<Card> cards;
-                if (_tutorialManager.IsTutorial)
-                {
-                    cards = _tutorialManager.GetSpecificCardsBySet(faction);
-                }
-                else
-                {
-                    Faction set = SetTypeUtility.GetCardFaction(_dataManager, faction);
-                    cards = set.Cards.ToList();
-                }
+                
+                cards = _tutorialManager.IsTutorial ? 
+                    _tutorialManager.GetSpecificCardsBySet(faction) :
+                    SetTypeUtility.GetCardFaction(_dataManager, faction).Cards.ToList();
 
                 foreach (Card card in cards)
                 {
                     if
                     (
+                        CheckIfSatisfyFactionFilter(card) &&
                         CheckIfSatisfyGooCostFilter(card) &&
                         CheckIfSatisfyRankFilter(card) &&
                         CheckIfSatisfyTypeFilter(card)
@@ -1293,7 +1286,13 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
+            
             UpdateCacheFilteredCardList(resultList);
+        }
+
+        private bool CheckIfSatisfyFactionFilter(Card card)
+        {
+            return _cardFilterPopup.FilterData.FactionDictionary[card.Faction];
         }
 
         private bool CheckIfSatisfyGooCostFilter(Card card)
