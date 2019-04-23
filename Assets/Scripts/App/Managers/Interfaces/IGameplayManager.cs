@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Protobuf;
 
 namespace Loom.ZombieBattleground
 {
@@ -66,16 +68,16 @@ namespace Loom.ZombieBattleground
 
         bool IsGameplayReady();
 
-        Player GetPlayerByInstanceId(InstanceId id);
+        Player GetPlayerByInstanceId(Loom.ZombieBattleground.Data.InstanceId id);
 
         PlayerMoveAction PlayerMoves { get; set; }
 
-        Deck CurrentPlayerDeck { get; set; }
-        Deck OpponentPlayerDeck { get; set; }
+        Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
+        Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
 
         int OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
-        bool OpponentHasDoneMulligan { get; set; }
+        PlayerActionMulligan OpponentHasDoneMulligan { get; set; }
     }
 }
