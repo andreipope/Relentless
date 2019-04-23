@@ -273,7 +273,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 Action validateEndState = () =>
                 {
                     BoardUnitModel playerMonzoonModel = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerMonzoonId));
-                    Assert.AreEqual(2, playerMonzoonModel.CurrentCost);
+                    Assert.AreEqual(5, playerMonzoonModel.CurrentCost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

@@ -68,6 +68,7 @@ namespace Loom.ZombieBattleground
             base.UnitDiedHandler();
 
             _affectedCards.ForEach(ResetStatsOfTargetCard);
+            _affectedCards.Clear();
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
@@ -83,11 +84,15 @@ namespace Loom.ZombieBattleground
             _lastAuraActive = status;
             if (status)
             {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                _affectedCards.Clear();
+                
                 CheckSubTriggers();
             }
             else
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                _affectedCards.Clear();
             }
         }
 

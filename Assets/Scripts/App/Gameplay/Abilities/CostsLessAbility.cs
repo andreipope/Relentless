@@ -28,10 +28,13 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            InternalTools.DoActionDelayed(() =>
+            if (AbilityData.SubTrigger != Enumerators.AbilitySubTrigger.DuringCardInHand)
             {
-                Action();
-            }, 0.5f);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    Action();
+                }, 0.5f);
+            }
         }
 
         protected override void TurnStartedHandler()
