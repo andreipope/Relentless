@@ -574,6 +574,7 @@ namespace Loom.ZombieBattleground
 
         private async void ProcessOpenPackLogic()
         {
+            SetButtonInteractable(false);
             if (_tutorialManager.IsTutorial)
             {
                 if (_tutorialManager.IsTutorial)
