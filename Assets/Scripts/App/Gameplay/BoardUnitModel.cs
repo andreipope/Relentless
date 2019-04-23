@@ -1139,6 +1139,7 @@ namespace Loom.ZombieBattleground
             BuffsOnUnit.Clear();
             CurrentDamageHistory.Clear();
             CurrentCostHistory.Clear();
+            CurrentDefenseHistory.Clear();
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
