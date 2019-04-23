@@ -1,14 +1,11 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
 
 namespace Loom.ZombieBattleground
 {
     public class RageAbility : AbilityBase
     {
         public int Value;
-
-        private bool _wasChanged;
 
         public RageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -23,31 +20,23 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent();
         }
 
-        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        protected override void ChangeRageStatusAction(bool status)
         {
-            base.UnitHpChangedHandler(oldValue, newValue);
+            base.ChangeRageStatusAction(status);
 
             if (!PvPManager.UseBackendGameLogic)
             {
-                if (!_wasChanged)
+                if (status)
                 {
-                    if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
-                    {
-                        _wasChanged = true;
-                        AbilityUnitOwner.BuffedDamage += Value;
-                        AbilityUnitOwner.CurrentDamage += Value;
-                        InvokeActionTriggered(true);
-                    }
+                    AbilityUnitOwner.BuffedDamage += Value;
+                    AbilityUnitOwner.CurrentDamage += Value;
+                    InvokeActionTriggered(true);
                 }
                 else
                 {
-                    if (AbilityUnitOwner.CurrentDefense >= AbilityUnitOwner.MaxCurrentDefense)
-                    {
-                        AbilityUnitOwner.BuffedDamage -= Value;
-                        AbilityUnitOwner.CurrentDamage -= Value;
-                        _wasChanged = false;
-                        InvokeActionTriggered(false);
-                    }
+                    AbilityUnitOwner.BuffedDamage -= Value;
+                    AbilityUnitOwner.CurrentDamage -= Value;
+                    InvokeActionTriggered(false);
                 }
             }
         }

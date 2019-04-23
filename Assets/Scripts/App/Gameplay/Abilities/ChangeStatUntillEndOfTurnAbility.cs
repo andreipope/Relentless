@@ -24,9 +24,12 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity != Enumerators.AbilityActivity.ACTIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY || AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
                 return;
 
             AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
@@ -34,6 +37,19 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered();
         }
 
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                Action(TargetUnit);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
+            }
+        }
 
         protected override void UnitDiedHandler()
         {
@@ -51,20 +67,33 @@ namespace Loom.ZombieBattleground
 
             _boardUnits.Clear();
 
-            foreach (Enumerators.Target targetType in AbilityTargets)
+            if (info != null)
             {
-                switch (targetType)
+                _boardUnits.Add((BoardUnitModel)info);
+            }
+            else
+            {
+                foreach (Enumerators.Target targetType in AbilityTargets)
                 {
-                    case Enumerators.Target.PLAYER_ALL_CARDS:
-                    case Enumerators.Target.PLAYER_CARD:
-                        _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
-                        break;
-                    case Enumerators.Target.OPPONENT_ALL_CARDS:
-                    case Enumerators.Target.OPPONENT_CARD:
-                        _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
-                        break;
+                    switch (targetType)
+                    {
+                        case Enumerators.Target.PLAYER_ALL_CARDS:
+                        case Enumerators.Target.PLAYER_CARD:
+                            _boardUnits.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                            if(AbilityUnitOwner != null && _boardUnits.Contains(AbilityUnitOwner))
+                            {
+                                _boardUnits.Remove(AbilityUnitOwner);
+                            }
+                            break;
+                        case Enumerators.Target.OPPONENT_ALL_CARDS:
+                        case Enumerators.Target.OPPONENT_CARD:
+                            _boardUnits.AddRange(GetOpponentOverlord().CardsOnBoard);
+                            break;
+                    }
                 }
             }
+
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             foreach (BoardUnitModel unit in _boardUnits)
             {
@@ -79,13 +108,39 @@ namespace Loom.ZombieBattleground
                     }
 
                     unit.CurrentDamage += Damage;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = Damage
+                    });
                 }
 
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
                     unit.CurrentDefense += Defense;
+
+                    TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Defense > 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
+                        Target = unit,
+                        HasValue = true,
+                        Value = Defense
+                    });
                 }
+            }
+
+            if (TargetEffects.Count > 0)
+            {
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = GetCaller(),
+                    TargetEffects = TargetEffects
+                });
             }
         }
 

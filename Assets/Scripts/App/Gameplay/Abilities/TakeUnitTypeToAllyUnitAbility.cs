@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 {
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
+        private List<BoardUnitModel> _affectedUnits;
+
         public Enumerators.CardType UnitType;
         public Enumerators.Faction Faction;
 
@@ -21,6 +23,8 @@ namespace Loom.ZombieBattleground
             UnitType = ability.TargetUnitType;
             Faction = ability.Faction;
             Cost = ability.Cost;
+
+            _affectedUnits = new List<BoardUnitModel>();
         }
 
         public override void Activate()
@@ -43,6 +47,33 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+        }
+
+        protected override void ChangeAuraStatusAction(bool status)
+        {
+            base.ChangeAuraStatusAction(status);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            if (status)
+            {
+                Action();
+            }
+            else
+            {
+                ResetAffectedUnits(_affectedUnits);
+            }
+        }
+
+        protected override void BoardChangedHandler(int count)
+        {
+            base.BoardChangedHandler(count);
+
+            if (AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)
@@ -69,12 +100,12 @@ namespace Loom.ZombieBattleground
                         List<BoardUnitModel> allies;
 
                         allies = PlayerCallerOfAbility.CardsOnBoard
-                        .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead)
+                        .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead && unit.IsUnitActive)
                         .ToList();
 
                         if (allies.Count > 0)
                         {
-                            int random = MTwister.IRandom(0, allies.Count);
+                            int random = MTwister.IRandom(0, allies.Count - 1);
 
                             TakeTypeToUnit(allies[random]);
 
@@ -87,11 +118,7 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.AbilitySubTrigger.OnlyThisUnitInPlay:
-                    if (PlayerCallerOfAbility.CardsOnBoard.Where(
-                            unit => unit != AbilityUnitOwner &&
-                                !unit.IsDead &&
-                                unit.CurrentDefense > 0)
-                        .Count() == 0)
+                    if (GetAliveUnits(PlayerCallerOfAbility.CardsOnBoard).Count() == 1)
                     {
                         targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                         {
@@ -106,19 +133,20 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
-                                   unit.Card.Prototype.Faction == Faction &&
+                                   (unit.Card.Prototype.Faction == Faction || Faction == Enumerators.Faction.Undefined) &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
-                        foreach(BoardUnitModel unit in allies)
+                        foreach (BoardUnitModel unit in allies)
                         {
-                            TakeTypeToUnit(unit);
-
-                            targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                            if (TakeTypeToUnit(unit))
                             {
-                                ActionEffectType = effectType,
-                                Target = unit
-                            });
+                                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = unit
+                                });
+                            }
                         }
                     }
                     break;
@@ -131,7 +159,54 @@ namespace Loom.ZombieBattleground
 
                         foreach (BoardUnitModel unit in allies)
                         {
-                            TakeTypeToUnit(unit);
+                            if (TakeTypeToUnit(unit))
+                            {
+                                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = unit
+                                });
+                            }
+                        }
+                    }
+                    break;
+                case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
+                    {
+                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
+                                       unit => unit != AbilityUnitOwner &&
+                                           !unit.IsDead &&
+                                           unit.CurrentDefense > 0 && unit.IsUnitActive).ToList();
+
+                        if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
+                        {
+                            for (int i = _affectedUnits.Count-1; i >= 0; i--)
+                            {
+                                if (!allies.Contains(_affectedUnits[i]))
+                                {
+                                    _affectedUnits.RemoveAt(i);
+                                }
+                            }
+                        }
+
+                        foreach (BoardUnitModel unit in allies)
+                        {
+                            if (AbilityTrigger == Enumerators.AbilityTrigger.AURA &&
+                                _affectedUnits.Contains(unit))
+                                continue;
+
+                            if (TakeTypeToUnit(unit))
+                            {
+                                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                                {
+                                    ActionEffectType = effectType,
+                                    Target = unit
+                                });
+
+                                if (AbilityTrigger == Enumerators.AbilityTrigger.AURA)
+                                {
+                                    _affectedUnits.Add(unit);
+                                }
+                            }
                         }
                     }
                     break;
@@ -156,22 +231,42 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private bool TakeTypeToUnit(BoardUnitModel unit)
         {
             if (unit == null)
-                return;
+                return false;
 
             switch (UnitType)
             {
                 case Enumerators.CardType.HEAVY:
                     unit.SetAsHeavyUnit();
-                    break;
+                    return true;
                 case Enumerators.CardType.FERAL:
                     unit.SetAsFeralUnit();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(UnitType), UnitType, null);
+                    return true;
             }
+
+            return false;
+        }
+
+        private void ResetAffectedUnits(List<BoardUnitModel> units)
+        {
+            foreach(BoardUnitModel unit in units)
+            {
+                switch(unit.Card.InstanceCard.CardType)
+                {
+                    case Enumerators.CardType.HEAVY:
+                        unit.SetAsHeavyUnit();
+                        break;
+                    case Enumerators.CardType.WALKER:
+                        unit.SetAsWalkerUnit();
+                        break;
+                    case Enumerators.CardType.FERAL:
+                        unit.SetAsFeralUnit();
+                        break;
+                }
+            }
+            units.Clear();
         }
     }
 }

@@ -89,6 +89,9 @@ namespace Loom.ZombieBattleground
 
         private bool _isDragging;
 
+        private Material _materialNormal,
+                         _materialGrayscale;
+
         public readonly Dictionary<Enumerators.Faction, Enumerators.Faction> FactionAgainstDictionary =
             new Dictionary<Enumerators.Faction, Enumerators.Faction>
             {
@@ -214,6 +217,9 @@ namespace Loom.ZombieBattleground
             };
 
             _imageAbilitiesPanel = _selfPage.transform.Find("Tab_Editing/Panel_FrameComponents/Upper_Items/Button_OverlordAbilities").GetComponent<Image>();
+            
+            _materialNormal = new Material(Shader.Find("Sprites/Default"));
+            _materialGrayscale = new Material(Shader.Find("Sprites/Grayscale"));
 
             LoadBoardCardComponents();
 
@@ -236,6 +242,9 @@ namespace Loom.ZombieBattleground
                 _draggingObject = null;
                 _isDragging = false;
             }
+
+            Object.Destroy(_materialNormal);
+            Object.Destroy(_materialGrayscale);
 
             _cacheCollectionCardsList.Clear();
             _imageAbilityIcons = null;
@@ -281,22 +290,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
-        }
-        
-        private void ConfirmSaveDeckHandler(bool status)
-        {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
-            
-            if (status)
-            {                
-                SaveDeck(HordeSelectionWithNavigationPage.Tab.Rename);
-            }
-            else
-            {                
-                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);        
-            }  
+            _myDeckPage.IsRenameWhileEditing = true;
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename); 
         }
 
         private void ButtonEditDeckFilterHandler()
@@ -360,6 +355,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaveButtonPressed);
 
+            _buttonSaveDeck.enabled = false;
+
             PlayClickSound();
 
             SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);
@@ -369,14 +366,32 @@ namespace Loom.ZombieBattleground
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishAddDeck -= FinishAddDeck;
             _myDeckPage.IsEditingNewDeck = false;
-            _myDeckPage.SelectDeckIndex = _myDeckPage.GetDeckList().IndexOf(_myDeckPage.CurrentEditDeck);
-            _myDeckPage.AssignCurrentDeck();
+
+            if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
+                return;
+            
+            _buttonSaveDeck.enabled = true;
+
+            if (_myDeckPage.CurrentEditDeck.Id < 0)
+                return;
+
+            List<Deck> cacheDeckList = _myDeckPage.GetDeckList();
+            _myDeckPage.SelectDeckIndex = cacheDeckList.IndexOf(_myDeckPage.CurrentEditDeck);
+            _myDeckPage.SelectDeckIndex = Mathf.Min(_myDeckPage.SelectDeckIndex, cacheDeckList.Count-1);
+            
+            _myDeckPage.AssignCurrentDeck(_myDeckPage.SelectDeckIndex);
             _myDeckPage.ChangeTab(_nextTab);
         }
         
         private void FinishEditDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+
+            if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
+                return;
+
+            _buttonSaveDeck.enabled = true;
+
             _myDeckPage.ChangeTab(_nextTab);
         }
 
@@ -544,11 +559,22 @@ namespace Loom.ZombieBattleground
                         amount,
                         BoardCardView.AmountTrayType.Counter                        
                     );
+                    SetCardFrameMaterial
+                    (
+                        card,
+                        amount > 0 ? _materialNormal : _materialGrayscale
+                    );
                     break;
                 }
             }
         }
         
+        private void SetCardFrameMaterial(BoardCardView card, Material material)
+        {
+            card.GameObject.transform.Find("Frame").GetComponent<SpriteRenderer>().material = material;
+            card.GameObject.transform.Find("Picture").GetComponent<SpriteRenderer>().material = material;
+        }
+
         private void SubtractInitialDeckCardsAmountFromCollections(Deck deck)
         {
             foreach(DeckCardData card in deck.Cards)
@@ -582,6 +608,9 @@ namespace Loom.ZombieBattleground
             int count = 0;
             foreach(Card card in _cacheCollectionCardsList)
             {
+                if (_cacheCollectionPageIndexDictionary.ContainsKey(card.Name))
+                    continue;
+                    
                 _cacheCollectionPageIndexDictionary.Add(card.Name, page);
 
                 ++count;
@@ -655,7 +684,7 @@ namespace Loom.ZombieBattleground
             if (FactionAgainstDictionary[overlordData.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
-                    "It's not possible to add cards to the deck \n from the faction from which the hero is weak against");
+                    "Cannot add from the faction your Overlord is weak against.");
                 return;
             }
 
@@ -663,7 +692,7 @@ namespace Loom.ZombieBattleground
             if (collectionCardData.Amount == 0)
             {
                 _myDeckPage.OpenAlertDialog(
-                    "You don't have enough cards of this type. \n Buy or earn new packs to get more cards!");
+                    "You don't have enough of this card.\nBuy or earn packs to get more cards.");
                 return;
             }
 
@@ -673,14 +702,14 @@ namespace Loom.ZombieBattleground
 
             if (existingCards != null && existingCards.Amount == maxCopies)
             {
-                _myDeckPage.OpenAlertDialog("You cannot have more than " + maxCopies + " copies of the " +
-                    card.Rank.ToString().ToLowerInvariant() + " card in your deck.");
+                _myDeckPage.OpenAlertDialog("Cannot have more than " + maxCopies + " copies of an " +
+                    card.Rank.ToString().ToLowerInvariant() + " card in one deck.");
                 return;
             }
 
             if (_myDeckPage.CurrentEditDeck.GetNumCards() == Constants.DeckMaxSize)
             {
-                _myDeckPage.OpenAlertDialog("You can not add more than " + Constants.DeckMaxSize + " Cards in a single Horde.");
+                _myDeckPage.OpenAlertDialog("Cannot have more than " + Constants.DeckMaxSize + " cards in one deck.");
                 return;
             }
 
@@ -798,6 +827,11 @@ namespace Loom.ZombieBattleground
                         boardCard.CardsAmountDeckEditing, 
                         BoardCardView.AmountTrayType.Radio
                     );
+                }
+
+                if(!_cacheCollectionPageIndexDictionary.ContainsKey(card.Name))
+                {
+                    _cacheCollectionPageIndexDictionary.Add(card.Name, 0);
                 }
                 
                 UpdateCollectionPageIndex
@@ -1083,7 +1117,8 @@ namespace Loom.ZombieBattleground
 
         private void MoveDeckPageIndex(int direction)
         {
-            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1);
+            int newIndex = Mathf.Clamp(_deckPageIndex + direction, 0, Mathf.Max(0, GetDeckPageAmount(_myDeckPage.CurrentEditDeck) - 1));
+
             if (newIndex == _deckPageIndex)
                 return;
                 
@@ -1189,7 +1224,7 @@ namespace Loom.ZombieBattleground
 
             if (!CheckIfAnyCacheCollectionCardsExist() && !_tutorialManager.IsTutorial)
             {
-                _myDeckPage.OpenAlertDialog("Sorry, you can't add zombies from that faction to this deck");
+                _myDeckPage.OpenAlertDialog("No cards found with that search.");
                 ResetSearchAndFilterResult();
             }
         }
@@ -1198,10 +1233,11 @@ namespace Loom.ZombieBattleground
         {
             string keyword = _inputFieldSearchName.text.Trim().ToLower();
             List<Card> resultList = new List<Card>();
-            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList;
+            List<Enumerators.Faction> allAvailableFactionList = _cardFilterPopup.AllAvailableFactionList.Select(item => item).ToList();
             OverlordModel overlordModel = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
             Enumerators.Faction againstFaction = FactionAgainstDictionary[overlordModel.Faction];
             allAvailableFactionList.Remove(againstFaction);
+
             foreach (Enumerators.Faction item in allAvailableFactionList)
             {
                 List<Card> cards;
@@ -1213,12 +1249,12 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     Faction set = SetTypeUtility.GetCardFaction(_dataManager, item);
-                    cards = cards = set.Cards.ToList();
+                    cards = set.Cards.ToList();
                 }
 
                 foreach (Card card in cards)
                 {
-                    if (card.Name.ToLower().Contains(keyword))
+                    if (card.Name.Trim().ToLower().Contains(keyword))
                     {
                         resultList.Add(card);
                     }
@@ -1427,7 +1463,11 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                SaveDeck(HordeSelectionWithNavigationPage.Tab.SelectDeck);            
+                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsRenameWhileEditing ?
+                    HordeSelectionWithNavigationPage.Tab.Editing :
+                    HordeSelectionWithNavigationPage.Tab.SelectDeck;
+                SaveDeck(tab);
+                _myDeckPage.IsRenameWhileEditing = false;            
             }
         }
 

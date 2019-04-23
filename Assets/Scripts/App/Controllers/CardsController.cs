@@ -143,7 +143,7 @@ namespace Loom.ZombieBattleground
         {
             CardDistribution = true;
 
-            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 GameClient.Get<ICameraManager>().FadeIn(0.8f, 0, false);
 
@@ -209,6 +209,7 @@ namespace Loom.ZombieBattleground
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
+                    highestInstanceId = cards.Count();
                 }
                 else
                 {
@@ -497,7 +498,8 @@ namespace Loom.ZombieBattleground
 
                             _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false, _gameplayManager.CanDoDragActions);
 
-                            _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
+                            if(Constants.RankSystemEnabled)
+                                _ranksController.UpdateRanksByElements(boardUnitView.Model.OwnerPlayer.CardsOnBoard, boardUnitView.Model, rankBuffAction);
 
                             _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer,
                                 () =>
@@ -520,7 +522,7 @@ namespace Loom.ZombieBattleground
                                                 rankBuffAction.ForceActionDone();
 
                                                 boardUnitView.DisposeGameObject();
-                                                boardUnitView.Model.Die(true);
+                                                boardUnitView.Model.Die(true, isDead: false);
 
                                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.CurrentPlayer, null);
                                             }
@@ -853,6 +855,38 @@ namespace Loom.ZombieBattleground
             _gameplayManager.CanDoDragActions = true;
 
             CardForAbilityChoosed?.Invoke(choosableAbility);
+        }
+
+        public void DiscardCardFromHand(BoardUnitModel boardUnitModel)
+        {
+            if(boardUnitModel.Owner.IsLocalPlayer)
+            {
+                BoardCardView card = _battlegroundController.GetBoardUnitViewByModel<BoardCardView>(boardUnitModel);
+
+                if (card != null && card != default(BoardCardView))
+                {
+                    if (_battlegroundController.PlayerHandCards.Contains(card))
+                    {
+                        _battlegroundController.PlayerHandCards.Remove(card);
+                    }
+                    card.Dispose();
+                }
+            }
+            else
+            {
+                OpponentHandCard card = _battlegroundController.GetBoardUnitViewByModel<OpponentHandCard>(boardUnitModel);
+
+                if (card != null && card != default(OpponentHandCard))
+                {
+                    if (_battlegroundController.OpponentHandCards.Contains(card))
+                    {
+                        _battlegroundController.OpponentHandCards.Remove(card);
+                    }
+                    card.Dispose();
+                }
+            }
+
+            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel);
         }
     }
 

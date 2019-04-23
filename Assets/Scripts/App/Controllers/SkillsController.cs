@@ -527,6 +527,11 @@ namespace Loom.ZombieBattleground
                                && x.InstanceCard.Cost == skill.Skill.Value
                                && !skill.OwnerPlayer.CardsOnBoard.Any(c => c == x)).Count > 0;
                     break;
+                case Enumerators.Skill.PUSH:
+                    int ownerGoo = skill.OwnerPlayer.CurrentGoo;
+                    int cardCost = skill.FightTargetingArrow.SelectedCard.Model.Prototype.Cost;
+                    state = ownerGoo > 0 && cardCost <= ownerGoo;
+                    break;
                 default:
                     break;
             }
@@ -825,8 +830,16 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             List<BoardUnitModel> units = new List<BoardUnitModel>();
-            units.AddRange(_gameplayManager.CurrentPlayer.CardsOnBoard);
-            units.AddRange(_gameplayManager.OpponentPlayer.CardsOnBoard);
+
+            units = units
+               .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
+               .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
+               .Where(card => !card.IsDead && card.CurrentDefense > 0)
+               .ToList();
+            foreach (BoardUnitModel unit in units)
+            {
+                unit.SetUnitActiveStatus(false);
+            }
 
             Vector3 position = Vector3.left * 2f;
 
@@ -2263,6 +2276,9 @@ namespace Loom.ZombieBattleground
 
             foreach (BoardUnitModel unit in units)
             {
+                if (unit == null)
+                    continue;
+
                 unit.SetAsHeavyUnit();
 
                 BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);

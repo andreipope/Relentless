@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: ElementFilter_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings: []
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 1819446476a324679b5fb635eab4818e, type: 3}
+    - {fileID: 2800000, guid: 6673266046d704d1a9739e47947260c1, type: 3}
+    - {fileID: 2800000, guid: e73d907fa8a51435c8c4934593dbb8a3, type: 3}
+    - {fileID: 2800000, guid: 9b962fa58f6124288bc4a508af22d94a, type: 3}
+    - {fileID: 2800000, guid: fa6a3a0ef2761455b9ddb71644f0a7e3, type: 3}
+    - {fileID: 2800000, guid: 65866d7755ed4444f8ad4a6c974bf6f5, type: 3}
+    - {fileID: 2800000, guid: 2f8c2b5870da2476998c21319299a7e5, type: 3}
+    - {fileID: 2800000, guid: 3aa1d2b81e4b347eb96ed6af7fad976f, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 6673266046d704d1a9739e47947260c1, type: 3}
+  - {fileID: 21300000, guid: 1819446476a324679b5fb635eab4818e, type: 3}
+  - {fileID: 21300000, guid: 9b962fa58f6124288bc4a508af22d94a, type: 3}
+  - {fileID: 21300000, guid: 65866d7755ed4444f8ad4a6c974bf6f5, type: 3}
+  - {fileID: 21300000, guid: 2f8c2b5870da2476998c21319299a7e5, type: 3}
+  - {fileID: 21300000, guid: 3aa1d2b81e4b347eb96ed6af7fad976f, type: 3}
+  - {fileID: 21300000, guid: fa6a3a0ef2761455b9ddb71644f0a7e3, type: 3}
+  - {fileID: 21300000, guid: e73d907fa8a51435c8c4934593dbb8a3, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - element_toxic
+  - element_water
+  - element_fire
+  - element_earth
+  - element_air
+  - filter_element_glow
+  - element_item
+  - element_life
+  m_Tag: ElementFilter_Atlas
+  m_IsVariant: 0

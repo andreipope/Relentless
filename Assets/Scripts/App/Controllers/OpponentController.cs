@@ -464,6 +464,7 @@ namespace Loom.ZombieBattleground
                                 BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
                                 _gameplayManager.OpponentPlayer.BoardItemsInUse.Insert(ItemPosition.End, item);
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
+                                item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -484,8 +485,8 @@ namespace Loom.ZombieBattleground
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);
-                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 _boardController.UpdateCurrentBoardOfPlayer(_gameplayManager.OpponentPlayer, null);
+                                boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
                                 break;
                         }
 
@@ -537,7 +538,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card);
+            BoardObject boardObjectCaller = _battlegroundController.GetBoardObjectByInstanceId(model.Card, false);
 
             if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
@@ -642,7 +643,8 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel == null)
                 ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
-            _ranksController.BuffAllyManually(units, boardUnitModel);
+            if (Constants.RankSystemEnabled)
+                _ranksController.BuffAllyManually(units, boardUnitModel);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

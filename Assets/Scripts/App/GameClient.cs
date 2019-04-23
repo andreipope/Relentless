@@ -107,8 +107,6 @@ namespace Loom.ZombieBattleground
             const BackendPurpose backend = BackendPurpose.Production;
 #elif USE_BRANCH_TESTING_BACKEND
             const BackendPurpose backend = BackendPurpose.BranchTesting;
-#elif USE_REBALANCE_BACKEND
-            const BackendPurpose backend = BackendPurpose.Rebalance;
 #else
             const BackendPurpose backend = BackendPurpose.Staging;
 #endif
@@ -147,9 +145,11 @@ namespace Loom.ZombieBattleground
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }
+
 #if UNITY_EDITOR
-            configDataFilePath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, Constants.LocalConfigDataFileName);
-            if (File.Exists(configDataFilePath))
+            const string envVarConfigFileFilePath = "ZB_CONFIG_FILE_PATH";
+            configDataFilePath = Environment.GetEnvironmentVariable(envVarConfigFileFilePath);
+            if (!String.IsNullOrEmpty(configDataFilePath) && File.Exists(configDataFilePath))
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }

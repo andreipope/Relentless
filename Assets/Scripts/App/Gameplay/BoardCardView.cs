@@ -310,6 +310,7 @@ namespace Loom.ZombieBattleground
         {
             _hasDestroyed = true;
             Object.Destroy(GameObject);
+            Model.CardPictureWasUpdated -= PictureUpdatedEvent;
         }
 
         public void DrawCardFromOpponentDeckToPlayer()
@@ -390,7 +391,7 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION && Constants.RankSystemEnabled)
             {
                 TooltipContentData.RankInfo rankInfo =
                     DataManager.GetCardRankInfo(unit.Model.Card.Prototype.Rank);
@@ -540,7 +541,7 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
+            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION && Constants.RankSystemEnabled)
             {
                 TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.Rank);
                 if (rankInfo != null)

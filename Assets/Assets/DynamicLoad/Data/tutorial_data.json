@@ -100,7 +100,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "I will melt you!"
+              "Description": "I will burn you to ash!"
             }
           ]
         },
@@ -310,7 +310,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Melt him!",
+              "Description": "Turn him to ash!",
               "AppearDelay": 2.5
             }
           ],
@@ -487,22 +487,22 @@
       ],
       "SpecificBattlegroundInfo": {
         "PlayerInfo": {
-          "OverlordId": 4,
+          "OverlordId": 1,
           "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 0,
           "MaximumGoo": 0,
           "CardsInDeck": [
             {
-              "Name": "Gloop",
+              "Name": "Burn",
               "TutorialObjectId": 1
             },
             {
-              "Name": "Rubble",
+              "Name": "Poizon",
               "TutorialObjectId": 2
             },
             {
-              "Name": "Zky",
+              "Name": "Zlab",
               "TutorialObjectId": 3
             },
             {
@@ -515,21 +515,21 @@
         },
         "OpponentInfo": {
           "OverlordId": 0,
-          "Defense": 5,
+          "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 0,
           "MaximumGoo": 0,
           "CardsInDeck": [
             {
-              "Name": "Duzt",
+              "Name": "Whizper",
               "TutorialObjectId": 51
             },
             {
-              "Name": "Duzt",
+              "Name": "Whizper",
               "TutorialObjectId": 52
             },
             {
-              "Name": "Rubble",
+              "Name": "Burn",
               "TutorialObjectId": 53
             },
             {
@@ -771,6 +771,7 @@
         {
           "Id": 0,
           "TutorialTooltipAlign": "CenterLeft",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
           "TutorialTooltipOwner": "UI",
           "Description": "Add cards to your deck by dragging them to the top.",
           "Position": {
@@ -778,12 +779,12 @@
             "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages",
-          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 1,
           "TutorialTooltipAlign": "CenterLeft",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
           "TutorialTooltipOwner": "UI",
           "Description": "Remove cards from your deck by double tapping on them.",
           "Position": {
@@ -791,12 +792,12 @@
             "Y": 4.7,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages",
-          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 2,
           "TutorialTooltipAlign": "CenterLeft",
+          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
           "TutorialTooltipOwner": "UI",
           "Description": "You can also add cards by double tapping them.",
           "Position": {
@@ -804,8 +805,7 @@
             "Y": 0,
             "Z": 0
           },
-          "TutorialTooltipLayer": "AbovePages",
-          "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
+          "TutorialTooltipLayer": "AbovePages"
         },
         {
           "Id": 3,
@@ -834,6 +834,7 @@
         {
           "Id": 5,
           "TutorialTooltipAlign": "CenterRight",
+          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipOwner": "UI",
           "Description": "For now, click on the arrows to browse your cards and fill the deck.",
           "Position": {
@@ -841,7 +842,6 @@
             "Y": 0,
             "Z": 0
           },
-          "TutorialUIElementOwnerName": "Button_LowerRightArrow",
           "TutorialTooltipLayer": "AbovePages"
         },
         {
@@ -1137,9 +1137,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -1184,9 +1184,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -1231,9 +1231,9 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Single",
-              "TutorialHandLayer": "AbovePages",
               "TutorialUIElementOwnerName": "Button_LowerLeftArrow",
               "TutorialHandPointerOwner": "UI",
+              "TutorialHandLayer": "AbovePages"
             }
           ]
         },
@@ -1312,7 +1312,6 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
-            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
             "Button_Login",
@@ -1320,7 +1319,8 @@
             "Button_Rename",
             "Button_Edit",
             "Button_BuildNewDeck",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_MyPacks"
           ],
           "HandPointers": [
             {
@@ -1414,16 +1414,24 @@
         }
       ],
       "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
-        "MaximumCardsCount": 10,
+        "MainSet": "FIRE",
+        "MaximumCardsCount": 20,
         "CardsForArmy": [
           {
             "Amount": 2,
-            "CardName": "Gloop"
+            "CardName": "Whizper"
           },
           {
             "Amount": 2,
-            "CardName": "Zky"
+            "CardName": "Burn"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Poizon"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zlab"
           },
           {
             "Amount": 2,
@@ -1431,35 +1439,58 @@
           },
           {
             "Amount": 2,
-            "CardName": "Rubble"
+            "CardName": "Ember"
           },
           {
-            "Amount": 1,
-            "CardName": "Zwoop"
+            "Amount": 2,
+            "CardName": "Blocker"
           },
           {
-            "Amount": 1,
-            "CardName": "Bane"
+            "Amount": 2,
+            "CardName": "Breezee"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Pyromaz"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Crumbz"
           }
         ]
       },
       "TutorialReward": {
-        "CardPackCount": 1,
+        "CardPackCount": 2,
         "CardPackReward": [
           {
-            "Name": "Rubble"
+            "Name": "Ember"
           },
           {
-            "Name": "Bane"
+            "Name": "Ember"
           },
           {
-            "Name": "Zwoop"
+            "Name": "Blocker"
           },
           {
-            "Name": "Zky"
+            "Name": "Blocker"
           },
           {
-            "Name": "Harpoon"
+            "Name": "Breezee"
+          },
+          {
+            "Name": "Breezee"
+          },
+          {
+            "Name": "Pyromaz"
+          },
+          {
+            "Name": "Pyromaz"
+          },
+          {
+            "Name": "Crumbz"
+          },
+          {
+            "Name": "Crumbz"
           }
         ]
       },
@@ -1580,7 +1611,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "EnemyOverlord",
-              "Description": "I'll melt you!"
+              "Description": "I'll crush you!"
             }
           ]
         },
@@ -1690,11 +1721,9 @@
           "ActionToEndThisStep": "TapOnScreen",
           "TutorialStepType": "GameplayStep",
           "TutorialDescriptionTooltipsToActivate": [
-            4,
-            7
+            4
           ],
-          "ConnectedTurnIndex": 4,
-          "PlayerOverlordAbilityShouldBeUnlocked": true
+          "ConnectedTurnIndex": 4
         },
         {
           "ActionToEndThisStep": "PlayerOverlordCardPlayed",
@@ -1703,7 +1732,7 @@
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Time to end this.",
+              "Description": "Play the feral, first!",
               "AppearDelay": 1
             }
           ],
@@ -1725,8 +1754,7 @@
                 "Y": -0.25,
                 "Z": 0
               },
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 10
+              "TutorialHandPointerType": "Animated"
             }
           ]
         },
@@ -1759,7 +1787,6 @@
           "TutorialObjectIdStepOwner": 2,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
-            "OPPONENT",
             "OPPONENT_CARD"
           ],
           "UnitsCanAttack": true,
@@ -1776,7 +1803,6 @@
                 "Z": 0
               },
               "TutorialHandPointerType": "Animated",
-              "AppearDelay": 5,
               "TutorialObjectIdStepOwner": 2,
               "TargetTutorialObjectId": 52
             }
@@ -1792,8 +1818,7 @@
           "TutorialObjectIdStepOwner": 1,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
-            "OPPONENT",
-            "OPPONENT_CARD"
+            "OPPONENT"
           ],
           "UnitsCanAttack": true,
           "HandPointers": [
@@ -1815,20 +1840,55 @@
           ]
         },
         {
+          "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
+          "CanEndTurn": true
+        },
+        {
+          "ActionToEndThisStep": "BattleframeAttacked",
+          "TutorialStepType": "GameplayStep",
+          "ConnectedTurnIndex": 5,
+          "LaunchAIBrain": true
+        },
+        {
+          "ActionToEndThisStep": "EnemyOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
+          "ConnectedTurnIndex": 5,
+          "TutorialObjectIdStepOwner": 53
+        },
+        {
+          "ActionToEndThisStep": "EndTurn",
+          "TutorialStepType": "GameplayStep",
+          "UnitsCanAttack": true
+        },
+        {
+          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
+          "TutorialStepType": "GameplayStep",
+          "ConnectedTurnIndex": 6,
+          "TutorialObjectIdStepOwner": 3,
+          "CanInteractWithGameplay": true,
+          "SelectableTargets": [
+            "OPPONENT"
+          ],
+          "UnitsCanAttack": true
+        },
+        {
           "ActionToEndThisStep": "PlayerOverlordAbilityUsed",
           "TutorialStepType": "GameplayStep",
           "OverlordSayTooltips": [
             {
               "TutorialTooltipAlign": "CenterLeft",
               "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "My Poison Dart will end him."
+              "Description": "My fireball will end him."
             }
           ],
-          "ConnectedTurnIndex": 4,
+          "ConnectedTurnIndex": 6,
           "CanInteractWithGameplay": true,
           "SelectableTargets": [
             "OPPONENT"
           ],
+          "PlayerOverlordAbilityShouldBeUnlocked": true,
+          "UnitsCanAttack": true,
           "HandPointers": [
             {
               "StartPosition": {
@@ -1874,38 +1934,46 @@
       ],
       "SpecificBattlegroundInfo": {
         "PlayerInfo": {
-          "OverlordId": 4,
+          "OverlordId": 1,
           "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 4,
           "MaximumGoo": 4,
           "CardsInDeck": [
             {
-              "Name": "Zwoop",
+              "Name": "Zlab",
               "TutorialObjectId": 1
             },
             {
-              "Name": "Bane",
+              "Name": "Ember",
               "TutorialObjectId": 2
+            },
+            {
+              "Name": "Harpoon",
+              "TutorialObjectId": 3
             }
           ],
-          "PrimarySkill": "POISON_DART",
+          "PrimarySkill": "FIREBALL",
           "SecondarySkill": "NONE"
         },
         "OpponentInfo": {
-          "OverlordId": 4,
-          "Defense": 5,
+          "OverlordId": 0,
+          "Defense": 10,
           "MaximumDefense": 20,
           "CurrentGoo": 4,
           "MaximumGoo": 4,
           "CardsInDeck": [
             {
-              "Name": "Shale",
+              "Name": "Ember",
               "TutorialObjectId": 51
             },
             {
-              "Name": "Hardy",
+              "Name": "Blocker",
               "TutorialObjectId": 52
+            },
+            {
+              "Name": "Boomstick",
+              "TutorialObjectId": 53
             }
           ],
           "PrimarySkill": "NONE",
@@ -1968,8 +2036,7 @@
           "RequiredActivitiesToDoneDuringTurn": [
             "PlayerOverlordCardPlayed",
             "BattleframeAttacked",
-            "BattleframeAttacked",
-            "PlayerOverlordAbilityUsed"
+            "BattleframeAttacked"
           ],
           "ActionActivityHandlers": [
             {
@@ -1987,7 +2054,7 @@
               "TutorialActivityActionHandlerData": {
                 "TutorialTooltipAlign": "CenterRight",
                 "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "No, not that! We can end it this turn!"
+                "Description": "No, not that!"
               }
             }
           ],
@@ -2004,6 +2071,40 @@
             },
             {
               "TutorialObjectId": 1,
+              "Target": "OPPONENT"
+            }
+          ]
+        },
+        {
+          "TurnIndex": 5,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "BattleframeAttacked",
+            "EnemyOverlordCardPlayed"
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 53,
+              "Target": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            }
+          ],
+          "UseBattleframesSequence": [
+            {
+              "TutorialObjectId": 51,
+              "Target": "OPPONENT_CARD",
+              "TargetTutorialObjectId": 1
+            }
+          ]
+        },
+        {
+          "TurnIndex": 6,
+          "RequiredActivitiesToDoneDuringTurn": [
+            "PlayerOverlordCardPlayed",
+            "PlayerOverlordAbilityUsed"
+          ],
+          "PlayCardsSequence": [
+            {
+              "TutorialObjectId": 3,
               "Target": "OPPONENT"
             }
           ],
@@ -2028,15 +2129,15 @@
         {
           "Id": 6,
           "TutorialTooltipAlign": "CenterLeft",
+          "TutorialUIElementOwnerName": "Button_MyPacks",
           "TutorialTooltipOwner": "UI",
           "Description": "Let's check out your new cards first.",
           "Position": {
-                "X": 1,
-                "Y": -0.5,
-                "Z": 0
+            "X": 1,
+            "Y": -0.5,
+            "Z": 0
           },
           "AppearDelay": 0,
-          "TutorialUIElementOwnerName": "Button_MyPacks",
           "TutorialTooltipLayer": "AboveUI"
         }
       ],
@@ -2270,7 +2371,6 @@
             "Button_Right",
             "Button_Shop",
             "Button_MyDecks",
-            "Button_MyPacks",
             "Button_MyCards",
             "Button_Setting",
             "Button_Login",
@@ -2278,7 +2378,8 @@
             "Button_Rename",
             "Button_Edit",
             "Button_BuildNewDeck",
-            "Button_Filter"
+            "Button_Filter",
+            "Button_MyPacks"
           ],
           "HandPointers": [
             {
@@ -2340,16 +2441,24 @@
         }
       ],
       "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
-        "MaximumCardsCount": 15,
+        "MainSet": "FIRE",
+        "MaximumCardsCount": 30,
         "CardsForArmy": [
           {
             "Amount": 2,
-            "CardName": "Gloop"
+            "CardName": "Whizper"
           },
           {
             "Amount": 2,
-            "CardName": "Zky"
+            "CardName": "Burn"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Poizon"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zlab"
           },
           {
             "Amount": 2,
@@ -2357,43 +2466,78 @@
           },
           {
             "Amount": 2,
-            "CardName": "Rubble"
+            "CardName": "Ember"
           },
           {
             "Amount": 2,
-            "CardName": "Zwoop"
+            "CardName": "Blocker"
           },
           {
             "Amount": 2,
-            "CardName": "Bane"
-          },
-          {
-            "Amount": 1,
-            "CardName": "GooZilla"
+            "CardName": "Breezee"
           },
           {
             "Amount": 2,
-            "CardName": "Azzazzin"
+            "CardName": "Pyromaz"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Crumbz"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Boomstick"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Molotov"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Zhampion"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Grower"
+          },
+          {
+            "Amount": 2,
+            "CardName": "Bark"
           }
         ]
       },
       "TutorialReward": {
-        "CardPackCount": 1,
+        "CardPackCount": 2,
         "CardPackReward": [
           {
-            "Name": "GooZilla"
+            "Name": "Boomstick"
           },
           {
-            "Name": "Azzazzin"
+            "Name": "Boomstick"
           },
           {
-            "Name": "Azzazzin"
+            "Name": "Molotov"
           },
           {
-            "Name": "Zwoop"
+            "Name": "Molotov"
           },
           {
-            "Name": "Bane"
+            "Name": "Zhampion"
+          },
+          {
+            "Name": "Zhampion"
+          },
+          {
+            "Name": "Grower"
+          },
+          {
+            "Name": "Grower"
+          },
+          {
+            "Name": "Bark"
+          },
+          {
+            "Name": "Bark"
           }
         ]
       },
@@ -2402,1918 +2546,6 @@
   },
   {
     "Id": 4,
-    "Name": "Rank",
-    "TutorialContent": {
-      "TutorialDescriptionTooltips": [
-        {
-          "Id": 1,
-          "TutorialTooltipAlign": "TopMiddle",
-          "TutorialTooltipOwner": "PlayerBattleframe",
-          "TutorialTooltipOwnerId": 1,
-          "Description": "For Toxic, the Rank Buff gives zombies +1 Atk and the Destroy ability.",
-          "Position": {
-            "X": 0,
-            "Y": -1.3,
-            "Z": 0
-          },
-          "DynamicPosition": true
-        },
-        {
-          "Id": 2,
-          "TutorialTooltipAlign": "CenterRight",
-          "TutorialTooltipOwner": "PlayerBattleframe",
-          "TutorialTooltipOwnerId": 21,
-          "Description": "When higher ranked zombies are played, they give Rank Buffs to lower ranking zombies from the same faction.",
-          "Position": {
-            "X": -1.15,
-            "Y": 0.3,
-            "Z": 0
-          },
-          "DynamicPosition": true
-        },
-        {
-          "Id": 3,
-          "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "EnemyBattleframe",
-          "Description": "Zombies with Destroy will one-shot-kill any enemy zombie.",
-          "Position": {
-            "X": 3.75,
-            "Y": -1.45,
-            "Z": 0
-          }
-        },
-        {
-          "Id": 4,
-          "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "PlayerBattleframe",
-          "TutorialTooltipOwnerId": 22,
-          "Description": "Zombies with Blitz can attack other zombies the turn they are played.",
-          "Position": {
-            "X": 1.15,
-            "Y": 0.3,
-            "Z": 0
-          }
-        }
-      ],
-      "TutorialSteps": [
-        {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialStepType": "GameplayStep",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Zombies also have ranks, which give buffs to other zombies.\n\nCome, I'll show you how it works.",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "LET'S BEGIN"
-          }
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 1,
-          "LaunchGameplayManually": true,
-          "LaunchAIBrain": true,
-          "RequiredActivitiesToDoneDuringStep": [
-            "EnemyOverlordCardPlayed"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "CanInteractWithGameplay": true,
-          "HandPointers": [
-            {
-              "EndPosition": {
-                "X": 0,
-                "Y": -0.25,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerCardInHand",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "CanInteractWithGameplay": true,
-          "HandPointers": [
-            {
-              "EndPosition": {
-                "X": 0,
-                "Y": -0.25,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerCardInHand",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 2.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "CanInteractWithGameplay": true,
-          "CanEndTurn": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 3,
-          "LaunchAIBrain": true
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterLeft",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "We'll show them with our GooZilla!"
-            }
-          ],
-          "ConnectedTurnIndex": 4,
-          "TutorialObjectIdStepOwner": 21,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD",
-            "OPPONENT"
-          ],
-          "CanEndTurn": true,
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "DescriptionTooltipClosed",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            1,
-            2
-          ],
-          "ConnectedTurnIndex": 4
-        },
-        {
-          "ActionToEndThisStep": "EnemyBattleframeDied",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            3
-          ],
-          "TutorialDescriptionTooltipsToDeactivate": [
-            1,
-            2
-          ],
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD",
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true,
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.3,
-                "Z": 0
-              },
-              "EndPosition": {
-                "X": 0,
-                "Y": 1.3,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerBattleframe",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 5,
-              "TutorialObjectIdStepOwner": 1,
-              "TargetTutorialObjectId": 52,
-              "AdditionalObjectIdOwners": [
-                20
-              ],
-              "AdditionalObjectIdTargets": [
-                53
-              ]
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "EnemyBattleframeDied",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD",
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true,
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.3,
-                "Z": 0
-              },
-              "EndPosition": {
-                "X": 0,
-                "Y": 1.3,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerBattleframe",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 5,
-              "TutorialObjectIdStepOwner": 1,
-              "TargetTutorialObjectId": 52,
-              "AdditionalObjectIdOwners": [
-                20
-              ],
-              "AdditionalObjectIdTargets": [
-                53
-              ]
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "CanEndTurn": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 5,
-          "LaunchAIBrain": true
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterLeft",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Lucky lucky."
-            }
-          ],
-          "ConnectedTurnIndex": 6,
-          "TutorialObjectIdStepOwner": 22,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD",
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "BattleframeAttacked",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            4
-          ],
-          "ConnectedTurnIndex": 6,
-          "TutorialObjectIdStepOwner": 22,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD",
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "EnemyOverlordDied",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 6,
-          "TutorialObjectIdStepOwner": 21,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "OverlordSayPopupHided",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterLeft",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Nice work.",
-              "Duration": 2.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "YouWonPopupOpened",
-          "TutorialStepType": "GameplayStep",
-          "BlockedButtons": [
-            "Button_PlayAgain"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
-          "TutorialStepType": "GameplayStep"
-        }
-      ],
-      "ActionActivityHandlers": [
-      ],
-      "SpecificBattlegroundInfo": {
-        "PlayerInfo": {
-          "OverlordId": 4,
-          "Defense": 10,
-          "MaximumDefense": 20,
-          "CurrentGoo": 10,
-          "MaximumGoo": 10,
-          "CardsInHand": [
-            {
-              "Name": "Gloop",
-              "TutorialObjectId": 1
-            }
-          ],
-          "CardsInDeck": [
-            {
-              "Name": "Gloop",
-              "TutorialObjectId": 20
-            },
-            {
-              "Name": "GooZilla",
-              "TutorialObjectId": 21
-            },
-            {
-              "Name": "Azzazzin",
-              "TutorialObjectId": 22
-            }
-          ],
-          "CardsOnBoard": [
-          ],
-          "PrimarySkill": "NONE",
-          "SecondarySkill": "NONE"
-        },
-        "OpponentInfo": {
-          "OverlordId": 0,
-          "Defense": 10,
-          "MaximumDefense": 20,
-          "CurrentGoo": 10,
-          "MaximumGoo": 10,
-          "CardsInHand": [
-          ],
-          "CardsInDeck": [
-            {
-              "Name": "Groundy",
-              "TutorialObjectId": 52
-            },
-            {
-              "Name": "Shale",
-              "TutorialObjectId": 53
-            },
-            {
-              "Name": "Groundy",
-              "TutorialObjectId": 54
-            }
-          ],
-          "PrimarySkill": "NONE",
-          "SecondarySkill": "NONE"
-        },
-        "GameplayBeginManually": true,
-        "AISpecificOrderEnabled": true,
-        "RankSystemHasEnabled": true
-      },
-      "SpecificTurnInfos": [
-        {
-          "TurnIndex": 1,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "EnemyOverlordCardPlayed"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 52
-            }
-          ]
-        },
-        {
-          "TurnIndex": 2,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "PlayerOverlordCardPlayed"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 1
-            },
-            {
-              "TutorialObjectId": 20
-            }
-          ]
-        },
-        {
-          "TurnIndex": 3,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "EnemyOverlordCardPlayed",
-            "BattleframeAttacked",
-            "BattleframeAttacked"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 53
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 52,
-              "Target": "PLAYER"
-            },
-            {
-              "TutorialObjectId": 53,
-              "Target": "PLAYER"
-            }
-          ]
-        },
-        {
-          "TurnIndex": 4,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked",
-            "BattleframeAttacked"
-          ],
-          "ActionActivityHandlers": [
-            {
-              "TutorialActivityAction": "PlayerOverlordTriedToUseWrongBattleframe",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterLeft",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Best to play GooZilla first. You'll see."
-              }
-            },
-            {
-              "TutorialActivityAction": "PlayerOverlordTriedToUseUnsequentionalBattleframe",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterRight",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "That will be suicide."
-              }
-            },
-            {
-              "TutorialActivityAction": "TapOnEndTurnButtonWhenItsLimited",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterLeft",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Best to play GooZilla first. You'll see."
-              }
-            }
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 21
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 1,
-              "Target": "OPPONENT_CARD"
-            },
-            {
-              "TutorialObjectId": 20,
-              "Target": "OPPONENT_CARD"
-            }
-          ]
-        },
-        {
-          "TurnIndex": 5,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "EnemyOverlordCardPlayed"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 54
-            }
-          ]
-        },
-        {
-          "TurnIndex": 6,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked",
-            "BattleframeAttacked"
-          ],
-          "ActionActivityHandlers": [
-            {
-              "TutorialActivityAction": "PlayerOverlordTriedToUseWrongBattleframe",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterLeft",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "What are you doing? We can end this."
-              }
-            }
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 22
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 22,
-              "Target": "OPPONENT_CARD"
-            },
-            {
-              "TutorialObjectId": 21,
-              "Target": "OPPONENT"
-            }
-          ]
-        }
-      ],
-      "PlayerOrderScreenShouldAppear": false,
-      "RewardCardPackCount": 1
-    }
-  },
-  {
-    "Id": 5,
-    "Name": "Deck Building 3",
-    "HiddenTutorial": true,
-    "TutorialContent": {
-      "TutorialDescriptionTooltips": [
-        {
-          "Id": 6,
-          "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "UI",
-          "Description": "Let's check out your new cards first.",
-          "Position": {
-                "X": 1,
-                "Y": -0.5,
-                "Z": 0
-          },
-          "AppearDelay": 0,
-          "TutorialUIElementOwnerName": "Button_MyPacks",
-          "TutorialTooltipLayer": "AboveUI"
-        }
-      ],
-      "TutorialSteps": [
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            6
-          ],
-          "OpenScreen": "MainMenuPageWithNavigationBar",
-          "BlockedButtons": [
-            "Panel_Battle_Mode",
-            "Button_Login",
-            "Button_Left",
-            "Button_Right",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyCards",
-            "Button_Setting",
-            "Button_Login"
-          ],
-          "ConnectedActivities": [
-            2
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_MyPacks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "CardPackOpened",
-          "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToDeactivate": [
-            6
-          ],
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyCards",
-            "Button_MyPacks",
-            "ButtonPackType",
-            "Button_BuyPacks",
-            "Button_Setting",
-            "Button_Login",
-            "PackContent"
-          ],
-          "ConnectedActivities": [
-            3
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.15,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 9.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "CardPackCollected",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "ButtonPackType",
-            "ButtonOpenPacks",
-            "Button_BuyPacks",
-            "Button_Setting",
-            "Button_Login",
-            "PackContent"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyCards",
-            "ButtonPackType",
-            "ButtonOpenPacks",
-            "Button_BuyPacks",
-            "Button_MyPacks",
-            "Button_Setting",
-            "Button_MyPacks",
-            "Button_Login"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_MyDecks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "HordeTabChanged",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Auto",
-            "Button_Filter",
-            "InputText_SearchDeckName",
-            "Button_Delete",
-            "Button_Rename",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_ButtonBackTray",
-            "Button_BuildNewDeck"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.5,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_Edit",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "HordeFilled",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Button_SaveDeck",
-            "Text_DeckName",
-            "Button_OverlordAbilities"
-          ],
-          "ConnectedActivities": [
-            1
-          ],
-          "CanDragCards": true,
-          "CanDoubleTapCards": true
-        },
-        {
-          "ActionToEndThisStep": "HordeSaveButtonPressed",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Text_DeckName",
-            "Button_OverlordAbilities",
-            "Button_Filter"
-          ],
-          "CardsInteractingLocked": true,
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.5,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_SaveDeck",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 3.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "MainMenuPageWithNavigationBar",
-          "BlockedButtons": [
-            "Panel_Battle_Mode",
-            "Button_Login",
-            "Button_Left",
-            "Button_Right",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Setting",
-            "Button_Login",
-            "Button_Delete",
-            "Button_Rename",
-            "Button_Edit",
-            "Button_BuildNewDeck",
-            "Button_Filter"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_Battle",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 2.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "BattleStarted",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Panel_Battle_Mode"
-          ],
-          "ConnectedActivities": [
-            0
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 0,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI"
-            }
-          ]
-        }
-      ],
-      "ActionActivityHandlers": [
-        {
-          "Id": 0,
-          "TutorialActivityAction": "TriedToPressPlayButton",
-          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
-          "HasSpecificConnection": true,
-          "TutorialActivityActionHandlerData": {
-            "TutorialDescriptionTooltipsToActivate": [
-              6
-            ]
-          }
-        }
-      ],
-      "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
-        "MaximumCardsCount": 20,
-        "CardsForArmy": [
-          {
-            "Amount": 2,
-            "CardName": "Gloop"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Zky"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Harpoon"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Rubble"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Zwoop"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Bane"
-          },
-          {
-            "Amount": 1,
-            "CardName": "GooZilla"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Azzazzin"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Cherno-bill"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Germ"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Nail Bomb"
-          }
-        ]
-      },
-      "TutorialReward": {
-        "CardPackCount": 1,
-        "CardPackReward": [
-          {
-            "Name": "Cherno-bill"
-          },
-          {
-            "Name": "Germ"
-          },
-          {
-            "Name": "Germ"
-          },
-          {
-            "Name": "Nail Bomb"
-          },
-          {
-            "Name": "Nail Bomb"
-          }
-        ]
-      },
-      "HasBlockedInteractivityInGameScreens": true
-    }
-  },
-  {
-    "Id": 6,
-    "Name": "Overflow",
-    "TutorialContent": {
-      "TutorialDescriptionTooltips": [
-        {
-          "Id": 1,
-          "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "EnemyBattleframe",
-          "TutorialTooltipOwnerId": 52,
-          "Description": "Death effects are triggered when the zombie is destroyed.",
-          "Position": {
-            "X": 1.15,
-            "Y": 0.3,
-            "Z": 0
-          }
-        },
-        {
-          "Id": 2,
-          "TutorialTooltipAlign": "CenterLeft",
-          "Description": "Gives you the ability to Overflow your goo.",
-          "Position": {
-            "X": 1.85,
-            "Y": 0.3,
-            "Z": 0
-          },
-          "MinimumShowTime": 0
-        },
-        {
-          "Id": 3,
-          "TutorialTooltipAlign": "BottomMiddle",
-          "Description": "Overflow allows you to go beyond 11 goo and play stronger zombies.",
-          "Position": {
-            "X": -3.32,
-            "Y": -5.9,
-            "Z": 0
-          }
-        }
-      ],
-      "TutorialSteps": [
-        {
-          "ActionToEndThisStep": "AvatarTooltipClosed",
-          "TutorialStepType": "GameplayStep",
-          "TutorialAvatar": {
-            "Pose": "NORMAL",
-            "Description": "Let's learn about Goo-Carriers.\n\nThese special cards give you extra goo to spend in the same turn. This effect is called \"Overflow\".",
-            "AboveUI": false,
-            "DescriptionTooltipCloseText": "LET'S BEGIN"
-          }
-        },
-        {
-          "ActionToEndThisStep": "EnemyOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 1,
-          "LaunchGameplayManually": true,
-          "LaunchAIBrain": true,
-          "RequiredActivitiesToDoneDuringStep": [
-            "EnemyOverlordCardPlayed"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "EnemyOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "RequiredActivitiesToDoneDuringStep": [
-            "EnemyOverlordCardPlayed"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "DescriptionTooltipClosed",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            1
-          ],
-          "TutorialObjectIdStepOwner": 52
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep"
-        },
-        {
-          "ActionToEndThisStep": "StartTurn",
-          "TutorialStepType": "GameplayStep"
-        },
-        {
-          "ActionToEndThisStep": "PlayerCreatedNewCardAndMovedToHand",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "CanInteractWithGameplay": true,
-          "HandPointers": [
-            {
-              "EndPosition": {
-                "X": 0,
-                "Y": -0.25,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerCardInHand",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 2.5,
-              "TutorialObjectIdStepOwner": 10
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "TapOnScreen",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            2
-          ],
-          "MatchShouldBePaused": true
-        },
-        {
-          "ActionToEndThisStep": "BattleframeAttacked",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "TutorialObjectIdStepOwner": 20,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 2,
-          "CanInteractWithGameplay": true,
-          "CanEndTurn": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 3,
-          "LaunchAIBrain": true
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterRight",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let's play Cherno-bill. But we need Overflow first. Use Tainted Goo.",
-              "Duration": 6.5
-            }
-          ],
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "ConnectedActivities": [
-            0
-          ],
-          "HandPointers": [
-            {
-              "EndPosition": {
-                "X": 4,
-                "Y": -0.25,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerCardInHand",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 10,
-              "TutorialObjectIdStepOwner": -1
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterRight",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let Cherno-bill melt!"
-            }
-          ],
-          "TutorialDescriptionTooltipsToActivate": [
-            3
-          ],
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true
-        },
-        {
-          "ActionToEndThisStep": "BattleframeAttacked",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "BattleframeAttacked",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 4,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "CanEndTurn": true
-        },
-        {
-          "ActionToEndThisStep": "EnemyOverlordCardPlayedStarted",
-          "TutorialStepType": "GameplayStep",
-          "TutorialDescriptionTooltipsToDeactivate": [
-            1
-          ],
-          "ConnectedTurnIndex": 5,
-          "LaunchAIBrain": true,
-          "RequiredActivitiesToDoneDuringStep": [
-            "BattleframeAttacked",
-            "EnemyOverlordCardPlayed"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "DeathAbilityCompleted",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 5,
-          "AIShouldBePaused": true
-        },
-        {
-          "ActionToEndThisStep": "EndTurn",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 5,
-          "RequiredActivitiesToDoneDuringStep": [
-            "EnemyOverlordCardPlayed"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "PlayerOverlordCardPlayed",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterRight",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "Let's finish this.",
-              "AppearDelay": 1
-            }
-          ],
-          "ConnectedTurnIndex": 6,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT_CARD"
-          ],
-          "HandPointers": [
-            {
-              "EndPosition": {
-                "X": -1.55,
-                "Y": 3,
-                "Z": 0
-              },
-              "TutorialHandPointerOwner": "PlayerCardInHand",
-              "TutorialHandPointerType": "Animated",
-              "AppearDelay": 3
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "EnemyOverlordDied",
-          "TutorialStepType": "GameplayStep",
-          "ConnectedTurnIndex": 6,
-          "CanInteractWithGameplay": true,
-          "SelectableTargets": [
-            "OPPONENT"
-          ],
-          "UnitsCanAttack": true
-        },
-        {
-          "ActionToEndThisStep": "OverlordSayPopupHided",
-          "TutorialStepType": "GameplayStep",
-          "OverlordSayTooltips": [
-            {
-              "TutorialTooltipAlign": "CenterLeft",
-              "TutorialTooltipOwner": "PlayerOverlord",
-              "Description": "The goo must flow.",
-              "Duration": 2.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "YouWonPopupOpened",
-          "TutorialStepType": "GameplayStep",
-          "BlockedButtons": [
-            "Button_PlayAgain"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "TutorialProgressInfoPopupClosed",
-          "TutorialStepType": "GameplayStep"
-        }
-      ],
-      "ActionActivityHandlers": [
-        {
-          "Id": 0,
-          "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
-          "TutorialActivityActionHandler": "OverlordSayTooltip",
-          "HasSpecificConnection": true,
-          "TutorialActivityActionHandlerData": {
-            "TutorialTooltipAlign": "CenterLeft",
-            "TutorialTooltipOwner": "PlayerOverlord",
-            "Description": "Use Tainted Goo."
-          }
-        }
-      ],
-      "SpecificBattlegroundInfo": {
-        "PlayerInfo": {
-          "OverlordId": 4,
-          "Defense": 10,
-          "MaximumDefense": 20,
-          "CurrentGoo": 8,
-          "MaximumGoo": 8,
-          "CardsInHand": [
-            {
-              "Name": "Cherno-bill",
-              "TutorialObjectId": 1
-            }
-          ],
-          "CardsInDeck": [
-            {
-              "Name": "Germ",
-              "TutorialObjectId": 10
-            },
-            {
-              "Name": "Germ",
-              "TutorialObjectId": 11
-            },
-            {
-              "Name": "Nail Bomb",
-              "TutorialObjectId": 12
-            }
-          ],
-          "CardsOnBoard": [
-            {
-              "Name": "GooZilla",
-              "TutorialObjectId": 20,
-              "IsManuallyPlayable": true,
-              "BuffedDefense": 4,
-              "BuffedDamage": 4
-            }
-          ],
-          "PrimarySkill": "NONE",
-          "SecondarySkill": "NONE"
-        },
-        "OpponentInfo": {
-          "OverlordId": 0,
-          "Defense": 10,
-          "MaximumDefense": 20,
-          "CurrentGoo": 8,
-          "MaximumGoo": 8,
-          "CardsInHand": [
-            {
-              "Name": "Crumbz",
-              "TutorialObjectId": 51
-            },
-            {
-              "Name": "Crumbz",
-              "TutorialObjectId": 52
-            }
-          ],
-          "CardsInDeck": [
-            {
-              "Name": "Golem",
-              "TutorialObjectId": 53
-            },
-            {
-              "Name": "Hardy",
-              "TutorialObjectId": 54
-            },
-            {
-              "Name": "Earthshaker",
-              "TutorialObjectId": 55
-            },
-            {
-              "Name": "Spiker",
-              "TutorialObjectId": 56
-            },
-            {
-              "Name": "Spiker",
-              "TutorialObjectId": 57
-            }
-          ],
-          "PrimarySkill": "NONE",
-          "SecondarySkill": "NONE"
-        },
-        "GameplayBeginManually": true,
-        "AISpecificOrderEnabled": true,
-        "RankSystemHasEnabled": true
-      },
-      "SpecificTurnInfos": [
-        {
-          "TurnIndex": 1,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "EnemyOverlordCardPlayed",
-            "EnemyOverlordCardPlayed"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 51
-            },
-            {
-              "TutorialObjectId": 52
-            }
-          ]
-        },
-        {
-          "TurnIndex": 2,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked"
-          ],
-          "ActionActivityHandlers": [
-            {
-              "TutorialActivityAction": "PlayerOverlordTriedToPlayUnsequentionalCard",
-              "TutorialActivityActionHandler": "OverlordSayTooltip",
-              "TutorialActivityActionHandlerData": {
-                "TutorialTooltipAlign": "CenterLeft",
-                "TutorialTooltipOwner": "PlayerOverlord",
-                "Description": "Save it for now."
-              }
-            }
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 10
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 20,
-              "Target": "OPPONENT_CARD"
-            }
-          ]
-        },
-        {
-          "TurnIndex": 3,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "EnemyOverlordCardPlayed",
-            "EnemyOverlordCardPlayed",
-            "BattleframeAttacked"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 53
-            },
-            {
-              "TutorialObjectId": 54
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 51,
-              "Target": "PLAYER"
-            },
-            {
-              "TutorialObjectId": 52,
-              "Target": "PLAYER"
-            }
-          ]
-        },
-        {
-          "TurnIndex": 4,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked",
-            "BattleframeAttacked"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": -1
-            },
-            {
-              "TutorialObjectId": 1
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 20,
-              "Target": "OPPONENT_CARD"
-            },
-            {
-              "TutorialObjectId": 10,
-              "Target": "OPPONENT_CARD"
-            }
-          ]
-        },
-        {
-          "TurnIndex": 5,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "BattleframeAttacked",
-            "EnemyOverlordCardPlayed",
-            "EnemyOverlordCardPlayed"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 55,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 1
-            },
-            {
-              "TutorialObjectId": 56
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 52,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 1
-            },
-            {
-              "TutorialObjectId": 51,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 1
-            },
-            {
-              "TutorialObjectId": 53,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 1
-            },
-            {
-              "TutorialObjectId": 54,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 1
-            }
-          ]
-        },
-        {
-          "TurnIndex": 6,
-          "RequiredActivitiesToDoneDuringTurn": [
-            "PlayerOverlordCardPlayed",
-            "BattleframeAttacked"
-          ],
-          "PlayCardsSequence": [
-            {
-              "TutorialObjectId": 12,
-              "Target": "OPPONENT_CARD",
-              "TargetTutorialObjectId": 55
-            }
-          ],
-          "UseBattleframesSequence": [
-            {
-              "TutorialObjectId": 20,
-              "Target": "OPPONENT"
-            }
-          ]
-        }
-      ],
-      "PlayerOrderScreenShouldAppear": false,
-      "RewardCardPackCount": 1
-    }
-  },
-  {
-    "Id": 7,
-    "Name": "Deck Building 4",
-    "HiddenTutorial": true,
-    "TutorialContent": {
-      "TutorialDescriptionTooltips": [
-        {
-          "Id": 6,
-          "TutorialTooltipAlign": "CenterLeft",
-          "TutorialTooltipOwner": "UI",
-          "Description": "Let's check out your new cards first.",
-          "Position": {
-                "X": 1,
-                "Y": -0.5,
-                "Z": 0
-          },
-          "AppearDelay": 0,
-          "TutorialUIElementOwnerName": "Button_MyPacks",
-          "TutorialTooltipLayer": "AboveUI"
-        }
-      ],
-      "TutorialSteps": [
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToActivate": [
-            6
-          ],
-          "OpenScreen": "MainMenuPageWithNavigationBar",
-          "BlockedButtons": [
-            "Panel_Battle_Mode",
-            "Button_Login",
-            "Button_Left",
-            "Button_Right",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyCards",
-            "Button_Setting",
-            "Button_Login"
-          ],
-          "ConnectedActivities": [
-            2
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.2,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_MyPacks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "CardPackOpened",
-          "TutorialStepType": "MenuStep",
-          "TutorialDescriptionTooltipsToDeactivate": [
-            6
-          ],
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyCards",
-            "Button_MyPacks",
-            "ButtonPackType",
-            "Button_BuyPacks",
-            "Button_Setting",
-            "Button_Login",
-            "PackContent"
-          ],
-          "ConnectedActivities": [
-            3
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.15,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "ButtonOpenPacks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 9.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "CardPackCollected",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "ButtonPackType",
-            "ButtonOpenPacks",
-            "Button_BuyPacks",
-            "Button_Setting",
-            "Button_Login",
-            "PackContent"
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "PackOpenerPageWithNavigationBar",
-          "BlockedButtons": [
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyCards",
-            "ButtonPackType",
-            "ButtonOpenPacks",
-            "Button_BuyPacks",
-            "Button_MyPacks",
-            "Button_Setting",
-            "Button_MyPacks",
-            "Button_Login"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_MyDecks",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "HordeTabChanged",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Auto",
-            "Button_Filter",
-            "InputText_SearchDeckName",
-            "Button_Delete",
-            "Button_Rename",
-            "Button_LeftArrow",
-            "Button_RightArrow",
-            "Image_ButtonBackTray",
-            "Button_BuildNewDeck"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.5,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_Edit",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 0.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "HordeFilled",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Button_SaveDeck",
-            "Text_DeckName",
-            "Button_OverlordAbilities"
-          ],
-          "ConnectedActivities": [
-            1
-          ],
-          "CanDragCards": true,
-          "CanDoubleTapCards": true
-        },
-        {
-          "ActionToEndThisStep": "HordeSaveButtonPressed",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Battle",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Button_Save",
-            "Button_Auto",
-            "Text_DeckName",
-            "Button_OverlordAbilities",
-            "Button_Filter"
-          ],
-          "CardsInteractingLocked": true,
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 1.5,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_SaveDeck",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AbovePages",
-              "AppearDelay": 3.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "ScreenChanged",
-          "TutorialStepType": "MenuStep",
-          "OpenScreen": "MainMenuPageWithNavigationBar",
-          "BlockedButtons": [
-            "Panel_Battle_Mode",
-            "Button_Login",
-            "Button_Left",
-            "Button_Right",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Setting",
-            "Button_Login",
-            "Button_Delete",
-            "Button_Rename",
-            "Button_Edit",
-            "Button_BuildNewDeck",
-            "Button_Filter"
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": -0.5,
-                "Y": 1.4,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Button_Battle",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI",
-              "AppearDelay": 2.5
-            }
-          ]
-        },
-        {
-          "ActionToEndThisStep": "BattleStarted",
-          "TutorialStepType": "MenuStep",
-          "BlockedButtons": [
-            "Button_Login",
-            "Button_Setting",
-            "Button_Shop",
-            "Button_MyDecks",
-            "Button_MyPacks",
-            "Button_MyCards",
-            "Button_Back",
-            "Panel_Battle_Mode"
-          ],
-          "ConnectedActivities": [
-            0
-          ],
-          "HandPointers": [
-            {
-              "StartPosition": {
-                "X": 0,
-                "Y": 0,
-                "Z": 0
-              },
-              "TutorialHandPointerType": "Single",
-              "TutorialUIElementOwnerName": "Panel_BattleSwitch",
-              "TutorialHandPointerOwner": "UI",
-              "TutorialHandLayer": "AboveUI"
-            }
-          ]
-        }
-      ],
-      "ActionActivityHandlers": [
-        {
-          "Id": 0,
-          "TutorialActivityAction": "TriedToPressPlayButton",
-          "TutorialActivityActionHandler": "DrawDescriptionTooltips",
-          "HasSpecificConnection": true,
-          "TutorialActivityActionHandlerData": {
-            "TutorialDescriptionTooltipsToActivate": [
-              6
-            ]
-          }
-        }
-      ],
-      "SpecificHordeInfo": {
-        "MainSet": "TOXIC",
-        "MaximumCardsCount": 30,
-        "CardsForArmy": [
-          {
-            "Amount": 2,
-            "CardName": "Gloop"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Zky"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Harpoon"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Rubble"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Zwoop"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Bane"
-          },
-          {
-            "Amount": 1,
-            "CardName": "GooZilla"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Azzazzin"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Cherno-bill"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Germ"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Nail Bomb"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Whistle"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Goo Beaker"
-          },
-          {
-            "Amount": 2,
-            "CardName": "Slab"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Trunk"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Blizzard"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Pushhh"
-          },
-          {
-            "Amount": 1,
-            "CardName": "Vindrom"
-          }
-        ]
-      },
-      "TutorialReward": {
-        "CardPackCount": 2,
-        "CardPackReward": [
-          {
-            "Name": "Whistle"
-          },
-          {
-            "Name": "Whistle"
-          },
-          {
-            "Name": "Goo Beaker"
-          },
-          {
-            "Name": "Goo Beaker"
-          },
-          {
-            "Name": "Slab"
-          },
-          {
-            "Name": "Slab"
-          },
-          {
-            "Name": "Trunk"
-          },
-          {
-            "Name": "Pushhh"
-          },
-          {
-            "Name": "Blizzard"
-          },
-          {
-            "Name": "Vindrom"
-          }
-        ]
-      },
-      "HasBlockedInteractivityInGameScreens": true
-    }
-  },
-  {
-    "Id": 8,
     "Name": "Normal Battle",
     "TutorialContent": {
       "TutorialDescriptionTooltips": [
@@ -4402,7 +2634,9 @@
           ],
           "SelectableTargets": [
             "OPPONENT",
-            "OPPONENT_CARD"
+            "OPPONENT_CARD",
+            "PLAYER",
+            "PLAYER_CARD"
           ],
           "CanEndTurn": true,
           "PlayerOverlordAbilityShouldBeUnlocked": true,
@@ -4492,19 +2726,19 @@
               "Name": "Earthshaker"
             },
             {
-              "Name": "Spiker"
+              "Name": "Zolid"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
-              "Name": "Rockky"
+              "Name": "Rocky"
             },
             {
               "Name": "Pebble"

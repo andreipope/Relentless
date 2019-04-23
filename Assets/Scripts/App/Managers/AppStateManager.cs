@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         public bool IsAppPaused { get; private set; }
+        
+        public event Action ConnectionStatusDidUpdate;
 
         public Enumerators.AppState AppState { get; set; }
 
@@ -46,14 +48,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AppState.APP_INIT:
                     GameClient.Get<ITimerManager>().Dispose();
-                    if (Constants.EnableNewUI)
-                    {
-                         _uiManager.SetPage<LoadingWithAnimationPage>();
-                    }   
-                    else
-                    {
-                        _uiManager.SetPage<LoadingPage>();
-                    }
+                    _uiManager.SetPage<LoadingWithAnimationPage>();
                     GameClient.Get<ISoundManager>().PlaySound(
                         Enumerators.SoundType.BACKGROUND,
                         128,
@@ -65,45 +60,23 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.LOGIN:
                     break;
                 case Enumerators.AppState.MAIN_MENU:
-                    if(Constants.EnableNewUI)
-                        _uiManager.SetPage<MainMenuWithNavigationPage>();                    
-                    else
-                        _uiManager.SetPage<MainMenuPage>();
+                    _uiManager.SetPage<MainMenuWithNavigationPage>(); 
                     break;
                 case Enumerators.AppState.OVERLORD_SELECTION:
-                    if (Constants.EnableNewUI)
-                    {
-                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
-                        HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
-                        hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);  
-                    }
-                    else
-                        _uiManager.SetPage<OverlordSelectionPage>();
+                    _uiManager.SetPage<HordeSelectionWithNavigationPage>();
+                    HordeSelectionWithNavigationPage hordePage = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+                    hordePage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlord);
                     break;
-                case Enumerators.AppState.HordeSelection:
-                    if (Constants.EnableNewUI)                    
-                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();                    
-                    else
-                        _uiManager.SetPage<HordeSelectionPage>();                        
-                        
+                case Enumerators.AppState.HordeSelection:                
+                    _uiManager.SetPage<HordeSelectionWithNavigationPage>(); 
                     CheckIfPlayAgainOptionShouldBeAvailable();
                     break;                    
                 case Enumerators.AppState.ARMY:
-                    if (Constants.EnableNewUI)
-                        _uiManager.SetPage<ArmyWithNavigationPage>();
-                    else
-                        _uiManager.SetPage<ArmyPage>();
+                    _uiManager.SetPage<ArmyWithNavigationPage>();
                     break;
                 case Enumerators.AppState.DECK_EDITING:
-                    if (Constants.EnableNewUI)
-                    {
-                        _uiManager.SetPage<HordeSelectionWithNavigationPage>();
-                        _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
-                    }
-                    else
-                    {
-                        _uiManager.SetPage<HordeEditingPage>();
-                    }
+                    _uiManager.SetPage<HordeSelectionWithNavigationPage>();
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);                    
                     break;
                 case Enumerators.AppState.SHOP:                    
                     if (Constants.EnableShopPage)
@@ -116,11 +89,8 @@ namespace Loom.ZombieBattleground
                             loginPopup.Show();
                             return;
                         }
-
-                        if (Constants.EnableNewUI)
-                            _uiManager.SetPage<ShopWithNavigationPage>();
-                        else
-                            _uiManager.SetPage<ShopPage>();
+                        
+                        _uiManager.SetPage<ShopWithNavigationPage>();
                     }
                     else
                     {
@@ -130,33 +100,20 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AppState.PACK_OPENER:
                     if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.EnableShopPage)
                     {
-                        if (Constants.EnableNewUI)
-                            _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
-                        else
-                            _uiManager.SetPage<PackOpenerPage>();
-                        break;
+                        _uiManager.SetPage<PackOpenerPageWithNavigationBar>();
                     }
                     else
                     {
                         _uiManager.DrawPopup<WarningPopup>($"The Pack Opener is Disabled\nfor version {BuildMetaInfo.Instance.DisplayVersionName}\n\n Thanks for helping us make this game Awesome\n\n-Loom Team");
                         return;
                     }
+                    break;
                 case Enumerators.AppState.GAMEPLAY:
                     _uiManager.SetPage<GameplayPage>();
                     break;
-                case Enumerators.AppState.CREDITS:
-                    _uiManager.SetPage<CreditsPage>();
-                    break;
                 case Enumerators.AppState.PlaySelection:
-                    if (Constants.EnableNewUI)
-                    {
-                        _uiManager.SetPage<MainMenuWithNavigationPage>();
-                        _uiManager.DrawPopup<GameModePopup>();                   
-                    }
-                    else
-                    {
-                        _uiManager.SetPage<PlaySelectionPage>();
-                    }
+                    _uiManager.SetPage<MainMenuWithNavigationPage>();
+                    _uiManager.DrawPopup<GameModePopup>(); 
                     break;
                 case Enumerators.AppState.PvPSelection:
                     _uiManager.SetPage<PvPSelectionPage>();
@@ -247,6 +204,15 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
+
+        public async Task SendLeaveMatchIfInPlay()
+        {
+            if (GameClient.Get<IGameplayManager>().IsGameStarted)
+            {
+                await GameClient.Get<BackendFacade>().SendPlayerAction(
+                 GameClient.Get<ActionCollectorUploader>().GetLeaveMatchRequest());
+            }
+        }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
@@ -255,7 +221,9 @@ namespace Loom.ZombieBattleground
                 if (state != RpcConnectionState.Connected &&
                     state != RpcConnectionState.Connecting)
                 {
-                    HandleNetworkExceptionFlow(new RpcClientException($"Changed status of connection to server on: {state}", 1, null), false, true);
+                    string errorMsg =
+                        "Your game client is now OFFLINE. Please check your internet connection and try again later.";
+                    HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null), false, true);
                 }
             }, null);
         }
@@ -274,6 +242,7 @@ namespace Loom.ZombieBattleground
                         try
                         {
                             await _backendDataControlMediator.LoginAndLoadData();
+                            ConnectionStatusDidUpdate?.Invoke();
                         }
                         catch(Exception e)
                         {

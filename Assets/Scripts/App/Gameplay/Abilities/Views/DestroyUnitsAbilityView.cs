@@ -124,7 +124,11 @@ namespace Loom.ZombieBattleground
             CreateSubParticle(unit.Transform.position);
             _unitsViews.Remove(unit.Model);
             _cameraManager.ShakeGameplay(Enumerators.ShakeType.Medium);
-            Ability.DestroyUnit(unit);
+            if (!unit.Model.HasBuffShield)
+            {
+                unit.ChangeModelVisibility(false);
+            }
+            Ability.DestroyUnit(unit.Model);
         }
 
         private void CreateSubParticle(Vector3 pos, float duration = 3)

@@ -256,7 +256,7 @@ namespace Loom.ZombieBattleground
             
             if (_tutorialManager.IsTutorial)
             {
-                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 1;
+                _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
                 _isCollectedTutorialCards = false;
             }
@@ -494,7 +494,7 @@ namespace Loom.ZombieBattleground
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryPackBalanceRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += RetryRequestPackBalance;
                 }
@@ -514,7 +514,7 @@ namespace Loom.ZombieBattleground
         private async Task RetriveCardsFromPack(int packTypeId)
         {
             _lastOpenPackIdRequest = packTypeId;
-            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             try
             {
                 List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryOpenPackRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += async (x) => await RetryRequestOpenPack(x);
                 }
@@ -544,7 +544,7 @@ namespace Loom.ZombieBattleground
         
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             _cardsToDisplayQueqe.Clear();
             foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
             {
@@ -576,17 +576,20 @@ namespace Loom.ZombieBattleground
         {
             if (_tutorialManager.IsTutorial)
             {
-                if (!_isCollectedTutorialCards)
+                if (_tutorialManager.IsTutorial)
                 {
-                    _isCollectedTutorialCards = true;
-                    await SimulateRetriveTutorialCardsFromPack();
-                    _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = 0;
-                }
-                else
-                {
-                    _cardsToDisplayQueqe.Clear();
-                    ChangeState(STATE.CARD_EMERGED);
-                    _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);                   
+                    if (_packBalanceAmounts[_selectedPackTypeIndex] > 0 && _packToOpenAmount > 0)
+                    {
+                        await SimulateRetriveTutorialCardsFromPack();
+
+                        _packBalanceAmounts[_selectedPackTypeIndex]--;
+                        _packToOpenAmount--;
+                    }
+                    else
+                    {
+                        ChangeState(STATE.CARD_EMERGED);
+                        _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.CardPackCollected);
+                    }
                 }
             }
             else

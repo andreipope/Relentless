@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -84,7 +85,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, bool hasCounterAttack = true)
+        public void AttackUnitByUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int additionalDamage = 0, bool hasCounterAttack = true)
         {
             int damageAttacked = 0;
             int damageAttacking;
@@ -96,7 +97,7 @@ namespace Loom.ZombieBattleground
                 int additionalDamageAttacked =
                     _abilitiesController.GetStatModificatorByAbility(attackedUnitModel, attackingUnitModel, false);
 
-                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker;
+                damageAttacking = attackingUnitModel.CurrentDamage + additionalDamageAttacker + additionalDamage;
 
                 if (damageAttacking > 0 && attackedUnitModel.HasBuffShield)
                 {
@@ -105,7 +106,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.CurrentDefense -= damageAttacking;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -132,7 +133,7 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        attackingUnitModel.CurrentDefense -= damageAttacked;
+                        attackingUnitModel.CurrentDefense -= Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource);
 
                         if (attackingUnitModel.CurrentDefense <= 0)
                         {
@@ -187,7 +188,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.CurrentDefense -= damage;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -215,9 +216,9 @@ namespace Loom.ZombieBattleground
                 if (skill.Skill.Skill != Enumerators.Skill.HARDEN &&
                     skill.Skill.Skill != Enumerators.Skill.ICE_WALL)
                 {
-                    if (healingPlayer.Defense > Constants.DefaultPlayerHp)
+                    if (healingPlayer.Defense > healingPlayer.MaxCurrentDefense)
                     {
-                        healingPlayer.Defense = Constants.DefaultPlayerHp;
+                        healingPlayer.Defense = healingPlayer.MaxCurrentDefense;
                     }
                 }
             }
@@ -260,7 +261,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.CurrentDefense -= damage;
+                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
@@ -292,9 +293,9 @@ namespace Loom.ZombieBattleground
             if (healedPlayer != null)
             {
                 healedPlayer.Defense += healValue;
-                if (healedPlayer.Defense > Constants.DefaultPlayerHp)
+                if (healedPlayer.Defense > healedPlayer.MaxCurrentDefense)
                 {
-                    healedPlayer.Defense = Constants.DefaultPlayerHp;
+                    healedPlayer.Defense = healedPlayer.MaxCurrentDefense;
                 }
             }
         }

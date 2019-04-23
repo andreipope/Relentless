@@ -12,9 +12,12 @@ namespace Loom.ZombieBattleground
 
         private List<BoardUnitModel> _units;
 
+        private int Count { get; }
+
         public DestroyUnitsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
+            Count = ability.Count;
         }
 
         public override void Activate()
@@ -27,6 +30,19 @@ namespace Loom.ZombieBattleground
                 return;
 
             Action();
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                _units = new List<BoardUnitModel>();
+                _units.Add(TargetUnit);
+
+                InvokeActionTriggered(_units);
+            }
         }
 
         public override void Update()
@@ -47,24 +63,42 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
+
                         _units.AddRange(GetOpponentOverlord().CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        _units.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+
+                        if (AbilityUnitOwner != null)
+                        {
+                            if (_units.Contains(AbilityUnitOwner))
+                            {
+                                _units.Remove(AbilityUnitOwner);
+                            }
+                        }
                         break;
                 }
+            }
+
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
+            {
+                _units = GetRandomUnits(_units, Count);
             }
 
             InvokeActionTriggered(_units);
         }
 
-        public void DestroyUnit(BoardUnitView unit)
+        public void DestroyUnit(BoardUnitModel unit)
         {
-            if(!unit.Model.HasBuffShield)
+            bool withEffect = true;
+
+            if (AbilityData.VisualEffectsToPlay != null && AbilityData.VisualEffectsToPlay.Count > 0)
             {
-                unit.ChangeModelVisibility(false);
+                withEffect = false;
             }
-            BattlegroundController.DestroyBoardUnit(unit.Model, false);
+
+            BattlegroundController.DestroyBoardUnit(unit, withEffect);
+            _units.Remove(unit);
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -72,6 +106,11 @@ namespace Loom.ZombieBattleground
             base.VFXAnimationEndedHandler();
 
             OnUpdateEvent = null;
+
+            for (int i = _units.Count -1; i >= 0; i--)
+            {
+                DestroyUnit(_units[i]);
+            }
 
             if (_units.Count > 0)
             {

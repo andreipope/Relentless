@@ -480,7 +480,7 @@ namespace Loom.ZombieBattleground.Test
             if (IsTestFailed)
                 return;
 
-            if (Constants.MulliganEnabled || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan || GameClient.Get<IMatchManager>().MatchType != Enumerators.MatchType.PVP)
             {
                 WaitStart(5);
 
@@ -1136,7 +1136,9 @@ namespace Loom.ZombieBattleground.Test
                     Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
-                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
                         boardCardView.HandBoardCard,
                         playCardOnBoard =>
@@ -1158,7 +1160,9 @@ namespace Loom.ZombieBattleground.Test
                     Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
                     BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
 
-                    _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
+                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+
+                        _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
                         boardCardView.HandBoardCard,
                         playCardOnBoard =>
@@ -1176,8 +1180,6 @@ namespace Loom.ZombieBattleground.Test
                     break;
                 }
             }
-
-            _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
 
             await new WaitForUpdate();
         }
@@ -1598,7 +1600,7 @@ namespace Loom.ZombieBattleground.Test
 
             await SetDeckTitle("Kalile");
 
-            await AddCardToHorde("Air", "Whizpar", 4);
+            await AddCardToHorde("Air", "Whizper", 4);
             await AddCardToHorde("Air", "Soothsayer", 4);
             await AddCardToHorde("Air", "FumeZ", 4);
             await AddCardToHorde("Air", "Breezee", 4);
@@ -1869,7 +1871,8 @@ namespace Loom.ZombieBattleground.Test
 
                 for (int counter = 0; counter < count; counter++)
                 {
-                    _uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
+                    //FIXME since HordeEditingPage is outdated and removed, have to fix this method
+                    //_uiManager.GetPage<HordeEditingPage>().AddCardToDeck(null, armyCard);
 
                     await LetsThink();
                 }
@@ -2240,14 +2243,7 @@ namespace Loom.ZombieBattleground.Test
                 matchConfirmed = true;
             }
 
-            client.DebugCheats = new DebugCheatsConfiguration
-            {
-                Enabled = DebugCheats.Enabled,
-                CustomRandomSeed = DebugCheats.CustomRandomSeed,
-                ForceFirstTurnUserId = DebugCheats.ForceFirstTurnUserId,
-                DisableDeckShuffle = DebugCheats.DisableDeckShuffle,
-                IgnoreGooRequirements = DebugCheats.IgnoreGooRequirements
-            };
+            client.DebugCheats = new DebugCheatsConfiguration(DebugCheats);
 
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 

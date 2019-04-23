@@ -105,7 +105,9 @@ namespace Loom.ZombieBattleground
 
         public OverlordModel CurrentEditOverlord;
 
-        public bool IsEditingNewDeck;        
+        public bool IsEditingNewDeck;    
+        
+        public bool IsRenameWhileEditing;    
         
         private int _deckPageIndex;
 
@@ -283,7 +285,7 @@ namespace Loom.ZombieBattleground
             if (_tab == Tab.Editing)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Do you want to save the current deck editing progress?");
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
             }
             else
             {
@@ -326,7 +328,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.DrawPopup<WarningPopup>("No available deck exist for selected element!");
+                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
         }
@@ -348,7 +350,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {
-                OpenAlertDialog("Sorry, Not able to delete Last Deck.");
+                OpenAlertDialog("Cannot delete. You must have at least one deck.");
                 return;
             }
 
@@ -356,7 +358,7 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.Name + "?");
+                _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
             }
         }
         
@@ -408,6 +410,9 @@ namespace Loom.ZombieBattleground
         private void FinishDeleteDeck(bool success, Deck deck)
         {
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
+
+            _cacheDeckListToDisplay = GetDeckList();
+            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
             ChangeTab(Tab.SelectDeck);
         }
 
@@ -437,6 +442,12 @@ namespace Loom.ZombieBattleground
             CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
             IsEditingNewDeck = false;
         }
+
+        public void AssignCurrentDeck(int deckIndex)
+        {
+            SelectDeckIndex = deckIndex;
+            AssignCurrentDeck();
+        }
         
         public void AssignNewDeck()
         {
@@ -460,7 +471,6 @@ namespace Loom.ZombieBattleground
         public void ChangeTab(Tab newTab)
         {
             Tab oldTabl = _tab;
-
             _tab = newTab;            
             
             for (int i = 0; i < _tabObjects.Length;++i)
@@ -592,7 +602,7 @@ namespace Loom.ZombieBattleground
             
             if(deckListToDisplay.Count <= 0)
             {
-                OpenAlertDialog($"No deck found for keyword '{_inputFieldSearchDeckName.text.Trim()}'");
+                OpenAlertDialog($"No decks found with that search.");
                 return deckList;
             }
 
@@ -821,7 +831,7 @@ namespace Loom.ZombieBattleground
                 _deckPageIndex = (deckIndexAfterSubtractFistPage / _deckInfoAmountPerPage) + 1;
                 indexInPage = deckIndexAfterSubtractFistPage % _deckInfoAmountPerPage;
             }
-            
+
             UpdateDeckInfoObjects();
             ChangeSelectDeckIndex(indexInPage);
         }
