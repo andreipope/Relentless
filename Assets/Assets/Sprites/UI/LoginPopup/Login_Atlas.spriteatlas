@@ -19,7 +19,18 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 8
@@ -29,32 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 486e86fbfd3d24ec1b17b916ec25b343, type: 3}
-    - {fileID: 2800000, guid: ce632dd070cb04b76a858736eb8a15c5, type: 3}
-    - {fileID: 2800000, guid: 83a3201a787f441e184067e06f524bf6, type: 3}
-    - {fileID: 2800000, guid: 1439cc73f184e4b3c803a914290ac8dc, type: 3}
-    - {fileID: 2800000, guid: 2c567a263f8b54a9aacb7e7e0cfb0eee, type: 3}
-    - {fileID: 2800000, guid: fdee7f306ce2945099b9dd48e9609ce2, type: 3}
-    - {fileID: 2800000, guid: 79d6d1acfa7db482787221faa6f97a6e, type: 3}
-    - {fileID: 2800000, guid: 23e06d21278724d15a4d67dfb2383ae2, type: 3}
-    - {fileID: 2800000, guid: 5b73362f9f55d45119f8d2abc9b76ebf, type: 3}
-    - {fileID: 2800000, guid: 265928f4b91014f2c9d064c4cd1dac83, type: 3}
-    - {fileID: 2800000, guid: 95c3d125f6be34ff783d0a2b14cfcb54, type: 3}
-    - {fileID: 2800000, guid: ef173c1e034b14bcc9593b27baa03a76, type: 3}
-    - {fileID: 2800000, guid: dc37f4cac0ad74a31a33f2c1915aa190, type: 3}
-    - {fileID: 2800000, guid: c566dfca7f06746aaaf5f705f4b797b9, type: 3}
-    - {fileID: 2800000, guid: b366cb9b91c1144f182e20c20a8cfe14, type: 3}
-    - {fileID: 2800000, guid: a64c32a451f3b44e08c65ac60b64d560, type: 3}
-    - {fileID: 2800000, guid: fd2bb9548a58d46d3a35a72e70b71b8a, type: 3}
-    - {fileID: 2800000, guid: cb3ae487958ba4b2d82226f3de61f932, type: 3}
-    - {fileID: 2800000, guid: 1a7432a063e964676859ab5688845791, type: 3}
-    - {fileID: 2800000, guid: b49d1aee9c66c4df59f676e6dbd5d715, type: 3}
-    - {fileID: 2800000, guid: b42845c7480de49f1b935e4116854f13, type: 3}
-    - {fileID: 2800000, guid: 9153195eaddea4bd3bc46ac3fa278a1f, type: 3}
-    - {fileID: 2800000, guid: 51da9042e3ac74f43bf5efd9fda091c7, type: 3}
-    - {fileID: 2800000, guid: 1c03f18a647244ae7b62fffdeb0fbd5e, type: 3}
-    - {fileID: 2800000, guid: 877ce0a23cca64d6b9b841a0c7c5f7ec, type: 3}
-    - {fileID: 2800000, guid: 06e99564c11934f2c9c2b87fc7ba8517, type: 3}
+    - {fileID: 102900000, guid: eab23e2c70ac14e43b1c9c7372232a56, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -73,6 +59,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 2c567a263f8b54a9aacb7e7e0cfb0eee, type: 3}
   - {fileID: 21300000, guid: cb3ae487958ba4b2d82226f3de61f932, type: 3}
   - {fileID: 21300000, guid: b42845c7480de49f1b935e4116854f13, type: 3}
+  - {fileID: 21300000, guid: 1aa528e9cc1d540b2b2f1ef3680e4055, type: 3}
   - {fileID: 21300000, guid: 83a3201a787f441e184067e06f524bf6, type: 3}
   - {fileID: 21300000, guid: 1c03f18a647244ae7b62fffdeb0fbd5e, type: 3}
   - {fileID: 21300000, guid: dc37f4cac0ad74a31a33f2c1915aa190, type: 3}
@@ -84,6 +71,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 9153195eaddea4bd3bc46ac3fa278a1f, type: 3}
   - {fileID: 21300000, guid: b49d1aee9c66c4df59f676e6dbd5d715, type: 3}
   - {fileID: 21300000, guid: 5b73362f9f55d45119f8d2abc9b76ebf, type: 3}
+  - {fileID: 21300000, guid: 11bead8f24d4243689c91f6c2c69e36d, type: 3}
   m_PackedSpriteNamesToIndex:
   - btn_googleplay_iconwithroboto_off
   - login_btn_normal_off
@@ -100,6 +88,7 @@ SpriteAtlas:
   - btn_googleplay_icononly_on
   - login_btn_green_on
   - login_btn_small_off
+  - login_btn_google_on 1
   - login_btn_google_on
   - login_field_long
   - login_btn_blue_off
@@ -111,5 +100,6 @@ SpriteAtlas:
   - login_btn_small_on
   - login_btn_normal_on
   - btn_googleplay_iconwithspace_on
+  - login_btn_google_off 1
   m_Tag: Login_Atlas
   m_IsVariant: 0
