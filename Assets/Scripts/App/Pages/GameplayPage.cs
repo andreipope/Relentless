@@ -458,11 +458,11 @@ namespace Loom.ZombieBattleground
 
             OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
             OnPlayerDefenseChanged(player.Defense);
-            OnPlayerGooVialsChanged(player.GooVials);
+            OnPlayerGooVialsChanged(player.GooVials, false);
             OnPlayerCurrentGooChanged(player.CurrentGoo);
             OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
             OnOpponentDefenseChanged(opponent.Defense);
-            OnOpponentGooVialsChanged(opponent.GooVials);
+            OnOpponentGooVialsChanged(opponent.GooVials, false);
             OnOpponentCurrentGooChanged(opponent.CurrentGoo);
         }
 
@@ -598,12 +598,12 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnPlayerGooVialsChanged(int currentTurnGoo)
+        private void OnPlayerGooVialsChanged(int currentTurnGoo, bool disableAddedBottles)
         {
             if (!_isPlayerInited)
                 return;
 
-            _playerManaBar.SetVialGoo(currentTurnGoo);
+            _playerManaBar.SetVialGoo(currentTurnGoo, disableAddedBottles);
         }
 
         private void OnOpponentDefenseChanged(int defense)
@@ -631,12 +631,12 @@ namespace Loom.ZombieBattleground
             _opponentManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentGooVialsChanged(int currentTurnGoo)
+        private void OnOpponentGooVialsChanged(int currentTurnGoo, bool disableAddedBottles)
         {
             if (!_isPlayerInited)
                 return;
 
-            _opponentManaBar.SetVialGoo(currentTurnGoo);
+            _opponentManaBar.SetVialGoo(currentTurnGoo, disableAddedBottles);
         }
 
         private void TurnStartedHandler()

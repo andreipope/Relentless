@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground
             if (PlayerCallerOfAbility.Defense <= Defense)
             {
                 AbilityUnitOwner.BuffedDefense += Value;
-                AbilityUnitOwner.CurrentDefense += Value;
+                AbilityUnitOwner.AddToCurrentDefenseHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
             }
         }
     }

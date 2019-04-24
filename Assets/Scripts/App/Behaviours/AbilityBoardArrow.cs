@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             {
                 if(SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis)
                 {
-                    if (unit.Model.Card.InstanceCard.Cost <= OwnerOfThis.BoardUnitModel.InstanceCard.Cost)
+                    if (unit.Model.CurrentCost <= OwnerOfThis.BoardUnitModel.CurrentCost)
                         return;
                 }
 
@@ -77,7 +77,7 @@ namespace Loom.ZombieBattleground
                     {
                         if ((UnitDefense > 0 && unit.Model.CurrentDefense <= UnitDefense) || UnitDefense == 0)
                         {
-                            if (unit.Model.Card.InstanceCard.Cost <= UnitCost || UnitCost == 0)
+                            if (unit.Model.CurrentCost <= UnitCost || UnitCost == 0)
                             {
                                 if (SelfBoardCreature != unit)
                                 {

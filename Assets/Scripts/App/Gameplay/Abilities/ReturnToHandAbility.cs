@@ -72,8 +72,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
-                unit.Card.InstanceCard.Cost += Cost;
-                
+                unit.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+
                 if (PlayerCallerOfAbility.IsLocalPlayer)
                 {
                     BattlegroundController.PlayerHandCards.FirstOrDefault(card => card.Model == BoardUnitModel).UpdateCardCost();

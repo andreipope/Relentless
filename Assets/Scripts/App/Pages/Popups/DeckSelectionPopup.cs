@@ -121,7 +121,9 @@ namespace Loom.ZombieBattleground
                 _deckIconPositionList.Add(frame.position);
             }
 
-            ReloadDeckDataAndDisplay();                        
+            ReloadDeckDataAndDisplay();
+
+            ((AppStateManager)GameClient.Get<IAppStateManager>()).ConnectionStatusDidUpdate += ReloadDeckDataAndDisplay;
         }
 
         public void Show(object data)
@@ -189,7 +191,15 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);            
+
+            if ((_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker) && _deckList.Count > 0)
+            {
+                _selectDeckIndex = _deckList.IndexOf(deck);
+            }
+            else
+            {
+                _selectDeckIndex = _dataManager.CachedDecksData.Decks.IndexOf(deck);
+            }
         }
 
         private void UpdateSelectedDeckData(int deckId)
@@ -287,7 +297,7 @@ namespace Loom.ZombieBattleground
                 };
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {
-                    if (_tutorialManager.IsTutorial)
+                    if (_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker)
                         return;
 
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);

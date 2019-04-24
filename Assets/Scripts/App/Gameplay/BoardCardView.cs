@@ -220,7 +220,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCardCost()
         {
-            CostText.text = Model.Card.InstanceCard.Cost.ToString();
+            CostText.text = Model.CurrentCost.ToString();
             UpdateColorOfCost();
         }
         public virtual void UpdateAmount(int amount)
@@ -391,7 +391,7 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
+            if (unit.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION && Constants.RankSystemEnabled)
             {
                 TooltipContentData.RankInfo rankInfo =
                     DataManager.GetCardRankInfo(unit.Model.Card.Prototype.Rank);
@@ -541,7 +541,7 @@ namespace Loom.ZombieBattleground
             List<BuffTooltipInfo> buffs = new List<BuffTooltipInfo>();
 
             // left block info ------------------------------------
-            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION)
+            if (boardCardView.Model.Card.Prototype.Rank != Enumerators.CardRank.MINION && Constants.RankSystemEnabled)
             {
                 TooltipContentData.RankInfo rankInfo = DataManager.GetCardRankInfo(boardCardView.Model.Card.Prototype.Rank);
                 if (rankInfo != null)
@@ -647,11 +647,11 @@ namespace Loom.ZombieBattleground
 
         private void UpdateColorOfCost()
         {
-            if (Model.Card.InstanceCard.Cost > Model.Card.Prototype.Cost)
+            if (Model.CurrentCost > Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.red;
             }
-            else if (Model.Card.InstanceCard.Cost < Model.Card.Prototype.Cost)
+            else if (Model.CurrentCost < Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.green;
             }

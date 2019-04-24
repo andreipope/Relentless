@@ -494,7 +494,7 @@ namespace Loom.ZombieBattleground
                 if (_retryPackBalanceRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryPackBalanceRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetrievePackBalanceAmount)} with typeId {typeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += RetryRequestPackBalance;
                 }
@@ -514,7 +514,7 @@ namespace Loom.ZombieBattleground
         private async Task RetriveCardsFromPack(int packTypeId)
         {
             _lastOpenPackIdRequest = packTypeId;
-            _uiManager.DrawPopup<LoadingFiatPopup>();
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             try
             {
                 List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
@@ -531,7 +531,7 @@ namespace Loom.ZombieBattleground
                 if (_retryOpenPackRequestCount >= MaxRequestRetryAttempt)
                 {
                     _retryOpenPackRequestCount = 0;
-                    _uiManager.DrawPopup<QuestionPopup>($"{nameof(RetriveCardsFromPack)} with typeId {packTypeId} failed\n{e.Message}\nWould you like to retry?");
+                    _uiManager.DrawPopup<QuestionPopup>($"Something went wrong.\nWould you like to retry?");
                     QuestionPopup popup = _uiManager.GetPopup<QuestionPopup>();
                     popup.ConfirmationReceived += async (x) => await RetryRequestOpenPack(x);
                 }
@@ -544,17 +544,8 @@ namespace Loom.ZombieBattleground
         
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>();
-            _cardsToDisplayQueqe.Clear();
-            foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
-            {
-                _cardsToDisplayQueqe.Add
-                (
-                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name)
-                );
-                if (_cardsToDisplayQueqe.Count >= 5)
-                    break;
-            }
+            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
+            _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
             _uiManager.HidePopup<LoadingFiatPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
