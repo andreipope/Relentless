@@ -1475,7 +1475,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 int count = 3;
-                int difference = 2;
 
                 InstanceId[] playerCardsId = new InstanceId[count];
                 InstanceId[] opponentCardsId = new InstanceId[count];

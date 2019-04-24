@@ -879,8 +879,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 InstanceId opponentHotId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 1);
                 InstanceId opponentHot2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 2);
 
-                int value = 2;
-
                 CardModel playerHotUnit = null;
                 CardModel playerHot2Unit = null;
                 CardModel playerHot3Unit = null;
@@ -939,6 +937,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     Assert.IsTrue(playerHot3Unit.HasFeral);
                     Assert.IsTrue(opponentHotUnit.HasFeral);
                     Assert.IsTrue(opponentHot2Unit.HasFeral);
+                    Assert.NotNull(playerAlphaUnit);
+                    Assert.NotNull(opponentAlphaUnit);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);

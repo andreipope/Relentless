@@ -14,8 +14,6 @@ namespace Loom.ZombieBattleground
 
         private CardModel _unit;
 
-        private bool _isRandom;
-
         private bool _checkForCardOwner;
 
         public DestroyUnitByCostAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -33,7 +31,6 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                _isRandom = true;
                 _unit = GetRandomUnit();
                 InvokeActionTriggered(_unit);
 
@@ -46,7 +43,6 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                _isRandom = false;
                 _unit = TargetUnit;
                 InvokeActionTriggered(_unit);
             }

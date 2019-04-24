@@ -181,7 +181,7 @@ namespace Loom.ZombieBattleground
 
         #region button handlers
 
-        public async void ContinueButtonOnClickHandler()
+        public void ContinueButtonOnClickHandler()
         {
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_continueButton.name))
                 return;

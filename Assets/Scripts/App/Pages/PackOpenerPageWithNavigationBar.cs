@@ -127,8 +127,6 @@ namespace Loom.ZombieBattleground
         
         private const int MaxRequestRetryAttempt = 2;
 
-        private bool _isCollectedTutorialCards = false;
-
         #region IUIElement
 
         public void Init()
@@ -258,7 +256,6 @@ namespace Loom.ZombieBattleground
             {
                 _packBalanceAmounts[(int)Enumerators.MarketplaceCardPackType.Minion] = _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackCount;
                 SetPackTypeButtonsAmount((int)Enumerators.MarketplaceCardPackType.Minion);
-                _isCollectedTutorialCards = false;
             }
             else
             {
