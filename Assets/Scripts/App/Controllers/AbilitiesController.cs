@@ -1186,6 +1186,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DAMAGE_AND_DISTRACT:
                     ability = new DamageAndDistractAbility(cardKind, abilityData);
+                    abilityView = new DamageAndDistractAbilityView((DamageAndDistractAbility)ability);
                     break;
                 case Enumerators.AbilityType.PUT_UNITS_FROM_DISCARD_INTO_PLAY:
                     ability = new PutUnitsFromDiscardIntoPlayAbility(cardKind, abilityData);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Common;
@@ -11,11 +12,19 @@ namespace Loom.ZombieBattleground
 
         public int Count { get; }
 
+        public event Action OnUpdateEvent;
+
+        private List<BoardUnitModel> _units;
+
+        private List<PastActionsPopup.TargetEffectParam> _targetEffects;
+
         public DamageAndDistractAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Damage = ability.Damage;
             Count = ability.Count;
+
+            _targetEffects = new List<PastActionsPopup.TargetEffectParam>();
         }
 
         public override void Activate()
@@ -28,67 +37,88 @@ namespace Loom.ZombieBattleground
             HandleSubTriggers();
         }
 
+        public override void Update()
+        {
+            OnUpdateEvent?.Invoke();
+        }
+
         private void HandleSubTriggers()
         {
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
+            _units = new List<BoardUnitModel>();
 
             foreach(Enumerators.Target target in AbilityTargets)
             {
                 switch(target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
-                        units.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
+                        _units.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
                         break;
                 }
             }
 
-            if (units.Count == 0)
+            if (_units.Count == 0)
                 return;
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                units = GetRandomUnits(units, Count);
+                _units = GetRandomUnits(_units, Count);
             }
 
-            DamageAndDistract(units);
+            InvokeActionTriggered(_units);
 
-            InvokeUseAbilityEvent(units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
+            InvokeUseAbilityEvent(_units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
         }
 
         private void DamageAndDistract(List<BoardUnitModel> units)
         {
-            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
-
             foreach (BoardUnitModel boardUnit in units)
             {
-                BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
-
-                BattlegroundController.DistractUnit(boardUnit);
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                {
-                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                    Target = boardUnit,
-                    HasValue = true,
-                    Value = -Damage
-                });
-
-                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
-                {
-                    ActionEffectType = Enumerators.ActionEffectType.Distract,
-                    Target = boardUnit,
-                });
+                DamageAndDistractUnit(boardUnit);
             }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = GetCaller(),
-                TargetEffects = TargetEffects
+                TargetEffects = _targetEffects
             });
+        }
+
+        private void DamageAndDistractUnit(BoardUnitModel boardUnit)
+        {
+            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
+
+            BattlegroundController.DistractUnit(boardUnit);
+
+            _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                Target = boardUnit,
+                HasValue = true,
+                Value = -Damage
+            });
+
+            _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            {
+                ActionEffectType = Enumerators.ActionEffectType.Distract,
+                Target = boardUnit,
+            });
+        }
+
+        public void OneActionCompleted(BoardUnitModel boardUnitModel)
+        {
+            DamageAndDistractUnit(boardUnitModel);
+            _units.Remove(boardUnitModel);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            DamageAndDistract(_units);
         }
     }
 }
