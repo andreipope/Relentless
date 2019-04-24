@@ -37,11 +37,11 @@ namespace Loom.ZombieBattleground
 
         private void DrawStats()
         {
-            AttackText.text = Model.Card.InstanceCard.Damage.ToString();
-            DefenseText.text = Model.Card.InstanceCard.Defense.ToString();
+            AttackText.text = Model.CurrentDamage.ToString();
+            DefenseText.text = Model.CurrentDefense.ToString();
 
-            FillColor(Model.Card.InstanceCard.Damage, Model.Card.Prototype.Damage, AttackText);
-            FillColor(Model.Card.InstanceCard.Defense, Model.Card.Prototype.Defense, DefenseText);
+            FillColor(Model.CurrentDamage, Model.Card.Prototype.Damage, AttackText);
+            FillColor(Model.CurrentDefense, Model.Card.Prototype.Defense, DefenseText);
         }
 
         public void DrawOriginalStats()
