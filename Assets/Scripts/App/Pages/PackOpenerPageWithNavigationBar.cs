@@ -545,16 +545,7 @@ namespace Loom.ZombieBattleground
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
             _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
-            _cardsToDisplayQueqe.Clear();
-            foreach(CardRewardInfo cardInfo in _tutorialManager.CurrentTutorial.TutorialContent.TutorialReward.CardPackReward)
-            {
-                _cardsToDisplayQueqe.Add
-                (
-                    _dataManager.CachedCardsLibraryData.GetCardFromName(cardInfo.Name)
-                );
-                if (_cardsToDisplayQueqe.Count >= 5)
-                    break;
-            }
+            _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
             _uiManager.HidePopup<LoadingFiatPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
