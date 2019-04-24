@@ -14,14 +14,16 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
-    public class NetworkMessageSendManager : IService, INetworkMessageSendManager
+    public class NetworkActionManager : IService, INetworkActionManager
     {
-        private static readonly ILog Log = Logging.GetLog(nameof(NetworkMessageSendManager));
+        private static readonly ILog Log = Logging.GetLog(nameof(NetworkActionManager));
 
         private readonly Queue<Func<Task>> _tasks = new Queue<Func<Task>>();
         private BackendFacade _backendFacade;
 
         public bool Active { get; set; }
+
+        public int QueuedTaskCount => _tasks?.Count ?? 0;
 
         public void Init()
         {
@@ -125,7 +127,7 @@ namespace Loom.ZombieBattleground
             {
                 Func<Task> connectFuncInGame = () =>
                 {
-                    GameClient.Get<INetworkMessageSendManager>().Clear();
+                    GameClient.Get<INetworkActionManager>().Clear();
                     gameplayManager.CurrentPlayer.ThrowLeaveMatch();
                     gameplayManager.EndGame(Enumerators.EndGameType.CANCEL);
                     GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);

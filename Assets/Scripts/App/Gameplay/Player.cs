@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
 
         private readonly IDataManager _dataManager;
 
-        private readonly INetworkMessageSendManager _networkMessageSendManager;
+        private readonly INetworkActionManager _networkActionManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -121,7 +121,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _networkMessageSendManager = GameClient.Get<INetworkMessageSendManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -487,7 +487,7 @@ namespace Loom.ZombieBattleground
 
                         _actionsQueueController.AddNewActionInToQueue(completeCallback =>
                         {
-                            _networkMessageSendManager.EnqueueMessage(
+                            _networkActionManager.EnqueueMessage(
                                 new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                     _backendDataControlMediator.UserDataModel.UserId,
                                     IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId

@@ -75,7 +75,7 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
-        private INetworkMessageSendManager _networkMessageSendManager;
+        private INetworkActionManager _networkActionManager;
 
         private bool _isCheckPlayerAvailableTimerStart;
         private float _checkPlayerTimer;
@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _backendFacade = GameClient.Get<BackendFacade>();
-            _networkMessageSendManager = GameClient.Get<INetworkMessageSendManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                _networkMessageSendManager.Active = false;
+                _networkActionManager.Active = false;
                 _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
@@ -227,7 +227,7 @@ namespace Loom.ZombieBattleground
                     );
                 }
 
-                _networkMessageSendManager.Clear();
+                _networkActionManager.Clear();
             }
             catch(Exception e)
             {
@@ -244,8 +244,8 @@ namespace Loom.ZombieBattleground
         {
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
-            _networkMessageSendManager.Active = false;
-            _networkMessageSendManager.Clear();
+            _networkActionManager.Active = false;
+            _networkActionManager.Clear();
 
             InitialGameState = null;
 
@@ -263,7 +263,7 @@ namespace Loom.ZombieBattleground
 
             _isCheckPlayerAvailableTimerStart = true;
 
-            _networkMessageSendManager.Active = true;
+            _networkActionManager.Active = true;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
