@@ -54,6 +54,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: cca4d9c15b105bf42aa73d75620bcd1b, type: 3}
   - {fileID: 21300000, guid: 97cd97e12d12f95479c8acb849fa5ff6, type: 3}
   - {fileID: 21300000, guid: d9f259e11371c7d45b5e2c73bb076607, type: 3}
+  - {fileID: 21300000, guid: f30152a25e3bb6c4da8d218ee26f87e6, type: 3}
   - {fileID: 21300000, guid: 2a1cf4a3b514a9d408ccda69aa4aad68, type: 3}
   - {fileID: 21300000, guid: 0fd0405482874ff4792efad0ab0cf498, type: 3}
   - {fileID: 21300000, guid: df08aa84b7ec21d4caaa051f19bc6a25, type: 3}
@@ -63,8 +64,10 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 5c2ab19500198d64e9677e9a868bde47, type: 3}
   - {fileID: 21300000, guid: 80a88c26184cb5c46a4dbd8ba13cb6ab, type: 3}
   - {fileID: 21300000, guid: a650a3661d2c558488be061da4f97fed, type: 3}
+  - {fileID: 21300000, guid: 87a74a8687c3b55408f508d189bf51bf, type: 3}
   - {fileID: 21300000, guid: d684acb68d84f8142ade71e7ff875577, type: 3}
   - {fileID: 21300000, guid: f03d1307cbce54f438e2d0942447c239, type: 3}
+  - {fileID: 21300000, guid: 19c2b0c7de8c2774f9cf32b889868362, type: 3}
   - {fileID: 21300000, guid: 10b18618aa1a21c4a8c49b2edc7942b0, type: 3}
   - {fileID: 21300000, guid: 21f57809a694a34418fa05deb8797080, type: 3}
   - {fileID: 21300000, guid: e5ec315985830b0449694c28a08d15ab, type: 3}
@@ -75,6 +78,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: b3d76b3b6e5314d4790e39cd7c33cb04, type: 3}
   - {fileID: 21300000, guid: c107d59b1f6714c4e87d57e93445ba17, type: 3}
   - {fileID: 21300000, guid: 4bf09c1c073893d49909aec68d7b29fa, type: 3}
+  - {fileID: 21300000, guid: 25cabd1cce996334e9ae8b219634b0b8, type: 3}
+  - {fileID: 21300000, guid: 4c50da2c52222964bad71b125f0acd90, type: 3}
   - {fileID: 21300000, guid: 53d5d7ece1b077f42a74eb7569b077ca, type: 3}
   - {fileID: 21300000, guid: 6893081dee85f0d40a40c52c723b1ae6, type: 3}
   - {fileID: 21300000, guid: f2c3343dc2f461c489e02f7006d13147, type: 3}
@@ -92,6 +97,7 @@ SpriteAtlas:
   - battleground_mechanic_icon_ragex
   - battleground_mechanic_icon_shatter
   - battleground_mechanic_icon_blank
+  - battleground_mechanic_icon_chainsaw
   - battleground_mechanic_icon_destroy
   - battleground_past_action_bar_icon_effect
   - battleground_past_action_bar_icon_attackbuff
@@ -101,8 +107,10 @@ SpriteAtlas:
   - battleground_past_action_bar_icon_attackdebuff
   - 506709160
   - battleground_mechanic_icon_overflowx
+  - battleground_mechanic_icon_blitz
   - battleground_mechanic_icon_death
   - battleground_past_action_bar_icon_shielddebuff
+  - battleground_mechanic_icon_restore
   - battleground_mechanic_icon_freeze
   - battleground_mechanic_icon_end
   - battleground_mechanic_icon_devour
@@ -113,6 +121,8 @@ SpriteAtlas:
   - battleground_mechanic_icon_attack
   - battleground_mechanic_icon_flash
   - battleground_past_action_bar_icon_lifegain
+  - battleground_past_action_bar_icon_devour
+  - battleground_mechanic_icon_superserum
   - battleground_past_action_bar_icon_blank
   - battleground_mechanic_icon_guard
   - battleground_mechanic_icon_entry
