@@ -21,6 +21,12 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+            {
+                InvokeUseAbilityEvent();
+                return;
+            }
         }
 
         protected override void InputEndedHandler()
@@ -30,6 +36,12 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 ReturnTargetToHand(TargetUnit);
+
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(TargetUnit)
+                    });
             }
         }
 
@@ -44,15 +56,6 @@ namespace Loom.ZombieBattleground
             {
                 ReturnTargetToHand(AbilityUnitOwner);
             }
-        }
-
-        private void ReturnDeadTargetToHand(BoardUnitModel unit)
-        {
-            unit.ResetToInitial();
-
-            unit.Owner.PlayerCardsController.ReturnToHandBoardUnit(unit, new Vector3());               
-
-            GameClient.Get<IGameplayManager>().RearrangeHands();
         }
 
         private void ReturnTargetToHand(BoardUnitModel unit)
@@ -80,13 +83,6 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(unit)
-                }
-            );
-
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
@@ -100,6 +96,15 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
+        }
+
+        private void ReturnDeadTargetToHand(BoardUnitModel unit)
+        {
+            unit.ResetToInitial();
+
+            unit.Owner.PlayerCardsController.ReturnToHandBoardUnit(unit, new Vector3());
+
+            GameClient.Get<IGameplayManager>().RearrangeHands();
         }
     }
 }
