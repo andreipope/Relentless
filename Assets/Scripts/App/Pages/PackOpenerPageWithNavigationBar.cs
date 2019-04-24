@@ -514,6 +514,7 @@ namespace Loom.ZombieBattleground
         private async Task RetriveCardsFromPack(int packTypeId)
         {
             _lastOpenPackIdRequest = packTypeId;
+            SetButtonInteractable(false);
             _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
             try
             {
@@ -564,7 +565,7 @@ namespace Loom.ZombieBattleground
         }
 
         private async void ProcessOpenPackLogic()
-        {
+        {            
             if (_tutorialManager.IsTutorial)
             {
                 if (_tutorialManager.IsTutorial)
