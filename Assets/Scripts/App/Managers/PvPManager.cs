@@ -97,6 +97,9 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
+            if (!_backendFacade.IsConnected)
+                return;
+
             if (_keepAliveActive)
             {
                 _nextKeepAliveSendTimer += Time.unscaledDeltaTime;
@@ -104,10 +107,14 @@ namespace Loom.ZombieBattleground
                 {
                     _nextKeepAliveSendTimer = 0f;
 
-                    await _networkActionManager.EnqueueNetworkTask(async () =>
+                    try
                     {
-                        await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
-                    });
+                        await _networkActionManager.ExecuteNetworkTask(() => _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id));
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -197,7 +204,7 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                _networkActionManager.Active = false;
+                _networkActionManager.Clear();
                 _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
@@ -215,6 +222,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
+                Log.Warn("", e);
                 Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
@@ -229,7 +237,6 @@ namespace Loom.ZombieBattleground
             Log.Debug($"{nameof(MatchMakingFlowControllerOnMatchConfirmed)}(MatchMetadata matchMetadata = {matchMetadata})");
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
-            _networkActionManager.Active = false;
             _networkActionManager.Clear();
 
             InitialGameState = null;
@@ -239,7 +246,15 @@ namespace Loom.ZombieBattleground
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
             {
-                await LoadInitialGameState();
+                try
+                {
+                    await _networkActionManager.EnqueueNetworkTask(LoadInitialGameState, keepCurrentAppState: true);
+                }
+                catch (Exception e)
+                {
+                    Log.Warn(e);
+                    return;
+                }
             }
 
             Log.Info("Match Starting");
@@ -247,20 +262,26 @@ namespace Loom.ZombieBattleground
             GameStartedActionReceived?.Invoke();
 
             _keepAliveActive = true;
-            _networkActionManager.Active = true;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
         {
-            await _networkActionManager.EnqueueNetworkTask(
-                func,
-                onUnknownExceptionCallbackFunc: async exception =>
-                {
-                    Log.Info("Exception not handled, restarting matchmaking:" + exception.Message);
-                    await Task.Delay(1000); // avoids endless loop on repeated exceptions
-                    await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
-                }
-            );
+            try
+            {
+                await _networkActionManager.EnqueueNetworkTask(
+                    func,
+                    onUnknownExceptionCallbackFunc: async exception =>
+                    {
+                        Log.Info("Exception not handled, restarting matchmaking:" + exception.Message);
+                        await Task.Delay(1000); // avoids endless loop on repeated exceptions
+                        await CallAndRestartMatchmakingOnException(() => _matchMakingFlowController.Restart());
+                    }
+                );
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+            }
         }
 
         private async void OnPlayerActionReceivedHandler(byte[] data)
@@ -420,7 +441,14 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            await _networkActionManager.EnqueueNetworkTask(taskFunc);
+            try
+            {
+                await _networkActionManager.EnqueueNetworkTask(taskFunc);
+            }
+            catch
+            {
+                // No additional handling
+            }
         }
 
         private async Task LoadInitialGameState()

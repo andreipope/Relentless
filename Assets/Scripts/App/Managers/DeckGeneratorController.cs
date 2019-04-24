@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
                     },
-                    leaveCurrentAppState: true,
+                    keepCurrentAppState: true,
                     onUnknownExceptionCallbackFunc: exception =>
                     {
                         OpenAlertDialog("Not able to Add Deck: \n" + exception.Message);
@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
             }
             catch
             {
-                // Ignore
+                // No additional handling
             }
             finally
             {
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
                         _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                     },
-                    leaveCurrentAppState: true,
+                    keepCurrentAppState: true,
                     onUnknownExceptionCallbackFunc: exception =>
                     {
                         string message = exception.Message;
@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
             }
             catch
             {
-                // Ignore
+                // No additional handling
             }
             finally
             {
@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground
                         Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
                         success = true;
                     },
-                    leaveCurrentAppState: true,
+                    keepCurrentAppState: true,
                     onUnknownExceptionCallbackFunc: exception =>
                     {
                         OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + exception.Message);
@@ -187,7 +187,7 @@ namespace Loom.ZombieBattleground
             }
             catch
             {
-                // Ignore
+                // No additional handling
             }
             finally
             {

@@ -1370,6 +1370,7 @@ namespace Loom.ZombieBattleground
             _handPointerController.ResetAll();
         }
 
+        // FIXME: unused
         private async void CreateStarterDeck()
         {
             List<DeckCardData> cards = GetCardsForStarterDeck();

@@ -263,7 +263,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
                 playerAction.ControlGameState = controlGameState;
 
-                _networkActionManager.EnqueueMessage(matchAction);
+                try
+                {
+                    _networkActionManager.EnqueueMessage(matchAction);
+                }
+                catch
+                {
+                    // No special handling
+                }
             }
         }
     }

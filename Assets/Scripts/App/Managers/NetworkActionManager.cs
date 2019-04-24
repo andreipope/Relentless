@@ -17,11 +17,9 @@ namespace Loom.ZombieBattleground
         private readonly Queue<(Func<Task> funcTask, TaskCompletionSource<bool> completedTask)> _tasks = new Queue<(Func<Task> funcTask, TaskCompletionSource<bool> completedTask)>();
         private BackendFacade _backendFacade;
         private IAppStateManager _appStateManager;
-        private bool _isUpdating;
+        private bool _isExecutingTask;
 
-        public bool Active { get; set; } = true;
-
-        public int QueuedTaskCount => _tasks?.Count ?? 0;
+        public int QueuedTaskCount => (_tasks?.Count ?? 0) + (_isExecutingTask ? 1 : 0);
 
         public void Init()
         {
@@ -36,17 +34,11 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            //if (!Active)
-            //    return;
-
-            if (_isUpdating)
-                return;
-
-            _isUpdating = true;
-            Log.Debug(_isUpdating);
             while (_tasks.Count > 0)
             {
-                (Func<Task> funcTask, TaskCompletionSource<bool> completedTask) = _tasks.Peek();
+                _isExecutingTask = true;
+
+                (Func<Task> funcTask, TaskCompletionSource<bool> completedTask) = _tasks.Dequeue();
                 try
                 {
                     await funcTask();
@@ -56,13 +48,9 @@ namespace Loom.ZombieBattleground
                 {
                     completedTask.SetException(e);
                 }
-                finally
-                {
-                    _tasks.Dequeue();
-                }
-            }
 
-            _isUpdating = false;
+                _isExecutingTask = false;
+            }
         }
 
         public Task EnqueueMessage(IMessage request)
@@ -87,31 +75,40 @@ namespace Loom.ZombieBattleground
             Func<Task> taskFunc,
             Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
             Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
-            bool leaveCurrentAppState = false,
-            bool drawErrorMessage = true
+            bool keepCurrentAppState = false,
+            bool drawErrorMessage = true,
+            bool ignoreConnectionState = false
             )
         {
-            if (taskFunc == null)
-                throw new ArgumentNullException(nameof(taskFunc));
-
-            Func<Task> wrappedTaskFunc = async () =>
-            {
-                if (!_backendFacade.IsConnected)
-                {
-                    Log.Warn("Tried to execute network action when Connection state is Disconnected.");
-                    return;
-                }
-
-                await ExecuteNetworkAction(taskFunc,
-                    onUnknownExceptionCallbackFunc,
-                    onNetworkExceptionCallbackFunc,
-                    leaveCurrentAppState,
-                    drawErrorMessage);
-            };
+            Func<Task> wrappedTaskFunc = WrapNetworkTask(
+                taskFunc,
+                onUnknownExceptionCallbackFunc,
+                onNetworkExceptionCallbackFunc,
+                keepCurrentAppState,
+                drawErrorMessage,
+                ignoreConnectionState);
 
             TaskCompletionSource<bool> completedTask = new TaskCompletionSource<bool>();
             _tasks.Enqueue((wrappedTaskFunc, completedTask));
             return completedTask.Task;
+        }
+
+        public Task ExecuteNetworkTask(
+            Func<Task> taskFunc,
+            Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
+            Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
+            bool keepCurrentAppState = false,
+            bool drawErrorMessage = true,
+            bool ignoreConnectionState = false
+        )
+        {
+            return WrapNetworkTask(
+                taskFunc,
+                onUnknownExceptionCallbackFunc,
+                onNetworkExceptionCallbackFunc,
+                keepCurrentAppState,
+                drawErrorMessage,
+                ignoreConnectionState)();
         }
 
         public void Dispose()
@@ -119,11 +116,39 @@ namespace Loom.ZombieBattleground
             Clear();
         }
 
+        private Func<Task> WrapNetworkTask(
+            Func<Task> taskFunc,
+            Func<Exception, Task> onUnknownExceptionCallbackFunc,
+            Func<Exception, Task> onNetworkExceptionCallbackFunc,
+            bool keepCurrentAppState,
+            bool drawErrorMessage,
+            bool ignoreConnectionState
+        )
+        {
+            if (taskFunc == null)
+                throw new ArgumentNullException(nameof(taskFunc));
+
+            return async () =>
+            {
+                if (!ignoreConnectionState && !_backendFacade.IsConnected)
+                {
+                    Log.Warn($"Tried to execute network action ({taskFunc.Target}[{taskFunc.Method}]) when Connection state is Disconnected.");
+                    return;
+                }
+
+                await ExecuteNetworkAction(taskFunc,
+                    onUnknownExceptionCallbackFunc,
+                    onNetworkExceptionCallbackFunc,
+                    keepCurrentAppState,
+                    drawErrorMessage);
+            };
+        }
+
         private async Task ExecuteNetworkAction(
             Func<Task> taskFunc,
             Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
             Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
-            bool leaveCurrentAppState = false,
+            bool keepCurrentAppState = false,
             bool drawErrorMessage = true)
         {
             try
@@ -134,7 +159,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" Time out == " + exception);
-                _appStateManager.HandleNetworkExceptionFlow(exception, leaveCurrentAppState, drawErrorMessage);
+                _appStateManager.HandleNetworkExceptionFlow(exception, keepCurrentAppState, drawErrorMessage);
                 if (onNetworkExceptionCallbackFunc != null)
                 {
                     await onNetworkExceptionCallbackFunc(exception);
@@ -146,7 +171,7 @@ namespace Loom.ZombieBattleground
             {
                 Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn(" RpcException == " + exception);
-                _appStateManager.HandleNetworkExceptionFlow(exception, leaveCurrentAppState, drawErrorMessage);
+                _appStateManager.HandleNetworkExceptionFlow(exception, keepCurrentAppState, drawErrorMessage);
                 if (onNetworkExceptionCallbackFunc != null)
                 {
                     await onNetworkExceptionCallbackFunc(exception);
