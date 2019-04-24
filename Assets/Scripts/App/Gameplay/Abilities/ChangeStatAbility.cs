@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -133,6 +134,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void BoardChangedHandler(int count)
+        {
+            base.BoardChangedHandler(count);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);
+        }
+
         protected override void PlayerCurrentGooChangedHandler(int goo)
         {
             base.PlayerCurrentGooChangedHandler(goo);
@@ -211,14 +222,28 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false)
+        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
         {
-            foreach (BoardUnitModel unit in PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard)
+            List<BoardUnitModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
+
+            if(filterUnits != null)
+            {
+                filterUnits.ForEach((unit) => units.Remove(unit.BoardUnitModel));
+            }
+
+            foreach (BoardUnitModel unit in units)
             {
                 if (!withCaller && unit == BoardUnitModel)
                     continue;
 
                 ChangeStatsOfTarget(unit, defense, damage);
+
+                _affectedUnits.Add(new CardStatInfo()
+                {
+                    BoardUnitModel = unit,
+                    ModifiedDamage = damage,
+                    ModifiedDefense = defense
+                });
             }
         }
         
