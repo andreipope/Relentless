@@ -181,22 +181,7 @@ namespace Loom.ZombieBattleground
 
         public int CurrentCost
         {
-            get {
-                int totalValue;
-                ValueHistory forcedValue = FindFirstForcedValueInValueHistory(CurrentCostHistory);
-
-                if (forcedValue != null)
-                {
-                    totalValue = forcedValue.ValueInteger;
-                }
-                else
-                {
-                    totalValue = GetBackTotalValueFromValueHistory(CurrentCostHistory, Card.Prototype.Cost);
-                }
-
-                totalValue = Mathf.Max(0, totalValue);
-                return totalValue;
-            }
+            get => CalculateValueBasedOnHistory(CurrentCostHistory, Card.Prototype.Cost);
         }
 
         public List<ValueHistory> CurrentCostHistory;
