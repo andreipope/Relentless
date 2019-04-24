@@ -1,6 +1,7 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -130,7 +131,18 @@ namespace Loom.ZombieBattleground
             else
             {
                 ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+                _affectedUnits.Clear();
             }
+        }
+
+        protected override void BoardChangedHandler(int count)
+        {
+            base.BoardChangedHandler(count);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
+
+            ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);
         }
 
         protected override void PlayerCurrentGooChangedHandler(int goo)
@@ -211,23 +223,37 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false)
+        private void ChangeStatsOfPlayerAllyCards(int defense, int damage, bool withCaller = false, List<CardStatInfo> filterUnits = null)
         {
-            foreach (CardModel unit in PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard)
+            List<CardModel> units = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard.ToList();
+
+            if(filterUnits != null)
+            {
+                filterUnits.ForEach((unit) => units.Remove(unit.CardModel));
+            }
+
+            foreach (CardModel unit in units)
             {
                 if (!withCaller && unit == CardModel)
                     continue;
 
                 ChangeStatsOfTarget(unit, defense, damage);
+
+                _affectedUnits.Add(new CardStatInfo()
+                {
+                    CardModel = unit,
+                    ModifiedDamage = damage,
+                    ModifiedDefense = defense
+                });
             }
         }
         
         private void ChangeStatsOfTarget(CardModel unit, int defense, int damage)
         {
             unit.BuffedDefense += defense;
-            unit.CurrentDefense += defense;
+            unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
             unit.BuffedDamage += damage;
-            unit.CurrentDamage += damage;
+            unit.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
         private void GetParameters(out int defense, out int attack)
@@ -250,13 +276,11 @@ namespace Loom.ZombieBattleground
             {
                 cardStat.CardModel.BuffedDefense =
                     Mathf.Clamp(cardStat.CardModel.BuffedDefense - cardStat.ModifiedDefense, 0, 999);
-                cardStat.CardModel.CurrentDefense =
-                    Mathf.Clamp(cardStat.CardModel.CurrentDefense - cardStat.ModifiedDefense, cardStat.CardModel.Card.Prototype.Defense, 999);
+                cardStat.CardModel.AddToCurrentDefenseHistory(-cardStat.ModifiedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 cardStat.CardModel.BuffedDamage =
                     Mathf.Clamp(cardStat.CardModel.BuffedDamage - cardStat.ModifiedDamage, 0, 999);
-                cardStat.CardModel.CurrentDamage =
-                    Mathf.Clamp(cardStat.CardModel.CurrentDamage - cardStat.ModifiedDamage, cardStat.CardModel.Card.Prototype.Damage, 999);
+                cardStat.CardModel.AddToCurrentDamageHistory(-cardStat.ModifiedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             _affectedUnits.Clear();

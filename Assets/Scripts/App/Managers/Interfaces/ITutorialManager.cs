@@ -20,6 +20,8 @@ namespace Loom.ZombieBattleground
 
         bool UnfinishedTutorial { get; set; }
 
+        bool BattleShouldBeWonBlocker { get; }
+
         //TutorialReward RewardFromLastTutorial { get; }
 
         void StartTutorial();

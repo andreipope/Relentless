@@ -170,8 +170,8 @@ namespace Loom.ZombieBattleground
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
                     CardModel card = _battlegroundController.GetCardModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
-                    card.BuffedDamage = rageOutcome.NewDamage;
-                    card.CurrentDamage = rageOutcome.NewDamage;
+                    boardUnit.BuffedDamage = rageOutcome.NewDamage;
+                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
@@ -225,12 +225,11 @@ namespace Loom.ZombieBattleground
                         }
 
                         card.BuffedDamage = changeStatOutcome.NewDamage;
-                        card.CurrentDamage = changeStatOutcome.NewDamage;
+                        //card.CurrentDamage = changeStatOutcome.NewDamage;
                     }
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         card.BuffedDefense = changeStatOutcome.NewDefense;
-                        card.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;
@@ -357,6 +356,12 @@ namespace Loom.ZombieBattleground
         private void OnLeaveMatchHandler()
         {
             _gameplayManager.OpponentPlayer.PlayerDie();
+
+            if(_cardsController.CardDistribution)
+            {
+                _cardsController.EndCardDistribution();
+                GameClient.Get<IUIManager>().HidePopup<MulliganPopup>();
+            }
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -461,7 +466,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.InstanceCard.Cost;
+                        _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.CurrentCost;
                     },
                     (workingCard, boardObject) =>
                     {

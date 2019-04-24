@@ -117,7 +117,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            player.GooVials += Value;
+            player.AddEmptyGooVials(player.GooVials + Value);
         }
 
         protected override void VFXAnimationEndedHandler()

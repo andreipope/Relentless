@@ -18,6 +18,8 @@ namespace Loom.ZombieBattleground
     public abstract class BoardCardView : ICardView
     {
         public int CardsAmountDeckEditing;
+        
+        public int MaxCopies;
 
         public bool CardShouldBeChanged;
 
@@ -73,9 +75,7 @@ namespace Loom.ZombieBattleground
 
         protected OnBehaviourHandler BehaviourHandler;
 
-        protected List<ElementSlotOfCards> ElementSlotsOfCards;
-
-        protected Transform ParentOfEditingGroupUI;
+        protected GameObject BulletPointGroup;
 
         protected List<BuffOnCardInfoObject> BuffOnCardInfoObjects;
 
@@ -98,8 +98,6 @@ namespace Loom.ZombieBattleground
 
             GameObject = selfObject;
 
-            ElementSlotsOfCards = new List<ElementSlotOfCards>();
-
             CardAnimator = GameObject.GetComponent<Animator>();
             CardAnimator.enabled = false;
 
@@ -118,8 +116,6 @@ namespace Loom.ZombieBattleground
             RemoveCardParticle = Transform.Find("RemoveCardParticle").GetComponent<ParticleSystem>();
 
             DistibuteCardObject = Transform.Find("DistributeCardObject").gameObject;
-
-            ParentOfEditingGroupUI = Transform.Find("DeckEditingGroupUI");
 
             costHighlightObject = Transform.Find("CostHighlight").gameObject;
 
@@ -207,19 +203,61 @@ namespace Loom.ZombieBattleground
             Counter
         }
 
-        public void SetAmount(AmountTrayType amountTrayType, int amount = -1)
-        {
+        public void SetAmount(AmountTrayType amountTrayType, int amount = -1, int maxCopies = -1)
+        {            
             AmountTrayWithRadio.SetActive(amountTrayType == AmountTrayType.Radio);
-            ParentOfEditingGroupUI.gameObject.SetActive(amountTrayType == AmountTrayType.Radio);
             AmountTrayWithCounter.SetActive(amountTrayType == AmountTrayType.Counter);
-            AmountText.text = amount.ToString();            
+            
+            switch(amountTrayType)
+            {
+                case AmountTrayType.Counter:
+                    AmountText.text = amount.ToString();
+                    break;
+                case AmountTrayType.Radio:
+                    if (maxCopies > 4)
+                        break;
+                        
+                    if (MaxCopies != maxCopies)
+                    {
+                        Object.Destroy(BulletPointGroup);
+                        BulletPointGroup = null;                        
+                    }
+                    if(BulletPointGroup == null)
+                    {
+                        BulletPointGroup = Object.Instantiate
+                        (
+                            GameClient.Get<ILoadObjectsManager>().GetObjectByPath<GameObject>
+                            (
+                                $"Prefabs/UI/Elements/BulletPoint_{maxCopies}"
+                            ),
+                            AmountTrayWithRadio.transform,
+                            false
+                        );
+                    }
+
+                    Transform bullet;
+                    bool isGlow;
+                    for (int i = 0; i < maxCopies; ++i)
+                    {
+                        bullet = BulletPointGroup.transform.Find($"Bullet_{i}");
+                        isGlow = i < amount;
+                        bullet.Find("Bullet_Glow").gameObject.SetActive(isGlow);
+                        bullet.Find("Bullet_Normal").gameObject.SetActive(!isGlow);
+                    }
+                    break;
+                default:
+                    break;    
+            }
+            
+            CardsAmountDeckEditing = amount;
+            MaxCopies = maxCopies;       
         }
 
         public int FuturePositionOnBoard = 0;
 
         public void UpdateCardCost()
         {
-            CostText.text = Model.Card.InstanceCard.Cost.ToString();
+            CostText.text = Model.CurrentCost.ToString();
             UpdateColorOfCost();
         }
         public virtual void UpdateAmount(int amount)
@@ -310,48 +348,6 @@ namespace Loom.ZombieBattleground
             _hasDestroyed = true;
             Object.Destroy(GameObject);
             Model.CardPictureWasUpdated -= PictureUpdatedEvent;
-        }
-
-        // editing deck page
-        public void SetAmountOfCardsInEditingPage(bool init, uint maxCopies, int amount, AmountTrayType amountTrayType)
-        {
-            CardsAmountDeckEditing = amount;
-            if (init)
-            {
-                foreach (Transform child in ParentOfEditingGroupUI)
-                {
-                    Object.Destroy(child.gameObject);
-                }
-
-                foreach (ElementSlotOfCards item in ElementSlotsOfCards)
-                {
-                    Object.Destroy(item.SelfObject);
-                }
-
-                ElementSlotsOfCards.Clear();
-
-                for (int i = 0; i < maxCopies; i++)
-                {
-                    ElementSlotsOfCards.Add(new ElementSlotOfCards(ParentOfEditingGroupUI, false));
-                }
-            }
-
-            for (int i = 0; i < maxCopies; i++)
-            {
-                if (i >= ElementSlotsOfCards.Count)
-                {
-                    ElementSlotsOfCards.Add(new ElementSlotOfCards(ParentOfEditingGroupUI, false));
-                }
-
-                ElementSlotsOfCards[i].SetStatus(i < amount);
-            }
-
-            float offset = -0.18f;
-            float spacing = 1.2f;
-            float offsetY = 0f;
-            InternalTools.GroupHorizontalObjects(ParentOfEditingGroupUI, offset, spacing, offsetY);
-
-            SetAmount(amountTrayType, amount);
         }
 
         public void DrawTooltipInfoOfUnit(BoardUnitView unit)
@@ -624,11 +620,11 @@ namespace Loom.ZombieBattleground
 
         private void UpdateColorOfCost()
         {
-            if (Model.Card.InstanceCard.Cost > Model.Card.Prototype.Cost)
+            if (Model.CurrentCost > Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.red;
             }
-            else if (Model.Card.InstanceCard.Cost < Model.Card.Prototype.Cost)
+            else if (Model.CurrentCost < Model.Card.Prototype.Cost)
             {
                 CostText.color = Color.green;
             }
@@ -786,40 +782,6 @@ namespace Loom.ZombieBattleground
             private string ReplaceXByValue(string val, int intVal)
             {
                 return val.Replace("X", intVal.ToString());
-            }
-        }
-
-        public class ElementSlotOfCards
-        {
-            public GameObject SelfObject;
-
-            public GameObject UsedObject, FreeObject;
-
-            public ElementSlotOfCards(Transform parent, bool used)
-            {
-                SelfObject =
-                    Object.Instantiate(
-                        GameClient.Get<ILoadObjectsManager>()
-                            .GetObjectByPath<GameObject>("Prefabs/Gameplay/Element_SlotOfCards"), parent, false);
-
-                FreeObject = SelfObject.transform.Find("Object_Free").gameObject;
-                UsedObject = SelfObject.transform.Find("Object_Used").gameObject;
-
-                SetStatus(used);
-            }
-
-            public void SetStatus(bool used)
-            {
-                if (used)
-                {
-                    FreeObject.SetActive(false);
-                    UsedObject.SetActive(true);
-                }
-                else
-                {
-                    FreeObject.SetActive(true);
-                    UsedObject.SetActive(false);
-                }
             }
         }
     }

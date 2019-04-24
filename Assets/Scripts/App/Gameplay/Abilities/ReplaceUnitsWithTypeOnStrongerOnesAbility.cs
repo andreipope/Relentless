@@ -169,8 +169,8 @@ namespace Loom.ZombieBattleground
                     _boardUnitsViews.Add(unitView);
                     ReplaceUnitInfo replaceUnitInfo = new ReplaceUnitInfo()
                     {
-                        OldUnitCost = unit.Card.InstanceCard.Cost,
-                        NewUnitPossibleCost = unit.Card.InstanceCard.Cost + 1,
+                        OldUnitCost = unit.CurrentCost,
+                        NewUnitPossibleCost = unit.CurrentCost + 1,
                         OldUnitView = unitView,
                         OwnerPlayer = unit.OwnerPlayer,
                         Position = unit.OwnerPlayer.CardsOnBoard.IndexOf(unit),

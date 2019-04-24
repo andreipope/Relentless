@@ -12,11 +12,14 @@ namespace Loom.ZombieBattleground
 
         public int Value;
 
+        private int _lastCost;
+
         public CostsLessIfCardTypeInPlayAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Faction = ability.Faction;
             Value = ability.Value;
+            _lastCost = 0;
         }
 
         public override void Activate()
@@ -58,16 +61,22 @@ namespace Loom.ZombieBattleground
                 gooCost = PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction).Count * Value;
             }
 
-            CardsController.SetGooCostOfCardInHand(
-                PlayerCallerOfAbility,
-                CardModel,
-                CardModel.Prototype.Cost + gooCost,
-                BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel));
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
+            if (_lastCost != 0) 
+            {
+                CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, CardModel,
+                -_lastCost, boardCardView);
+            }
+
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, CardModel,
+                gooCost, boardCardView);
+
+            _lastCost = gooCost;
         }
 
         private void CardPlayedHandler(CardModel cardModel, int position)
         {
-            if (cardModel == CardModel)
+            if (cardModel != CardModel)
                 return;
 
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;

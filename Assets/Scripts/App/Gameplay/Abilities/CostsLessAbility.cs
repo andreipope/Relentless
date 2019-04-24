@@ -9,7 +9,8 @@ namespace Loom.ZombieBattleground
     public class CostsLessAbility : AbilityBase
     {
         public int Cost;
-
+        
+        private ValueHistory _currentValue;
         public CostsLessAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -27,10 +28,13 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.CardPlayed += CardPlayedHandler;
 
-            InternalTools.DoActionDelayed(() =>
+            if (AbilityData.SubTrigger != Enumerators.AbilitySubTrigger.DuringCardInHand)
             {
-                Action();
-            }, 0.5f);
+                InternalTools.DoActionDelayed(() =>
+                {
+                    Action();
+                }, 0.5f);
+            }
         }
 
         protected override void TurnStartedHandler()
@@ -63,20 +67,47 @@ namespace Loom.ZombieBattleground
                     cost = Cost;
                 }
 
-                CardsController.SetGooCostOfCardInHand(
-                    PlayerCallerOfAbility,
-                    CardModel,
-                    cost,
-                    BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
-                );
+                Debug.LogWarning("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+
+                BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
+                if (cost == Cost)
+                {
+                    if (_currentValue == null)
+                    {
+                        _currentValue = CardsController.SetGooCostOfCardInHand(
+                            PlayerCallerOfAbility,
+                            CardModel,
+                            cost,
+                            boardCardView,
+                            forced: true
+                        );
+                    }
+                }
+                else
+                {
+                    if (_currentValue != null)
+                    {
+                        _currentValue.Enabled = false;
+                        _currentValue = null;
+
+                        CardsController.SetGooCostOfCardInHand(
+                            PlayerCallerOfAbility,
+                            CardModel,
+                            0,
+                            boardCardView
+                        );
+
+                        Debug.LogWarning("RESULT " + CardModel.CurrentCost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+                    }
+                }
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.DuringCardInHand)
             {
                 CardsController.SetGooCostOfCardInHand(
                        PlayerCallerOfAbility,
                        CardModel,
-                       Mathf.Max(CardModel.Card.InstanceCard.Cost - Cost, 0),
-                       BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel)
+                       -Cost,
+                       boardCardView
                    );
             }
         }

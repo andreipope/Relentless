@@ -124,6 +124,7 @@ namespace Loom.ZombieBattleground
                 //throw new Exception($"No view found for model {cardModel}");
             }
 
+
             return view;
         }
 
@@ -584,7 +585,7 @@ namespace Loom.ZombieBattleground
                              completeCallback?.Invoke();
                          }
                      }, delay);
-                 },  Enumerators.QueueActionType.StopTurn);
+                 }, Enumerators.QueueActionType.StopTurn);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(CardModel cardModel)
@@ -946,12 +947,12 @@ namespace Loom.ZombieBattleground
 
         public void DistractUnit(CardModel card)
         {
-            int buffedDamage = card.BuffedDamage;
-            int buffedDefense = card.BuffedDefense;
+            int BuffedDamage = card.BuffedDamage;
+            int BuffedDefense = card.BuffedDefense;
             card.BuffedDamage = 0;
             card.BuffedDefense = 0;
-            card.CurrentDamage -= buffedDamage;
-            card.CurrentDefense -= buffedDefense;
+            card.DisableBuffsOnValueHistory(card.CurrentDamageHistory);
+            card.DisableBuffsOnValueHistory(card.CurrentDefenseHistory);
             card.HasSwing = false;
             card.TakeFreezeToAttacked = false;
             card.HasBuffRush = false;
@@ -1004,7 +1005,8 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public IBoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true) {
+        public BoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true)
+        {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;
 
@@ -1099,12 +1101,12 @@ namespace Loom.ZombieBattleground
         public IBoardObject GetBoardObjectByInstanceId(InstanceId id, bool handlePlayers = true)
         {
             CardModel cardModel = GetCardModelByInstanceId(id, true);
-            if(cardModel != null)
+            if (cardModel != null)
                 return cardModel;
 
             List<IBoardObject> boardObjects = new List<IBoardObject>();
 
-            if(handlePlayers)
+            if (handlePlayers)
             {
                 boardObjects.Add(_gameplayManager.CurrentPlayer);
                 boardObjects.Add(_gameplayManager.OpponentPlayer);
@@ -1261,7 +1263,7 @@ namespace Loom.ZombieBattleground
                     })
                     .ToList();
 
-           player.PlayerCardsController.SetCardsInDeck(cardModels);
+            player.PlayerCardsController.SetCardsInDeck(cardModels);
         }
 
         private void SetupOverlordsGraveyardsAsSpecific(List<string> playerCards, List<string> opponentCards)
@@ -1279,9 +1281,9 @@ namespace Loom.ZombieBattleground
                 workingUnitView = _gameplayManager.CurrentPlayer.PlayerCardsController.SpawnUnitOnBoard(cardInfo.Name, ItemPosition.End);
                 workingUnitView.Model.Card.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                workingUnitView.Model.CurrentDefense += cardInfo.BuffedDefense;
+                workingUnitView.Model.AddToCurrentDefenseHistory(cardInfo.BuffedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
                 workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
-                workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
+                workingUnitView.Model.AddToCurrentDamageHistory(cardInfo.BuffedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
             }
 
@@ -1297,10 +1299,21 @@ namespace Loom.ZombieBattleground
             // todo implement logic
         }
 
+        #endregion
+
         private void OnGameInitializedHandler()
         {
         }
-    }
 
-    #endregion
+        public List<CardModel> GetDeterministicRandomUnits(List<CardModel> units, int count)
+        {
+            return GetDeterministicRandomElements(units, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        public List<T> GetDeterministicRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count, true);
+        }
+    }
 }

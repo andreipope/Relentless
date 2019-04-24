@@ -1,15 +1,24 @@
 using System;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
+using Loom.ZombieBattleground.Protobuf;
 using TMPro;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
+using System.Collections.Generic;
+
+
+using Loom.ZombieBattleground.Data;
+using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
+
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
     public class WaitingForPlayerPopup : IUIPopup
     {
+        private const float TotalTimeBeforeForfeit = 180;
         public event Action PopupHiding;
 
         private ILoadObjectsManager _loadObjectsManager;
@@ -17,6 +26,8 @@ namespace Loom.ZombieBattleground
         private IGameplayManager _gameplayManager;
 
         private IAppStateManager _appStateManager;
+
+        private IPvPManager _pvpManager;
 
         private CardsController _cardsController;
 
@@ -26,6 +37,7 @@ namespace Loom.ZombieBattleground
 
         private ButtonShiftingContent _gotItButton;
 
+        private float _currentTimeBeforeForfeit;
         public GameObject Self { get; private set; }
 
         public void Init()
@@ -33,6 +45,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _pvpManager = GameClient.Get<IPvPManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
             _cardsController = _gameplayManager.GetController<CardsController>();
         }
@@ -72,6 +85,8 @@ namespace Loom.ZombieBattleground
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
             _text.text = "Waiting for the opponent...";
 
+            _currentTimeBeforeForfeit = 0;
+
             Update();
         }
 
@@ -92,12 +107,64 @@ namespace Loom.ZombieBattleground
                     return;
                 }
                 
-                if (_gameplayManager.OpponentHasDoneMulligan)
+                if (_gameplayManager.OpponentHasDoneMulligan != null || _pvpManager.DebugCheats.SkipMulligan)
                 {
+                    HandleMulliganOpponent(_gameplayManager.OpponentHasDoneMulligan);
                     _cardsController.EndCardDistribution();
                     Hide();
 
                     return;
+                }
+
+                _currentTimeBeforeForfeit += Time.deltaTime;
+
+                if (_currentTimeBeforeForfeit > TotalTimeBeforeForfeit)
+                {
+                    _gameplayManager.OpponentPlayer.PlayerDie();
+                    Hide();
+
+                    return;
+                }
+            }
+        }
+
+        private void HandleMulliganOpponent(PlayerActionMulligan mulligan) 
+        {
+            if (Constants.MulliganEnabled && !_pvpManager.DebugCheats.SkipMulligan)
+            {
+                List<CardModel> cardsToRemove = new List<CardModel>();
+                bool found;
+                foreach (CardModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
+                {
+                    found = false;
+                    foreach (Protobuf.InstanceId cardNotMulligan in mulligan.MulliganedCards)
+                    {
+                        if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        cardsToRemove.Add(cardInHand);
+                    }
+                }
+
+                BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
+                foreach (CardModel card in cardsToRemove)
+                {
+                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
+                    OpponentHandCard opponentHandCard = battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == card.InstanceId);
+                    battlegroundController.OpponentHandCards.Remove(opponentHandCard);
+                    opponentHandCard.Dispose();
+                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
+                }
+
+                for (int i = 0; i < cardsToRemove.Count; i++)
+                {
+                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer.CardsInDeck[0]);
                 }
             }
         }

@@ -294,7 +294,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> PlayerCurrentGooChanged;
 
-        public event Action<int> PlayerGooVialsChanged;
+        public event Action<int, bool> PlayerGooVialsChanged;
 
         public event Action<CardModel> DrawCard;
 
@@ -321,7 +321,7 @@ namespace Loom.ZombieBattleground
             {
                 _gooVials = Mathf.Clamp(value, 0, (int) MaxGooVials);
 
-                PlayerGooVialsChanged?.Invoke(_gooVials);
+                PlayerGooVialsChanged?.Invoke(_gooVials, false);
             }
         }
 
@@ -510,6 +510,13 @@ namespace Loom.ZombieBattleground
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordDied);
                 }
             }
+        }
+
+        public void AddEmptyGooVials(int value)
+        {
+            _gooVials = Mathf.Clamp(value, 0, (int)MaxGooVials);
+
+            PlayerGooVialsChanged?.Invoke(_gooVials, true);
         }
 
         public void SetGlowStatus(bool status)

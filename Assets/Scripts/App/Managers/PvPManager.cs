@@ -432,51 +432,13 @@ namespace Loom.ZombieBattleground
                                 battlegroundController.UnregisterCardView(opponentHandCardView);
                                 opponentHandCardView.Dispose();
                                 _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
+                                return;
                             }
 
                             for (int i = 0; i < cardsToRemove.Count; i++)
                             {
                                 _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer
                                     .CardsInDeck[0]);
-                            }
-                        } else {
-                            if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
-                            {
-                                //TO DO: fix issue with initialization on opponent hand
-                                List<CardModel> cardsToRemove = new List<CardModel>();
-                                bool found;
-                                foreach (CardModel cardInHand in _gameplayManager.OpponentPlayer.CardsInHand)
-                                {
-                                    found = false;
-                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
-                                    {
-                                        if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
-                                        {
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-                                    if (!found)
-                                    {
-                                        cardsToRemove.Add(cardInHand);
-                                    }
-                                }
-
-                                BattlegroundController battlegroundController = _gameplayManager.GetController<BattlegroundController>();
-
-                                foreach (CardModel card in cardsToRemove)
-                                {
-                                    _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
-                                    OpponentHandCardView opponentHandCardView = battlegroundController.GetCardViewByModel<OpponentHandCardView>(card);
-                                    battlegroundController.UnregisterCardView(opponentHandCardView);
-                                    opponentHandCardView.Dispose();
-                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
-                                }
-
-                                for (int i = 0; i < cardsToRemove.Count; i++)
-                                {
-                                    _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardFromDeckToHand(_gameplayManager.OpponentPlayer.CardsInDeck[0]);
-                                }
                             }
                         }
                     }
