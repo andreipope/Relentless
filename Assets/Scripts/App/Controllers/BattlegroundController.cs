@@ -970,8 +970,8 @@ namespace Loom.ZombieBattleground
             int BuffedDefense = boardUnit.BuffedDefense;
             boardUnit.BuffedDamage = 0;
             boardUnit.BuffedDefense = 0;
-            boardUnit.CurrentDamage -= BuffedDamage;
-            boardUnit.CurrentDefense -= BuffedDefense;          
+            boardUnit.DisableBuffsOnValueHistory(boardUnit.CurrentDamageHistory);
+            boardUnit.DisableBuffsOnValueHistory(boardUnit.CurrentDefenseHistory);
             boardUnit.HasSwing = false;
             boardUnit.TakeFreezeToAttacked = false;
             boardUnit.HasBuffRush = false;
@@ -1295,9 +1295,9 @@ namespace Loom.ZombieBattleground
                 workingUnitView = _gameplayManager.CurrentPlayer.PlayerCardsController.SpawnUnitOnBoard(cardInfo.Name, ItemPosition.End);
                 workingUnitView.Model.Card.TutorialObjectId = cardInfo.TutorialObjectId;
                 workingUnitView.Model.CantAttackInThisTurnBlocker = !cardInfo.IsManuallyPlayable;
-                workingUnitView.Model.CurrentDefense += cardInfo.BuffedDefense;
+                workingUnitView.Model.AddToCurrentDefenseHistory(cardInfo.BuffedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
                 workingUnitView.Model.BuffedDefense += cardInfo.BuffedDefense;
-                workingUnitView.Model.CurrentDamage += cardInfo.BuffedDamage;
+                workingUnitView.Model.AddToCurrentDamageHistory(cardInfo.BuffedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
                 workingUnitView.Model.BuffedDamage += cardInfo.BuffedDamage;
             }
 

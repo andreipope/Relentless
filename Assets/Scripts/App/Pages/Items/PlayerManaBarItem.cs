@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
             _vialGooPrefab = gooPrefab;
         }
 
-        public void SetVialGoo(int maxValue)
+        public void SetVialGoo(int maxValue, bool disableAddedBottles = false)
         {
             int oldMaxValue = _maxValue;
             _maxValue = maxValue;
@@ -135,6 +135,11 @@ namespace Loom.ZombieBattleground
                 if(i >= oldMaxValue && i < _maxValue)
                 {
                     CreateVialGooVfx(_gooBottles[i]);
+
+                    if(disableAddedBottles)
+                    {
+                        Disactive(_gooBottles[i]);
+                    }
                 }
             }
             _vialGooPrefab = null;

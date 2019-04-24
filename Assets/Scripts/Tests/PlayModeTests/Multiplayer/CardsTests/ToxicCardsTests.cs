@@ -66,8 +66,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                     int costIncrease = 1;
                     BoardUnitModel playerRelentleZZModel = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(playerRelentleZZId));
                     BoardUnitModel opponentRelentleZZModel = ((BoardUnitModel)TestHelper.BattlegroundController.GetBoardUnitModelByInstanceId(opponentRelentleZZId));
-                    Assert.AreEqual(playerRelentleZZModel.Card.Prototype.Cost+costIncrease, playerRelentleZZModel.Card.InstanceCard.Cost);
-                    Assert.AreEqual(playerRelentleZZModel.Card.Prototype.Cost+costIncrease, playerRelentleZZModel.Card.InstanceCard.Cost);
+                    Assert.AreEqual(playerRelentleZZModel.Card.Prototype.Cost+costIncrease, playerRelentleZZModel.CurrentCost);
+                    Assert.AreEqual(playerRelentleZZModel.Card.Prototype.Cost+costIncrease, playerRelentleZZModel.CurrentCost);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
@@ -801,12 +801,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                     foreach(BoardUnitModel card in TestHelper.GameplayManager.CurrentPlayer.PlayerCardsController.CardsInHand)
                     {
-                        Assert.AreEqual(card.Prototype.Cost + 2, card.InstanceCard.Cost);
+                        Assert.AreEqual(card.Prototype.Cost, card.CurrentCost);
                     }
 
                     foreach (BoardUnitModel card in TestHelper.GameplayManager.OpponentPlayer.PlayerCardsController.CardsInHand)
                     {
-                        Assert.AreEqual(card.Prototype.Cost + 2, card.InstanceCard.Cost);
+                        Assert.AreEqual(card.Prototype.Cost, card.CurrentCost);
                     }
                 };
 

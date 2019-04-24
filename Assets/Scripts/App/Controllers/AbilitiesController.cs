@@ -329,7 +329,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasUnitsOnBoardThatCostMoreThan(BoardUnitModel boardUnitModel, AbilityData ability)
         {
-            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.Card.InstanceCard.Cost > boardUnitModel.Card.InstanceCard.Cost).Count > 0;
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.CurrentCost > boardUnitModel.CurrentCost).Count > 0;
         }
 
         public IReadOnlyList<BoardUnitModel> GetUnitsFromTargets(BoardUnitModel boardUnitModel, AbilityData ability)
@@ -540,7 +540,7 @@ namespace Loom.ZombieBattleground
                                        {
                                            instance.Abilities = prototype.Abilities.Select(a => new AbilityData(a)).ToList();
 
-                                           card.Model.Card.Owner.CurrentGoo += card.Model.Card.InstanceCard.Cost;
+                                           card.Model.Card.Owner.CurrentGoo += card.Model.CurrentCost;
 
                                            handCard.GameObject.SetActive(true);
                                            handCard.ResetToHandAnimation();
