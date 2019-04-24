@@ -91,7 +91,12 @@ namespace Loom.ZombieBattleground
         {
             BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
 
-            BattlegroundController.DistractUnit(boardUnit);
+            boardUnit.HandleDefenseBuffer(Damage);
+
+            if (boardUnit.IsUnitActive)
+            {
+                BattlegroundController.DistractUnit(boardUnit);
+            }
 
             _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {

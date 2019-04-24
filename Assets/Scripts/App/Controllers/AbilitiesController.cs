@@ -73,9 +73,9 @@ namespace Loom.ZombieBattleground
         {
             lock (_lock)
             {
-                foreach (ActiveAbility item in _activeAbilities)
+                for (int i = 0; i < _activeAbilities.Count; i++)
                 {
-                    item.Ability.Update();
+                    _activeAbilities[i].Ability.Update();
                 }
             }
         }
