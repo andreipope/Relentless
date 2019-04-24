@@ -545,25 +545,23 @@ namespace Loom.ZombieBattleground
                 collectionCardData = _collectionData.GetCardData(card.Name);
                 UpdateCollectionCardsDisplay
                 (
-                    true,
                     card.Name,
                     collectionCardData.Amount
                 );
             }
         }
 
-        public void UpdateCollectionCardsDisplay(bool init, string cardId, int amount)
+        public void UpdateCollectionCardsDisplay(string cardId, int amount)
         {
             foreach (BoardCardView card in _createdCollectionsBoardCards)
             {
                 if (card.Model.Card.Prototype.Name == cardId)
                 {
-                    card.SetAmountOfCardsInEditingPage
+                    card.SetAmount
                     (
-                        init,
-                        GetMaxCopiesValue(card.Model.Card.Prototype),
+                        BoardCardView.AmountTrayType.Counter,
                         amount,
-                        BoardCardView.AmountTrayType.Counter                        
+                        (int)GetMaxCopiesValue(card.Model.Card.Prototype)                                             
                     );
                     SetCardFrameMaterial
                     (
@@ -660,12 +658,11 @@ namespace Loom.ZombieBattleground
 
                 boardCard.Transform.position = DeckCardPositions[_createdDeckBoardCards.Count - 1].position;
 
-                boardCard.SetAmountOfCardsInEditingPage
+                boardCard.SetAmount
                 (
-                    true,
-                    GetMaxCopiesValue(prototype),
+                    BoardCardView.AmountTrayType.Radio,
                     card.Amount, 
-                    BoardCardView.AmountTrayType.Radio
+                    (int)GetMaxCopiesValue(prototype)                    
                 );
                     
                 OnBehaviourHandler eventHandler = boardCard.GameObject.GetComponent<OnBehaviourHandler>();
@@ -722,7 +719,7 @@ namespace Loom.ZombieBattleground
             }
 
             collectionCardData.Amount--;
-            UpdateCollectionCardsDisplay(false, card.Name, collectionCardData.Amount);
+            UpdateCollectionCardsDisplay(card.Name, collectionCardData.Amount);
             bool isCardAlreadyExist = _myDeckPage.CurrentEditDeck.Cards.Exists(x => x.CardName == card.Name);
             _myDeckPage.CurrentEditDeck.AddCard(card.Name);
             UpdateDeckPageIndexDictionary();
@@ -730,12 +727,11 @@ namespace Loom.ZombieBattleground
             if (_createdDeckBoardCards.Exists(item => item.Model.Card.Prototype.MouldId == card.MouldId))
             {
                 BoardCardView foundItem = _createdDeckBoardCards.Find(item => item.Model.Card.Prototype.MouldId == card.MouldId);
-                foundItem.SetAmountOfCardsInEditingPage
+                foundItem.SetAmount
                 (
-                    false,
-                    GetMaxCopiesValue(card),
-                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,
-                    BoardCardView.AmountTrayType.Radio
+                    BoardCardView.AmountTrayType.Radio,
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == foundItem.Model.Card.Prototype.Name).Amount,                   
+                    (int)GetMaxCopiesValue(card)
                 );
             }
             else
@@ -806,7 +802,6 @@ namespace Loom.ZombieBattleground
             collectionCardData.Amount++;
             UpdateCollectionCardsDisplay
             (
-                false,
                 card.Name,
                 collectionCardData.Amount
             );
@@ -828,12 +823,11 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    boardCard.SetAmountOfCardsInEditingPage
+                    boardCard.SetAmount
                     (
-                        false, 
-                        GetMaxCopiesValue(boardCard.Model.Card.Prototype), 
-                        boardCard.CardsAmountDeckEditing, 
-                        BoardCardView.AmountTrayType.Radio
+                        BoardCardView.AmountTrayType.Radio,
+                        boardCard.CardsAmountDeckEditing,
+                        (int)GetMaxCopiesValue(boardCard.Model.Card.Prototype)
                     );
                 }
 
@@ -871,7 +865,6 @@ namespace Loom.ZombieBattleground
             GameObject go;
             BoardCardView boardCard;
             BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
-            int amount = _collectionData.GetCardData(card.Name).Amount;
 
             switch (card.Kind)
             {
@@ -887,7 +880,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
             }
 
-            boardCard.SetAmount(BoardCardView.AmountTrayType.None,amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.None);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
