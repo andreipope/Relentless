@@ -344,6 +344,10 @@ namespace Loom.ZombieBattleground
                     {
                         Log.Warn(e);
                     }
+                    finally
+                    {
+                        _uiManager.HidePopup<LoadDataMessagePopup>();
+                    }
                 }
 
                 connectionPopup.Hide();
