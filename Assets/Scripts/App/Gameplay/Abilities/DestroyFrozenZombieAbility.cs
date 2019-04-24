@@ -89,7 +89,7 @@ namespace Loom.ZombieBattleground
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.DeathMark,
-                    Target = TargetUnit
+                    Target = unit
                 });
             }
 

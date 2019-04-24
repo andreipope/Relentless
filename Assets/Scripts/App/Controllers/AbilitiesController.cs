@@ -1222,6 +1222,8 @@ namespace Loom.ZombieBattleground
                     card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
 
                     InternalTools.DoActionDelayed(card.Dispose, 0.5f);
+
+                    ProceedWithCardToGraveyard(card);
                 }
                 else
                 {
