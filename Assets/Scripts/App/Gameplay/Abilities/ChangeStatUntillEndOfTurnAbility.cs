@@ -107,14 +107,14 @@ namespace Loom.ZombieBattleground
                         unit.DamageDebuffUntillEndOfTurn -= buffresult;
                     }
 
-                    unit.AddToCurrentDamageHistory(Damage, Enumerators.ReasonForValueChange.AbilityBuff);
+                    unit.AddToCurrentDamageHistory(unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        ActionEffectType = unit.DamageDebuffUntillEndOfTurn > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit,
                         HasValue = true,
-                        Value = Damage
+                        Value = unit.DamageDebuffUntillEndOfTurn
                     });
                 }
 
