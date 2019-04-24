@@ -67,9 +67,6 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            _affectedCards.ForEach(ResetStatsOfTargetCard);
-            _affectedCards.Clear();
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
@@ -86,7 +83,7 @@ namespace Loom.ZombieBattleground
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
                 _affectedCards.Clear();
-                
+
                 CheckSubTriggers();
             }
             else
@@ -201,7 +198,7 @@ namespace Loom.ZombieBattleground
         {
             card.AddToCurrentCostHistory(-Cost, Enumerators.ReasonForValueChange.AbilityBuff);
             card.AddToCurrentDamageHistory(-Attack, Enumerators.ReasonForValueChange.AbilityBuff);
-            card.InstanceCard.Defense = card.Prototype.Defense;
+            card.AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
