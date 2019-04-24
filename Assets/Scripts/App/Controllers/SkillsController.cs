@@ -1126,9 +1126,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.TOXIC);
-                units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+                units = _battlegroundController.GetDeterministicRandomElements(units.ToList(), skill.Count);
                 count = units.Count;
-                opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard, skill.Count);
+                opponentUnits = _battlegroundController.GetDeterministicRandomUnits(
+                    _gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard.ToList(),
+                    skill.Count);
 
                 _targets = new List<ParametrizedAbilityBoardObject>();
             }
@@ -1170,7 +1172,7 @@ namespace Loom.ZombieBattleground
                     Target = unitModel
                 });
 
-                if (opponentUnitModel != null)
+                if (opponentUnitModel != null && !(opponentUnitModel is default(BoardUnitModel)))
                 {
                     if (unitAttacks.ContainsKey(opponentUnitModel))
                     {
