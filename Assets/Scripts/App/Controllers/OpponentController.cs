@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                     BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewDamage;
-                    boardUnit.CurrentDamage = rageOutcome.NewDamage;
+                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
@@ -218,12 +218,11 @@ namespace Loom.ZombieBattleground
                         }
 
                         boardUnit.BuffedDamage = changeStatOutcome.NewDamage;
-                        boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
+                        //boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
                     }
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;
@@ -356,6 +355,12 @@ namespace Loom.ZombieBattleground
         private void OnLeaveMatchHandler()
         {
             _gameplayManager.OpponentPlayer.PlayerDie();
+
+            if(_cardsController.CardDistribution)
+            {
+                _cardsController.EndCardDistribution();
+                GameClient.Get<IUIManager>().HidePopup<MulliganPopup>();
+            }
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -477,7 +482,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
+                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.CurrentCost;
                     },
                     (workingCard, boardObject) =>
                     {

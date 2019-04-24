@@ -40,17 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 2214d9b64c8b04fd69dfc19bfaec68a8, type: 3}
-    - {fileID: 2800000, guid: da3fe3e97523c4d2082e9591b612788c, type: 3}
-    - {fileID: 2800000, guid: e6c44243192184dbeaf8dc3d0c338091, type: 3}
-    - {fileID: 2800000, guid: ab47374e6c14045c398b73d95e8b62a0, type: 3}
-    - {fileID: 2800000, guid: 3089405974eda4490a97be9c1b3d796a, type: 3}
-    - {fileID: 2800000, guid: 40c10ed8e6bd84d33a2f8e838ed3b18d, type: 3}
-    - {fileID: 2800000, guid: 40fb31c8a930e4503924caea2dd5bcf2, type: 3}
-    - {fileID: 2800000, guid: b500e661a54154660878a96eba488cbe, type: 3}
-    - {fileID: 2800000, guid: 2e84f0d3bd14b491c85e3b7b01a2836e, type: 3}
-    - {fileID: 2800000, guid: 9ca0a281b0a7042f98b406772326b8f5, type: 3}
-    - {fileID: 2800000, guid: a25b5379ef7fb406fb467cf753707583, type: 3}
+    - {fileID: 102900000, guid: 352a82a412b4a492d9ff53a6bd3c9d66, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

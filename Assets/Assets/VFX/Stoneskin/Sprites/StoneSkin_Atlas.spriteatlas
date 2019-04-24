@@ -40,16 +40,16 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 4d458060b8db95e45aa82eaf5357be75, type: 3}
-    - {fileID: 2800000, guid: 1cba6fbcf84f18940a698b5db7300835, type: 3}
-    - {fileID: 2800000, guid: f3ecb2e0d6b7fc34ea66e54726462f29, type: 3}
+    - {fileID: 102900000, guid: 2b417d22ab83e8d499612101b85f6577, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: 435dc3306aa9fd84e9df4b4ee17573d4, type: 3}
   - {fileID: 21300000, guid: 4d458060b8db95e45aa82eaf5357be75, type: 3}
   - {fileID: 21300000, guid: f3ecb2e0d6b7fc34ea66e54726462f29, type: 3}
   - {fileID: 21300000, guid: 1cba6fbcf84f18940a698b5db7300835, type: 3}
   m_PackedSpriteNamesToIndex:
+  - EarthOverlordPH
   - StoneSprite
   - Dust2
   - StoneSpriteMask

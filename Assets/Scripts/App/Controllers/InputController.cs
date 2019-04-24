@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle)
+                if (_gameplayManager.IsTutorial && !_gameplayManager.GetController<BoardArrowController>().IsBoardArrowNowInTheBattle && _gameplayManager.IsGameStarted)
                 {
                     CastRay(Input.mousePosition, SRLayerMask.Battleground, isHovering: true);
                 }

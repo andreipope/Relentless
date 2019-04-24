@@ -524,7 +524,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.RESSURECT:
                     state = skill.OwnerPlayer.CardsInGraveyard.FindAll(x => x.Prototype.Faction == Enumerators.Faction.LIFE
                                && x.Prototype.Kind == Enumerators.CardKind.CREATURE
-                               && x.InstanceCard.Cost == skill.Skill.Value
+                               && x.CurrentCost == skill.Skill.Value
                                && !skill.OwnerPlayer.CardsOnBoard.Any(c => c == x)).Count > 0;
                     break;
                 case Enumerators.Skill.PUSH:
@@ -880,7 +880,7 @@ namespace Loom.ZombieBattleground
                 _battleController.AttackUnitBySkill(owner, boardSkill, unit, 0);
 
                 unit.BuffedDamage += skill.Damage;
-                unit.CurrentDamage += skill.Damage;
+                unit.AddToCurrentDamageHistory(skill.Damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 _vfxController.CreateVfx(
                     _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/ToxicPowerVFX"),
@@ -1126,9 +1126,11 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.TOXIC);
-                units = InternalTools.GetRandomElementsFromList(units, skill.Count);
+                units = _battlegroundController.GetDeterministicRandomElements(units.ToList(), skill.Count);
                 count = units.Count;
-                opponentUnits = InternalTools.GetRandomElementsFromList(_gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard, skill.Count);
+                opponentUnits = _battlegroundController.GetDeterministicRandomUnits(
+                    _gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard.ToList(),
+                    skill.Count);
 
                 _targets = new List<ParametrizedAbilityBoardObject>();
             }
@@ -1170,7 +1172,7 @@ namespace Loom.ZombieBattleground
                     Target = unitModel
                 });
 
-                if (opponentUnitModel != null)
+                if (opponentUnitModel != null && !(opponentUnitModel is default(BoardUnitModel)))
                 {
                     if (unitAttacks.ContainsKey(opponentUnitModel))
                     {
@@ -1354,7 +1356,7 @@ namespace Loom.ZombieBattleground
             {
                 boardUnitModels = owner.CardsInGraveyard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.LIFE
                                                        && x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
-                                                       && x.Card.InstanceCard.Cost == skill.Value
+                                                       && x.CurrentCost== skill.Value
                                                        && !owner.CardsOnBoard.Any(c => c.Card == x.Card));
 
                 boardUnitModels = InternalTools.GetRandomElementsFromList(boardUnitModels, skill.Count);
@@ -1717,7 +1719,7 @@ namespace Loom.ZombieBattleground
                     {
                         case BoardUnitModel unit:
                             unit.BuffedDefense += skill.Value;
-                            unit.CurrentDefense += skill.Value;
+                            unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
                             actionType = Enumerators.ActionType.UseOverlordPowerOnCard;
                             break;
                         case Player player:
@@ -2114,7 +2116,7 @@ namespace Loom.ZombieBattleground
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
                 unit.BuffedDefense += skill.Value;
-                unit.CurrentDefense += skill.Value;
+                unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.6f;
@@ -2225,7 +2227,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitModel unit in units)
             {
                 unit.BuffedDefense += skill.Value;
-                unit.CurrentDefense += skill.Value;
+                unit.AddToCurrentDefenseHistory(skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 Vector3 position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
                 position -= Vector3.up * 3.65f;
