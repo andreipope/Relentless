@@ -539,6 +539,12 @@ namespace Loom.ZombieBattleground
                 cardView.Transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
             }
 
+            if(!_gameplayManager.CurrentTurnPlayer.IsLocalPlayer &&
+                cardView is BoardCardView boardCardView)
+            {
+                boardCardView.SetHighlightingEnabled(false);
+            }
+
             if (CheckIsMoreThanMaxCards())
             {
                 _cardsController.DiscardCardFromHand(boardUnitModel);

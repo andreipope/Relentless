@@ -29,13 +29,13 @@ namespace Loom.ZombieBattleground
                 if (status)
                 {
                     AbilityUnitOwner.BuffedDamage += Value;
-                    AbilityUnitOwner.CurrentDamage += Value;
+                    AbilityUnitOwner.AddToCurrentDamageHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
                     InvokeActionTriggered(true);
                 }
                 else
                 {
                     AbilityUnitOwner.BuffedDamage -= Value;
-                    AbilityUnitOwner.CurrentDamage -= Value;
+                    AbilityUnitOwner.AddToCurrentDamageHistory(-Value, Enumerators.ReasonForValueChange.AbilityBuff);
                     InvokeActionTriggered(false);
                 }
             }
