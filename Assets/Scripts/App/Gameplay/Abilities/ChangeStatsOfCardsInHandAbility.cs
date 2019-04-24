@@ -169,7 +169,7 @@ namespace Loom.ZombieBattleground
             {
                 card.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
                 card.AddToCurrentDamageHistory(Attack, Enumerators.ReasonForValueChange.AbilityBuff);
-                card.InstanceCard.Defense += Defense;
+                card.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
