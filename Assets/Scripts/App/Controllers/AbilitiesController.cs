@@ -417,23 +417,7 @@ namespace Loom.ZombieBattleground
                        {
                            AbilityData ability = instance.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
-                           if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
-                               !HasSpecialUnitOnBoard(boardUnitModel, ability) ||
-                               ability.TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE &&
-                               !HasSpecialUnitStatusOnBoard(boardUnitModel, ability) ||
-                               (ability.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
-                               ability.TargetFaction != Enumerators.Faction.Undefined &&
-                               !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
-                               !CanTakeControlUnit(boardUnitModel, ability) ||
-                               (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
-                               !HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)) ||
-                               (ability.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess &&
-                                !OverlordDefenseEqualOrLess(boardUnitModel, ability)) ||
-                                (ability.TargetUnitType != Enumerators.CardType.UNDEFINED &&
-                                 !HasUnitsWithoutTargetUnitType(boardUnitModel, ability) &&
-                                 ability.Activity == Enumerators.AbilityActivity.ACTIVE &&
-                                 ability.Trigger == Enumerators.AbilityTrigger.ENTRY))
-
+                           if (CheckAbilityOnTarget(boardUnitModel, ability))
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
@@ -689,6 +673,35 @@ namespace Loom.ZombieBattleground
                        abilityEndAction.Invoke();
                    }
                };
+        }
+
+        public bool CheckAbilityOnTarget(BoardUnitModel boardUnitModel, AbilityData ability = null)
+        {
+            if(ability == null)
+            {
+                IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
+                ability = instance.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
+            }
+
+            if (ability == null || ability is default(AbilityData))
+                return false;
+
+            return ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
+                                   !HasSpecialUnitOnBoard(boardUnitModel, ability) ||
+                                   ability.TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE &&
+                                   !HasSpecialUnitStatusOnBoard(boardUnitModel, ability) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
+                                   ability.TargetFaction != Enumerators.Faction.Undefined &&
+                                   !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
+                                   !CanTakeControlUnit(boardUnitModel, ability) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
+                                   !HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess &&
+                                    !OverlordDefenseEqualOrLess(boardUnitModel, ability)) ||
+                                    (ability.TargetUnitType != Enumerators.CardType.UNDEFINED &&
+                                     !HasUnitsWithoutTargetUnitType(boardUnitModel, ability) &&
+                                     ability.Activity == Enumerators.AbilityActivity.ACTIVE &&
+                                     ability.Trigger == Enumerators.AbilityTrigger.ENTRY);
         }
 
         public void InvokeUseAbilityEvent(
