@@ -32,7 +32,8 @@ namespace Loom.ZombieBattleground
 
             int damageDeal = (int) info;
 
-            AbilityUnitOwner.CurrentDefense = Mathf.Clamp(AbilityUnitOwner.CurrentDefense + (Value * damageDeal), 0, AbilityUnitOwner.MaxCurrentDefense);
+            int defense = Mathf.Clamp(AbilityUnitOwner.CurrentDefense + (Value * damageDeal), 0, AbilityUnitOwner.MaxCurrentDefense);
+            AbilityUnitOwner.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
         protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)

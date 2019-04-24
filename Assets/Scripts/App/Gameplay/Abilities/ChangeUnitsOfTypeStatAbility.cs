@@ -58,11 +58,11 @@ namespace Loom.ZombieBattleground
                 {
                     case Enumerators.Stat.DAMAGE:
                         unit.BuffedDamage += Value;
-                        unit.CurrentDamage += Value;
+                        unit.AddToCurrentDamageHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
                         break;
                     case Enumerators.Stat.DEFENSE:
                         unit.BuffedDefense += Value;
-                        unit.CurrentDefense += Value;
+                        unit.AddToCurrentDefenseHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(StatType), StatType, null);
