@@ -131,6 +131,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 ChangeStatsOfPlayerAllyCards(-Defense, -Attack, false);
+                _affectedUnits.Clear();
             }
         }
 
