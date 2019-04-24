@@ -10,13 +10,12 @@ namespace Loom.ZombieBattleground
 
         int QueuedTaskCount { get; }
 
-        void EnqueueMessage(IMessage request);
+        Task EnqueueMessage(IMessage request);
 
-        void EnqueueNetworkTask(
+        Task EnqueueNetworkTask(
             Func<Task> taskFunc,
             Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
             Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
-            Func<Task> onCompletedCallbackFunc = null,
             bool leaveCurrentAppState = false,
             bool drawErrorMessage = true
         );

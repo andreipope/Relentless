@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
                 {
                     _nextKeepAliveSendTimer = 0f;
 
-                    _networkActionManager.EnqueueNetworkTask(async () =>
+                    await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         await _backendFacade.KeepAliveStatus(_backendDataControlMediator.UserDataModel.UserId, MatchMetadata.Id);
                     });
@@ -252,7 +252,7 @@ namespace Loom.ZombieBattleground
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
         {
-            _networkActionManager.EnqueueNetworkTask(
+            await _networkActionManager.EnqueueNetworkTask(
                 func,
                 onUnknownExceptionCallbackFunc: async exception =>
                 {
@@ -420,7 +420,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            _networkActionManager.EnqueueNetworkTask(taskFunc);
+            await _networkActionManager.EnqueueNetworkTask(taskFunc);
         }
 
         private async Task LoadInitialGameState()

@@ -1406,7 +1406,7 @@ namespace Loom.ZombieBattleground
                 if (currentDeck == null)
                     return;
 
-                _networkActionManager.EnqueueNetworkTask(async () =>
+                await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                         _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;

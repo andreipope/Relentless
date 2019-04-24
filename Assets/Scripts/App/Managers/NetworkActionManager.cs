@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -13,12 +14,12 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(NetworkActionManager));
 
-        private readonly Queue<Func<Task>> _tasks = new Queue<Func<Task>>();
+        private readonly Queue<(Func<Task> funcTask, TaskCompletionSource<bool> completedTask)> _tasks = new Queue<(Func<Task> funcTask, TaskCompletionSource<bool> completedTask)>();
         private BackendFacade _backendFacade;
         private IAppStateManager _appStateManager;
         private bool _isUpdating;
 
-        public bool Active { get; set; }
+        public bool Active { get; set; } = true;
 
         public int QueuedTaskCount => _tasks?.Count ?? 0;
 
@@ -35,25 +36,38 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!Active)
-                return;
+            //if (!Active)
+            //    return;
 
             if (_isUpdating)
                 return;
 
             _isUpdating = true;
+            Log.Debug(_isUpdating);
             while (_tasks.Count > 0)
             {
-                await _tasks.Peek().Invoke();
-                _tasks.Dequeue();
+                (Func<Task> funcTask, TaskCompletionSource<bool> completedTask) = _tasks.Peek();
+                try
+                {
+                    await funcTask();
+                    completedTask.SetResult(true);
+                }
+                catch (Exception e)
+                {
+                    completedTask.SetException(e);
+                }
+                finally
+                {
+                    _tasks.Dequeue();
+                }
             }
 
             _isUpdating = false;
         }
 
-        public void EnqueueMessage(IMessage request)
+        public Task EnqueueMessage(IMessage request)
         {
-            EnqueueNetworkTask(async () =>
+            return EnqueueNetworkTask(async () =>
             {
                 switch (request)
                 {
@@ -69,11 +83,10 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        public void EnqueueNetworkTask(
+        public Task EnqueueNetworkTask(
             Func<Task> taskFunc,
             Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
             Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
-            Func<Task> onCompletedCallbackFunc = null,
             bool leaveCurrentAppState = false,
             bool drawErrorMessage = true
             )
@@ -81,7 +94,7 @@ namespace Loom.ZombieBattleground
             if (taskFunc == null)
                 throw new ArgumentNullException(nameof(taskFunc));
 
-            _tasks.Enqueue(async () =>
+            Func<Task> wrappedTaskFunc = async () =>
             {
                 if (!_backendFacade.IsConnected)
                 {
@@ -89,10 +102,17 @@ namespace Loom.ZombieBattleground
                     return;
                 }
 
-                await ExecuteNetworkAction(taskFunc, onUnknownExceptionCallbackFunc, onNetworkExceptionCallbackFunc, onCompletedCallbackFunc, leaveCurrentAppState, drawErrorMessage);
-            });
-        }
+                await ExecuteNetworkAction(taskFunc,
+                    onUnknownExceptionCallbackFunc,
+                    onNetworkExceptionCallbackFunc,
+                    leaveCurrentAppState,
+                    drawErrorMessage);
+            };
 
+            TaskCompletionSource<bool> completedTask = new TaskCompletionSource<bool>();
+            _tasks.Enqueue((wrappedTaskFunc, completedTask));
+            return completedTask.Task;
+        }
 
         public void Dispose()
         {
@@ -103,7 +123,6 @@ namespace Loom.ZombieBattleground
             Func<Task> taskFunc,
             Func<Exception, Task> onUnknownExceptionCallbackFunc = null,
             Func<Exception, Task> onNetworkExceptionCallbackFunc = null,
-            Func<Task> onCompletedCallbackFunc = null,
             bool leaveCurrentAppState = false,
             bool drawErrorMessage = true)
         {
@@ -120,6 +139,8 @@ namespace Loom.ZombieBattleground
                 {
                     await onNetworkExceptionCallbackFunc(exception);
                 }
+
+                throw;
             }
             catch (Client.RpcClientException exception)
             {
@@ -130,6 +151,8 @@ namespace Loom.ZombieBattleground
                 {
                     await onNetworkExceptionCallbackFunc(exception);
                 }
+
+                throw;
             }
             catch (Exception exception)
             {
@@ -144,11 +167,8 @@ namespace Loom.ZombieBattleground
                 {
                     ShowConnectionPopup();
                 }
-            }
 
-            if (onCompletedCallbackFunc != null)
-            {
-                await onCompletedCallbackFunc();
+                throw;
             }
         }
 
