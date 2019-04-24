@@ -60,7 +60,7 @@ namespace Loom.ZombieBattleground
                         case Enumerators.Target.PLAYER_ALL_CARDS:
                             foreach (CardModel cardPlayer in Ability.PlayerCallerOfAbility.CardsOnBoard)
                             {
-                                BoardUnitView cardPlayerView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(cardPlayer);
+                                BoardUnitView cardPlayerView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardPlayer);
                                 CreateVfx(cardPlayerView.Transform.position, true);
                             }
                             break;

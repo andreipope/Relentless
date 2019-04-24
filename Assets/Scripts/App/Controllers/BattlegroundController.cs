@@ -947,8 +947,6 @@ namespace Loom.ZombieBattleground
 
         public void DistractUnit(CardModel card)
         {
-            int BuffedDamage = card.BuffedDamage;
-            int BuffedDefense = card.BuffedDefense;
             card.BuffedDamage = 0;
             card.BuffedDefense = 0;
             card.DisableBuffsOnValueHistory(card.CurrentDamageHistory);
@@ -1005,7 +1003,7 @@ namespace Loom.ZombieBattleground
         }
 
 
-        public BoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true)
+        public IBoardObject GetTargetByInstanceId(InstanceId id, bool createHandCardByDefault = true)
         {
             if (_gameplayManager.CurrentPlayer.InstanceId == id)
                 return _gameplayManager.CurrentPlayer;

@@ -76,10 +76,10 @@ namespace Loom.ZombieBattleground
             _rootQueue = ActionQueueAction.CreateRootActionQueue();
         }
 
-        public void ForceContinueAction(GameplayActionQueueAction modelActionForDying)
+        public void ForceContinueAction(GameplayActionQueueAction action)
         {
             // FIXME: Does nothing now?
-            Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction modelActionForDying = {modelActionForDying})");
+            Log.Debug($"{nameof(ForceContinueAction)}(GameplayActionQueueAction action = {action})");
         }
 
         private GameplayActionQueueAction CreateAction(GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool onlyManualComplete = false)

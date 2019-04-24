@@ -1247,7 +1247,7 @@ namespace Loom.ZombieBattleground
 
                     InternalTools.DoActionDelayed(card.Dispose, 0.5f);
 
-                    ProceedWithCardToGraveyard(card);
+                    ProceedWithCardToGraveyard(card.Model);
                 }
                 else
                 {

@@ -170,8 +170,8 @@ namespace Loom.ZombieBattleground
                     PlayerActionOutcome.Types.CardAbilityRageOutcome rageOutcome = outcome.Rage;
                     CardModel card = _battlegroundController.GetCardModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
-                    boardUnit.BuffedDamage = rageOutcome.NewDamage;
-                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
+                    card.BuffedDamage = rageOutcome.NewDamage;
+                  //  card.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:

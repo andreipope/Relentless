@@ -57,6 +57,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.OnlyThisCardInHand)
             {
                 int cost = CardModel.Prototype.Cost;
@@ -69,7 +70,6 @@ namespace Loom.ZombieBattleground
 
                 Debug.LogWarning("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
 
-                BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
                 if (cost == Cost)
                 {
                     if (_currentValue == null)

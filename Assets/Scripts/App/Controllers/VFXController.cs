@@ -302,7 +302,7 @@ namespace Loom.ZombieBattleground
                 case CardModel unit:
                     if (unit.Owner.PlayerCardsController.CardsOnBoard.Contains(unit))
                     {
-                        castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                        castVfxPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                     }
                     break;
                 case HandBoardCard cardInHand:

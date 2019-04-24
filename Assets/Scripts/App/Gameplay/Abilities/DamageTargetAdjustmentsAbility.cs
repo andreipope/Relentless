@@ -111,10 +111,10 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            ActionReportsController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = TargetEffects
             });
 

@@ -946,7 +946,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             GameplayActionQueueAction callAbilityAction = null;
-            GameplayActionQueueAction ranksBuffAction = null;
+            GameplayActionQueueAction rankBuffAction = null;
 
             _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.CurrentCost;
 
@@ -969,7 +969,7 @@ namespace Loom.ZombieBattleground
 
                         if (Constants.RankSystemEnabled)
                         {
-                            ranksBuffAction = _gameplayManager.GetController<RanksController>().AddUpdateRanksByElementsAction(cardModel.Owner.CardsOnBoard, cardModel);
+                            rankBuffAction = _gameplayManager.GetController<RanksController>().AddUpdateRanksByElementsAction(cardModel.Owner.CardsOnBoard, cardModel);
                         }
 
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
@@ -992,18 +992,15 @@ namespace Loom.ZombieBattleground
                                     {
                                         Action callback = () =>
                                         {
-                                            _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                            callAbilityAction = _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
                                             null, false, (status) =>
                                             {
                                                 if (!status)
                                                 {
-                                                    ranksBuffAction.Action = null;
-                                                    ranksBuffAction.ForceActionDone();
+                                                    rankBuffAction?.TriggerActionExternally();
                                                 }
 
-                                            }, callAbilityAction, target);
-
-                                            _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                            },  target);
                                         };
 
                                         _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
@@ -1053,7 +1050,7 @@ namespace Loom.ZombieBattleground
                             {
                                 Action callback = () =>
                                 {
-                                    _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
+                                    callAbilityAction = _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, cardModel, null, false, null,  target);
                                     _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 };
 

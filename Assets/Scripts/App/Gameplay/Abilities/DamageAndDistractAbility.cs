@@ -90,7 +90,7 @@ namespace Loom.ZombieBattleground
 
         private void DamageAndDistractUnit(CardModel boardUnit)
         {
-            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
 
             boardUnit.HandleDefenseBuffer(Damage);
 

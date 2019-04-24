@@ -156,9 +156,9 @@ namespace Loom.ZombieBattleground
                 foreach (CardModel card in cardsToRemove)
                 {
                     _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(card);
-                    OpponentHandCard opponentHandCard = battlegroundController.OpponentHandCards.FirstOrDefault(x => x.Model.InstanceId == card.InstanceId);
-                    battlegroundController.OpponentHandCards.Remove(opponentHandCard);
-                    opponentHandCard.Dispose();
+                    OpponentHandCardView opponentHandCardView = battlegroundController.GetCardViewByModel<OpponentHandCardView>(card);
+                    battlegroundController.UnregisterCardView(opponentHandCardView);
+                    opponentHandCardView.Dispose();
                     _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToDeck(card);
                 }
 
