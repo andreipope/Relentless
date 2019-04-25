@@ -656,18 +656,10 @@ namespace Loom.ZombieBattleground
 
                 _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
             }
-            catch (TimeoutException e)
+            catch (Exception e) when (e is TimeoutException || e is RpcClientException)
             {
                 Helpers.ExceptionReporter.SilentReportException(e);
-
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
-
-                _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
-            }
-            catch (RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("", e);
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
