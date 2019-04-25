@@ -354,9 +354,12 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+
+
             Deck deck = GetSelectedDeck();
             if (deck != null)
             {
+                _buttonDelete.enabled = false;
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
                 _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
             }
@@ -396,7 +399,10 @@ namespace Loom.ZombieBattleground
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmDeleteDeckReceivedHandler;
 
             if (!status)
+            {
+                _buttonDelete.enabled = true;
                 return;
+            }
                 
             Deck deck = GetSelectedDeck();
 
@@ -409,6 +415,8 @@ namespace Loom.ZombieBattleground
         
         private void FinishDeleteDeck(bool success, Deck deck)
         {
+            _buttonDelete.enabled = true;
+            
             GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
 
             _cacheDeckListToDisplay = GetDeckList();
