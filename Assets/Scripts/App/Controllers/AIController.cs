@@ -1006,6 +1006,7 @@ namespace Loom.ZombieBattleground
                                     }
                                     else
                                     {
+                                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitModel);
                                         _actionsQueueController.ForceContinueAction(callAbilityAction);
                                     }
                                 }
@@ -1062,6 +1063,7 @@ namespace Loom.ZombieBattleground
                             }
                             else
                             {
+                                _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitModel);
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                             }
                         }
