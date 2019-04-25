@@ -22,12 +22,12 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 2
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 2048
+      m_MaxTextureSize: 4096
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 2
-      m_CompressionQuality: 50
-      m_CrunchedCompression: 0
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
       m_AndroidETC2FallbackOverride: 0
@@ -40,30 +40,28 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 8fd773dc1ee851f42a1d95be89c710d4, type: 3}
-    - {fileID: 2800000, guid: ed5ab0f0c07c86240b38b74bb27328be, type: 3}
-    - {fileID: 2800000, guid: 51f8e92bad8f48e4697ac2ce222ba212, type: 3}
-    - {fileID: 2800000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
-    - {fileID: 2800000, guid: bfaea2c874177874daac5c8e38b719e0, type: 3}
-    - {fileID: 2800000, guid: e59c5a74bbb6ec74e91afc466f784b1f, type: 3}
-    - {fileID: 2800000, guid: 071634884bd22e944a060691bcb7c043, type: 3}
+    - {fileID: 102900000, guid: 566f13b19de696943bf0da711defd111, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
+  - {fileID: 21300000, guid: b703d3e02258b4475af9897f0322c85b, type: 3}
   - {fileID: 21300000, guid: ed5ab0f0c07c86240b38b74bb27328be, type: 3}
-  - {fileID: 21300000, guid: e59c5a74bbb6ec74e91afc466f784b1f, type: 3}
-  - {fileID: 21300000, guid: 071634884bd22e944a060691bcb7c043, type: 3}
-  - {fileID: 21300000, guid: bfaea2c874177874daac5c8e38b719e0, type: 3}
-  - {fileID: 21300000, guid: 51f8e92bad8f48e4697ac2ce222ba212, type: 3}
+  - {fileID: 21300000, guid: 0b87c4a207eadcc4abcab6291af51527, type: 3}
+  - {fileID: 21300000, guid: ffe07c131e2434c72869e12d761c4b11, type: 3}
+  - {fileID: 21300000, guid: a1a16324f52e741f6b20f41e79ce9233, type: 3}
+  - {fileID: 21300000, guid: bf2770d9cbfde4db7ad59547996fa7fc, type: 3}
+  - {fileID: 21300000, guid: 4847359bd18de40d4b9edd58df83008f, type: 3}
   - {fileID: 21300000, guid: 8fd773dc1ee851f42a1d95be89c710d4, type: 3}
-  - {fileID: 21300000, guid: 40bd91bec55d69941b4d6b259e05cedd, type: 3}
+  - {fileID: 21300000, guid: e84663fdd59ea4ea88d11cfea805bc93, type: 3}
   m_PackedSpriteNamesToIndex:
+  - cooldown_timer_off
   - hero_sword
-  - glow_hero
-  - glow_skill
-  - glow_goo
-  - glow_card_inhand
+  - overlord_health_container
+  - hero_shield_battleground
+  - halfCircle
+  - cooldown_timer_frame
+  - cooldown_timer_on
   - hero_shield
-  - glow_card_onfield
+  - cooldown_timer_mask
   m_Tag: Frames_Atlas
   m_IsVariant: 0

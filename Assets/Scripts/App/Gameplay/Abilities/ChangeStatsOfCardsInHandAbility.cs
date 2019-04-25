@@ -26,6 +26,8 @@ namespace Loom.ZombieBattleground
 
         private bool _lastAuraActive;
 
+        private List<ValueHistory> _changedValues;
+
         public ChangeStatsOfCardsInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
@@ -37,6 +39,7 @@ namespace Loom.ZombieBattleground
             Count = Mathf.Clamp(ability.Count, 1, ability.Count);
 
             _affectedCards = new List<BoardUnitModel>();
+            _changedValues = new List<ValueHistory>();
         }
 
         public override void Activate()
@@ -64,8 +67,6 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            _affectedCards.ForEach(ResetStatsOfTargetCard);
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
@@ -80,11 +81,15 @@ namespace Loom.ZombieBattleground
             _lastAuraActive = status;
             if (status)
             {
+                _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                _affectedCards.Clear();
+
                 CheckSubTriggers();
             }
             else
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
+                _affectedCards.Clear();
             }
         }
 
@@ -159,9 +164,9 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                card.InstanceCard.Damage += Attack;
-                card.InstanceCard.Defense += Defense;
-                card.InstanceCard.Cost = Mathf.Max(0, card.InstanceCard.Cost+Cost);
+                card.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+                card.AddToCurrentDamageHistory(Attack, Enumerators.ReasonForValueChange.AbilityBuff);
+                card.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -184,20 +189,20 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model == card);
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == card);
                 boardCardView?.UpdateCardCost();
             }
         }
 
         private void ResetStatsOfTargetCard(BoardUnitModel card)
         {
-            card.InstanceCard.Damage = card.Prototype.Damage;
-            card.InstanceCard.Defense = card.Prototype.Defense;
-            card.InstanceCard.Cost = card.Prototype.Cost;
+            card.AddToCurrentCostHistory(-Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.AddToCurrentDamageHistory(-Attack, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model.Card == card.Card);
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model.Card == card.Card);
                 boardCardView?.UpdateCardCost();
             }
         }

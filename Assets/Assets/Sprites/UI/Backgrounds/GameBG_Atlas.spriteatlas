@@ -26,8 +26,8 @@ SpriteAtlas:
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 2
-      m_CompressionQuality: 50
-      m_CrunchedCompression: 0
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
       m_AndroidETC2FallbackOverride: 0
@@ -40,39 +40,26 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 5025957db15f5f441ad8992e37c98f5b, type: 3}
-    - {fileID: 2800000, guid: 16c48a5fd0e80ee42ad14e6976559ad1, type: 3}
-    - {fileID: 2800000, guid: 51bb2844234e314499a3231a40ca0399, type: 3}
-    - {fileID: 2800000, guid: 253028fc360d9974abf4115c1d631ae2, type: 3}
-    - {fileID: 2800000, guid: d10390531c841674995abbb0708aac6c, type: 3}
-    - {fileID: 2800000, guid: e449ef57272c6924b856320d01e32232, type: 3}
-    - {fileID: 2800000, guid: 5ce0ffe523abebd48b89ffe408e70068, type: 3}
-    - {fileID: 2800000, guid: d9d81e4da6fdb0c49b9a533b483c2209, type: 3}
-    - {fileID: 2800000, guid: 6ca343ef5a23abc4b8419dffecb8c0dd, type: 3}
-    - {fileID: 2800000, guid: 3227bfa31edf31b45a1e78fb1347030b, type: 3}
+    - {fileID: 102900000, guid: 0fad3637af85c8648af02fd2c4427d59, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
-  - {fileID: 21300000, guid: d10390531c841674995abbb0708aac6c, type: 3}
-  - {fileID: 21300000, guid: 3227bfa31edf31b45a1e78fb1347030b, type: 3}
-  - {fileID: 21300000, guid: 51bb2844234e314499a3231a40ca0399, type: 3}
-  - {fileID: 21300000, guid: 5ce0ffe523abebd48b89ffe408e70068, type: 3}
-  - {fileID: 21300000, guid: e449ef57272c6924b856320d01e32232, type: 3}
-  - {fileID: 21300000, guid: 253028fc360d9974abf4115c1d631ae2, type: 3}
-  - {fileID: 21300000, guid: d9d81e4da6fdb0c49b9a533b483c2209, type: 3}
+  - {fileID: 21300000, guid: 72bd59f0e37bd2f4c88730c6e99ed52f, type: 3}
+  - {fileID: 21300000, guid: 4e5f0302d2f7aa4498cd84b8d6dfc7e5, type: 3}
+  - {fileID: 21300000, guid: 621a39e267a35ea4f9f520411e175a4e, type: 3}
+  - {fileID: 21300000, guid: f6b2a07a54c1f254693fc9e1f83bef2d, type: 3}
   - {fileID: 21300000, guid: 5025957db15f5f441ad8992e37c98f5b, type: 3}
+  - {fileID: 21300000, guid: cf96a92e625295344b0bc0c983c5fc2e, type: 3}
+  - {fileID: 21300000, guid: afb0428eefe98ea4b9cf22e24d187eac, type: 3}
   - {fileID: 21300000, guid: 16c48a5fd0e80ee42ad14e6976559ad1, type: 3}
-  - {fileID: 21300000, guid: 6ca343ef5a23abc4b8419dffecb8c0dd, type: 3}
   m_PackedSpriteNamesToIndex:
-  - deck_full
-  - graveyard_single
-  - deck_bunch
-  - graveyard_bunch
-  - deck_single
-  - deck_couple
-  - graveyard_couple
+  - hero_mask
+  - history_frame
+  - enemy_graveyard_mask
+  - player_graveyard_mask
   - mask_bottle_player
+  - endturn_mask
+  - battleground_bg_full
   - opponent_bottle_mask
-  - graveyard_full
   m_Tag: GameBG_Atlas
   m_IsVariant: 0

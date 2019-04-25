@@ -274,6 +274,8 @@ namespace Loom.ZombieBattleground
 
         public bool BlockedInQueue { get; set; }
 
+        public bool ActionDone => _actionDone;
+
         public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
             _timerManager = GameClient.Get<ITimerManager>();

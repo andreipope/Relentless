@@ -312,11 +312,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
-#if USE_PRODUCTION_BACKEND
         private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
-#else
-        private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
-#endif
 
         private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
@@ -513,7 +509,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Log.Debug(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {

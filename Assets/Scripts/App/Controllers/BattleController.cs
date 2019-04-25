@@ -106,7 +106,8 @@ namespace Loom.ZombieBattleground
                 }
 
                 attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
-                attackedUnitModel.CurrentDefense -= Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource);
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource),
+                    Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -133,7 +134,8 @@ namespace Loom.ZombieBattleground
                         }
 
                         attackingUnitModel.LastAttackingSetType = attackedUnitModel.Card.Prototype.Faction;
-                        attackingUnitModel.CurrentDefense -= Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource);
+                        attackingUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacked, attackingUnitModel.MaximumDamageFromAnySource),
+                    Enumerators.ReasonForValueChange.Attack);
 
                         if (attackingUnitModel.CurrentDefense <= 0)
                         {
@@ -188,7 +190,8 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.UseShieldFromBuff();
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
-                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                    Enumerators.ReasonForValueChange.Attack);
 
                 CheckOnKillEnemyZombie(attackedUnitModel);
 
@@ -228,11 +231,8 @@ namespace Loom.ZombieBattleground
         {
             if (healedCreature != null)
             {
-                healedCreature.CurrentDefense += skill.Skill.Value;
-                if (healedCreature.CurrentDefense > healedCreature.MaxCurrentDefense)
-                {
-                    healedCreature.CurrentDefense = healedCreature.MaxCurrentDefense;
-                }
+                healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(skill.Skill.Value, 0, healedCreature.MaxCurrentDefense),
+                    Enumerators.ReasonForValueChange.AbilityBuff);
             }
         }
 
@@ -261,7 +261,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException(nameof(attacker), attacker, null);
                 }
 
-                attackedUnitModel.CurrentDefense -= Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource);
+                attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
+                    Enumerators.ReasonForValueChange.AbilityDamage);
                 CheckOnKillEnemyZombie(attackedUnitModel);
             }
         }
@@ -309,12 +310,9 @@ namespace Loom.ZombieBattleground
 
             if (healedCreature != null)
             {
-                healedCreature.CurrentDefense += healValue;
-                if (healedCreature.CurrentDefense > healedCreature.MaxCurrentDefense)
-                {
-                    healedCreature.CurrentDefense = healedCreature.MaxCurrentDefense;
-                }
-            }
+                healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(healValue, 0, healedCreature.MaxCurrentDefense),
+                    Enumerators.ReasonForValueChange.AbilityBuff);
+            } 
         }
 
         public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)

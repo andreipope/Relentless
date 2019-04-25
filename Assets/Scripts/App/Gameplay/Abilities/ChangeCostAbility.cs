@@ -2,6 +2,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -35,15 +36,6 @@ namespace Loom.ZombieBattleground
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
-
-            if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
-            {
-                CardsController.SetGooCostOfCardInHand(
-                        PlayerCallerOfAbility,
-                        BoardUnitModel,
-                        BoardUnitModel.Card.InstanceCard.Cost + Cost
-                    );
-            }
         }
 
         protected override void ChangeAuraStatusAction(bool status)
@@ -85,7 +77,7 @@ namespace Loom.ZombieBattleground
 
             if (!status)
             {
-                units = _updatedCostUnits;
+                units = new List<BoardUnitModel>(_updatedCostUnits);
             }
             else
             {
@@ -102,23 +94,26 @@ namespace Loom.ZombieBattleground
 
                 foreach (BoardUnitModel boardUnit in units)
                 {
-                    calculatedCost = boardUnit.Card.InstanceCard.Cost;
+                    calculatedCost = boardUnit.CurrentCost;
 
                     if (!refresh || !_updatedCostUnits.Contains(boardUnit))
                     {
                         calculatedCost += status ? Cost : - Cost;
                     }
 
-                    if (boardUnit.Card.InstanceCard.Cost == calculatedCost)
+                    if (boardUnit.CurrentCost == calculatedCost)
                         continue;
 
                     CardsController.SetGooCostOfCardInHand(
                         player,
                         boardUnit,
-                        calculatedCost
+                        status ? Cost : - Cost
                     );
-
-                    _updatedCostUnits.Add(boardUnit);
+                    
+                    if (!_updatedCostUnits.Contains(boardUnit))
+                    {
+                        _updatedCostUnits.Add(boardUnit);
+                    }
                 }
             }
 

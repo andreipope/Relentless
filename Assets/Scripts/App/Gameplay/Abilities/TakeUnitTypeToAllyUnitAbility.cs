@@ -154,7 +154,7 @@ namespace Loom.ZombieBattleground
                     {
                         List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
-                                      unit.Card.InstanceCard.Cost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
+                                      unit.CurrentCost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 
                         foreach (BoardUnitModel unit in allies)
