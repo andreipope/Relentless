@@ -1147,6 +1147,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT:
                     ability = new DestroyTargetUnitAbility(cardKind, abilityData);
+                    abilityView = new DestroyTargetUnitAbilityView((DestroyTargetUnitAbility)ability);
                     break;
                 case Enumerators.AbilityType.AGILE:
                     ability = new AgileAbility(cardKind, abilityData);
@@ -1196,6 +1197,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
                     ability = new BlockTakeDamageAbility(cardKind, abilityData);
+                    abilityView = new BlockTakeDamageAbilityView((BlockTakeDamageAbility)ability);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
                     ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
