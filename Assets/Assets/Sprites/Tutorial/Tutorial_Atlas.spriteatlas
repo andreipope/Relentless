@@ -1,0 +1,161 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Tutorial_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 3eb2d2490779bd04fa4839d6d7f62ba3, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: fa26d88088c6af24ca4c3c903c61ac84, type: 3}
+  - {fileID: 21300000, guid: b02252f003c353f4eaabe9bc9c8fde35, type: 3}
+  - {fileID: 21300000, guid: 4d455a21fda3b6840a881efc9930ba18, type: 3}
+  - {fileID: 21300000, guid: 6adb4e21605dd754fabee05a68f40905, type: 3}
+  - {fileID: 21300000, guid: 4bc2419181b935c418ab187f0cff8320, type: 3}
+  - {fileID: 21300000, guid: 355b17c1e11d1e34c86e1cdeca2afd35, type: 3}
+  - {fileID: 21300000, guid: 174bb9c1dc932d44aa356e610989320a, type: 3}
+  - {fileID: 21300000, guid: 3839f0223f9ace94cb498c1cb1b8f0db, type: 3}
+  - {fileID: 21300000, guid: 4dea21224288c0447a76ad9258a707fb, type: 3}
+  - {fileID: 21300000, guid: cda3b0523270f9a4480ca88e2b421a2a, type: 3}
+  - {fileID: 21300000, guid: 559ae652952105c4d8bd052cde5b93cb, type: 3}
+  - {fileID: 21300000, guid: 2a96d0c238c53d149a3e85e7eedf5fd8, type: 3}
+  - {fileID: 21300000, guid: 4bc6a6037dbffb14c91093f89e494043, type: 3}
+  - {fileID: 21300000, guid: 519a3733e94bf664197eb9a1ca254ced, type: 3}
+  - {fileID: 21300000, guid: 7ab4ef73e7c2a3b4da6a48fc01d22e8f, type: 3}
+  - {fileID: 21300000, guid: a39a58c3202db424d980ad69ca88eb46, type: 3}
+  - {fileID: 21300000, guid: 10ad0ec39dc44534fa54298282a9ccff, type: 3}
+  - {fileID: 21300000, guid: b34ea5d37e7c0b84a8111484ec7ebbc6, type: 3}
+  - {fileID: 21300000, guid: ecc68e4439f4b61429aa2064ad55ff3b, type: 3}
+  - {fileID: 21300000, guid: 90d64c54f516e3145809dc0ad58b1aa1, type: 3}
+  - {fileID: 21300000, guid: 79dc9ca4551c8a34abb2f1909efc2d74, type: 3}
+  - {fileID: 21300000, guid: 3043dcc4f2521714ebbabe30fd5b7d8e, type: 3}
+  - {fileID: 21300000, guid: f97482252f12f0149a83b9bf18a717e0, type: 3}
+  - {fileID: 21300000, guid: ddbaad9536febef4ca64f7b49bd64c0e, type: 3}
+  - {fileID: 21300000, guid: 9959b9a54461d504d8ce0140245bf9be, type: 3}
+  - {fileID: 21300000, guid: 8b5014f544613fe42a1696f80d3a68ee, type: 3}
+  - {fileID: 21300000, guid: 1c44b806f508f914385419d12a991887, type: 3}
+  - {fileID: 21300000, guid: 5fe71b96ffac0184caa9b49d9eb0151e, type: 3}
+  - {fileID: 21300000, guid: b919d4c67a09e3a40848fd7560110564, type: 3}
+  - {fileID: 21300000, guid: e969aad602a04b74594c6415dacaebee, type: 3}
+  - {fileID: 21300000, guid: acb9471796e73d74fa9bcbf54fe54954, type: 3}
+  - {fileID: 21300000, guid: 07dfd497233bdff48911fbf082229297, type: 3}
+  - {fileID: 21300000, guid: c51deef7a3efc144da48bd2a6ec86b12, type: 3}
+  - {fileID: 21300000, guid: bf8476195a03a0746a227aa5703626c5, type: 3}
+  - {fileID: 21300000, guid: 472d132903dc18e4ba8fe8337a7d66e5, type: 3}
+  - {fileID: 21300000, guid: ddb26c796511da64fab2a45f01376d38, type: 3}
+  - {fileID: 21300000, guid: ffa8afb9a55bd7248ba645278a4993ee, type: 3}
+  - {fileID: 21300000, guid: c31a78d9d715a3045a8a9be85bd633b1, type: 3}
+  - {fileID: 21300000, guid: efe13a2a4bae6b7448f3b55ae75a5ba4, type: 3}
+  - {fileID: 21300000, guid: d0be693a72956ce44b1f48f1c1fbd0ac, type: 3}
+  - {fileID: 21300000, guid: ce16ce3a036a66245a44cb06f640aff1, type: 3}
+  - {fileID: 21300000, guid: 9b74d15adf4617a44b4ea50a9af16561, type: 3}
+  - {fileID: 21300000, guid: 758f3e8a0957c7340b26234849702789, type: 3}
+  - {fileID: 21300000, guid: 3185724b6249c5248875a1de992cac89, type: 3}
+  - {fileID: 21300000, guid: 3c7507bb6c32dd149abeddc30353abf8, type: 3}
+  - {fileID: 21300000, guid: 662a2fcb97db9484c90003726d8fb2b6, type: 3}
+  - {fileID: 21300000, guid: fd0a8b5c9a9344f61ae7e60add8b7e50, type: 3}
+  - {fileID: 21300000, guid: d0e1a17c836bf9a4e822304c69eea4bd, type: 3}
+  - {fileID: 21300000, guid: 1985eb8c6723fca4c95b8733ddde6c67, type: 3}
+  - {fileID: 21300000, guid: 94bdc78d45207a04d997cca37e2a3b53, type: 3}
+  - {fileID: 21300000, guid: 6780495ee37e7fa4895f27e57e2bb38f, type: 3}
+  - {fileID: 21300000, guid: 83140b5e0bdd0f5488aa25f43e45f2a7, type: 3}
+  - {fileID: 21300000, guid: 7e91e87e4b2bfb04eafccfd8b60e5a25, type: 3}
+  - {fileID: 21300000, guid: 1889da7f5f190e0439a201992d4eed35, type: 3}
+  - {fileID: 21300000, guid: 127acb9fcb012774796222900d1bdd87, type: 3}
+  - {fileID: 21300000, guid: ee0b62ff560c8c04ca6e63811658d351, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - overlord_dialogue_bottom_left
+  - cardtooltip_horizontal
+  - tutorial_hand_pointing
+  - overlord_dialoguebox2
+  - tutorial_tooltip02_side_right
+  - tutorial_tooltip02_arrow
+  - tutorial_tooltip01_top_mid_02
+  - tutorial_tooltip01_top_left
+  - tutorial_tooltip02_middle
+  - tutorial_tooltip02_bottom_mid_02
+  - tutorial_hand_pressed_lighted
+  - overlord_dialogue_bottom_middle1
+  - overlord_dialogue_bottom_right
+  - tutorial_tooltip02_bottom_mid_01
+  - tutorial_tooltip01_full
+  - overlord_dialogue_top_right
+  - tutorial_progress_bg
+  - overlord_dialogue_middle_right
+  - tutorial_tooltip01_bottom_right
+  - tutorial_tooltip02_top_right
+  - overlord_dialogue_middle_left
+  - tutorial_tooltip01_bottom_mid_02
+  - overlord_dialogue_top_middle1
+  - overlord_dialogue_top_middle2
+  - tutorial_tooltip02_top_mid
+  - jane_dialoguebox_pressed
+  - cardtooltip_vertical2
+  - tutorial_tooltip02_bottom_right
+  - cardtooltip_vertical
+  - tutorial_hand_pressed
+  - overlord_dialogue_arrow_left
+  - tutorial_progress_bar
+  - transparentCircle
+  - tutorial_light_pressed
+  - tutiorial_hand_drag
+  - tutorial_tooltip01_bottom_mid_01
+  - tutorial_tooltip02_side_left
+  - tutorial_progress_icon
+  - Circle
+  - tutorial_tooltip02_bottom_left
+  - jane_dialoguebox_normal
+  - tutorial_tooltip01_side
+  - cardtooltip_horizontal2
+  - tutorial_tooltip01_middle
+  - overlord_dialogue_arrow_right
+  - overlord_dialoguebox1
+  - bubble
+  - overlord_dialogue_top_left
+  - overlord_dialogue_middle
+  - overlord_dialogue_bottom_middle2
+  - tutorial_tooltip01_bottom_left
+  - tutorial_tooltip02_full
+  - tutorial_tooltip02_top_left
+  - tutorial_tooltip01_top_mid_01
+  - tutorial_tooltip01_arrow
+  - tutorial_tooltip01_top_right
+  m_Tag: Tutorial_Atlas
+  m_IsVariant: 0

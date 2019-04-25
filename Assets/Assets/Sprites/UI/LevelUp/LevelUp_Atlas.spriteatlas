@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: LevelUp_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: fc3df0a1a97fcc14b914c7f49bc6e73d, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: b40a0ea161584264fbe5ce85b5130668, type: 3}
+  - {fileID: 21300000, guid: 120d322263cd9bf4bbbaae595c989d9c, type: 3}
+  - {fileID: 21300000, guid: 20ea4a324065d2d4888702428f093ed9, type: 3}
+  - {fileID: 21300000, guid: 5747d94227e872e4d8fc3ca205bde117, type: 3}
+  - {fileID: 21300000, guid: a7a385780a07e69408836e3860e703a1, type: 3}
+  - {fileID: 21300000, guid: 485b1499d07dae848946ca7c691d8cad, type: 3}
+  - {fileID: 21300000, guid: 7df898c922d6bbb428d221aa3e76db0d, type: 3}
+  - {fileID: 21300000, guid: 4d509aeb6c8d32b4bacdb1f8e827e774, type: 3}
+  - {fileID: 21300000, guid: 29ba55bceccf5c147891d88ea2fcefc2, type: 3}
+  - {fileID: 21300000, guid: d01b12cd02f82be4aaf47e1050bff413, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - levelup_text
+  - fxplaceholder_frame_overlordskill_medium
+  - levelup_panel
+  - levelup_fx_rays
+  - frame_overlordskill_medium
+  - levelup_text
+  - levelup_fx_rays
+  - overlordability_life_mend
+  - levelup_panel
+  - heroability_locked
+  m_Tag: LevelUp_Atlas
+  m_IsVariant: 0
