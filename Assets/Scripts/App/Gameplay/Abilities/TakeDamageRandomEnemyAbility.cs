@@ -44,23 +44,47 @@ namespace Loom.ZombieBattleground
             }
         }
 
+        protected override void TurnStartedHandler()
+        {
+            base.TurnStartedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.TURN ||
+        !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
+                return;
+            Action();
+        }
+
         protected override void TurnEndedHandler()
         {
             base.TurnEndedHandler();
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun))
+          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun) || (AbilityUnitOwner != null && AbilityUnitOwner.IsDead) || (AbilityUnitOwner != null && AbilityUnitOwner.CurrentDefense <= 0))
                 return;
             Action();
         }
 
         protected override void UnitDiedHandler()
         {
-            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH) 
+            {
                 base.UnitDiedHandler();
                 return;
             }
 
             Action();
+        }
+
+        protected override void ChangeRageStatusAction(bool status)
+        {
+            base.ChangeRageStatusAction(status);
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.RAGE)
+                return;
+
+            if (status)
+            {
+                Action();
+            }
         }
 
         public override void Action(object info = null)
@@ -148,6 +172,11 @@ namespace Loom.ZombieBattleground
                 Caller = GetCaller(),
                 TargetEffects = targetEffects
             });
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH) 
+            {
+                base.UnitDiedHandler();
+            }
         }
 
         private void ActionCompleted(object target, out int damageWas)

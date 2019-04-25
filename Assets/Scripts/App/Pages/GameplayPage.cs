@@ -199,18 +199,7 @@ namespace Loom.ZombieBattleground
                 _zippingVfx.SetActive(false);
             }
 
-#if !UNITY_ANDROID && !UNITY_IOS
-            _settingsButton.gameObject.SetActive(true);
-            _buttonBack.gameObject.SetActive(false);
-#else
-            _buttonBack.gameObject.SetActive(true);
-            _settingsButton.gameObject.SetActive(false);
-#endif
-            if (_gameplayManager.IsTutorial)
-            {
-                _buttonBack.gameObject.SetActive(false);
-                _settingsButton.gameObject.SetActive(false);
-            }
+            SettingsAndBackButtonVisibility(false);
 
             StartGame();
             KeepButtonVisibility(false);
@@ -458,11 +447,11 @@ namespace Loom.ZombieBattleground
 
             OnPlayerDeckChangedHandler(player.CardsInDeck.Count);
             OnPlayerDefenseChanged(player.Defense);
-            OnPlayerGooVialsChanged(player.GooVials);
+            OnPlayerGooVialsChanged(player.GooVials, false);
             OnPlayerCurrentGooChanged(player.CurrentGoo);
             OnOpponentDeckChangedHandler(opponent.CardsInDeck.Count);
             OnOpponentDefenseChanged(opponent.Defense);
-            OnOpponentGooVialsChanged(opponent.GooVials);
+            OnOpponentGooVialsChanged(opponent.GooVials, false);
             OnOpponentCurrentGooChanged(opponent.CurrentGoo);
         }
 
@@ -598,12 +587,12 @@ namespace Loom.ZombieBattleground
             _playerManaBar.SetGoo(goo);
         }
 
-        private void OnPlayerGooVialsChanged(int currentTurnGoo)
+        private void OnPlayerGooVialsChanged(int currentTurnGoo, bool disableAddedBottles)
         {
             if (!_isPlayerInited)
                 return;
 
-            _playerManaBar.SetVialGoo(currentTurnGoo);
+            _playerManaBar.SetVialGoo(currentTurnGoo, disableAddedBottles);
         }
 
         private void OnOpponentDefenseChanged(int defense)
@@ -631,12 +620,12 @@ namespace Loom.ZombieBattleground
             _opponentManaBar.SetGoo(goo);
         }
 
-        private void OnOpponentGooVialsChanged(int currentTurnGoo)
+        private void OnOpponentGooVialsChanged(int currentTurnGoo, bool disableAddedBottles)
         {
             if (!_isPlayerInited)
                 return;
 
-            _opponentManaBar.SetVialGoo(currentTurnGoo);
+            _opponentManaBar.SetVialGoo(currentTurnGoo, disableAddedBottles);
         }
 
         private void TurnStartedHandler()
@@ -692,8 +681,24 @@ namespace Loom.ZombieBattleground
 
         public void SettingsButtonOnClickHandler()
         {
-            _uiManager.DrawPopup<MySettingPopup>();
+            _uiManager.DrawPopup<SettingsWithCreditsPopup>();
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        public void SettingsAndBackButtonVisibility(bool visible)
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            _settingsButton.gameObject.SetActive(visible);
+            _buttonBack.gameObject.SetActive(false);
+#else
+            _buttonBack.gameObject.SetActive(visible);
+            _settingsButton.gameObject.SetActive(false);
+#endif
+            if (_gameplayManager.IsTutorial)
+            {
+                _buttonBack.gameObject.SetActive(false);
+                _settingsButton.gameObject.SetActive(false);
+            }
         }
 
         #endregion

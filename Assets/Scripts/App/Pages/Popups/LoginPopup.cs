@@ -20,6 +20,7 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(LoginPopup));
 
+        public static Action OnShowPopupEvent;
         public static Action OnHidePopupEvent;
         public static Action OnLoginSuccess;
 
@@ -222,6 +223,8 @@ namespace Loom.ZombieBattleground
 
             _onEnterInputIndex = _inputManager.RegisterInputHandler(Enumerators.InputType.KEYBOARD,
                 (int)KeyCode.Return, null, OnInputDownEnterButton);
+                
+            OnShowPopupEvent?.Invoke();
         }
 
         public void Show(object data)
@@ -289,7 +292,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input a valid OTP.");
+                _uiManager.GetPopup<WarningPopup>().Show("Incorrect verification code.\nPlease try again.");
             }
         }
 
@@ -304,7 +307,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
             }
         }
 
@@ -337,19 +340,19 @@ namespace Loom.ZombieBattleground
 
             if (string.IsNullOrEmpty(_emailFieldRegister.text) || string.IsNullOrEmpty(_passwordFieldRegister.text) || string.IsNullOrEmpty(_confirmFieldRegister.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please enter both your email and password.");
                 return;
             }
 
             if (!Utilites.ValidateEmail(_emailFieldRegister.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
                 return;
             }
 
             if (_passwordFieldRegister.text != _confirmFieldRegister.text)
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Password Mismatch - Password and Confirm Password must be the same.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please make sure your passwords match.");
                 return;
             }
 
@@ -360,7 +363,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
             }
         }
 
@@ -371,13 +374,13 @@ namespace Loom.ZombieBattleground
 
             if (string.IsNullOrEmpty(_emailFieldLogin.text) || string.IsNullOrEmpty(_passwordFieldLogin.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("No Email or Password Entered.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please enter both your email and password.");
                 return;
             }
 
             if (!Utilites.ValidateEmail(_emailFieldLogin.text))
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid Email.");
+                _uiManager.GetPopup<WarningPopup>().Show("Please enter a valid email address.");
                 return;
             }
 
@@ -388,7 +391,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.GetPopup<WarningPopup>().Show("Please input valid data.");
+                _uiManager.GetPopup<WarningPopup>().Show("Incorrect email or password. Please try again.");
             }
         }
 
@@ -424,7 +427,7 @@ namespace Loom.ZombieBattleground
                     string errorMsg = string.Empty;
                     if (e.Message.Contains("Forbidden"))
                     {
-                        errorMsg = "Invalid OTP. \n Please Enter correct OTP.";
+                        errorMsg = "Incorrect verification code.\nPlease try again.";
                     }
                     _lastErrorMessage = e.Message;
                     SetUIState(LoginState.ValidationFailed, errorMsg);
@@ -491,7 +494,7 @@ namespace Loom.ZombieBattleground
             {
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
-                SetUIState(LoginState.ValidationFailed, "Registration was failed.\nPlease try again later.");
+                SetUIState(LoginState.ValidationFailed, "Unable to register at this time.\nPlease try again a bit later.");
 
                 _registerButton.enabled = true;
             }
@@ -501,9 +504,7 @@ namespace Loom.ZombieBattleground
                 string errorMsg = string.Empty;
                 if (e.Message.Contains("BadRequest"))
                 {
-                    errorMsg = "This email already exists, \n " +
-                               "Please try a different email to register or \n " +
-                               "login to your existing account.";
+                    errorMsg = "That email is already in use.\nPlease use a different email or login to your existing account.";
                 }
 
                 _lastErrorMessage = e.Message;
@@ -604,7 +605,7 @@ namespace Loom.ZombieBattleground
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
-                SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
+                SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
 
                 _loginButton.enabled = true;
             }
@@ -614,7 +615,7 @@ namespace Loom.ZombieBattleground
 
                 GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
 
-                SetUIState(LoginState.ValidationFailed, "Login failed due to: " + e.Message);
+                SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
 
                 _loginButton.enabled = true;
             }
@@ -626,7 +627,7 @@ namespace Loom.ZombieBattleground
                 _lastErrorMessage = e.Message;
                 if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
                 {
-                    _lastErrorMessage = "\n The Username and/or Password are not correct. \n";
+                    _lastErrorMessage = "Incorrect username and/or password.\nPlease try again.";
                 }
                 SetUIState(LoginState.ValidationFailed);
 
@@ -687,10 +688,6 @@ namespace Loom.ZombieBattleground
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)
             {
-#if USE_REBALANCE_BACKEND
-                GameClient.Get<IDataManager>().CachedUserLocalData.Tutorial = false;
-                _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
-#else
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
                 (_tutorialManager as TutorialManager).CheckAvailableTutorial();
 
@@ -740,7 +737,6 @@ namespace Loom.ZombieBattleground
                         _tutorialManager.StartTutorial();
                     }
                 }
-#endif
             }
             else
             {
@@ -923,17 +919,7 @@ namespace Loom.ZombieBattleground
         private void GenerateKeysAndUserFromUserID(
             string userId, out byte[] privateKey, out byte[] publicKey)
         {
-            userId = "ZombieSlayer_" + userId;
-
-            string seedString =
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId))) +
-                CryptoUtils.BytesToHexString(
-                    new MD5CryptoServiceProvider().ComputeHash(Encoding.UTF8.GetBytes(userId)));
-
-            byte[] seedByte = CryptoUtils.HexStringToBytes(seedString);
-
-            privateKey = CryptoUtils.GeneratePrivateKey(seedByte);
+            privateKey = CryptoUtils.GeneratePrivateKey();
 
             publicKey = CryptoUtils.PublicKeyFromPrivateKey(privateKey);
         }

@@ -14,7 +14,7 @@ using UnityEngine.TestTools;
 
 namespace Loom.ZombieBattleground.Test
 {
-    [Category("QuickSubset")]
+    [Category("EditQuickSubset")]
     public class SelfTests
     {
         private static readonly ILog Log = Logging.GetLog(nameof(SelfTests));
@@ -38,7 +38,6 @@ namespace Loom.ZombieBattleground.Test
                 typeof(EarthCardsTests),
                 typeof(FireCardsTests),
                 typeof(ToxicCardsTests),
-                typeof(HiddenCardsTests),
                 typeof(LifeCardsTests),
                 typeof(ItemsCardsTests)
             };

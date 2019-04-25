@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityUnitOwner.CurrentDamage += Value;
+            AbilityUnitOwner.AddToCurrentDamageHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
             AbilityUnitOwner.BuffedDamage += Value;
         }
     }

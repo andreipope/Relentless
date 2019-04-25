@@ -52,8 +52,6 @@ namespace Loom.ZombieBattleground
 
         private const int MaxSelectedAbilities = 2;
 
-        public event Action PopupHiding;
-
         private ISoundManager _soundManager;
 
         private Button _continueButton;
@@ -93,8 +91,6 @@ namespace Loom.ZombieBattleground
                     Dispose();
                 }
             };
-
-            PopupHiding += ProcessEditOverlordSkills;
         }
         
         public void Show(GameObject selfPage)
@@ -127,39 +123,6 @@ namespace Loom.ZombieBattleground
         public void Dispose()
         {
             ResetItems();
-        }
-        
-        private async void ProcessEditOverlordSkills()
-        { 
-            bool success = true;
-
-            Deck deckToSave = _dataManager.CachedDecksData.Decks.ToList()[_myDeckPage.SelectDeckIndex];
-            deckToSave.PrimarySkill = _myDeckPage.CurrentEditDeck.PrimarySkill;
-            deckToSave.SecondarySkill = _myDeckPage.CurrentEditDeck.SecondarySkill;
-
-            try
-            {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deckToSave);
-            }
-            catch (Exception e)
-            {
-                success = false;
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                OpenAlertDialog("Not able to edit Deck: \n" + e.Message);
-            }
-
-            if (success)
-            {
-                HordeSelectionWithNavigationPage.Tab tab = _myDeckPage.IsDisplayRenameDeck ?
-                    HordeSelectionWithNavigationPage.Tab.Rename :
-                    HordeSelectionWithNavigationPage.Tab.Editing;
-
-                if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
-                    return;
-                    
-                _myDeckPage.ChangeTab(tab);
-            }
         }
         
         private void UpdateSkillIconAndDescriptionDisplay()
@@ -249,7 +212,39 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditOverlord.SecondarySkill;
             }
 
-            PopupHiding?.Invoke();
+            if (_myDeckPage.IsEditingNewDeck)
+            {
+                if (GameClient.Get<ITutorialManager>().IsTutorial)
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+                }
+                else
+                {
+                    _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Rename);
+                }
+            }
+            else
+            {
+                DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+                deckGeneratorController.FinishEditDeck += FinishEditDeck;
+                _continueButton.enabled = false;
+                deckGeneratorController.ProcessEditDeck(_myDeckPage.CurrentEditDeck);
+            }
+        }
+        
+        private void FinishEditDeck(bool success, Deck deck)
+        {
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishEditDeck -= FinishEditDeck; 
+
+            if (GameClient.Get<IAppStateManager>().AppState != Enumerators.AppState.HordeSelection)
+                return;
+
+            _continueButton.enabled = true;
+            
+            if(success)
+            {
+                _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.Editing);
+            }
         }
 
         #endregion
@@ -329,7 +324,9 @@ namespace Loom.ZombieBattleground
 
             private readonly Button _selectButton;
 
-            private readonly GameObject _glowObj;
+            private readonly GameObject _glowObj,
+                                        _frameObj,
+                                        _lockObj;
 
             private readonly Image _abilityIconImage;
 
@@ -352,6 +349,8 @@ namespace Loom.ZombieBattleground
 
                 _selfObject.SetActive(true);
                 _glowObj = _selfObject.transform.Find("Glow").gameObject;
+                _frameObj = _selfObject.transform.Find("Frame").gameObject;
+                _lockObj = _selfObject.transform.Find("Image_Lock").gameObject;
                 _abilityIconImage = _selfObject.transform.Find("AbilityIcon").GetComponent<Image>();
                 _selectButton = _selfObject.GetComponent<Button>();
 
@@ -359,9 +358,13 @@ namespace Loom.ZombieBattleground
 
                 IsUnlocked = Skill != null ? Skill.Unlocked : false;
 
-                _abilityIconImage.sprite = IsUnlocked ?
-                    _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath) :
-                     _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
+                if(IsUnlocked)
+                {
+                    _abilityIconImage.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + Skill.IconPath);
+                }
+
+                _frameObj.SetActive(IsUnlocked);
+                _lockObj.SetActive(!IsUnlocked);
 
                 _selectButton.interactable = IsUnlocked;
 

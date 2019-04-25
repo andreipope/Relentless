@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                     BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewDamage;
-                    boardUnit.CurrentDamage = rageOutcome.NewDamage;
+                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
@@ -218,12 +218,11 @@ namespace Loom.ZombieBattleground
                         }
 
                         boardUnit.BuffedDamage = changeStatOutcome.NewDamage;
-                        boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
+                        //boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
                     }
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;
@@ -356,6 +355,12 @@ namespace Loom.ZombieBattleground
         private void OnLeaveMatchHandler()
         {
             _gameplayManager.OpponentPlayer.PlayerDie();
+
+            if(_cardsController.CardDistribution)
+            {
+                _cardsController.EndCardDistribution();
+                GameClient.Get<IUIManager>().HidePopup<MulliganPopup>();
+            }
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -464,6 +469,7 @@ namespace Loom.ZombieBattleground
                                 BoardItem item = new BoardItem(null, boardUnitModel); // todo improve it with game Object aht will be aniamted
                                 _gameplayManager.OpponentPlayer.BoardItemsInUse.Insert(ItemPosition.End, item);
                                 item.Model.Owner = _gameplayManager.OpponentPlayer;
+                                item.Model.Owner.PlayerCardsController.AddCardToGraveyard(item.Model);
                                 _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
                                 {
                                     ActionType = Enumerators.ActionType.PlayCardFromHand,
@@ -476,7 +482,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
+                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.CurrentCost;
                     },
                     (workingCard, boardObject) =>
                     {
@@ -642,7 +648,8 @@ namespace Loom.ZombieBattleground
             if (boardUnitModel == null)
                 ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
-            _ranksController.BuffAllyManually(units, boardUnitModel);
+            if (Constants.RankSystemEnabled)
+                _ranksController.BuffAllyManually(units, boardUnitModel);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

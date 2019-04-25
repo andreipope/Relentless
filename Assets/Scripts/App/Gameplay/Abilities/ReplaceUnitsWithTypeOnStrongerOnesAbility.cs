@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
     public class ReplaceUnitsWithTypeOnStrongerOnesAbility : AbilityBase
     {
         private List<BoardUnitModel> _boardUnits;
+        private List<BoardUnitView> _boardUnitsViews;
+        private List<BoardUnitView> _replaceBoardUnitsViews;
         private List<ReplaceUnitInfo> _replaceUnitInfos;
 
         public int Value;
@@ -25,6 +27,8 @@ namespace Loom.ZombieBattleground
 
             _boardUnits = new List<BoardUnitModel>();
             _replaceUnitInfos = new List<ReplaceUnitInfo>();
+            _replaceBoardUnitsViews = new List<BoardUnitView>();
+            _boardUnitsViews = new List<BoardUnitView>();
         }
 
         public override void Activate()
@@ -53,9 +57,11 @@ namespace Loom.ZombieBattleground
             ClearOldUnitsOnBoard();
             GenerateNewUnitsOnBoard();
 
+            InvokeActionTriggered(new List<BoardUnitView>[] { _boardUnitsViews, _replaceBoardUnitsViews });
+
             List<ParametrizedAbilityBoardObject> targets = new List<ParametrizedAbilityBoardObject>();
 
-            foreach(ReplaceUnitInfo unitinfo in _replaceUnitInfos)
+            foreach (ReplaceUnitInfo unitinfo in _replaceUnitInfos)
             {
                 targets.Add(new ParametrizedAbilityBoardObject(
                     unitinfo.OldUnitView.Model,
@@ -67,6 +73,11 @@ namespace Loom.ZombieBattleground
             }
 
             InvokeUseAbilityEvent(targets);
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
         }
 
         private void GetInfosAboutUnitsOnBoard()
@@ -104,6 +115,8 @@ namespace Loom.ZombieBattleground
             {
                 itemPosition = new ItemPosition(unitInfo.Position);
                 unit = unitInfo.OwnerPlayer.PlayerCardsController.SpawnUnitOnBoard(unitInfo.NewUnitCardTitle, itemPosition);
+                _replaceBoardUnitsViews.Add(unit);
+                RanksController.AddUnitForIgnoreRankBuff(unit.Model);
             }
         }
 
@@ -115,10 +128,8 @@ namespace Loom.ZombieBattleground
                 {
                     BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
                     unit.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unit);
-
+                    
                     BattlegroundController.DeactivateAllAbilitiesOnUnit(unit);
-
-                    unitView.DisposeGameObject();
                 }
             }
             else
@@ -128,8 +139,6 @@ namespace Loom.ZombieBattleground
                     unitInfo.OldUnitView.Model.OwnerPlayer.PlayerCardsController.RemoveCardFromBoard(unitInfo.OldUnitView.Model);
 
                     BattlegroundController.DeactivateAllAbilitiesOnUnit(unitInfo.OldUnitView.Model);
-
-                    unitInfo.OldUnitView.DisposeGameObject();
                 }
             }
         }
@@ -142,7 +151,7 @@ namespace Loom.ZombieBattleground
                 {
                     BoardUnitModel unit = boardObject.BoardObject as BoardUnitModel;
                     BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
-
+                    _boardUnitsViews.Add(unitView);
                     _replaceUnitInfos.Add(new ReplaceUnitInfo()
                     {
                         OldUnitView = unitView,
@@ -157,10 +166,11 @@ namespace Loom.ZombieBattleground
                 foreach (BoardUnitModel unit in _boardUnits)
                 {
                     BoardUnitView unitView = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit);
+                    _boardUnitsViews.Add(unitView);
                     ReplaceUnitInfo replaceUnitInfo = new ReplaceUnitInfo()
                     {
-                        OldUnitCost = unit.Card.InstanceCard.Cost,
-                        NewUnitPossibleCost = unit.Card.InstanceCard.Cost + 1,
+                        OldUnitCost = unit.CurrentCost,
+                        NewUnitPossibleCost = unit.CurrentCost + 1,
                         OldUnitView = unitView,
                         OwnerPlayer = unit.OwnerPlayer,
                         Position = unit.OwnerPlayer.CardsOnBoard.IndexOf(unit),

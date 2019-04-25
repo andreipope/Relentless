@@ -83,7 +83,7 @@ namespace Loom.ZombieBattleground
 
         public event Action OnMenuStepUpdated;
 
-        public bool BattleShouldBeWonBlocker;
+        public bool BattleShouldBeWonBlocker { get; private set; }
 
         public bool PlayerWon { get; set; }
 

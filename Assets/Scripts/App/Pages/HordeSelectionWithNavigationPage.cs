@@ -61,11 +61,10 @@ namespace Loom.ZombieBattleground
                        _buttonSelectDeckFilter,
                        _buttonEdit,
                        _buttonDelete,
-                       _buttonRename,                       
+                       _buttonRename,
                        _buttonLeftArrow,
-                       _buttonRightArrow;
-
-        public Button ButtonSaveRenameDeck;
+                       _buttonRightArrow,
+                       _buttonSaveRenameDeck;
 
         private TMP_InputField _inputFieldRenameDeckName,
                                _inputFieldSearchDeckName;
@@ -106,9 +105,9 @@ namespace Loom.ZombieBattleground
 
         public OverlordModel CurrentEditOverlord;
 
-        public bool IsEditingNewDeck;
+        public bool IsEditingNewDeck;    
         
-        public bool IsDisplayRenameDeck;
+        public bool IsRenameWhileEditing;    
         
         private int _deckPageIndex;
 
@@ -283,7 +282,29 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            ChangeTab(Tab.SelectDeck);
+            if (_tab == Tab.Editing)
+            {
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmSaveDeckHandler;
+                _uiManager.DrawPopup<QuestionPopup>("Would you like to save your progress?");
+            }
+            else
+            {
+                ChangeTab(Tab.SelectDeck);
+            }
+        }
+        
+        private void ConfirmSaveDeckHandler(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= ConfirmSaveDeckHandler;
+            
+            if (status)
+            {
+                HordeEditTab.SaveDeck(Tab.SelectDeck);
+            }
+            else
+            {                
+                ChangeTab(Tab.SelectDeck);        
+            }  
         }
         
         private void ButtonSelectDeckFilterHandler()
@@ -307,7 +328,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _uiManager.DrawPopup<WarningPopup>("No available deck exist for selected element!");
+                _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
         }
@@ -329,7 +350,7 @@ namespace Loom.ZombieBattleground
             PlayClickSound();
             if (GetDeckList().Count <= 1)
             {
-                OpenAlertDialog("Sorry, Not able to delete Last Deck.");
+                OpenAlertDialog("Cannot delete. You must have at least one deck.");
                 return;
             }
 
@@ -337,7 +358,7 @@ namespace Loom.ZombieBattleground
             if (deck != null)
             {
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmDeleteDeckReceivedHandler;
-                _uiManager.DrawPopup<QuestionPopup>("Do you really want to delete " + deck.Name + "?");
+                _uiManager.DrawPopup<QuestionPopup>("Are you sure you want to delete " + deck.Name + "?");
             }
         }
         
@@ -352,13 +373,12 @@ namespace Loom.ZombieBattleground
         
         private void ButtonSaveRenameDeckHandler()
         {
-            if (GameClient.Get<ITutorialManager>().BlockAndReport(ButtonSaveRenameDeck.name))
+            if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonSaveRenameDeck.name))
                 return;
 
             PlayClickSound();
-            Deck deck = GetSelectedDeck();
             string newName = _inputFieldRenameDeckName.text;
-            HordeEditTab.ProcessRenameDeck(deck, newName);
+            HordeEditTab.RenameDeck(newName);
         }
 
         public void OnInputFieldRenameEndedEdit(string value)
@@ -379,9 +399,21 @@ namespace Loom.ZombieBattleground
                 return;
                 
             Deck deck = GetSelectedDeck();
-            ProcessDeleteDeck(deck);
+
+            DeckGeneratorController deckGeneratorController = GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>();
+            deckGeneratorController.FinishDeleteDeck += FinishDeleteDeck;
+            deckGeneratorController.ProcessDeleteDeck(deck);
 
             _analyticsManager.SetEvent(AnalyticsManager.EventDeckDeleted);
+        }
+        
+        private void FinishDeleteDeck(bool success, Deck deck)
+        {
+            GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().FinishDeleteDeck -= FinishDeleteDeck; 
+
+            _cacheDeckListToDisplay = GetDeckList();
+            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
+            ChangeTab(Tab.SelectDeck);
         }
 
         #endregion
@@ -404,24 +436,23 @@ namespace Loom.ZombieBattleground
             return deckList[SelectDeckIndex];
         }
 
-        public void AssignCurrentDeck(bool isNewDeck, bool isDisplayRenameDeck = false)
-        {   
-            IsEditingNewDeck = isNewDeck;
-            if(IsEditingNewDeck)
-            {
-                CurrentEditDeck = CreateNewDeckData();
-            }
-            else
-            {
-                CurrentEditDeck = GetSelectedDeck().Clone();
-                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
-            }
-            if(_tutorialManager.IsTutorial)
-            {
-                isDisplayRenameDeck = false;
-            }
+        public void AssignCurrentDeck()
+        { 
+            CurrentEditDeck = GetSelectedDeck().Clone();
+            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
+            IsEditingNewDeck = false;
+        }
 
-            IsDisplayRenameDeck = isDisplayRenameDeck;
+        public void AssignCurrentDeck(int deckIndex)
+        {
+            SelectDeckIndex = deckIndex;
+            AssignCurrentDeck();
+        }
+        
+        public void AssignNewDeck()
+        {
+            CurrentEditDeck = CreateNewDeckData();
+            IsEditingNewDeck = true;
         }
 
         private Deck CreateNewDeckData()
@@ -429,35 +460,12 @@ namespace Loom.ZombieBattleground
             Deck deck = new Deck(
                 -1,
                 CurrentEditOverlord.OverlordId,
-                GenerateDeckName(),                
+                GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
                 new List<DeckCardData>(),
                 0,
                 0
             );
             return deck;
-        }
-        
-        private string GenerateDeckName()
-        {
-            int index = _dataManager.CachedDecksData.Decks.Count;
-            string newName = _tutorialManager.IsTutorial ? "Tutorial" : "HORDE " + index;
-
-            while (true)
-            {
-                bool isNameCollide = false;
-                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; ++i)
-                {
-                    if (string.Equals(_dataManager.CachedDecksData.Decks[i].Name,newName))
-                    {
-                        isNameCollide = true;
-                        ++index;
-                        newName = "HORDE " + index;
-                        break;
-                    }
-                }
-                if (!isNameCollide)
-                    return newName;
-            }
         }
 
         public void ChangeTab(Tab newTab)
@@ -493,10 +501,9 @@ namespace Loom.ZombieBattleground
                     ApplyDeckByLastSelected();
                     break;
                 case Tab.Rename:
-                    _inputFieldRenameDeckName.text = GetSelectedDeck().Name;
+                    _inputFieldRenameDeckName.text = CurrentEditDeck.Name;
                     break;
-                case Tab.Editing:  
-                    AssignCurrentDeck(false);                                    
+                case Tab.Editing:
                     break;
                 case Tab.SelectOverlord:                    
                     break;
@@ -526,10 +533,13 @@ namespace Loom.ZombieBattleground
             {
                 SelectDeckIndex = newIndexInPage + (_deckPageIndex-1) * _deckInfoAmountPerPage + (_deckInfoAmountPerPage-1);
             }
+            
             if (_tutorialManager.IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1)
             {
                 SelectDeckIndex = 1;
             }
+            
+            AssignCurrentDeck();    
         }
 
         private void UpdateShowBackButton(bool isShow)
@@ -540,48 +550,6 @@ namespace Loom.ZombieBattleground
         private void UpdateShowAutoButton(bool isShow)
         {
             _trayButtonAuto.gameObject.SetActive(isShow);
-        }
-
-        private async void ProcessDeleteDeck(Deck currentDeck)
-        {
-            try
-            {
-                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    currentDeck.Id
-                );
-
-                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-            }
-            catch (TimeoutException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("Time out ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Client.RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("RpcException ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Result ===", e);
-                OpenAlertDialog($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
-                return;
-            }
-
-            _cacheDeckListToDisplay = GetDeckList();
-            SelectDeckIndex = Mathf.Min(SelectDeckIndex, _cacheDeckListToDisplay.Count-1);
-
-            ChangeTab(Tab.SelectDeck);
         }
         
         private void MoveDeckPageIndex(int direction)
@@ -634,7 +602,7 @@ namespace Loom.ZombieBattleground
             
             if(deckListToDisplay.Count <= 0)
             {
-                OpenAlertDialog($"No deck found for keyword '{_inputFieldSearchDeckName.text.Trim()}'");
+                OpenAlertDialog($"No decks found with that search.");
                 return deckList;
             }
 
@@ -700,8 +668,8 @@ namespace Loom.ZombieBattleground
             _buttonRename = _selfPage.transform.Find("Tab_SelectDeck/Panel_FrameComponents/Lower_Items/Button_Rename").GetComponent<Button>();
             _buttonRename.onClick.AddListener(ButtonRenameHandler);
             
-            ButtonSaveRenameDeck = _selfPage.transform.Find("Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
-            ButtonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);           
+            _buttonSaveRenameDeck = _selfPage.transform.Find("Tab_Rename/Panel_FrameComponents/Lower_Items/Button_Save").GetComponent<Button>();
+            _buttonSaveRenameDeck.onClick.AddListener(ButtonSaveRenameDeckHandler);           
         }
 
         private void LoadObjects()
@@ -762,7 +730,7 @@ namespace Loom.ZombieBattleground
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
                 MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();                
                 multiPointerClickHandler.DoubleClickReceived += ()=>
-                {
+                {                    
                     ChangeSelectDeckIndex(index);
                     ButtonEditHandler();
                     PlayClickSound();

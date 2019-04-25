@@ -37,7 +37,9 @@ namespace Loom.ZombieBattleground
         private List<TextMeshProUGUI> _textItemNameList,
                                       _textItemPriceList;
 
-        private ShopData _shopData;
+        private FiatBackendManager.FiatProduct _productData;
+
+        private string _currencyPrefix;
         
         #region IUIElement
         
@@ -51,7 +53,7 @@ namespace Loom.ZombieBattleground
             _textItemPriceList = new List<TextMeshProUGUI>();
 
             InitPurchaseLogic();
-            LoadShopData();         
+            LoadProductData();         
         }
 
         public void Update()
@@ -62,14 +64,20 @@ namespace Loom.ZombieBattleground
         {
             _selfPage = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
-            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);
-            
-            LoadItems();
+            _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
 
             UpdatePageScaleToMatchResolution();
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
             _uiManager.DrawPopup<AreaBarPopup>();
+            
+            if(!CheckIfProductDataAvailable())
+            {
+                ReloadProductData();
+                _uiManager.DrawPopup<WarningPopup>($"Cannot load product data\n Please try again");                
+                return;
+            }
+            LoadItems();
         }
         
         public void Hide()
@@ -106,11 +114,11 @@ namespace Loom.ZombieBattleground
         private void BuyButtonHandler( int id )
         {
             #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-            _uiManager.DrawPopup<LoadingFiatPopup>("Activating purchase . . .");
-            _inAppPurchaseManager.BuyProductID( _shopData.ProductID[id] );
+            _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
+            _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
             #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
             #endif
         }
         
@@ -134,38 +142,84 @@ namespace Loom.ZombieBattleground
             }
         } 
         
+        private bool CheckIfProductDataAvailable()
+        {
+            return _productData != null;
+        }
+        
+        private async void ReloadProductData()
+        {
+            _uiManager.DrawPopup<LoadingFiatPopup>($"Loading products data");
+            await LoadProductData();
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.MAIN_MENU);
+        }
+
         private void LoadItems()
         {
-            string path = "Panel_Content/Group_Packs";
+            string path = "Panel_Content/Mask/Group_Packs";
             
             _itemButtonList.Clear();
             _textItemNameList.Clear();
             _textItemPriceList.Clear();
+
+            int maxPackObject = _selfPage.transform.Find(path).childCount;
             
-            for (int i = 0; i < _shopData.NumberOfItems; ++i)
+            for (int i = 0; i < _productData.packs.Length && i < maxPackObject; ++i)
             {
                 int index = i;
+                
                 Button button = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Button_Pack").GetComponent<Button>();
+                button.transform.parent.gameObject.SetActive(true);
                 _itemButtonList.Add(button);
                 button.onClick.AddListener(()=>
                 {
                     PlayClickSound();
                     BuyButtonHandler(index);
                 });
+
+                FiatBackendManager.FiatProductPack packData = _productData.packs[i];
                 
                 TextMeshProUGUI textName = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_PackName").GetComponent<TextMeshProUGUI>();
-                textName.text = _shopData.ItemNames[i];
+                textName.text = packData.display_name;
                 _textItemNameList.Add(textName);
                 
                 TextMeshProUGUI textPrice = _selfPage.transform.Find($"{path}/Node_Pack_{i}/Text_Price").GetComponent<TextMeshProUGUI>();
-                textPrice.text = _shopData.ItemCosts[i];
+                textPrice.text = _currencyPrefix + (packData.price / (float)_productData.unit_percent).ToString("n2");
                 _textItemPriceList.Add(textPrice);
             }
         }
         
-        private void LoadShopData()
+        private async Task LoadProductData()
         {
-            _shopData = JsonConvert.DeserializeObject<ShopData>(_loadObjectsManager.GetObjectByPath<TextAsset>("Data/shop_data").text);            
+            FiatBackendManager.FiatProductResponse fiatProductResponse;
+            try
+            {
+                fiatProductResponse = await _fiatBackendManager.CallFiatProducts();
+            }
+            catch(Exception e)
+            {
+                Log.Info($"{nameof(_fiatBackendManager.CallFiatProducts)} failed: {e.Message}");                
+                return;
+            }
+
+            try
+            {
+#if UNITY_ANDROID
+                _productData = fiatProductResponse.products.First(x => x.store == "PlayStore");
+#elif UNITY_IOS
+                _productData = fiatProductResponse.products.First(x => x.store == "AppStore");
+#else
+                _productData = fiatProductResponse.products.First(x => x.store == "MarketPlace"); 
+#endif
+            }
+            catch(Exception e)
+            {
+                Log.Info($"Parsing product data failed: {e.Message}");                
+                return;
+            }
+
+            _currencyPrefix = string.Equals(_productData.currency, "USD") ? "$" : "";
         }
 
 #region Purchasing Logic
@@ -197,8 +251,9 @@ namespace Loom.ZombieBattleground
         
 #if UNITY_IOS || UNITY_ANDROID
         private async void RequestFiatValidationGoogle()
-        {            
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationGoogle)}");
+        {
+            Log.Info($"{nameof(RequestFiatValidationGoogle)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -214,7 +269,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatValidationGoogle)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationGoogle)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -235,7 +290,8 @@ namespace Loom.ZombieBattleground
 
         private async void RequestFiatValidationApple()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatValidationApple)}");
+            Log.Info($"{nameof(RequestFiatValidationApple)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -251,7 +307,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatValidationApple)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatValidationApple)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationApple;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -272,7 +328,8 @@ namespace Loom.ZombieBattleground
         
         private async void RequestFiatTransaction()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(RequestFiatTransaction)}");
+            Log.Info($"{nameof(RequestFiatTransaction)}");
+            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
             
             List<FiatBackendManager.FiatTransactionResponse> recordList = null;
             try
@@ -282,7 +339,7 @@ namespace Loom.ZombieBattleground
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>($"{nameof(RequestFiatTransaction)} failed\n{e.Message}\nPlease try again");
+                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
                 _uiManager.HidePopup<LoadingFiatPopup>();
@@ -313,7 +370,7 @@ namespace Loom.ZombieBattleground
         
         private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
         {            
-            Log.Debug("<color=green>START REQUEST for packs</color>");
+            Log.Debug("START REQUEST for packs");
             List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
             for (int i = 0; i < sortedRecordList.Count; ++i)
             {
@@ -323,17 +380,18 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < requestList.Count; ++i)
             {
                 FiatBackendManager.FiatTransactionResponse record = requestList[i];
-                
-                _uiManager.DrawPopup<LoadingFiatPopup>($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+
+                Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+                _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
 
                 string eventResponse = "";
 
                 eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
-                Log.Debug($"<color=green>Contract [requestPacks] success call.</color>");
-                Log.Debug($"<color=green>EVENT RESPONSE: {eventResponse}</color>");
+                Log.Debug($"Contract [requestPacks] success call.");
+                Log.Debug($"EVENT RESPONSE: {eventResponse}");
                 if (!string.IsNullOrEmpty(eventResponse))
                 {
-                    Log.Debug("<color=green>FINISH REQUEST for packs</color>");
+                    Log.Debug("FINISH REQUEST for packs");
                     await _fiatBackendManager.CallFiatClaim
                     (
                         record.UserId,
@@ -352,7 +410,7 @@ namespace Loom.ZombieBattleground
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
             await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
-            _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s)");
+            _uiManager.DrawPopup<LoadingFiatPopup>($"Success!");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
