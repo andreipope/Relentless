@@ -1,5 +1,6 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ namespace Loom.ZombieBattleground
     {
         private int Damage { get; }
         private BoardUnitModel _targetedUnit;
+
+        private Action _animationEndedAction;
 
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
@@ -26,7 +29,12 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = AbilityUnitOwner;
 
-                ApplyMaximumDamageBuff(_targetedUnit, Damage);
+                _animationEndedAction = () =>
+                {
+                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
+                };
+
+                InvokeActionTriggered(_targetedUnit);
 
                 InvokeUseAbilityEvent();
             }
@@ -40,7 +48,12 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = TargetUnit;
 
-                ApplyMaximumDamageBuff(_targetedUnit, Damage);
+                _animationEndedAction = () =>
+                {
+                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
+                };
+
+                InvokeActionTriggered(_targetedUnit);
 
                 InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
@@ -58,12 +71,26 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                ApplyMaximumDamageBuff(_targetedUnit, 999);
+                _animationEndedAction = () =>
+                {
+                    ApplyMaximumDamageBuff(_targetedUnit, 999);
+                };
+
+                InvokeActionTriggered(_targetedUnit);
             }
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            _animationEndedAction?.Invoke();
+            _animationEndedAction = null;
         }
 
         private void ApplyMaximumDamageBuff(BoardUnitModel boardUnit, int value)
         {
+            Debug.LogError(1111);
             boardUnit?.SetMaximumDamageToUnit(value);
         }
     }
