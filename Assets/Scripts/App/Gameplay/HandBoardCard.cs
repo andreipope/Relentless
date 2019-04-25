@@ -280,7 +280,6 @@ public class HandBoardCard : OwnableBoardObject
         {
             onComplete?.Invoke();
             _isHovering = false;
-            HandCardCollider.enabled = true;
         });
 
         _sortingGroup.sortingOrder = _normalSortingOrder;
