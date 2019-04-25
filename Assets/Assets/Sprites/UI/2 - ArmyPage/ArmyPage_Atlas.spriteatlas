@@ -19,7 +19,18 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 8
@@ -29,27 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: 0ce98a57d5595446daf44e89efa3c3f2, type: 3}
-    - {fileID: 2800000, guid: ea5417bd1250444dfb8572da47f8e427, type: 3}
-    - {fileID: 2800000, guid: 36ad2ea589bd84135823f44193fc17a0, type: 3}
-    - {fileID: 2800000, guid: 75831ee0034994029af87657b5d5b81d, type: 3}
-    - {fileID: 2800000, guid: 8b980fec12e0f42a280b7df90007e6d1, type: 3}
-    - {fileID: 2800000, guid: a5a36c0c385774082a7d54f4fceef4f6, type: 3}
-    - {fileID: 2800000, guid: e60d7e3eaf017401794fc2dca9fd94c9, type: 3}
-    - {fileID: 2800000, guid: 877a7765abba644c0a354b2966d02796, type: 3}
-    - {fileID: 2800000, guid: a638a06de5f1a4178ae358f8c291cce7, type: 3}
-    - {fileID: 2800000, guid: c32062dfc11fe4f1b9444592b357eb4a, type: 3}
-    - {fileID: 2800000, guid: 554fb35e29ba548d4a8415001e27e203, type: 3}
-    - {fileID: 2800000, guid: e1120b06ee9cb4d1da62ca1aedf42c7e, type: 3}
-    - {fileID: 2800000, guid: ea88ca2adcf5c433c84ae2d7fa0f4d44, type: 3}
-    - {fileID: 2800000, guid: 798178642f1e040c0831b77b4c40babf, type: 3}
-    - {fileID: 2800000, guid: bc602f0850c5e4acd86ee50dc1cac57f, type: 3}
-    - {fileID: 2800000, guid: 8202e0c1ebb374f3888362977d8cf8fb, type: 3}
-    - {fileID: 2800000, guid: e23b7f7071d914c0aba1607506f9a987, type: 3}
-    - {fileID: 2800000, guid: 73801ce72810546999416674ec13b4f0, type: 3}
-    - {fileID: 2800000, guid: ad2e5a4ce886f4c8c9e38a1cd7ed183d, type: 3}
-    - {fileID: 2800000, guid: 15a26422daf4d47aeaed078d4d6d4169, type: 3}
-    - {fileID: 2800000, guid: 623b6356de7694a91be25638d2bbe4a0, type: 3}
+    - {fileID: 102900000, guid: 753293ec6c19f4bd39fbac051d22bbdc, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

@@ -19,7 +19,18 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 8
@@ -29,23 +40,8 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: ea782eb25783f4f4e8541a6db0415af7, type: 3}
-    - {fileID: 2800000, guid: b371e8a578751404fbc13d2563d95609, type: 3}
-    - {fileID: 2800000, guid: ada9be09f8fdd4a4694dbbc3fe48a910, type: 3}
-    - {fileID: 2800000, guid: 82e0a08392e8542d6ab8b1ff7ab19312, type: 3}
-    - {fileID: 2800000, guid: 7404cb9af215f481fa8775dda127194c, type: 3}
-    - {fileID: 2800000, guid: a2b70c9e3864b48f5a8415e1aa2df433, type: 3}
-    - {fileID: 2800000, guid: 9a422bec1150b4ba1b2dd53f1be32505, type: 3}
-    - {fileID: 2800000, guid: e05ea953e9bc445be8d4fab5f49ef39f, type: 3}
-    - {fileID: 2800000, guid: 4c03c0630633cd44199148ac752413c1, type: 3}
-    - {fileID: 2800000, guid: c50b83d276633d242ad921c3d271a2c0, type: 3}
-    - {fileID: 2800000, guid: f1d82ca173d97e147bd9b2dd5a3484b9, type: 3}
-    - {fileID: 2800000, guid: eda211622d7feff4ca9ff861ba8a08eb, type: 3}
-    - {fileID: 2800000, guid: 97b96cde0c8001542b8c23a7b3cc7478, type: 3}
-    - {fileID: 2800000, guid: 9b489d21f2a508045975337b5a4c5b3e, type: 3}
-    - {fileID: 2800000, guid: 57d0e1be6a0167b4e82a375d5b8fcf1d, type: 3}
-    - {fileID: 2800000, guid: 74ac7c67c1487174fba74a262fcd6166, type: 3}
-    - {fileID: 2800000, guid: a913dbf2c4bd65f41accd9eebc963bf0, type: 3}
+    - {fileID: 102900000, guid: 607fe89eed22e4d2f9547c9e9a9eb895, type: 3}
+    - {fileID: 102900000, guid: c99f5b6e9749c8f4fa78f526af8373cf, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:

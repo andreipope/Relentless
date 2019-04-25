@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
@@ -72,7 +73,7 @@ namespace Loom.ZombieBattleground
         {
             ActionsReports.Add(report);
             GotNewActionReportEvent?.Invoke(report);
-            if(checkBuffer)
+            if (checkBuffer)
             {
                 CheckReportsInBuffer(report);
             }
@@ -136,7 +137,7 @@ namespace Loom.ZombieBattleground
                 _actionsToDo.Remove(actionToInsert);
             }
 
-            int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore)-1;
+            int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore) - 1;
 
             _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
         }
@@ -260,9 +261,9 @@ namespace Loom.ZombieBattleground
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
 
-        private readonly ITimerManager _timerManager;
-
         private bool _actionDone;
+
+        private Sequence _timeoutSequence;
 
         public Action<T, Action> Action;
 
@@ -274,10 +275,10 @@ namespace Loom.ZombieBattleground
 
         public bool BlockedInQueue { get; set; }
 
+        public bool ActionDone => _actionDone;
+
         public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
-            _timerManager = GameClient.Get<ITimerManager>();
-
             Action = action;
             Parameter = parameter;
             Id = id;
@@ -297,6 +298,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
+                    _timeoutSequence = InternalTools.DoActionDelayed(ActionDoneCallback, Constants.QueueActionTimeout);
                     Action?.Invoke(Parameter, ActionDoneCallback);
                 }
             }
@@ -327,6 +329,8 @@ namespace Loom.ZombieBattleground
             if (_actionDone)
                 return;
 
+            _timeoutSequence?.Kill();
+            _timeoutSequence = null;
             ForceActionDone();
         }
     }

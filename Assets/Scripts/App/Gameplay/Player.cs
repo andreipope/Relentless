@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
         private readonly INetworkActionManager _networkActionManager;
 
+        private readonly IUIManager _uiManager;
+
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
         private readonly IGameplayManager _gameplayManager;
@@ -119,6 +121,7 @@ namespace Loom.ZombieBattleground
             IsLocalPlayer = !isOpponent;
 
             _dataManager = GameClient.Get<IDataManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
@@ -429,6 +432,18 @@ namespace Loom.ZombieBattleground
 
         public void PlayerDie()
         {
+            MulliganPopup mulliganPopup = _uiManager.GetPopup<MulliganPopup>();
+            if (mulliganPopup.Self != null) 
+            {
+                mulliganPopup.Hide();
+            }
+
+            WaitingForPlayerPopup waitingForPlayerPopup = _uiManager.GetPopup<WaitingForPlayerPopup>();
+            if (waitingForPlayerPopup.Self != null) 
+            {
+                waitingForPlayerPopup.Hide();
+            }
+
             _avatarAnimator.enabled = true;
             _overlordDeathObject.SetActive(true);
             _deathAnimator.enabled = true;
