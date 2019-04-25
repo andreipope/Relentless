@@ -161,6 +161,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
+        internal const float QueueActionTimeout = 60f;    
+
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
