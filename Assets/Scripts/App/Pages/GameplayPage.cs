@@ -102,6 +102,12 @@ namespace Loom.ZombieBattleground
         private OverlordModel _playerOverlord,
                      _opponentOverlord;
 
+        private List<GameObject> _cacheBoardUnitViewObjectList;
+
+        private GameObject _cacheBoardUnitViewObjectContainer;
+
+        private const int BoardUnitViewObjectCacheAmount = 5;
+
         public void Init()
         {
             _uiManager = GameClient.Get<IUIManager>();
@@ -143,6 +149,8 @@ namespace Loom.ZombieBattleground
 
             _playerManaBarsPosition = new Vector3(-3.55f, 0, -6.07f);
             _opponentManaBarsPosition = new Vector3(9.77f, 0, 4.75f);
+        
+            _cacheBoardUnitViewObjectList = new List<GameObject>();
         }
 
         public void Hide()
@@ -160,6 +168,8 @@ namespace Loom.ZombieBattleground
 
             _playerOverlord = null;
             _opponentOverlord = null;
+
+            UnLoadCachingBoardUnitViewObjects();
         }
 
         public void Dispose()
@@ -173,6 +183,13 @@ namespace Loom.ZombieBattleground
                 if (_reportGameActionsPanel != null)
                 {
                     _reportGameActionsPanel.Update();
+                }
+            
+                if(_cacheBoardUnitViewObjectList.Count < BoardUnitViewObjectCacheAmount)
+                {
+                    GameObject boardUnitViewObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
+                    boardUnitViewObject.transform.SetParent(_cacheBoardUnitViewObjectContainer.transform);
+                    _cacheBoardUnitViewObjectList.Add(boardUnitViewObject);
                 }
             }
         }
@@ -212,8 +229,36 @@ namespace Loom.ZombieBattleground
                 _settingsButton.gameObject.SetActive(false);
             }
 
+            LoadCachingBoardUnitViewObjects();
+
             StartGame();
             KeepButtonVisibility(false);
+        }
+
+        private void LoadCachingBoardUnitViewObjects()
+        {
+            UnLoadCachingBoardUnitViewObjects();
+            _cacheBoardUnitViewObjectContainer = new GameObject("CacheBoardViewContainer");
+        }
+        
+        private void UnLoadCachingBoardUnitViewObjects()
+        {
+            for(int i = 0; i < _cacheBoardUnitViewObjectList.Count; ++i)
+            {
+                Object.Destroy(_cacheBoardUnitViewObjectList[i]);
+            }
+            _cacheBoardUnitViewObjectList.Clear();
+            Object.Destroy(_cacheBoardUnitViewObjectContainer);
+        }
+        
+        public GameObject FetchCacheBoardUnitViewObject()
+        {
+            if (_cacheBoardUnitViewObjectList.Count <= 0)
+                return null;
+
+            GameObject boardUnitViewObject = _cacheBoardUnitViewObjectList[0];
+            _cacheBoardUnitViewObjectList.Remove(boardUnitViewObject);
+            return boardUnitViewObject;
         }
 
         public void SetEndTurnButtonStatus(bool status)
