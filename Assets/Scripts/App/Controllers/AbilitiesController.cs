@@ -293,8 +293,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialUnitOnBoard(BoardUnitModel boardUnitModel, AbilityData ability)
         {
-            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType &&
-                                                                        item.UnitSpecialStatus == ability.TargetUnitSpecialStatus).Count > 0;
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType).Count > 0;
         }
 
         public bool HasUnitsWithoutTargetUnitType(BoardUnitModel boardUnitModel, AbilityData ability)
