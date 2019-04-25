@@ -90,7 +90,6 @@ namespace Loom.ZombieBattleground
 
         private void ApplyMaximumDamageBuff(BoardUnitModel boardUnit, int value)
         {
-            Debug.LogError(1111);
             boardUnit?.SetMaximumDamageToUnit(value);
         }
     }
