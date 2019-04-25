@@ -313,6 +313,8 @@ namespace Loom.ZombieBattleground
 
         public void DisableBuffsOnValueHistory (List<ValueHistory> valueHistory)
         {
+            int oldDefence = CurrentDefense;
+            int oldDamage = CurrentDamage;
             for (int i = 0; i < valueHistory.Count; i++)
             {
                 if (valueHistory[i].Source == Enumerators.ReasonForValueChange.AbilityBuff)
@@ -320,6 +322,8 @@ namespace Loom.ZombieBattleground
                     valueHistory[i].Enabled = false;
                 }
             }
+            UnitDefenseChanged?.Invoke(oldDefence, CurrentDefense);
+            UnitDamageChanged?.Invoke(oldDamage, CurrentDamage);
         }
 
         public void AddToCurrentDamageHistory(int value, Enumerators.ReasonForValueChange reason, bool forced = false)

@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                InvokeActionTriggered(TargetUnit);
             }
         }
 
@@ -47,6 +47,13 @@ namespace Loom.ZombieBattleground
             {
                 new ParametrizedAbilityBoardObject(TargetUnit)
             });
+        }
+
+        protected override void VFXAnimationEndedHandler()
+        {
+            base.VFXAnimationEndedHandler();
+
+            Action();
         }
     }
 }

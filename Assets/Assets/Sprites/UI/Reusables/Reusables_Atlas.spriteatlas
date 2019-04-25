@@ -19,7 +19,18 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 8
@@ -29,22 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
-    - {fileID: 2800000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
-    - {fileID: 2800000, guid: 5a4a260f10d9d46fc8467cde25ff8050, type: 3}
-    - {fileID: 2800000, guid: 953e68d32a88c4a7089b6d9b9d67944d, type: 3}
-    - {fileID: 2800000, guid: dec925b37c59f48728cae13dc07e3012, type: 3}
-    - {fileID: 2800000, guid: 6b33732bd80d342baa045b3c10bd8e82, type: 3}
-    - {fileID: 2800000, guid: 7d20bc2f9a6ac443dbe1d082903e3522, type: 3}
-    - {fileID: 2800000, guid: 81b14ef7511c64f52b7a074b23cec3a2, type: 3}
-    - {fileID: 2800000, guid: 40d58650ec7663d40b4b919aff42d90c, type: 3}
-    - {fileID: 2800000, guid: a2998a310217e59468b557bf0df41e76, type: 3}
-    - {fileID: 2800000, guid: c009d170f3b7c42acaa5fe81a13dbd44, type: 3}
-    - {fileID: 2800000, guid: 068d58a0d526e4cc9977c0ec70e81fe2, type: 3}
-    - {fileID: 2800000, guid: 0d6b623b234bb4f10ba8c5d5787683a4, type: 3}
-    - {fileID: 2800000, guid: c7b82c5f511e841f88cacea781b1f5c4, type: 3}
-    - {fileID: 2800000, guid: a532c4a86abb94cf5a7887b47b0b87f7, type: 3}
-    - {fileID: 2800000, guid: 6c8b59652fd7345fbafd7aaf8c7f3aa6, type: 3}
+    - {fileID: 102900000, guid: 705c195fa8d1c42c1b042cf1708d1f8c, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -55,13 +51,17 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dec925b37c59f48728cae13dc07e3012, type: 3}
   - {fileID: 21300000, guid: eba66cc38cad94d249634f246fefc6b1, type: 3}
   - {fileID: 21300000, guid: 953e68d32a88c4a7089b6d9b9d67944d, type: 3}
+  - {fileID: 21300000, guid: 835c4aa40b0894c0cbd74beeb4bd6a9b, type: 3}
   - {fileID: 21300000, guid: 6c8b59652fd7345fbafd7aaf8c7f3aa6, type: 3}
   - {fileID: 21300000, guid: 81b14ef7511c64f52b7a074b23cec3a2, type: 3}
   - {fileID: 21300000, guid: a532c4a86abb94cf5a7887b47b0b87f7, type: 3}
   - {fileID: 21300000, guid: 13f34909e7deb45ce910846667d90ff6, type: 3}
   - {fileID: 21300000, guid: 6b33732bd80d342baa045b3c10bd8e82, type: 3}
   - {fileID: 21300000, guid: 0d6b623b234bb4f10ba8c5d5787683a4, type: 3}
+  - {fileID: 21300000, guid: f0352a2c8e36c46fc937d9925f3b6faa, type: 3}
+  - {fileID: 21300000, guid: e981b28cc589646f3bea870fa29c7f0c, type: 3}
   - {fileID: 21300000, guid: 5a4a260f10d9d46fc8467cde25ff8050, type: 3}
+  - {fileID: 21300000, guid: bead3b2fbd2984e638df2c2ecfed027e, type: 3}
   - {fileID: 21300000, guid: 7d20bc2f9a6ac443dbe1d082903e3522, type: 3}
   - {fileID: 21300000, guid: c7b82c5f511e841f88cacea781b1f5c4, type: 3}
   m_PackedSpriteNamesToIndex:
@@ -72,13 +72,17 @@ SpriteAtlas:
   - button_green_normal
   - arrow_normal
   - button_brown_pressed
+  - panel_game_mode
   - panel_popup
   - button_red_pressed
   - search_bar
   - arrow_pressed
   - button_green_pressed
   - header_short
+  - panel_long_blank
+  - main_panel
   - button_brown_normal
+  - main_bg
   - button_red_normal
   - tab_button_tray
   m_Tag: Reusables_Atlas

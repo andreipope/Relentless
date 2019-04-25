@@ -244,6 +244,9 @@ namespace Loom.ZombieBattleground
                 if (value > Value)
                     value = Value;
 
+                if (value == 0)
+                    continue;
+
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,

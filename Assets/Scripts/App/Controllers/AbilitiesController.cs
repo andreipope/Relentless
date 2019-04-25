@@ -287,8 +287,7 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialUnitOnBoard(CardModel cardModel, AbilityData ability)
         {
-            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType &&
-                                                                        item.UnitSpecialStatus == ability.TargetUnitSpecialStatus).Count > 0;
+            return GetUnitsFromTargets(cardModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType).Count > 0;
         }
 
         public bool HasUnitsWithoutTargetUnitType(CardModel cardModel, AbilityData ability)
@@ -1157,6 +1156,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT:
                     ability = new DestroyTargetUnitAbility(cardKind, abilityData);
+                    abilityView = new DestroyTargetUnitAbilityView((DestroyTargetUnitAbility)ability);
                     break;
                 case Enumerators.AbilityType.AGILE:
                     ability = new AgileAbility(cardKind, abilityData);
@@ -1206,6 +1206,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
                     ability = new BlockTakeDamageAbility(cardKind, abilityData);
+                    abilityView = new BlockTakeDamageAbilityView((BlockTakeDamageAbility)ability);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
                     ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
