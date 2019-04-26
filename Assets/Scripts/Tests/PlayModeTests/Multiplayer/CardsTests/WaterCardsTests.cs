@@ -98,61 +98,67 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Jetter", 2));
+                    new DeckCardData("Jetter", 1),
+                    new DeckCardData("Hot", 20)
+                );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Jetter", 2));
+                    new DeckCardData("Jetter", 1),
+                    new DeckCardData("Hot", 20)
+                );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerJetter1 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Jetter", 1);
-                InstanceId playerJetter2 = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Jetter", 2);
+                InstanceId playerJetter = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Jetter", 1);
+                InstanceId playerHotId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 1);
+                InstanceId playerHot2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Hot", 2);
 
-                InstanceId opponentJetter1 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Jetter", 1);
-                InstanceId opponentJetter2 = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Jetter", 2);
+                InstanceId opponentJetter = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Jetter", 1);
+                InstanceId opponentHotId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 1);
+                InstanceId opponentHot2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Hot", 2);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                        player => {},
                        opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => {},
-                       opponent => {},
-                       player => player.CardPlay(playerJetter1, ItemPosition.Start),
+                       player =>
+                       {
+                           player.CardPlay(playerHotId, ItemPosition.Start);
+                           player.CardPlay(playerHot2Id, ItemPosition.Start);
+                       },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentJetter1, ItemPosition.Start, playerJetter1);
+                           opponent.CardPlay(opponentHotId, ItemPosition.Start);
+                           opponent.CardPlay(opponentHot2Id, ItemPosition.Start);
                        },
-                       player => player.CardPlay(playerJetter2, ItemPosition.Start, opponentJetter1),
+                       player =>
+                       {
+                           player.CardAttack(playerHotId, pvpTestContext.GetOpponentPlayer().InstanceId);
+                           player.CardAttack(playerHot2Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                       },
                        opponent =>
                        {
-                           opponent.CardPlay(opponentJetter2, ItemPosition.Start, playerJetter2);
+                           opponent.CardAttack(opponentHotId, pvpTestContext.GetCurrentPlayer().InstanceId);
+                           opponent.CardAttack(opponentHot2Id, pvpTestContext.GetCurrentPlayer().InstanceId);
                        },
+                       player =>
+                       {
+                           player.CardPlay(playerJetter, ItemPosition.Start, opponentHotId);
+                       },
+                       opponent =>
+                       {
+                           opponent.CardPlay(opponentJetter, ItemPosition.Start, playerHotId);
+                       }
                 };
-
-                BoardUnitModel playerJetter1Model = null;
-                BoardUnitModel playerJetter2Model = null;
-                BoardUnitModel opponentJetter1Model = null;
-                BoardUnitModel opponentJetter2Model = null;
 
                 Action validateEndState = () =>
                 {
-                    playerJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerJetter1);
-                    playerJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerJetter2);
-                    opponentJetter1Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentJetter1);
-                    opponentJetter2Model = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentJetter2);
+                    int value = 4;
 
-                    Assert.NotNull(playerJetter1Model);
-                    Assert.NotNull(playerJetter2Model);
-                    Assert.NotNull(opponentJetter1Model);
-                    Assert.NotNull(opponentJetter2Model);
+                    BoardUnitModel playerHotUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHotId);
+                    BoardUnitModel opponentHotUnit = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId);
 
-                    Assert.AreEqual(playerJetter1Model.MaxCurrentDefense - 1, playerJetter1Model.CurrentDefense);
-                    Assert.AreEqual(playerJetter2Model.MaxCurrentDefense - 1, playerJetter2Model.CurrentDefense);
-                    Assert.AreEqual(opponentJetter1Model.MaxCurrentDefense - 1, opponentJetter1Model.CurrentDefense);
-                    Assert.AreEqual(opponentJetter2Model.MaxCurrentDefense, opponentJetter2Model.CurrentDefense);
+                    Assert.AreEqual(playerHotUnit.MaxCurrentDefense - value, playerHotUnit.CurrentDefense);
+                    Assert.AreEqual(opponentHotUnit.MaxCurrentDefense - value, opponentHotUnit.CurrentDefense);
                 };
 
 

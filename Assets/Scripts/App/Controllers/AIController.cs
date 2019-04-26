@@ -123,9 +123,9 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.PlayerCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x)).ToArray());
-
+                _gameplayManager.OpponentPlayer.PlayerCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x, false)).ToArray());
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+                Resources.UnloadUnusedAssets();
             }
 
             if (_gameplayManager.IsTutorial &&
@@ -984,23 +984,31 @@ namespace Loom.ZombieBattleground
 
                                 if (target != null)
                                 {
-                                    Action callback = () =>
+                                    if (!_abilitiesController.CheckAbilityOnTarget(boardUnitModel))
                                     {
-                                        _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
-                                        null, false, (status) =>
+                                        Action callback = () =>
                                         {
-                                            if (!status)
+                                            _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                            null, false, (status) =>
                                             {
-                                                ranksBuffAction.Action = null;
-                                                ranksBuffAction.ForceActionDone();
-                                            }
+                                                if (!status)
+                                                {
+                                                    ranksBuffAction.Action = null;
+                                                    ranksBuffAction.ForceActionDone();
+                                                }
 
-                                        }, callAbilityAction, target);
+                                            }, callAbilityAction, target);
 
+                                            _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                        };
+
+                                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
+                                    }
+                                    else
+                                    {
+                                        _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitModel);
                                         _actionsQueueController.ForceContinueAction(callAbilityAction);
-                                    };
-
-                                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
+                                    }
                                 }
                                 else
                                 {
@@ -1043,13 +1051,21 @@ namespace Loom.ZombieBattleground
 
                         if (target != null)
                         {
-                            Action callback = () =>
+                            if (!_abilitiesController.CheckAbilityOnTarget(boardUnitModel))
                             {
-                                _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
-                                _actionsQueueController.ForceContinueAction(callAbilityAction);
-                            };
+                                Action callback = () =>
+                                {
+                                    _abilitiesController.CallAbility(null, boardUnitModel, Enumerators.CardKind.ITEM, boardItem, null, false, null, callAbilityAction, target);
+                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                };
 
-                            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
+                                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
+                            }
+                            else
+                            {
+                                _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitModel);
+                                _actionsQueueController.ForceContinueAction(callAbilityAction);
+                            }
                         }
                         else
                         {

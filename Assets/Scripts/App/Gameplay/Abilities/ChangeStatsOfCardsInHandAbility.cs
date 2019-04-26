@@ -67,9 +67,6 @@ namespace Loom.ZombieBattleground
         {
             base.UnitDiedHandler();
 
-            _affectedCards.ForEach(ResetStatsOfTargetCard);
-            _affectedCards.Clear();
-
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
@@ -86,7 +83,7 @@ namespace Loom.ZombieBattleground
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
                 _affectedCards.Clear();
-                
+
                 CheckSubTriggers();
             }
             else
@@ -169,7 +166,7 @@ namespace Loom.ZombieBattleground
             {
                 card.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
                 card.AddToCurrentDamageHistory(Attack, Enumerators.ReasonForValueChange.AbilityBuff);
-                card.InstanceCard.Defense += Defense;
+                card.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -192,7 +189,7 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model == card);
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == card);
                 boardCardView?.UpdateCardCost();
             }
         }
@@ -201,11 +198,11 @@ namespace Loom.ZombieBattleground
         {
             card.AddToCurrentCostHistory(-Cost, Enumerators.ReasonForValueChange.AbilityBuff);
             card.AddToCurrentDamageHistory(-Attack, Enumerators.ReasonForValueChange.AbilityBuff);
-            card.InstanceCard.Defense = card.Prototype.Defense;
+            card.AddToCurrentDefenseHistory(-Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.First(x => x.Model.Card == card.Card);
+                BoardCardView boardCardView = BattlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model.Card == card.Card);
                 boardCardView?.UpdateCardCost();
             }
         }

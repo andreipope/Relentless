@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Gameplay_Heroes_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 2
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: fdcfaa0ce9908824d905ff7f60d52c2c, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 8ca3cc40dee140f438d93c1bb0c2a483, type: 3}
+  - {fileID: 21300000, guid: 0f02a412f6c880743a80e06edce759f0, type: 3}
+  - {fileID: 21300000, guid: 39ff3622a4670b3419c7d046eecab27a, type: 3}
+  - {fileID: 21300000, guid: e454d053def75f04ab82cded40ebb990, type: 3}
+  - {fileID: 21300000, guid: 4f6b75535bcc41c448a488d57bfb95d5, type: 3}
+  - {fileID: 21300000, guid: 7bd3a6370d6b7cd46a4c0bad82d8c840, type: 3}
+  - {fileID: 21300000, guid: 95d8fc975a24a994394ec7f4c6060e08, type: 3}
+  - {fileID: 21300000, guid: 6ac7ddd8d3f1fc949950aa91ab12acc8, type: 3}
+  - {fileID: 21300000, guid: 216f03fa01eb4e940b6cb6c5dc1dfae9, type: 3}
+  - {fileID: 21300000, guid: 2824ef2cc9e4e434fb4cf4a6168d2bca, type: 3}
+  - {fileID: 21300000, guid: cd15237c3c03c2d418dd81c9f408316f, type: 3}
+  - {fileID: 21300000, guid: c708b1bf14ca82647b45cea80cfc0d04, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - hero_fire
+  - hero_air_bnw
+  - hero_fire_bnw
+  - hero_toxic
+  - hero_toxic_bnw
+  - hero_water
+  - hero_earth_bnw
+  - hero_life
+  - hero_life_bnw
+  - hero_air
+  - hero_earth
+  - hero_water_bnw
+  m_Tag: Gameplay_Heroes_Atlas
+  m_IsVariant: 0

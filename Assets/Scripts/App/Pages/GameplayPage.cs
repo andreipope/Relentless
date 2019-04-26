@@ -199,18 +199,7 @@ namespace Loom.ZombieBattleground
                 _zippingVfx.SetActive(false);
             }
 
-#if !UNITY_ANDROID && !UNITY_IOS
-            _settingsButton.gameObject.SetActive(true);
-            _buttonBack.gameObject.SetActive(false);
-#else
-            _buttonBack.gameObject.SetActive(true);
-            _settingsButton.gameObject.SetActive(false);
-#endif
-            if (_gameplayManager.IsTutorial)
-            {
-                _buttonBack.gameObject.SetActive(false);
-                _settingsButton.gameObject.SetActive(false);
-            }
+            SettingsAndBackButtonVisibility(false);
 
             StartGame();
             KeepButtonVisibility(false);
@@ -694,6 +683,22 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.DrawPopup<SettingsWithCreditsPopup>();
             _soundManager.PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
+        }
+
+        public void SettingsAndBackButtonVisibility(bool visible)
+        {
+#if !UNITY_ANDROID && !UNITY_IOS
+            _settingsButton.gameObject.SetActive(visible);
+            _buttonBack.gameObject.SetActive(false);
+#else
+            _buttonBack.gameObject.SetActive(visible);
+            _settingsButton.gameObject.SetActive(false);
+#endif
+            if (_gameplayManager.IsTutorial)
+            {
+                _buttonBack.gameObject.SetActive(false);
+                _settingsButton.gameObject.SetActive(false);
+            }
         }
 
         #endregion

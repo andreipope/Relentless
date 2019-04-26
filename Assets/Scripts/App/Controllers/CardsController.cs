@@ -164,6 +164,12 @@ namespace Loom.ZombieBattleground
 
         public void EndCardDistribution()
         {
+            GameplayPage gameplayPage = _uiManager.GetPage<GameplayPage>();
+            if (gameplayPage.Self)
+            {
+                gameplayPage.SettingsAndBackButtonVisibility(true);
+            }
+
             if (!CardDistribution)
                 return;
 

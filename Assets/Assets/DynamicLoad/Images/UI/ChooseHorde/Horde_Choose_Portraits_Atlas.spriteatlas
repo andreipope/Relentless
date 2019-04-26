@@ -22,12 +22,12 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 2
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 2048
+      m_MaxTextureSize: 4096
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 2
-      m_CompressionQuality: 50
-      m_CrunchedCompression: 0
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
       m_AllowsAlphaSplitting: 0
       m_Overridden: 0
       m_AndroidETC2FallbackOverride: 0
@@ -40,12 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: f5413cea750f94c91a236c64f4936492, type: 3}
-    - {fileID: 2800000, guid: a551ef314a638443f9510f438d298035, type: 3}
-    - {fileID: 2800000, guid: 3c8bab0c3eb474fd5b8cc11d83dbc7f7, type: 3}
-    - {fileID: 2800000, guid: 5077bc3f4b34f432f8d33614a1ecd14f, type: 3}
-    - {fileID: 2800000, guid: 4779d6669c9b74d0d9de975549358a3b, type: 3}
-    - {fileID: 2800000, guid: 5e0922c32d15e46f8a437b0cb6cf6c95, type: 3}
+    - {fileID: 102900000, guid: 43778ae0fad7641658f9333e307b02c1, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
