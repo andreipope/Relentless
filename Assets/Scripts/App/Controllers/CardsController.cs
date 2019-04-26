@@ -362,7 +362,7 @@ namespace Loom.ZombieBattleground
             {
                 int newIndexOfCard = 0;
                 float newCreatureCardPosition = card.Transform.position.x;
-                IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard);
+                IReadOnlyList<BoardUnitView> cardsOnBoardViews = _battlegroundController.GetCardViewsByModels<BoardUnitView>(player.CardsOnBoard);
 
                 // set correct position on board depends from card view position
                 for (int i = 0; i < player.CardsOnBoard.Count; i++)
@@ -382,7 +382,7 @@ namespace Loom.ZombieBattleground
                     _indexOfCard = newIndexOfCard;
 
                     IReadOnlyList<BoardUnitView> playerCards =
-                        _battlegroundController.GetCardViewsFromModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
+                        _battlegroundController.GetCardViewsByModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
                     List<BoardUnitView> toArrangeList = new List<BoardUnitView>();
 
                     for (int i = 0; i < playerCards.Count; i++)
@@ -396,7 +396,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ReturnCardToHand(CardModel cardModel)
+        public void ReturnCardToHand(CardModel cardModel, int addToMaxCards = 0)
         {
             Player unitOwner = cardModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel);
@@ -419,7 +419,7 @@ namespace Loom.ZombieBattleground
 
                 cardModel.ResetToInitial();
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(cardModel, unitPosition);
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(cardModel, unitPosition, addToMaxCards);               
 
                 _gameplayManager.RearrangeHands();
             },
@@ -473,7 +473,7 @@ namespace Loom.ZombieBattleground
                         float newCreatureCardPosition = card.Transform.position.x;
 
                         IReadOnlyList<BoardUnitView> cardsOnBoardViews =
-                            _battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard);
+                            _battlegroundController.GetCardViewsByModels<BoardUnitView>(player.CardsOnBoard);
 
                         // set correct position on board depends from card view position
                         for (int i = 0; i < player.CardsOnBoard.Count; i++)

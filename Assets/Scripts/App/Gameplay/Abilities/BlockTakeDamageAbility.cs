@@ -71,12 +71,8 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                _animationEndedAction = () =>
-                {
-                    ApplyMaximumDamageBuff(_targetedUnit, 999);
-                };
-
-                InvokeActionTriggered(_targetedUnit);
+                ApplyMaximumDamageBuff(_targetedUnit, 999);
+                Deactivate();
             }
         }
 
@@ -90,7 +86,11 @@ namespace Loom.ZombieBattleground
 
         private void ApplyMaximumDamageBuff(CardModel boardUnit, int value)
         {
-            boardUnit?.SetMaximumDamageToUnit(value);
+            if (boardUnit != null)
+            {
+                boardUnit.SetMaximumDamageToUnit(value);
+                boardUnit.IsPlayable = true;
+            }
         }
     }
 }

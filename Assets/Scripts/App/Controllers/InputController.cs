@@ -194,8 +194,8 @@ namespace Loom.ZombieBattleground
 
             hasPointerTarget = ProcessTutorialActions(ref hasPointerTarget, collider, isHovering);
 
-            IReadOnlyList<BoardUnitView> playerCardsOnBoardUnitViews = _battlegroundController.GetCardViewsFromModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
-            IReadOnlyList<BoardUnitView> opponentCardsOnBoardUnitViews = _battlegroundController.GetCardViewsFromModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> playerCardsOnBoardUnitViews = _battlegroundController.GetCardViewsByModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> opponentCardsOnBoardUnitViews = _battlegroundController.GetCardViewsByModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard);
             ProcessUnits(ref hasTarget, ref hasPointerTarget, playerCardsOnBoardUnitViews, collider, permanent, isHovering);
             ProcessUnits(ref hasTarget, ref hasPointerTarget, opponentCardsOnBoardUnitViews, collider, permanent, isHovering);
 

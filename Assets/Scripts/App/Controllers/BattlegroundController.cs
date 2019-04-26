@@ -128,7 +128,7 @@ namespace Loom.ZombieBattleground
             return view;
         }
 
-        public IReadOnlyList<T> GetCardViewsFromModels<T>(IReadOnlyList<CardModel> models) where T : ICardView
+        public IReadOnlyList<T> GetCardViewsByModels<T>(IReadOnlyList<CardModel> models) where T : ICardView
         {
             return models.Select(GetCardViewByModel<T>).ToList();
         }
@@ -205,12 +205,12 @@ namespace Loom.ZombieBattleground
             {
                 CheckGameDynamic();
 
-                foreach (BoardUnitView item in GetCardViewsFromModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard))
+                foreach (BoardUnitView item in GetCardViewsByModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard))
                 {
                     item.Update();
                 }
 
-                foreach (BoardUnitView item in GetCardViewsFromModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard))
+                foreach (BoardUnitView item in GetCardViewsByModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard))
                 {
                     item.Update();
                 }
@@ -430,9 +430,9 @@ namespace Loom.ZombieBattleground
             UpdatePositionOfCardsInOpponentHand();
             _playerController.IsActive = _gameplayManager.IsLocalPlayerTurn();
 
-            IReadOnlyList<BoardUnitView> currentPlayerCardsOnBoardUnitViews = GetCardViewsFromModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
-            IReadOnlyList<BoardUnitView> opponentPlayerCardsOnBoardUnitViews = GetCardViewsFromModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard);
-            IReadOnlyList<BoardCardView> currentPlayerCardsInHandUnitViews = GetCardViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+            IReadOnlyList<BoardUnitView> currentPlayerCardsOnBoardUnitViews = GetCardViewsByModels<BoardUnitView>(_gameplayManager.CurrentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardUnitView> opponentPlayerCardsOnBoardUnitViews = GetCardViewsByModels<BoardUnitView>(_gameplayManager.OpponentPlayer.CardsOnBoard);
+            IReadOnlyList<BoardCardView> currentPlayerCardsInHandUnitViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
@@ -774,7 +774,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsInPlayerHand(bool isMove = false)
         {
-            IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsFromModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+            IReadOnlyList<BoardCardView> boardCardViews = GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
             float spacing = -1.5f;
@@ -833,7 +833,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdatePositionOfCardsInOpponentHand(bool isMove = false, bool isNewCard = false)
         {
-            IReadOnlyList<OpponentHandCardView> boardCardViews = GetCardViewsFromModels<OpponentHandCardView>(_gameplayManager.OpponentPlayer.CardsInHand);
+            IReadOnlyList<OpponentHandCardView> boardCardViews = GetCardViewsByModels<OpponentHandCardView>(_gameplayManager.OpponentPlayer.CardsInHand);
 
             float handWidth = 0.0f;
             float spacing = -1.0f;
@@ -1132,7 +1132,7 @@ namespace Loom.ZombieBattleground
 
         public List<CardModel> GetAdjacentUnitsToUnit(CardModel targetUnit)
         {
-            IReadOnlyList<CardModel> boardCards = targetUnit.OwnerPlayer.CardsOnBoard;
+            IReadOnlyList<CardModel> boardCards = GetAliveUnits(targetUnit.OwnerPlayer.CardsOnBoard).ToList();
 
             int targetIndex = boardCards.IndexOf(targetUnit);
 
@@ -1313,5 +1313,10 @@ namespace Loom.ZombieBattleground
         {
             return InternalTools.GetRandomElementsFromList(elements, count, true);
         }
+
+        public IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
+        {
+            return units.Where(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }    
     }
 }

@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground
 
         private void ReturnBoardUnitToHand(CardModel unit)
         {
-            CardsController.ReturnCardToHand(unit);
+            CardsController.ReturnCardToHand(unit, 1);
         }
 
         protected override void VFXAnimationEndedHandler()

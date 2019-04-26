@@ -18,7 +18,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsReturnToHand { get; private set; }
 
-        protected bool StartedDrag;
+    public Collider2D HandCardCollider { get; private set; }
+
+    protected bool StartedDrag;
 
         protected Vector3 InitialPos;
 
@@ -53,9 +55,10 @@ namespace Loom.ZombieBattleground
             BoardCardView = boardCardView;
             CardModel = boardCardView.Model;
 
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _soundManager = GameClient.Get<ISoundManager>();
-            _tutorialManager = GameClient.Get<ITutorialManager>();
+        HandCardCollider = GameObject.GetComponent<Collider2D>();
+
+        BoardCardView = boardCardView;
+        CardModel = boardCardView.Model;
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();

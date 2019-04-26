@@ -422,7 +422,7 @@ static class BattleCommandsHandler
         player.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
         _battlegroundController.RegisterCardView(newUnit, player);
 
-        _boardController.UpdateBoard(_battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.CardsOnBoard), true, null);
+        _boardController.UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.CardsOnBoard), true, null);
     }
 
     private static void RevertAttackOnUnit(IMove move)

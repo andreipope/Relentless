@@ -571,7 +571,7 @@ namespace Loom.ZombieBattleground
 
         protected IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
         {
-            return units.Where(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+            return BattlegroundController.GetAliveUnits(units);
         }
 
         protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)

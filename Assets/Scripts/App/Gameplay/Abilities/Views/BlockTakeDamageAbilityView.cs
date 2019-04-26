@@ -24,6 +24,7 @@ namespace Loom.ZombieBattleground
         protected override void OnAbilityAction(object info = null)
         {
             _targetedUnit = info as CardModel;
+            _targetedUnit.IsPlayable = false;
             ActionCompleted();
         }
 

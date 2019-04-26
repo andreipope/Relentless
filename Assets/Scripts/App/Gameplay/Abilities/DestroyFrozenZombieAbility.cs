@@ -35,6 +35,7 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 InvokeActionTriggered();
+                TargetUnit.HandleDefenseBuffer(TargetUnit.CurrentDefense);
             }
         }
 

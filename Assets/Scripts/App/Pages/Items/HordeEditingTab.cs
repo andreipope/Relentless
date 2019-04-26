@@ -163,6 +163,7 @@ namespace Loom.ZombieBattleground
                 UpdateOverlordAbilitiesButton();
                 
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
+                _textEditDeckName.fontSize = _myDeckPage.CurrentEditDeck.Name.Length < 15 ? 65f : 50f;
 
                 if (_tutorialManager.IsTutorial)
                 {
