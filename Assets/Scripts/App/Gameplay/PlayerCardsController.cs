@@ -526,7 +526,7 @@ namespace Loom.ZombieBattleground
             return boardUnitModel;
         }
 
-        public void ReturnToHandBoardUnit(BoardUnitModel boardUnitModel, Vector3 cardPosition)
+        public void ReturnToHandBoardUnit(BoardUnitModel boardUnitModel, Vector3 cardPosition, int addToMaxCards = 0)
         {
             CallLog($"{nameof(ReturnToHandBoardUnit)}(BoardUnitModel boardUnitModel = {boardUnitModel}, Vector3 cardPosition = {cardPosition})");
 
@@ -545,7 +545,7 @@ namespace Loom.ZombieBattleground
                 boardCardView.SetHighlightingEnabled(false);
             }
 
-            if (CheckIsMoreThanMaxCards())
+            if (CheckIsMoreThanMaxCards(addToMaxCards: addToMaxCards))
             {
                 _cardsController.DiscardCardFromHand(boardUnitModel);
             }
@@ -804,9 +804,9 @@ namespace Loom.ZombieBattleground
             _cardsOnBoard.Insert(ItemPosition.End, unit);
         }
 
-        public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel = null)
+        public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel = null, int addToMaxCards = 0)
         {
-            if (CardsInHand.Count >= Player.MaxCardsInHand)
+            if (CardsInHand.Count >= Player.MaxCardsInHand+addToMaxCards)
             {
                 return true;
             }
