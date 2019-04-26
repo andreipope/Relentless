@@ -877,6 +877,7 @@ namespace Loom.ZombieBattleground
         public void HandleAttackPlayer(Action completeCallback, Player targetPlayer, Action hitCallback, Action attackCompleteCallback)
         {
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetPlayer.AvatarObject,
                 0.1f,
@@ -915,6 +916,7 @@ namespace Loom.ZombieBattleground
             }
 
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetCardView.GameObject,
                 0.5f,
