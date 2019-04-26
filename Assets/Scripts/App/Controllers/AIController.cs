@@ -123,9 +123,9 @@ namespace Loom.ZombieBattleground
                     }
                 }
 
-                _gameplayManager.OpponentPlayer.PlayerCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x)).ToArray());
-
+                _gameplayManager.OpponentPlayer.PlayerCardsController.SetCardsInDeck(workingDeck.Select(x => new BoardUnitModel(x, false)).ToArray());
                 _battlegroundController.UpdatePositionOfCardsInOpponentHand();
+                Resources.UnloadUnusedAssets();
             }
 
             if (_gameplayManager.IsTutorial &&

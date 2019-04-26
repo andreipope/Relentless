@@ -78,7 +78,7 @@ namespace Loom.ZombieBattleground
 
         public Sprite CardPicture { get; private set; }
 
-        public BoardUnitModel(WorkingCard card)
+        public BoardUnitModel(WorkingCard card, bool isUnloadUnusedAssets = true)
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
@@ -113,7 +113,7 @@ namespace Loom.ZombieBattleground
 
             IsAllAbilitiesResolvedAtStart = true;
 
-            SetObjectInfo(card);
+            SetObjectInfo(card, isUnloadUnusedAssets);
         }
 
         public event Action TurnStarted;
@@ -622,7 +622,7 @@ namespace Loom.ZombieBattleground
             GameMechanicDescriptionsOnUnitChanged?.Invoke();
         }
 
-        private void SetObjectInfo(WorkingCard card)
+        private void SetObjectInfo(WorkingCard card, bool isUnloadUnusedAssets)
         {
             Card = card;
 
@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            SetPicture();
+            SetPicture("", "", isUnloadUnusedAssets);
         }
 
         public void OnStartTurn()
@@ -1042,7 +1042,7 @@ namespace Loom.ZombieBattleground
             PrepairingToDie?.Invoke(this);
         }
 
-        public void SetPicture(string name = "", string attribute = "")
+        public void SetPicture(string name = "", string attribute = "", bool isUnloadUnusedAssets = true)
         {
             string imagePath = $"{Constants.PathToCardsIllustrations}";
 
@@ -1063,7 +1063,10 @@ namespace Loom.ZombieBattleground
             CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
             CardPictureWasUpdated?.Invoke();
 
-            Resources.UnloadUnusedAssets();
+            if (isUnloadUnusedAssets)
+            {
+                Resources.UnloadUnusedAssets();
+            }
         }
 
         public void ArriveUnitOnBoard()
