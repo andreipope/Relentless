@@ -676,10 +676,12 @@ namespace Loom.ZombieBattleground
 
         public bool CheckAbilityOnTarget(BoardUnitModel boardUnitModel, AbilityData ability = null)
         {
+            if (boardUnitModel == null)
+                return false;
+
             if(ability == null)
             {
-                IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
-                ability = instance.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
+                ability = boardUnitModel.Card.InstanceCard.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
             }
 
             if (ability == null || ability is default(AbilityData))
