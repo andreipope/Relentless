@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!_backendFacade.IsConnected)
+            if (_backendFacade == null || !_backendFacade.IsConnected)
                 return;
 
             if (_keepAliveActive)
