@@ -54,11 +54,11 @@ namespace Loom.ZombieBattleground
 
             BoardCardView = boardCardView;
             CardModel = boardCardView.Model;
+            HandCardCollider = GameObject.GetComponent<Collider2D>();
 
-        HandCardCollider = GameObject.GetComponent<Collider2D>();
-
-        BoardCardView = boardCardView;
-        CardModel = boardCardView.Model;
+            _gameplayManager = GameClient.Get<IGameplayManager>();
+            _soundManager = GameClient.Get<ISoundManager>();
+            _tutorialManager = GameClient.Get<ITutorialManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _cardsController = _gameplayManager.GetController<CardsController>();

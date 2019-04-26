@@ -595,7 +595,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
             {
                 BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
 
@@ -616,8 +616,7 @@ namespace Loom.ZombieBattleground
 
                 skill.UseSkillFromEvent(parametrizedAbilityObjects);
 
-                completeCallback?.Invoke();
-
+                completeCallback();
             }, Enumerators.QueueActionType.OverlordSkillUsage);
         }
 
@@ -626,23 +625,23 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
             {
-                List<BoardUnitModel> units = new List<BoardUnitModel>();
+                List<CardModel> units = new List<CardModel>();
 
-                foreach (BoardObject boardObject in _battlegroundController.GetTargetsByInstanceId(targets))
+                foreach (IBoardObject boardObject in _battlegroundController.GetTargetsByInstanceId(targets))
                 {
-                    if (boardObject != null && boardObject is BoardUnitModel)
+                    if (boardObject != null && boardObject is CardModel)
                     {
-                        units.Add(boardObject as BoardUnitModel);
+                        units.Add(boardObject as CardModel);
                     }
                     else
                     {
-                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to BoardUnitModel"));
+                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to CardModel"));
                     }
                 }
 
-                BoardUnitModel cardModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
+                CardModel cardModel = _battlegroundController.GetCardModelByInstanceId(card);
                 if (cardModel == null)
                     ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
 
@@ -651,8 +650,7 @@ namespace Loom.ZombieBattleground
                     _ranksController.BuffAllyManually(units, cardModel);
                 }
 
-                completeCallback?.Invoke();
-
+                completeCallback();
             }, Enumerators.QueueActionType.RankBuff);
         }
 

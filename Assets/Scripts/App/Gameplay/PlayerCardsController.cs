@@ -523,7 +523,7 @@ namespace Loom.ZombieBattleground
             return cardModel;
         }
 
-        public void ReturnToHandBoardUnit(CardModel ardModel, Vector3 cardPosition, int addToMaxCards = 0)
+        public void ReturnToHandBoardUnit(CardModel cardModel, Vector3 cardPosition, int addToMaxCards = 0)
         {
             CallLog($"{nameof(ReturnToHandBoardUnit)}(CardModel cardModel = {cardModel}, Vector3 cardPosition = {cardPosition})");
 
