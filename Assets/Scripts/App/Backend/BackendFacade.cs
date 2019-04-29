@@ -231,7 +231,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string OverlordsList = "ListOverlords";
         private const string SetOverlordLevelMethod = "SetOverlordLevel";
         private const string SetOverlordExperienceMethod = "SetOverlordExperience";
-
+        private const string GetOverlordLevelMethod = "GetOverlordLevel";
 
         public async Task<ListOverlordsResponse> GetOverlordList(string userId)
         {
@@ -257,7 +257,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<SetOverlordExperienceResponse> SetOverlordExperience(string userId, int overlordId, long experience)
         {
-            // TODO : I guess should return the level as well, after adding experience points
             SetOverlordExperienceRequest request = new SetOverlordExperienceRequest
             {
                 UserId = userId,
@@ -266,6 +265,17 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await _contractCallProxy.CallAsync<SetOverlordExperienceResponse>(SetOverlordExperienceMethod, request);
+        }
+
+        public async Task<GetOverlordLevelResponse> GetOverlordLevel(string userId, int overlordId)
+        {
+            GetOverlordRequest request = new GetOverlordRequest()
+            {
+                UserId = userId,
+                OverlordId = overlordId
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetOverlordLevelResponse>(GetOverlordLevelMethod, request);
         }
 
 

@@ -7,6 +7,7 @@ namespace Loom.ZombieBattleground
     public interface IOverlordExperienceManager
     {
         OverlordExperienceManager.ExperienceInfo MatchExperienceInfo { get; }
+        OverlordExperienceManager.ExperienceInfo OpponentMatchExperienceInfo { get; }
 
         void ChangeExperience(OverlordModel overlord, int value);
         int GetRequiredExperienceForNewLevel(OverlordModel overlord);
@@ -14,7 +15,9 @@ namespace Loom.ZombieBattleground
         OverlordExperienceManager.LevelReward GetLevelReward(OverlordModel overlord);
 
         void InitializeExperienceInfoInMatch(OverlordModel overlord);
+        void InitializeOpponentExperienceInfoInMatch(OverlordModel overlord);
         Task ApplyExperienceFromMatch(OverlordModel overlord);
+        Task GetLevelAndRewards(OverlordModel overlord);
         void ApplyExperience(OverlordModel overlord, int experience);
     }
 }

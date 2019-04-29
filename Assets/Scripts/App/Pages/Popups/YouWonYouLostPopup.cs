@@ -141,7 +141,7 @@ namespace Loom.ZombieBattleground
 
             _isLevelUp = false;
 
-            _overlordManager.ApplyExperienceFromMatch(_currentPlayerOverlord);
+            //_overlordManager.ApplyExperienceFromMatch(_currentPlayerOverlord);
 
             _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
             _textDeckName.text = deck.Name;
@@ -157,15 +157,29 @@ namespace Loom.ZombieBattleground
             }
             else
             {
+                GetOverlordLevel();
+            }
+        }
+
+        private async Task GetOverlordLevel()
+        {
+            try
+            {
+                await _overlordManager.GetLevelAndRewards(_currentPlayerOverlord);
                 float currentExperiencePercentage = (float)_overlordManager.MatchExperienceInfo.ExperienceAtBegin /
-                                                _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
+                                                    _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
 
                 _imageExperienceBar.fillAmount = currentExperiencePercentage;
 
-                FillingExperienceBar();                
+                FillingExperienceBar();
+
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("failed to get overlord level " + e);
             }
         }
-        
+
         public void Show(object data)
         {
             if (data is object[] param)

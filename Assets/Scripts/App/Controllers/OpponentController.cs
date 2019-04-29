@@ -74,6 +74,8 @@ namespace Loom.ZombieBattleground
             Player player = new Player(instanceId, GameObject.Find("Opponent"), true);
             _gameplayManager.OpponentPlayer = player;
 
+            GameClient.Get<IOverlordExperienceManager>().InitializeOpponentExperienceInfoInMatch(player.SelfOverlord);
+
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&
                 GameClient.Get<ITutorialManager>().CurrentTutorial.TutorialContent.ToGameplayContent().

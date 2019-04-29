@@ -30,6 +30,7 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
 
         public ExperienceInfo MatchExperienceInfo { get; private set; }
+        public ExperienceInfo OpponentMatchExperienceInfo { get; private set; }
 
         public void Init()
         {
@@ -60,6 +61,14 @@ namespace Loom.ZombieBattleground
             MatchExperienceInfo.ExperienceReceived = 0;
         }
 
+        public void InitializeOpponentExperienceInfoInMatch(OverlordModel overlord)
+        {
+            OpponentMatchExperienceInfo = new ExperienceInfo();
+            OpponentMatchExperienceInfo.LevelAtBegin = overlord.Level;
+            OpponentMatchExperienceInfo.ExperienceAtBegin = overlord.Experience;
+            OpponentMatchExperienceInfo.ExperienceReceived = 150;
+        }
+
         public async Task ApplyExperienceFromMatch(OverlordModel overlord)
         {
             try
@@ -80,6 +89,26 @@ namespace Loom.ZombieBattleground
             _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
             _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
+
+        public async Task GetLevelAndRewards(OverlordModel overlord)
+        {
+            try
+            {
+                GetOverlordLevelResponse overlordLevelResponse = await _backendFacade.GetOverlordLevel(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    overlord.OverlordId);
+
+                overlord.Experience = overlordLevelResponse.Experience;
+                int level = (int)overlordLevelResponse.Level;
+
+                CheckLevel(overlord, level);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError("Not able to get level, " + e);
+            }
+        }
+
 
         public async void ApplyExperience(OverlordModel overlord, int experience)
         {
@@ -131,6 +160,14 @@ namespace Loom.ZombieBattleground
         {
             while (overlord.Experience >= GetRequiredExperienceForNewLevel(overlord) &&
                    overlord.Level < _overlordXPInfo.MaxLevel)
+            {
+                LevelUp(overlord);
+            }
+        }
+
+        private void CheckLevel(OverlordModel overlord, int updatedlevel)
+        {
+            while (overlord.Level < updatedlevel)
             {
                 LevelUp(overlord);
             }

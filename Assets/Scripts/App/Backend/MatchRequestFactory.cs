@@ -20,13 +20,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
         }
 
-        public EndMatchRequest EndMatch(string userId, string winnerId)
+        public EndMatchRequest EndMatch(string userId, string winnerId, long playerMatchExperience, long opponentMatchExperience)
         {
             return new EndMatchRequest
             {
                 UserId = userId,
                 MatchId = _matchId,
-                WinnerId = winnerId
+                WinnerId = winnerId,
+                PlayerMatchExperience = playerMatchExperience,
+                OpponentMatchExperience = opponentMatchExperience
             };
         }
     }

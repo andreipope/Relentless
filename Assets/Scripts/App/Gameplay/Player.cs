@@ -508,7 +508,9 @@ namespace Loom.ZombieBattleground
                             _queueManager.AddAction(
                                 new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                     _backendDataControlMediator.UserDataModel.UserId,
-                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId
+                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId,
+                                    GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.ExperienceReceived,
+                                    GameClient.Get<IOverlordExperienceManager>().OpponentMatchExperienceInfo.ExperienceReceived
                                 )
                             );
 
