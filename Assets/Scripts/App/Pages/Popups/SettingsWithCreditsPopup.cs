@@ -208,6 +208,10 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < length; i++)
             {
+#if UNITY_STANDALONE_WIN
+                if ((Enumerators.ScreenMode)i == Enumerators.ScreenMode.BorderlessWindow)
+                    continue;
+#endif
                 data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
             }
             _screenModeDropdown.AddOptions(data);
