@@ -126,7 +126,6 @@ namespace Loom.ZombieBattleground
         public InstanceId GetNewCardInstanceId()
         {
             _cardInstanceId++;
-            Debug.LogWarning("INSTANCE ID: " + _cardInstanceId);
             return new InstanceId(_cardInstanceId);
         }
 
@@ -137,7 +136,6 @@ namespace Loom.ZombieBattleground
 
         public void SetNewCardInstanceId(int id)
         {
-            Debug.LogWarning("INSTANCE ID: " + _cardInstanceId);
             _cardInstanceId = id;
         }
 
