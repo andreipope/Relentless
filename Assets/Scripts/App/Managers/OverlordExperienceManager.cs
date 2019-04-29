@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             OpponentMatchExperienceInfo = new ExperienceInfo();
             OpponentMatchExperienceInfo.LevelAtBegin = overlord.Level;
             OpponentMatchExperienceInfo.ExperienceAtBegin = overlord.Experience;
-            OpponentMatchExperienceInfo.ExperienceReceived = 150;
+            OpponentMatchExperienceInfo.ExperienceReceived = 0;
         }
 
         public async Task ApplyExperienceFromMatch(OverlordModel overlord)
@@ -149,6 +149,19 @@ namespace Loom.ZombieBattleground
             ExperienceAction action = _overlordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
 
             ChangeExperience(overlord, action.Experience);
+        }
+
+        public void ReportExperienceAction(Enumerators.ExperienceActionType actionType, bool isOpponent = false)
+        {
+            if (_gameplayManager.IsTutorial)
+                return;
+
+            ExperienceAction action = _overlordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
+            int value = action.Experience;
+            if (isOpponent)
+                OpponentMatchExperienceInfo.ExperienceReceived += value;
+            else
+                MatchExperienceInfo.ExperienceReceived += value;
         }
 
         public LevelReward GetLevelReward(OverlordModel overlord)

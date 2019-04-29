@@ -12,6 +12,7 @@ namespace Loom.ZombieBattleground
         void ChangeExperience(OverlordModel overlord, int value);
         int GetRequiredExperienceForNewLevel(OverlordModel overlord);
         void ReportExperienceAction(OverlordModel overlord, Enumerators.ExperienceActionType actionType);
+        void ReportExperienceAction(Enumerators.ExperienceActionType actionType, bool isOpponent);
         OverlordExperienceManager.LevelReward GetLevelReward(OverlordModel overlord);
 
         void InitializeExperienceInfoInMatch(OverlordModel overlord);

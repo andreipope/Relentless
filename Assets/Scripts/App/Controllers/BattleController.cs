@@ -312,14 +312,17 @@ namespace Loom.ZombieBattleground
             {
                 healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(healValue, 0, healedCreature.MaxCurrentDefense),
                     Enumerators.ReasonForValueChange.AbilityBuff);
-            } 
+            }
         }
 
         public void CheckOnKillEnemyZombie(BoardUnitModel attackedUnit)
         {
-            if (!attackedUnit.OwnerPlayer.IsLocalPlayer && attackedUnit.CurrentDefense == 0)
+            if (attackedUnit.CurrentDefense == 0)
             {
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillMinion);
+                if(!attackedUnit.OwnerPlayer.IsLocalPlayer)
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.KillMinion, false);
+                else
+                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.KillMinion, true);
             }
         }
 
