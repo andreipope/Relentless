@@ -67,6 +67,11 @@ namespace Loom.ZombieBattleground
                 _units = GetRandomUnits(_units, Count);
             }
 
+            foreach(BoardUnitModel boardUnitModel in _units)
+            {
+                boardUnitModel.HandleDefenseBuffer(Damage);
+            }
+
             InvokeActionTriggered(_units);
 
             InvokeUseAbilityEvent(_units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
@@ -91,8 +96,6 @@ namespace Loom.ZombieBattleground
         private void DamageAndDistractUnit(CardModel boardUnit)
         {
             BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
-
-            boardUnit.HandleDefenseBuffer(Damage);
 
             if (boardUnit.IsUnitActive)
             {
