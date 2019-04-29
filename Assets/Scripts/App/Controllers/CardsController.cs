@@ -164,6 +164,12 @@ namespace Loom.ZombieBattleground
 
         public void EndCardDistribution()
         {
+            GameplayPage gameplayPage = _uiManager.GetPage<GameplayPage>();
+            if (gameplayPage.Self)
+            {
+                gameplayPage.SettingsAndBackButtonVisibility(true);
+            }
+
             if (!CardDistribution)
                 return;
 
@@ -391,7 +397,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ReturnCardToHand(BoardUnitModel boardUnitModel)
+        public void ReturnCardToHand(BoardUnitModel boardUnitModel, int addToMaxCards = 0)
         {
             Player unitOwner = boardUnitModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
@@ -414,7 +420,7 @@ namespace Loom.ZombieBattleground
 
                 boardUnitModel.ResetToInitial();
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);               
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition, addToMaxCards);               
 
                 _gameplayManager.RearrangeHands();
             },

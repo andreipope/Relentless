@@ -75,13 +75,12 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IQueueManager _queueManager;
-
-        private bool _isCheckPlayerAvailableTimerStart;
-        private float _checkPlayerTimer;
-
-        private SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
-
         private IGameplayManager _gameplayManager;
+
+        private bool _keepAliveActive;
+        private float _nextKeepAliveSendTimer;
+
+        private readonly SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
 
         private UIMatchMakingFlowController _matchMakingFlowController;
 
@@ -98,12 +97,16 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (_backendFacade == null || !_backendFacade.IsConnected)
+                return;
+
+            if (_keepAliveActive)
             {
-                _checkPlayerTimer += Time.unscaledDeltaTime;
-                if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
+                _nextKeepAliveSendTimer += Time.unscaledDeltaTime;
+                if (_nextKeepAliveSendTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
-                    _checkPlayerTimer = 0f;
+                    _nextKeepAliveSendTimer = 0f;
+                    Log.Debug("Sending keepalive");
 
                     try
                     {
@@ -164,6 +167,8 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
+            Log.Debug(nameof(GameEndedHandler));
+
             try
             {
                 ResetCheckPlayerStatus();
@@ -208,6 +213,7 @@ namespace Loom.ZombieBattleground
 
         public async Task StopMatchmaking()
         {
+            Log.Debug(nameof(StopMatchmaking));
             await _matchmakingBusySemaphore.WaitAsync();
 
             try
@@ -230,6 +236,7 @@ namespace Loom.ZombieBattleground
             }
             catch(Exception e)
             {
+                Log.Warn("", e);
                 Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
@@ -241,6 +248,7 @@ namespace Loom.ZombieBattleground
 
         private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
         {
+            Log.Debug($"{nameof(MatchMakingFlowControllerOnMatchConfirmed)}(MatchMetadata matchMetadata = {matchMetadata})");
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
             _queueManager.Active = false;
@@ -249,7 +257,7 @@ namespace Loom.ZombieBattleground
             InitialGameState = null;
 
             MatchMetadata = matchMetadata;
-            
+
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
             {
@@ -260,7 +268,7 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            _isCheckPlayerAvailableTimerStart = true;
+            _keepAliveActive = true;
 
             _queueManager.Active = true;
         }
@@ -351,19 +359,19 @@ namespace Loom.ZombieBattleground
                                List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
                                int cardsRemoved = 0;
                                bool found;
-                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand) 
+                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
                                {
                                    found = false;
                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
                                    {
-                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
+                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
                                        {
                                            finalCardsInHand.Add(cardInHand);
                                            found = true;
                                            break;
                                        }
                                    }
-                                   if (!found) 
+                                   if (!found)
                                    {
                                        _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
                                        cardsRemoved++;
@@ -478,8 +486,9 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            _isCheckPlayerAvailableTimerStart = false;
-            _checkPlayerTimer = 0f;
+            Log.Info($"{nameof(ResetCheckPlayerStatus)} ({nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
+            _keepAliveActive = false;
+            _nextKeepAliveSendTimer = 0f;
         }
     }
 }

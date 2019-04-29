@@ -128,6 +128,7 @@ namespace Loom.ZombieBattleground
             
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
             {
+                _buttonCredits.gameObject.SetActive(false);
                 _appStateManager.SetPausingApp(true);
             }
             

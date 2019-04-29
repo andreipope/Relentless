@@ -102,7 +102,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 Helpers.ExceptionReporter.SilentReportException(exception);
                 Log.Warn("RpcException ==", exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                if (UserDataModel.IsValid) 
+                {
+                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception);
+                }
             }
 
             await _dataManager.StartLoadCache();      

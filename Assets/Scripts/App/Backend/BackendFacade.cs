@@ -752,16 +752,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             await _contractCallProxy.CallAsync(EndMatchMethod, request);
         }
 
-        public async Task<CheckGameStatusResponse> CheckPlayerStatus(long matchId)
-        {
-            CheckGameStatusRequest request = new CheckGameStatusRequest
-            {
-                MatchId = matchId
-            };
-
-            return await _contractCallProxy.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
-        }
-
         public async Task<KeepAliveResponse> KeepAliveStatus(string userId, long matchId)
         {
             KeepAliveRequest request = new KeepAliveRequest

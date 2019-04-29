@@ -17,6 +17,8 @@ public class HandBoardCard : OwnableBoardObject
 
     public bool IsReturnToHand { get; private set; }
 
+    public Collider2D HandCardCollider { get; private set; }
+
     protected bool StartedDrag;
 
     protected Vector3 InitialPos;
@@ -50,6 +52,8 @@ public class HandBoardCard : OwnableBoardObject
     public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
     {
         GameObject = selfObject;
+
+        HandCardCollider = GameObject.GetComponent<Collider2D>();
 
         BoardCardView = boardCardView;
         BoardUnitModel = boardCardView.Model;

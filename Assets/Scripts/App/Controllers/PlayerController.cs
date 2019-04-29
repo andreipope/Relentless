@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         private BoardCardView _topmostBoardCard;
 
+        private GameObject _currentHoveringCard;
+
         private PointerEventSolver _pointerEventSolver;
 
         public bool IsPlayerStunned { get; set; }
@@ -395,9 +397,13 @@ namespace Loom.ZombieBattleground
                     foreach (RaycastHit2D hit in hits)
                     {
                         boardCardView = _gameplayManager.GetController<BattlegroundController>().GetBoardCardFromHisObject(hit.collider.gameObject);
-                        if(boardCardView != null && boardCardView.HandBoardCard != null && !boardCardView.HandBoardCard.IsReturnToHand)
+                        if(boardCardView != null && boardCardView.HandBoardCard != null && !boardCardView.HandBoardCard.IsReturnToHand && boardCardView != _hoveringHandCard)
                         {
                             boardCardViews.Add(boardCardView);
+                        }
+                        else if(hit.collider.gameObject != null && hit.collider.gameObject == _currentHoveringCard)
+                        {
+                            boardCardViews.Add(_hoveringHandCard);
                         }
                         boardCardView = null;
                     }
@@ -447,17 +453,33 @@ namespace Loom.ZombieBattleground
 
         private void ShowHoveringAndZoom()
         {
+            EnableHoveringCardObject();
             _hoveringHandCard.HandBoardCard?.HoveringAndZoom();
+        }
+
+        private void EnableHoveringCardObject()
+        {
+            if(_currentHoveringCard == null)
+            {
+                _currentHoveringCard = new GameObject("InitialHoveringHandCard");
+                BoxCollider2D collider = _currentHoveringCard.AddComponent<BoxCollider2D>();
+                collider.size = (_hoveringHandCard.HandBoardCard.HandCardCollider as BoxCollider2D).size;
+            }
+            _currentHoveringCard.SetActive(true);
+            _currentHoveringCard.transform.position = _hoveringHandCard.Transform.position;
+            _currentHoveringCard.transform.localScale = _hoveringHandCard.Transform.localScale;
+            _currentHoveringCard.transform.eulerAngles = _hoveringHandCard.Transform.eulerAngles;
         }
 
         private void HideHoveringAndZoom(bool isMove = true)
         {
             _isMoveHoveringCard = true;
+            _currentHoveringCard?.SetActive(false);
             Action onComplete = () =>
             {
                 _isMoveHoveringCard = false;
             };
-            _hoveringHandCard.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
+            _hoveringHandCard?.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
             _hoveringHandCard = null;
         }
 
