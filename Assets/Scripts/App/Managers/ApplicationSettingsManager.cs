@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
 #if !UNITY_ANDROID && !UNITY_IOS
-            Screen.SetResolution(CurrentResolution.Resolution.x, CurrentResolution.Resolution.y, Screen.fullScreen);          
+            Screen.SetResolution(CurrentResolution.Resolution.x, CurrentResolution.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen);          
 #endif
         }
 
