@@ -42,6 +42,8 @@ namespace Loom.ZombieBattleground
 #if !UNITY_ANDROID && !UNITY_IOS
         private TMP_Dropdown _resolutionDropdown;
         private TMP_Dropdown _screenModeDropdown;
+
+        private const float ScrollSensitivityForWindows = 25f;
 #endif
 
         private bool _initialInit = true;
@@ -143,6 +145,10 @@ namespace Loom.ZombieBattleground
 #else
             _resolutionDropdown = _panelVideoSettings.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
             _screenModeDropdown = _panelVideoSettings.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
+            #if UNITY_STANDALONE_WIN
+            _resolutionDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
+            _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
+            #endif
             _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
