@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
         }
 #endif
 
-        public void SetScreenMode(Enumerators.ScreenMode screenMode)
+        public async void SetScreenMode(Enumerators.ScreenMode screenMode)
         {
             CurrentScreenMode = screenMode;
 
@@ -96,7 +96,11 @@ namespace Loom.ZombieBattleground
             }
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+#if !UNITY_ANDROID && !UNITY_IOS
+            Screen.SetResolution(CurrentResolution.Resolution.x, CurrentResolution.Resolution.y, Screen.fullScreen);          
+#endif
         }
 
 #if !UNITY_ANDROID && !UNITY_IOS
