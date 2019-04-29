@@ -1,0 +1,81 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Melt_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 38938fd321a0aa94cbbd3114fe0a2398, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: d8bb1520e567ad049a39ec9cf82464db, type: 3}
+  - {fileID: 21300000, guid: 48c6b6a150f44094f96abb2cfc2befb5, type: 3}
+  - {fileID: 21300000, guid: c2fc2b92b06044c10ae41e95f0693260, type: 3}
+  - {fileID: 21300000, guid: e90e03f33f85f4e4ea3914062730da7f, type: 3}
+  - {fileID: 21300000, guid: c9daf98435879e24db4224c64c86cdb6, type: 3}
+  - {fileID: 21300000, guid: 533057e58ccbea444b438bdf6374aa4f, type: 3}
+  - {fileID: 21300000, guid: c3f8a56697e38f9469be81ba5cf02891, type: 3}
+  - {fileID: 21300000, guid: 0c269e57dc29d78498638aa02bdd8ae0, type: 3}
+  - {fileID: 21300000, guid: dde3a4a880e15c341b4cfb0cf9a1fccb, type: 3}
+  - {fileID: 21300000, guid: 60bc46a8d2711854eb5644e83042e786, type: 3}
+  - {fileID: 21300000, guid: 0e83cb194dad4f44ba076c0ef4290e42, type: 3}
+  - {fileID: 21300000, guid: 259c486b7fdca1f40a040a4fbf26bd38, type: 3}
+  - {fileID: 21300000, guid: dc650aaca7dd4c641a73e93aef31f90c, type: 3}
+  - {fileID: 21300000, guid: 6272ae5d74d40464ebcaba8941b55274, type: 3}
+  - {fileID: 21300000, guid: c3e5e72f9af30d24ab59a66919fe0608, type: 3}
+  - {fileID: 21300000, guid: 7d2c9d5f8f9efde4ca42c64ee11908ac, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - button_disintegrate_normal
+  - disintegrate_top
+  - fxplaceholder_melt
+  - button_disintegrate_frame
+  - button_disintegrate_pressed
+  - button_yesno_frame
+  - effect_placeholder
+  - button_yes_normal
+  - effect_ring
+  - disintegrate_gooicon
+  - button_no_pressed
+  - disintegrate_paper
+  - disintegrate_bottom
+  - disintegrate_cardcount
+  - button_yes_pressed
+  - button_no_normal
+  m_Tag: Melt_Atlas
+  m_IsVariant: 0

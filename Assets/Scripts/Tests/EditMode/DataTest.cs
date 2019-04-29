@@ -219,8 +219,7 @@ namespace Loom.ZombieBattleground.Test
                     7,
                     8,
                     Enumerators.CardKind.UNDEFINED,
-                    new List<Enumerators.GameMechanicDescription>(),
-                    new MouldId(12345)
+                    new List<Enumerators.GameMechanicDescription>()
                 );
         }
     }

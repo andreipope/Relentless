@@ -88,9 +88,6 @@ namespace Loom.ZombieBattleground.Data
         [JsonProperty]
         public List<Enumerators.GameMechanicDescription> TargetGameMechanicDescriptions { get; private set; }
 
-        [JsonProperty]
-        public MouldId MouldId { get; private set; }
-
         [JsonConstructor]
         public AbilityData(
             Enumerators.AbilityType ability,
@@ -119,8 +116,7 @@ namespace Loom.ZombieBattleground.Data
             int defense2,
             int cost,
             Enumerators.CardKind targetCardkind,
-            List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes,
-            MouldId mouldId
+            List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes
             )
         {
             Ability = ability;
@@ -150,7 +146,6 @@ namespace Loom.ZombieBattleground.Data
             Cost = cost;
             TargetKind = targetCardkind;
             TargetGameMechanicDescriptions = targetGameMechanicDescriptionTypes;
-            MouldId = mouldId;
         }
 
         public AbilityData(AbilityData source) : this (
@@ -180,8 +175,7 @@ namespace Loom.ZombieBattleground.Data
             source.Defense2,
             source.Cost,
             source.TargetKind,
-            source.TargetGameMechanicDescriptions,
-            source.MouldId
+            source.TargetGameMechanicDescriptions
         ) 
         {
         }

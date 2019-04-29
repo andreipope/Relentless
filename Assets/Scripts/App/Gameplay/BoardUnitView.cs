@@ -585,27 +585,6 @@ namespace Loom.ZombieBattleground
                     Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
                     false, true);
                 }
-
-
-                // FIXME: WTF we have logic based on card name?
-                if (Model.Card.Prototype.Name.Equals("Freezzee"))
-                {
-                    IReadOnlyList<BoardUnitModel> freezzees =
-                        Model
-                            .GetEnemyUnitsList(Model)
-                            .FindAll(x => x.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
-
-                    if (freezzees.Count > 0)
-                    {
-                        foreach (BoardUnitModel unitModel in freezzees)
-                        {
-                            unitModel.Stun(Enumerators.StunType.FREEZE, 1);
-
-                            BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
-                            CreateFrozenVfx(unitView.Transform.position);
-                        }
-                    }
-                }
             }
 
             _initialScale = GameObject.transform.localScale;
@@ -810,6 +789,7 @@ namespace Loom.ZombieBattleground
                 _fightTargetingArrow.TargetsType = Model.AttackTargetsAvailability;
                 _fightTargetingArrow.BoardCards = _gameplayManager.OpponentPlayer.CardsOnBoard;
                 _fightTargetingArrow.Owner = this.Model;
+                _fightTargetingArrow.IgnoreHeavy = Model.AgileEnabled;
 
                 if (Model.AttackRestriction == Enumerators.AttackRestriction.ONLY_DIFFERENT)
                 {
@@ -876,6 +856,7 @@ namespace Loom.ZombieBattleground
         public void HandleAttackPlayer(Action completeCallback, Player targetPlayer, Action hitCallback, Action attackCompleteCallback)
         {
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetPlayer.AvatarObject,
                 0.1f,
@@ -914,6 +895,7 @@ namespace Loom.ZombieBattleground
             }
 
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetCardView.GameObject,
                 0.5f,

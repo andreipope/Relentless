@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.18";
+        internal const string CurrentVersionBase = "0.1.19";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -160,6 +160,8 @@ namespace Loom.ZombieBattleground.Common
         internal const float DurationHoveringHandCard = 0.15f;
 
         internal const int BackendCallTimeout = 10000;
+
+        internal const float QueueActionTimeout = 60f;    
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);

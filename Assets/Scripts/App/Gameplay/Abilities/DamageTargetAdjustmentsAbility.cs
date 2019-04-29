@@ -1,16 +1,14 @@
-using System;
 using System.Collections.Generic;
-using DG.Tweening;
+using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
     public class DamageTargetAdjustmentsAbility : AbilityBase
     {
-        public int Value { get; }
+        private int Value { get; }
 
         private List<BoardUnitModel> _targetUnits;
 
@@ -34,77 +32,11 @@ namespace Loom.ZombieBattleground
                     break;
             }
 
-            if(AbilityTrigger == Enumerators.AbilityTrigger.ATTACK)
+            if(AbilityTrigger != Enumerators.AbilityTrigger.ENTRY &&
+               AbilityActivity != Enumerators.AbilityActivity.ACTIVE)
             {
                 InvokeUseAbilityEvent();
             }
-        }
-
-        public override void Update()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
-        public override void Action(object info = null)
-        {
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
-            base.Action(info);
-
-            _targetUnits = new List<BoardUnitModel>();
-
-            BoardUnitModel unit = (BoardUnitModel) info;
-
-            Player playerOwner = unit.OwnerPlayer;
-
-            BoardUnitModel leftAdjustment = null, rightAdjustment = null;
-
-            int targetIndex = -1;
-            IReadOnlyList<BoardUnitModel> list = null;
-            for (int i = 0; i < playerOwner.CardsOnBoard.Count; i++)
-            {
-                if (playerOwner.CardsOnBoard[i] == unit)
-                {
-                    targetIndex = i;
-                    list = playerOwner.CardsOnBoard;
-                    break;
-                }
-            }
-
-            if (targetIndex > -1)
-            {
-                if (targetIndex - 1 > -1)
-                {
-                    leftAdjustment = list[targetIndex - 1];
-                }
-
-                if (targetIndex + 1 < list.Count)
-                {
-                    rightAdjustment = list[targetIndex + 1];
-                }
-            }
-
-            _targetUnits.Add(unit);
-
-            if (leftAdjustment != null)
-            {
-                _targetUnits.Add(leftAdjustment);
-            }
-
-            if (rightAdjustment != null)
-            {
-                _targetUnits.Add(rightAdjustment);
-            }
-
-            foreach(BoardUnitModel target in _targetUnits)
-            {
-                target.HandleDefenseBuffer(Value);
-            }
-
-            InvokeActionTriggered(_targetUnits);
         }
 
         protected override void InputEndedHandler()
@@ -113,25 +45,22 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                switch (AffectObjectType)
-                {
-                    case Enumerators.AffectObjectType.Character:
-                        Action(TargetUnit);
-                        break;
-                }
+                DamageTargetAdjacent(TargetUnit);
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(BoardObject boardObject, int damage, bool isAttacker)
         {
-            base.UnitAttackedHandler(info, damage, isAttacker);
+            base.UnitAttackedHandler(boardObject, damage, isAttacker);
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            Action(info);
+            if (boardObject is BoardUnitModel unit)
+            {
+                DamageTargetAdjacent(unit);
+            }
         }
-
 
         protected override void VFXAnimationEndedHandler()
         {
@@ -142,21 +71,54 @@ namespace Loom.ZombieBattleground
             AbilityProcessingAction?.ForceActionDone();
         }
 
+        private void DamageTargetAdjacent(BoardUnitModel targetUnit)
+        {
+            if (targetUnit == null)
+                return;
+
+            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+            _targetUnits = new List<BoardUnitModel>();
+
+            _targetUnits.Add(targetUnit);
+            _targetUnits.AddRange(BattlegroundController.GetAdjacentUnitsToUnit(targetUnit));
+
+            foreach (BoardUnitModel target in _targetUnits)
+            {
+                target.HandleDefenseBuffer(Value);
+            }
+
+            InvokeActionTriggered(_targetUnits);
+        }
+
         private void ActionCompleted()
         {
-            object caller = AbilityUnitOwner ?? (object) BoardItem;
+            if (_targetUnits == null || _targetUnits.Count == 0)
+                return;
+
+            List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             foreach (BoardUnitModel unit in _targetUnits)
             {
-                BattleController.AttackUnitByAbility(caller, AbilityData, unit);
+                BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, Value);
+
+                TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                    Target = unit,
+                    HasValue = true,
+                    Value = -Value
+                });
             }
 
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
-                }
-            );
+            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                Caller = GetCaller(),
+                TargetEffects = TargetEffects
+            });
+
+            InvokeUseAbilityEvent(_targetUnits.Select(targ => new ParametrizedAbilityBoardObject(targ)).ToList());
         }
     }
 }

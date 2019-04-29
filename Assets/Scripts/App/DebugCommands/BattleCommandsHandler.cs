@@ -269,7 +269,8 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        player.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -315,7 +316,9 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
         _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
@@ -438,10 +441,10 @@ static class BattleCommandsHandler
         {
             obj.AttackingUnitModel.NumTurnsOnBoard--;
             obj.AttackingUnitModel.OnStartTurn();
-            obj.AttackingUnitModel.CurrentDefense += obj.DamageOnAttackingUnit;
+            obj.AttackingUnitModel.AddToCurrentDefenseHistory(obj.DamageOnAttackingUnit, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
-         obj.AttackedUnitModel.CurrentDefense += obj.DamageOnAttackedUnit;
+         obj.AttackedUnitModel.AddToCurrentDefenseHistory(obj.DamageOnAttackedUnit, Enumerators.ReasonForValueChange.AbilityBuff);
     }
 
 
@@ -520,7 +523,7 @@ static class BattleCommandsHandler
         else if(playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.AddToCurrentDefenseHistory(-playOverlordSkill.Skill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
         playOverlordSkill.Skill.SetCoolDown(0);
@@ -615,7 +618,7 @@ static class BattleCommandsHandler
         if (playOverlordSkill.Targets[0].BoardObject is BoardUnitModel unit)
         {
             unit.BuffedDefense -= playOverlordSkill.Skill.Skill.Value;
-            unit.CurrentDefense -= playOverlordSkill.Skill.Skill.Value;
+            unit.AddToCurrentDefenseHistory(-playOverlordSkill.Skill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
             playOverlordSkill.Skill.SetCoolDown(0);
         }
     }
@@ -653,8 +656,7 @@ static class BattleCommandsHandler
             RevertAttackOnUnitBySkill(unit, playOverlordSkill.Skill);
 
             unit.BuffedDamage -= playOverlordSkill.Skill.Skill.Damage;
-            unit.CurrentDamage -= playOverlordSkill.Skill.Skill.Damage;
-
+            unit.AddToCurrentDamageHistory(-playOverlordSkill.Skill.Skill.Damage, Enumerators.ReasonForValueChange.AbilityBuff);
             playOverlordSkill.Skill.SetCoolDown(0);
         }
     }
@@ -681,7 +683,7 @@ static class BattleCommandsHandler
     private static void RevertAttackOnUnitBySkill(BoardUnitModel unitModel, BoardSkill boardSkill)
     {
         BoardUnitModel creature = unitModel;
-        creature.CurrentDefense += boardSkill.Skill.Value;
+        creature.AddToCurrentDefenseHistory(boardSkill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
     }
 
     private static void RevertHealPlayerBySkill(Player player, BoardSkill boardSkill)
@@ -697,7 +699,7 @@ static class BattleCommandsHandler
         if (unitModel == null)
             return;
 
-        unitModel.CurrentDefense -= boardSkill.Skill.Value;
+        unitModel.AddToCurrentDefenseHistory(-boardSkill.Skill.Value, Enumerators.ReasonForValueChange.AbilityBuff);
     }
 
     [CommandHandler(Description = "Unlocks current overlord abilities")]

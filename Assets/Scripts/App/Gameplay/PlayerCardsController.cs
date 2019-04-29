@@ -524,23 +524,7 @@ namespace Loom.ZombieBattleground
             return boardUnitModel;
         }
 
-        public BoardUnitModel CreateNewCardByNameAndAddToHand(string name)
-        {
-            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)}(string name = {name})");
-            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
-
-            return CreateNewCardAndAddToHand(card);
-        }
-
-        public BoardUnitModel CreateNewCardByMouldIdAndAddToHand(MouldId mouldId)
-        {
-            CallLog($"{nameof(CreateNewCardByMouldIdAndAddToHand)}(MouldId mouldId = {mouldId})");
-            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId));
-
-            return CreateNewCardAndAddToHand(card);
-        }
-
-        public void ReturnToHandBoardUnit(BoardUnitModel boardUnitModel, Vector3 cardPosition)
+        public void ReturnToHandBoardUnit(BoardUnitModel boardUnitModel, Vector3 cardPosition, int addToMaxCards = 0)
         {
             CallLog($"{nameof(ReturnToHandBoardUnit)}(BoardUnitModel boardUnitModel = {boardUnitModel}, Vector3 cardPosition = {cardPosition})");
 
@@ -553,7 +537,13 @@ namespace Loom.ZombieBattleground
                 cardView.Transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
             }
 
-            if (CheckIsMoreThanMaxCards())
+            if(!_gameplayManager.CurrentTurnPlayer.IsLocalPlayer &&
+                cardView is BoardCardView boardCardView)
+            {
+                boardCardView.SetHighlightingEnabled(false);
+            }
+
+            if (CheckIsMoreThanMaxCards(addToMaxCards: addToMaxCards))
             {
                 _cardsController.DiscardCardFromHand(boardUnitModel);
             }
@@ -812,9 +802,9 @@ namespace Loom.ZombieBattleground
             _cardsOnBoard.Insert(ItemPosition.End, unit);
         }
 
-        public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel = null)
+        public bool CheckIsMoreThanMaxCards(BoardUnitModel boardUnitModel = null, int addToMaxCards = 0)
         {
-            if (CardsInHand.Count >= Player.MaxCardsInHand)
+            if (CardsInHand.Count >= Player.MaxCardsInHand+addToMaxCards)
             {
                 return true;
             }

@@ -107,21 +107,21 @@ namespace Loom.ZombieBattleground
                         unit.DamageDebuffUntillEndOfTurn -= buffresult;
                     }
 
-                    unit.CurrentDamage += Damage;
+                    unit.AddToCurrentDamageHistory(unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Damage > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
+                        ActionEffectType = unit.DamageDebuffUntillEndOfTurn > 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit,
                         HasValue = true,
-                        Value = Damage
+                        Value = unit.DamageDebuffUntillEndOfTurn
                     });
                 }
 
                 if (Defense != 0)
                 {
                     unit.HpDebuffUntillEndOfTurn += Defense;
-                    unit.CurrentDefense += Defense;
+                    unit.AddToCurrentDefenseHistory(Defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
@@ -158,13 +158,13 @@ namespace Loom.ZombieBattleground
 
                 if (unit.DamageDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentDamage -= unit.DamageDebuffUntillEndOfTurn;
+                    unit.AddToCurrentDamageHistory(-unit.DamageDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
                     unit.DamageDebuffUntillEndOfTurn = 0;
                 }
 
                 if (unit.HpDebuffUntillEndOfTurn != 0)
                 {
-                    unit.CurrentDefense -= unit.HpDebuffUntillEndOfTurn;
+                    unit.AddToCurrentDefenseHistory(-unit.HpDebuffUntillEndOfTurn, Enumerators.ReasonForValueChange.AbilityBuff);
                     unit.HpDebuffUntillEndOfTurn = 0;
                 }
             }

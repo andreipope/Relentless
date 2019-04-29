@@ -58,12 +58,12 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HighestCost)
             {
-                cards = cards.OrderByDescending(item => item.Card.InstanceCard.Cost).ToList();
+                cards = cards.OrderByDescending(item => item.CurrentCost).ToList();
                 cards = cards.GetRange(0, Mathf.Clamp(Count, Mathf.Min(cards.Count, Count), cards.Count));
             }
             else
             {
-                cards = cards.FindAll(x => x.Card.InstanceCard.Cost <= Value);
+                cards = cards.FindAll(x => x.CurrentCost <= Value);
 
                 if (Faction != Enumerators.Faction.Undefined)
                 {
@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     HandBoardCard cardHand = BattlegroundController.CreateCustomHandBoardCard(cards[i]).HandBoardCard;
-                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardHand.BoardCardView, ref targetEffects, ref boardCards, false);
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardHand.BoardCardView, ref targetEffects, ref boardCards, GameplayManager.IsLocalPlayerTurn());
                 }
             }
 

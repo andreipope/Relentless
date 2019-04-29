@@ -164,6 +164,12 @@ namespace Loom.ZombieBattleground
 
         public void EndCardDistribution()
         {
+            GameplayPage gameplayPage = _uiManager.GetPage<GameplayPage>();
+            if (gameplayPage.Self)
+            {
+                gameplayPage.SettingsAndBackButtonVisibility(true);
+            }
+
             if (!CardDistribution)
                 return;
 
@@ -391,12 +397,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ReturnCardToHand(BoardUnitModel boardUnitModel)
+        public void ReturnCardToHand(BoardUnitModel boardUnitModel, int addToMaxCards = 0)
         {
             Player unitOwner = boardUnitModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
 
             boardUnitModel.Card.InstanceCard.Cost = boardUnitModel.Card.Prototype.Cost;
+            boardUnitModel.DisableBuffsOnValueHistory(boardUnitModel.CurrentCostHistory);
 
             Vector3 unitPosition = boardUnitView.Transform.position;
 
@@ -413,7 +420,7 @@ namespace Loom.ZombieBattleground
 
                 boardUnitModel.ResetToInitial();
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);               
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition, addToMaxCards);               
 
                 _gameplayManager.RearrangeHands();
             },
@@ -443,7 +450,7 @@ namespace Loom.ZombieBattleground
                 card.HandBoardCard.Enabled = false;
                 if (!_gameplayManager.AvoidGooCost)
                 {
-                    card.Model.Card.Owner.CurrentGoo -= card.Model.Card.InstanceCard.Cost;
+                    card.Model.Card.Owner.CurrentGoo -= card.Model.CurrentCost;
                 }
 
                 _soundManager.PlaySound(Enumerators.SoundType.CARD_FLY_HAND_TO_BATTLEGROUND,
@@ -514,7 +521,7 @@ namespace Loom.ZombieBattleground
                                             if (status)
                                             {
                                                 player.ThrowPlayCardEvent(card.Model, card.FuturePositionOnBoard);
-                                                OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.Card.InstanceCard.Cost));
+                                                OnPlayPlayerCard?.Invoke(new PlayCardOnBoard(boardUnitView, card.Model.CurrentCost));
                                             }
                                             else
                                             {
@@ -700,12 +707,12 @@ namespace Loom.ZombieBattleground
             {
                 BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model.Card == boardUnitModel.Card);
 
-                boardCardView.Model.Card.InstanceCard.Cost = Math.Max(boardCardView.Model.Card.InstanceCard.Cost + value, 0);
+                boardUnitModel.AddToCurrentCostHistory(value, Enumerators.ReasonForValueChange.AbilityBuff);
                 boardCardView.UpdateCardCost();
             }
             else
             {
-                boardUnitModel.Card.InstanceCard.Cost = Mathf.Clamp(boardUnitModel.Card.InstanceCard.Cost + value, 0, 99);
+                boardUnitModel.AddToCurrentCostHistory(value, Enumerators.ReasonForValueChange.AbilityBuff);
             }
 
             player.PlayerCardsController.InvokeHandChanged();
@@ -713,24 +720,30 @@ namespace Loom.ZombieBattleground
             return boardUnitModel;
         }
 
-        public void SetGooCostOfCardInHand(Player player, BoardUnitModel boardUnitModel, int value, BoardCardView boardCardView = null)
+        public ValueHistory SetGooCostOfCardInHand(Player player, BoardUnitModel boardUnitModel, int value, BoardCardView boardCardView = null, bool forced = false)
         {
             if (player.IsLocalPlayer)
             {
+                boardUnitModel.AddToCurrentCostHistory(value, Enumerators.ReasonForValueChange.AbilityBuff, forced);
+
                 if (boardCardView == null)
                 {
-                    boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
+                    boardCardView = _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == boardUnitModel);
                 }
 
-                boardCardView.Model.Card.InstanceCard.Cost = Mathf.Max(0, value);
-                boardCardView.UpdateCardCost();
+                if (boardCardView != null) 
+                    {
+                        boardCardView.UpdateCardCost();
 
-                bool isActive = boardCardView.Model.Card.InstanceCard.Cost < boardCardView.Model.Card.Prototype.Cost;
-                boardCardView.costHighlightObject.SetActive(isActive);
+                        bool isActive = boardCardView.Model.CurrentCost < boardCardView.Model.Card.Prototype.Cost;
+                        boardCardView.costHighlightObject.SetActive(isActive);
+                    }
+
+                return boardUnitModel.FindFirstForcedValueInValueHistory(boardUnitModel.CurrentCostHistory);
             }
             else
             {
-                boardUnitModel.InstanceCard.Cost = Mathf.Clamp(value, 0, 99);
+                boardUnitModel.AddToCurrentCostHistory(value, Enumerators.ReasonForValueChange.AbilityBuff, forced);
                 boardUnitModel.Prototype = new Card(
                     boardUnitModel.Prototype.MouldId,
                     boardUnitModel.Prototype.Name,
@@ -752,6 +765,8 @@ namespace Loom.ZombieBattleground
                     boardUnitModel.Prototype.UniqueAnimation,
                     boardUnitModel.Prototype.Hidden
                 );
+
+                return boardUnitModel.FindFirstForcedValueInValueHistory(boardUnitModel.CurrentCostHistory);
             }
         }
 
@@ -964,7 +979,7 @@ namespace Loom.ZombieBattleground
 
             _titleText.text = boardUnitModel.Prototype.Name;
             _descriptionText.text = choosableAbility.Description;
-            _gooCostText.text = boardUnitModel.InstanceCard.Cost.ToString();
+            _gooCostText.text = boardUnitModel.CurrentCost.ToString();
 
             if (boardUnitModel.Prototype.Kind == Enumerators.CardKind.CREATURE)
             {

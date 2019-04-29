@@ -19,7 +19,18 @@ SpriteAtlas:
       readable: 0
       crunchedCompression: 0
       sRGB: 1
-    platformSettings: []
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
     packingSettings:
       serializedVersion: 2
       padding: 8
@@ -29,16 +40,7 @@ SpriteAtlas:
       enableTightPacking: 0
     variantMultiplier: 1
     packables:
-    - {fileID: 2800000, guid: a8f1691de13aa45d98080da3e3f9ba53, type: 3}
-    - {fileID: 2800000, guid: 8c2c19dc483874295acaf742eaaf3fd3, type: 3}
-    - {fileID: 2800000, guid: 3e05930f71dd84dc2bf3a409f5f81084, type: 3}
-    - {fileID: 2800000, guid: 62644ca9007464efc91e09e7bd40cda7, type: 3}
-    - {fileID: 2800000, guid: 52d0d65d21364184aaed43f9ca9eca81, type: 3}
-    - {fileID: 2800000, guid: 4c57731db14894a59a0ed2aa1ac6d956, type: 3}
-    - {fileID: 2800000, guid: dd7bd7370271c40758103d3ef7a3ec90, type: 3}
-    - {fileID: 2800000, guid: 6522ce7739d008f4fb72d182ccad8809, type: 3}
-    - {fileID: 2800000, guid: 08b2d474d678fa340a9eb6e4018bb853, type: 3}
-    - {fileID: 2800000, guid: 4e60a711cc8fe9c4b99a49334e224e59, type: 3}
+    - {fileID: 102900000, guid: a0d1898fcca9829469a088d929dc112f, type: 3}
     bindAsDefault: 1
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
@@ -47,6 +49,8 @@ SpriteAtlas:
   - {fileID: 21300000, guid: dd7bd7370271c40758103d3ef7a3ec90, type: 3}
   - {fileID: 21300000, guid: 6522ce7739d008f4fb72d182ccad8809, type: 3}
   - {fileID: 21300000, guid: 62644ca9007464efc91e09e7bd40cda7, type: 3}
+  - {fileID: 21300000, guid: 405f88fa23e3c486eac05a8da0d20a12, type: 3}
+  - {fileID: 21300000, guid: 22d5d77cba7ba434e8dd2e93ab6d4c47, type: 3}
   - {fileID: 21300000, guid: 8c2c19dc483874295acaf742eaaf3fd3, type: 3}
   - {fileID: 21300000, guid: 4c57731db14894a59a0ed2aa1ac6d956, type: 3}
   - {fileID: 21300000, guid: a8f1691de13aa45d98080da3e3f9ba53, type: 3}
@@ -58,6 +62,8 @@ SpriteAtlas:
   - pack_screen
   - packopener_button_open
   - pack_holder_tray
+  - czb_ui_bg
+  - pack_panel
   - pack_holder_normal
   - pack_sample
   - pack_button

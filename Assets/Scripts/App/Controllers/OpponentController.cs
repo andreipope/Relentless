@@ -164,7 +164,7 @@ namespace Loom.ZombieBattleground
                     BoardUnitModel boardUnit = _battlegroundController.GetBoardUnitModelByInstanceId(rageOutcome.InstanceId.FromProtobuf());
 
                     boardUnit.BuffedDamage = rageOutcome.NewDamage;
-                    boardUnit.CurrentDamage = rageOutcome.NewDamage;
+                  //  boardUnit.CurrentDamage = rageOutcome.NewDamage;
                     break; 
 
                 case PlayerActionOutcome.OutcomeOneofCase.PriorityAttack:
@@ -218,12 +218,11 @@ namespace Loom.ZombieBattleground
                         }
 
                         boardUnit.BuffedDamage = changeStatOutcome.NewDamage;
-                        boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
+                        //boardUnit.CurrentDamage = changeStatOutcome.NewDamage;
                     }
                     else if (changeStatOutcome.Stat == Stat.Types.Enum.Defense)
                     {
                         boardUnit.BuffedDefense = changeStatOutcome.NewDefense;
-                        boardUnit.CurrentDefense = changeStatOutcome.NewDefense;
                     }
 
                     break;
@@ -356,6 +355,12 @@ namespace Loom.ZombieBattleground
         private void OnLeaveMatchHandler()
         {
             _gameplayManager.OpponentPlayer.PlayerDie();
+
+            if(_cardsController.CardDistribution)
+            {
+                _cardsController.EndCardDistribution();
+                GameClient.Get<IUIManager>().HidePopup<MulliganPopup>();
+            }
         }
 
         private void OnCardAttackedHandler(PlayerActionCardAttack actionCardAttack)
@@ -477,7 +482,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.InstanceCard.Cost;
+                        _gameplayManager.OpponentPlayer.CurrentGoo -= boardUnitModel.CurrentCost;
                     },
                     (workingCard, boardObject) =>
                     {
@@ -600,24 +605,30 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
-
-            List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
-
-            foreach (Unit unit in model.Targets)
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
             {
-                parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
-                    _battlegroundController.GetTargetByInstanceId(unit.InstanceId),
-                    new ParametrizedAbilityParameters
-                    {
-                        Attack = unit.Parameter.Attack,
-                        Defense = unit.Parameter.Defense,
-                        CardName = unit.Parameter.CardName,
-                    }
-                ));
-            }
+                BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
 
-            skill.UseSkillFromEvent(parametrizedAbilityObjects);
+                List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
+
+                foreach (Unit unit in model.Targets)
+                {
+                    parametrizedAbilityObjects.Add(new ParametrizedAbilityBoardObject(
+                        _battlegroundController.GetTargetByInstanceId(unit.InstanceId),
+                        new ParametrizedAbilityParameters
+                        {
+                            Attack = unit.Parameter.Attack,
+                            Defense = unit.Parameter.Defense,
+                            CardName = unit.Parameter.CardName,
+                        }
+                    ));
+                }
+
+                skill.UseSkillFromEvent(parametrizedAbilityObjects);
+
+                completeCallback?.Invoke();
+
+            }, Enumerators.QueueActionType.OverlordSkillUsage);
         }
 
         private void GotActionRankBuff(InstanceId card, IList<Unit> targets)
@@ -625,26 +636,34 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            List<BoardUnitModel> units = new List<BoardUnitModel>();
-
-            foreach (BoardObject boardObject in _battlegroundController.GetTargetsByInstanceId(targets))
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
             {
-                if (boardObject != null && boardObject is BoardUnitModel)
-                {
-                    units.Add(boardObject as BoardUnitModel);
-                }
-                else
-                {
-                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to BoardUnitModel"));
-                }
-            }
+                List<BoardUnitModel> units = new List<BoardUnitModel>();
 
-            BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
-            if (boardUnitModel == null)
-                ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
+                foreach (BoardObject boardObject in _battlegroundController.GetTargetsByInstanceId(targets))
+                {
+                    if (boardObject != null && boardObject is BoardUnitModel)
+                    {
+                        units.Add(boardObject as BoardUnitModel);
+                    }
+                    else
+                    {
+                        ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] BoardObject {boardObject} is null or not equal to BoardUnitModel"));
+                    }
+                }
 
-            if (Constants.RankSystemEnabled)
-                _ranksController.BuffAllyManually(units, boardUnitModel);
+                BoardUnitModel boardUnitModel = _battlegroundController.GetBoardUnitModelByInstanceId(card);
+                if (boardUnitModel == null)
+                    ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"Board unit with instance ID {card} not found"));
+
+                if (Constants.RankSystemEnabled)
+                {
+                    _ranksController.BuffAllyManually(units, boardUnitModel);
+                }
+
+                completeCallback?.Invoke();
+
+            }, Enumerators.QueueActionType.RankBuff);
         }
 
         private void GotCheatDestroyCardsOnBoard(IEnumerable<InstanceId> cards)

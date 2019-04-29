@@ -35,6 +35,7 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 InvokeActionTriggered();
+                TargetUnit.HandleDefenseBuffer(TargetUnit.CurrentDefense);
             }
         }
 
@@ -89,7 +90,7 @@ namespace Loom.ZombieBattleground
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.DeathMark,
-                    Target = TargetUnit
+                    Target = unit
                 });
             }
 

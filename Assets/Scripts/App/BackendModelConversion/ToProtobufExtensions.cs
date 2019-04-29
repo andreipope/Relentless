@@ -66,8 +66,7 @@ namespace Loom.ZombieBattleground.Data
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
                 Defense2 = ability.Defense2,
-                Cost = ability.Cost,
-                MouldId = ability.MouldId.Id
+                Cost = ability.Cost
             };
 
             return abilityData;

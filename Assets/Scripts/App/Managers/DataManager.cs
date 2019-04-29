@@ -284,8 +284,7 @@ namespace Loom.ZombieBattleground
                 throw new RpcClientException(msg,-1, null);
             }
 
-            _uiManager.HidePopup<LoginPopup>();
-            _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
+            _uiManager.GetPopup<LoginPopup>().SetValidationFailed(msg);
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)

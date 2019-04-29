@@ -90,8 +90,7 @@ namespace Loom.ZombieBattleground.Data
                 ability.Defense2,
                 ability.Cost,
                 (Enumerators.CardKind)ability.TargetCardKind,
-                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList(),
-                new MouldId(ability.MouldId)
+                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList()
             );
         }
 
