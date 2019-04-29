@@ -15,33 +15,47 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
-
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
-                return;
-
-            Action();
+            if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY && AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                TakeGuardToTarget(AbilityUnitOwner);
+                InvokeUseAbilityEvent();
+            }
         }
 
-        public override void Action(object info = null)
+        protected override void InputEndedHandler()
         {
-            base.Action(info);
+            base.InputEndedHandler();
 
-            AbilityUnitOwner.AddBuffShield();
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (IsAbilityResolved)
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                TakeGuardToTarget(TargetUnit);
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
+            }
+        }
+
+        private void TakeGuardToTarget(BoardObject boardObject)
+        {
+            if (boardObject is BoardUnitModel unit)
+            {
+                unit.AddBuffShield();
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
                         {
                             ActionEffectType = Enumerators.ActionEffectType.Guard,
-                            Target = AbilityUnitOwner,
+                            Target = unit,
                         }
                     }
-            });
+                });
+            }
         }
     }
 }

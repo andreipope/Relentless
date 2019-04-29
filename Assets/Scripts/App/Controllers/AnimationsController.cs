@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private BoardController _boardController;
+
         public void Dispose()
         {
         }
@@ -26,6 +28,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _boardController = _gameplayManager.GetController<BoardController>();
         }
 
         public void Update()
@@ -37,6 +40,7 @@ namespace Loom.ZombieBattleground
         }
 
         public void DoFightAnimation(
+            BoardUnitView boardUnitView,
             GameObject source,
             GameObject target,
             float shakeStrength,
@@ -69,8 +73,15 @@ namespace Loom.ZombieBattleground
                 () =>
                 {
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
-                   
-                    source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
+
+                    Vector2 correctEndPosition = _boardController.GetCorrectPositionOfUnitOnBoard(boardUnitView.Model.Owner, boardUnitView);
+
+                    if(correctEndPosition == Vector2.zero)
+                    {
+                        correctEndPosition = originalPos;
+                    }
+
+                    source.transform.DOMove(correctEndPosition, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
                             onCompleteCallback?.Invoke();

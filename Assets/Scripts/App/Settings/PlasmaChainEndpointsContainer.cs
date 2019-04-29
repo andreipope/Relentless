@@ -28,7 +28,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
         
         public const string FiatValidationURL = "https://dev-auth.loom.games/fiat/validate";
         public const string FiatTransactionURL = "https://dev-auth.loom.games/fiat/transaction";
-        public const string FiatClaimURL = "https://dev-auth.loom.games/fiat/claim-orders";       
+        public const string FiatClaimURL = "https://dev-auth.loom.games/fiat/claim-orders";   
+        public const string FiatProductsURL = "https://dev-auth.loom.games/fiat/products";    
 #else
         //STAGING ENVIRONMENT
         public const string ContractAddressCardFaucet = "0x42ac2c5ef756896b2820e5a2b433c5cc1ae7ca41";  

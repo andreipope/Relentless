@@ -138,5 +138,13 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
+        
+        private void UpdateLoginButtonDisplay(bool status)
+        {
+            if (Self != null)
+            {
+                _buttonLogin.gameObject.SetActive(!status);
+            }
+        }
     }
 }

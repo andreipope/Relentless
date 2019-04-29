@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -12,25 +13,30 @@ namespace Loom.ZombieBattleground
         public int Count { get; }
         public Enumerators.Faction Faction { get; }
 
-        private IGameplayManager _gameplayManager;
-        private AbilitiesController _abilitiesController;
-
         public SummonFromHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
             Value = ability.Value;
             Count = ability.Count;
             Faction = ability.Faction;
-
-            _gameplayManager = GameClient.Get<IGameplayManager>();
-            _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
         }
 
         public override void Activate()
         {
             base.Activate();
 
+            InvokeUseAbilityEvent();
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            Action();
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
             Action();
@@ -44,55 +50,47 @@ namespace Loom.ZombieBattleground
             List<HandBoardCard> boardCards = new List<HandBoardCard>();
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            if (PredefinedTargets != null)
-            {
-                IReadOnlyList<HandBoardCard> boardCardsTargets =
-                    PredefinedTargets
-                        .Select(x => x.BoardObject as BoardUnitModel)
-                        .Select(x => BattlegroundController.CreateCustomHandBoardCard(x).HandBoardCard)
-                        .ToList();
+            if (!HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
+                return;
 
-                foreach (HandBoardCard target in boardCardsTargets)
+            List<BoardUnitModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
+                FindAll(card => card.Prototype.Kind == Enumerators.CardKind.CREATURE);
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HighestCost)
+            {
+                cards = cards.OrderByDescending(item => item.CurrentCost).ToList();
+                cards = cards.GetRange(0, Mathf.Clamp(Count, Mathf.Min(cards.Count, Count), cards.Count));
+            }
+            else
+            {
+                cards = cards.FindAll(x => x.CurrentCost <= Value);
+
+                if (Faction != Enumerators.Faction.Undefined)
                 {
-                    PutCardFromHandToBoard(target.OwnerPlayer, target.BoardCardView, ref targetEffects, ref boardCards, false);
+                    cards = cards.FindAll(x => x.Card.Prototype.Faction == Faction);
                 }
-                return;
+
+                cards = GetRandomElements(cards, Count);
             }
-
-            if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
-                return;
-
-            IReadOnlyList<BoardUnitModel> cards = GameplayManager.CurrentPlayer.CardsInHand.FindAll(
-                x => x.Card.InstanceCard.Cost <= Value &&
-                    x.Card.Prototype.Kind == Enumerators.CardKind.CREATURE
-            );
-
-            if (Faction != Enumerators.Faction.Undefined)
-            {
-                cards = cards.FindAll(x => x.Card.Prototype.Faction == Faction);
-            }
-
-            cards = InternalTools.GetRandomElementsFromList(cards, Count).ToUniqueList();
 
             if (cards.Count == 0)
                 return;
 
             List<BoardObject> targets = new List<BoardObject>();
 
-            for (int i = 0; i < cards.Count; i++)
+            for (int i = 0; i < Mathf.Min(emptyFields, cards.Count); i++)
             {
-                if (PlayerCallerOfAbility.CardsOnBoard.Count >= Constants.MaxBoardUnits)
-                    break;
-
-                BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
-                PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
+                if (cards[i].Owner.IsLocalPlayer)
+                {
+                    BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
+                }
+                else
+                {
+                    HandBoardCard cardHand = BattlegroundController.CreateCustomHandBoardCard(cards[i]).HandBoardCard;
+                    PutCardFromHandToBoard(PlayerCallerOfAbility, cardHand.BoardCardView, ref targetEffects, ref boardCards, GameplayManager.IsLocalPlayerTurn());
+                }
             }
-
-            InvokeUseAbilityEvent(
-                boardCards
-                    .Select(target => new ParametrizedAbilityBoardObject(target))
-                    .ToList()
-            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

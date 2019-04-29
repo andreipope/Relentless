@@ -73,9 +73,9 @@ namespace Loom.ZombieBattleground
         {
             lock (_lock)
             {
-                foreach (ActiveAbility item in _activeAbilities)
+                for (int i = 0; i < _activeAbilities.Count; i++)
                 {
-                    item.Ability.Update();
+                    _activeAbilities[i].Ability.Update();
                 }
             }
         }
@@ -293,92 +293,17 @@ namespace Loom.ZombieBattleground
 
         public bool HasSpecialUnitOnBoard(BoardUnitModel boardUnitModel, AbilityData ability)
         {
-            if (ability.Targets.Count == 0)
-            {
-                return false;
-            }
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.InitialUnitType == ability.TargetCardType).Count > 0;
+        }
 
-            Player opponent = boardUnitModel.Owner == _gameplayManager.CurrentPlayer ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
-            Player player = boardUnitModel.Owner;
-
-            foreach (Enumerators.Target target in ability.Targets)
-            {
-                switch (target)
-                {
-                    case Enumerators.Target.PLAYER_CARD:
-                    {
-                        IReadOnlyList<BoardUnitModel> units =
-                            player.CardsOnBoard.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    case Enumerators.Target.OPPONENT_CARD:
-                    {
-                        IReadOnlyList<BoardUnitModel> units =
-                            opponent.CardsOnBoard.FindAll(x =>
-                                x.InitialUnitType == ability.TargetCardType &&
-                                x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-            }
-
-            return false;
+        public bool HasUnitsWithoutTargetUnitType(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.InitialUnitType != ability.TargetUnitType).Count > 0;
         }
 
         public bool HasSpecialUnitStatusOnBoard(BoardUnitModel boardUnitModel, AbilityData ability)
         {
-            if (ability.Targets.Count == 0)
-            {
-                return false;
-            }
-
-            Player opponent = boardUnitModel.Owner == _gameplayManager.CurrentPlayer ?
-                _gameplayManager.OpponentPlayer :
-                _gameplayManager.CurrentPlayer;
-            Player player = boardUnitModel.Owner;
-
-            foreach (Enumerators.Target target in ability.Targets)
-            {
-                switch (target)
-                {
-                    case Enumerators.Target.PLAYER_CARD:
-                    {
-                        IReadOnlyList<BoardUnitModel> units =
-                            player.CardsOnBoard.FindAll(x => x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    case Enumerators.Target.OPPONENT_CARD:
-                    {
-                        IReadOnlyList<BoardUnitModel> units =
-                            opponent.CardsOnBoard.FindAll(x => x.UnitSpecialStatus == ability.TargetUnitSpecialStatus);
-
-                        if (units.Count > 0)
-                            return true;
-
-                        break;
-                    }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(target), target, null);
-                }
-            }
-
-            return false;
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.UnitSpecialStatus == ability.TargetUnitSpecialStatus).Count > 0;
         }
 
         public bool HasSpecialUnitFactionOnMainBoard(BoardUnitModel boardUnitModel, AbilityData ability)
@@ -399,6 +324,40 @@ namespace Loom.ZombieBattleground
                 return false;
 
             return true;
+        }
+
+        public bool HasUnitsOnBoardThatCostMoreThan(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            return GetUnitsFromTargets(boardUnitModel, ability).FindAll(item => item.CurrentCost > boardUnitModel.CurrentCost).Count > 0;
+        }
+
+        public IReadOnlyList<BoardUnitModel> GetUnitsFromTargets(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            if (ability.Targets.Count == 0)
+                return new List<BoardUnitModel>();
+
+            Player opponent = boardUnitModel.Owner == _gameplayManager.CurrentPlayer ?
+               _gameplayManager.OpponentPlayer :
+               _gameplayManager.CurrentPlayer;
+            Player player = boardUnitModel.Owner;
+
+            foreach (Enumerators.Target target in ability.Targets)
+            {
+                switch (target)
+                {
+                    case Enumerators.Target.PLAYER_CARD:
+                        return player.CardsOnBoard;
+                    case Enumerators.Target.OPPONENT_CARD:
+                        return opponent.CardsOnBoard;
+                }
+            }
+
+            return new List<BoardUnitModel>();
+        }
+
+        public bool OverlordDefenseEqualOrLess(BoardUnitModel boardUnitModel, AbilityData ability)
+        {
+            return boardUnitModel.Owner.Defense <= ability.Defense;
         }
 
         private ActiveAbility _activeAbility;
@@ -457,14 +416,7 @@ namespace Loom.ZombieBattleground
                        {
                            AbilityData ability = instance.Abilities.First(IsAbilityCanActivateTargetAtStart);
 
-                           if (ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
-                               !HasSpecialUnitOnBoard(boardUnitModel, ability) ||
-                               ability.TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE &&
-                               !HasSpecialUnitStatusOnBoard(boardUnitModel, ability) ||
-                               (ability.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
-                               !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
-                               !CanTakeControlUnit(boardUnitModel, ability))
-
+                           if (CheckAbilityOnTarget(boardUnitModel, ability))
                            {
                                CallPermanentAbilityAction(isPlayer, action, card, target, _activeAbility, kind);
 
@@ -532,10 +484,7 @@ namespace Loom.ZombieBattleground
                                            {
                                                boardUnitModel.Owner.PlayerCardsController.AddCardToBoard(boardUnitModel, (ItemPosition)card.FuturePositionOnBoard);
 
-                                               InternalTools.DoActionDelayed(() =>
-                                               {
-                                                   Object.Destroy(card.GameObject);
-                                               }, 0.5f);
+                                               InternalTools.DoActionDelayed(card.Dispose, 0.5f);
 
                                                ProceedWithCardToGraveyard(card);
                                            }
@@ -574,7 +523,7 @@ namespace Loom.ZombieBattleground
                                        {
                                            instance.Abilities = prototype.Abilities.Select(a => new AbilityData(a)).ToList();
 
-                                           card.Model.Card.Owner.CurrentGoo += card.Model.Card.InstanceCard.Cost;
+                                           card.Model.Card.Owner.CurrentGoo += card.Model.CurrentCost;
 
                                            handCard.GameObject.SetActive(true);
                                            handCard.ResetToHandAnimation();
@@ -725,6 +674,37 @@ namespace Loom.ZombieBattleground
                };
         }
 
+        public bool CheckAbilityOnTarget(BoardUnitModel boardUnitModel, AbilityData ability = null)
+        {
+            if (boardUnitModel == null)
+                return false;
+
+            if(ability == null)
+            {
+                ability = boardUnitModel.Card.InstanceCard.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
+            }
+
+            if (ability == null || ability is default(AbilityData))
+                return false;
+
+            return ability.TargetCardType != Enumerators.CardType.UNDEFINED &&
+                                   !HasSpecialUnitOnBoard(boardUnitModel, ability) ||
+                                   ability.TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE &&
+                                   !HasSpecialUnitStatusOnBoard(boardUnitModel, ability) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.IfHasUnitsWithFactionInPlay &&
+                                   ability.TargetFaction != Enumerators.Faction.Undefined &&
+                                   !HasSpecialUnitFactionOnMainBoard(boardUnitModel, ability)) ||
+                                   !CanTakeControlUnit(boardUnitModel, ability) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis &&
+                                   !HasUnitsOnBoardThatCostMoreThan(boardUnitModel, ability)) ||
+                                   (ability.SubTrigger == Enumerators.AbilitySubTrigger.OverlordDefenseEqualOrLess &&
+                                    !OverlordDefenseEqualOrLess(boardUnitModel, ability)) ||
+                                    (ability.TargetUnitType != Enumerators.CardType.UNDEFINED &&
+                                     !HasUnitsWithoutTargetUnitType(boardUnitModel, ability) &&
+                                     ability.Activity == Enumerators.AbilityActivity.ACTIVE &&
+                                     ability.Trigger == Enumerators.AbilityTrigger.ENTRY);
+        }
+
         public void InvokeUseAbilityEvent(
             BoardUnitModel boardUnitModel,
             Enumerators.AbilityType abilityType,
@@ -858,12 +838,34 @@ namespace Loom.ZombieBattleground
             foreach(AbilityData abilityData in boardUnitModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;
-                if(abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY)
+                if ((abilityData.Trigger != Enumerators.AbilityTrigger.ENTRY &&
+                     abilityData.Activity == Enumerators.AbilityActivity.PASSIVE) || CanActivateAbility(abilityData))
                 {
                     activeAbility = CreateActiveAbility(abilityData, boardUnitModel.Prototype.Kind, abilityCaller, owner, boardUnitModel);
                     activeAbility.Ability.Activate();
                 }
             }
+        }
+
+        private bool CanActivateAbility(AbilityData abilityData)
+        {
+            if (abilityData.Trigger == Enumerators.AbilityTrigger.ENTRY &&
+                abilityData.Activity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                switch (abilityData.Ability)
+                {
+                    case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
+                    case Enumerators.AbilityType.EXTRA_GOO_IF_UNIT_IN_PLAY:
+                    case Enumerators.AbilityType.SET_ATTACK_AVAILABILITY:
+                        return true;
+                    case Enumerators.AbilityType.CHANGE_STAT:
+                        if (abilityData.SubTrigger == Enumerators.AbilitySubTrigger.NumberOfUnspentGoo)
+                            return true;
+                        break;
+                }
+            }
+
+            return false;
         }
 
         private void CreateAbilityByType(Enumerators.CardKind cardKind, AbilityData abilityData, out AbilityBase ability, out AbilityViewBase abilityView)
@@ -911,9 +913,6 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilityType.CARD_RETURN:
                     ability = new ReturnToHandAbility(cardKind, abilityData);
-                    break;
-                case Enumerators.AbilityType.WEAPON:
-                    ability = new OverlordWeaponAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.CHANGE_STAT_OF_CREATURES_BY_TYPE:
                     ability = new ChangeUnitsOfTypeStatAbility(cardKind, abilityData);
@@ -1077,8 +1076,8 @@ namespace Loom.ZombieBattleground
                     abilityView = new DamageAndDistractTargetAbilityView((DamageAndDistractTargetAbility)ability);
                     break;
                 case Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED:
-                    ability = new DamageOverlordOnCountItemsPlayedAbility(cardKind, abilityData);
-                    abilityView = new DamageOverlordOnCountItemsPlayedAbilityView((DamageOverlordOnCountItemsPlayedAbility)ability);
+                    ability = new DamageTargetOnCountItemsPlayedAbility(cardKind, abilityData);
+                    abilityView = new DamageTargetOnCountItemsPlayedAbilityView((DamageTargetOnCountItemsPlayedAbility)ability);
                     break;
                 case Enumerators.AbilityType.DISTRACT:
                     ability = new DistractAbility(cardKind, abilityData);
@@ -1147,6 +1146,63 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.DRAW_CARD_BY_FACTION:
                     ability = new DrawCardByFactionAbility(cardKind, abilityData);
                     break;
+                case Enumerators.AbilityType.DESTROY_TARGET_UNIT:
+                    ability = new DestroyTargetUnitAbility(cardKind, abilityData);
+                    abilityView = new DestroyTargetUnitAbilityView((DestroyTargetUnitAbility)ability);
+                    break;
+                case Enumerators.AbilityType.AGILE:
+                    ability = new AgileAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_OF_CARDS_IN_HAND:
+                    ability = new ChangeStatsOfCardsInHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.GIVE_BUFFS_TO_UNIT:
+                    ability = new GiveBuffsToUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISCARD_CARD_FROM_HAND:
+                    ability = new DiscardCardFromHandAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.GET_GOO_THIS_TURN:
+                    ability = new GetGooThisTurnAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.COSTS_LESS:
+                    ability = new CostsLessAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.FILL_BOARD_BY_UNITS:
+                    ability = new FillBoardByUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS:
+                    ability = new DealDamageToTargetThatAttackThisAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.CHANGE_COST:
+                    ability = new ChangeCostAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.GAIN_STATS_OF_ADJACENT_UNITS:
+                    ability = new GainStatsOfAdjacentUnitsAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.TAKE_UNIT_TYPE_TO_TARGET_UNIT:
+                    ability = new TakeUnitTypeToTargetUnitAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DISTRACT_AND_CHANGE_STAT:
+                    ability = new DistractAndChangeStatAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.DAMAGE_AND_DISTRACT:
+                    ability = new DamageAndDistractAbility(cardKind, abilityData);
+                    abilityView = new DamageAndDistractAbilityView((DamageAndDistractAbility)ability);
+                    break;
+                case Enumerators.AbilityType.PUT_UNITS_FROM_DISCARD_INTO_PLAY:
+                    ability = new PutUnitsFromDiscardIntoPlayAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.PUT_UNITS_FRON_LIBRARY_INTO_PLAY:
+                    ability = new PutUnitsFromLibraryIntoPlayAbility(cardKind, abilityData);
+                    break;
+                case Enumerators.AbilityType.BLOCK_TAKE_DAMAGE:
+                    ability = new BlockTakeDamageAbility(cardKind, abilityData);
+                    abilityView = new BlockTakeDamageAbilityView((BlockTakeDamageAbility)ability);
+                    break;
+                case Enumerators.AbilityType.CHANGE_STAT_THIS_TURN:
+                    ability = new ChangeStatThisTurnAbility(cardKind, abilityData);
+                    break; 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(abilityData.Ability), abilityData.Ability, null);
             }
@@ -1182,10 +1238,7 @@ namespace Loom.ZombieBattleground
                 {
                     card.Model.Card.Owner.PlayerCardsController.AddCardToBoard(card.Model, (ItemPosition)card.FuturePositionOnBoard);
 
-                    InternalTools.DoActionDelayed(() =>
-                    {
-                        Object.Destroy(card.GameObject);
-                    }, 0.5f);
+                    InternalTools.DoActionDelayed(card.Dispose, 0.5f);
 
                     ProceedWithCardToGraveyard(card);
                 }
@@ -1285,7 +1338,9 @@ namespace Loom.ZombieBattleground
                         default(Enumerators.AbilitySubTrigger),
                         null,
                         0,
-                        0
+                        0,
+                        default(Enumerators.CardKind),
+                        null
                         );
                     break;
                 case Enumerators.AbilityType.DESTROY_TARGET_UNIT_AFTER_ATTACK:
@@ -1314,7 +1369,9 @@ namespace Loom.ZombieBattleground
                         default(Enumerators.AbilitySubTrigger),
                         null,
                         0,
-                        0
+                        0,
+                        default(Enumerators.CardKind),
+                        null
                     );
                     break;
             }

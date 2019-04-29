@@ -6,8 +6,6 @@ namespace Loom.ZombieBattleground
 {
     public class AdjacentUnitsGetStatAbility : AbilityBase
     {
-        public Enumerators.Stat StatType { get; }
-
         public int Defense { get; }
 
         public int Damage { get; }
@@ -15,7 +13,6 @@ namespace Loom.ZombieBattleground
         public AdjacentUnitsGetStatAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            StatType = ability.Stat;
             Damage = ability.Damage;
             Defense = ability.Defense;
         }
@@ -24,11 +21,30 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
-            InvokeUseAbilityEvent();
+            if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
+
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+        }
+
+        protected override void InputEndedHandler()
+        {
+            base.InputEndedHandler();
+
+            if (IsAbilityResolved)
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit), Defense, Damage);
+
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
+                {
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
+            }
         }
 
         protected override void UnitDiedHandler()
@@ -38,38 +54,52 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
         }
 
-        public override void Action(object info = null)
+        protected override void ChangeAuraStatusAction(bool status)
         {
-            base.Action(info);
+            base.ChangeAuraStatusAction(status);
 
-            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+                return;
 
+            if (status)
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), Defense, Damage);
+            }
+            else
+            {
+                ChangeStats(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner), -Defense, -Damage);
+            }
+        }
+
+        private void ChangeStats(List<BoardUnitModel> units, int defense, int damage)
+        {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            foreach (BoardUnitModel unit in adjacent)
+            foreach (BoardUnitModel unit in units)
             {
-                if (StatType == Enumerators.Stat.DEFENSE)
+                if (defense != 0)
                 {
-                    unit.BuffedDefense += Defense;
-                    unit.CurrentDefense += Defense;
+                    unit.BuffedDefense += defense;
+                    unit.AddToCurrentDefenseHistory(defense, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        ActionEffectType = defense >= 0 ? Enumerators.ActionEffectType.ShieldBuff : Enumerators.ActionEffectType.ShieldDebuff,
                         Target = unit,
                     });
                 }
-                else if (StatType == Enumerators.Stat.DAMAGE)
+
+                if (damage != 0)
                 {
-                    unit.BuffedDamage += Damage;
-                    unit.CurrentDamage += Damage;
+                    unit.BuffedDamage += damage;
+                    unit.AddToCurrentDamageHistory(damage, Enumerators.ReasonForValueChange.AbilityBuff);
 
                     targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                     {
-                        ActionEffectType = Enumerators.ActionEffectType.AttackBuff,
+                        ActionEffectType = damage >= 0 ? Enumerators.ActionEffectType.AttackBuff : Enumerators.ActionEffectType.AttackDebuff,
                         Target = unit
                     });
                 }

@@ -35,32 +35,92 @@ namespace Loom.ZombieBattleground
         public override void Activate()
         {
             base.Activate();
-            
+
             if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
             {
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Impact).Path);
+            }
+
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH || AbilityTrigger == Enumerators.AbilityTrigger.END)
+            {
+                InvokeUseAbilityEvent();
             }
 
             if (AbilityTrigger == Enumerators.AbilityTrigger.ENTRY)
             {
                 if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
                 {
-                   if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
-                   {
+                    if(SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+                    {
+                       InvokeUseAbilityEvent();
                         _targets.Add(PlayerCallerOfAbility);
 
                         _vfxAnimationEndedCallback = HealOverlord;
                         InvokeActionTriggered(_targets);
-                   }
-                   else
-                   {
+                    }
+                    else if (SubTrigger == Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay)
+                    {
+                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
+                        _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                        InvokeActionTriggered(_targets);
+                    }
+                    else if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+                    {
+                        _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
+                        _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                        InvokeActionTriggered(_targets);
+                    }
+                    else
+                    {
                         SelectRandomCountOfAllies();
 
                         _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
                         InvokeActionTriggered(_targets);
                     }
                 }
-             }
+            }
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+            {
+                base.UnitDiedHandler();
+                return;
+            }
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
+            {
+                _targets.Add(PlayerCallerOfAbility);
+                _vfxAnimationEndedCallback = HealOverlord;
+                InvokeActionTriggered(_targets);
+            } 
+            else
+            {
+                base.UnitDiedHandler();
+            }
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
+                return;
+
+            if (SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
+            {
+                _targets.Clear();
+
+                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+
+                _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
+                InvokeActionTriggered(_targets);
+            }
         }
 
         protected override void InputEndedHandler()
@@ -79,13 +139,6 @@ namespace Loom.ZombieBattleground
         private void HealOverlord()
         {
             HealTarget(PlayerCallerOfAbility, Value);
-
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(PlayerCallerOfAbility)
-                }
-            );
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
@@ -140,6 +193,11 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
+            
+            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
+            {
+                base.UnitDiedHandler();
+            }
 
             _vfxAnimationEndedCallback?.Invoke();
         }
@@ -186,6 +244,9 @@ namespace Loom.ZombieBattleground
                 if (value > Value)
                     value = Value;
 
+                if (value == 0)
+                    continue;
+
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
@@ -197,11 +258,14 @@ namespace Loom.ZombieBattleground
                 HealTarget(boardObject, value);
             }
 
-            InvokeUseAbilityEvent(
-                _targets
-                    .Select(x => new ParametrizedAbilityBoardObject(x))
-                    .ToList()
-            );
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END)
+            {
+                InvokeUseAbilityEvent(
+                    _targets
+                        .Select(x => new ParametrizedAbilityBoardObject(x))
+                        .ToList()
+                );
+            }
 
             ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {

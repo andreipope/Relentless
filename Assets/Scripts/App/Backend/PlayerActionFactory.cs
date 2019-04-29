@@ -33,7 +33,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 ActionType = PlayerActionType.Types.Enum.LeaveMatch,
                 PlayerId = _playerId,
-                LeaveMatch = new PlayerActionLeaveMatch()
+                LeaveMatch = new PlayerActionLeaveMatch
+                {
+                    Reason = PlayerActionLeaveMatch.Types.Reason.PlayerLeave
+                }
             };
         }
 

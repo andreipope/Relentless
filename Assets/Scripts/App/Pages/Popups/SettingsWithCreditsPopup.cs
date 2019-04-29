@@ -21,6 +21,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private BackendDataControlMediator _backendDataControlMediator;
 
+        public Action<bool> OnLoginButtonDisplayUpdate;
+
         private GameObject _panelVideoSettings,
                            _groupLogin;
 
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             Self = null;
 
             _gameplayManager.IsGameplayInputBlocked = false;
+            OnLoginButtonDisplayUpdate?.Invoke(false);
         }
 
         public void SetMainPriority()
@@ -125,6 +128,7 @@ namespace Loom.ZombieBattleground
             
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
             {
+                _buttonCredits.gameObject.SetActive(false);
                 _appStateManager.SetPausingApp(true);
             }
             
@@ -143,6 +147,8 @@ namespace Loom.ZombieBattleground
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
             FillInfo();
+            
+            OnLoginButtonDisplayUpdate?.Invoke(true);
         }
 
         public void Show(object data)
@@ -166,6 +172,7 @@ namespace Loom.ZombieBattleground
                 {
                     _buttonLogin.gameObject.SetActive(true);
                     _buttonLogout.gameObject.SetActive(false);
+                    OnLoginButtonDisplayUpdate?.Invoke(true);
                 }
             }
             else
@@ -174,6 +181,7 @@ namespace Loom.ZombieBattleground
                 {
                     _buttonLogin.gameObject.SetActive(false);
                     _buttonLogout.gameObject.SetActive(true);    
+                    OnLoginButtonDisplayUpdate?.Invoke(false);  
                 }
             }         
         }
@@ -251,7 +259,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmLogout;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to logout?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to logout?"); 
         }
         
         private void ConfirmLogout(bool status)
@@ -309,7 +317,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectHelpLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to help link?");            
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to help link?");            
         }
         
         private void ConfirmRedirectHelpLink(bool status)
@@ -325,7 +333,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectSupportLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to support link?");
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to redirect to support link?");
         }
         
         private void ConfirmRedirectSupportLink(bool status)

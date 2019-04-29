@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.15";
+        internal const string CurrentVersionBase = "0.1.19";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -78,11 +78,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-#if USE_REBALANCE_BACKEND
         internal const int DefaultPlayerHp = 50;
-#else
-        internal const int DefaultPlayerHp = 20;
-#endif
 
         internal const int DefaultPlayerGoo = 0;
 
@@ -165,6 +161,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
+        internal const float QueueActionTimeout = 60f;    
+
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
         internal static Vector3 DefaultPositionOfOpponentBoardCard = new Vector3(6.5f, 3.5f, 0);
 
@@ -176,10 +174,10 @@ namespace Loom.ZombieBattleground.Common
         internal static Vector3 DefaultScaleForZoomedCardInHand = new Vector3(0.375f, 0.375f, 0.375f);
 
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
-        public const string ErrorMessageForConnectionImpossible = "We can't establish a connection with the authorization server. Please check your internet connection and try again.";
+        public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
 
-        public const bool MulliganEnabled = false;
+        public const bool MulliganEnabled = true;
 
         public static readonly bool AlwaysGuestLogin = false;
 
@@ -188,6 +186,8 @@ namespace Loom.ZombieBattleground.Common
         public static readonly bool DevModeEnabled = false;
 
         public const bool UsingCardTooltips = false;
+
+        public const bool RankSystemEnabled = false;
 
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR
@@ -206,15 +206,19 @@ namespace Loom.ZombieBattleground.Common
             "1985151694912169";
 #endif
 
-        internal static readonly bool EnableShopPage = true;
+        internal static readonly bool EnableShopPage =
+#if UNITY_EDITOR || DEVELOPMENT || DEVELOPMENT_BUILD
+            true;
+#else
+            false;
+#endif
+
         internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
         internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
         internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
         internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
         
         internal const int LastTutorialId = 8;
-        
-        internal static readonly bool EnableNewUI = true;
 
         internal const string MarketPlaceLink = "https://loom.games/en/browse";
         
@@ -227,5 +231,9 @@ namespace Loom.ZombieBattleground.Common
         internal const string ZbVersionLink = "/zbversion?environment=" + EnvironmentPointText + "&version=" + CurrentVersionBase;
 
         internal const string EnvironmentPointText = "%environment_point%";
+              
+        internal const int MinimumMemorySize = 2048;
+        
+        internal const float MinimumMemoryThresholdPercentage = 0.85f;
     }
 }

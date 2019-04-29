@@ -56,18 +56,7 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            if(_isRandom)
-            {
-                DestroyUnit(_unit);
-            }
-            else
-            {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
-                DestroyUnit(TargetUnit);
-
-                AbilityProcessingAction?.ForceActionDone();
-            }
+            DestroyUnit(_unit);
         }
 
         private BoardUnitModel GetRandomUnit()
@@ -82,18 +71,18 @@ namespace Loom.ZombieBattleground
             {
                 if (AbilityData.Targets.Contains(Enumerators.Target.OPPONENT_CARD))
                 {
-                    units.AddRange(GetOpponentOverlord().CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
+                    units.AddRange(GetOpponentOverlord().CardsOnBoard.Where(x => x.CurrentCost <= Cost).ToList());
                 }
 
                 if (AbilityData.Targets.Contains(Enumerators.Target.PLAYER_CARD))
                 {
-                    units.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x.Card.InstanceCard.Cost <= Cost).ToList());
+                    units.AddRange(PlayerCallerOfAbility.CardsOnBoard.Where(x => x.CurrentCost <= Cost).ToList());
                 }
             }
 
             if (units != null && units.Count > 0)
             {
-                return InternalTools.GetRandomElementsFromList(units, 1)[0];
+                return GetRandomUnits(units, 1)[0];
             }
 
             return null;
@@ -101,7 +90,7 @@ namespace Loom.ZombieBattleground
 
         private void DestroyUnit(BoardUnitModel unit)
         {
-            if (unit != null && unit.Card.InstanceCard.Cost <= Cost)
+            if (unit != null)
             {
                 InvokeUseAbilityEvent(
                     new List<ParametrizedAbilityBoardObject>

@@ -35,11 +35,10 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.CardsOnBoard[0] == AbilityUnitOwner)
             {
                 AbilityUnitOwner.BuffedDefense += Value;
-                AbilityUnitOwner.CurrentDefense += Value;
+                AbilityUnitOwner.AddToCurrentDefenseHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 AbilityUnitOwner.BuffedDamage += Value;
-                AbilityUnitOwner.CurrentDamage += Value;
-
+                AbilityUnitOwner.AddToCurrentDamageHistory(Value, Enumerators.ReasonForValueChange.AbilityBuff);
             }
         }
     }

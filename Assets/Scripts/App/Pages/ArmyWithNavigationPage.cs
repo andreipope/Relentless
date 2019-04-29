@@ -47,6 +47,8 @@ namespace Loom.ZombieBattleground
         private int _countAllCardsAmount;
 
         private bool _isAllCardsCounted;
+        
+        private const float BoardCardScale = 0.2574f;
 
         #endregion
 
@@ -189,7 +191,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
-            _uiManager.DrawPopup<QuestionPopup>("Do you want to redirect to marketplace webpage?"); 
+            _uiManager.DrawPopup<QuestionPopup>("Would you like to visit the Marketplace website?"); 
         }
         
         private void ConfirmRedirectMarketplaceLink(bool status)
@@ -319,10 +321,10 @@ namespace Loom.ZombieBattleground
             }
 
             int amount = cardData.Amount;
-            boardCard.SetAmount(BoardCardView.AmountTrayType.None, amount);
+            boardCard.SetAmount(BoardCardView.AmountTrayType.Counter, amount);
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
-            boardCard.Transform.localScale = Vector3.one * 0.3f;
+            boardCard.Transform.localScale = Vector3.one * BoardCardScale;
             boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI1;
             
             boardCard.Transform.SetParent(_createdBoardCardContainer.transform);
@@ -391,6 +393,7 @@ namespace Loom.ZombieBattleground
                     {
                         if
                         (
+                            CheckIfSatisfyFactionFilter(card) &&
                             CheckIfSatisfyGooCostFilter(card) &&
                             CheckIfSatisfyRankFilter(card) &&
                             CheckIfSatisfyTypeFilter(card)
@@ -428,6 +431,7 @@ namespace Loom.ZombieBattleground
                     {
                         if
                         (
+                            CheckIfSatisfyFactionFilter(card) &&
                             CheckIfSatisfyGooCostFilter(card) &&
                             CheckIfSatisfyRankFilter(card) &&
                             CheckIfSatisfyTypeFilter(card)
@@ -495,17 +499,22 @@ namespace Loom.ZombieBattleground
 
             return false;
         }
-        
+
         private bool CheckIfSatisfyRankFilter(Card card)
         {
             return _uiManager.GetPopup<CardFilterPopup>().FilterData.RankDictionary[card.Rank];
         }
-        
+
+        private bool CheckIfSatisfyFactionFilter(Card card)
+        {
+            return _uiManager.GetPopup<CardFilterPopup>().FilterData.FactionDictionary[card.Faction];
+        }
+
         private bool CheckIfSatisfyTypeFilter(Card card)
         {
             return _uiManager.GetPopup<CardFilterPopup>().FilterData.TypeDictionary[card.Type];
         }
-        
+
         private void UpdateCacheFilteredCardList(List<Card> cardList)
         {
             _cacheFilteredSetTypeCardsList = cardList.FindAll(card => !card.Hidden).ToList();

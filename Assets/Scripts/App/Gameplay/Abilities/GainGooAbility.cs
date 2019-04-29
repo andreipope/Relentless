@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
         protected override void UnitDiedHandler()
@@ -33,20 +33,34 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
                 return;
 
-            Action();
+            HandleSubTriggers();
         }
 
-        public override void Action(object info = null)
+        private void HandleSubTriggers()
         {
-            base.Action(info);
-
-            if (GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility)
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.LessDefThanInOpponent)
             {
-                PlayerCallerOfAbility.CurrentGoo = Mathf.Clamp(PlayerCallerOfAbility.CurrentGoo + Count, 0, Constants.MaximumPlayerGoo);
+                if (PlayerCallerOfAbility.Defense < GetOpponentOverlord().Defense)
+                {
+                    GainGoo(PlayerCallerOfAbility, Count);
+                }
             }
             else
             {
-                PlayerCallerOfAbility.CurrentGooModificator += Count;
+                GainGoo(PlayerCallerOfAbility, Count);
+            }
+        }
+
+        private void GainGoo(Player player, int count)
+        { 
+            if (GameplayManager.CurrentTurnPlayer == player)
+            {
+                player.CurrentGoo = Mathf.Clamp(player.CurrentGoo + count, 0, (int)player.MaxGooVials);
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
+            }
+            else
+            {
+                player.GooVials = Mathf.Clamp(player.GooVials + count, 0, (int)player.MaxGooVials);
             }
         }
     }

@@ -51,12 +51,17 @@ namespace Loom.ZombieBattleground
                 Units = Units.Where(x => x.Card.InstanceCard.Cost <= Value).ToList();
             }
 
+            foreach(BoardUnitModel unit in Units)
+            {
+                unit.SetUnitActiveStatus(false);
+            }
+
             InvokeActionTriggered(Units);
         }
 
         private void ReturnBoardUnitToHand(BoardUnitModel unit)
         {
-            CardsController.ReturnCardToHand(unit);
+            CardsController.ReturnCardToHand(unit, 1);
         }
 
         protected override void VFXAnimationEndedHandler()

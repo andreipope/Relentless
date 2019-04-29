@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         private IUIManager _uiManager;
 
-        private TextMeshProUGUI _text;        
+        private TextMeshPro _text;        
         
         public void Init()
         {
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LoadingFiatPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
-            _text = Self.transform.Find("Text").GetComponent<TextMeshProUGUI>();
+            _text = Self.transform.Find("LoadingSpinner/Text").GetComponent<TextMeshPro>();
         }
 
         public void Show(object data)

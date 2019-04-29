@@ -300,7 +300,10 @@ namespace Loom.ZombieBattleground
                     castVfxPosition = unit.Transform.position;
                     break;
                 case BoardUnitModel unit:
-                    castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    if (unit.Owner.PlayerCardsController.CardsOnBoard.Contains(unit))
+                    {
+                        castVfxPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                    }
                     break;
                 case HandBoardCard cardInHand:
                     break;
@@ -510,7 +513,10 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
-            if (BoardUnitView != null && !BoardUnitView.WasDestroyed && SelfObject != null)
+            if (BoardUnitView != null &&
+                !BoardUnitView.WasDestroyed &&
+                SelfObject != null &&
+                BoardUnitView.GameObject != null)
             {
                 if (_withEffect)
                 {

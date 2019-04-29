@@ -55,6 +55,8 @@ namespace Loom.ZombieBattleground
 
         private readonly IDataManager _dataManager;
 
+        private readonly IUIManager _uiManager;
+
         private readonly IQueueManager _queueManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
@@ -119,6 +121,7 @@ namespace Loom.ZombieBattleground
             IsLocalPlayer = !isOpponent;
 
             _dataManager = GameClient.Get<IDataManager>();
+            _uiManager = GameClient.Get<IUIManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
             _matchManager = GameClient.Get<IMatchManager>();
@@ -164,11 +167,8 @@ namespace Loom.ZombieBattleground
                     MaxCardsInPlay = (uint) InitialPvPPlayerState.MaxCardsInPlay;
                     MaxGooVials = (uint) InitialPvPPlayerState.MaxGooVials;
 
-#if USE_REBALANCE_BACKEND
-                    Defense = Constants.DefaultPlayerHp;
-#else
                     Defense = InitialPvPPlayerState.Defense;
-#endif
+
                     CurrentGoo = InitialPvPPlayerState.CurrentGoo;
                     GooVials = InitialPvPPlayerState.GooVials;
 
@@ -300,7 +300,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<int> PlayerCurrentGooChanged;
 
-        public event Action<int> PlayerGooVialsChanged;
+        public event Action<int, bool> PlayerGooVialsChanged;
 
         public event Action<BoardUnitModel> DrawCard;
 
@@ -325,7 +325,7 @@ namespace Loom.ZombieBattleground
             {
                 _gooVials = Mathf.Clamp(value, 0, (int) MaxGooVials);
 
-                PlayerGooVialsChanged?.Invoke(_gooVials);
+                PlayerGooVialsChanged?.Invoke(_gooVials, false);
             }
         }
 
@@ -432,6 +432,18 @@ namespace Loom.ZombieBattleground
 
         public void PlayerDie()
         {
+            MulliganPopup mulliganPopup = _uiManager.GetPopup<MulliganPopup>();
+            if (mulliganPopup.Self != null) 
+            {
+                mulliganPopup.Hide();
+            }
+
+            WaitingForPlayerPopup waitingForPlayerPopup = _uiManager.GetPopup<WaitingForPlayerPopup>();
+            if (waitingForPlayerPopup.Self != null) 
+            {
+                waitingForPlayerPopup.Hide();
+            }
+
             _avatarAnimator.enabled = true;
             _overlordDeathObject.SetActive(true);
             _deathAnimator.enabled = true;
@@ -516,6 +528,13 @@ namespace Loom.ZombieBattleground
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EnemyOverlordDied);
                 }
             }
+        }
+
+        public void AddEmptyGooVials(int value)
+        {
+            _gooVials = Mathf.Clamp(value, 0, (int)MaxGooVials);
+
+            PlayerGooVialsChanged?.Invoke(_gooVials, true);
         }
 
         public void SetGlowStatus(bool status)
