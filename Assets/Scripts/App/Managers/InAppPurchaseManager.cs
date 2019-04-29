@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         public event Action<PurchaseEventArgs> ProcessPurchaseAction;
 
+        public event Action PurchaseFailedOrCanceled;
+
         #endregion
 
         #region IInAppPurchaseManager
@@ -71,11 +73,13 @@ namespace Loom.ZombieBattleground
                 else
                 { 
                     Log.Info("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
+                    PurchaseFailedOrCanceled?.Invoke();
                 }
             }
             else
             {
                 Log.Info("BuyProductID FAIL. Not initialized.");
+                PurchaseFailedOrCanceled?.Invoke();
             }
         }
 
@@ -119,6 +123,7 @@ namespace Loom.ZombieBattleground
         public void OnPurchaseFailed(Product product, PurchaseFailureReason failureReason)
         {
             Log.Info(string.Format("OnPurchaseFailed: FAIL. Product: '{0}', PurchaseFailureReason: {1}", product.definition.storeSpecificId, failureReason));
+            PurchaseFailedOrCanceled?.Invoke();
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)

@@ -475,12 +475,12 @@ namespace Loom.ZombieBattleground
         private void HideHoveringAndZoom(bool isMove = true)
         {
             _isMoveHoveringCard = true;
-            _currentHoveringCard.SetActive(false);
+            _currentHoveringCard?.SetActive(false);
             Action onComplete = () =>
             {
                 _isMoveHoveringCard = false;
             };
-            _hoveringHandCard.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
+            _hoveringHandCard?.HandBoardCard?.ResetHoveringAndZoom(isMove, onComplete);
             _hoveringHandCard = null;
         }
 
