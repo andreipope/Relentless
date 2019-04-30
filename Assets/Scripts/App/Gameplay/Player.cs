@@ -433,13 +433,13 @@ namespace Loom.ZombieBattleground
         public void PlayerDie()
         {
             MulliganPopup mulliganPopup = _uiManager.GetPopup<MulliganPopup>();
-            if (mulliganPopup.Self != null) 
+            if (mulliganPopup.Self != null)
             {
                 mulliganPopup.Hide();
             }
 
             WaitingForPlayerPopup waitingForPlayerPopup = _uiManager.GetPopup<WaitingForPlayerPopup>();
-            if (waitingForPlayerPopup.Self != null) 
+            if (waitingForPlayerPopup.Self != null)
             {
                 waitingForPlayerPopup.Hide();
             }
@@ -508,10 +508,16 @@ namespace Loom.ZombieBattleground
                             _queueManager.AddAction(
                                 new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                     _backendDataControlMediator.UserDataModel.UserId,
-                                    IsLocalPlayer ? _pvpManager.GetOpponentUserId() : _backendDataControlMediator.UserDataModel.UserId,
-                                    GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.ExperienceReceived,
-                                    GameClient.Get<IOverlordExperienceManager>().OpponentMatchExperienceInfo.ExperienceReceived
-                                )
+                                    IsLocalPlayer ?
+                                        _pvpManager.GetOpponentUserId() :
+                                        _backendDataControlMediator.UserDataModel.UserId,
+                                    new[]
+                                    {
+                                        GameClient.Get<IOverlordExperienceManager>().PlayerMatchExperienceInfo
+                                            .ExperienceReceived,
+                                        GameClient.Get<IOverlordExperienceManager>().OpponentMatchExperienceInfo
+                                            .ExperienceReceived
+                                    })
                             );
 
                             completeCallback?.Invoke();
@@ -625,10 +631,8 @@ namespace Loom.ZombieBattleground
         {
             if (now <= 0 && !_isDead)
             {
-                if (!IsLocalPlayer)
-                {
-                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(_gameplayManager.CurrentPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.KillOverlord);
-                }
+                GameClient.Get<IOverlordExperienceManager>()
+                    .ReportExperienceAction(Enumerators.ExperienceActionType.KillOverlord, IsLocalPlayer);
 
                 PlayerDie();
 

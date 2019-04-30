@@ -268,11 +268,15 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
-            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
 
             if (OwnerPlayer.IsLocalPlayer)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.UseOverlordAbility, false);
+            }
+            else
+            {
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.UseOverlordAbility, true);
             }
 
             if (_gameplayManager.UseInifiniteAbility)

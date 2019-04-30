@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Opencoding.CommandHandlerSystem;
+using UnityEngine;
 
 static class BattleCommandsHandler
 {
@@ -225,7 +226,7 @@ static class BattleCommandsHandler
         _overlordManager.InitializeExperienceInfoInMatch(overlord);
 
         //_overlordManager.ApplyExperience(overlord, xpAmount);
-        if (overlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
+        if (overlord.Level > _overlordManager.PlayerMatchExperienceInfo.LevelAtBegin)
         {
             _uiManager.DrawPopup<LevelUpPopup>();
         }
@@ -715,4 +716,13 @@ static class BattleCommandsHandler
 
         GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
+    
+    
+    [CommandHandler(Description = "Show Player and Opponent XP")]
+    private static void ShowPlayerAndOpponentXP()
+    {
+        Debug.Log("Player Experience = " + _overlordManager.PlayerMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Opponent Experience = " + _overlordManager.OpponentMatchExperienceInfo.ExperienceReceived);
+    }
+
 }

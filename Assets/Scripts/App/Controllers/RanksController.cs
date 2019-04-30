@@ -72,8 +72,8 @@ namespace Loom.ZombieBattleground
                        {
                            DoRankUpgrades(filter, boardUnitModel);
 
-                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(filter[0].OwnerPlayer.SelfOverlord,
-                            Common.Enumerators.ExperienceActionType.ActivateRankAbility);
+                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(
+                            Common.Enumerators.ExperienceActionType.ActivateRankAbility, false);
 
                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
                        }

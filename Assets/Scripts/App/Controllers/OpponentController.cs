@@ -497,7 +497,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, true);
+                        GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.PlayCard, true);
                         
                         completeCallback?.Invoke();
                     }

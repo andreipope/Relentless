@@ -475,8 +475,8 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
-                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfOverlord, Common.Enumerators.ExperienceActionType.PlayCard);
-  
+                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, false);
+
                                            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel, true);
                                            boardUnitModel.Owner.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
 
@@ -654,7 +654,7 @@ namespace Loom.ZombieBattleground
                                                                                    blockQueue: true);
 
 
-                              
+
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, boardUnitModel);
@@ -1230,7 +1230,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
 
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfOverlord, Common.Enumerators.ExperienceActionType.PlayCard);
+                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, false);
 
                 card.Model.Card.Owner.PlayerCardsController.RemoveCardFromHand(card.Model);
 

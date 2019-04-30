@@ -135,7 +135,7 @@ namespace Loom.ZombieBattleground
 
         private void FillInfo()
         {
-            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.GotRewards;
+            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().PlayerMatchExperienceInfo.GotRewards;
 
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
