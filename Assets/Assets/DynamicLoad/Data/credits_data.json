@@ -14,67 +14,9 @@
             },
             {
               "FullName": "James Duffy"
-            },
+            }
           ]
         }        
-      ]
-    },
-    {
-      "subsectionType": "Production",
-      "posts": [
-        {
-          "Post": "Game Director",
-          "credits": [
-            {
-              "FullName": "Roy Shapira"
-            }
-          ]
-        },
-        {
-          "Post": "Lead Game Producer",
-          "credits": [
-            {
-              "FullName": "Diana Shapira"
-            }
-          ]
-        },
-        {
-          "Post": "Game Producer",
-          "credits": [
-            {
-              "FullName": "Monika Guballa"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "subsectionType": "Game Design",
-      "posts": [
-        {
-          "Post": "Senior Game Designer",
-          "credits": [
-            {
-              "FullName": "Alexei Menardo"
-            }
-          ]
-        },
-        {
-          "Post": "Technical Designer",
-          "credits": [
-            {
-              "FullName": "Sara Santillan"
-            }
-          ]
-        },
-        {
-          "Post": "Game Designer",
-          "credits": [
-            {
-              "FullName": "Nelson Capilos"
-            }
-          ]
-        }
       ]
     },
     {
@@ -185,31 +127,65 @@
           ]
         }
       ]
-    },
+    },    
     {
-      "subsectionType": "QA",
+      "subsectionType": "Game Team",
       "posts": [
         {
-          "Post": "Head of QA",
+          "Post": "Game Director",
           "credits": [
             {
-              "FullName": "Yuneek Sehgal"
+              "FullName": "Roy Shapira"
             }
           ]
         },
         {
-          "Post": "Quality Assurance",
+          "Post": "Lead Game Producer",
           "credits": [
             {
-              "FullName": "Vaibhav Dixit"
-            },
+              "FullName": "Diana Shapira"
+            }
+          ]
+        },
+        {
+          "Post": "Game Producer",
+          "credits": [
             {
-              "FullName": "Amit Kumar"
-            },
+              "FullName": "Monika Guballa"
+            }
           ]
         }
       ]
     },
+    {
+      "subsectionType": "Design",
+      "posts": [
+        {
+          "Post": "Senior Game Designer",
+          "credits": [
+            {
+              "FullName": "Alexei Menardo"
+            }
+          ]
+        },
+        {
+          "Post": "Technical Designer",
+          "credits": [
+            {
+              "FullName": "Sara Santillan"
+            }
+          ]
+        },
+        {
+          "Post": "Game Designer",
+          "credits": [
+            {
+              "FullName": "Nelson Capilos"
+            }
+          ]
+        }
+      ]
+    },    
     {
       "subsectionType": "Art",
       "posts": [
@@ -222,7 +198,7 @@
           ]
         },
         {
-          "Post": "Senior 2D Artist",
+          "Post": "Senior Artist",
           "credits": [
             {
               "FullName": "Lanny “Wu” Suhandy"
@@ -296,7 +272,7 @@
       ]
     },
     {
-      "subsectionType": "Music and Sound \n W.O.W Sound",
+      "subsectionType": "Music and Sound",
       "posts": [
         {
           "Post": "W.O.W Sound",
@@ -327,6 +303,30 @@
           "credits": [
             {
               "FullName": "Ryan Withrow"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "subsectionType": "QA",
+      "posts": [
+        {
+          "Post": "Head of QA",
+          "credits": [
+            {
+              "FullName": "Yuneek Sehgal"
+            }
+          ]
+        },
+        {
+          "Post": "Quality Assurance",
+          "credits": [
+            {
+              "FullName": "Vaibhav Dixit"
+            },
+            {
+              "FullName": "Amit Kumar"
             }
           ]
         }
