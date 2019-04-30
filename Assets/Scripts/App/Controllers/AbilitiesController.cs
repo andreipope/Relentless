@@ -752,7 +752,7 @@ namespace Loom.ZombieBattleground
         private bool _PvPToggleFirstLastAbility = true;
 
         public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
-                                         List<ParametrizedAbilityBoardObject> targets, BoardUnitModel boardUnitModel, Player owner)
+                                         List<ParametrizedAbilityBoardObject> targets, BoardUnitModel boardUnitModel, Player owner, Action completeCallback = null)
         {
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
@@ -818,6 +818,8 @@ namespace Loom.ZombieBattleground
                     activeAbility.Ability.SelectedTargetAction(true);
 
                     _boardController.UpdateWholeBoard(null);
+
+                    completeCallback?.Invoke();
                 };
 
                 if (from != null && targets[0].BoardObject != null)
@@ -828,6 +830,10 @@ namespace Loom.ZombieBattleground
                 {
                     callback();
                 }
+            }
+            else
+            {
+                completeCallback?.Invoke();
             }
 
             activeAbility.Ability.Activate();
