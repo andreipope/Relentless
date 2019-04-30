@@ -1333,7 +1333,7 @@ namespace Loom.ZombieBattleground
 
         public IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)
         {
-            return units.Where(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+            return units.Where(card => card.IsAlive());
         }    
     }
 }
