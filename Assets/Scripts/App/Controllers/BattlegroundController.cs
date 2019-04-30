@@ -1334,6 +1334,17 @@ namespace Loom.ZombieBattleground
         public IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)
         {
             return units.Where(card => card.IsAlive());
-        }    
+        }
+
+        public bool HasUnitInAttackingState(IEnumerable<BoardUnitView> units)
+        {
+            foreach (BoardUnitView unit in units)
+            {
+                if (unit!= null && unit.Model != null && unit.Model.IsAttacking)
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

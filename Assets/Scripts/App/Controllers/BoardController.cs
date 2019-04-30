@@ -93,6 +93,15 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
+            if(_battlegroundController.HasUnitInAttackingState(units))
+            {
+                InternalTools.DoActionDelayed(() =>
+                {
+                    UpdateBoard(units, isBottom, boardUpdated, skipIndex);
+                }, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
+                return;
+            }
+
             List<UnitPositionOnBoard> newPositions = GetPositionsForUnits(units, isBottom);
 
             _sequenceUniqueId++;
@@ -103,7 +112,7 @@ namespace Loom.ZombieBattleground
             Tween tween;
             const float Duration = 0.4f;
 
-            for (int i = 0; i < units.Count; i++)
+            for (int i = 0; i < newPositions.Count; i++)
             {
                 updateSequence.AddTween(null, Duration);
             }
@@ -112,7 +121,7 @@ namespace Loom.ZombieBattleground
             {
                 if (i != skipIndex)
                 {
-                    BoardUnitView card = units[i];
+                    BoardUnitView card = newPositions[i].BoardUnitView;
 
                     card.PositionOfBoard = newPositions[i].Position;
 
@@ -188,14 +197,16 @@ namespace Loom.ZombieBattleground
             Vector3 pivot = isBottom ? _battlegroundController.PlayerBoardObject.transform.position :
                                        _battlegroundController.OpponentBoardObject.transform.position;
 
+            UnitPositionOnBoard unitPositionOnBoard;
             for (int i = 0; i < units.Count; i++)
             {
-                newPositions.Add(new UnitPositionOnBoard()
+                unitPositionOnBoard = new UnitPositionOnBoard()
                 {
                     BoardUnitView = units[i],
                     Position = new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + (isBottom ? -1.7f : 0f))
-                });
+                };
                 pivot.x += boardWidth / units.Count;
+                newPositions.Add(unitPositionOnBoard);
             }
 
             return newPositions;
