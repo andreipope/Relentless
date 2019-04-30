@@ -17,8 +17,6 @@ namespace Loom.ZombieBattleground
 
         void InitializeExperienceInfoInMatch(OverlordModel overlord);
         void InitializeOpponentExperienceInfoInMatch(OverlordModel overlord);
-        Task ApplyExperienceFromMatch(OverlordModel overlord);
         Task GetLevelAndRewards(OverlordModel overlord);
-        void ApplyExperience(OverlordModel overlord, int experience);
     }
 }

@@ -224,7 +224,7 @@ static class BattleCommandsHandler
 
         _overlordManager.InitializeExperienceInfoInMatch(overlord);
 
-        _overlordManager.ApplyExperience(overlord, xpAmount);
+        //_overlordManager.ApplyExperience(overlord, xpAmount);
         if (overlord.Level > _overlordManager.MatchExperienceInfo.LevelAtBegin)
         {
             _uiManager.DrawPopup<LevelUpPopup>();
@@ -251,7 +251,7 @@ static class BattleCommandsHandler
 
         overlord.Level = level;
 
-        await _backendFacade.SetOverlordLevel(_backendDataControlMediator.UserDataModel.UserId, overlord.OverlordId, overlord.Level);
+        //await _backendFacade.SetOverlordLevel(_backendDataControlMediator.UserDataModel.UserId, overlord.OverlordId, overlord.Level);
         _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 

@@ -229,8 +229,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Overlords
 
         private const string OverlordsList = "ListOverlords";
-        private const string SetOverlordLevelMethod = "SetOverlordLevel";
-        private const string SetOverlordExperienceMethod = "SetOverlordExperience";
         private const string GetOverlordLevelMethod = "GetOverlordLevel";
 
         public async Task<ListOverlordsResponse> GetOverlordList(string userId)
@@ -241,30 +239,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
-        }
-
-        public async Task<SetOverlordLevelResponse> SetOverlordLevel(string userId, int overlordId, int level)
-        {
-            SetOverlordLevelRequest request = new SetOverlordLevelRequest
-            {
-                UserId = userId,
-                OverlordId = overlordId,
-                Level = level
-            };
-
-            return await _contractCallProxy.CallAsync<SetOverlordLevelResponse>(SetOverlordLevelMethod, request);
-        }
-
-        public async Task<SetOverlordExperienceResponse> SetOverlordExperience(string userId, int overlordId, long experience)
-        {
-            SetOverlordExperienceRequest request = new SetOverlordExperienceRequest
-            {
-                UserId = userId,
-                OverlordId = overlordId,
-                Experience = experience
-            };
-
-            return await _contractCallProxy.CallAsync<SetOverlordExperienceResponse>(SetOverlordExperienceMethod, request);
         }
 
         public async Task<GetOverlordLevelResponse> GetOverlordLevel(string userId, int overlordId)

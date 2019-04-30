@@ -69,27 +69,6 @@ namespace Loom.ZombieBattleground
             OpponentMatchExperienceInfo.ExperienceReceived = 0;
         }
 
-        public async Task ApplyExperienceFromMatch(OverlordModel overlord)
-        {
-            try
-            {
-                SetOverlordExperienceResponse experienceResponse = await _backendFacade.SetOverlordExperience(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    overlord.OverlordId,
-                    MatchExperienceInfo.ExperienceReceived);
-
-                overlord.Experience = experienceResponse.Experience;
-                CheckLevel(overlord);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError("Not able to save Experience, " + e);
-            }
-
-            _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
-        }
-
         public async Task GetLevelAndRewards(OverlordModel overlord)
         {
             try
@@ -103,32 +82,25 @@ namespace Loom.ZombieBattleground
 
                 CheckLevel(overlord, level);
             }
-            catch (Exception e)
+            catch (TimeoutException e)
             {
-                Debug.LogError("Not able to get level, " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
-        }
-
-
-        public async void ApplyExperience(OverlordModel overlord, int experience)
-        {
-            try
+            catch (Client.RpcClientException e)
             {
-                SetOverlordExperienceResponse experienceResponse = await _backendFacade.SetOverlordExperience(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    overlord.OverlordId,
-                    experience);
-
-                overlord.Experience = experienceResponse.Experience;
-                CheckLevel(overlord);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("RpcException ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
             }
             catch (Exception e)
             {
-                Debug.LogError("Not able to save Experience, " + e);
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result ===", e);
+                OpenAlertDialog($"Not able Get Level and Rewards : " + e.Message);
+                return;
             }
-
-            _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-            _dataManager.SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         public int GetRequiredExperienceForNewLevel(OverlordModel overlord)
@@ -249,9 +221,9 @@ namespace Loom.ZombieBattleground
                     {
                         deck.SecondarySkill = skill.Skill;
                         SaveDeck(deck);
-                    }                   
+                    }
                 }
-            }          
+            }
         }
 
         private async void SaveDeck(Deck deck)
@@ -281,7 +253,7 @@ namespace Loom.ZombieBattleground
             public OverlordSkillRewardItem SkillReward;
             public UnitRewardItem UnitReward;
 
-            public class UnitRewardItem 
+            public class UnitRewardItem
             {
                 public string Rank;
                 public int Count;
