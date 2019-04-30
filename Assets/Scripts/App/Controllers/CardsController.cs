@@ -210,12 +210,12 @@ namespace Loom.ZombieBattleground
                          .Concat(state.CardsInPlay)
                          .Concat(state.CardsInGraveyard));
 
-                int highestInstanceId = 0;
+                int highestInstanceId = 1; //we set it to 1 as the players overlords own instance ID 0 and 1 respectively
 
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
-                    highestInstanceId = cards.Count();
+                    highestInstanceId += cards.Count();
                 }
                 else
                 {
