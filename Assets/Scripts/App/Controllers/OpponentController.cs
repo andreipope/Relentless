@@ -593,11 +593,12 @@ namespace Loom.ZombieBattleground
                     boardObjectCaller,
                     parametrizedAbilityObjects,
                     boardUnitModel,
-                    _gameplayManager.OpponentPlayer);
-
-                completeCallback?.Invoke();
+                    _gameplayManager.OpponentPlayer,
+                    completeCallback);
 
             }, Enumerators.QueueActionType.AbilityUsage);
+
+            _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
         }
 
         private void GotActionUseOverlordSkill(UseOverlordSkillModel model)
