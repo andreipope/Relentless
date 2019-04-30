@@ -610,6 +610,7 @@ namespace Loom.ZombieBattleground
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
                 Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
+                completePlayCardCallback?.Invoke(null, target);
                 return;
             }
 
