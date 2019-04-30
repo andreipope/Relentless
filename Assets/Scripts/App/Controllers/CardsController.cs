@@ -410,6 +410,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController.DeactivateAllAbilitiesOnUnit(boardUnitModel);
 
             boardUnitModel.InvokeUnitPrepairingToDie();
+            boardUnitModel.SetUnitActiveStatus(false);
 
             InternalTools.DoActionDelayed(() =>
             {
