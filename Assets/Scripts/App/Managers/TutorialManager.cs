@@ -214,6 +214,10 @@ namespace Loom.ZombieBattleground
                 {
                     FillTutorialDeck();
                 }
+                else if(!CurrentTutorial.IsGameplayTutorial() && CurrentTutorial.Id != FirstDeckBuildTutorialIndex)
+                {
+                    ResetTutorialDeck();
+                }
 
                 ClearToolTips();
             }
@@ -1392,49 +1396,49 @@ namespace Loom.ZombieBattleground
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
-        private async void RemoveTutorialDeck()
+        private async void RemoveTutorialDeck(Deck currentDeck = null)
         {
-            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            if (currentDeck == null && _dataManager.CachedUserLocalData.TutorialSavedDeck != null)
             {
-                Deck currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+                currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+            }
 
-                if (currentDeck == null)
-                    return;
+            if (currentDeck == null)
+                return;
 
-                try
-                {
-                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+            try
+            {
+                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
-                    await _backendFacade.DeleteDeck(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        currentDeck.Id
-                    );
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    currentDeck.Id
+                );
 
-                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-                }
-                catch (TimeoutException e)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(e);
-                    Log.Warn("Time out ==", e);
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                catch (Client.RpcClientException exception)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(exception);
-                    Log.Warn(" RpcException == " + exception);
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(e);
-                    Log.Info("Result === " + e);
-                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
-                    return;
-                }
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+            }
+            catch (TimeoutException e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Warn("Time out ==", e);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+            }
+            catch (Client.RpcClientException exception)
+            {
+                Helpers.ExceptionReporter.SilentReportException(exception);
+                Log.Warn(" RpcException == " + exception);
+                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
+            }
+            catch (Exception e)
+            {
+                Helpers.ExceptionReporter.SilentReportException(e);
+                Log.Info("Result === " + e);
+                _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
+                return;
             }
         }
 
@@ -1462,6 +1466,38 @@ namespace Loom.ZombieBattleground
             }
 
             return filteredCards;
+        }
+
+        private void ResetTutorialDeck()
+        {
+            Deck deck = null;
+            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            {
+                deck = _dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+            }
+            DeckCardData cardInDeck = null;
+
+            int maxCount = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount;
+            if (deck != null && deck.GetNumCards() >= maxCount)
+            {
+                foreach (CardRewardInfo rewardCard in CurrentTutorial.TutorialContent.ToMenusContent().TutorialReward.CardPackReward)
+                {
+                    cardInDeck = deck.Cards.Find(card => card.CardName == rewardCard.Name);
+                    if (cardInDeck != null)
+                    {
+                        cardInDeck.Amount -= 1;
+                        if (cardInDeck.Amount < 1)
+                        {
+                            deck.Cards.Remove(cardInDeck);
+                        }
+                    }
+                }
+
+                if (deck.Cards.Count == 0)
+                {
+                    RemoveTutorialDeck(deck);
+                }
+            }
         }
     }
 }
