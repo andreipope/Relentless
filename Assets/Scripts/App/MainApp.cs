@@ -1,4 +1,5 @@
 using System;
+using log4net;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,6 +11,8 @@ namespace Loom.ZombieBattleground
 {
     public class MainApp : MonoBehaviour
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(MainApp));
+
         public delegate void MainAppDelegate(object param);
 
         public event Action<Scene, LoadSceneMode> LevelLoaded;
@@ -19,6 +22,8 @@ namespace Loom.ZombieBattleground
         public event Action FixedUpdateEvent;
 
         public event Action OnDrawGizmosCalled;
+
+        public event Action<Action<bool>> ApplicationWantsToQuit;
 
         public static MainApp Instance { get; private set; }
 
@@ -42,6 +47,7 @@ namespace Loom.ZombieBattleground
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.APP_INIT);
 
                 SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+                Application.wantsToQuit += OnApplicationWantsToQuit;
 
                 GameClient.Get<IAnalyticsManager>().StartSession();
             }
@@ -71,9 +77,9 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private async void OnDestroy()
+        private void OnDestroy()
         {
-            await GameClient.Get<IAppStateManager>().SendLeaveMatchIfInPlay();
+            GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
 
             if (Instance == this)
             {
@@ -100,9 +106,13 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnApplicationQuit()
+        private bool OnApplicationWantsToQuit()
         {
-            GameClient.Get<IAnalyticsManager>().SetEvent(AnalyticsManager.EventQuitToDesktop);
+            Log.Info("OnApplicationWantsToQuit()");
+            bool wantsToQuit = true;
+            ApplicationWantsToQuit?.Invoke(val => wantsToQuit = val);
+            Log.Info("OnApplicationWantsToQuit returns " + wantsToQuit);
+            return wantsToQuit;
         }
     }
 }

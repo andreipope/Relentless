@@ -17,5 +17,10 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Status = status;
             UseBackendGameLogic = useBackendGameLogic;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(Id)}: {Id}, {nameof(Topics)}: {Utilites.FormatCallLogList(Topics)}, {nameof(Status)}: {Status}, {nameof(UseBackendGameLogic)}: {UseBackendGameLogic}";
+        }
     }
 }

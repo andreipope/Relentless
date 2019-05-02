@@ -585,7 +585,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string SendPlayerActionMethod = "SendPlayerAction";
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
-        private const string CheckGameStatusMethod = "CheckGameStatus";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";

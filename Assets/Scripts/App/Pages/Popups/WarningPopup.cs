@@ -59,6 +59,7 @@ namespace Loom.ZombieBattleground
 
             _gotItButton = Self.transform.Find("Button_GotIt").GetComponent<ButtonShiftingContent>();
             _gotItButton.onClick.AddListener(CloseButtonHandler);
+            SetCloseButtonVisible(true);
 
             _text = Self.transform.Find("Text_Message").GetComponent<TextMeshProUGUI>();
         }
@@ -72,6 +73,11 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+        }
+
+        public void SetCloseButtonVisible(bool visible)
+        {
+            _gotItButton.gameObject.SetActive(visible);
         }
 
         public void CloseButtonHandler()

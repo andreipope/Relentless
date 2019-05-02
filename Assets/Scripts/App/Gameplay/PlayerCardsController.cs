@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground
 
         public void SetCardsInDeck(IReadOnlyList<BoardUnitModel> cards)
         {
-            CallLog($"{nameof(SetCardsInDeck)}(IEnumerable<BoardUnitModel> cards = {FormatCallLogList(cards)})");
+            CallLog($"{nameof(SetCardsInDeck)}(IEnumerable<BoardUnitModel> cards = {Utilites.FormatCallLogList(cards)})");
             
             _cardsInDeck.Clear();
 
@@ -404,7 +404,7 @@ namespace Loom.ZombieBattleground
 
         public void SetCardsInHand(IReadOnlyList<BoardUnitModel> cards)
         {
-            CallLog($"{nameof(SetCardsInHand)}(IEnumerable<BoardUnitModel> cards = {FormatCallLogList(cards)})");
+            CallLog($"{nameof(SetCardsInHand)}(IEnumerable<BoardUnitModel> cards = {Utilites.FormatCallLogList(cards)})");
 
             _cardsInHand.Clear();
             _cardsInHand.InsertRange(ItemPosition.Start, cards);
@@ -442,7 +442,7 @@ namespace Loom.ZombieBattleground
 
         public void SetFirstHandForPvPMatch(IReadOnlyList<BoardUnitModel> boardUnitModels, bool removeCardsFromDeck = true)
         {
-            CallLog($"{nameof(SetFirstHandForPvPMatch)}(IReadOnlyList<BoardUnitModel> boardUnitModels = {FormatCallLogList(boardUnitModels)}], bool removeCardsFromDeck = {removeCardsFromDeck})");
+            CallLog($"{nameof(SetFirstHandForPvPMatch)}(IReadOnlyList<BoardUnitModel> boardUnitModels = {Utilites.FormatCallLogList(boardUnitModels)}], bool removeCardsFromDeck = {removeCardsFromDeck})");
 
             foreach (BoardUnitModel boardUnitModel in boardUnitModels)
             {
@@ -873,11 +873,6 @@ namespace Loom.ZombieBattleground
             {
                 Log.Debug(message);
             }
-        }
-
-        private static string FormatCallLogList<T>(IReadOnlyList<T> list)
-        {
-            return $"[({list.Count} items) {String.Join(", ", list)}]";
         }
     }
 }
