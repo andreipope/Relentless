@@ -5,7 +5,9 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
+using Newtonsoft.Json;
 using NUnit.Framework;
+using UnityEngine;
 using AbilityData = Loom.ZombieBattleground.Data.AbilityData;
 using Card = Loom.ZombieBattleground.Data.Card;
 using PictureTransform = Loom.ZombieBattleground.Data.PictureTransform;
@@ -17,6 +19,14 @@ namespace Loom.ZombieBattleground.Test
     public class DataTest
     {
         [Test]
+        public void MouldIdSerialization()
+        {
+            MouldId original = new MouldId(long.MaxValue);
+            string serialized = JsonConvert.SerializeObject(original);
+            MouldId deserialized = JsonConvert.DeserializeObject<MouldId>(serialized);
+            Assert.AreEqual(original, deserialized);
+        }
+        [Test]
         public void DeckProtobufSerialization()
         {
             Deck original = new Deck(
@@ -25,8 +35,8 @@ namespace Loom.ZombieBattleground.Test
                 "deck name",
                 new List<DeckCardData>
                 {
-                    new DeckCardData("card 1", 3),
-                    new DeckCardData("card 2", 4)
+                    new DeckCardData(new MouldId(1), 3),
+                    new DeckCardData(new MouldId(2), 4)
                 },
                 Enumerators.Skill.HEALING_TOUCH,
                 Enumerators.Skill.MEND
@@ -40,7 +50,7 @@ namespace Loom.ZombieBattleground.Test
         public void CardProtobufSerialization()
         {
             Card card = new Card(
-                123,
+                new MouldId(123),
                 "Foo",
                 3,
                 "description",

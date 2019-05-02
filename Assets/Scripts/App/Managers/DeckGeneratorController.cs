@@ -156,7 +156,7 @@ namespace Loom.ZombieBattleground
                 FinishEditDeck?.Invoke(success, deck);
             }
         }
-        
+
         public async Task ProcessDeleteDeck(Deck deck)
         {
             bool success = false;
@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground
                 FinishDeleteDeck?.Invoke(success, deck);
             }
         }
-        
+
         public bool VerifyDeckName(string deckName, string previousDeckName = null)
         {
             if (string.IsNullOrWhiteSpace(deckName))
@@ -202,7 +202,7 @@ namespace Loom.ZombieBattleground
                 OpenAlertDialog("Saving Deck with an empty name is not allowed.");
                 return false;
             }
-            
+
             if(!string.IsNullOrEmpty(previousDeckName))
             {
                 if (string.Equals(deckName, previousDeckName))
@@ -218,7 +218,7 @@ namespace Loom.ZombieBattleground
                     return false;
                 }
             }
-            
+
             return true;
         }
 
@@ -226,36 +226,36 @@ namespace Loom.ZombieBattleground
         {
             OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
             Enumerators.Faction faction = overlord.Faction;
-            
+
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> creatureCards = overlordElementSet.Cards.ToList();
             List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
-            
+
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)
             {
                 int amount = GetCardsAmount
                 (
-                    card.Name,
-                    collectionData                    
+                    card.MouldId,
+                    collectionData
                 );
-                
+
                 for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
                     availableCreatureCardList.Add(addedCard);
                 }
             }
-            
+
             List<Card> availableItemCardList = new List<Card>();
             foreach (Card card in itemCards)
             {
                 int amount = GetCardsAmount
                 (
-                    card.Name,
-                    collectionData                    
+                    card.MouldId,
+                    collectionData
                 );
-                
+
                 for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
@@ -265,7 +265,7 @@ namespace Loom.ZombieBattleground
 
             MidRangeDeckGenerationStyle(deck, availableCreatureCardList.ToList(), availableItemCardList.ToList());
         }
-        
+
         public string GenerateDeckName()
         {
             int index = _dataManager.CachedDecksData.Decks.Count;
@@ -287,26 +287,26 @@ namespace Loom.ZombieBattleground
                     return newName;
             }
         }
-        
+
         private void BasicDeckGenerationStyle(Deck deck, List<Card> availableCardList)
         {
             RemoveAllCardsFromDeck(deck);
-            
+
             int amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
             while(amountLeftToFill > 0)
             {
                 if (amountLeftToFill > availableCardList.Count)
                     break;
-                
+
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
-                deck.AddCard(card.Name);
+                deck.AddCard(card.MouldId);
                 availableCardList.Remove(card);
-                
+
                 amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
             }
         }
-        
+
         private void MidRangeDeckGenerationStyle(Deck deck, List<Card> creatureCardList, List<Card> itemCardList)
         {
             RemoveAllCardsFromDeck(deck);
@@ -322,7 +322,7 @@ namespace Loom.ZombieBattleground
             {
                 if (card.Kind == Enumerators.CardKind.ITEM)
                      continue;
-                     
+
                 int index = Mathf.Clamp(card.Cost, 0, 10);
                 cardSortByGooCost[index].Add(card);
             }
@@ -372,7 +372,7 @@ namespace Loom.ZombieBattleground
                 cardZeroToThreeCostList.Remove(card);
                 cardSortByGooCost[card.Cost].Remove(card);
             }
-            
+
             List<Card> cardFourToSevenCostList = cardSortByGooCost[4]
                                           .Concat(cardSortByGooCost[5])
                                           .Concat(cardSortByGooCost[6])
@@ -388,7 +388,7 @@ namespace Loom.ZombieBattleground
                 cardFourToSevenCostList.Remove(card);
                 cardSortByGooCost[card.Cost].Remove(card);
             }
-            
+
             List<Card> cardEightToTenCostList = cardSortByGooCost[8]
                                           .Concat(cardSortByGooCost[9])
                                           .Concat(cardSortByGooCost[10])
@@ -408,7 +408,7 @@ namespace Loom.ZombieBattleground
             {
                 if (itemCardList.Count < 0)
                     break;
-                    
+
                 Card card = itemCardList[Random.Range(0, itemCardList.Count)];
                 cardsToAdd.Add(card);
                 itemCardList.Remove(card);
@@ -419,19 +419,19 @@ namespace Loom.ZombieBattleground
             {
                 if (amountLeftToFill > creatureCardList.Count)
                     break;
-                
+
                 int randomIndex = Random.Range(0, creatureCardList.Count);
                 Card card = creatureCardList[randomIndex];
                 cardsToAdd.Add(card);
                 creatureCardList.Remove(card);
-                
+
                 amountLeftToFill = (int)(Constants.DeckMaxSize - cardsToAdd.Count);
             }
 
             cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
             foreach(Card card in cardsToAdd)
             {
-                deck.AddCard(card.Name);
+                deck.AddCard(card.MouldId);
             }
         }
 
@@ -440,12 +440,9 @@ namespace Loom.ZombieBattleground
             List<CollectionCardData> availableCardList = new List<CollectionCardData>();
             foreach(Card card in cards)
             {
-                CollectionCardData item = new CollectionCardData();
-                item.CardName = card.Name;
-                item.Amount = GetCardsAmount
-                (
-                    card.Name,
-                    collectionData                    
+                CollectionCardData item = new CollectionCardData(
+                    card.MouldId,
+                    GetCardsAmount(card.MouldId, collectionData)
                 );
                 availableCardList.Add(item);
             }
@@ -457,11 +454,11 @@ namespace Loom.ZombieBattleground
             deck.Cards.Clear();
         }
 
-        private int GetCardsAmount(string cardName, CollectionData collectionData)
+        private int GetCardsAmount(MouldId mouldId, CollectionData collectionData)
         {
-            return collectionData.GetCardData(cardName).Amount;
+            return collectionData.GetCardData(mouldId).Amount;
         }
-        
+
         public void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,

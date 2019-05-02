@@ -456,13 +456,11 @@ namespace Loom.ZombieBattleground
             InvokeMulliganStarted();
         }
 
-        public CardModel CreateNewCardByNameAndAddToHand(string name)
+        public CardModel CreateNewCardAndAddToHand(Card card)
         {
-            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)}(string name = {name})");
+            CallLog($"{nameof(CreateNewCardAndAddToHand)}(Card card = {card})");
 
-            float animationDuration = 1.5f;
-
-            Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
+            const float animationDuration = 1.5f;
             WorkingCard workingCard = new WorkingCard(card, card, Player);
             if (_tutorialManager.IsTutorial)
             {
@@ -473,7 +471,7 @@ namespace Loom.ZombieBattleground
 
             if (CheckIsMoreThanMaxCards(cardModel))
             {
-                CallLog($"{nameof(CreateNewCardByNameAndAddToHand)} CheckIsMoreThanMaxCards == true, returned {cardModel}");
+                CallLog($"{nameof(CreateNewCardAndAddToHand)} CheckIsMoreThanMaxCards == true, returned {cardModel}");
                 return cardModel;
             }
 
@@ -519,7 +517,7 @@ namespace Loom.ZombieBattleground
                     animationDuration);
             }
 
-            CallLog($"{nameof(CreateNewCardByNameAndAddToHand)} returned {cardModel}");
+            CallLog($"{nameof(CreateNewCardAndAddToHand)} returned {cardModel}");
             return cardModel;
         }
 

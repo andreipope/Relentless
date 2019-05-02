@@ -116,7 +116,8 @@ namespace Loom.ZombieBattleground.Data
             int defense2,
             int cost,
             Enumerators.CardKind targetCardkind,
-            List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes)
+            List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes
+            )
         {
             Ability = ability;
             Activity = activity;

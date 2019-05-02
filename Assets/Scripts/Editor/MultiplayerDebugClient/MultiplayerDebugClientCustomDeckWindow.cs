@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
         public MultiplayerDebugClient Client => _ownerWindow.DebugClient;
 
-        private Dictionary<string, (string metaDescription, string cardText)> _cardNameToDescription;
+        private Dictionary<MouldId, (string metaDescription, string cardText)> _cardMouldIdToDescription;
         private bool _visible;
         private Vector2 _customDeckScrollPosition;
         private Vector2 _cardLibraryScrollPosition;
@@ -49,12 +49,13 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
             }
 
-            if (_cardNameToDescription == null)
+            if (_cardMouldIdToDescription == null)
+            if (_cardMouldIdToDescription == null)
             {
-                _cardNameToDescription = new Dictionary<string, (string metaDescription, string cardText)>();
+                _cardMouldIdToDescription = new Dictionary<MouldId, (string metaDescription, string cardText)>();
                 foreach (Card card in cardLibrary)
                 {
-                    _cardNameToDescription[card.Name] =
+                    _cardMouldIdToDescription[card.MouldId] =
                     (
                         $"{card.Name} (set: {card.Faction}, cost: {card.Cost}, atk: {card.Damage}, def: {card.Defense})",
                         card.Description
@@ -126,15 +127,15 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
                                 EditorGUILayout.BeginHorizontal();
                                 {
-                                    (string metaDescription, string cardText) = _cardNameToDescription[card.Name];
+                                    (string metaDescription, string cardText) = _cardMouldIdToDescription[card.MouldId];
                                     GUILayout.Label(new GUIContent(metaDescription, cardText));
 
                                     GUILayout.FlexibleSpace();
                                     if (GUILayout.Button("Add", GUILayout.Width(70)))
                                     {
-                                        if (!customDeck.Cards.Any(deckCard => deckCard.CardName == card.Name))
+                                        if (!customDeck.Cards.Any(deckCard => deckCard.MouldId == card.MouldId))
                                         {
-                                            DeckCardData deckCardData = new DeckCardData(card.Name, 0);
+                                            DeckCardData deckCardData = new DeckCardData(card.MouldId, 0);
                                             customDeck.Cards.Add(deckCardData);
                                         }
                                     }
@@ -193,7 +194,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
 
             EditorGUILayout.BeginHorizontal();
             {
-                (string metaDescription, string cardText) = _cardNameToDescription[deckCard.CardName];
+                (string metaDescription, string cardText) = _cardMouldIdToDescription[deckCard.MouldId];
                 GUILayout.Label(new GUIContent(metaDescription, cardText));
 
                 GUILayout.FlexibleSpace();

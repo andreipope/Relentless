@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -8,7 +7,7 @@ namespace Loom.ZombieBattleground
     {
         public GameObject selfObject;
 
-        public long MouldId;
+        public MouldId MouldId;
 
         private bool _isFirstActive;
 

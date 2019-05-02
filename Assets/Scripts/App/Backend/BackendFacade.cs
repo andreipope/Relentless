@@ -132,10 +132,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             GetCollectionRequest request = new GetCollectionRequest
             {
-                UserId = userId
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
+            return await _contractCallProxy.CallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
         }
 
         #endregion
@@ -160,7 +161,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string GetAiDecksDataMethod = "GetAIDecks";
 
-        private const string GetDeckDataMethod = "ListDecks";
+        private const string ListDecksMethod = "ListDecks";
 
         private const string DeleteDeckMethod = "DeleteDeck";
 
@@ -168,14 +169,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string EditDeckMethod = "EditDeck";
 
-        public async Task<ListDecksResponse> GetDecks(string userId)
+        public async Task<ListDecksResponse> ListDecks(string userId)
         {
             ListDecksRequest request = new ListDecksRequest
             {
-                UserId = userId
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+            return await _contractCallProxy.CallAsync<ListDecksResponse>(ListDecksMethod, request);
         }
 
         public async Task<GetAIDecksResponse> GetAiDecks()
@@ -193,7 +195,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId
+                DeckId = deckId,
+                Version = BackendEndpoint.DataVersion
             };
 
             await _contractCallProxy.CallAsync(DeleteDeckMethod, request);

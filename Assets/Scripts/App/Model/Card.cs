@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground.Data
     public class Card : IReadOnlyCard
     {
         [JsonProperty]
-        public long MouldId { get; }
+        public MouldId MouldId { get; }
 
         [JsonProperty]
         public string Name { get; }
@@ -61,7 +61,7 @@ namespace Loom.ZombieBattleground.Data
 
         [JsonConstructor]
         public Card(
-            long mouldId,
+            MouldId mouldId,
             string name,
             int cost,
             string description,

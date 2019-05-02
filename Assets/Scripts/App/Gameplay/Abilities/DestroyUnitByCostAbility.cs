@@ -8,7 +8,7 @@ namespace Loom.ZombieBattleground
 {
     public class DestroyUnitByCostAbility : AbilityBase
     {
-        private const int TorchCardId = 147;
+        private static readonly MouldId TorchCardId = new MouldId(147);
 
         public int Cost { get; }
 
