@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using Deck = Loom.ZombieBattleground.Data.Deck;
 namespace Loom.ZombieBattleground.Test
 {
     [Category("EditQuickSubset")]
-    public class LoomDeckTest
+    public class ContractBasicTest
     {
         private readonly LoomTestContext LoomTestContext = new LoomTestContext();
 
@@ -38,8 +39,9 @@ namespace Loom.ZombieBattleground.Test
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
                 Assert.IsNotNull(listDecksResponse);
+                Assert.IsNotNull(listDecksResponse.Decks);
 
-                DecksData decksData = JsonConvert.DeserializeObject<DecksData>(listDecksResponse.ToString());
+                DecksData decksData = listDecksResponse.FromProtobuf();
                 Assert.IsNotNull(decksData);
                 Assert.AreEqual(1, decksData.Decks.Count);
                 Assert.AreEqual("Default", decksData.Decks[0].Name);
@@ -118,13 +120,21 @@ namespace Loom.ZombieBattleground.Test
                 List<DeckCardData> cards =
                     new List<DeckCardData>
                     {
-                        new DeckCardData(new MouldId(-1), 100500)
+                        new DeckCardData(new MouldId(1), 100500)
                     };
                 Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
-                    await LoomTestContext.BackendFacade.AddDeck(user, deck);
+                    try
+                    {
+                        await LoomTestContext.BackendFacade.AddDeck(user, deck);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.LogException(e);
+                        throw;
+                    }
                 });
             });
         }
@@ -232,6 +242,21 @@ namespace Loom.ZombieBattleground.Test
                         .Select(d => d.FromProtobuf())
                         .ToList();
                 Assert.GreaterOrEqual(decksData.Count, 1);
+            });
+        }
+
+        [UnityTest]
+        public IEnumerator GetCardCollection()
+        {
+            return LoomTestContext.ContractAsyncTest(async () =>
+            {
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest");
+                await LoomTestContext.BackendFacade.SignUp(user);
+
+                GetCollectionResponse getCollectionResponse = await LoomTestContext.BackendFacade.GetCardCollection(user);
+                Assert.IsNotNull(getCollectionResponse);
+                Assert.IsNotNull(getCollectionResponse.Cards);
+                Assert.GreaterOrEqual(getCollectionResponse.Cards.Count, 0);
             });
         }
     }
