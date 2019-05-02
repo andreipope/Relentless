@@ -125,7 +125,10 @@ namespace Loom.ZombieBattleground.Test
             GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             await TestHelper.MainMenuTransition("Button_Battle");
-            GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
+            if (GameClient.Get<IPvPManager>()?.MatchMakingFlowController != null)
+            {
+                GameClient.Get<IPvPManager>().MatchMakingFlowController.ActionWaitingTime = 1;
+            }
 
             await TestHelper.MatchmakeOpponentDebugClient(modifyOpponentDebugCheats);
 
