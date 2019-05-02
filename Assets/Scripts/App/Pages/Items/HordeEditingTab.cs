@@ -428,6 +428,7 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck,
                 _collectionData
             );
+            SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
             UpdateDeckPageIndexDictionary();
 
             ResetCollectionPageState();
@@ -611,7 +612,20 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-        
+
+        private void UpdateDeckCardsDisplay()
+        {
+            foreach (BoardCardView card in _displayDeckBoardCards)
+            {
+                card.SetAmount
+                (
+                    BoardCardView.AmountTrayType.Radio,
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.CardName == card.Model.Card.Prototype.Name).Amount,
+                    (int)GetMaxCopiesValue(card.Model.Card.Prototype)
+                );
+            }
+        }
+
         private void SetCardFrameMaterial(BoardCardView card, Material material)
         {
             card.GameObject.transform.Find("Frame").GetComponent<SpriteRenderer>().material = material;
@@ -1221,6 +1235,7 @@ namespace Loom.ZombieBattleground
         {
             _deckPageIndex = 0;
             UpdateDeckCardPage();
+            UpdateDeckCardsDisplay();
         }
 
         public void MoveCollectionPageIndex(int direction)
