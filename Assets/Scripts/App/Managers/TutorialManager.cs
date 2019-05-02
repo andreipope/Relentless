@@ -1475,7 +1475,7 @@ namespace Loom.ZombieBattleground
             {
                 foreach (CardRewardInfo rewardCard in CurrentTutorial.TutorialContent.ToMenusContent().TutorialReward.CardPackReward)
                 {
-                    cardInDeck = deck.Cards.Find(card => card.CardName == rewardCard.Name);
+                    cardInDeck = deck.Cards.Find(card => card.MouldId == _dataManager.CachedCardsLibraryData.GetCardFromName(rewardCard.Name).MouldId);
                     if (cardInDeck != null)
                     {
                         cardInDeck.Amount -= 1;
