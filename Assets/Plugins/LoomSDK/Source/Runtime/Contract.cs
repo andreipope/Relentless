@@ -100,7 +100,7 @@ namespace Loom.Client
         private async Task<T> CallAsync<T>(Transaction tx, CallDescription callDescription) where T : IMessage, new()
         {
             var result = await this.Client.CommitTxAsync(tx, callDescription);
-            if (result != null && result.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0)
+            if (result != null && result.DeliverTx.Data != null)
             {
                 var resp = new Response();
                 resp.MergeFrom(result.DeliverTx.Data);
