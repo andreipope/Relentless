@@ -319,7 +319,7 @@ namespace Loom.ZombieBattleground
 
             if ((int)onOpenPackEvent.CardId % 10 == 0)
             {
-                int mouldId = (int)onOpenPackEvent.CardId / 10;
+                MouldId mouldId = new MouldId((int)onOpenPackEvent.CardId / 10);
                 Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
                 Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
                 CardsReceived.Add(card);

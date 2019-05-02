@@ -269,7 +269,8 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Your Turn");
             return;
         }
-        player.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        player.PlayerCardsController.CreateNewCardAndAddToHand(card);
     }
 
     [CommandHandler(Description = "Sets the cooldown of the player's Overlord abilities to 0")]
@@ -315,7 +316,9 @@ static class BattleCommandsHandler
             Log.Error("Please Wait For Opponent Turn");
             return;
         }
-        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardByNameAndAddToHand(cardName);
+
+        Card card = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(cardName));
+        BoardUnitModel boardUnitModel = opponentPlayer.PlayerCardsController.CreateNewCardAndAddToHand(card);
         _aiController.PlayCardOnBoard(boardUnitModel, true);
     }
 
