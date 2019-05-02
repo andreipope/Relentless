@@ -11,6 +11,7 @@ using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using UnityEngine.UI;
 
@@ -45,6 +46,8 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
 
         private IAppStateManager _appStateManager;
+        
+        private INetworkActionManager _networkActionManager;
 
         private OverlordsTalkingController _overlordsChatController;
 
@@ -112,6 +115,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
+            
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -1369,6 +1374,7 @@ namespace Loom.ZombieBattleground
             _handPointerController.ResetAll();
         }
 
+        // FIXME: unused
         private async void CreateStarterDeck()
         {
             List<DeckCardData> cards = GetCardsForStarterDeck();
@@ -1401,12 +1407,12 @@ namespace Loom.ZombieBattleground
             if (currentDeck == null && _dataManager.CachedUserLocalData.TutorialSavedDeck != null)
             {
                 currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
-            }
 
+            }
             if (currentDeck == null)
                 return;
 
-            try
+            await _networkActionManager.EnqueueNetworkTask(async () =>
             {
                 _dataManager.CachedDecksData.Decks.Remove(currentDeck);
                 _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
@@ -1420,26 +1426,13 @@ namespace Loom.ZombieBattleground
                 );
 
                 Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-            }
-            catch (TimeoutException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("Time out ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-            }
-            catch (Client.RpcClientException exception)
-            {
-                Helpers.ExceptionReporter.SilentReportException(exception);
-                Log.Warn(" RpcException == " + exception);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Result === " + e);
-                _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
-                return;
-            }
+            },
+                onUnknownExceptionCallbackFunc: exception =>
+                {
+                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + exception.Message);
+                    return Task.CompletedTask;
+                }
+            );
         }
 
         private List<DeckCardData> GetCardsForStarterDeck()

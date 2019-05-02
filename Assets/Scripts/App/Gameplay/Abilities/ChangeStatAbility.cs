@@ -229,6 +229,8 @@ namespace Loom.ZombieBattleground
 
             if(filterUnits != null)
             {
+                filterUnits = filterUnits.Where(unit => !unit.BoardUnitModel.IsReanimated).ToList();
+
                 filterUnits.ForEach((unit) => units.Remove(unit.BoardUnitModel));
             }
 
