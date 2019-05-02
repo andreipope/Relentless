@@ -1,3 +1,4 @@
+using System;
 using System.Runtime.Serialization;
 
 namespace Loom.ZombieBattleground.Common
@@ -113,6 +114,7 @@ namespace Loom.ZombieBattleground.Common
             ATTACK_OVERLORD,
             ADJACENT_UNITS_GET_HEAVY,
             FREEZE_NUMBER_OF_RANDOM_ALLY,
+            [Obsolete("Ability not used, and mould ids are used now", true)]
             ADD_CARD_BY_NAME_TO_HAND,
             DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS,
             SWING,

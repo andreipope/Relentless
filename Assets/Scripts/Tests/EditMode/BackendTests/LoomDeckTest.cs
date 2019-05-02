@@ -29,11 +29,11 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        public IEnumerator GetDeck()
+        public IEnumerator ListDecks()
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
-                string user = LoomTestContext.CreateUniqueUserId("LoomTest_GetDeck");
+                string user = LoomTestContext.CreateUniqueUserId("LoomTest_ListDecks");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
                 ListDecksResponse listDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        public IEnumerator GetDeck_NonExistent_User_Request()
+        public IEnumerator ListDecks_NonExistent_User_Request()
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground.Test
         }
 
         [UnityTest]
-        public IEnumerator GetDeck_User_Have_No_Deck()
+        public IEnumerator ListDecks_User_Have_No_Deck()
         {
             return LoomTestContext.ContractAsyncTest(async () =>
             {
@@ -118,7 +118,7 @@ namespace Loom.ZombieBattleground.Test
                 List<DeckCardData> cards =
                     new List<DeckCardData>
                     {
-                        new DeckCardData("Izze", 100500)
+                        new DeckCardData(new MouldId(-1), 100500)
                     };
                 Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
 

@@ -1149,7 +1149,7 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitModel> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            IReadOnlyList<BoardUnitModel> boardCards = targetUnit.OwnerPlayer.CardsOnBoard;
+            IReadOnlyList<BoardUnitModel> boardCards = GetAliveUnits(targetUnit.OwnerPlayer.CardsOnBoard).ToList();
 
             int targetIndex = boardCards.IndexOf(targetUnit);
 
@@ -1329,6 +1329,22 @@ namespace Loom.ZombieBattleground
         public List<T> GetDeterministicRandomElements<T>(List<T> elements, int count)
         {
             return InternalTools.GetRandomElementsFromList(elements, count, true);
+        }
+
+        public IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)
+        {
+            return units.Where(card => card.IsAlive());
+        }
+
+        public bool HasUnitInAttackingState(IEnumerable<BoardUnitView> units)
+        {
+            foreach (BoardUnitView unit in units)
+            {
+                if (unit!= null && unit.Model != null && unit.Model.IsAttacking)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

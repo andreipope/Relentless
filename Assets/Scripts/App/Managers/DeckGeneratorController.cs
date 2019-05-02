@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -23,16 +24,19 @@ namespace Loom.ZombieBattleground
         
         private IAnalyticsManager _analyticsManager;
 
+        private INetworkActionManager _networkActionManager;
+
         public Action<bool, Deck> FinishAddDeck,
                                   FinishEditDeck,
                                   FinishDeleteDeck;
-    
+
         public void Init()
         {
             _dataManager = GameClient.Get<IDataManager>();
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
         }
         
         public void Update()
@@ -49,150 +53,148 @@ namespace Loom.ZombieBattleground
         {
 
         }
-        
+
         public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
         {
-            bool success = false;
             deck.OverlordId = overlord.OverlordId;
             deck.PrimarySkill = overlord.PrimarySkill;
             deck.SecondarySkill = overlord.SecondarySkill;
 
+            bool success = false;
             try
             {
-                long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                deck.Id = newDeckId;
-                _dataManager.CachedDecksData.Decks.Add(deck);
-                _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
-                Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
+                await _networkActionManager.EnqueueNetworkTask(async () =>
+                    {
+                        long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
+                        deck.Id = newDeckId;
+                        _dataManager.CachedDecksData.Decks.Add(deck);
+                        _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
+                        Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
 
-                if(GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    _dataManager.CachedUserLocalData.TutorialSavedDeck = deck;
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                }
-                success = true;
+                        if (GameClient.Get<ITutorialManager>().IsTutorial)
+                        {
+                            _dataManager.CachedUserLocalData.TutorialSavedDeck = deck;
+                            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                        }
+
+                        success = true;
+
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+                        GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
+                    },
+                    keepCurrentAppState: true,
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        OpenAlertDialog("Not able to Add Deck: \n" + exception.Message);
+                        return Task.CompletedTask;
+                    }
+                );
             }
-            catch (Exception e)
+            catch
             {
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);
-
-                if (e is Client.RpcClientException || e is TimeoutException)
-                {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                else
-                {
-                    OpenAlertDialog("Not able to Add Deck: \n" + e.Message);
-                }
+                // No additional handling
             }
-            
-            if (success)
+            finally
             {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);                
-
-                GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
+                FinishAddDeck?.Invoke(success, deck);
             }
-            
-            FinishAddDeck?.Invoke(success,deck);
         }
-        
+
         public async void ProcessEditDeck(Deck deck)
         {
             bool success = false;
             try
             {
-                await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-
-                for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
-                {
-                    if (_dataManager.CachedDecksData.Decks[i].Id == deck.Id)
+                await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
-                        _dataManager.CachedDecksData.Decks[i] = deck;
-                        break;
-                    }
-                }
+                        await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
 
-                _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
-                Log.Info(" ====== Edit Deck Successfully ==== ");
-                success = true;
+                        for (int i = 0; i < _dataManager.CachedDecksData.Decks.Count; i++)
+                        {
+                            if (_dataManager.CachedDecksData.Decks[i].Id == deck.Id)
+                            {
+                                _dataManager.CachedDecksData.Decks[i] = deck;
+                                break;
+                            }
+                        }
+
+                        _analyticsManager.SetEvent(AnalyticsManager.EventDeckEdited);
+                        Log.Info(" ====== Edit Deck Successfully ==== ");
+                        success = true;
+
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    },
+                    keepCurrentAppState: true,
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        string message = exception.Message;
+
+                        string[] description = exception.Message.Split('=');
+                        if (description.Length > 0)
+                        {
+                            message = description[description.Length - 1].TrimStart(' ');
+                            message = char.ToUpper(message[0]) + message.Substring(1);
+                        }
+                        if (GameClient.Get<ITutorialManager>().IsTutorial)
+                        {
+                            message = Constants.ErrorMessageForConnectionFailed;
+                        }
+                        OpenAlertDialog("Not able to Edit Deck: \n" + message);
+                        return Task.CompletedTask;
+                    }
+                );
             }
-            catch (Exception e)
+            catch
             {
-                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, e);                
-
-                if (e is Client.RpcClientException || e is TimeoutException)
-                {
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                else
-                {
-                    string message = e.Message;
-
-                    string[] description = e.Message.Split('=');
-                    if (description.Length > 0)
-                    {
-                        message = description[description.Length - 1].TrimStart(' ');
-                        message = char.ToUpper(message[0]) + message.Substring(1);
-                    }
-                    if (GameClient.Get<ITutorialManager>().IsTutorial)
-                    {
-                        message = Constants.ErrorMessageForConnectionFailed;
-                    }
-                    OpenAlertDialog("Not able to Edit Deck: \n" + message);
-                }
+                // No additional handling
             }
-
-            if (success)
+            finally
             {
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                FinishEditDeck?.Invoke(success, deck);
             }
-
-            FinishEditDeck?.Invoke(success, deck);
         }
-        
-        public async void ProcessDeleteDeck(Deck deck)
+
+        public async Task ProcessDeleteDeck(Deck deck)
         {
             bool success = false;
             try
             {
-                _dataManager.CachedDecksData.Decks.Remove(deck);
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+                await _networkActionManager.EnqueueNetworkTask(async () =>
+                    {
+                        _dataManager.CachedDecksData.Decks.Remove(deck);
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    deck.Id
+                        await _backendFacade.DeleteDeck(
+                            _backendDataControlMediator.UserDataModel.UserId,
+                            deck.Id
+                        );
+
+                        Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
+                        success = true;
+                    },
+                    keepCurrentAppState: true,
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + exception.Message);
+                        return Task.CompletedTask;
+                    }
                 );
-
-                Log.Info($" ====== Delete Deck {deck.Id} Successfully ==== ");
-                success = true;
             }
-            catch (TimeoutException e)
+            catch
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("Time out ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                // No additional handling
             }
-            catch (Client.RpcClientException e)
+            finally
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Warn("RpcException ==", e);
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
+                FinishDeleteDeck?.Invoke(success, deck);
             }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-                Log.Info("Result ===", e);
-                OpenAlertDialog($"Not able to Delete Deck {deck.Id}: " + e.Message);
-                return;
-            }
-
-            FinishDeleteDeck?.Invoke(success,deck);
         }
-        
+
         public bool VerifyDeckName(string deckName, string previousDeckName = null)
         {
             if (string.IsNullOrWhiteSpace(deckName))
@@ -200,7 +202,7 @@ namespace Loom.ZombieBattleground
                 OpenAlertDialog("Saving Deck with an empty name is not allowed.");
                 return false;
             }
-            
+
             if(!string.IsNullOrEmpty(previousDeckName))
             {
                 if (string.Equals(deckName, previousDeckName))
@@ -216,7 +218,7 @@ namespace Loom.ZombieBattleground
                     return false;
                 }
             }
-            
+
             return true;
         }
 
@@ -224,36 +226,36 @@ namespace Loom.ZombieBattleground
         {
             OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
             Enumerators.Faction faction = overlord.Faction;
-            
+
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> creatureCards = overlordElementSet.Cards.ToList();
             List<Card> itemCards = SetTypeUtility.GetCardFaction(_dataManager, Enumerators.Faction.ITEM).Cards.ToList();
-            
+
             List<Card> availableCreatureCardList = new List<Card>();
             foreach (Card card in creatureCards)
             {
                 int amount = GetCardsAmount
                 (
-                    card.Name,
-                    collectionData                    
+                    card.MouldId,
+                    collectionData
                 );
-                
+
                 for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
                     availableCreatureCardList.Add(addedCard);
                 }
             }
-            
+
             List<Card> availableItemCardList = new List<Card>();
             foreach (Card card in itemCards)
             {
                 int amount = GetCardsAmount
                 (
-                    card.Name,
-                    collectionData                    
+                    card.MouldId,
+                    collectionData
                 );
-                
+
                 for (int i = 0; i < amount; ++i)
                 {
                     Card addedCard = new Card(card);
@@ -263,7 +265,7 @@ namespace Loom.ZombieBattleground
 
             MidRangeDeckGenerationStyle(deck, availableCreatureCardList.ToList(), availableItemCardList.ToList());
         }
-        
+
         public string GenerateDeckName()
         {
             int index = _dataManager.CachedDecksData.Decks.Count;
@@ -285,26 +287,26 @@ namespace Loom.ZombieBattleground
                     return newName;
             }
         }
-        
+
         private void BasicDeckGenerationStyle(Deck deck, List<Card> availableCardList)
         {
             RemoveAllCardsFromDeck(deck);
-            
+
             int amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
             while(amountLeftToFill > 0)
             {
                 if (amountLeftToFill > availableCardList.Count)
                     break;
-                
+
                 int randomIndex = Random.Range(0, availableCardList.Count);
                 Card card = availableCardList[randomIndex];
-                deck.AddCard(card.Name);
+                deck.AddCard(card.MouldId);
                 availableCardList.Remove(card);
-                
+
                 amountLeftToFill = (int)(Constants.DeckMaxSize - deck.GetNumCards());
             }
         }
-        
+
         private void MidRangeDeckGenerationStyle(Deck deck, List<Card> creatureCardList, List<Card> itemCardList)
         {
             RemoveAllCardsFromDeck(deck);
@@ -320,7 +322,7 @@ namespace Loom.ZombieBattleground
             {
                 if (card.Kind == Enumerators.CardKind.ITEM)
                      continue;
-                     
+
                 int index = Mathf.Clamp(card.Cost, 0, 10);
                 cardSortByGooCost[index].Add(card);
             }
@@ -354,51 +356,59 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            
-            for (int i = 0; i < 7 - countCardOneToThreeCost; ++i)
+
+            List<Card> cardZeroToThreeCostList = cardSortByGooCost[0]
+                                          .Concat(cardSortByGooCost[1])
+                                          .Concat(cardSortByGooCost[2])
+                                          .Concat(cardSortByGooCost[3])
+                                          .ToList();
+                                          
+            for (int i = 0; i < 7 - countCardOneToThreeCost && cardZeroToThreeCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(1, 4);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardZeroToThreeCostList.Count);
+                Card card = cardZeroToThreeCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardZeroToThreeCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
+
+            List<Card> cardFourToSevenCostList = cardSortByGooCost[4]
+                                          .Concat(cardSortByGooCost[5])
+                                          .Concat(cardSortByGooCost[6])
+                                          .Concat(cardSortByGooCost[7])
+                                          .ToList();
             
-            for (int i = 0; i < 12 - countCardFourToSevenCost; ++i)
+            for (int i = 0; i < 12 - countCardFourToSevenCost && cardFourToSevenCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(4, 8);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardFourToSevenCostList.Count);
+                Card card = cardFourToSevenCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardFourToSevenCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
+
+            List<Card> cardEightToTenCostList = cardSortByGooCost[8]
+                                          .Concat(cardSortByGooCost[9])
+                                          .Concat(cardSortByGooCost[10])
+                                          .ToList();
             
-            for (int i = 0; i < 4 - countCardEightToTenCost; ++i)
+            for (int i = 0; i < 4 - countCardEightToTenCost && cardEightToTenCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(8, 11);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardEightToTenCostList.Count);
+                Card card = cardEightToTenCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardEightToTenCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
 
             for (int i = 0; i < 7; ++i)
             {
                 if (itemCardList.Count < 0)
                     break;
-                    
+
                 Card card = itemCardList[Random.Range(0, itemCardList.Count)];
                 cardsToAdd.Add(card);
                 itemCardList.Remove(card);
@@ -409,19 +419,19 @@ namespace Loom.ZombieBattleground
             {
                 if (amountLeftToFill > creatureCardList.Count)
                     break;
-                
+
                 int randomIndex = Random.Range(0, creatureCardList.Count);
                 Card card = creatureCardList[randomIndex];
                 cardsToAdd.Add(card);
                 creatureCardList.Remove(card);
-                
+
                 amountLeftToFill = (int)(Constants.DeckMaxSize - cardsToAdd.Count);
             }
 
             cardsToAdd = cardsToAdd.OrderBy(x => x.Faction).ThenBy(x => x.Cost).ToList();
             foreach(Card card in cardsToAdd)
             {
-                deck.AddCard(card.Name);
+                deck.AddCard(card.MouldId);
             }
         }
 
@@ -430,12 +440,9 @@ namespace Loom.ZombieBattleground
             List<CollectionCardData> availableCardList = new List<CollectionCardData>();
             foreach(Card card in cards)
             {
-                CollectionCardData item = new CollectionCardData();
-                item.CardName = card.Name;
-                item.Amount = GetCardsAmount
-                (
-                    card.Name,
-                    collectionData                    
+                CollectionCardData item = new CollectionCardData(
+                    card.MouldId,
+                    GetCardsAmount(card.MouldId, collectionData)
                 );
                 availableCardList.Add(item);
             }
@@ -447,11 +454,11 @@ namespace Loom.ZombieBattleground
             deck.Cards.Clear();
         }
 
-        private int GetCardsAmount(string cardName, CollectionData collectionData)
+        private int GetCardsAmount(MouldId mouldId, CollectionData collectionData)
         {
-            return collectionData.GetCardData(cardName).Amount;
+            return collectionData.GetCardData(mouldId).Amount;
         }
-        
+
         public void OpenAlertDialog(string msg)
         {
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,

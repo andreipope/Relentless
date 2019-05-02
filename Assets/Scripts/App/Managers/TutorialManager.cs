@@ -11,6 +11,7 @@ using System.Globalization;
 using Newtonsoft.Json.Converters;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using UnityEngine.UI;
 
@@ -45,6 +46,8 @@ namespace Loom.ZombieBattleground
         private IAnalyticsManager _analyticsManager;
 
         private IAppStateManager _appStateManager;
+        
+        private INetworkActionManager _networkActionManager;
 
         private OverlordsTalkingController _overlordsChatController;
 
@@ -112,6 +115,8 @@ namespace Loom.ZombieBattleground
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _analyticsManager = GameClient.Get<IAnalyticsManager>();
             _appStateManager = GameClient.Get<IAppStateManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
+            
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -213,6 +218,10 @@ namespace Loom.ZombieBattleground
                 if (CurrentTutorial.IsGameplayTutorial() && !CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.DisabledInitialization)
                 {
                     FillTutorialDeck();
+                }
+                else if(!CurrentTutorial.IsGameplayTutorial() && CurrentTutorial.Id != FirstDeckBuildTutorialIndex)
+                {
+                    ResetTutorialDeck();
                 }
 
                 ClearToolTips();
@@ -1301,9 +1310,9 @@ namespace Loom.ZombieBattleground
             return cards;
         }
 
-        public CollectionCardData GetCardData(string id)
+        public SpecificHordeCardData GetCardData(string id)
         {
-            CollectionCardData cardData = null;
+            SpecificHordeCardData cardData = null;
             if (CurrentTutorial != null && CurrentTutorial.TutorialContent.ToMenusContent() != null)
             {
                 cardData = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
@@ -1365,6 +1374,7 @@ namespace Loom.ZombieBattleground
             _handPointerController.ResetAll();
         }
 
+        // FIXME: unused
         private async void CreateStarterDeck()
         {
             List<DeckCardData> cards = GetCardsForStarterDeck();
@@ -1392,59 +1402,46 @@ namespace Loom.ZombieBattleground
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
-        private async void RemoveTutorialDeck()
+        private async void RemoveTutorialDeck(Deck currentDeck = null)
         {
-            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            if (currentDeck == null && _dataManager.CachedUserLocalData.TutorialSavedDeck != null)
             {
-                Deck currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+                currentDeck = _dataManager.CachedDecksData.Decks.Find(deck => deck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
 
-                if (currentDeck == null)
-                    return;
-
-                try
-                {
-                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-
-                    await _backendFacade.DeleteDeck(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        currentDeck.Id
-                    );
-
-                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-                }
-                catch (TimeoutException e)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(e);
-                    Log.Warn("Time out ==", e);
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true);
-                }
-                catch (Client.RpcClientException exception)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(exception);
-                    Log.Warn(" RpcException == " + exception);
-                    GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(exception, true);
-                }
-                catch (Exception e)
-                {
-                    Helpers.ExceptionReporter.SilentReportException(e);
-                    Log.Info("Result === " + e);
-                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + e.Message);
-                    return;
-                }
             }
+            if (currentDeck == null)
+                return;
+
+            await _networkActionManager.EnqueueNetworkTask(async () =>
+            {
+                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
+                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+
+                await _backendFacade.DeleteDeck(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    currentDeck.Id
+                );
+
+                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+            },
+                onUnknownExceptionCallbackFunc: exception =>
+                {
+                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + exception.Message);
+                    return Task.CompletedTask;
+                }
+            );
         }
 
         private List<DeckCardData> GetCardsForStarterDeck()
         {
             List<DeckCardData> cards =
                 _tutorials[_tutorials.Count - 2].TutorialContent.ToMenusContent().SpecificHordeInfo.CardsForArmy
-                    .Select(data => new DeckCardData(data.CardName, data.Amount))
+                    .Select(data => new DeckCardData(_dataManager.CachedCardsLibraryData.GetCardFromName(data.CardName).MouldId, data.Amount))
                     .ToList()
-                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromName(card.CardName).Faction != Enumerators.Faction.FIRE);
+                    .FindAll(card => _dataManager.CachedCardsLibraryData.GetCardFromMouldId(card.MouldId).Faction != Enumerators.Faction.FIRE);
 
             List<DeckCardData> filteredCards = new List<DeckCardData>();
             int countCards = 0;
@@ -1462,6 +1459,38 @@ namespace Loom.ZombieBattleground
             }
 
             return filteredCards;
+        }
+
+        private void ResetTutorialDeck()
+        {
+            Deck deck = null;
+            if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+            {
+                deck = _dataManager.CachedDecksData.Decks.Find(cachedDeck => cachedDeck.Id == _dataManager.CachedUserLocalData.TutorialSavedDeck.Id);
+            }
+            DeckCardData cardInDeck = null;
+
+            int maxCount = CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount;
+            if (deck != null && deck.GetNumCards() >= maxCount)
+            {
+                foreach (CardRewardInfo rewardCard in CurrentTutorial.TutorialContent.ToMenusContent().TutorialReward.CardPackReward)
+                {
+                    cardInDeck = deck.Cards.Find(card => card.MouldId == _dataManager.CachedCardsLibraryData.GetCardFromName(rewardCard.Name).MouldId);
+                    if (cardInDeck != null)
+                    {
+                        cardInDeck.Amount -= 1;
+                        if (cardInDeck.Amount < 1)
+                        {
+                            deck.Cards.Remove(cardInDeck);
+                        }
+                    }
+                }
+
+                if (deck.Cards.Count == 0)
+                {
+                    RemoveTutorialDeck(deck);
+                }
+            }
         }
     }
 }

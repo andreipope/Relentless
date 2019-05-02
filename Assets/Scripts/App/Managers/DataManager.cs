@@ -284,8 +284,7 @@ namespace Loom.ZombieBattleground
                 throw new RpcClientException(msg,-1, null);
             }
 
-            _uiManager.HidePopup<LoginPopup>();
-            _uiManager.DrawPopup<LoadDataMessagePopup>(msg);
+            _uiManager.GetPopup<LoginPopup>().SetValidationFailed(msg);
         }
 
         private async Task LoadCachedData(Enumerators.CacheDataType type)
@@ -339,17 +338,27 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
+                        bool isLoadedFromFile = false;
                         if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                            try
+                            {
+                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                                isLoadedFromFile = true;
+                            }
+                            catch (JsonSerializationException)
+                            {
+                                // Gracefully handle old incompatible data
+                            }
                         }
-                        else
+
+                        if (!isLoadedFromFile)
                         {
                             GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
 
-                        await ProcessCardsInCollectionValidation();
+                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
                     }
                     catch (Exception)
                     {
@@ -362,14 +371,7 @@ namespace Loom.ZombieBattleground
                     try
                     {
                         ListDecksResponse listDecksResponse = await _backendFacade.ListDecks(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedDecksData =
-                            new DecksData(
-                                listDecksResponse.Decks != null ?
-                                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
-                                    new List<Deck>()
-                            );
-
-                       await ProcessCardsInDeckValidation();
+                        CachedDecksData = listDecksResponse.FromProtobuf();
                     }
                     catch (Exception e)
                     {
@@ -404,50 +406,6 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
-        }
-
-        private async Task ProcessCardsInDeckValidation()
-        {
-            bool hasChanges;
-            Card foundCard;
-            foreach (Deck deck in CachedDecksData.Decks)
-            {
-                hasChanges = false;
-                for (int i = 0; i < deck.Cards.Count; i++)
-                {
-                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == deck.Cards[i].CardName);
-
-                    if(foundCard == null || foundCard is default(Card))
-                    {
-                        deck.Cards.Remove(deck.Cards[i]);
-                        i--;
-
-                        hasChanges = true;
-                    }
-                }
-
-                if (hasChanges)
-                {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                }
-            }
-        }
-
-        private async Task ProcessCardsInCollectionValidation()
-        {
-            Card foundCard;
-            for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
-            {
-                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
-
-                if (foundCard == null)
-                {
-                    CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
-                    i--;
-                }
-            }
-
-            await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void LoadLocalCachedData()
@@ -556,10 +514,10 @@ namespace Loom.ZombieBattleground
                 {
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData
-                        {
-                            Amount = (int) GetMaxCopiesValue(card, set.Name),
-                            CardName = card.Name
-                        });
+                        (
+                            card.MouldId,
+                            (int) GetMaxCopiesValue(card, set.Name)
+                        ));
                 }
             }
         }
