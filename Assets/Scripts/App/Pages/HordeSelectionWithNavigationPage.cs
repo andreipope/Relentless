@@ -751,8 +751,7 @@ namespace Loom.ZombieBattleground
                 int cardsAmount = deck.GetNumCards();
                 OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
-                deckInfoObject.TextDeckName.text = deckName;
-                deckInfoObject.TextDeckName.fontSize = deckName.Length < 15 ? 47.55f : 36.5f;                
+                deckInfoObject.TextDeckName.text = deckName;               
                 if (_tutorialManager.IsTutorial)
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";
