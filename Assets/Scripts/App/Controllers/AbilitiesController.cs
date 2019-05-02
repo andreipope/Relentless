@@ -671,6 +671,8 @@ namespace Loom.ZombieBattleground
                    {
                        abilityEndAction.Invoke();
                    }
+
+                   return null;
                };
         }
 

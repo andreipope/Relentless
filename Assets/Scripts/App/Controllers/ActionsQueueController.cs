@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DG.Tweening;
 using log4net;
 using Loom.ZombieBattleground.Common;
@@ -8,6 +9,8 @@ using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
+    public delegate Task AsyncAction<G, H>(G g, H h);
+
     public class ActionsQueueController : IController
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionsQueueController));
@@ -96,7 +99,7 @@ namespace Loom.ZombieBattleground
         /// <param name="parameter">parameters for action if ot needs</param>
         /// <param name="report">report that will be added into reports list</param>
         public GameplayQueueAction<object> AddNewActionInToQueue(
-            Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+            AsyncAction<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
             GameplayQueueAction<object> gameAction = GenerateActionForQueue(actionToDo, actionType, parameter, blockQueue);
             gameAction.OnActionDoneEvent += OnActionDoneEvent;
@@ -117,7 +120,7 @@ namespace Loom.ZombieBattleground
         }
 
         public GameplayQueueAction<object> GenerateActionForQueue(
-            Action<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
+            AsyncAction<object, Action> actionToDo, Enumerators.QueueActionType actionType, object parameter = null, bool blockQueue = false)
         {
             _nextActionId++;
 
@@ -140,6 +143,31 @@ namespace Loom.ZombieBattleground
             int position = _actionsToDo.FindIndex(action => action.ActionType == actionBefore) - 1;
 
             _actionsToDo.Insert(Mathf.Clamp(position, 0, _actionsToDo.Count), actionToInsert);
+        }
+
+        public int GetCountOfActionsByType(Enumerators.QueueActionType actionType, AsyncAction<object, Action> asyncAction = null)
+        {
+            int count = 0;
+
+            if (asyncAction != null)
+            {
+                for (int i = 0; i < _actionsToDo.Count; i++)
+                {
+                    if (_actionsToDo[i].Action == asyncAction)
+                        break;
+
+                    if (_actionsToDo[i].ActionType == actionType)
+                    {
+                        count++;
+                    }
+                }
+            }
+            else
+            {
+                count = _actionsToDo.FindAll(item => item.ActionType == actionType).Count;
+            }
+
+            return count;
         }
 
         public void StopAllActions()
@@ -265,7 +293,7 @@ namespace Loom.ZombieBattleground
 
         private Sequence _timeoutSequence;
 
-        public Action<T, Action> Action;
+        public AsyncAction<T, Action> Action;
 
         public T Parameter;
 
@@ -277,7 +305,7 @@ namespace Loom.ZombieBattleground
 
         public bool ActionDone => _actionDone;
 
-        public GameplayQueueAction(Action<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
+        public GameplayQueueAction(AsyncAction<T, Action> action, T parameter, long id, Enumerators.QueueActionType actionType, bool blockQueue)
         {
             Action = action;
             Parameter = parameter;
@@ -288,7 +316,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<GameplayQueueAction<T>> OnActionDoneEvent;
 
-        public void DoAction()
+        public async void DoAction()
         {
             try
             {
@@ -299,7 +327,12 @@ namespace Loom.ZombieBattleground
                 else
                 {
                     _timeoutSequence = InternalTools.DoActionDelayed(ActionDoneCallback, Constants.QueueActionTimeout);
-                    Action?.Invoke(Parameter, ActionDoneCallback);
+                    Task task = Action.Invoke(Parameter, ActionDoneCallback);
+
+                    if(task != null)
+                    {
+                        await task;
+                    }
                 }
             }
             catch (Exception ex)

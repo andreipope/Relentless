@@ -37,7 +37,11 @@ namespace Loom.ZombieBattleground
 
         private BattlegroundController _battlegroundController;
 
+        private ActionsQueueController _actionsQueueController;
+
         private long _sequenceUniqueId = 0;
+
+        private List<Action> _updateBoardActionsBuffered;
 
         public void Dispose()
         {
@@ -56,11 +60,15 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+
+            _updateBoardActionsBuffered = new List<Action>();
         }
 
         public void ResetAll()
         {
             _sequenceUniqueId = 0;
+            _updateBoardActionsBuffered.Clear();
         }
 
         public void Update()
@@ -93,14 +101,19 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
-            if(_battlegroundController.HasUnitInAttackingState(units))
+            if(_battlegroundController.HasUnitInAttackingState(units) ||
+               _actionsQueueController.GetCountOfActionsByType(Enumerators.QueueActionType.OpponentBoardUpdate) > 0)
             {
-                InternalTools.DoActionDelayed(() =>
+                _updateBoardActionsBuffered.Add(() =>
                 {
                     UpdateBoard(units, isBottom, boardUpdated, skipIndex);
-                }, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
+                });
+
+                InternalTools.DoActionDelayed(CheckUpdateBoardBuffer, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
                 return;
             }
+
+            _updateBoardActionsBuffered.Clear();
 
             List<UnitPositionOnBoard> newPositions = GetPositionsForUnits(units, isBottom);
 
@@ -170,6 +183,15 @@ namespace Loom.ZombieBattleground
             }
 
             return Vector2.zero;
+        }
+
+        private void CheckUpdateBoardBuffer()
+        {
+            if (_updateBoardActionsBuffered.Count > 0)
+            {
+                _updateBoardActionsBuffered[_updateBoardActionsBuffered.Count - 1]?.Invoke();
+                _updateBoardActionsBuffered.Clear();
+            }
         }
 
         private List<UnitPositionOnBoard> GetPositionsForUnits(IReadOnlyList<BoardUnitView> units, bool isBottom)

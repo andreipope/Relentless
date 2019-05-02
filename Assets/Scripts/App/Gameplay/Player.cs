@@ -513,6 +513,7 @@ namespace Loom.ZombieBattleground
                             );
 
                             completeCallback?.Invoke();
+                            return null;
                         }, Enumerators.QueueActionType.EndMatch);
                     }
                 }, 2f);
@@ -594,6 +595,7 @@ namespace Loom.ZombieBattleground
                 LeaveMatch?.Invoke();
 
                 completeCallback?.Invoke();
+                return null;
             }, Enumerators.QueueActionType.LeaveMatch);
         }
 

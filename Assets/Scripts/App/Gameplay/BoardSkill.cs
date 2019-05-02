@@ -257,6 +257,8 @@ namespace Loom.ZombieBattleground
                     {
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
+
+                        return null;
                     },
                     Enumerators.QueueActionType.OverlordSkillUsage);
         }
