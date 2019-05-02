@@ -338,11 +338,21 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
+                        bool isLoadedFromFile = false;
                         if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                            try
+                            {
+                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                                isLoadedFromFile = true;
+                            }
+                            catch (JsonSerializationException)
+                            {
+                                // Gracefully handle old incompatible data
+                            }
                         }
-                        else
+
+                        if (!isLoadedFromFile)
                         {
                             GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
