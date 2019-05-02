@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
 
             ClearUnitTypeEffects();
 
-            SetPicture();
+            SetPicture("", "");
         }
 
         public void OnStartTurn()
@@ -1062,8 +1062,6 @@ namespace Loom.ZombieBattleground
 
             CardPicture = _loadObjectsManager.GetObjectByPath<Sprite>(imagePath);
             CardPictureWasUpdated?.Invoke();
-
-            Resources.UnloadUnusedAssets();
         }
 
         public void ArriveUnitOnBoard()

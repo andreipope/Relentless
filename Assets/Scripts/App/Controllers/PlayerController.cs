@@ -169,6 +169,7 @@ namespace Loom.ZombieBattleground
 
                 BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
                 player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
+                Resources.UnloadUnusedAssets();
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
