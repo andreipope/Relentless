@@ -356,44 +356,52 @@ namespace Loom.ZombieBattleground
                     }
                 }
             }
-            
-            for (int i = 0; i < 7 - countCardOneToThreeCost; ++i)
+
+            List<Card> cardZeroToThreeCostList = cardSortByGooCost[0]
+                                          .Concat(cardSortByGooCost[1])
+                                          .Concat(cardSortByGooCost[2])
+                                          .Concat(cardSortByGooCost[3])
+                                          .ToList();
+                                          
+            for (int i = 0; i < 7 - countCardOneToThreeCost && cardZeroToThreeCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(1, 4);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardZeroToThreeCostList.Count);
+                Card card = cardZeroToThreeCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardZeroToThreeCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
             
-            for (int i = 0; i < 12 - countCardFourToSevenCost; ++i)
+            List<Card> cardFourToSevenCostList = cardSortByGooCost[4]
+                                          .Concat(cardSortByGooCost[5])
+                                          .Concat(cardSortByGooCost[6])
+                                          .Concat(cardSortByGooCost[7])
+                                          .ToList();
+            
+            for (int i = 0; i < 12 - countCardFourToSevenCost && cardFourToSevenCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(4, 8);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardFourToSevenCostList.Count);
+                Card card = cardFourToSevenCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardFourToSevenCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
             
-            for (int i = 0; i < 4 - countCardEightToTenCost; ++i)
+            List<Card> cardEightToTenCostList = cardSortByGooCost[8]
+                                          .Concat(cardSortByGooCost[9])
+                                          .Concat(cardSortByGooCost[10])
+                                          .ToList();
+            
+            for (int i = 0; i < 4 - countCardEightToTenCost && cardEightToTenCostList.Count > 0; ++i)
             {
-                int randCost = Random.Range(8, 11);
-                if(cardSortByGooCost[randCost].Count > 0)
-                {
-                    List<Card> cardList = cardSortByGooCost[randCost];
-                    Card card = cardList[Random.Range(0, cardList.Count)];
-                    cardsToAdd.Add(card);
-                    cardList.Remove(card);
-                    creatureCardList.Remove(card);
-                }
+                int randIndex = Random.Range(0, cardEightToTenCostList.Count);
+                Card card = cardEightToTenCostList[randIndex];
+                cardsToAdd.Add(card);
+                creatureCardList.Remove(card);
+                cardEightToTenCostList.Remove(card);
+                cardSortByGooCost[card.Cost].Remove(card);
             }
 
             for (int i = 0; i < 7; ++i)

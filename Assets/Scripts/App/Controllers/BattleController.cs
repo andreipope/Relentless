@@ -231,7 +231,7 @@ namespace Loom.ZombieBattleground
         {
             if (healedCreature != null)
             {
-                healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(skill.Skill.Value, 0, healedCreature.MaxCurrentDefense),
+                healedCreature.AddToCurrentDefenseHistory(Mathf.Clamp(skill.Skill.Value, 0, healedCreature.MaxCurrentDefense - healedCreature.CurrentDefense),
                     Enumerators.ReasonForValueChange.AbilityBuff);
             }
         }
