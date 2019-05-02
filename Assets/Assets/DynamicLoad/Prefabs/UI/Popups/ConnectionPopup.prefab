@@ -1079,7 +1079,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
@@ -1370,7 +1370,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_text: Connecting to the server lost, reconnecting...
+  m_text: Lost connection to the server, reconnecting...
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 82356db5a5e5f1d468125eb62285c598, type: 2}
   m_sharedMaterial: {fileID: 21431480145053772, guid: 82356db5a5e5f1d468125eb62285c598,
@@ -1605,7 +1605,7 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}

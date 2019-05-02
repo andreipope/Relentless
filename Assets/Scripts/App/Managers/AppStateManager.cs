@@ -16,6 +16,9 @@ namespace Loom.ZombieBattleground
 
         private const float BackButtonResetDelay = 0.5f;
 
+        private const int MaxReconnectInMenuCount = 3;
+        private const int ReconnectInMenuDelay = 5000;
+
         private IUIManager _uiManager;
 
         private float _backButtonTimer;
@@ -325,7 +328,7 @@ namespace Loom.ZombieBattleground
                 _uiManager.DrawPopup<ConnectionPopup>();
                 connectionPopup.ShowReconnecting();
 
-                for (int i = 0; i < 3; i++)
+                for (int i = 0; i < MaxReconnectInMenuCount; i++)
                 {
                     try
                     {
@@ -343,6 +346,7 @@ namespace Loom.ZombieBattleground
                     catch (Exception e)
                     {
                         Log.Warn(e);
+                        await Task.Delay(ReconnectInMenuDelay);
                     }
                     finally
                     {
