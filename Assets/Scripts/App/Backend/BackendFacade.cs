@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string EditDeckMethod = "EditDeck";
 
-        public async Task<ListDecksResponse> GetDecks(string userId)
+        public async Task<ListDecksResponse> ListDecks(string userId)
         {
             ListDecksRequest request = new ListDecksRequest
             {

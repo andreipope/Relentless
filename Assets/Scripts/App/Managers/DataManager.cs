@@ -361,7 +361,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.DECKS_DATA:
                     try
                     {
-                        ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        ListDecksResponse listDecksResponse = await _backendFacade.ListDecks(_backendDataControlMediator.UserDataModel.UserId);
                         CachedDecksData =
                             new DecksData(
                                 listDecksResponse.Decks != null ?
