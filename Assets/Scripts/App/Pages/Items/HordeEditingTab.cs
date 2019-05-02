@@ -163,7 +163,6 @@ namespace Loom.ZombieBattleground
                 UpdateOverlordAbilitiesButton();
 
                 _textEditDeckName.text = _myDeckPage.CurrentEditDeck.Name;
-                _textEditDeckName.fontSize = _myDeckPage.CurrentEditDeck.Name.Length < 15 ? 65f : 50f;
 
                 if (_tutorialManager.IsTutorial)
                 {
@@ -428,6 +427,7 @@ namespace Loom.ZombieBattleground
                 _myDeckPage.CurrentEditDeck,
                 _collectionData
             );
+            SubtractInitialDeckCardsAmountFromCollections(_myDeckPage.CurrentEditDeck);
             UpdateDeckPageIndexDictionary();
 
             ResetCollectionPageState();
@@ -613,6 +613,19 @@ namespace Loom.ZombieBattleground
                     );
                     break;
                 }
+            }
+        }
+
+        private void UpdateDeckCardsDisplay()
+        {
+            foreach (BoardCardView card in _displayDeckBoardCards)
+            {
+                card.SetAmount
+                (
+                    BoardCardView.AmountTrayType.Radio,
+                    _myDeckPage.CurrentEditDeck.Cards.Find(x => x.MouldId == card.Model.Card.Prototype.MouldId).Amount,
+                    (int)GetMaxCopiesValue(card.Model.Card.Prototype)
+                );
             }
         }
 
@@ -1227,6 +1240,7 @@ namespace Loom.ZombieBattleground
         {
             _deckPageIndex = 0;
             UpdateDeckCardPage();
+            UpdateDeckCardsDisplay();
         }
 
         public void MoveCollectionPageIndex(int direction)
