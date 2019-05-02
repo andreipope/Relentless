@@ -82,8 +82,6 @@ namespace Loom.ZombieBattleground
                            _ranksUpgradeCompleteAction?.Invoke();
                            _ranksUpgradeCompleteAction = null;
                        }
-
-                       return null;
                    };
         }
 
@@ -332,7 +330,6 @@ namespace Loom.ZombieBattleground
                      _ranksUpgradeCompleteAction = completeCallback;
 
                      DoRankUpgrades(units, card, false);
-                     return null;
                  }, Enumerators.QueueActionType.RankBuff);
         }
     }

@@ -421,7 +421,6 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-                return null;
             }, Enumerators.QueueActionType.StopTurn);
         }
 
@@ -430,12 +429,8 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            AsyncAction<object, Action> queueTask = null;
-
-            queueTask = async (parameter, completeCallback) =>
+            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue((parameter, completeCallback) =>
             {
-                await LetsWaitForActionsQueueByType(Enumerators.QueueActionType.UnitCombat, asyncAction: queueTask);
-
                 BoardUnitView boardUnitViewElement = null;
                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer,
                     cardId,
@@ -502,10 +497,9 @@ namespace Loom.ZombieBattleground
                         }
 
                         completeCallback?.Invoke();
-                    });
-            };
-
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(queueTask, Enumerators.QueueActionType.CardPlay);
+                    }
+                );
+            }, Enumerators.QueueActionType.CardPlay);
         }
 
         private void GotActionCardAttack(CardAttackModel model)
@@ -521,7 +515,7 @@ namespace Loom.ZombieBattleground
                 if (attackerUnit == null || target == null || attackerUnit is default(BoardUnitModel) || attackerUnit is default(BoardUnitModel))
                 {
                     ExceptionReporter.LogExceptionAsWarning(Log, new Exception($"[Out of sync] GotActionCardAttack Has Error: attackerUnit: {attackerUnit}; target: {target}"));
-                    return null;
+                    return;
                 }
 
                 Action callback = () =>
@@ -542,7 +536,6 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-                return null;
             }, Enumerators.QueueActionType.UnitCombat);
         }
 
@@ -590,7 +583,7 @@ namespace Loom.ZombieBattleground
                         break;
                     default:
                         Log.Warn(new ArgumentOutOfRangeException($"{nameof(boardObjectCaller)} has type: {boardObjectCaller?.GetType().ToString()}"));
-                        return null;
+                        return;
                 }
 
                 _abilitiesController.PlayAbilityFromEvent(
@@ -600,8 +593,6 @@ namespace Loom.ZombieBattleground
                     boardUnitModel,
                     _gameplayManager.OpponentPlayer,
                     completeCallback);
-
-                return null;
 
             }, Enumerators.QueueActionType.AbilityUsage);
 
@@ -635,8 +626,6 @@ namespace Loom.ZombieBattleground
                 skill.UseSkillFromEvent(parametrizedAbilityObjects);
 
                 completeCallback?.Invoke();
-
-                return null;
 
             }, Enumerators.QueueActionType.OverlordSkillUsage);
         }
@@ -673,8 +662,6 @@ namespace Loom.ZombieBattleground
 
                 completeCallback?.Invoke();
 
-                return null;
-
             }, Enumerators.QueueActionType.RankBuff);
         }
 
@@ -695,14 +682,6 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-
-        private async Task LetsWaitForActionsQueueByType(Enumerators.QueueActionType actionType, int delay = 100, AsyncAction<object, Action> asyncAction = null)
-        {
-            while (_actionsQueueController.GetCountOfActionsByType(actionType, asyncAction) > 0)
-            {
-                await Task.Delay(delay);
-            }
-        }
     }
 
     #region models
