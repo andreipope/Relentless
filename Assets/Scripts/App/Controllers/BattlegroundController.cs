@@ -589,7 +589,6 @@ namespace Loom.ZombieBattleground
                              completeCallback?.Invoke();
                          }
                      }, delay);
-                     return null;
                  }, Enumerators.QueueActionType.StopTurn);
         }
 
