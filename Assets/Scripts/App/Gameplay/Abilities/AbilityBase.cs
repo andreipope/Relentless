@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Principal;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
@@ -60,6 +59,8 @@ namespace Loom.ZombieBattleground
 
         protected ActionsQueueController ActionsQueueController;
 
+        protected ActionsReportController ActionsReportController;
+
         protected BattlegroundController BattlegroundController;
 
         protected RanksController RanksController;
@@ -96,8 +97,12 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _opponentAvatar;
 
-        protected GameplayQueueAction<object> AbilityProcessingAction;
+        protected GameplayActionQueueAction AbilityProcessingAction;
 
+        protected GameplayActionQueueAction AbilityTargetingAction;
+
+        protected bool UnitOwnerIsInRage;
+        
         public AbilityBase()
         {
             GameplayManager = GameClient.Get<IGameplayManager>();
@@ -122,6 +127,7 @@ namespace Loom.ZombieBattleground
             ParticlesController = GameplayManager.GetController<ParticlesController>();
             BattleController = GameplayManager.GetController<BattleController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            ActionsReportController = GameplayManager.GetController<ActionsReportController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
@@ -166,6 +172,8 @@ namespace Loom.ZombieBattleground
             TargettingArrow.TargetUnitSpecialStatusType = TargetUnitSpecialStatus;
             TargettingArrow.UnitDefense = AbilityData.Defense2;
             TargettingArrow.UnitCost = AbilityData.Cost;
+            TargettingArrow.SubTrigger = AbilityData.SubTrigger;
+            TargettingArrow.OwnerOfThis = this;
 
             switch (CardKind)
             {
@@ -190,7 +198,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityTargetingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityTargetingBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -215,6 +223,9 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
 
             VFXAnimationEnded += VFXAnimationEndedHandler;
 
@@ -230,6 +241,7 @@ namespace Loom.ZombieBattleground
                         AbilityUnitOwner.PrepairingToDie += PrepairingToDieHandler;
                         AbilityUnitOwner.KilledUnit += UnitKilledUnitHandler;
                         AbilityUnitOwner.UnitAttackedEnded += UnitAttackedEndedHandler;
+                        AbilityUnitOwner.UnitAttackStateFinished += UnitAttackStateFinishedHandler;
                     }
                     break;
                 case Enumerators.CardKind.ITEM:
@@ -239,6 +251,8 @@ namespace Loom.ZombieBattleground
             }
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
+
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -249,9 +263,15 @@ namespace Loom.ZombieBattleground
         {
             GameplayManager.GameEnded -= GameEndedHandler;
 
-            PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
-            PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
-
+            if (PlayerCallerOfAbility != null) 
+            {
+                PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
+                PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+                PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+                PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
+            }
+            
             VFXAnimationEnded -= VFXAnimationEndedHandler;
 
             DeactivateSelectTarget();
@@ -271,6 +291,7 @@ namespace Loom.ZombieBattleground
                 AbilityUnitOwner.PrepairingToDie -= PrepairingToDieHandler;
                 AbilityUnitOwner.KilledUnit -= UnitKilledUnitHandler;
                 AbilityUnitOwner.UnitAttackedEnded -= UnitAttackedEndedHandler;
+                AbilityUnitOwner.UnitAttackStateFinished -= UnitAttackStateFinishedHandler;
             }
 
             AbilitiesController.DeactivateAbility(ActivityId);
@@ -303,6 +324,7 @@ namespace Loom.ZombieBattleground
             if (callInputEndBefore)
             {
                 PermanentInputEndEvent?.Invoke();
+                CompleteTargetingAction();
                 return;
             }
 
@@ -331,6 +353,8 @@ namespace Loom.ZombieBattleground
                 OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectFailedByTargettingArrowCallback = null;
             }
+
+            CompleteTargetingAction();
         }
 
         public virtual void Action(object info = null)
@@ -420,15 +444,26 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
+            ChangeAuraStatusAction(false);
+
             Deactivate();
             Dispose();
         }
 
         protected virtual void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
+
         }
 
         protected virtual void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            if (!AbilityUnitOwner.IsAttacking)
+            {
+                CheckRageStatus();
+            }
+        }
+
+        protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
 
@@ -445,10 +480,53 @@ namespace Loom.ZombieBattleground
 
         }
 
+        protected virtual void ChangeAuraStatusAction(bool status)
+        {
+
+        }
+
+        protected virtual void BoardChangedHandler(int count)
+        {
+
+        }
+
+        protected virtual void HandChangedHandler(int count)
+        {
+
+        }
+        protected virtual void PlayerCurrentGooChangedHandler(int goo)
+        {
+            
+        }
+
+        protected virtual void UnitAttackStateFinishedHandler()
+        {
+            CheckRageStatus();
+        }
 
         protected virtual void PrepairingToDieHandler(IBoardObject from)
         {
             AbilitiesController.DeactivateAbility(ActivityId);
+        }
+
+        private void CheckRageStatus()
+        {
+            if (AbilityUnitOwner.CurrentDefense < AbilityUnitOwner.MaxCurrentDefense)
+            {
+                if (!UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = true;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
+            else
+            {
+                if (UnitOwnerIsInRage)
+                {
+                    UnitOwnerIsInRage = false;
+                    ChangeRageStatusAction(UnitOwnerIsInRage);
+                }
+            }
         }
 
         protected void ClearParticles()
@@ -461,7 +539,12 @@ namespace Loom.ZombieBattleground
 
         public Player GetOpponentOverlord()
         {
-            return PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
+            return GetOpponentOverlord(PlayerCallerOfAbility);
+        }
+
+        public Player GetOpponentOverlord(Player player)
+        {
+            return player == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }
@@ -473,8 +556,31 @@ namespace Loom.ZombieBattleground
 
         protected List<CardModel> GetRandomEnemyUnits(int count)
         {
-            return InternalTools.GetRandomElementsFromList(GetOpponentOverlord().CardsOnBoard, count)
-                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead);
+            return BattlegroundController.GetDeterministicRandomElements(GetOpponentOverlord().CardsOnBoard.ToList(), count);
+        }
+
+        protected List<CardModel> GetRandomUnits(List<CardModel> units,int count)
+        {
+            return BattlegroundController.GetDeterministicRandomElements(units, count);
+        }
+
+        protected List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return BattlegroundController.GetDeterministicRandomElements(elements, count);
+        }
+
+        protected IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
+        {
+            return BattlegroundController.GetAliveUnits(units);
+        }
+
+        protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)
+        {
+            emptyFields = player.PlayerCardsController.CardsOnBoard.
+                FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive).Count;
+
+            emptyFields = (int)player.MaxCardsInPlay-emptyFields;
+            return emptyFields > 0;
         }
 
         public void InvokeActionTriggered(object info = null)
@@ -511,6 +617,12 @@ namespace Loom.ZombieBattleground
                 AbilityData.Ability,
                 targets ?? new List<ParametrizedAbilityBoardObject>()
             );
+        }
+
+        private void CompleteTargetingAction()
+        {
+            AbilityTargetingAction?.TriggerActionExternally();
+            AbilityTargetingAction = null;
         }
     }
 }

@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense <= 0) 
             {   
-                AbilityProcessingAction?.ForceActionDone();
+                AbilityProcessingAction?.TriggerActionExternally();
                 AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue:true);
             }
         }
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                 CardModel.ResetToInitial();
                 PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(CardModel, true);
             }
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

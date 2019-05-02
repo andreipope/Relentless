@@ -1,15 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbility : AbilityBase
     {
-        public int Value;
+        private int Damage;
 
         public event Action OnUpdateEvent;
 
@@ -18,7 +16,7 @@ namespace Loom.ZombieBattleground
         public MassiveDamageAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Damage = ability.Value;
         }
 
         public override void Activate()
@@ -29,7 +27,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            TakeDamage(true);
         }
 
         public override void Update()
@@ -44,15 +42,31 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            Action();
+            TakeDamage();
+        }
+
+        protected override void TurnEndedHandler()
+        {
+            base.TurnEndedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
+                     !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+                return;
+
+            TakeDamage();
+        }
+
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
+        {
+            base.UnitAttackedHandler(info, damage, isAttacker);
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
+                return;
+
+            TakeDamage();
         }
 
         protected override void VFXAnimationEndedHandler()
         {
-            if (AbilityTrigger == Enumerators.AbilityTrigger.DEATH)
-            {
-                base.UnitDiedHandler();
-            }
             base.VFXAnimationEndedHandler();
 
             for (int i = _targets.Count-1; i >= 0; i--)
@@ -66,31 +80,48 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public override void Action(object info = null)
+        private void TakeDamage(bool exceptCaller = false)
         {
             _targets = new List<IBoardObject>();
 
-            Player opponent = PlayerCallerOfAbility == GameplayManager.CurrentPlayer ?
-                GameplayManager.OpponentPlayer :
-                GameplayManager.CurrentPlayer;
             foreach (Enumerators.Target target in AbilityTargets)
             {
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
-                        _targets.AddRange(opponent.CardsOnBoard);
+                    case Enumerators.Target.OPPONENT_CARD:
+                        _targets.AddRange(GetAliveUnits(GetOpponentOverlord().PlayerCardsController.CardsOnBoard));
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        _targets.AddRange(PlayerCallerOfAbility.CardsOnBoard);
+                    case Enumerators.Target.PLAYER_CARD:
+                        _targets.AddRange(GetAliveUnits(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard));
+
+                        if (exceptCaller && _targets.Contains(AbilityUnitOwner))
+                        {
+                            _targets.Remove(AbilityUnitOwner);
+                        }
                         break;
                     case Enumerators.Target.OPPONENT:
-                        _targets.Add(opponent);
+                        _targets.Add(GetOpponentOverlord());
                         break;
                     case Enumerators.Target.PLAYER:
                         _targets.Add(PlayerCallerOfAbility);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(target), target, null);
+                }
+            }
+
+            if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.EqualToUnitAttack)
+            {
+                Damage = CardModel.InstanceCard.Damage;
+            }
+
+            foreach(IBoardObject boardObject in _targets)
+            {
+                if (boardObject is CardModel boardUnit)
+                {
+                    boardUnit.HandleDefenseBuffer(Damage);
                 }
             }
 
@@ -102,10 +133,10 @@ namespace Loom.ZombieBattleground
             switch (boardObject)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, Damage);
                     break;
                 case CardModel unit:
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, Damage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(boardObject), boardObject, null);

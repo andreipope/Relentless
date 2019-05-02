@@ -18,7 +18,9 @@ namespace Loom.ZombieBattleground
 
         public bool IsReturnToHand { get; private set; }
 
-        protected bool StartedDrag;
+    public Collider2D HandCardCollider { get; private set; }
+
+    protected bool StartedDrag;
 
         protected Vector3 InitialPos;
 
@@ -44,8 +46,6 @@ namespace Loom.ZombieBattleground
 
         private bool _canceledPlay;
 
-        private bool _isHovering;
-
         private int _normalSortingOrder;
 
         public HandBoardCard(GameObject selfObject, BoardCardView boardCardView)
@@ -54,6 +54,7 @@ namespace Loom.ZombieBattleground
 
             BoardCardView = boardCardView;
             CardModel = boardCardView.Model;
+            HandCardCollider = GameObject.GetComponent<Collider2D>();
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _soundManager = GameClient.Get<ISoundManager>();
@@ -269,7 +270,6 @@ namespace Loom.ZombieBattleground
             Transform.DORotate(Vector3.zero, 0.15f);
             _normalSortingOrder = _sortingGroup.sortingOrder;
             _sortingGroup.sortingOrder = 100;
-            _isHovering = true;
         }
 
         public void ResetHoveringAndZoom(bool isMove = true, Action onComplete = null)
@@ -284,7 +284,6 @@ namespace Loom.ZombieBattleground
                 .OnComplete(() =>
                 {
                     onComplete?.Invoke();
-                    _isHovering = false;
                 });
 
             _sortingGroup.sortingOrder = _normalSortingOrder;

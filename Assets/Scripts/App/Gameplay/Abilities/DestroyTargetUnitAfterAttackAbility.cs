@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground
                 case CardModel cardModel:
                     BattlegroundController.DestroyBoardUnit(cardModel, handleShield:true);
 
-                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                         ActionType = Enumerators.ActionType.CardAffectingCard,
                         Caller = AbilityUnitOwner,

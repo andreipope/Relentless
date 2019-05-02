@@ -94,7 +94,7 @@ namespace Loom.Client
                 ExceptionDispatchInfo.Capture(e.InnerException).Throw();
             }
 
-            throw new TimeoutException($"Call took longer than {timeoutMs} ms");
+            throw new TimeoutException("The game session was dropped. Please check your internet connection and try again later.");
         }
 
         protected virtual async Task<Task> ExecuteTaskWaitForOtherTasks(Func<Task<Task>> taskProducer)

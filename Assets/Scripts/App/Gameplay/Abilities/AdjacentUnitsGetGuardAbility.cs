@@ -41,7 +41,7 @@ namespace Loom.ZombieBattleground
 
             if (targetEffects.Count > 0)
             {
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingCard,
                     Caller = AbilityUnitOwner,

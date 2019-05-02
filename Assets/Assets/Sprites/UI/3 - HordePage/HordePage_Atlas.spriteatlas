@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: HordePage_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: c5efdf6834c734d69bc61d410631d4c0, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 6673266046d704d1a9739e47947260c1, type: 3}
+  - {fileID: 21300000, guid: 93ca35b020d4c4875a5386d930c4a7ad, type: 3}
+  - {fileID: 21300000, guid: 3df01c3145c4e4b2caa817001e819709, type: 3}
+  - {fileID: 21300000, guid: e7c2fae1d7b374926b2062b348e3fd9a, type: 3}
+  - {fileID: 21300000, guid: 4118d1423da91f14b9b06563db7a24d8, type: 3}
+  - {fileID: 21300000, guid: df0c77836a1c548d9b177eb5104552f3, type: 3}
+  - {fileID: 21300000, guid: bd1bd693f64aa42f6ad0354bf7729330, type: 3}
+  - {fileID: 21300000, guid: 1819446476a324679b5fb635eab4818e, type: 3}
+  - {fileID: 21300000, guid: 9b962fa58f6124288bc4a508af22d94a, type: 3}
+  - {fileID: 21300000, guid: ebd6ba66f922341eba5fd76c39027471, type: 3}
+  - {fileID: 21300000, guid: 2a07114755b234fd9982bd3493cd12d8, type: 3}
+  - {fileID: 21300000, guid: 98d55647c81e9437b9e6fc37c786ca34, type: 3}
+  - {fileID: 21300000, guid: 65866d7755ed4444f8ad4a6c974bf6f5, type: 3}
+  - {fileID: 21300000, guid: 1d2acca7928fa4d1aa2b30283dcfda5c, type: 3}
+  - {fileID: 21300000, guid: 4f487ea7d3464fc42a943b73fcbbadfb, type: 3}
+  - {fileID: 21300000, guid: 2f8c2b5870da2476998c21319299a7e5, type: 3}
+  - {fileID: 21300000, guid: 3aa1d2b81e4b347eb96ed6af7fad976f, type: 3}
+  - {fileID: 21300000, guid: d9dd8a79b0d6343e5936b5d6cb9d6a19, type: 3}
+  - {fileID: 21300000, guid: 413e1cc9b02c14d04bb21170c1f713c2, type: 3}
+  - {fileID: 21300000, guid: acc845fd658fc40c99e873206796ea79, type: 3}
+  - {fileID: 21300000, guid: fa6a3a0ef2761455b9ddb71644f0a7e3, type: 3}
+  - {fileID: 21300000, guid: 05fdae5eccc024e2a9544522ef6a0f9b, type: 3}
+  - {fileID: 21300000, guid: 6a241e3fed420411aa63d453cae3fd62, type: 3}
+  - {fileID: 21300000, guid: e73d907fa8a51435c8c4934593dbb8a3, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - element_toxic
+  - deck_cardcounttray_bottom
+  - deck_thumbnail_glow
+  - skill_selected
+  - button_radio_on
+  - new_deck_btn_pressed
+  - skill_slots
+  - element_water
+  - element_fire
+  - skill_selected_counter
+  - header_tray
+  - deck_new
+  - element_earth
+  - rename_deck
+  - button_radio_off
+  - element_air
+  - filter_element_glow
+  - elements_list
+  - deck_cardcounttray_top
+  - new_deck_btn_normal
+  - element_item
+  - element_x
+  - deck_thumbnail_new
+  - element_life
+  m_Tag: HordePage_Atlas
+  m_IsVariant: 0

@@ -32,7 +32,7 @@ namespace Loom.ZombieBattleground.Test
         {
             "RpcClientException",
             "WebSocketException",
-            "Call took longer than",
+            "The game session was dropped",
             "invalid player"
         };
 

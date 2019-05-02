@@ -1,7 +1,5 @@
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -55,7 +53,13 @@ namespace Loom.ZombieBattleground
 
         private void TakeDamageToUnit(CardModel unit)
         {
-            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit);
+            int damage = Value;
+            if (damage == 0)
+            {
+                damage = AbilityUnitOwner.CurrentDamage;
+            }
+
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, damage);
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -67,7 +71,7 @@ namespace Loom.ZombieBattleground
                 TakeDamageToUnit(unit);
             }
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

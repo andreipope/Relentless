@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 
         private int _timersCount;
 
-        private List<Timer> _timers;
+        private List<Timer> _timers = new List<Timer>();
 
         public void Dispose()
         {
@@ -19,7 +19,6 @@ namespace Loom.ZombieBattleground
 
         public void Init()
         {
-            _timers = new List<Timer>();
         }
 
         public void Update()

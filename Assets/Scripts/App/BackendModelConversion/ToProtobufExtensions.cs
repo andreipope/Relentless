@@ -206,7 +206,9 @@ namespace Loom.ZombieBattleground.Data
 
                 ForceFirstTurnUserId = debugCheatsConfiguration.ForceFirstTurnUserId ?? "",
 
-                IgnoreGooRequirements = debugCheatsConfiguration.IgnoreGooRequirements
+                IgnoreGooRequirements = debugCheatsConfiguration.IgnoreGooRequirements,
+
+                SkipMulligan = debugCheatsConfiguration.SkipMulligan
             };
         }
     }

@@ -79,7 +79,9 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.AbilitySubTrigger) ability.SubTrigger,
                 ability.ChoosableAbilities.Select(c => c.FromProtobuf()).ToList(),
                 ability.Defense2,
-                ability.Cost
+                ability.Cost,
+                (Enumerators.CardKind)ability.TargetCardKind,
+                ability.TargetGameMechanicDescriptionTypes.Select(g => (Enumerators.GameMechanicDescription)g).ToList()
             );
         }
 

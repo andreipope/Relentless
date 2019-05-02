@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -13,6 +14,9 @@ using UnityEngine;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 using SystemText = System.Text;
 using Loom.Google.Protobuf.Collections;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Loom.ZombieBattleground.Helpers;
 
 namespace Loom.ZombieBattleground
 {
@@ -71,21 +75,20 @@ namespace Loom.ZombieBattleground
 
         private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
-        private IQueueManager _queueManager;
-
-        private bool _isCheckPlayerAvailableTimerStart;
-        private float _checkPlayerTimer;
-
-        private SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
-
+        private INetworkActionManager _networkActionManager;
         private IGameplayManager _gameplayManager;
+
+        private bool _keepAliveActive;
+        private float _nextKeepAliveSendTimer;
+
+        private readonly SemaphoreSlim _matchmakingBusySemaphore = new SemaphoreSlim(1);
 
         private UIMatchMakingFlowController _matchMakingFlowController;
 
         public void Init()
         {
             _backendFacade = GameClient.Get<BackendFacade>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _backendFacade.PlayerActionDataReceived += OnPlayerActionReceivedHandler;
@@ -95,12 +98,16 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (_isCheckPlayerAvailableTimerStart)
+            if (_backendFacade == null || !_backendFacade.IsConnected)
+                return;
+
+            if (_keepAliveActive)
             {
-                _checkPlayerTimer += Time.unscaledDeltaTime;
-                if (_checkPlayerTimer > Constants.PvPCheckPlayerAvailableMaxTime)
+                _nextKeepAliveSendTimer += Time.unscaledDeltaTime;
+                if (_nextKeepAliveSendTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
-                    _checkPlayerTimer = 0f;
+                    _nextKeepAliveSendTimer = 0f;
+                    Log.Debug("Sending keepalive");
 
                     try
                     {
@@ -161,6 +168,8 @@ namespace Loom.ZombieBattleground
 
         private async void GameEndedHandler(Enumerators.EndGameType obj)
         {
+            Log.Debug(nameof(GameEndedHandler));
+
             try
             {
                 ResetCheckPlayerStatus();
@@ -205,11 +214,12 @@ namespace Loom.ZombieBattleground
 
         public async Task StopMatchmaking()
         {
+            Log.Debug(nameof(StopMatchmaking));
             await _matchmakingBusySemaphore.WaitAsync();
 
             try
             {
-                _queueManager.Active = false;
+                _networkActionManager.Active = false;
                 _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
                 await _matchMakingFlowController.Stop();
                 _matchMakingFlowController = null;
@@ -223,10 +233,11 @@ namespace Loom.ZombieBattleground
                     );
                 }
 
-                _queueManager.Clear();
+                _networkActionManager.Clear();
             }
             catch(Exception e)
             {
+                Log.Warn("", e);
                 Helpers.ExceptionReporter.SilentReportException(e);
             }
             finally
@@ -238,10 +249,11 @@ namespace Loom.ZombieBattleground
 
         private async void MatchMakingFlowControllerOnMatchConfirmed(MatchMetadata matchMetadata)
         {
+            Log.Debug($"{nameof(MatchMakingFlowControllerOnMatchConfirmed)}(MatchMetadata matchMetadata = {matchMetadata})");
             _matchMakingFlowController.MatchConfirmed -= MatchMakingFlowControllerOnMatchConfirmed;
 
-            _queueManager.Active = false;
-            _queueManager.Clear();
+            _networkActionManager.Active = false;
+            _networkActionManager.Clear();
 
             InitialGameState = null;
 
@@ -257,9 +269,9 @@ namespace Loom.ZombieBattleground
 
             GameStartedActionReceived?.Invoke();
 
-            _isCheckPlayerAvailableTimerStart = true;
+            _keepAliveActive = true;
 
-            _queueManager.Active = true;
+            _networkActionManager.Active = true;
         }
 
         private async Task CallAndRestartMatchmakingOnException(Func<Task> func)
@@ -289,128 +301,128 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void OnPlayerActionReceivedHandler(byte[] data)
+        private async void OnPlayerActionReceivedHandler(byte[] data)
         {
-            Func<Task> taskFunc = async () =>
-            {
-                PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
-                CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
+            // Return to main thread
+            await new WaitForUpdate();
+            PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
+            CurrentActionIndex = (int) playerActionEvent.CurrentActionIndex;
+            Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
 
-                if (playerActionEvent.Block != null)
+            if (playerActionEvent.Block != null)
+            {
+                foreach (HistoryData historyData in playerActionEvent.Block.List)
                 {
-                    foreach (HistoryData historyData in playerActionEvent.Block.List)
+                    HistoryEndGame endGameData = historyData.EndGame;
+                    if (endGameData != null)
                     {
-                        HistoryEndGame endGameData = historyData.EndGame;
-                        if (endGameData != null)
+                        Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
+                        await _backendFacade.UnsubscribeEvent();
+                        return;
+                    }
+                }
+            }
+
+            switch (playerActionEvent.Match.Status)
+            {
+                case Match.Types.Status.Created:
+                    MatchCreatedActionReceived?.Invoke();
+                    break;
+                case Match.Types.Status.Matching:
+                    bool matchCanStart = true;
+                    for (int i = 0; i < 2; i++)
+                    {
+                        if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
                         {
-                            Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                            await _backendFacade.UnsubscribeEvent();
+                            matchCanStart = false;
+                            break;
+                        }
+                    }
+
+                    if (matchCanStart)
+                    {
+                        MatchingStartedActionReceived?.Invoke();
+                    }
+
+                    break;
+                case Match.Types.Status.Started:
+
+                    //Should not handle this anymore through events for now
+                    break;
+                case Match.Types.Status.Playing:
+                    foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
+                    {
+                        Log.Info(playerActionOutcome.ToString());
+                        PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
+                    }
+
+                    if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
+                    {
+                        if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan &&
+                            playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
+                        {
+                            List<CardModel> finalCardsInHand = new List<CardModel>();
+                            int cardsRemoved = 0;
+                            bool found;
+                            foreach (CardModel cardInHand in _gameplayManager.CurrentPlayer.MulliganCards)
+                            {
+                                found = false;
+                                foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
+                                {
+                                    if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
+                                    {
+                                        finalCardsInHand.Add(cardInHand);
+                                        found = true;
+                                        break;
+                                    }
+                                }
+
+                                if (!found)
+                                {
+                                    _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
+                                    cardsRemoved++;
+                                }
+                            }
+
+                            for (int i = 0; i < cardsRemoved; i++)
+                            {
+                                finalCardsInHand.Add(_gameplayManager.CurrentPlayer.CardsInDeck[i]);
+                            }
+
+                            _gameplayManager.CurrentPlayer.PlayerCardsController.SetCardsPreparingToHand(finalCardsInHand);
+
+                            GameClient.Get<IUIManager>().GetPopup<WaitingForPlayerPopup>().Show("Waiting for the opponent...");
+
+                            return;
+                        }
+                        else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
+                        {
+                            OnReceivePlayerActionType(playerActionEvent);
+                        }
+                        else
+                        {
                             return;
                         }
                     }
-                }
 
-                switch (playerActionEvent.Match.Status)
-                {
-                    case Match.Types.Status.Created:
-                        MatchCreatedActionReceived?.Invoke();
-                        break;
-                    case Match.Types.Status.Matching:
-                        bool matchCanStart = true;
-                        for (int i = 0; i < 2; i++)
-                        {
-                            if (!playerActionEvent.Match.PlayerStates[i].MatchAccepted)
-                            {
-                                matchCanStart = false;
-                                break;
-                            }
-                        }
-                        if (matchCanStart)
-                        {
-                            MTwister.RandomInit((uint)playerActionEvent.Match.RandomSeed);
-                            MatchingStartedActionReceived?.Invoke();
-                        }
-                        break;
-                    case Match.Types.Status.Started:
-                        //Should not handle this anymore through events for now
-                        break;
-                    case Match.Types.Status.Playing:
-                        foreach (PlayerActionOutcome playerActionOutcome in playerActionEvent.PlayerAction.ActionOutcomes)
-                        {
-                            Log.Info(playerActionOutcome.ToString());
-                            PlayerActionOutcomeReceived?.Invoke(playerActionOutcome);
-                        }
-
-                        if (playerActionEvent.PlayerAction.PlayerId == _backendDataControlMediator.UserDataModel.UserId)
-                        {
-                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
-                            {
-                                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-
-                                PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
-                                state.Id == _backendDataControlMediator.UserDataModel.UserId);
-
-                                for (int i = 0; i < 3; i++) {
-                                    playerState.CardsInDeck.Add(playerState.CardsInHand[i]);
-                                }
-
-                                SetCardsInDeck(_gameplayManager.CurrentPlayer, playerState.CardsInDeck);
-
-                                _gameplayManager.GetController<CardsController>().CardsDistribution(_gameplayManager.CurrentPlayer.MulliganCards);
-                            } else if (playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.CheatDestroyCardsOnBoard)
-                            {
-                                OnReceivePlayerActionType(playerActionEvent);
-                            }
-                            else
-                            {
-                                return;
-                            }
-                        } else {
-                            if (Constants.MulliganEnabled && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
-                            {
-                                GetGameStateResponse getGameStateResponse = await _backendFacade.GetGameState(MatchMetadata.Id);
-
-                                PlayerState playerState = getGameStateResponse.GameState.PlayerStates.First(state =>
-                                state.Id != _backendDataControlMediator.UserDataModel.UserId);
-
-                                SetCardsInDeck(_gameplayManager.OpponentPlayer, playerState.CardsInDeck);
-
-                                SetCardsInHand(_gameplayManager.OpponentPlayer, playerState.CardsInHand);
-                            }
-                        }
-
-                        OnReceivePlayerActionType(playerActionEvent);
-                        break;
-                    case Match.Types.Status.PlayerLeft:
-                        OnReceivePlayerLeftAction(playerActionEvent);
-                        break;
-                    case Match.Types.Status.Ended:
-                        GameEndedActionReceived?.Invoke();
-                        break;
-                    case Match.Types.Status.Canceled:
-                        break;
-                    case Match.Types.Status.Timedout:
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(
-                            nameof(playerActionEvent.Match.Status),
-                            playerActionEvent.Match.Status + " not found"
-                        );
-                }
-            };
-
-            GameClient.Get<IQueueManager>().AddTask(taskFunc);
-        }
-
-        private void SetCardsInDeck(Player player, RepeatedField<CardInstance> cardsInDeck)
-        {
-            player.PlayerCardsController.SetCardsInDeck(cardsInDeck.Select(card => new CardModel(card.FromProtobuf(player))).ToArray());
-        }
-
-        private void SetCardsInHand(Player player, RepeatedField<CardInstance> cards)
-        {
-            player.PlayerCardsController.SetCardsInHand(cards.Select(card => new CardModel(card.FromProtobuf(player))).ToArray());
+                    OnReceivePlayerActionType(playerActionEvent);
+                    break;
+                case Match.Types.Status.PlayerLeft:
+                    OnReceivePlayerLeftAction(playerActionEvent);
+                    break;
+                case Match.Types.Status.Ended:
+                    GameEndedActionReceived?.Invoke();
+                    break;
+                case Match.Types.Status.Canceled:
+                    break;
+                case Match.Types.Status.Timedout:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(
+                        nameof(playerActionEvent.Match.Status),
+                        playerActionEvent.Match.Status + " not found"
+                    );
+            }
         }
 
         private async Task LoadInitialGameState()
@@ -476,8 +488,9 @@ namespace Loom.ZombieBattleground
 
         private void ResetCheckPlayerStatus()
         {
-            _isCheckPlayerAvailableTimerStart = false;
-            _checkPlayerTimer = 0f;
+            Log.Info($"{nameof(ResetCheckPlayerStatus)} ({nameof(_keepAliveActive)} = {_keepAliveActive}, {nameof(_nextKeepAliveSendTimer)} = {_nextKeepAliveSendTimer})");
+            _keepAliveActive = false;
+            _nextKeepAliveSendTimer = 0f;
         }
     }
 }

@@ -2,17 +2,18 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace Loom.ZombieBattleground
 {
     public class ReturnToHandAbility : AbilityBase
     {
-        public int Value { get; }
+        public int Cost { get; }
 
         public ReturnToHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Value = ability.Value;
+            Cost = ability.Cost;
         }
 
         public override void Activate()
@@ -20,46 +21,12 @@ namespace Loom.ZombieBattleground
             base.Activate();
 
             VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/PushVFX");
-        }
 
-        public override void Update()
-        {
-        }
-
-        public override void Dispose()
-        {
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(TargetUnit).Transform.position;
-
-            CreateVfx(unitPosition, true, 3f, true);
-
-            CardsController.ReturnCardToHand(TargetUnit);
-
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
-                }
-            );
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
             {
-                ActionType = Enumerators.ActionType.UseOverlordPowerOnCard,
-                Caller = AbilityUnitOwner,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.Push,
-                        Target = TargetUnit
-                    }
-                }
-            });
+                InvokeUseAbilityEvent();
+                return;
+            }
         }
 
         protected override void InputEndedHandler()
@@ -68,8 +35,76 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                Action();
+                ReturnTargetToHand(TargetUnit);
+
+                InvokeUseAbilityEvent(
+                    new List<ParametrizedAbilityBoardObject>
+                    {
+                        new ParametrizedAbilityBoardObject(TargetUnit)
+                    });
             }
+        }
+
+        protected override void UnitDiedHandler()
+        {
+            base.UnitDiedHandler();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+                return;
+
+            if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
+            {
+                ReturnTargetToHand(AbilityUnitOwner);
+            }
+        }
+
+        private void ReturnTargetToHand(CardModel unit)
+        {
+            if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
+            {
+                Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
+
+                CreateVfx(unitPosition, true, 3f, true);
+
+                CardsController.ReturnCardToHand(unit);
+            }
+            else
+            {
+                ReturnDeadTargetToHand(unit);
+            }
+
+            if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
+            {
+                unit.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+
+                if (PlayerCallerOfAbility.IsLocalPlayer)
+                {
+                    BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel).UpdateCardCost();
+                }
+            }
+
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingCard,
+                Caller = AbilityUnitOwner,
+                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                {
+                    new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.Push,
+                        Target = unit
+                    }
+                }
+            });
+        }
+
+        private void ReturnDeadTargetToHand(CardModel unit)
+        {
+            unit.ResetToInitial();
+
+            unit.Owner.PlayerCardsController.ReturnToHandBoardUnit(unit, new Vector3());
+
+            GameClient.Get<IGameplayManager>().RearrangeHands();
         }
     }
 }

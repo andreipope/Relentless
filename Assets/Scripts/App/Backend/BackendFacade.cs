@@ -283,11 +283,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string createVaultTokenEndPoint = "/auth/loom-userpass/create_token";
 
-#if USE_PRODUCTION_BACKEND
         private const string accessVaultEndPoint = "/entcubbyhole/loomauth";
-#else
-        private const string accessVaultEndPoint = "/entcubbyhole/protected/loomauth";
-#endif
 
         private const string createVaultTokenForNon2FAUsersEndPoint = "/auth/loom-simple-userpass/create_token";
 
@@ -484,7 +480,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Log.Debug(httpResponseMessage.ToString());
+            Log.Debug(httpResponseMessage.ReadToEnd());
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -578,19 +574,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 #endregion
 
 
-#region VersionCheck
-
-        private const string GetVersionMethod = "GetVersions";
-
-        public async Task<GetVersionsResponse> GetVersions()
-        {
-            GetVersionsRequest request = new GetVersionsRequest();
-            return await _contractCallProxy.StaticCallAsync<GetVersionsResponse>(GetVersionMethod, request);
-        }
-
-#endregion
-
-
 #region PVP
 
         private const string FindMatchMethod = "FindMatch";
@@ -626,9 +609,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             bool useBackendGameLogic,
             DebugCheatsConfiguration debugCheats = null)
         {
-#if USE_REBALANCE_BACKEND
-            pvpTags.Add("v4");
-#endif
             RegisterPlayerPoolRequest request = new RegisterPlayerPoolRequest
             {
                 RegistrationData = new PlayerProfileRegistrationData
@@ -651,9 +631,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<FindMatchResponse> FindMatch(string userId, IList<string> pvpTags)
         {
-#if USE_REBALANCE_BACKEND
-            pvpTags.Add("v4");
-#endif
             FindMatchRequest request = new FindMatchRequest
             {
                 UserId = userId,
@@ -734,16 +711,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task SendEndMatchRequest(EndMatchRequest request)
         {
             await _contractCallProxy.CallAsync(EndMatchMethod, request);
-        }
-
-        public async Task<CheckGameStatusResponse> CheckPlayerStatus(long matchId)
-        {
-            CheckGameStatusRequest request = new CheckGameStatusRequest
-            {
-                MatchId = matchId
-            };
-
-            return await _contractCallProxy.CallAsync<CheckGameStatusResponse>(CheckGameStatusMethod, request);
         }
 
         public async Task<KeepAliveResponse> KeepAliveStatus(string userId, long matchId)

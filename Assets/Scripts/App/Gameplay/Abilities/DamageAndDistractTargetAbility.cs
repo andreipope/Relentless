@@ -48,7 +48,7 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DistractUnit(TargetUnit);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = AbilityUnitOwner,
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
                         ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
                         Target = TargetUnit,
                         HasValue = true,
-                        Value = -AbilityData.Value
+                        Value = -Damage
                     },
                     new PastActionsPopup.TargetEffectParam()
                     {
@@ -68,7 +68,7 @@ namespace Loom.ZombieBattleground
                     }
                 }
             });
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         protected override void VFXAnimationEndedHandler()

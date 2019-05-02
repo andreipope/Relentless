@@ -23,7 +23,9 @@ namespace Loom.ZombieBattleground.Common
             GOT_DAMAGE,
             AT_DEFENCE,
             IN_HAND,
-            KILL_UNIT
+            KILL_UNIT,
+            RAGE,
+            AURA
         }
 
         public enum AbilityEffect
@@ -152,7 +154,25 @@ namespace Loom.ZombieBattleground.Common
             COSTS_LESS_IF_CARD_TYPE_IN_PLAY,
             GAIN_GOO,
             BLITZ,
-            DRAW_CARD_BY_FACTION
+            DRAW_CARD_BY_FACTION,
+            DESTROY_TARGET_UNIT,
+            AGILE,
+            CHANGE_STAT_OF_CARDS_IN_HAND,
+            GIVE_BUFFS_TO_UNIT,
+            DISCARD_CARD_FROM_HAND,
+            GET_GOO_THIS_TURN,
+            COSTS_LESS,
+            FILL_BOARD_BY_UNITS,
+            DEAL_DAMAGE_TO_TARGET_THAT_ATTACK_THIS,
+            CHANGE_COST,
+            GAIN_STATS_OF_ADJACENT_UNITS,
+            DISTRACT_AND_CHANGE_STAT,
+            DAMAGE_AND_DISTRACT,
+            PUT_UNITS_FROM_DISCARD_INTO_PLAY,
+            PUT_UNITS_FRON_LIBRARY_INTO_PLAY,
+            BLOCK_TAKE_DAMAGE,
+            TAKE_UNIT_TYPE_TO_TARGET_UNIT,
+            CHANGE_STAT_THIS_TURN
         }
 
         public enum ActionType
@@ -209,7 +229,6 @@ namespace Loom.ZombieBattleground.Common
             GAMEPLAY,
             DECK_EDITING,
             PACK_OPENER,
-            CREDITS,
             PlaySelection,
             PvPSelection,
             CustomGameModeList,
@@ -310,6 +329,9 @@ namespace Loom.ZombieBattleground.Common
 
             [EnumMember(Value = "SUPER_SERUM")]
             SuperSerum,
+
+            [EnumMember(Value = "AURA")]
+            Aura
         }
 
         public enum BuffType
@@ -608,7 +630,9 @@ namespace Loom.ZombieBattleground.Common
             PlayRandomCardOnBoardFromDeck,
             PlayFromHand,
             Swing,
-            Devour
+            Devour,
+
+            CardDiscard
         }
         public enum ScreenMode
         {
@@ -676,7 +700,24 @@ namespace Loom.ZombieBattleground.Common
             ForEachFactionOfUnitInHand,
             IfHasUnitsWithFactionInPlay,
             AllyUnitsByFactionThatCost,
-            YourOverlord
+            YourOverlord,
+            PermanentChanges,
+            HasChangesInParameters,
+            LessDefThanInOpponent,
+            OverlordDefenseEqualOrLess,
+            OnlyThisCardInHand,
+            AllCardsInHand,
+            CardCostMoreThanCostOfThis,
+            ForEachEnemyUnitInPlay,
+            ForEachAllyUnitInPlay,
+            IfHaveFewerUnitsInPlay,
+            ToOpponentOverlord,
+            UntilStartOfNextPlayerTurn,
+            DuringCardInHand,
+            ForEachUnitInPlay,
+            HighestCost,
+            EqualToUnitAttack,
+            NumberOfUnspentGoo
         }
 
         public enum UniqueAnimation
@@ -722,11 +763,9 @@ namespace Loom.ZombieBattleground.Common
             RankBuff,
             AbilityUsage,
             UnitDeath,
-            WholeBoardUpdate,
-            PlayerBoardUpdate,
-            OpponentBoardUpdate,
             OverlordSkillUsage,
             AbilityUsageBlocker,
+            AbilityTargetingBlocker,
             StopTurn,
             EndMatch,
             UnitCombat,
@@ -909,6 +948,13 @@ namespace Loom.ZombieBattleground.Common
         {
             MenuStep,
             GameplayStep
+        }
+
+        public enum ReasonForValueChange
+        {
+            Attack,
+            AbilityBuff,
+            AbilityDamage
         }
     }
 }

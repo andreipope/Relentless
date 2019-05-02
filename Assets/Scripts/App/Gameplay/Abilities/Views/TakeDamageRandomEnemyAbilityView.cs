@@ -92,7 +92,7 @@ namespace Loom.ZombieBattleground
                             targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
                             break;
                         case Player player:
-                            targetPosition = Ability.TargetPlayer.AvatarObject.transform.position;
+                            targetPosition = player.AvatarObject.transform.position;
                             break;
                     }
 

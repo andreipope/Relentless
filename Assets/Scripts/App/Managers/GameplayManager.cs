@@ -6,6 +6,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
+using Loom.ZombieBattleground.Protobuf;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -77,9 +78,9 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
-        public Deck CurrentPlayerDeck { get; set; }
+        public Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
 
-        public Deck OpponentPlayerDeck { get; set; }
+        public Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
 
         public int OpponentIdCheat { get; set; }
 
@@ -87,7 +88,7 @@ namespace Loom.ZombieBattleground
 
         public bool UseInifiniteAbility { get; set; }
 
-        public bool OpponentHasDoneMulligan {get; set;}
+        public PlayerActionMulligan OpponentHasDoneMulligan {get; set;}
 
         public AnalyticsTimer MatchDuration { get; set; }
 
@@ -126,16 +127,10 @@ namespace Loom.ZombieBattleground
                             switch (endGameType)
                             {
                                 case Enumerators.EndGameType.WIN:
-                                    if (Constants.EnableNewUI)
                                         _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { true });
-                                    else
-                                        _uiManager.DrawPopup<YouWonPopup>();
                                     break;
                                 case Enumerators.EndGameType.LOSE:
-                                    if (Constants.EnableNewUI)
                                         _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { false });
-                                    else
-                                        _uiManager.DrawPopup<YouLosePopup>();
                                     break;
                                 case Enumerators.EndGameType.CANCEL:
                                     break;
@@ -219,7 +214,7 @@ namespace Loom.ZombieBattleground
             return player.IsLocalPlayer ? OpponentPlayer : CurrentPlayer;
         }
 
-        public Player GetPlayerByInstanceId(InstanceId id)
+        public Player GetPlayerByInstanceId(Loom.ZombieBattleground.Data.InstanceId id)
         {
             if (CurrentPlayer.InstanceId == id)
                 return CurrentPlayer;
@@ -294,6 +289,7 @@ namespace Loom.ZombieBattleground
                 new ParticlesController(),
                 new AbilitiesController(),
                 new ActionsQueueController(),
+                new ActionsReportController(),
                 new PlayerController(),
                 new AIController(),
                 new CardsController(),
@@ -334,8 +330,8 @@ namespace Loom.ZombieBattleground
             switch (_matchManager.MatchType)
             {
                 case Enumerators.MatchType.LOCAL:
-                    GetController<PlayerController>().InitializePlayer(new InstanceId(0));
-                    GetController<AIController>().InitializePlayer(new InstanceId(1));
+                    GetController<PlayerController>().InitializePlayer(new Loom.ZombieBattleground.Data.InstanceId(0));
+                    GetController<AIController>().InitializePlayer(new Loom.ZombieBattleground.Data.InstanceId(1));
                     break;
                 case Enumerators.MatchType.PVP:
                     int localPlayerIndex =

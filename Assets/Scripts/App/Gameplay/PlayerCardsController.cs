@@ -64,6 +64,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ActionsQueueController _actionsQueueController;
 
+        private readonly ActionsReportController _actionsReportController;
+
         private readonly AnimationsController _animationsController;
 
         private readonly BoardController _boardController;
@@ -91,6 +93,7 @@ namespace Loom.ZombieBattleground
             _vfxController = _gameplayManager.GetController<VfxController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _animationsController = _gameplayManager.GetController<AnimationsController>();
             _boardController = _gameplayManager.GetController<BoardController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -520,11 +523,9 @@ namespace Loom.ZombieBattleground
             return cardModel;
         }
 
-        public void ReturnToHandBoardUnit(CardModel cardModel, Vector3 cardPosition)
+        public void ReturnToHandBoardUnit(CardModel cardModel, Vector3 cardPosition, int addToMaxCards = 0)
         {
             CallLog($"{nameof(ReturnToHandBoardUnit)}(CardModel cardModel = {cardModel}, Vector3 cardPosition = {cardPosition})");
-            if (CheckIsMoreThanMaxCards(cardModel))
-                return;
 
             IView cardView = AddCardToHand(cardModel, true);
             cardView.GameObject.transform.position = cardPosition;
@@ -533,6 +534,17 @@ namespace Loom.ZombieBattleground
             if (Player.IsLocalPlayer)
             {
                 cardView.GameObject.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f); // size of the cards in hand
+            }
+
+            if(!_gameplayManager.CurrentTurnPlayer.IsLocalPlayer &&
+                cardView is BoardCardView boardCardView)
+            {
+                boardCardView.SetHighlightingEnabled(false);
+            }
+
+            if (CheckIsMoreThanMaxCards(addToMaxCards: addToMaxCards))
+            {
+                _cardsController.DiscardCardFromHand(cardModel);
             }
         }
 
@@ -594,7 +606,7 @@ namespace Loom.ZombieBattleground
 
             card.RemoveCardParticle.Play();
 
-            _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam
+            _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam
             {
                 ActionType = Enumerators.ActionType.PlayCardFromHand,
                 Caller = boardUnitView.Model,
@@ -794,9 +806,9 @@ namespace Loom.ZombieBattleground
             _cardsOnBoard.Insert(ItemPosition.End, unit);
         }
 
-        public bool CheckIsMoreThanMaxCards(CardModel cardModel)
+        public bool CheckIsMoreThanMaxCards(CardModel cardModel = null, int addToMaxCards = 0)
         {
-            if (CardsInHand.Count >= Player.MaxCardsInHand)
+            if (CardsInHand.Count >= Player.MaxCardsInHand+addToMaxCards)
             {
                 return true;
             }

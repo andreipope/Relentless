@@ -2,6 +2,7 @@ using DG.Tweening;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
@@ -14,6 +15,19 @@ namespace Loom.ZombieBattleground
             TargetUnitSpecialStatus = ability.TargetUnitSpecialStatus;
         }
 
+        public override void Activate()
+        {
+            base.Activate();
+
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
+                return;
+
+            if (AbilityActivity != Enumerators.AbilityActivity.PASSIVE)
+                return;
+
+            HandleSubTriggers();
+        }
+
         protected override void InputEndedHandler()
         {
             base.InputEndedHandler();
@@ -21,35 +35,74 @@ namespace Loom.ZombieBattleground
             if (IsAbilityResolved)
             {
                 InvokeActionTriggered();
+                TargetUnit.HandleDefenseBuffer(TargetUnit.CurrentDefense);
             }
+        }
+
+        private void HandleSubTriggers()
+        {
+            List<CardModel> targets = new List<CardModel>();
+
+            foreach(Enumerators.Target target in AbilityTargets)
+            {
+                switch(target)
+                {
+                    case Enumerators.Target.PLAYER_ALL_CARDS:
+                    case Enumerators.Target.PLAYER_CARD:
+                        targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        break;
+                    case Enumerators.Target.OPPONENT_ALL_CARDS:
+                    case Enumerators.Target.OPPONENT_CARD:
+                        targets.AddRange(GetOpponentOverlord().PlayerCardsController.CardsOnBoard);
+                        break;
+                }
+            }
+
+            if(TargetUnitSpecialStatus != Enumerators.UnitSpecialStatus.NONE)
+            {
+                targets = targets.FindAll(card => card.UnitSpecialStatus == TargetUnitSpecialStatus);
+            }
+
+            DestroyFrozenUnits(targets);
         }
 
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-        
-            BattlegroundController.DestroyBoardUnit(TargetUnit, false);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            if (TargetUnit != null)
             {
-                ActionType = Enumerators.ActionType.CardAffectingCard,
+                DestroyFrozenUnits(new List<CardModel>() { TargetUnit });
+            }
+        }
+
+        private void DestroyFrozenUnits(List<CardModel> boardUnits)
+        {
+            if (boardUnits == null || boardUnits.Count == 0)
+                return;
+
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            foreach (CardModel unit in boardUnits)
+            {
+                BattlegroundController.DestroyBoardUnit(unit, false);
+
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.DeathMark,
+                    Target = unit
+                });
+            }
+
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            {
+                ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
                 Caller = AbilityUnitOwner,
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                    {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.DeathMark,
-                            Target = TargetUnit
-                        }
-                    }
+                TargetEffects = targetEffects
             });
 
-            InvokeUseAbilityEvent(
-                new List<ParametrizedAbilityBoardObject>
-                {
-                    new ParametrizedAbilityBoardObject(TargetUnit)
-                }
-            );
+
+            InvokeUseAbilityEvent(boardUnits.Select(card => new ParametrizedAbilityBoardObject(card)).ToList());
         }
     }
 }

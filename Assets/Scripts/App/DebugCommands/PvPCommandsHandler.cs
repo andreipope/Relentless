@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground
         private static readonly ILog Log = Logging.GetLog(nameof(PvPCommandsHandler));
 
         private static IPvPManager _pvpManager;
-        private static IQueueManager _queueManager;
+        private static INetworkActionManager networkActionManager;
         private static BackendDataControlMediator _backendDataControlMediator;
 
         public static void Initialize()
@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground
             CommandHandlers.RegisterCommandHandlers(typeof(PvPCommandsHandler));
 
             _pvpManager = GameClient.Get<IPvPManager>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            networkActionManager = GameClient.Get<INetworkActionManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
 
@@ -47,7 +47,7 @@ namespace Loom.ZombieBattleground
             MatchRequestFactory matchRequestFactory = new MatchRequestFactory(_pvpManager.MatchMetadata.Id);
             PlayerActionFactory playerActionFactory = new PlayerActionFactory(_backendDataControlMediator.UserDataModel.UserId);
             PlayerAction action = playerActionFactory.CheatDestroyCardsOnBoard(new[] { new InstanceId(cardId) });
-            _queueManager.AddAction(matchRequestFactory.CreateAction(action));
+            networkActionManager.EnqueueMessage(matchRequestFactory.CreateAction(action));
         }
     }
 }

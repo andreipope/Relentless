@@ -15,45 +15,59 @@ namespace Loom.ZombieBattleground
         {
             base.Activate();
 
+            if (AbilityActivity == Enumerators.AbilityActivity.PASSIVE)
+            {
+                InvokeUseAbilityEvent();
+            }
 
-            InvokeUseAbilityEvent();
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            Action();
+            TakeHeavyToUnits(BattlegroundController.GetAdjacentUnitsToUnit(AbilityUnitOwner));
         }
 
-        public override void Action(object info = null)
+        protected override void InputEndedHandler()
         {
-            base.Action(info);
+            base.InputEndedHandler();
 
-            int targetIndex = -1;
-            for (int i = 0; i < PlayerCallerOfAbility.CardsOnBoard.Count; i++)
+            if (IsAbilityResolved)
             {
-                if (PlayerCallerOfAbility.CardsOnBoard[i] == AbilityUnitOwner)
-                {
-                    targetIndex = i;
-                    break;
-                }
-            }
+                TakeHeavyToUnits(BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit));
 
-            if (targetIndex > -1)
-            {
-                if (targetIndex - 1 > -1)
+                InvokeUseAbilityEvent(new List<ParametrizedAbilityBoardObject>()
                 {
-                    TakeHeavyToUnit(PlayerCallerOfAbility.CardsOnBoard[targetIndex - 1]);
-                }
-
-                if (targetIndex + 1 < PlayerCallerOfAbility.CardsOnBoard.Count)
-                {
-                    TakeHeavyToUnit(PlayerCallerOfAbility.CardsOnBoard[targetIndex + 1]);
-                }
+                    new ParametrizedAbilityBoardObject(TargetUnit)
+                });
             }
         }
 
-        private static void TakeHeavyToUnit(CardModel unit)
+        private void TakeHeavyToUnits(List<CardModel> units)
         {
-            unit?.SetAsHeavyUnit();
+            List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+            foreach (CardModel unit in units)
+            {
+                if (unit.IsHeavyUnit)
+                    continue;
+
+                unit.SetAsHeavyUnit();
+
+                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                {
+                    ActionEffectType = Enumerators.ActionEffectType.Heavy,
+                    Target = unit
+                });
+            }
+
+            if (targetEffects.Count > 0)
+            {
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = targetEffects
+                });
+            }
         }
     }
 }

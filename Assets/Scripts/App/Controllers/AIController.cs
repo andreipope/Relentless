@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground
 
         private ActionsQueueController _actionsQueueController;
 
+        private ActionsReportController _actionsReportController;
+
         private AbilitiesController _abilitiesController;
 
         private SkillsController _skillsController;
@@ -74,6 +76,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _cardsController = _gameplayManager.GetController<CardsController>();
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _boardController = _gameplayManager.GetController<BoardController>();
@@ -747,8 +750,8 @@ namespace Loom.ZombieBattleground
             CardModel expensiveCard =
                 GetUnitCardsInHand()
                     .Find(
-                        x => x.InstanceCard.Cost > _gameplayManager.OpponentPlayer.CurrentGoo &&
-                            x.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
+                        x => x.CurrentCost > _gameplayManager.OpponentPlayer.CurrentGoo &&
+                            x.CurrentCost <= _gameplayManager.OpponentPlayer.CurrentGoo + benefit);
             if (expensiveCard != null)
             {
                 bool wasAction = false;
@@ -808,7 +811,7 @@ namespace Loom.ZombieBattleground
         {
             if (!Constants.DevModeEnabled)
             {
-                return cardModel.InstanceCard.Cost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
+                return cardModel.CurrentCost <= _gameplayManager.OpponentPlayer.CurrentGoo &&
                 _gameplayManager.OpponentPlayer.Turn > MinTurnForAttack;
             }
             else
@@ -844,7 +847,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayCardOnBoard(CardModel cardModel, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
-            _actionsQueueController.AddNewActionInToQueue((parameter, completeCallback) =>
+            _actionsQueueController.AddNewActionInToQueue(completeCallback =>
             {
                 if(!CardCanBePlayable(cardModel) && !ignorePlayAbility)
                 {
@@ -942,10 +945,10 @@ namespace Loom.ZombieBattleground
             if ( cardModel == null)
                 return;
 
-            GameplayQueueAction<object> callAbilityAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsage, blockQueue: true);
-            GameplayQueueAction<object> ranksBuffAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.RankBuff);
+            GameplayActionQueueAction callAbilityAction = null;
+            GameplayActionQueueAction rankBuffAction = null;
 
-            _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.InstanceCard.Cost;
+            _gameplayManager.OpponentPlayer.CurrentGoo -= cardModel.CurrentCost;
 
             switch (cardModel.Prototype.Kind)
             {
@@ -957,14 +960,17 @@ namespace Loom.ZombieBattleground
                         boardUnit.transform.position = Vector3.up * 2f; // Start pos before moving cards to the opponents board
                         _gameplayManager.OpponentPlayer.PlayerCardsController.AddCardToBoard(cardModel, ItemPosition.End);
                         _battlegroundController.RegisterCardView(boardUnitViewElement, _gameplayManager.OpponentPlayer, ItemPosition.End);
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
                             Caller = boardUnitViewElement.Model,
                             TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         });
 
-                        _gameplayManager.GetController<RanksController>().UpdateRanksByElements(cardModel.Owner.CardsOnBoard, cardModel, ranksBuffAction);
+                        if (Constants.RankSystemEnabled)
+                        {
+                            rankBuffAction = _gameplayManager.GetController<RanksController>().AddUpdateRanksByElementsAction(cardModel.Owner.CardsOnBoard, cardModel);
+                        }
 
                         _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitViewElement.Model, false);
 
@@ -982,30 +988,33 @@ namespace Loom.ZombieBattleground
 
                                 if (target != null)
                                 {
-                                    Action callback = () =>
+                                    if (!_abilitiesController.CheckAbilityOnTarget(cardModel))
                                     {
-                                        _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
-                                        null, false, (status) =>
+                                        Action callback = () =>
                                         {
-                                            if (!status)
+                                            callAbilityAction = _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.CREATURE, boardUnitViewElement.Model,
+                                            null, false, (status) =>
                                             {
-                                                ranksBuffAction.Action = null;
-                                                ranksBuffAction.ForceActionDone();
-                                            }
+                                                if (!status)
+                                                {
+                                                    rankBuffAction?.TriggerActionExternally();
+                                                }
 
-                                        }, callAbilityAction, target);
+                                            },  target);
+                                        };
 
+                                        _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
+                                    }
+                                    else
+                                    {
+                                        _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel);
                                         _actionsQueueController.ForceContinueAction(callAbilityAction);
-                                    };
-
-                                    _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(boardUnit.transform, target, action: callback);
+                                    }
                                 }
                                 else
                                 {
-                                    _abilitiesController.CallAbility(null, cardModel,
-                                        Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null, callAbilityAction);
-
-                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                    callAbilityAction = _abilitiesController.CallAbility(null, cardModel,
+                                        Enumerators.CardKind.CREATURE, boardUnitViewElement.Model, null, false, null);
                                 }
                             });
                         boardUnitViewElement.PlayArrivalAnimation(playUniqueAnimation: true);
@@ -1021,7 +1030,7 @@ namespace Loom.ZombieBattleground
                         CurrentItemCard.SetHighlightingEnabled(false);
                         itemCard.gameObject.SetActive(false);
 
-                        _actionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                        _actionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                         {
                             ActionType = Enumerators.ActionType.PlayCardFromHand,
                             Caller = cardModel,
@@ -1038,20 +1047,27 @@ namespace Loom.ZombieBattleground
 
                         if (target != null)
                         {
-                            Action callback = () =>
+                            if (!_abilitiesController.CheckAbilityOnTarget(cardModel))
                             {
-                                _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, cardModel, null, false, null, callAbilityAction, target);
-                                _actionsQueueController.ForceContinueAction(callAbilityAction);
-                            };
+                                Action callback = () =>
+                                {
+                                    callAbilityAction = _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, cardModel, null, false, null,  target);
+                                    _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                };
 
-                            _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
+                                _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(_gameplayManager.OpponentPlayer.AvatarObject.transform, target, action: callback);
+                            }
+                            else
+                            {
+                                _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel);
+                                _actionsQueueController.ForceContinueAction(callAbilityAction);
+                            }
                         }
                         else
                         {
-                            _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, cardModel, null, false, null, callAbilityAction);
+                            callAbilityAction = _abilitiesController.CallAbility(null, cardModel, Enumerators.CardKind.ITEM, cardModel, null, false, null);
 
                             _actionsQueueController.ForceContinueAction(callAbilityAction);
-                            ranksBuffAction.ForceActionDone();
                         }
                     }
                     break;

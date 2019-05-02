@@ -158,28 +158,34 @@ namespace Loom.ZombieBattleground
         
         public void StartMatch()
         {
-            Action startMatch = () =>
-            {
-                Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
-                GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
-                GameClient.Get<IMatchManager>().FindMatch();
-            };
-
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
-                startMatch?.Invoke();
             }
-            else
-            {
-                startMatch?.Invoke();
-            }  
+            
+            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+            GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
+            GameClient.Get<IMatchManager>().FindMatch();
+
+            _buttonPlay.interactable = false;
+            
+            // Wait for 1 frame to prevent multiple trigger on button
+            Sequence waitSequence = DOTween.Sequence();
+            waitSequence.AppendInterval(Time.fixedDeltaTime);
+            waitSequence.AppendCallback(
+                () =>
+                {
+                    if (_buttonPlay != null)
+                    {
+                        _buttonPlay.interactable = true;
+                    }
+                });
         }
         
         private bool CheckIfSelectDeckContainEnoughCards(Deck deck)
         {
-            if (GameClient.Get<ITutorialManager>().IsTutorial)
+            if (GameClient.Get<ITutorialManager>().IsTutorial || Constants.DevModeEnabled)
                 return true;
                 
             return deck.GetNumCards() == Constants.MinDeckSize;

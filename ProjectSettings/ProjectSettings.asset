@@ -91,7 +91,7 @@ PlayerSettings:
   xboxEnableKinectAutoTracking: 0
   xboxEnableFitness: 0
   visibleInBackground: 1
-  allowFullscreenSwitch: 0
+  allowFullscreenSwitch: 1
   graphicsJobMode: 0
   fullscreenMode: 1
   xboxSpeechDB: 0
@@ -650,8 +650,7 @@ PlayerSettings:
   webGLCompressionFormat: 1
   webGLLinkerTarget: 1
   scriptingDefineSymbols:
-    1: 
-    7: USE_STAGING_BACKEND
+    1: USE_STAGING_BACKEND
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

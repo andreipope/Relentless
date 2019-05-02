@@ -51,6 +51,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             _opponentEventListener?.Dispose();
         }
 
+        public PlayerActionRequest GetLeaveMatchRequest()
+        {
+            return _playerEventListener.GetLeaveMatchRequest();
+        }
+
         private void GameplayManagerGameEnded(Enumerators.EndGameType obj)
         {
             _playerEventListener?.Dispose();
@@ -98,7 +103,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             private readonly BackendFacade _backendFacade;
 
-            private readonly IQueueManager _queueManager;
+            private readonly INetworkActionManager _networkActionManager;
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -118,7 +123,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public PlayerEventListener(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
-                _queueManager = GameClient.Get<IQueueManager>();
+                _networkActionManager = GameClient.Get<INetworkActionManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -196,6 +201,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
             public void Dispose()
             {
                 UnsubscribeFromPlayerEvents();
+            }
+
+            public PlayerActionRequest GetLeaveMatchRequest()
+            {
+                return GetPlayerActionRequest(_playerActionFactory.LeaveMatch());
             }
 
             private void UnsubscribeFromPlayerEvents()
@@ -278,6 +288,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void AddAction(PlayerAction playerAction)
             {
+                _networkActionManager.EnqueueMessage(GetPlayerActionRequest(playerAction));
+            }
+
+            private PlayerActionRequest GetPlayerActionRequest(PlayerAction playerAction)
+            {
                 PlayerActionRequest matchAction = _matchRequestFactory.CreateAction(playerAction);
 
                 // Exclude ControlGameState from logs for clarity
@@ -286,7 +301,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
                 playerAction.ControlGameState = controlGameState;
 
-                _queueManager.AddAction(matchAction);
+                return matchAction;
             }
         }
     }

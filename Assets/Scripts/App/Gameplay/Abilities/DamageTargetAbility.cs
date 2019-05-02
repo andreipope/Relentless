@@ -56,32 +56,29 @@ namespace Loom.ZombieBattleground
         {
             if (AbilityTargets.Contains(Enumerators.Target.ITSELF))
             {
-                if (AbilityUnitOwner == AbilityUnitOwner)
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+                BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
+
+                InvokeUseAbilityEvent();
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
-                    AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
-
-                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, AbilityUnitOwner);
-
-                    InvokeUseAbilityEvent();
-
-                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
-                        ActionType = Enumerators.ActionType.CardAffectingCard,
-                        Caller = AbilityUnitOwner,
-                        TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        new PastActionsPopup.TargetEffectParam()
                         {
-                            new PastActionsPopup.TargetEffectParam()
-                            {
-                                ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
-                                Target = AbilityUnitOwner,
-                                HasValue = true,
-                                Value = -AbilityData.Value
-                            }
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldDebuff,
+                            Target = AbilityUnitOwner,
+                            HasValue = true,
+                            Value = -AbilityData.Value
                         }
-                    });
+                    }
+                });
 
-                    AbilityProcessingAction?.ForceActionDone();
-                } 
+                AbilityProcessingAction?.TriggerActionExternally();
             }
         }
 
@@ -98,6 +95,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AffectObjectType.Character:                   
                     _targetObject = TargetUnit;
+                    TargetUnit.HandleDefenseBuffer(Value);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
@@ -136,7 +134,7 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException(nameof(_targetObject), _targetObject, null);
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = actionType,
                 Caller = AbilityUnitOwner,
@@ -152,7 +150,7 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

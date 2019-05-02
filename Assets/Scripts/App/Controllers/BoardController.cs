@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetCardViewsFromModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
@@ -93,34 +93,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
-            // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
-            if (!isBottom)
-            {
-                units = units.Reverse().ToList();
-            }
-
-            float boardWidth = 0.0f;
-            const float spacing = 0.2f;
-            const float cardWidth = 2.5f;
-
-            for (int i = 0; i < units.Count; i++)
-            {
-                boardWidth += cardWidth;
-                boardWidth += spacing;
-            }
-
-            boardWidth -= spacing;
-
-            List<Vector2> newPositions = new List<Vector2>(units.Count);
-
-            Vector3 pivot = isBottom ? _battlegroundController.PlayerBoardObject.transform.position :
-                                       _battlegroundController.OpponentBoardObject.transform.position;
-
-            for (int i = 0; i < units.Count; i++)
-            {
-                newPositions.Add(new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + (isBottom ? -1.7f : 0f)));
-                pivot.x += boardWidth / units.Count;
-            }
+            List<UnitPositionOnBoard> newPositions = GetPositionsForUnits(units, isBottom);
 
             _sequenceUniqueId++;
 
@@ -141,9 +114,9 @@ namespace Loom.ZombieBattleground
                 {
                     BoardUnitView card = units[i];
 
-                    card.PositionOfBoard = newPositions[i];
+                    card.PositionOfBoard = newPositions[i].Position;
 
-                    tween = card.Transform.DOMove(newPositions[i], Duration).SetEase(Ease.OutSine);
+                    tween = card.Transform.DOMove(newPositions[i].Position, Duration).SetEase(Ease.OutSine);
                     tween.OnComplete(() =>
                     {
                         updateSequence.TweenEnded(tween);
@@ -168,6 +141,63 @@ namespace Loom.ZombieBattleground
                     }
                 }, Duration * 2f);
             }
+        }
+
+        public Vector2 GetCorrectPositionOfUnitOnBoard(Player player, BoardUnitView boardUnitView)
+        {
+            UnitPositionOnBoard unitPositionOnBoard =
+                GetPositionsForUnits(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard),
+                                     player.IsLocalPlayer).Find(item => item.BoardUnitView == boardUnitView);
+
+            if (unitPositionOnBoard != null)
+            {
+                if(!player.IsLocalPlayer)
+                {
+                    unitPositionOnBoard.Position.x *= -1;
+                }
+
+                return unitPositionOnBoard.Position;
+            }
+
+            return Vector2.zero;
+        }
+
+        private List<UnitPositionOnBoard> GetPositionsForUnits(IReadOnlyList<BoardUnitView> units, bool isBottom)
+        {
+            // FIXME HARD: in tutorial, arrows should NEVER use XYZ coordinates, and use references to actual things instead.
+            if (!isBottom)
+            {
+                units = units.Reverse().ToList();
+            }
+
+            float boardWidth = 0.0f;
+            const float spacing = 0.2f;
+            const float cardWidth = 2.5f;
+
+            for (int i = 0; i < units.Count; i++)
+            {
+                boardWidth += cardWidth;
+                boardWidth += spacing;
+            }
+
+            boardWidth -= spacing;
+
+            List<UnitPositionOnBoard> newPositions = new List<UnitPositionOnBoard>(units.Count);
+
+            Vector3 pivot = isBottom ? _battlegroundController.PlayerBoardObject.transform.position :
+                                       _battlegroundController.OpponentBoardObject.transform.position;
+
+            for (int i = 0; i < units.Count; i++)
+            {
+                newPositions.Add(new UnitPositionOnBoard()
+                {
+                    BoardUnitView = units[i],
+                    Position = new Vector2(pivot.x - boardWidth / 2 + cardWidth / 2, pivot.y + (isBottom ? -1.7f : 0f))
+                });
+                pivot.x += boardWidth / units.Count;
+            }
+
+            return newPositions;
         }
 
         private void CheckIfBoardWasUpdated(ref int value, int maxValue, Action endCallback)
@@ -235,6 +265,12 @@ namespace Loom.ZombieBattleground
                 public bool IsDone;
                 public float timeout;
             }
+        }
+
+        public class UnitPositionOnBoard
+        {
+            public BoardUnitView BoardUnitView;
+            public Vector2 Position;
         }
     }
 }

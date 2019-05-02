@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: WinLose_Atlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 1
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 2
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 1
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: b14494f7c850344bab8deb3fc62e3a6f, type: 3}
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 8f09046516c65400b980236bbe5c68c3, type: 3}
+  - {fileID: 21300000, guid: d750bff8a2e3b4b0abce5b36e7a95f34, type: 3}
+  - {fileID: 21300000, guid: 9632354ab66f7467aba46ec4600fcf62, type: 3}
+  - {fileID: 21300000, guid: 86dc9a3c022224d8aa5f04bb7dd11dbf, type: 3}
+  - {fileID: 21300000, guid: 984cde3ce41f34a4f988758e98f277cc, type: 3}
+  - {fileID: 21300000, guid: 3380992d770b147e8945b74299d3eb31, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - results_overlord_toxic
+  - results_overlord_air
+  - results_overlord_fire
+  - results_overlord_earth
+  - results_overlord_life
+  - results_overlord_water
+  m_Tag: WinLose_Atlas
+  m_IsVariant: 0

@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ActionsQueueController _actionsQueueController;
 
+        private readonly ActionsReportController _actionsReportController;
+
         private readonly GameObject _selfPanel;
 
         private readonly VerticalLayoutGroup _reportGroup;
@@ -24,13 +26,14 @@ namespace Loom.ZombieBattleground
             IGameplayManager gameplayManager = GameClient.Get<IGameplayManager>();
 
             _actionsQueueController = gameplayManager.GetController<ActionsQueueController>();
+            _actionsReportController = gameplayManager.GetController<ActionsReportController>();
 
             _selfPanel = gameObject.transform.Find("Viewport/CardGraveyard").gameObject;
             _reportGroup = _selfPanel.GetComponent<VerticalLayoutGroup>();
 
             _playedCardPrefab = loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Elements/GraveyardCardPreview");
 
-            _actionsQueueController.GotNewActionReportEvent += GotNewActionReportEventHandler;
+            _actionsReportController.GotNewActionReportEvent += GotNewActionReportEventHandler;
 
             _reportGroup.padding.top = 0;
 
@@ -50,7 +53,7 @@ namespace Loom.ZombieBattleground
 
         public void Dispose()
         {
-            _actionsQueueController.GotNewActionReportEvent -= GotNewActionReportEventHandler;
+            _actionsReportController.GotNewActionReportEvent -= GotNewActionReportEventHandler;
         }
 
         public void Clear()

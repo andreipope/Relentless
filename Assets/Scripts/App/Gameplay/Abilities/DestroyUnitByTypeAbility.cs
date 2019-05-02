@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DestroyBoardUnit(TargetUnit);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
                 Caller = AbilityUnitOwner,
@@ -50,7 +50,7 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         protected override void InputEndedHandler()

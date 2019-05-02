@@ -47,15 +47,8 @@ namespace Loom.ZombieBattleground
 
             if (IsAbilityResolved)
             {
-                InvokeActionTriggered();
+                TakeControlEnemyUnit(new List<CardModel>() { TargetUnit });
             }
-        }
-
-        public override void Action(object info = null)
-        {
-            base.Action(info);
-
-            TakeControlEnemyUnit(new List<CardModel>() { TargetUnit });
         }
 
         private void TakeControlEnemyUnit(List<CardModel> units)
