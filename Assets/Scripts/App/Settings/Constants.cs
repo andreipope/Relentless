@@ -159,6 +159,10 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float DurationHoveringHandCard = 0.15f;
 
+        internal const float DurationUnitAttacking = 0.65f;
+
+        internal const float DurationEndUnitAttacking = 0.1f;
+
         internal const int BackendCallTimeout = 10000;
 
         internal const float QueueActionTimeout = 60f;    

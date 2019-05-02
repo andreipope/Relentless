@@ -1132,6 +1132,16 @@ namespace Loom.ZombieBattleground
             MaximumDamageFromAnySource = 999;
         }
 
+        public bool HasActiveMechanic(Enumerators.GameMechanicDescription gameMechanic)
+        {
+            return GameMechanicDescriptionsOnUnit.Contains(gameMechanic);
+        }
+
+        public bool IsAlive()
+        {
+            return CurrentDefense > 0 && IsUnitActive && !IsDead;
+        }
+
         public override string ToString()
         {
             return $"([{nameof(CardModel)}] {nameof(OwnerPlayer)}: {OwnerPlayer}, {nameof(Card)}: {Card}, {nameof(Faction)}: {Faction})";

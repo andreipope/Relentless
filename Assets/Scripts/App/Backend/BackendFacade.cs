@@ -577,13 +577,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 #region PVP
 
         private const string FindMatchMethod = "FindMatch";
-        private const string DebugFindMatchMethod = "DebugFindMatch";
         private const string CancelFindMatchMethod = "CancelFindMatch";
         private const string EndMatchMethod = "EndMatch";
         private const string SendPlayerActionMethod = "SendPlayerAction";
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
-        private const string CheckGameStatusMethod = "CheckGameStatus";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";

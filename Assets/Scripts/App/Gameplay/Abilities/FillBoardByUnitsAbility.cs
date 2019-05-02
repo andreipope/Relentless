@@ -46,9 +46,18 @@ namespace Loom.ZombieBattleground
 
         private void FillBoard(Player targetPlayer)
         {
-            long maxUnits = targetPlayer.MaxCardsInPlay - targetPlayer.PlayerCardsController.CardsOnBoard.Count;
+            if (!HasEmptySpaceOnBoard(targetPlayer, out int maxUnits))
+                return;
 
-            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Faction != Enumerators.Faction.ITEM);
+            if(AbilityUnitOwner.HasActiveMechanic(Enumerators.GameMechanicDescription.Reanimate))
+            {
+                if(!AbilityUnitOwner.IsAlive())
+                {
+                    maxUnits--;
+                }
+            }
+
+            List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Kind == Enumerators.CardKind.CREATURE);
 
             cards = cards.OrderByDescending(x => x.MouldId).ToList();
 
@@ -59,6 +68,9 @@ namespace Loom.ZombieBattleground
             CardModel boardUnit;
             for (int i = 0; i < cards.Count; i++)
             {
+                if (targetPlayer.PlayerCardsController.CardsOnBoard.Count >= targetPlayer.MaxCardsInPlay)
+                    break;
+
                 boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility).Model;
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()

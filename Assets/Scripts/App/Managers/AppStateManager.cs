@@ -16,6 +16,9 @@ namespace Loom.ZombieBattleground
 
         private const float BackButtonResetDelay = 0.5f;
 
+        private const int MaxReconnectInMenuCount = 3;
+        private const int ReconnectInMenuDelay = 5000;
+
         private IUIManager _uiManager;
 
         private float _backButtonTimer;
@@ -29,6 +32,10 @@ namespace Loom.ZombieBattleground
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
+
+        private IAnalyticsManager _analyticsManager;
+        private INetworkActionManager _networkActionManager;
+        private bool _isReconnecting;
 
         public bool IsAppPaused { get; private set; }
         
@@ -192,6 +199,9 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _backendFacade.ContractCreated += LoomManagerOnContractCreated;
+
+            _analyticsManager = GameClient.Get<IAnalyticsManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
         }
 
         public void Update()
@@ -204,18 +214,14 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITimerManager>().Dispose();
             Application.Quit();
         }
-
-        public async Task SendLeaveMatchIfInPlay()
-        {
-            if (!UnitTestDetector.IsRunningUnitTests && GameClient.Get<IGameplayManager>().IsGameStarted)
-            {
-                await GameClient.Get<BackendFacade>().SendPlayerAction(
-                 GameClient.Get<ActionCollectorUploader>().GetLeaveMatchRequest());
-            }
-        }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
+            if (!UnitTestDetector.IsRunningUnitTests && state == RpcConnectionState.Connected)
+            {
+                _isReconnecting = false;
+            }
+
             UnitySynchronizationContext.Instance.Post(o =>
             {
                 if (state != RpcConnectionState.Connected &&
@@ -258,7 +264,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void HandleNetworkExceptionFlow(Exception exception, bool leaveCurrentAppState = false, bool drawErrorMessage = true)
+        public async void HandleNetworkExceptionFlow(Exception exception, bool keepCurrentAppState = false, bool drawErrorMessage = true)
         {
             if (!ScenePlaybackDetector.IsPlaying || UnitTestDetector.IsRunningUnitTests) {
                 throw exception;
@@ -282,13 +288,18 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
+            bool mustReconnect = AppState != Enumerators.AppState.GAMEPLAY;
+
             _uiManager.HidePopup<WarningPopup>();
             _uiManager.GetPopup<MatchMakingPopup>().ForceCancelAndHide();
             _uiManager.HidePopup<CardInfoPopup>();
-            _uiManager.HidePopup<ConnectionPopup>();
             _uiManager.HidePopup<TutorialAvatarPopup>();
+            if (!_isReconnecting)
+            {
+                _uiManager.HidePopup<ConnectionPopup>();
+            }
 
-            if (!leaveCurrentAppState)
+            if (!keepCurrentAppState)
             {
                 if (AppState == Enumerators.AppState.GAMEPLAY)
                 {
@@ -301,12 +312,55 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (drawErrorMessage)
+            if (drawErrorMessage && !mustReconnect && !_isReconnecting)
             {
                 WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
                 popup.ConfirmationReceived += WarningPopupConfirmationReceived;
 
                 _uiManager.DrawPopup<WarningPopup>(exception.Message);
+            }
+
+            if (mustReconnect && !_isReconnecting)
+            {
+                _isReconnecting = true;
+
+                ConnectionPopup connectionPopup = _uiManager.GetPopup<ConnectionPopup>();
+                _uiManager.DrawPopup<ConnectionPopup>();
+                connectionPopup.ShowReconnecting();
+
+                for (int i = 0; i < MaxReconnectInMenuCount; i++)
+                {
+                    try
+                    {
+                        Log.Info($"Reconnecting (attempt {i + 1})");
+                        await _backendDataControlMediator.LoginAndLoadData();
+                        ConnectionStatusDidUpdate?.Invoke();
+
+                        _backendDataControlMediator.UserDataModel.IsValid = true;
+                        _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+
+                        _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                        Log.Info($"Finished reconnect (attempt {i + 1})");
+                        break;
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Warn(e);
+                        await Task.Delay(ReconnectInMenuDelay);
+                    }
+                    finally
+                    {
+                        _uiManager.HidePopup<LoadDataMessagePopup>();
+                    }
+                }
+
+                connectionPopup.Hide();
+                if (!_backendFacade.IsConnected)
+                {
+                    UpdateConnectionStatus();
+                }
+
+                _isReconnecting = false;
             }
         }
 

@@ -67,9 +67,9 @@ namespace Loom.ZombieBattleground
                 _units = GetRandomUnits(_units, Count);
             }
 
-            foreach(BoardUnitModel boardUnitModel in _units)
+            foreach(CardModel cardModel in _units)
             {
-                boardUnitModel.HandleDefenseBuffer(Damage);
+                cardModel.HandleDefenseBuffer(Damage);
             }
 
             InvokeActionTriggered(_units);

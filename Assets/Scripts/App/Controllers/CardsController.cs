@@ -209,12 +209,12 @@ namespace Loom.ZombieBattleground
                          .Concat(state.CardsInPlay)
                          .Concat(state.CardsInGraveyard));
 
-                int highestInstanceId = 0;
+                int highestInstanceId = 1; //we set it to 1 as the players overlords own instance ID 0 and 1 respectively
 
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
-                    highestInstanceId = cards.Count();
+                    highestInstanceId += cards.Count();
                 }
                 else
                 {
@@ -409,6 +409,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController.DeactivateAllAbilitiesOnUnit(cardModel);
 
             cardModel.InvokeUnitPrepairingToDie();
+            cardModel.SetUnitActiveStatus(false);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -633,11 +634,15 @@ namespace Loom.ZombieBattleground
                     );
             }
 
-            if (opponentHandCard == null)
-                throw new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
+            if (opponentHandCard is null)
+            {
+                Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
+                Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
+                completePlayCardCallback?.Invoke(null, target);
+                return;
+            }
 
             CardModel card = opponentHandCard.Model;
-
             _battlegroundController.UnregisterCardView(opponentHandCard);
             player.PlayerCardsController.RemoveCardFromHand(card);
             cardFoundCallback?.Invoke(card);

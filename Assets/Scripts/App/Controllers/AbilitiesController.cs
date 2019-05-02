@@ -816,7 +816,6 @@ namespace Loom.ZombieBattleground
                     activeAbility.Ability.SelectedTargetAction(true);
 
                     _boardController.UpdateWholeBoard(null);
-
                 };
 
                 if (from != null && targets[0].BoardObject != null)

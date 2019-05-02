@@ -470,7 +470,7 @@ namespace Loom.ZombieBattleground
                     },
                     (workingCard, boardObject) =>
                     {
-                        switch (workingCard.Prototype.Kind)
+                        switch (workingCard?.Prototype.Kind)
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);

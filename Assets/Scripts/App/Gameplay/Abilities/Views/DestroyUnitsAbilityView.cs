@@ -97,6 +97,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < _unitsViews.Count; i++)
             {
                 unitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(_unitsViews[i]);
+
+                if (unitView == null || unitView is default(BoardUnitView))
+                    continue;
+
                 if (unitView.Model.OwnerPlayer.IsLocalPlayer)
                 {
                     if (playerLineObject.transform.position.x > unitView.Transform.position.x + 1f)
