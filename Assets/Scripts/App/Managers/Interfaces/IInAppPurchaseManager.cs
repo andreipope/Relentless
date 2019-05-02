@@ -10,6 +10,8 @@ namespace Loom.ZombieBattleground
 #if UNITY_IOS || UNITY_ANDROID
         event Action<PurchaseEventArgs> ProcessPurchaseAction;
 
+        event Action PurchaseFailedOrCanceled;
+
         bool IsInitialized();
 
         void InitializePurchasing();

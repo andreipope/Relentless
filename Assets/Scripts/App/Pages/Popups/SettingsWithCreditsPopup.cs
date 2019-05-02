@@ -44,6 +44,8 @@ namespace Loom.ZombieBattleground
         private TMP_Dropdown _screenModeDropdown;
 #endif
 
+        private const float ScrollSensitivityForWindows = 25f;
+
         private bool _initialInit = true;
 
         public GameObject Self { get; private set; }
@@ -128,6 +130,7 @@ namespace Loom.ZombieBattleground
             
             if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
             {
+                _buttonCredits.gameObject.SetActive(false);
                 _appStateManager.SetPausingApp(true);
             }
             
@@ -142,6 +145,11 @@ namespace Loom.ZombieBattleground
 #else
             _resolutionDropdown = _panelVideoSettings.transform.Find("Dropdown_Resolution").GetComponent<TMP_Dropdown>();
             _screenModeDropdown = _panelVideoSettings.transform.Find("Dropdown_ScreenMode").GetComponent<TMP_Dropdown>();
+            #if UNITY_STANDALONE_WIN
+            _resolutionDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
+            _screenModeDropdown.transform.Find("Template").GetComponent<ScrollRect>().scrollSensitivity = ScrollSensitivityForWindows;
+            #endif
+
             _resolutionDropdown.onValueChanged.AddListener(ResolutionChangedHandler);
             _screenModeDropdown.onValueChanged.AddListener(ScreenModeChangedHandler);
 #endif
@@ -200,6 +208,10 @@ namespace Loom.ZombieBattleground
 
             for (int i = 0; i < length; i++)
             {
+#if UNITY_STANDALONE_WIN
+                if ((Enumerators.ScreenMode)i == Enumerators.ScreenMode.BorderlessWindow)
+                    continue;
+#endif
                 data.Add(InternalTools.ProccesEnumToString(((Enumerators.ScreenMode)i).ToString()));
             }
             _screenModeDropdown.AddOptions(data);

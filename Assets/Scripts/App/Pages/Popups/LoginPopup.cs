@@ -671,6 +671,12 @@ namespace Loom.ZombieBattleground
             );
         }
 
+        public void SetValidationFailed (string errorMessage)
+        {
+            _lastErrorMessage = errorMessage;
+            SetUIState(LoginState.ValidationFailed);
+        } 
+
         private async void SuccessfulLogin()
         {
             if (!_backendDataControlMediator.UserDataModel.IsRegistered && _dataManager.CachedUserLocalData.Tutorial)

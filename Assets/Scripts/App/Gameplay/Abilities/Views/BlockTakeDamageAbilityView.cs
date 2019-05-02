@@ -24,6 +24,7 @@ namespace Loom.ZombieBattleground
         protected override void OnAbilityAction(object info = null)
         {
             _targetedUnit = info as BoardUnitModel;
+            _targetedUnit.IsPlayable = false;
             ActionCompleted();
         }
 

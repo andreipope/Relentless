@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
 
         public async void Update()
         {
-            if (!_backendFacade.IsConnected)
+            if (_backendFacade == null || !_backendFacade.IsConnected)
                 return;
 
             if (_keepAliveActive)
@@ -106,6 +106,7 @@ namespace Loom.ZombieBattleground
                 if (_nextKeepAliveSendTimer > Constants.PvPCheckPlayerAvailableMaxTime)
                 {
                     _nextKeepAliveSendTimer = 0f;
+                    Log.Debug("Sending keepalive");
 
                     try
                     {
@@ -242,7 +243,7 @@ namespace Loom.ZombieBattleground
             InitialGameState = null;
 
             MatchMetadata = matchMetadata;
-            
+
             // No need to reload if a match was found immediately
             if (InitialGameState == null)
             {
@@ -343,19 +344,19 @@ namespace Loom.ZombieBattleground
                                List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
                                int cardsRemoved = 0;
                                bool found;
-                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand) 
+                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
                                {
                                    found = false;
                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
                                    {
-                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id) 
+                                       if (cardNotMulligan.Id == cardInHand.InstanceId.Id)
                                        {
                                            finalCardsInHand.Add(cardInHand);
                                            found = true;
                                            break;
                                        }
                                    }
-                                   if (!found) 
+                                   if (!found)
                                    {
                                        _gameplayManager.CurrentPlayer.PlayerCardsController.AddCardToDeck(cardInHand);
                                        cardsRemoved++;
