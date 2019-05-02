@@ -132,9 +132,9 @@ namespace Loom.ZombieBattleground
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             GameObject = GameClient.Get<IUIManager>().GetPage<GameplayPage>().FetchCacheBoardUnitViewObject();
-            if(GameObject == null)
+            if (GameObject is null)
             {
-                Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
+                GameObject = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/BoardCreature"));
             }
             GameObject.transform.SetParent(parent, false);
 
