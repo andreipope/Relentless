@@ -810,7 +810,7 @@ namespace Loom.ZombieBattleground
                                 AttackedThisTurn = false;
                                 IsAttacking = false;
                                 completeCallback?.Invoke();
-                                return;
+                                return null;
                             }
 
 
@@ -827,7 +827,7 @@ namespace Loom.ZombieBattleground
                                     AttackedThisTurn = false;
                                     IsAttacking = false;
                                     completeCallback?.Invoke();
-                                    return;
+                                    return null;
                                 }
                             }
 
@@ -850,6 +850,8 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                             );
+
+                            return null;
                         }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 case BoardUnitModel targetCardModel:
@@ -872,7 +874,7 @@ namespace Loom.ZombieBattleground
                                 IsAttacking = false;
                                 targetCardModel.IsAttacking = false;
                                 completeCallback?.Invoke();
-                                return;
+                                return null;
                             }
 
                             if (_tutorialManager.IsTutorial && OwnerPlayer.IsLocalPlayer)
@@ -890,7 +892,7 @@ namespace Loom.ZombieBattleground
                                     IsAttacking = false;
                                     targetCardModel.IsAttacking = false;
                                     completeCallback?.Invoke();
-                                    return;
+                                    return null;
                                 }
                             }
 
@@ -939,6 +941,8 @@ namespace Loom.ZombieBattleground
                                     UnitAttackedEnded?.Invoke();
                                 }
                                 );
+
+                            return null;
                         }, Enumerators.QueueActionType.UnitCombat);
                     break;
                 default:

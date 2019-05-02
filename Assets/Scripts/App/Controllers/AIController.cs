@@ -849,7 +849,7 @@ namespace Loom.ZombieBattleground
                 if(!CardCanBePlayable(boardUnitModel) && !ignorePlayAbility)
                 {
                     completeCallback?.Invoke();
-                    return;
+                    return null;
                 }
 
                 bool needTargetForAbility = false;
@@ -933,6 +933,8 @@ namespace Loom.ZombieBattleground
                         completeCallback?.Invoke();
                         break;
                 }
+
+                return null;
             }, Enumerators.QueueActionType.CardPlay);
         }
 
