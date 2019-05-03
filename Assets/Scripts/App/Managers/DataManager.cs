@@ -83,6 +83,8 @@ namespace Loom.ZombieBattleground
 
         public CreditsData CachedCreditsData { get; set; }
 
+        public Data.OverlordLevelingData CachedOverlordLevelingData { get; set; }
+
         public ConfigData ConfigData { get; set; }
 
         public UserInfo UserInfo { get; set; }
@@ -331,17 +333,27 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     try
                     {
+                        bool isLoadedFromFile = false;
                         if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
                         {
-                            CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                            try
+                            {
+                                CachedCollectionData = DeserializeObjectFromPersistentData<CollectionData>(GetPersistentDataPath(_cacheDataFileNames[type]));
+                                isLoadedFromFile = true;
+                            }
+                            catch (JsonSerializationException)
+                            {
+                                // Gracefully handle old incompatible data
+                            }
                         }
-                        else
+
+                        if (!isLoadedFromFile)
                         {
                             GetCollectionResponse getCollectionResponse = await _backendFacade.GetCardCollection(_backendDataControlMediator.UserDataModel.UserId);
                             CachedCollectionData = getCollectionResponse.FromProtobuf();
                         }
 
-                        await ProcessCardsInCollectionValidation();
+                        await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
                     }
                     catch (Exception)
                     {
@@ -353,15 +365,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.DECKS_DATA:
                     try
                     {
-                        ListDecksResponse listDecksResponse = await _backendFacade.GetDecks(_backendDataControlMediator.UserDataModel.UserId);
-                        CachedDecksData =
-                            new DecksData(
-                                listDecksResponse.Decks != null ?
-                                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
-                                    new List<Deck>()
-                            );
-
-                       await ProcessCardsInDeckValidation();
+                        ListDecksResponse listDecksResponse = await _backendFacade.ListDecks(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedDecksData = listDecksResponse.FromProtobuf();
                     }
                     catch (Exception e)
                     {
@@ -387,6 +392,18 @@ namespace Loom.ZombieBattleground
                         throw;
                     }
                     break;
+                case Enumerators.CacheDataType.OVERLORD_LEVELING_DATA:
+                    try
+                    {
+                        GetOverlordLevelingDataResponse overlordLevelingData = await _backendFacade.GetOverlordLevelingData();
+                        CachedOverlordLevelingData = overlordLevelingData.OverlordLeveling.FromProtobuf();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Opponent Leveling Data");
+                        throw;
+                    }
+                    break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
                     break;
@@ -396,50 +413,6 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
-        }
-
-        private async Task ProcessCardsInDeckValidation()
-        {
-            bool hasChanges;
-            Card foundCard;
-            foreach (Deck deck in CachedDecksData.Decks)
-            {
-                hasChanges = false;
-                for (int i = 0; i < deck.Cards.Count; i++)
-                {
-                    foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == deck.Cards[i].CardName);
-
-                    if(foundCard == null || foundCard is default(Card))
-                    {
-                        deck.Cards.Remove(deck.Cards[i]);
-                        i--;
-
-                        hasChanges = true;
-                    }
-                }
-
-                if (hasChanges)
-                {
-                    await _backendFacade.EditDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                }
-            }
-        }
-
-        private async Task ProcessCardsInCollectionValidation()
-        {
-            Card foundCard;
-            for (int i = 0; i < CachedCollectionData.Cards.Count; i++)
-            {
-                foundCard = CachedCardsLibraryData.Cards.FirstOrDefault(card => card.Name == CachedCollectionData.Cards[i].CardName);
-
-                if (foundCard == null)
-                {
-                    CachedCollectionData.Cards.Remove(CachedCollectionData.Cards[i]);
-                    i--;
-                }
-            }
-
-            await SaveCache(Enumerators.CacheDataType.COLLECTION_DATA);
         }
 
         private void LoadLocalCachedData()
@@ -548,10 +521,10 @@ namespace Loom.ZombieBattleground
                 {
                     CachedCollectionData.Cards.Add(
                         new CollectionCardData
-                        {
-                            Amount = (int) GetMaxCopiesValue(card, set.Name),
-                            CardName = card.Name
-                        });
+                        (
+                            card.MouldId,
+                            (int) GetMaxCopiesValue(card, set.Name)
+                        ));
                 }
             }
         }

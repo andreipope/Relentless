@@ -11,6 +11,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using OverlordLevelingData = Loom.ZombieBattleground.Data.OverlordLevelingData;
 using OverlordSkill = Loom.ZombieBattleground.Data.OverlordSkill;
 
 namespace Loom.ZombieBattleground
@@ -22,9 +23,7 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
         private ILoadObjectsManager _loadObjectsManager;
         private IGameplayManager _gameplayManager;
-
-        private OvelordExperienceInfo _overlordXPInfo;
-
+        
         private BackendFacade _backendFacade;
 
         private BackendDataControlMediator _backendDataControlMediator;
@@ -37,10 +36,7 @@ namespace Loom.ZombieBattleground
             _dataManager = GameClient.Get<IDataManager>();
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
-
-            _overlordXPInfo = JsonConvert.DeserializeObject<OvelordExperienceInfo>(
-                            _loadObjectsManager.GetObjectByPath<TextAsset>("Data/overlord_experience_data").text);
-
+            
             _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
@@ -71,7 +67,8 @@ namespace Loom.ZombieBattleground
 
         public async Task GetLevelAndRewards(OverlordModel overlord)
         {
-            try
+            await Task.CompletedTask;
+            /*try
             {
                 GetOverlordLevelResponse overlordLevelResponse = await _backendFacade.GetOverlordLevel(
                     _backendDataControlMediator.UserDataModel.UserId,
@@ -100,12 +97,12 @@ namespace Loom.ZombieBattleground
                 Log.Info("Result ===", e);
                 OpenAlertDialog($"Not able Get Level and Rewards : " + e.Message);
                 return;
-            }
+            }*/
         }
 
-        public int GetRequiredExperienceForNewLevel(OverlordModel overlord)
+        public long GetRequiredExperienceForNewLevel(OverlordModel overlord)
         {
-            return _overlordXPInfo.Fixed + _overlordXPInfo.ExperienceStep * (overlord.Level + 1);
+            return _dataManager.CachedOverlordLevelingData.Fixed + _dataManager.CachedOverlordLevelingData.ExperienceStep * (overlord.Level + 1);
         }
 
         public void ReportExperienceAction(Enumerators.ExperienceActionType actionType, bool isOpponent = false)
@@ -113,7 +110,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsTutorial)
                 return;
 
-            ExperienceAction action = _overlordXPInfo.ExperienceActions.Find(x => x.Action == actionType);
+            Data.ExperienceAction action = _dataManager.CachedOverlordLevelingData.ExperienceActions.Find(x => x.Action == actionType);
             int value = action.Experience;
             if (isOpponent)
                 OpponentMatchExperienceInfo.ExperienceReceived += value;
@@ -121,15 +118,15 @@ namespace Loom.ZombieBattleground
                 PlayerMatchExperienceInfo.ExperienceReceived += value;
         }
 
-        public LevelReward GetLevelReward(OverlordModel overlord)
+        public Data.LevelReward GetLevelReward(OverlordModel overlord)
         {
-            return _overlordXPInfo.Rewards.Find(x => x.Level == overlord.Level);
+            return _dataManager.CachedOverlordLevelingData.Rewards.Find(x => x.Level == overlord.Level);
         }
 
         private void CheckLevel(OverlordModel overlord)
         {
             while (overlord.Experience >= GetRequiredExperienceForNewLevel(overlord) &&
-                   overlord.Level < _overlordXPInfo.MaxLevel)
+                   overlord.Level < _dataManager.CachedOverlordLevelingData.MaxLevel)
             {
                 LevelUp(overlord);
             }
@@ -152,38 +149,40 @@ namespace Loom.ZombieBattleground
 
         private void ApplyReward(OverlordModel overlord)
         {
-            LevelReward levelReward = GetLevelReward(overlord);
-            if (levelReward != null)
+            Data.LevelReward levelReward = GetLevelReward(overlord);
+            return;
+            // FIXME: LEVELING load from server?
+            switch (levelReward)
             {
-                if (levelReward.UnitReward != null)
-                {
-                    List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
-                        .Where(x => x.Rank.ToString() == levelReward.UnitReward.Rank)
-                        .ToList();
-                    Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
-                    CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.CardName == card.Name);
-                    if (foundCard != null)
-                    {
-                        foundCard.Amount += levelReward.UnitReward.Count;
-                    }
-                    else
-                    {
-                        _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData()
-                        {
-                            Amount = levelReward.UnitReward.Count,
-                            CardName = card.Name
-                        });
-                    }
-                }
-                else if (levelReward.SkillReward != null)
-                {
-                    OverlordSkill unlockedSkill = overlord.GetSkill(levelReward.SkillReward.SkillIndex);
+                case null:
+                    break;
+                case Data.OverlordSkillRewardItem overlordSkillRewardItem:
+                    OverlordSkill unlockedSkill = overlord.GetSkill(overlordSkillRewardItem.SkillIndex);
                     unlockedSkill.Unlocked = true;
 
                     SaveSkillInDecks(overlord.OverlordId, unlockedSkill);
-                }
 
-                PlayerMatchExperienceInfo.GotRewards.Add(levelReward);
+                    PlayerMatchExperienceInfo.GotRewards.Add(levelReward);
+                    break;
+                case Data.UnitRewardItem unitRewardItem:
+                    List<Card> cards = _dataManager.CachedCardsLibraryData.Cards
+                        .Where(x => x.Rank == unitRewardItem.Rank)
+                        .ToList();
+                    Card card = cards[UnityEngine.Random.Range(0, cards.Count)];
+                    CollectionCardData foundCard = _dataManager.CachedCollectionData.Cards.Find(x => x.MouldId == card.MouldId);
+                    if (foundCard != null)
+                    {
+                        foundCard.Amount += unitRewardItem.Count;
+                    }
+                    else
+                    {
+                        _dataManager.CachedCollectionData.Cards.Add(new CollectionCardData(card.MouldId, unitRewardItem.Count));
+                    }
+
+                    PlayerMatchExperienceInfo.GotRewards.Add(levelReward);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(levelReward));
             }
         }
 
@@ -230,50 +229,6 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CHANGE_SCREEN, Constants.SfxSoundVolume,
                 false, false, true);
             GameClient.Get<IUIManager>().DrawPopup<WarningPopup>(msg);
-        }
-
-        public class LevelReward
-        {
-            public int Level;
-            public OverlordSkillRewardItem SkillReward;
-            public UnitRewardItem UnitReward;
-
-            public class UnitRewardItem
-            {
-                public string Rank;
-                public int Count;
-            }
-
-            public class OverlordSkillRewardItem
-            {
-                public int SkillIndex;
-            }
-        }
-
-        public class ExperienceAction
-        {
-            public Enumerators.ExperienceActionType Action;
-            public int Experience;
-        }
-
-        public class OvelordExperienceInfo
-        {
-            public List<LevelReward> Rewards;
-            public List<ExperienceAction> ExperienceActions;
-            public int Fixed;
-            public int ExperienceStep;
-            public int GooRewardStep;
-            public int MaxLevel;
-        }
-
-
-        public class ExperienceInfo
-        {
-            public int LevelAtBegin;
-            public long ExperienceAtBegin;
-            public long ExperienceReceived;
-
-            public List<LevelReward> GotRewards = new List<LevelReward>();
         }
     }
 }

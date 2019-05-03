@@ -132,10 +132,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
         {
             GetCollectionRequest request = new GetCollectionRequest
             {
-                UserId = userId
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
+            return await _contractCallProxy.CallAsync<GetCollectionResponse>(GetCardCollectionMethod, request);
         }
 
         #endregion
@@ -160,7 +161,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string GetAiDecksDataMethod = "GetAIDecks";
 
-        private const string GetDeckDataMethod = "ListDecks";
+        private const string ListDecksDataMethod = "ListDecks";
 
         private const string DeleteDeckMethod = "DeleteDeck";
 
@@ -168,14 +169,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string EditDeckMethod = "EditDeck";
 
-        public async Task<ListDecksResponse> GetDecks(string userId)
+        public async Task<ListDecksResponse> ListDecks(string userId)
         {
             ListDecksRequest request = new ListDecksRequest
             {
-                UserId = userId
+                UserId = userId,
+                Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListDecksResponse>(GetDeckDataMethod, request);
+            return await _contractCallProxy.CallAsync<ListDecksResponse>(ListDecksDataMethod, request);
         }
 
         public async Task<GetAIDecksResponse> GetAiDecks()
@@ -193,7 +195,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId
+                DeckId = deckId,
+                Version = BackendEndpoint.DataVersion
             };
 
             await _contractCallProxy.CallAsync(DeleteDeckMethod, request);
@@ -229,7 +232,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Overlords
 
         private const string OverlordsList = "ListOverlords";
-        private const string GetOverlordLevelMethod = "GetOverlordLevel";
+        private const string GetOverlordMethod = "GetOverlord";
 
         public async Task<ListOverlordsResponse> GetOverlordList(string userId)
         {
@@ -241,7 +244,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
         }
 
-        public async Task<GetOverlordLevelResponse> GetOverlordLevel(string userId, int overlordId)
+        public async Task<GetOverlordResponse> GetOverlordLevel(string userId, int overlordId)
         {
             GetOverlordRequest request = new GetOverlordRequest()
             {
@@ -249,7 +252,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 OverlordId = overlordId
             };
 
-            return await _contractCallProxy.StaticCallAsync<GetOverlordLevelResponse>(GetOverlordLevelMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetOverlordResponse>(GetOverlordMethod, request);
         }
 
 
@@ -263,6 +266,18 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
+        }
+
+        private const string GetOverlordLevelingDataMethod = "GetOverlordLevelingData";
+
+        public async Task<GetOverlordLevelingDataResponse> GetOverlordLevelingData()
+        {
+            GetOverlordLevelingDataRequest request = new GetOverlordLevelingDataRequest
+            {
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetOverlordLevelingDataResponse>(GetOverlordLevelingDataMethod, request);
         }
 
         #endregion
@@ -590,13 +605,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 #region PVP
 
         private const string FindMatchMethod = "FindMatch";
-        private const string DebugFindMatchMethod = "DebugFindMatch";
         private const string CancelFindMatchMethod = "CancelFindMatch";
         private const string EndMatchMethod = "EndMatch";
         private const string SendPlayerActionMethod = "SendPlayerAction";
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
-        private const string CheckGameStatusMethod = "CheckGameStatus";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";
@@ -800,5 +813,32 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.CallAsync<RewardTutorialClaimed>(RewardTutorialClaimMethod, request);
         }
 #endregion
+
+        #region Notifications
+        private const string GetNotificationsMethod = "GetNotifications";
+        private const string ClearNotificationsMethod = "ClearNotifications";
+
+        public async Task<GetNotificationsResponse> GetNotifications(string userId)
+        {
+            GetNotificationsRequest request = new GetNotificationsRequest
+            {
+                UserId = userId
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetNotificationsResponse>(GetNotificationsMethod, request);
+        }
+
+        public async Task<ClearNotificationsResponse> ClearNotifications(string userId, IEnumerable<int> notificationIds)
+        {
+            ClearNotificationsRequest request = new ClearNotificationsRequest
+            {
+                UserId = userId,
+                NotificationIds = { notificationIds }
+            };
+
+            return await _contractCallProxy.CallAsync<ClearNotificationsResponse>(ClearNotificationsMethod, request);
+        }
+
+        #endregion
     }
 }

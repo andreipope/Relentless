@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Loom.Client.Protobuf;
 using Loom.Google.Protobuf.Reflection;
 using Loom.ZombieBattleground.Protobuf;
@@ -84,9 +86,55 @@ namespace Loom.ZombieBattleground
                     .ToArray();
         }
 
-        public static string JsonPrettyPrint(string json)
+
+
+        public static string FormatCallLogList<T>(IList<T> list)
         {
-            return JToken.Parse(json).ToString(Formatting.Indented);
+            return $"[({list.Count} items) {String.Join(", ", list)}]";
+        }
+
+        public static string FormatCallLogList<T>(IReadOnlyList<T> list)
+        {
+            return $"[({list.Count} items) {String.Join(", ", list)}]";
+        }
+        
+        /// <summary>
+        /// Waits for the task to complete for up to <paramref name="timeoutMilliseconds"/>
+        /// and returns whether it completed in time.
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="timeoutMilliseconds"></param>
+        /// <returns>True if task timed out, false otherwise.</returns>
+        public static async Task<bool> RunTaskWithTimeout(Task task, int timeoutMilliseconds)
+        {
+            if (timeoutMilliseconds < 0)
+                throw new ArgumentOutOfRangeException(nameof(timeoutMilliseconds));
+
+            if (timeoutMilliseconds == 0)
+                return !task.IsCompleted;
+
+#if UNITY_WEBGL
+            // TODO: support timeout for WebGL
+            await task;
+            return false;
+#else
+            if (timeoutMilliseconds == Timeout.Infinite)
+            {
+                await task;
+                return false;
+            }
+
+            CancellationTokenSource cts = new CancellationTokenSource();
+            Task delayTask = Task.Delay(timeoutMilliseconds, cts.Token);
+            Task firstTask = await Task.WhenAny(task, delayTask);
+            if (firstTask == task) {
+                cts.Cancel();
+                await task;
+                return false;
+            }
+
+            return true;
+#endif
         }
 
         #region asset bundles and cache

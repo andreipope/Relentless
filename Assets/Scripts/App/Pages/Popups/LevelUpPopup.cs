@@ -140,7 +140,8 @@ namespace Loom.ZombieBattleground
             _rewardDisabledObject.SetActive(false);
             _rewardSkillObject.SetActive(true);
 
-            foreach (LevelReward levelReward in gotRewards)
+            // FIXME: LEVELING
+            /*foreach (OverlordLevelingData.LevelReward levelReward in gotRewards)
             {
                 if (levelReward != null)
                 {
@@ -163,7 +164,7 @@ namespace Loom.ZombieBattleground
                         }
                     }
                 }
-            }
+            }*/
         }
 
         private void FillRewardSkillInfo(int skillIndex)

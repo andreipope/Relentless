@@ -13,7 +13,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
     public class ActionCollectorUploader : IService
     {
         private static readonly ILog Log = Logging.GetLog(nameof(ActionCollectorUploader));
-        public static readonly ILog PlayerActionLog = Logging.GetLog("PlayerActionTrace");
+        private static readonly ILog PlayerActionLog = Logging.GetLog("PlayerActionTrace");
 
         private IGameplayManager _gameplayManager;
 
@@ -25,9 +25,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private BackendDataControlMediator _backendDataControlMediator;
 
-        private PlayerEventListener _playerEventListener;
+        private PlayerEventSender _playerEventSender;
 
-        private PlayerEventListener _opponentEventListener;
+        private PlayerEventSender _opponentEventSender;
 
         public void Init()
         {
@@ -47,19 +47,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public void Dispose()
         {
-            _playerEventListener?.Dispose();
-            _opponentEventListener?.Dispose();
-        }
-
-        public PlayerActionRequest GetLeaveMatchRequest()
-        {
-            return _playerEventListener.GetLeaveMatchRequest();
+            _playerEventSender?.Dispose();
+            _opponentEventSender?.Dispose();
         }
 
         private void GameplayManagerGameEnded(Enumerators.EndGameType obj)
         {
-            _playerEventListener?.Dispose();
-            _opponentEventListener?.Dispose();
+            _playerEventSender?.Dispose();
+            _opponentEventSender?.Dispose();
 
             _analyticsManager.NotifyFinishedMatch(obj);
 
@@ -82,11 +77,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private void GameplayManagerGameInitialized()
         {
-            _playerEventListener?.Dispose();
-            _opponentEventListener?.Dispose();
+            _playerEventSender?.Dispose();
+            _opponentEventSender?.Dispose();
 
-            _playerEventListener = new PlayerEventListener(_gameplayManager.CurrentPlayer, false);
-            _opponentEventListener = new PlayerEventListener(_gameplayManager.OpponentPlayer, true);
+            _playerEventSender = new PlayerEventSender(_gameplayManager.CurrentPlayer, false);
+            _opponentEventSender = new PlayerEventSender(_gameplayManager.OpponentPlayer, true);
 
             _analyticsManager.NotifyStartedMatch();
 
@@ -99,11 +94,15 @@ namespace Loom.ZombieBattleground.BackendCommunication
             }
         }
 
-        private class PlayerEventListener : IDisposable
+        public class PlayerEventSender : IDisposable
         {
+            public Player Player { get; }
+
+            public bool IsOpponent { get; }
+
             private readonly BackendFacade _backendFacade;
 
-            private readonly IQueueManager _queueManager;
+            private readonly INetworkActionManager _networkActionManager;
 
             private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -118,12 +117,13 @@ namespace Loom.ZombieBattleground.BackendCommunication
             private readonly RanksController _ranksController;
 
             private readonly MatchRequestFactory _matchRequestFactory;
+
             private readonly PlayerActionFactory _playerActionFactory;
 
-            public PlayerEventListener(Player player, bool isOpponent)
+            public PlayerEventSender(Player player, bool isOpponent)
             {
                 _backendFacade = GameClient.Get<BackendFacade>();
-                _queueManager = GameClient.Get<IQueueManager>();
+                _networkActionManager = GameClient.Get<INetworkActionManager>();
                 _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
                 _pvpManager = GameClient.Get<IPvPManager>();
                 _battlegroundController = GameClient.Get<IGameplayManager>().GetController<BattlegroundController>();
@@ -152,7 +152,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _abilitiesController.AbilityUsed += AbilityUsedHandler;
 
-                    Player.DrawCard += DrawCardHandler;
                     Player.CardPlayed += CardPlayedHandler;
                     Player.CardAttacked += CardAttackedHandler;
                     Player.LeaveMatch += LeaveMatchHandler;
@@ -172,40 +171,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            private void DrawCardHandler(BoardUnitModel boardUnitModel)
-            {
-                /*string playerId = _backendDataControlMediator.UserDataModel.UserId;
-                PlayerAction playerAction = new PlayerAction
-                {
-                    ActionType = PlayerActionType.Types.Enum.DrawCard,
-                    PlayerId = playerId,
-                    DrawCard = new PlayerActionDrawCard
-                    {
-                        CardInstance = new CardInstance
-                        {
-                            InstanceId = card.Id,
-                            Prototype = ToProtobufExtensions.GetCardPrototype(card),
-                            Defense = card.Health,
-                            Attack = card.Damage
-                        }
-                    }
-                };
-
-                _backendFacade.AddAction(_pvpManager.MatchMetadata.Id, playerAction);*/
-            }
-
-            public Player Player { get; }
-
-            public bool IsOpponent { get; }
-
             public void Dispose()
             {
                 UnsubscribeFromPlayerEvents();
-            }
-
-            public PlayerActionRequest GetLeaveMatchRequest()
-            {
-                return GetPlayerActionRequest(_playerActionFactory.LeaveMatch());
             }
 
             private void UnsubscribeFromPlayerEvents()
@@ -216,7 +184,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
                     _abilitiesController.AbilityUsed -= AbilityUsedHandler;
 
-                    Player.DrawCard -= DrawCardHandler;
                     Player.CardPlayed -= CardPlayedHandler;
                     Player.CardAttacked -= CardAttackedHandler;
                     Player.LeaveMatch -= LeaveMatchHandler;
@@ -288,20 +255,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             private void AddAction(PlayerAction playerAction)
             {
-                _queueManager.AddAction(GetPlayerActionRequest(playerAction));
-            }
-
-            private PlayerActionRequest GetPlayerActionRequest(PlayerAction playerAction)
-            {
                 PlayerActionRequest matchAction = _matchRequestFactory.CreateAction(playerAction);
 
                 // Exclude ControlGameState from logs for clarity
                 GameState controlGameState = playerAction.ControlGameState;
                 playerAction.ControlGameState = null;
-                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
+                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + JsonUtility.PrettyPrint(JsonFormatter.Default.Format(playerAction)));
                 playerAction.ControlGameState = controlGameState;
 
-                return matchAction;
+                try
+                {
+                    _networkActionManager.EnqueueMessage(matchAction);
+                }
+                catch
+                {
+                    // No special handling
+                }
             }
         }
     }

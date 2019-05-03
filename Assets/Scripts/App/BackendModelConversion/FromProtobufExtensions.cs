@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.Google.Protobuf.Collections;
@@ -13,10 +14,10 @@ namespace Loom.ZombieBattleground.Data
         public static CollectionCardData FromProtobuf(this CardCollectionCard cardCollection)
         {
             return new CollectionCardData
-            {
-                Amount = (int) cardCollection.Amount,
-                CardName = cardCollection.CardName
-            };
+            (
+                new MouldId(cardCollection.MouldId),
+                (int) cardCollection.Amount
+            );
         }
 
         public static CollectionData FromProtobuf(this GetCollectionResponse getCollectionResponse)
@@ -25,6 +26,15 @@ namespace Loom.ZombieBattleground.Data
             {
                 Cards = getCollectionResponse.Cards.Select(card => card.FromProtobuf()).ToList()
             };
+        }
+
+        public static DecksData FromProtobuf(this ListDecksResponse listDecksResponse)
+        {
+            return new DecksData(
+                listDecksResponse.Decks != null ?
+                    listDecksResponse.Decks.Select(deck => deck.FromProtobuf()).ToList() :
+                    new List<Deck>()
+            );
         }
 
         public static Unit FromProtobuf(this Protobuf.Unit unit)
@@ -146,10 +156,7 @@ namespace Loom.ZombieBattleground.Data
 
         public static DeckCardData FromProtobuf(this Protobuf.DeckCard card)
         {
-            return new DeckCardData(
-                card.CardName,
-                (int) card.Amount
-            );
+            return new DeckCardData(new MouldId(card.MouldId), (int) card.Amount);
         }
 
         public static AbilityData.VisualEffectInfo FromProtobuf(this Protobuf.AbilityData.Types.VisualEffectInfo visualEffectInfo)
@@ -180,7 +187,7 @@ namespace Loom.ZombieBattleground.Data
         public static Card FromProtobuf(this Protobuf.Card card)
         {
             return new Card(
-                card.MouldId,
+                new MouldId(card.MouldId),
                 card.Name,
                 card.Cost,
                 card.Description,
@@ -226,6 +233,41 @@ namespace Loom.ZombieBattleground.Data
         public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
         {
             return new InstanceId(cardInstance.Id);
+        }
+
+        public static ExperienceAction FromProtobuf(this Protobuf.ExperienceAction experienceAction)
+        {
+            return new ExperienceAction(
+                (Enumerators.ExperienceActionType) experienceAction.Action,
+                experienceAction.Experience
+            );
+        }
+
+        public static LevelReward FromProtobuf(this Protobuf.LevelReward levelReward)
+        {
+            switch (levelReward.RewardCase)
+            {
+                case Protobuf.LevelReward.RewardOneofCase.SkillReward:
+                    return new OverlordSkillRewardItem(levelReward.Level, levelReward.SkillReward.SkillIndex);
+                case Protobuf.LevelReward.RewardOneofCase.UnitReward:
+                    return new UnitRewardItem(levelReward.Level, (Enumerators.CardRank) levelReward.UnitReward.Rank, levelReward.UnitReward.Count);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public static OverlordLevelingData FromProtobuf(this Protobuf.OverlordLevelingData overlordLevelingData)
+        {
+            return new OverlordLevelingData(
+                overlordLevelingData.Rewards
+                    .Where(reward => reward.RewardCase != Protobuf.LevelReward.RewardOneofCase.None)
+                    .Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.ExperienceActions.Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.Fixed,
+                overlordLevelingData.ExperienceStep,
+                overlordLevelingData.GooRewardStep,
+                overlordLevelingData.MaxLevel
+            );
         }
     }
 }

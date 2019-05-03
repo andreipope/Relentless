@@ -1,6 +1,8 @@
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Protobuf;
 using Opencoding.CommandHandlerSystem;
+using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
@@ -54,6 +56,21 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ITutorialManager>().StopTutorial(true);
             GameClient.Get<IGameplayManager>().IsTutorial = false;
             GameClient.Get<IGameplayManager>().IsSpecificGameplayBattleground = false;
+        }
+
+        [CommandHandler(Description = "Get notifications from server")]
+        public static async void GetNotifications()
+        {
+            GetNotificationsResponse response = await GameClient.Get<BackendFacade>().GetNotifications(_backendDataControlMediator.UserDataModel.UserId);
+            Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
+        }
+
+        [CommandHandler(Description = "Clear notification on server")]
+        public static async void ClearNotification(int notificationId)
+        {
+            ClearNotificationsResponse response =
+                await GameClient.Get<BackendFacade>().ClearNotifications(_backendDataControlMediator.UserDataModel.UserId, new []{ notificationId });
+            Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
         }
     }
 }

@@ -62,26 +62,19 @@ namespace Loom.ZombieBattleground
 
             if (isCreatureAttacker)
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.6f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, Constants.DurationUnitAttacking);
             }
             else
             {
-                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, 0.7f);
+                partWay = Vector3.Lerp(originalPos + Vector3.back * 5f, target.transform.position + Vector3.back * 5f, Constants.DurationUnitAttacking);
             }
 
-            source.transform.DOMove(partWay, 0.10f).SetEase(Ease.InSine).OnComplete(
+            source.transform.DOMove(partWay, Constants.DurationEndUnitAttacking).SetEase(Ease.InSine).OnComplete(
                 () =>
                 {
                     target.transform.DOShakePosition(1, new Vector3(shakeStrength, shakeStrength, 0));
 
-                    Vector2 correctEndPosition = _boardController.GetCorrectPositionOfUnitOnBoard(boardUnitView.Model.Owner, boardUnitView);
-
-                    if(correctEndPosition == Vector2.zero)
-                    {
-                        correctEndPosition = originalPos;
-                    }
-
-                    source.transform.DOMove(correctEndPosition, duration).SetEase(Ease.OutSine).OnComplete(
+                    source.transform.DOMove(originalPos, duration).SetEase(Ease.OutSine).OnComplete(
                         () =>
                         {
                             onCompleteCallback?.Invoke();

@@ -164,7 +164,27 @@ namespace Loom.ZombieBattleground
             Enumerators.ActionType actionType = AffectObjectType == Enumerators.AffectObjectType.Player ?
                                 Enumerators.ActionType.CardAffectingOverlord : Enumerators.ActionType.CardAffectingCard;
 
-            HealTarget(boardObject, Value);
+            int value = Value;
+            if (CheckValueForRestoring(boardObject, ref value))
+            {
+                HealTarget(boardObject, value);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                            Target = boardObject,
+                            HasValue = true,
+                            Value = value
+                        }
+                    }
+                });
+            }
 
             InvokeUseAbilityEvent(
                 new List<ParametrizedAbilityBoardObject>
@@ -172,22 +192,6 @@ namespace Loom.ZombieBattleground
                     new ParametrizedAbilityBoardObject(boardObject)
                 }
             );
-
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
-            {
-                ActionType = actionType,
-                Caller = GetCaller(),
-                TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
-                {
-                    new PastActionsPopup.TargetEffectParam()
-                    {
-                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                        Target = boardObject,
-                        HasValue = true,
-                        Value = AbilityData.Value
-                    }
-                }
-            });
         }
 
         protected override void VFXAnimationEndedHandler()
@@ -241,21 +245,18 @@ namespace Loom.ZombieBattleground
                         break;
                 }
 
-                if (value > Value)
-                    value = Value;
-
-                if (value == 0)
-                    continue;
-
-                targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                if (CheckValueForRestoring(boardObject, ref value))
                 {
-                    ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
-                    Target = boardObject,
-                    HasValue = true,
-                    Value = value
-                });
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+                    {
+                        ActionEffectType = Enumerators.ActionEffectType.ShieldBuff,
+                        Target = boardObject,
+                        HasValue = true,
+                        Value = value
+                    });
 
-                HealTarget(boardObject, value);
+                    HealTarget(boardObject, value);
+                }
             }
 
             if (AbilityTrigger != Enumerators.AbilityTrigger.END)
@@ -288,6 +289,24 @@ namespace Loom.ZombieBattleground
                 default:
                     throw new ArgumentOutOfRangeException(nameof(AffectObjectType), AffectObjectType, null);
             }
+        }
+
+        private bool CheckValueForRestoring(BoardObject boardObject, ref int value)
+        {
+            switch (boardObject)
+            {
+                case BoardUnitModel unit:
+                    value = unit.MaxCurrentDefense - unit.CurrentDefense;
+                    break;
+                case Player player:
+                    value = player.MaxCurrentDefense - player.Defense;
+                    break;
+            }
+
+            if (value > Value)
+                value = Value;
+
+            return value != 0;
         }
     }
 }

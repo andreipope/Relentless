@@ -55,9 +55,9 @@ namespace Loom.ZombieBattleground
 
         private readonly IDataManager _dataManager;
 
-        private readonly IUIManager _uiManager;
+        private readonly INetworkActionManager _networkActionManager;
 
-        private readonly IQueueManager _queueManager;
+        private readonly IUIManager _uiManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
 
@@ -127,7 +127,7 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
-            _queueManager = GameClient.Get<IQueueManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
                                     state.Id == _backendDataControlMediator.UserDataModel.UserId
                                     );
 
-                    Log.Debug("InitialPvPPlayerState:\r\n" + Utilites.JsonPrettyPrint(InitialPvPPlayerState.ToString()));
+                    Log.Debug("InitialPvPPlayerState:\r\n" + JsonUtility.PrettyPrint(InitialPvPPlayerState.ToString()));
 
                     InitialCardsInHandCount = (uint) InitialPvPPlayerState.InitialCardsInHandCount;
                     MaxCardsInHand = (uint) InitialPvPPlayerState.MaxCardsInHand;
@@ -505,7 +505,7 @@ namespace Loom.ZombieBattleground
 
                         _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
                         {
-                            _queueManager.AddAction(
+                            _networkActionManager.EnqueueMessage(
                                 new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                     _backendDataControlMediator.UserDataModel.UserId,
                                     IsLocalPlayer ?
