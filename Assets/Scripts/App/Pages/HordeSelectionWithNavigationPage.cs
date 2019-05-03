@@ -441,6 +441,15 @@ namespace Loom.ZombieBattleground
         private Deck GetSelectedDeck()
         {
             List<Deck> deckList = GetDeckList();
+            if(deckList.Count <= 0)
+            {
+                SelectDeckIndex = 0;
+                return null;
+            }
+            else if(SelectDeckIndex < 0 || SelectDeckIndex >= deckList.Count)
+            {
+                SelectDeckIndex = 0;
+            }
             return deckList[SelectDeckIndex];
         }
 
