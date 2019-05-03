@@ -126,15 +126,7 @@ namespace Loom.ZombieBattleground.Test
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
-                    try
-                    {
-                        await LoomTestContext.BackendFacade.AddDeck(user, deck);
-                    }
-                    catch (Exception e)
-                    {
-                        Debug.LogException(e);
-                        throw;
-                    }
+                    await LoomTestContext.BackendFacade.AddDeck(user, deck);
                 });
             });
         }
