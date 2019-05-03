@@ -1149,17 +1149,18 @@ namespace Loom.ZombieBattleground
 
         public List<BoardUnitModel> GetAdjacentUnitsToUnit(BoardUnitModel targetUnit)
         {
-            IReadOnlyList<BoardUnitModel> boardCards = GetAliveUnits(targetUnit.OwnerPlayer.CardsOnBoard).ToList();
-
+            IReadOnlyList<BoardUnitModel> boardCards = targetUnit.OwnerPlayer.CardsOnBoard;
             int targetIndex = boardCards.IndexOf(targetUnit);
 
-            return boardCards.Where(unit =>
+            boardCards = boardCards.Where(unit =>
                     unit != targetUnit &&
                     (boardCards.IndexOf(unit) == Mathf.Clamp(targetIndex - 1, 0, boardCards.Count - 1) ||
                         boardCards.IndexOf(unit) == Mathf.Clamp(targetIndex + 1, 0, boardCards.Count - 1) &&
                         boardCards.IndexOf(unit) != targetIndex)
                 )
                 .ToList();
+
+            return GetAliveUnits(boardCards).ToList();
         }
 
         public BoardCardView CreateCustomHandBoardCard(BoardUnitModel boardUnitModel)

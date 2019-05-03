@@ -1210,11 +1210,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
-                InstanceId playerMountainId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cerberuz", 1);
+                InstanceId playerCerberuzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Cerberuz", 1);
                 InstanceId playerZlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
                 InstanceId playerZlab2Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 2);
                 InstanceId playerZlab3Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 3);
-                InstanceId opponentMountainId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cerberuz", 1);
+                InstanceId opponentCerberuzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Cerberuz", 1);
                 InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
                 InstanceId opponentZlab2Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 2);
                 InstanceId opponentZlab3Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 3);
@@ -1230,24 +1230,24 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                            player.CardPlay(playerZlabId, ItemPosition.Start);
                            player.CardPlay(playerZlab2Id, ItemPosition.Start);
                            player.CardPlay(playerZlab3Id, ItemPosition.Start);
-                           player.CardPlay(playerMountainId, ItemPosition.Start);
-                           player.CardAbilityUsed(playerMountainId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
+                           player.CardPlay(playerCerberuzId, ItemPosition.Start);
+                           player.CardAbilityUsed(playerCerberuzId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentZlabId, ItemPosition.Start);
                            opponent.CardPlay(opponentZlab2Id, ItemPosition.Start);
                            opponent.CardPlay(opponentZlab3Id, ItemPosition.Start);
-                           opponent.CardPlay(opponentMountainId, ItemPosition.Start);
-                           opponent.CardAbilityUsed(opponentMountainId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardPlay(opponentCerberuzId, ItemPosition.Start);
+                           opponent.CardAbilityUsed(opponentCerberuzId, Enumerators.AbilityType.SWING, new List<ParametrizedAbilityInstanceId>());
                        },
                        player =>
                        {
-                           player.CardAttack(playerMountainId, opponentZlab2Id);
+                           player.CardAttack(playerCerberuzId, opponentZlab2Id);
                        },
                        opponent =>
                        {
-                           opponent.CardAttack(opponentMountainId, playerZlab2Id);
+                           opponent.CardAttack(opponentCerberuzId, playerZlab2Id);
                            opponent.LetsThink(6);
                        }
                 };
