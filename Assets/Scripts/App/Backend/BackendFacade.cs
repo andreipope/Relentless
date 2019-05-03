@@ -161,7 +161,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         private const string GetAiDecksDataMethod = "GetAIDecks";
 
-        private const string ListDecksMethod = "ListDecks";
+        private const string ListDecksDataMethod = "ListDecks";
 
         private const string DeleteDeckMethod = "DeleteDeck";
 
@@ -177,7 +177,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.CallAsync<ListDecksResponse>(ListDecksMethod, request);
+            return await _contractCallProxy.CallAsync<ListDecksResponse>(ListDecksDataMethod, request);
         }
 
         public async Task<GetAIDecksResponse> GetAiDecks()
