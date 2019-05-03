@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         public ResolutionInfo CurrentResolution { get; private set; }
 
+        public event Action OnResolutionChanged;
+
         public void Dispose()
         {
         }
@@ -58,12 +60,12 @@ namespace Loom.ZombieBattleground
         {
             CurrentResolution = info;
 
-            Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen ? true : false);
-
-            SetScreenMode(CurrentScreenMode);
+            Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen);
 
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            OnResolutionChanged?.Invoke();
         }
 #endif
 
@@ -97,6 +99,20 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+
+            MakeResolutionHighestInFullScreenMode();
+        }
+        
+        private void MakeResolutionHighestInFullScreenMode()
+        {
+            if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
+            {
+                SetResolution(Resolutions[Resolutions.Count - 1]);
+            }
+            else
+            {
+                SetResolution(CurrentResolution);
+            }
         }
 
 #if !UNITY_ANDROID && !UNITY_IOS

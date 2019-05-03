@@ -61,6 +61,8 @@ namespace Loom.ZombieBattleground
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+
+            _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
         }
 
         public void Dispose()
@@ -404,5 +406,12 @@ namespace Loom.ZombieBattleground
             _soundManager.StopPlaying(Enumerators.SoundType.TUTORIAL);
             _soundManager.CrossfaidSound(Enumerators.SoundType.BACKGROUND, null, true);
         }
+        
+        private void RefreshSettingPopup()
+        {
+            Hide();
+            Show();
+        }
+
     }
 }
