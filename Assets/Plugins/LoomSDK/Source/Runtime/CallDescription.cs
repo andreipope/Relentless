@@ -20,5 +20,10 @@ namespace Loom.Client
             CalledMethodName = calledMethodName;
             IsStatic = isStatic;
         }
+
+        public override string ToString()
+        {
+            return $"{nameof(CalledMethodName)}: {CalledMethodName}, {nameof(IsStatic)}: {IsStatic}";
+        }
     }
 }
