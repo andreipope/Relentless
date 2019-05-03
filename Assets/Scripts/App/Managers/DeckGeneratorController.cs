@@ -56,6 +56,7 @@ namespace Loom.ZombieBattleground
 
         public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
         {
+            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
             deck.OverlordId = overlord.OverlordId;
             deck.PrimarySkill = overlord.PrimarySkill;
             deck.SecondarySkill = overlord.SecondarySkill;
@@ -98,12 +99,14 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
+                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
                 FinishAddDeck?.Invoke(success, deck);
             }
         }
 
         public async void ProcessEditDeck(Deck deck)
         {
+            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
             bool success = false;
             try
             {
@@ -153,12 +156,14 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
+                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
                 FinishEditDeck?.Invoke(success, deck);
             }
         }
 
         public async Task ProcessDeleteDeck(Deck deck)
         {
+            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Deleting Deck . . .");
             bool success = false;
             try
             {
@@ -191,6 +196,7 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
+                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
                 FinishDeleteDeck?.Invoke(success, deck);
             }
         }
