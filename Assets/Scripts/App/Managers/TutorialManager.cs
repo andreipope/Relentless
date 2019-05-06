@@ -1412,27 +1412,34 @@ namespace Loom.ZombieBattleground
             if (currentDeck == null)
                 return;
 
-            await _networkActionManager.EnqueueNetworkTask(async () =>
+            try
             {
-                _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
-                await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
-
-                await _backendFacade.DeleteDeck(
-                    _backendDataControlMediator.UserDataModel.UserId,
-                    currentDeck.Id
-                );
-
-                Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-            },
-                onUnknownExceptionCallbackFunc: exception =>
+                await _networkActionManager.EnqueueNetworkTask(async () =>
                 {
-                    _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + exception.Message);
-                    return Task.CompletedTask;
-                }
-            );
+                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+
+                    await _backendFacade.DeleteDeck(
+                        _backendDataControlMediator.UserDataModel.UserId,
+                        currentDeck.Id
+                    );
+
+                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                },
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + exception.Message);
+                        return Task.CompletedTask;
+                    }
+                );
+            }
+            catch
+            {
+                // No additional handling
+            }
         }
 
         private List<DeckCardData> GetCardsForStarterDeck()
