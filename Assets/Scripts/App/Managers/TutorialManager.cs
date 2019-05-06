@@ -1415,20 +1415,20 @@ namespace Loom.ZombieBattleground
             try
             {
                 await _networkActionManager.EnqueueNetworkTask(async () =>
-                {
-                    _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                    _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
-                    _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                    await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
+                    {
+                        _dataManager.CachedDecksData.Decks.Remove(currentDeck);
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                        _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+                        await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
-                    await _backendFacade.DeleteDeck(
-                        _backendDataControlMediator.UserDataModel.UserId,
-                        currentDeck.Id
-                    );
+                        await _backendFacade.DeleteDeck(
+                            _backendDataControlMediator.UserDataModel.UserId,
+                            currentDeck.Id
+                        );
 
-                    Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
-                },
+                        Log.Info($" ====== Delete Deck {currentDeck.Id} Successfully ==== ");
+                    },
                     onUnknownExceptionCallbackFunc: exception =>
                     {
                         _uiManager.DrawPopup<WarningPopup>($"Not able to Delete Deck {currentDeck.Id}: " + exception.Message);
