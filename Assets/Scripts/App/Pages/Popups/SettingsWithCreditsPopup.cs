@@ -61,8 +61,9 @@ namespace Loom.ZombieBattleground
             _applicationSettingsManager = GameClient.Get<IApplicationSettingsManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-
+#if !UNITY_ANDROID && !UNITY_IOS
             _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
+#endif
         }
 
         public void Dispose()
@@ -409,8 +410,13 @@ namespace Loom.ZombieBattleground
         
         private void RefreshSettingPopup()
         {
-            Hide();
-            Show();
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (Self != null)
+            {
+                _screenModeDropdown.value = (int)_applicationSettingsManager.CurrentScreenMode;
+                _resolutionDropdown.value = _applicationSettingsManager.Resolutions.IndexOf(_applicationSettingsManager.CurrentResolution);
+            }
+#endif
         }
 
     }
