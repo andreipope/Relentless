@@ -327,10 +327,13 @@ namespace Loom.ZombieBattleground
             RequestFiatValidationApple();
         }
         
-        private async void RequestFiatTransaction()
+        public async void RequestFiatTransaction(bool showLoadingPopup = true)
         {
             Log.Info($"{nameof(RequestFiatTransaction)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+            if (showLoadingPopup)
+            {
+                _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+            }
             
             List<FiatBackendManager.FiatTransactionResponse> recordList = null;
             try
@@ -357,8 +360,14 @@ namespace Loom.ZombieBattleground
                 log += i.TxID + ", ";
             }
             Log.Debug(log);
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestPack(recordList);            
+            if (showLoadingPopup)
+            {
+                _uiManager.HidePopup<LoadingFiatPopup>();
+            }            
+            if (recordList.Count > 0)
+            {
+                RequestPack(recordList);
+            }
         }
         
         private void WarningPopupRequestFiatTransaction()
@@ -403,15 +412,15 @@ namespace Loom.ZombieBattleground
                     );                    
                 }
             }
-            
-            _finishRequestPack();
+
+            _finishRequestPack?.Invoke();
         }
 
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
             await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
-            _uiManager.DrawPopup<LoadingFiatPopup>($"Success!");
+            _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s).");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
             GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
