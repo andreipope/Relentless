@@ -80,6 +80,28 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
+    public class ExperienceDeltaInfo
+    {
+        public int PreviousLevel { get; }
+
+        public long PreviousExperience { get; }
+
+        public int CurrentLevel { get; set; }
+
+        public long CurrentExperience { get; set; }
+
+        public IReadOnlyList<LevelReward> GotRewards { get; }
+
+        public ExperienceDeltaInfo(int previousLevel, long previousExperience, int currentLevel, long currentExperience, IReadOnlyList<LevelReward> gotRewards)
+        {
+            PreviousLevel = previousLevel;
+            PreviousExperience = previousExperience;
+            CurrentLevel = currentLevel;
+            CurrentExperience = currentExperience;
+            GotRewards = gotRewards;
+        }
+    }
+
     public class ExperienceInfo
     {
         public int LevelAtBegin { get; }

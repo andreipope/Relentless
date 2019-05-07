@@ -2,12 +2,15 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Helpers;
 using System.Linq;
+using log4net;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class CostsLessAbility : AbilityBase
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(CostsLessAbility));
+
         public int Cost;
         
         private ValueHistory _currentValue;
@@ -67,7 +70,7 @@ namespace Loom.ZombieBattleground
                     cost = Cost;
                 }
 
-                Debug.LogWarning("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+                Log.Warn("BOH " + cost + " " + Cost + " " + PlayerCallerOfAbility.IsLocalPlayer);
 
                 if (cost == Cost)
                 {
@@ -96,7 +99,7 @@ namespace Loom.ZombieBattleground
                             BoardCardView
                         );
 
-                        Debug.LogWarning("RESULT " + BoardUnitModel.CurrentCost + " " + PlayerCallerOfAbility.IsLocalPlayer);
+                        Log.Warn("RESULT " + BoardUnitModel.CurrentCost + " " + PlayerCallerOfAbility.IsLocalPlayer);
                     }
                 }
             }

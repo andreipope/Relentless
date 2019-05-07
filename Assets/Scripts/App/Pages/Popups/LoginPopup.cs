@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
+using Loom.ZombieBattleground.Data;
 using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
@@ -749,6 +750,15 @@ namespace Loom.ZombieBattleground
             {
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
+
+            (int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin) =
+                await GameClient.Get<IOverlordExperienceManager>().GetExperienceDeltaInfoFromEndMatchNotification();
+
+            if (experienceDeltaInfo != null)
+            {
+                _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { isWin });
+            }
+
             Hide();
             OnLoginSuccess?.Invoke();
         }

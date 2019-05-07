@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Loom.Google.Protobuf.Collections;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Helpers;
 using Loom.ZombieBattleground.Protobuf;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground.Data
 {
@@ -229,9 +227,9 @@ namespace Loom.ZombieBattleground.Data
                 );
         }
 
-        public static InstanceId FromProtobuf(this Protobuf.InstanceId cardInstance)
+        public static InstanceId FromProtobuf(this Protobuf.InstanceId id)
         {
-            return new InstanceId(cardInstance.Id);
+            return new InstanceId(id.Id);
         }
 
         public static ExperienceAction FromProtobuf(this Protobuf.ExperienceAction experienceAction)
@@ -258,15 +256,36 @@ namespace Loom.ZombieBattleground.Data
         public static OverlordLevelingData FromProtobuf(this Protobuf.OverlordLevelingData overlordLevelingData)
         {
             return new OverlordLevelingData(
-                overlordLevelingData.Rewards
-                    .Where(reward => reward.RewardCase != Protobuf.LevelReward.RewardOneofCase.None)
-                    .Select(reward => reward.FromProtobuf()).ToList(),
+                overlordLevelingData.Rewards.Select(reward => reward.FromProtobuf()).ToList(),
                 overlordLevelingData.ExperienceActions.Select(reward => reward.FromProtobuf()).ToList(),
                 overlordLevelingData.Fixed,
                 overlordLevelingData.ExperienceStep,
                 overlordLevelingData.GooRewardStep,
                 overlordLevelingData.MaxLevel
             );
+        }
+
+        public static Notification FromProtobuf(this Protobuf.Notification notification)
+        {
+            switch (notification.Type)
+            {
+                case NotificationType.Types.Enum.EndMatch:
+                    NotificationEndMatch notificationEndMatch = notification.EndMatch;
+                    return new EndMatchNotification(
+                        notification.Id,
+                        Utilites.UnixTimeStampToDateTime(notification.CreatedAt),
+                        notification.Seen,
+                        new OverlordId(notificationEndMatch.OverlordId),
+                        notificationEndMatch.OldLevel,
+                        notificationEndMatch.OldExperience,
+                        notificationEndMatch.NewLevel,
+                        notificationEndMatch.NewExperience,
+                        notificationEndMatch.IsWin,
+                        notificationEndMatch.Rewards.Select(reward => reward.FromProtobuf()).ToList()
+                        );
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

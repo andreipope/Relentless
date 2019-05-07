@@ -611,6 +611,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         private const string GetGameStateMethod = "GetGameState";
         private const string GetMatchMethod = "GetMatch";
         private const string RegisterPlayerPoolMethod = "RegisterPlayerPool";
+        private const string AddSoloExperienceMethod = "AddSoloExperience";
         private const string AcceptMatchMethod = "AcceptMatch";
         private const string KeepAliveStatusMethod = "KeepAlive";
 
@@ -748,6 +749,22 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
 
             return await _contractCallProxy.CallAsync<KeepAliveResponse>(KeepAliveStatusMethod, request);
+        }
+
+        public async Task<AddSoloExperienceResponse> AddSoloExperience(
+            string userId,
+            OverlordId overlordId,
+            long experience)
+        {
+            AddSoloExperienceRequest request = new AddSoloExperienceRequest
+            {
+                Version = BackendEndpoint.DataVersion,
+                UserId = userId,
+                OverlordId = overlordId.Id,
+                Experience = experience
+            };
+
+            return await _contractCallProxy.CallAsync<AddSoloExperienceResponse>(AddSoloExperienceMethod, request);
         }
 
         //attempt to implement a one message action policy

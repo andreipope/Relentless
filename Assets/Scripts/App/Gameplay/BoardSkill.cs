@@ -280,7 +280,7 @@ namespace Loom.ZombieBattleground
             }
 
             _overlordExperienceManager.ReportExperienceAction(
-                Enumerators.ExperienceActionType.KillOverlord,
+                Enumerators.ExperienceActionType.UseOverlordAbility,
                 OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchExperienceInfo : _overlordExperienceManager.OpponentMatchExperienceInfo
             );
 

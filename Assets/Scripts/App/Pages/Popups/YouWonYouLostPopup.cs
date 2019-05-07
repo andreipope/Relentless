@@ -8,14 +8,19 @@ using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using UnityEngine.Experimental.PlayerLoop;
 using System.Collections;
+using System.Runtime.Remoting;
 using System.Threading.Tasks;
 using DG.Tweening;
+using log4net;
 
 namespace Loom.ZombieBattleground
 {
     public class YouWonYouLostPopup : IUIPopup
     {
-        private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
+        private static readonly ILog Log = Logging.GetLog(nameof(YouWonYouLostPopup));
+
+        private const float ExperienceFillInterval = 1;
+        private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(ExperienceFillInterval);
 
         public GameObject Self { get; private set; }
 
@@ -37,6 +42,8 @@ namespace Loom.ZombieBattleground
 
         private IOverlordExperienceManager _overlordExperienceManager;
 
+        private IAppStateManager _appStateManager;
+
         private Button _buttonPlayAgain,
                        _buttonContinue;
 
@@ -51,13 +58,13 @@ namespace Loom.ZombieBattleground
                                 _textPlayerName,
                                 _textLevel;
 
-        private OverlordModel _currentPlayerOverlord;
+        private OverlordModel _currentPlayerOverlord1;
 
         private Coroutine _fillExperienceBarCoroutine;
 
         private bool _isWin;
 
-        private bool _isLevelUp;
+        private ExperienceDeltaInfo _experienceDeltaInfo;
 
         #region IUIPopup
 
@@ -70,6 +77,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _dataManager = GameClient.Get<IDataManager>();
+            _appStateManager = GameClient.Get<IAppStateManager>();
             _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _isWin = true;
@@ -124,7 +132,7 @@ namespace Loom.ZombieBattleground
 
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
             
-            _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            _currentPlayerOverlord1 = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
             _imageExperienceBar = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar").GetComponent<Image>();
 
@@ -133,49 +141,50 @@ namespace Loom.ZombieBattleground
             _imageOverlordPortrait = Self.transform.Find("Scaler/Image_OverlordPortrait").GetComponent<Image>();
             _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
             (
-                _currentPlayerOverlord.Faction
+                _currentPlayerOverlord1.Faction
             );
 
             _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textPlayerName = Self.transform.Find("Scaler/Group_PlayerInfo/Text_PlayerName").GetComponent<TextMeshProUGUI>();
             _textLevel = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Circle/Text_LevelNumber").GetComponent<TextMeshProUGUI>();
 
-            _isLevelUp = false;
-
             _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
             _textDeckName.text = deck.Name;
-            _textLevel.text = (_overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin).ToString();
 
             _imageLock.gameObject.SetActive(_tutorialManager.IsTutorial);
             _buttonContinue.gameObject.SetActive(_tutorialManager.IsTutorial);
             _buttonPlayAgain.gameObject.SetActive(false);
 
+            _experienceDeltaInfo = new ExperienceDeltaInfo(
+                _currentPlayerOverlord1.Level,
+                _currentPlayerOverlord1.Experience,
+                _currentPlayerOverlord1.Level,
+                _currentPlayerOverlord1.Experience,
+                Array.Empty<LevelReward>()
+            );
+
             if (_tutorialManager.IsTutorial)
             {
                 _imageExperienceBar.fillAmount = 0;
+                _textLevel.text = _overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin.ToString();
             }
             else
             {
-                GetOverlordLevel();
+                GetAndShowExperienceInfo();
             }
         }
 
-        private async Task GetOverlordLevel()
+        private async Task GetAndShowExperienceInfo()
         {
+            _textLevel.text = "";
             try
             {
-                await _overlordExperienceManager.UpdateLevelAndExperience(_currentPlayerOverlord);
-                float currentExperiencePercentage = (float)_overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin /
-                                                    _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord.Level);
-
-                _imageExperienceBar.fillAmount = currentExperiencePercentage;
-
-                FillingExperienceBar();
-
+                _experienceDeltaInfo = await _overlordExperienceManager.UpdateLevelAndExperience(_currentPlayerOverlord1);
+                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar());
             }
             catch (Exception e)
             {
-                Debug.LogError("failed to get overlord level " + e);
+                Log.Error("failed to get overlord level", e);
             }
         }
 
@@ -184,6 +193,10 @@ namespace Loom.ZombieBattleground
             if (data is object[] param)
             {
                 _isWin = (bool)param[0];
+            }
+            else
+            {
+                throw new ArgumentException(nameof(data));
             }
             Show();
         }
@@ -200,7 +213,7 @@ namespace Loom.ZombieBattleground
         {
             PlayClickSound();
 
-            if (!_tutorialManager.IsTutorial)
+            if (!_tutorialManager.IsTutorial && _appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
             {
                 MatchManager matchManager = (MatchManager)GameClient.Get<IMatchManager>();
                 matchManager.AppStateWasLoaded += PlayAgainWhenAppStateLoaded;
@@ -249,7 +262,10 @@ namespace Loom.ZombieBattleground
 
                 _uiManager.GetPopup<TutorialProgressInfoPopup>().PopupHiding += async () =>
                 {
-                    _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+                    {
+                        _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                    }
                     _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.TutorialProgressInfoPopupClosed);
                     GameClient.Get<ITutorialManager>().StopTutorial();
                     //if (_tutorialManager.CurrentTutorial.Id == Constants.LastTutorialId && !_dataManager.CachedUserLocalData.TutorialRewardClaimed)
@@ -261,7 +277,10 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+                {
+                    _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+                }
             }
         }
         
@@ -272,7 +291,10 @@ namespace Loom.ZombieBattleground
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.YouLosePopupClosed);
             }
 
-            GameClient.Get<IMatchManager>().FinishMatch(Enumerators.AppState.MAIN_MENU);
+            if (_appStateManager.AppState == Enumerators.AppState.GAMEPLAY)
+            {
+                _matchManager.FinishMatch(Enumerators.AppState.MAIN_MENU);
+            }
 
             _uiManager.HidePopup<YouWonYouLostPopup>();
             _soundManager.StopPlaying(Enumerators.SoundType.LOST_POPUP);
@@ -289,54 +311,36 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>().PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
         }
 
-        private void FillingExperienceBar()
+        private IEnumerator FillExperienceBar()
         {
-            if (_currentPlayerOverlord.Level > _overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin)
-            {
-                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBarWithLevelUp(_currentPlayerOverlord.Level));
-            }
-            else if (_currentPlayerOverlord.Experience > _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin)
-            {
-                float updatedExperiencePercetage = (float)_currentPlayerOverlord.Experience
-                    / _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord.Level);
+            float currentProgressRatio =
+                _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.PreviousLevel)
+                / (float) _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.PreviousLevel + 1);
 
-                _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar(updatedExperiencePercetage));
-            }
-            else
-            {
-                _buttonContinue.gameObject.SetActive(true);
-                _buttonPlayAgain.gameObject.SetActive(true);
-            }
-        }
+            float targetProgressRatio =
+                _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.CurrentLevel - 1)
+                / (float) _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.CurrentLevel);
 
-        private IEnumerator FillExperienceBar(float xpPercentage)
-        {
-            yield return _experienceFillWait;
-            _imageExperienceBar.DOFillAmount(xpPercentage, 1f);
+            _textLevel.text = _experienceDeltaInfo.PreviousLevel.ToString();
+            _imageExperienceBar.fillAmount = currentProgressRatio;
+            for (int level = _experienceDeltaInfo.PreviousLevel; level < _experienceDeltaInfo.CurrentLevel; level++)
+            {
+                _imageExperienceBar.DOFillAmount(1, ExperienceFillInterval);
+                yield return _experienceFillWait;
+                _imageExperienceBar.fillAmount = 0f;
+                _textLevel.text = (level + 1).ToString();
+            }
+
+            _imageExperienceBar.DOFillAmount(targetProgressRatio, ExperienceFillInterval);
 
             yield return _experienceFillWait;
             _buttonContinue.gameObject.SetActive(true);
             _buttonPlayAgain.gameObject.SetActive(true);
 
-            if (_isLevelUp)
+            if (_experienceDeltaInfo.CurrentLevel > _experienceDeltaInfo.PreviousLevel)
             {
                 _uiManager.DrawPopup<LevelUpPopup>();
             }
-        }
-
-        private IEnumerator FillExperienceBarWithLevelUp(int currentLevel)
-        {
-            yield return _experienceFillWait;
-            _imageExperienceBar.DOFillAmount(1, 1f);
-
-            yield return _experienceFillWait;
-
-            _imageExperienceBar.fillAmount = 0f;
-            _textLevel.text = (_overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin + 1).ToString();
-
-            _isLevelUp = true;
-
-            FillingExperienceBar();
         }
     }
 }

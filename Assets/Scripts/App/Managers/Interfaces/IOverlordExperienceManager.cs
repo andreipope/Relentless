@@ -14,8 +14,9 @@ namespace Loom.ZombieBattleground
 
         void ReportExperienceAction(Enumerators.ExperienceActionType actionType, ExperienceInfo experienceInfo);
 
-        long GetRequiredExperienceForNewLevel(int level);
+        long GetRequiredExperienceForLevel(int level);
 
-        Task UpdateLevelAndExperience(OverlordModel overlordModel);
+        Task<ExperienceDeltaInfo> UpdateLevelAndExperience(OverlordModel overlordModel);
+        Task<(int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin)> GetExperienceDeltaInfoFromEndMatchNotification();
     }
 }

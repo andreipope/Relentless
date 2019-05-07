@@ -1,5 +1,6 @@
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using Opencoding.CommandHandlerSystem;
 using UnityEngine;
@@ -32,7 +33,6 @@ namespace Loom.ZombieBattleground
             _backendDataControlMediator.SetUserDataModel(userDataModel);
 
             GameClient.Get<IUIManager>().GetPopup<LoginPopup>().Hide();
-
         }
 
         [CommandHandler(Description = "Skips tutorial if you inside it")]
@@ -71,6 +71,27 @@ namespace Loom.ZombieBattleground
             ClearNotificationsResponse response =
                 await GameClient.Get<BackendFacade>().ClearNotifications(_backendDataControlMediator.UserDataModel.UserId, new []{ notificationId });
             Debug.Log(JsonUtility.PrettyPrint(response.ToString()));
+        }
+
+        [CommandHandler(Description = "Add experience to an overlord")]
+        public static async void AddSoloExperience(int overlordId, int experience)
+        {
+            await GameClient.Get<BackendFacade>()
+                .AddSoloExperience(_backendDataControlMediator.UserDataModel.UserId, new OverlordId(overlordId), experience);
+
+            Debug.Log("Added experience");
+        }
+
+        [CommandHandler]
+        public static void ShowYouWonYouLostPopup(bool win)
+        {
+            GameClient.Get<IUIManager>().DrawPopup<YouWonYouLostPopup>(new object[] { win });
+        }
+
+        [CommandHandler]
+        public static void HideYouWonYouLostPopup()
+        {
+            GameClient.Get<IUIManager>().HidePopup<YouWonYouLostPopup>();
         }
     }
 }

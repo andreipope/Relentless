@@ -11,6 +11,7 @@ using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Protobuf;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
+using LevelReward = Loom.ZombieBattleground.Data.LevelReward;
 using OverlordLevelingData = Loom.ZombieBattleground.Data.OverlordLevelingData;
 using OverlordSkill = Loom.ZombieBattleground.Data.OverlordSkill;
 
@@ -61,24 +62,61 @@ namespace Loom.ZombieBattleground
             experienceInfo.ExperienceReceived += action.Experience;
         }
 
-        public long GetRequiredExperienceForNewLevel(int level)
+        public long GetRequiredExperienceForLevel(int level)
         {
-            return _dataManager.CachedOverlordLevelingData.Fixed + _dataManager.CachedOverlordLevelingData.ExperienceStep * (level + 1);
+            if (level <= 1)
+                return 0;
+
+            return _dataManager.CachedOverlordLevelingData.Fixed + _dataManager.CachedOverlordLevelingData.ExperienceStep * level;
         }
 
-        public async Task UpdateLevelAndExperience(OverlordModel overlordModel)
+        public async Task<ExperienceDeltaInfo> UpdateLevelAndExperience(OverlordModel overlordModel)
         {
-            try
+            (int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin) = await GetExperienceDeltaInfoFromEndMatchNotification();
+            if (experienceDeltaInfo != null)
             {
-                GetOverlordResponse getOverlordResponse = await _backendFacade.GetOverlord(_backendDataControlMediator.UserDataModel.UserId, overlordModel.Id);
-                OverlordModel updatedOverlordModel = getOverlordResponse.Overlord.FromProtobuf();
-                overlordModel.Experience = updatedOverlordModel.Experience;
-                overlordModel.Level = updatedOverlordModel.Level;
+                await _networkActionManager.EnqueueNetworkTask(
+                    async () =>
+                        await _backendFacade.ClearNotifications(_backendDataControlMediator.UserDataModel.UserId,new[]{ notificationId.Value }));
+
+                overlordModel.Level = experienceDeltaInfo.CurrentLevel;
+                overlordModel.Experience = experienceDeltaInfo.CurrentExperience;
             }
-            catch
+
+            Log.Warn("No EndMatchNotification, returning known values");
+            return new ExperienceDeltaInfo(
+                overlordModel.Level,
+                overlordModel.Experience,
+                overlordModel.Level,
+                overlordModel.Experience,
+                Array.Empty<LevelReward>()
+            );
+        }
+
+        public async Task<(int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin)> GetExperienceDeltaInfoFromEndMatchNotification()
+        {
+            GetNotificationsResponse notificationsResponse = null;
+            await _networkActionManager.EnqueueNetworkTask(async () =>
+                notificationsResponse = await _backendFacade.GetNotifications(_backendDataControlMediator.UserDataModel.UserId));
+
+            List<Notification> notifications = notificationsResponse.Notifications.Select(n => n.FromProtobuf()).ToList();
+            foreach (Notification notification in notifications)
             {
-                // No special handling
+                if (!(notification is EndMatchNotification endMatchNotification))
+                    continue;
+
+                ExperienceDeltaInfo experienceDeltaInfo = new ExperienceDeltaInfo(
+                    endMatchNotification.OldLevel,
+                    endMatchNotification.OldExperience,
+                    endMatchNotification.NewLevel,
+                    endMatchNotification.NewExperience,
+                    endMatchNotification.Rewards
+                );
+
+                return (notification.Id, experienceDeltaInfo, endMatchNotification.IsWin);
             }
+
+            return (null, null, false);
         }
 
         /*private void SaveSkillInDecks(int overlordId, OverlordSkill skill)

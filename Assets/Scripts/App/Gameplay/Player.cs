@@ -57,6 +57,8 @@ namespace Loom.ZombieBattleground
 
         private readonly INetworkActionManager _networkActionManager;
 
+        private readonly BackendFacade _backendFacade;
+
         private readonly IUIManager _uiManager;
 
         private readonly BackendDataControlMediator _backendDataControlMediator;
@@ -115,7 +117,6 @@ namespace Loom.ZombieBattleground
 
         private int _turnsLeftToFreeFromStun;
 
-
         public Player(Data.InstanceId instanceId, GameObject playerObject, bool isOpponent)
         {
             InstanceId = instanceId;
@@ -130,6 +131,7 @@ namespace Loom.ZombieBattleground
             _pvpManager = GameClient.Get<IPvPManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _networkActionManager = GameClient.Get<INetworkActionManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
             _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
@@ -399,7 +401,7 @@ namespace Loom.ZombieBattleground
 
         public void InvokeTurnStarted()
         {
-            if (_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer == this)
             {
                 GooVials++;
                 CurrentGoo = GooVials + CurrentGooModificator + ExtraGoo;
@@ -510,29 +512,49 @@ namespace Loom.ZombieBattleground
                 InternalTools.DoActionDelayed(() =>
                 {
                     _gameplayManager.EndGame(IsLocalPlayer ? Enumerators.EndGameType.LOSE : Enumerators.EndGameType.WIN);
-                    if (!IsLocalPlayer && _matchManager.MatchType == Enumerators.MatchType.PVP)
+                    if (!IsLocalPlayer)
                     {
-                        _actionsQueueController.ClearActions();
-
-                        _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                        if (_matchManager.MatchType == Enumerators.MatchType.PVP)
                         {
-                            _networkActionManager.EnqueueMessage(
-                                new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
-                                    _backendDataControlMediator.UserDataModel.UserId,
-                                    IsLocalPlayer ?
-                                        _pvpManager.GetOpponentUserId() :
-                                        _backendDataControlMediator.UserDataModel.UserId,
-                                    new[]
-                                    {
-                                        GameClient.Get<IOverlordExperienceManager>().PlayerMatchExperienceInfo
-                                            .ExperienceReceived,
-                                        GameClient.Get<IOverlordExperienceManager>().OpponentMatchExperienceInfo
-                                            .ExperienceReceived
-                                    })
-                            );
+                            _actionsQueueController.ClearActions();
 
-                            completeCallback?.Invoke();
-                        }, Enumerators.QueueActionType.EndMatch);
+                            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+                                {
+                                    _networkActionManager.EnqueueMessage(
+                                        new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
+                                            _backendDataControlMediator.UserDataModel.UserId,
+                                            IsLocalPlayer ?
+                                                _pvpManager.GetOpponentUserId() :
+                                                _backendDataControlMediator.UserDataModel.UserId,
+                                            new[]
+                                            {
+                                                _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived,
+                                                _overlordExperienceManager.OpponentMatchExperienceInfo
+                                                    .ExperienceReceived
+                                            })
+                                    );
+
+                                    completeCallback?.Invoke();
+                                },
+                                Enumerators.QueueActionType.EndMatch);
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            _networkActionManager.EnqueueNetworkTask(async () =>
+                            {
+                                await _backendFacade.AddSoloExperience(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    SelfOverlord.Id,
+                                    _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived);
+                            });
+                        }
+                        catch
+                        {
+                            // No special handling
+                        }
                     }
                 }, 2f);
             }
