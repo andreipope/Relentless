@@ -84,6 +84,11 @@
         },
         {
           "indexed": false,
+          "name": "userId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
           "name": "hash",
           "type": "bytes32"
         },
@@ -134,6 +139,10 @@
       "constant": false,
       "inputs": [
         {
+          "name": "userID",
+          "type": "uint256"
+        },
+        {
           "name": "r",
           "type": "bytes32"
         },
@@ -150,7 +159,7 @@
           "type": "bytes32"
         },
         {
-          "name": "amount",
+          "name": "amounts",
           "type": "uint256"
         }
       ],
