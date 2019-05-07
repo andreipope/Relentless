@@ -166,7 +166,7 @@ namespace Loom.ZombieBattleground
             {
                 await _overlordExperienceManager.UpdateLevelAndExperience(_currentPlayerOverlord);
                 float currentExperiencePercentage = (float)_overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin /
-                                                    _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
+                                                    _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord.Level);
 
                 _imageExperienceBar.fillAmount = currentExperiencePercentage;
 
@@ -298,7 +298,7 @@ namespace Loom.ZombieBattleground
             else if (_currentPlayerOverlord.Experience > _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin)
             {
                 float updatedExperiencePercetage = (float)_currentPlayerOverlord.Experience
-                    / _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
+                    / _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord.Level);
 
                 _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar(updatedExperiencePercetage));
             }
