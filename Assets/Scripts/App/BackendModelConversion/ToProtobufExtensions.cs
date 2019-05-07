@@ -66,7 +66,12 @@ namespace Loom.ZombieBattleground.Data
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
                 Defense2 = ability.Defense2,
-                Cost = ability.Cost
+                Cost = ability.Cost,
+                TargetCardKind = (CardKind.Types.Enum) ability.TargetKind,
+                TargetGameMechanicDescriptionTypes =
+                {
+                    ability.TargetGameMechanicDescriptions.Select(m => (GameMechanicDescription.Types.Enum) m)
+                }
             };
 
             return abilityData;

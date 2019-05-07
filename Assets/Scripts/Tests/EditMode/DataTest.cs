@@ -102,6 +102,7 @@ namespace Loom.ZombieBattleground.Test
                 {
                     new Skill
                     {
+                        Id = 333,
                         Title = "title",
                         IconPath = "supericon",
                         Description = "desc",
@@ -123,9 +124,11 @@ namespace Loom.ZombieBattleground.Test
                             Protobuf.Faction.Types.Enum.Life
                         },
                         Unlocked = true,
-                        CanSelectTarget = true
+                        CanSelectTarget = true,
+                        SingleUse = true
                     }
-                }
+                },
+                InitialDefense = 50
             };
 
             OverlordModel client = new OverlordModel(
@@ -140,7 +143,7 @@ namespace Loom.ZombieBattleground.Test
                 new List<Data.OverlordSkill>
                 {
                     new Data.OverlordSkill(
-                        0,
+                        333,
                         "title",
                         "supericon",
                         "desc",
@@ -163,10 +166,10 @@ namespace Loom.ZombieBattleground.Test
                         },
                         true,
                         true,
-                        false
+                        true
                     )
                 },
-                20
+                50
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());
@@ -215,8 +218,12 @@ namespace Loom.ZombieBattleground.Test
                     choosableAbilities,
                     7,
                     8,
-                    Enumerators.CardKind.UNDEFINED,
-                    new List<Enumerators.GameMechanicDescription>()
+                    Enumerators.CardKind.CREATURE,
+                    new List<Enumerators.GameMechanicDescription>
+                    {
+                        Enumerators.GameMechanicDescription.Death,
+                        Enumerators.GameMechanicDescription.Aura
+                    }
                 );
         }
     }

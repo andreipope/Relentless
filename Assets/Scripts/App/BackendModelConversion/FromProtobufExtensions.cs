@@ -107,7 +107,7 @@ namespace Loom.ZombieBattleground.Data
                 (int) overlord.Level,
                 (Enumerators.Faction) overlord.Faction,
                 overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                (int) overlord.InitialDefense
+                overlord.InitialDefense
             );
         }
 

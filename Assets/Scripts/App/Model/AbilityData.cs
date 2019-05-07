@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground.Data
             List<ChoosableAbility> choosableAbilities,
             int defense2,
             int cost,
-            Enumerators.CardKind targetCardkind,
+            Enumerators.CardKind targetKind,
             List<Enumerators.GameMechanicDescription> targetGameMechanicDescriptionTypes
             )
         {
@@ -144,7 +144,7 @@ namespace Loom.ZombieBattleground.Data
             ChoosableAbilities = choosableAbilities ?? new List<ChoosableAbility>();
             Defense2 = defense2;
             Cost = cost;
-            TargetKind = targetCardkind;
+            TargetKind = targetKind;
             TargetGameMechanicDescriptions = targetGameMechanicDescriptionTypes;
         }
 
