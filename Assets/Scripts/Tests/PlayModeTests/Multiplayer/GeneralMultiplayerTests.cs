@@ -16,6 +16,7 @@ using InstanceId = Loom.ZombieBattleground.Data.InstanceId;
 
 namespace Loom.ZombieBattleground.Test.MultiplayerTests
 {
+    [Ignore("Outdated")]
     public class GeneralMultiplayerTests : BaseIntegrationTest
     {
         private static readonly ILog Log = Logging.GetLog(nameof(GeneralMultiplayerTests));
