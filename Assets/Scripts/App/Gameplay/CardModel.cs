@@ -348,7 +348,7 @@ namespace Loom.ZombieBattleground
 
         public void HandleDefenseBuffer(int damage)
         {
-            if(CurrentDefense - damage <= 0 && !HasBuffShield)
+            if(CurrentDefense - Mathf.Min(damage, MaximumDamageFromAnySource) <= 0 && !HasBuffShield)
             {
                 SetUnitActiveStatus(false);
             }

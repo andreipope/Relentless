@@ -1247,8 +1247,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        opponent =>
                        {
                            opponent.CardAttack(opponentCerberuzId, playerZlab2Id);
-                           opponent.LetsThink(6);
-                       }
+                           opponent.LetsThink(15);
+                       },
+                       player => {},
+                       opponent => {}
                 };
 
                 Action validateEndState = () =>
