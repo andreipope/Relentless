@@ -54,12 +54,9 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
+        public async void ProcessAddDeck(Deck deck)
         {
             GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
-            deck.OverlordId = overlord.OverlordId;
-            deck.PrimarySkill = overlord.PrimarySkill;
-            deck.SecondarySkill = overlord.SecondarySkill;
 
             bool success = false;
             try
@@ -230,7 +227,7 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             Enumerators.Faction faction = overlord.Faction;
 
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);

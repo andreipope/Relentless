@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private readonly PlayerController _playerController;
 
         private readonly SkillsController _skillsController;
@@ -88,6 +90,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -269,15 +272,17 @@ namespace Loom.ZombieBattleground
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
 
+
+
             if (OwnerPlayer.IsLocalPlayer)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.UseOverlordAbility, false);
             }
-            else
-            {
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.UseOverlordAbility, true);
-            }
+
+            _overlordExperienceManager.ReportExperienceAction(
+                Enumerators.ExperienceActionType.KillOverlord,
+                OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchExperienceInfo : _overlordExperienceManager.OpponentMatchExperienceInfo
+            );
 
             if (_gameplayManager.UseInifiniteAbility)
             {

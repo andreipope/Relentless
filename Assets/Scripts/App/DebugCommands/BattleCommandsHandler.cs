@@ -21,7 +21,7 @@ static class BattleCommandsHandler
     private static CardsController _cardsController;
     private static AIController _aiController;
     private static IDataManager _dataManager;
-    private static IOverlordExperienceManager _overlordManager;
+    private static IOverlordExperienceManager _overlordExperienceManager;
     private static IUIManager _uiManager;
     private static BackendFacade _backendFacade;
     private static BackendDataControlMediator _backendDataControlMediator;
@@ -32,7 +32,7 @@ static class BattleCommandsHandler
 
         _gameplayManager = GameClient.Get<IGameplayManager>();
         _dataManager = GameClient.Get<IDataManager>();
-        _overlordManager = GameClient.Get<IOverlordExperienceManager>();
+        _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
         _uiManager = GameClient.Get<IUIManager>();
         _backendFacade = GameClient.Get<BackendFacade>();
         _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
@@ -204,56 +204,6 @@ static class BattleCommandsHandler
         }
 
         player.CurrentGoo = gooAmount;
-    }
-
-    [CommandHandler(Description = "Adds xp to an overlord. ")]
-    private static void AddXP([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int xpAmount)
-    {
-        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords.Find(x => x.Name == overlordName);
-
-        if (overlord == null)
-        {
-            Log.Error("Overlord not found");
-            return;
-        }
-
-        if (xpAmount <= 0)
-        {
-            Log.Error("Xp Amount should be higher than zero");
-            return;
-        }
-
-        _overlordManager.InitializeExperienceInfoInMatch(overlord);
-
-        //_overlordManager.ApplyExperience(overlord, xpAmount);
-        if (overlord.Level > _overlordManager.PlayerMatchExperienceInfo.LevelAtBegin)
-        {
-            _uiManager.DrawPopup<LevelUpPopup>();
-        }
-    }
-
-    [CommandHandler(Description = "Adds level to an overlord. ")]
-    private static async Task SetOverlordLevel([Autocomplete(typeof(BattleCommandsHandler), "OverlordsNames")] string overlordName, int level)
-    {
-        OverlordModel overlord = _dataManager.CachedOverlordData.Overlords
-            .Find(x => x.Name == overlordName);
-
-        if (overlord == null)
-        {
-            Log.Error("Overlord not found");
-            return;
-        }
-
-        if (level <= 0 || level > 20)
-        {
-            Log.Error("Level cant be set less than 1 nor max than 20");
-            return;
-        }
-
-        overlord.Level = level;
-
-        //await _backendFacade.SetOverlordLevel(_backendDataControlMediator.UserDataModel.UserId, overlord.OverlordId, overlord.Level);
-        _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
 
     public static IEnumerable<string> OverlordsNames()
@@ -724,8 +674,14 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Show Player and Opponent XP")]
     private static void ShowPlayerAndOpponentXP()
     {
-        Debug.Log("Player Experience = " + _overlordManager.PlayerMatchExperienceInfo.ExperienceReceived);
-        Debug.Log("Opponent Experience = " + _overlordManager.OpponentMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Player Experience = " + _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Opponent Experience = " + _overlordExperienceManager.OpponentMatchExperienceInfo.ExperienceReceived);
     }
 
+    [CommandHandler(Description = "Set Player and Opponent XP")]
+    private static void SetPlayerAndOpponentXP(int playerExperience, int opponentExperience)
+    {
+        _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived = playerExperience;
+        _overlordExperienceManager.OpponentMatchExperienceInfo.ExperienceReceived = opponentExperience;
+    }
 }

@@ -197,7 +197,7 @@ namespace Loom.ZombieBattleground
             
             _myDeckPage.CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[_selectOverlordIndex];
             _myDeckPage.AssignNewDeck();   
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill);            
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill);            
         }
 
         #endregion

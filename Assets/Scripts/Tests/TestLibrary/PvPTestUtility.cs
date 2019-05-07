@@ -213,7 +213,7 @@ namespace Loom.ZombieBattleground.Test
         {
             Deck deck = new Deck(
                  0,
-                 overlordId,
+                 new OverlordId(overlordId),
                  name,
                  cards.Select(card => card.ToDeckCardData()).ToList(),
                  Enumerators.Skill.NONE,

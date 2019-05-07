@@ -225,8 +225,7 @@ namespace Loom.ZombieBattleground
 
         private OverlordModel GetOverlordDataFromDeck(Deck deck)
         {
-            int overlordId = deck.OverlordId;
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[overlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
         

@@ -82,12 +82,18 @@ namespace Loom.ZombieBattleground.Data
 
     public class ExperienceInfo
     {
-        public int LevelAtBegin { get; set; }
+        public int LevelAtBegin { get; }
 
-        public long ExperienceAtBegin { get; set; }
+        public long ExperienceAtBegin { get; }
 
         public long ExperienceReceived { get; set; }
 
-        public List<LevelReward> GotRewards { get; set; }
+        public List<LevelReward> GotRewards { get; }
+
+        public ExperienceInfo(int levelAtBegin, long experienceAtBegin)
+        {
+            LevelAtBegin = levelAtBegin;
+            ExperienceAtBegin = experienceAtBegin;
+        }
     }
 }

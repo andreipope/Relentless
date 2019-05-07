@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using JetBrains.Annotations;
 using Loom.ZombieBattleground.Common;
@@ -15,11 +16,16 @@ namespace Loom.ZombieBattleground.Data
         {
             Overlords = overlords ?? throw new ArgumentNullException(nameof(overlords));
         }
+
+        public OverlordModel GetOverlordById(OverlordId id)
+        {
+            return Overlords.Single(model => model.Id == id);
+        }
     }
 
     public class OverlordModel
     {
-        public int OverlordId { get; }
+        public OverlordId Id { get; }
 
         public string Icon { get; }
 
@@ -37,14 +43,10 @@ namespace Loom.ZombieBattleground.Data
 
         public List<OverlordSkill> Skills { get; }
 
-        public Enumerators.Skill PrimarySkill;
-
-        public Enumerators.Skill SecondarySkill;
-
         public string FullName => $"{Name}, {ShortDescription}";
 
         public OverlordModel(
-            int overlordId,
+            OverlordId id,
             string icon,
             string name,
             string shortDescription,
@@ -52,12 +54,9 @@ namespace Loom.ZombieBattleground.Data
             long experience,
             int level,
             Enumerators.Faction faction,
-            List<OverlordSkill> skills,
-
-            Enumerators.Skill primarySkill,
-            Enumerators.Skill secondarySkill)
+            List<OverlordSkill> skills)
         {
-            OverlordId = overlordId;
+            Id = id;
             Icon = icon;
             Name = name;
             ShortDescription = shortDescription;
@@ -66,8 +65,6 @@ namespace Loom.ZombieBattleground.Data
             Level = level;
             Faction = faction;
             Skills = skills ?? new List<OverlordSkill>();
-            PrimarySkill = primarySkill;
-            SecondarySkill = secondarySkill;
         }
 
         public OverlordSkill GetSkill(Enumerators.Skill skill)

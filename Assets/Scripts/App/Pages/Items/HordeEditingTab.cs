@@ -412,7 +412,7 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill);
+            _myDeckPage.ChangeTab(HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill);
         }
 
         private void ButtonAutoHandler()
@@ -744,7 +744,7 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck == null)
                 return;
 
-            OverlordModel overlordData = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            OverlordModel overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
             if (FactionAgainstDictionary[overlordData.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
@@ -1120,7 +1120,7 @@ namespace Loom.ZombieBattleground
         private void UpdateOverlordAbilitiesButton()
         {
             Deck deck = _myDeckPage.CurrentEditDeck;
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[_myDeckPage.CurrentEditDeck.OverlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
             if(deck.PrimarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
@@ -1265,10 +1265,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetAvailableFactions()
         {
-            Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.Overlords
-            [
-                _myDeckPage.CurrentEditDeck.OverlordId
-            ].Faction;
+            Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId).Faction;
 
             _againstFaction = FactionAgainstDictionary[overlordFaction];
             Enumerators.Faction firstFaction = _tutorialManager.IsTutorial ?
@@ -1537,11 +1534,11 @@ namespace Loom.ZombieBattleground
             if(_myDeckPage.IsEditingNewDeck)
             {
                 deckGeneratorController.FinishAddDeck += FinishAddDeck;
-                deckGeneratorController.ProcessAddDeck
-                (
-                    _myDeckPage.CurrentEditDeck,
-                    _myDeckPage.CurrentEditOverlord
-                );
+                _myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Id;
+                _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedPrimarySkill;
+                _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedSecondarySkill;
+
+                deckGeneratorController.ProcessAddDeck(_myDeckPage.CurrentEditDeck);
             }
             else
             {

@@ -12,6 +12,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private ActionsQueueController _actionsQueueController;
 
         private AbilitiesController _abilitiesController;
@@ -30,6 +32,7 @@ namespace Loom.ZombieBattleground
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
@@ -319,10 +322,10 @@ namespace Loom.ZombieBattleground
         {
             if (attackedUnit.CurrentDefense == 0)
             {
-                if(!attackedUnit.OwnerPlayer.IsLocalPlayer)
-                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.KillMinion, false);
-                else
-                    GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Enumerators.ExperienceActionType.KillMinion, true);
+                _overlordExperienceManager.ReportExperienceAction(
+                    Enumerators.ExperienceActionType.KillMinion,
+                    attackedUnit.OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchExperienceInfo : _overlordExperienceManager.OpponentMatchExperienceInfo
+                    );
             }
         }
 

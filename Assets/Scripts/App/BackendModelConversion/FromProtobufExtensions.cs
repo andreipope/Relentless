@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground.Data
         public static OverlordModel FromProtobuf(this Protobuf.Overlord overlord)
         {
             return new OverlordModel(
-                (int) overlord.OverlordId,
+                new OverlordId(overlord.OverlordId),
                 overlord.Icon,
                 overlord.Name,
                 overlord.ShortDescription,
@@ -106,9 +106,7 @@ namespace Loom.ZombieBattleground.Data
                 overlord.Experience,
                 (int) overlord.Level,
                 (Enumerators.Faction) overlord.Faction,
-                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
-                (Enumerators.Skill)overlord.PrimarySkill,
-                (Enumerators.Skill)overlord.SecondarySkill
+                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList()
             );
         }
 
@@ -146,7 +144,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Deck(
                 deck.Id,
-                (int) deck.OverlordId,
+                new OverlordId(deck.OverlordId),
                 deck.Name,
                 deck.Cards.Select(card => card.FromProtobuf()).ToList(),
                 (Enumerators.Skill)deck.PrimarySkill,

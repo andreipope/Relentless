@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -124,8 +127,6 @@ namespace Loom.ZombieBattleground
             Player player = new Player(instanceId, GameObject.Find("Player"), false);
 
             _gameplayManager.CurrentPlayer = player;
-
-            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfOverlord);
 
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&

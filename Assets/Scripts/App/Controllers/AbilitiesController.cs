@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private CardsController _cardsController;
 
         private PlayerController _playerController;
@@ -55,6 +57,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
@@ -475,7 +478,7 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
-                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, false);
+                                           _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchExperienceInfo);
 
                                            boardUnitModel.Owner.PlayerCardsController.RemoveCardFromHand(boardUnitModel, true);
                                            boardUnitModel.Owner.PlayerCardsController.AddCardToGraveyard(boardUnitModel);
@@ -1233,7 +1236,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
 
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, false);
+                _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchExperienceInfo);
 
                 card.Model.Card.Owner.PlayerCardsController.RemoveCardFromHand(card.Model);
 

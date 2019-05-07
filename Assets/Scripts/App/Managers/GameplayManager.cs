@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private List<IController> _controllers = new List<IController>();
@@ -262,6 +264,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _matchManager.MatchFinished += MatchFinishedHandler;
@@ -354,6 +357,7 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
+            _overlordExperienceManager.InitializeMatchExperience(CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord);
 
             if (IsTutorial)
             {

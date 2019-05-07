@@ -244,12 +244,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
         }
 
-        public async Task<GetOverlordResponse> GetOverlordLevel(string userId, int overlordId)
+        public async Task<GetOverlordResponse> GetOverlord(string userId, OverlordId overlordId)
         {
             GetOverlordRequest request = new GetOverlordRequest()
             {
                 UserId = userId,
-                OverlordId = overlordId
+                OverlordId = overlordId.Id
             };
 
             return await _contractCallProxy.StaticCallAsync<GetOverlordResponse>(GetOverlordMethod, request);

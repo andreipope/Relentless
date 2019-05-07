@@ -222,8 +222,8 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.PlayerDeckId = CurrentDeckId;
 
-            int overlordId = -1;
-            int overlordHeroId = -1;
+            OverlordId? overlordId = null;
+            OverlordId? overlordHeroId = null;
 
             switch (_matchManager.MatchType)
             {
@@ -263,11 +263,11 @@ namespace Loom.ZombieBattleground
                     {
                         if (playerState.Id == _backendDataControlMediator.UserDataModel.UserId)
                         {
-                            overlordId = (int)playerState.Deck.OverlordId;
+                            overlordId = new OverlordId(playerState.Deck.OverlordId);
                         }
                         else
                         {
-                            overlordHeroId = (int)playerState.Deck.OverlordId;
+                            overlordHeroId = new OverlordId(playerState.Deck.OverlordId);
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
                             _gameplayManager.OpponentDeckId = -1;
                         }
@@ -277,14 +277,14 @@ namespace Loom.ZombieBattleground
                     throw new ArgumentOutOfRangeException();
             }
 
-            if (overlordId == -1)
-                throw new Exception($"{nameof(overlordId)} == -1");
+            if (overlordId == null)
+                throw new Exception($"{nameof(overlordId)} == null");
 
-            if (overlordHeroId == -1)
-                throw new Exception($"{nameof(overlordHeroId)} == -1");
+            if (overlordHeroId == null)
+                throw new Exception($"{nameof(overlordHeroId)} == null");
 
-            _playerOverlord = _dataManager.CachedOverlordData.Overlords[overlordId];
-            _opponentOverlord = _dataManager.CachedOverlordData.Overlords[overlordHeroId];
+            _playerOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordId.Value);
+            _opponentOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordHeroId.Value);
 
             _playerDeckStatusTexture = GameObject.Find("Player/Deck_Illustration/Deck").GetComponent<SpriteRenderer>();
             _opponentDeckStatusTexture =

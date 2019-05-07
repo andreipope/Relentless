@@ -94,7 +94,7 @@ namespace Loom.ZombieBattleground
             Rename = 1,
             Editing = 2,
             SelectOverlord = 3,
-            SelecOverlordSkill = 4,
+            SelectOverlordSkill = 4,
         }
         
         private Tab _tab;
@@ -456,7 +456,7 @@ namespace Loom.ZombieBattleground
         public void AssignCurrentDeck()
         { 
             CurrentEditDeck = GetSelectedDeck().Clone();
-            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords[CurrentEditDeck.OverlordId];
+            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Id == CurrentEditDeck.OverlordId);
             IsEditingNewDeck = false;
         }
 
@@ -476,7 +476,7 @@ namespace Loom.ZombieBattleground
         {
             Deck deck = new Deck(
                 -1,
-                CurrentEditOverlord.OverlordId,
+                CurrentEditOverlord.Id,
                 GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
                 new List<DeckCardData>(),
                 0,
@@ -501,7 +501,7 @@ namespace Loom.ZombieBattleground
                 newTab == Tab.Editing || 
                 newTab == Tab.Rename ||
                 newTab == Tab.SelectOverlord ||
-                newTab == Tab.SelecOverlordSkill
+                newTab == Tab.SelectOverlordSkill
             );
             
             UpdateShowAutoButton
@@ -524,7 +524,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Tab.SelectOverlord:                    
                     break;
-                case Tab.SelecOverlordSkill:
+                case Tab.SelectOverlordSkill:
                     _textSelectOverlordSkillDeckname.text = CurrentEditDeck.Name;
                     break;
                 default:
@@ -593,9 +593,11 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = new List<Deck>();
             for (int i = 0; i < deckList.Count; ++i)
             {
-                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deckList[i].OverlordId];
-                if( faction == overlord.Faction )
-                        deckListToDisplay.Add(deckList[i]);                
+                OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deckList[i].OverlordId);
+                if (faction == overlord.Faction)
+                {
+                    deckListToDisplay.Add(deckList[i]);
+                }
             }
 
             return deckListToDisplay;
@@ -758,7 +760,7 @@ namespace Loom.ZombieBattleground
                 
                 string deckName = deck.Name;
                 int cardsAmount = deck.GetNumCards();
-                OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+                OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
                 deckInfoObject.TextDeckName.text = deckName;
                 if (_tutorialManager.IsTutorial)

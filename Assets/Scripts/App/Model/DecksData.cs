@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground.Data
         public long Id { get; set; }
 
         [JsonProperty("HeroId")]
-        public int OverlordId { get; set; }
+        public OverlordId OverlordId { get; set; }
 
         public string Name { get; set; }
 
@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground.Data
 
         public Deck(
             long id,
-            int overlordId,
+            OverlordId overlordId,
             string name,
             List<DeckCardData> cards,
 

@@ -31,7 +31,7 @@ namespace Loom.ZombieBattleground.Test
         {
             Deck original = new Deck(
                 1,
-                2,
+                new OverlordId(2),
                 "deck name",
                 new List<DeckCardData>
                 {
@@ -125,13 +125,11 @@ namespace Loom.ZombieBattleground.Test
                         Unlocked = true,
                         CanSelectTarget = true
                     }
-                },
-                PrimarySkill = Protobuf.OverlordSkill.Types.Enum.HealingTouch,
-                SecondarySkill = Protobuf.OverlordSkill.Types.Enum.Mend
+                }
             };
 
             OverlordModel client = new OverlordModel(
-                1,
+                new OverlordId(1),
                 "icon",
                 "name",
                 "short desc",
@@ -167,9 +165,7 @@ namespace Loom.ZombieBattleground.Test
                         true,
                         false
                     )
-                },
-                Enumerators.Skill.HEALING_TOUCH,
-                Enumerators.Skill.MEND
+                }
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());

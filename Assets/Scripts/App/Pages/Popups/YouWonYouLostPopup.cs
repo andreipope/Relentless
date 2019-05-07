@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
         
         private IDataManager _dataManager;
 
-        private IOverlordExperienceManager _overlordManager;
+        private IOverlordExperienceManager _overlordExperienceManager;
 
         private Button _buttonPlayAgain,
                        _buttonContinue;
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _dataManager = GameClient.Get<IDataManager>();
-            _overlordManager = GameClient.Get<IOverlordExperienceManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _isWin = true;
         }
@@ -124,7 +124,7 @@ namespace Loom.ZombieBattleground
 
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
             
-            _currentPlayerOverlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
             _imageExperienceBar = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar").GetComponent<Image>();
 
@@ -142,11 +142,9 @@ namespace Loom.ZombieBattleground
 
             _isLevelUp = false;
 
-            //_overlordManager.ApplyExperienceFromMatch(_currentPlayerOverlord);
-
             _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
             _textDeckName.text = deck.Name;
-            _textLevel.text = (_overlordManager.PlayerMatchExperienceInfo.LevelAtBegin).ToString();
+            _textLevel.text = (_overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin).ToString();
 
             _imageLock.gameObject.SetActive(_tutorialManager.IsTutorial);
             _buttonContinue.gameObject.SetActive(_tutorialManager.IsTutorial);
@@ -166,9 +164,9 @@ namespace Loom.ZombieBattleground
         {
             try
             {
-                await _overlordManager.GetLevelAndRewards(_currentPlayerOverlord);
-                float currentExperiencePercentage = (float)_overlordManager.PlayerMatchExperienceInfo.ExperienceAtBegin /
-                                                    _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
+                await _overlordExperienceManager.UpdateLevelAndExperience(_currentPlayerOverlord);
+                float currentExperiencePercentage = (float)_overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin /
+                                                    _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
 
                 _imageExperienceBar.fillAmount = currentExperiencePercentage;
 
@@ -293,14 +291,14 @@ namespace Loom.ZombieBattleground
 
         private void FillingExperienceBar()
         {
-            if (_currentPlayerOverlord.Level > _overlordManager.PlayerMatchExperienceInfo.LevelAtBegin)
+            if (_currentPlayerOverlord.Level > _overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin)
             {
                 _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBarWithLevelUp(_currentPlayerOverlord.Level));
             }
-            else if (_currentPlayerOverlord.Experience > _overlordManager.PlayerMatchExperienceInfo.ExperienceAtBegin)
+            else if (_currentPlayerOverlord.Experience > _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceAtBegin)
             {
                 float updatedExperiencePercetage = (float)_currentPlayerOverlord.Experience
-                    / _overlordManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
+                    / _overlordExperienceManager.GetRequiredExperienceForNewLevel(_currentPlayerOverlord);
 
                 _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar(updatedExperiencePercetage));
             }
@@ -333,10 +331,8 @@ namespace Loom.ZombieBattleground
 
             yield return _experienceFillWait;
 
-            _overlordManager.PlayerMatchExperienceInfo.LevelAtBegin++;
-
             _imageExperienceBar.fillAmount = 0f;
-            _textLevel.text = _overlordManager.PlayerMatchExperienceInfo.LevelAtBegin.ToString();
+            _textLevel.text = (_overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin + 1).ToString();
 
             _isLevelUp = true;
 

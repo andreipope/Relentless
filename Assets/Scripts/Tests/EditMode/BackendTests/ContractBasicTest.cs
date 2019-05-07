@@ -87,7 +87,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(0, new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.BackendFacade.AddDeck(user, deck);
             });
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground.Test
             return LoomTestContext.ContractAsyncTest(async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(0, new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         new DeckCardData(new MouldId(1), 100500)
                     };
-                Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
+                Deck deck = new Deck(0, new OverlordId(0), "Gaurav", cards, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(1, 0, "Default", null, 0, 0);
+                Deck deck = new Deck(1, new OverlordId(0), "Default", null, 0, 0);
                 await LoomTestContext.BackendFacade.EditDeck(user, deck);
             });
         }
@@ -150,7 +150,7 @@ namespace Loom.ZombieBattleground.Test
             return LoomTestContext.ContractAsyncTest(async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(0, new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(123, 0, "GauravRandomDeck", null, 0, 0);
+                Deck deck = new Deck(123, new OverlordId(0), "GauravRandomDeck", null, 0, 0);
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
                     await LoomTestContext.BackendFacade.EditDeck(user, deck);

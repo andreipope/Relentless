@@ -147,7 +147,7 @@ namespace Loom.ZombieBattleground
                 if (_cheatUI._pvpManager.DebugCheats.CustomDeck == null)
                 {
                     _cheatUI._pvpManager.DebugCheats.CustomDeck =
-                        new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                        new Deck(-1, new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
                 }
 
                 foreach (Card card in cardsLibraryData.Cards)
@@ -260,10 +260,10 @@ namespace Loom.ZombieBattleground
                         customDeck.SecondarySkill = DrawEnumPopup(customDeck.SecondarySkill, _secondarySkillPopup);
 
                         GUILayout.Label("Overlord Id");
-                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.ToString());
+                        string overlordIdString = GUILayout.TextField(customDeck.OverlordId.Id.ToString());
                         if (int.TryParse(overlordIdString, out int newOverlordId))
                         {
-                            customDeck.OverlordId = newOverlordId;
+                            customDeck.OverlordId = new OverlordId(newOverlordId);
                         }
                     }
                     GUILayout.EndVertical();

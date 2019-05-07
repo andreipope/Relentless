@@ -7,14 +7,15 @@ namespace Loom.ZombieBattleground
     public interface IOverlordExperienceManager
     {
         ExperienceInfo PlayerMatchExperienceInfo { get; }
+
         ExperienceInfo OpponentMatchExperienceInfo { get; }
 
-        long GetRequiredExperienceForNewLevel(OverlordModel overlord);
-        void ReportExperienceAction(Enumerators.ExperienceActionType actionType, bool isOpponent);
-        LevelReward GetLevelReward(OverlordModel overlord);
+        void InitializeMatchExperience(OverlordModel playerOverlord, OverlordModel opponentOverlord);
 
-        void InitializeExperienceInfoInMatch(OverlordModel overlord);
-        void InitializeOpponentExperienceInfoInMatch(OverlordModel overlord);
-        Task GetLevelAndRewards(OverlordModel overlord);
+        void ReportExperienceAction(Enumerators.ExperienceActionType actionType, ExperienceInfo experienceInfo);
+
+        long GetRequiredExperienceForNewLevel(int level);
+
+        Task UpdateLevelAndExperience(OverlordModel overlordModel);
     }
 }

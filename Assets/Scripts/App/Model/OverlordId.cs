@@ -1,20 +1,22 @@
 using System;
+using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data
 {
     /// <summary>
-    /// Represents a unique skill identifier.
+    /// Represents a unique overlord ID.
     /// </summary>
-    public struct SkillId : IId<long>, IEquatable<SkillId>
+    [JsonConverter(typeof(JsonIdConverter<OverlordId, long>))]
+    public struct OverlordId : IId<long>, IEquatable<OverlordId>
     {
         public long Id { get; }
 
-        public SkillId(long id)
+        public OverlordId(long id)
         {
             Id = id;
         }
 
-        public bool Equals(SkillId other)
+        public bool Equals(OverlordId other)
         {
             return Id == other.Id;
         }
@@ -22,7 +24,7 @@ namespace Loom.ZombieBattleground.Data
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is SkillId other && Equals(other);
+            return obj is OverlordId other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -30,19 +32,19 @@ namespace Loom.ZombieBattleground.Data
             return Id.GetHashCode();
         }
 
-        public static bool operator ==(SkillId left, SkillId right)
+        public static bool operator ==(OverlordId left, OverlordId right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(SkillId left, SkillId right)
+        public static bool operator !=(OverlordId left, OverlordId right)
         {
             return !left.Equals(right);
         }
 
         public override string ToString()
         {
-            return $"(SkillId: {Id})";
+            return $"({nameof(OverlordId)}: {Id})";
         }
     }
 }

@@ -16,6 +16,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private BattlegroundController _battlegroundController;
 
         private Action _ranksUpgradeCompleteAction;
@@ -30,6 +32,7 @@ namespace Loom.ZombieBattleground
         {
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
             _unitsForIgnoreRankBuff = new List<BoardUnitModel>();
         }
@@ -72,8 +75,7 @@ namespace Loom.ZombieBattleground
                        {
                            DoRankUpgrades(filter, boardUnitModel);
 
-                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(
-                            Common.Enumerators.ExperienceActionType.ActivateRankAbility, false);
+                           _overlordExperienceManager.ReportExperienceAction(Enumerators.ExperienceActionType.ActivateRankAbility, _overlordExperienceManager.PlayerMatchExperienceInfo);
 
                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.RanksUpdated);
                        }
