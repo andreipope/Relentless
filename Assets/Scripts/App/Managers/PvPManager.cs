@@ -251,9 +251,9 @@ namespace Loom.ZombieBattleground
                 {
                     await _networkActionManager.EnqueueNetworkTask(LoadInitialGameState, keepCurrentAppState: true);
                 }
-                catch (Exception e)
+                catch
                 {
-                    Log.Warn(e);
+                    // No additional handling
                     return;
                 }
             }
@@ -279,9 +279,9 @@ namespace Loom.ZombieBattleground
                     }
                 );
             }
-            catch (Exception e)
+            catch
             {
-                Log.Warn(e);
+                // No additional handling
             }
         }
 

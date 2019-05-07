@@ -88,6 +88,7 @@ namespace Loom.ZombieBattleground
             foreach (BoardUnitModel target in _units)
             {
                 target.HandleDefenseBuffer(target.CurrentDefense);
+                target.SetUnitActiveStatus(false);
             }
 
             InvokeActionTriggered(_units);

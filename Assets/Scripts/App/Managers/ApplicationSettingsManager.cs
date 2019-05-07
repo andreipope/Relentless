@@ -99,10 +99,12 @@ namespace Loom.ZombieBattleground
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-
+#if !UNITY_ANDROID && !UNITY_IOS 
             MakeResolutionHighestInFullScreenMode();
+#endif
         }
-        
+  
+#if !UNITY_ANDROID && !UNITY_IOS      
         private void MakeResolutionHighestInFullScreenMode()
         {
             if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
@@ -115,7 +117,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-#if !UNITY_ANDROID && !UNITY_IOS
         private void FillResolutions()
         {
             Resolutions = new List<ResolutionInfo>();
