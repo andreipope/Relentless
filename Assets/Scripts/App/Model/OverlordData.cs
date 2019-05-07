@@ -41,6 +41,8 @@ namespace Loom.ZombieBattleground.Data
 
         public Enumerators.Skill SecondarySkill;
 
+        public int Defense;
+
         public string FullName => $"{Name}, {ShortDescription}";
 
         public OverlordModel(
@@ -55,7 +57,8 @@ namespace Loom.ZombieBattleground.Data
             List<OverlordSkill> skills,
 
             Enumerators.Skill primarySkill,
-            Enumerators.Skill secondarySkill)
+            Enumerators.Skill secondarySkill,
+            int defense)
         {
             OverlordId = overlordId;
             Icon = icon;
@@ -68,6 +71,7 @@ namespace Loom.ZombieBattleground.Data
             Skills = skills ?? new List<OverlordSkill>();
             PrimarySkill = primarySkill;
             SecondarySkill = secondarySkill;
+            Defense = defense;
         }
 
         public OverlordSkill GetSkill(Enumerators.Skill skill)

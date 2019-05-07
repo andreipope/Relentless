@@ -169,7 +169,8 @@ namespace Loom.ZombieBattleground.Test
                     )
                 },
                 Enumerators.Skill.HEALING_TOUCH,
-                Enumerators.Skill.MEND
+                Enumerators.Skill.MEND,
+                defense:20
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());

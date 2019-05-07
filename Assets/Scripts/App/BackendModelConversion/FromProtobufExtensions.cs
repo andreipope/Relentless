@@ -108,7 +108,8 @@ namespace Loom.ZombieBattleground.Data
                 (Enumerators.Faction) overlord.Faction,
                 overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
                 (Enumerators.Skill)overlord.PrimarySkill,
-                (Enumerators.Skill)overlord.SecondarySkill
+                (Enumerators.Skill)overlord.SecondarySkill,
+                (int)overlord.Defense
             );
         }
 
