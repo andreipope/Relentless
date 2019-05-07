@@ -43,6 +43,8 @@ namespace Loom.ZombieBattleground.Data
 
         public List<OverlordSkill> Skills { get; }
 
+        public int InitialDefense { get; }
+
         public string FullName => $"{Name}, {ShortDescription}";
 
         public OverlordModel(
@@ -54,7 +56,8 @@ namespace Loom.ZombieBattleground.Data
             long experience,
             int level,
             Enumerators.Faction faction,
-            List<OverlordSkill> skills)
+            List<OverlordSkill> skills,
+            int initialDefense)
         {
             Id = id;
             Icon = icon;
@@ -65,16 +68,12 @@ namespace Loom.ZombieBattleground.Data
             Level = level;
             Faction = faction;
             Skills = skills ?? new List<OverlordSkill>();
+            InitialDefense = initialDefense;
         }
 
         public OverlordSkill GetSkill(Enumerators.Skill skill)
         {
             return Skills.Find(x => x.Skill == skill);
-        }
-
-        public OverlordSkill GetSkill(int index)
-        {
-            return Skills[index];
         }
     }
 

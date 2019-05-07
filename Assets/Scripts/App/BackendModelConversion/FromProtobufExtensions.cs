@@ -106,7 +106,8 @@ namespace Loom.ZombieBattleground.Data
                 overlord.Experience,
                 (int) overlord.Level,
                 (Enumerators.Faction) overlord.Faction,
-                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList()
+                overlord.Skills.Select(skill => skill.FromProtobuf()).ToList(),
+                (int) overlord.InitialDefense
             );
         }
 

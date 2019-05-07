@@ -165,7 +165,8 @@ namespace Loom.ZombieBattleground.Test
                         true,
                         false
                     )
-                }
+                },
+                20
             );
 
             client.ShouldDeepEqual(protobuf.FromProtobuf());
