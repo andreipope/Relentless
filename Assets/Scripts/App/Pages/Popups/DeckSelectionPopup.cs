@@ -213,7 +213,9 @@ namespace Loom.ZombieBattleground
         public Deck GetSelectedDeck()
         {
             if (_deckList != null && _deckList.Count > 0)
+            {
                 return _deckList.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            }
 
             return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
         }
