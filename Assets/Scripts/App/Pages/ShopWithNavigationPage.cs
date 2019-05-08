@@ -40,6 +40,8 @@ namespace Loom.ZombieBattleground
         private FiatBackendManager.FiatProduct _productData;
 
         private string _currencyPrefix;
+
+        private List<FiatBackendManager.FiatTransactionResponse> _cacheFiatTransactionRecordList;
         
         #region IUIElement
         
@@ -51,6 +53,7 @@ namespace Loom.ZombieBattleground
             _itemButtonList = new List<Button>();
             _textItemNameList = new List<TextMeshProUGUI>();
             _textItemPriceList = new List<TextMeshProUGUI>();
+            _cacheFiatTransactionRecordList = new List<FiatBackendManager.FiatTransactionResponse>();
 
             InitPurchaseLogic();
             LoadProductData();         
@@ -66,6 +69,7 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
 
+            _cacheFiatTransactionRecordList.Clear();
             UpdatePageScaleToMatchResolution();
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
@@ -105,6 +109,8 @@ namespace Loom.ZombieBattleground
                 
             if (_textItemPriceList != null)
                 _textItemPriceList.Clear();  
+                
+            _cacheFiatTransactionRecordList.Clear();
         }
         
         #endregion
@@ -366,6 +372,7 @@ namespace Loom.ZombieBattleground
             }            
             if (recordList.Count > 0)
             {
+                _cacheFiatTransactionRecordList = recordList.ToList();
                 RequestPack(recordList);
             }
         }
@@ -378,27 +385,33 @@ namespace Loom.ZombieBattleground
             RequestFiatTransaction();
         }
         
-        private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> sortedRecordList)
+        private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> recordList)
         {            
-            Log.Debug("START REQUEST for packs");
-            List<FiatBackendManager.FiatTransactionResponse> requestList = new List<FiatBackendManager.FiatTransactionResponse>();
-            for (int i = 0; i < sortedRecordList.Count; ++i)
-            {
-                requestList.Add(sortedRecordList[i]);
-            }
+            Log.Debug("START REQUEST for packs");            
 
-            for (int i = 0; i < requestList.Count; ++i)
+            for (int i = 0; i < recordList.Count; ++i)
             {
-                FiatBackendManager.FiatTransactionResponse record = requestList[i];
+                FiatBackendManager.FiatTransactionResponse record = recordList[i];
 
                 Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
                 _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
 
                 string eventResponse = "";
 
-                eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
+                try
+                {
+                    eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
+                }
+                catch
+                {                    
+                    _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;
+                    _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");   
+                    return;
+                }
                 Log.Debug($"Contract [requestPacks] success call.");
                 Log.Debug($"EVENT RESPONSE: {eventResponse}");
+                _cacheFiatTransactionRecordList.Remove(record);
+                
                 if (!string.IsNullOrEmpty(eventResponse))
                 {
                     Log.Debug("FINISH REQUEST for packs");
@@ -414,6 +427,17 @@ namespace Loom.ZombieBattleground
             }
 
             _finishRequestPack?.Invoke();
+        }
+        
+        private void WarningPopupRequestPack(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;
+            if(status && _cacheFiatTransactionRecordList.Count > 0)
+            {
+                RequestPack(_cacheFiatTransactionRecordList);
+                return;
+            }
+            _uiManager.HidePopup<LoadingFiatPopup>();            
         }
 
         private async void OnFinishRequestPack()
