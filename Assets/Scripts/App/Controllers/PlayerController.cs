@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card, false)).ToArray();
+                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
                 player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
                 Resources.UnloadUnusedAssets();
             }
