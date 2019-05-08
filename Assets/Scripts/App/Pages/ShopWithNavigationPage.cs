@@ -432,12 +432,13 @@ namespace Loom.ZombieBattleground
         private void WarningPopupRequestPack(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;
+            _uiManager.HidePopup<LoadingFiatPopup>();         
+            
             if(status && _cacheFiatTransactionRecordList.Count > 0)
             {
                 RequestPack(_cacheFiatTransactionRecordList);
                 return;
-            }
-            _uiManager.HidePopup<LoadingFiatPopup>();            
+            }               
         }
 
         private async void OnFinishRequestPack()

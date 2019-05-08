@@ -51,9 +51,7 @@ namespace Loom.ZombieBattleground
         
         private bool _isEventTriggered = false;      
         
-        private string _eventResponse;           
-        
-        private const int MaxRequestRetryAttempt = 5;
+        private string _eventResponse;                   
     
         public void Init()
         {           
@@ -97,49 +95,40 @@ namespace Loom.ZombieBattleground
             }
             Log.Info( $"Calling smart contract [{RequestPacksMethod}]");
             
-            int count = 0;
-            while (true)
+            _isEventTriggered = false;
+            _eventResponse = ""; 
+            try
             {
-                _isEventTriggered = false;
-                _eventResponse = ""; 
-                try
-                {
 
-                    await contract.CallAsync
-                    (
-                        RequestPacksMethod,
-                        contractParams.UserId,
-                        contractParams.r,
-                        contractParams.s,
-                        contractParams.v,
-                        contractParams.hash,
-                        contractParams.amount,
-                        contractParams.TxID
-                    );
-                    Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
-                    for (int i = 0; i < 10; ++i)
+                await contract.CallAsync
+                (
+                    RequestPacksMethod,
+                    contractParams.UserId,
+                    contractParams.r,
+                    contractParams.s,
+                    contractParams.v,
+                    contractParams.hash,
+                    contractParams.amount,
+                    contractParams.TxID
+                );
+                Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
+                for (int i = 0; i < 10; ++i)
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(1));
+                    Log.Info($"<color=green>Wait {i + 1} sec</color>");
+                    if (_isEventTriggered)
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(1));
-                        Log.Info($"<color=green>Wait {i + 1} sec</color>");
-                        if (_isEventTriggered)
-                        {
-                            return _eventResponse;
-                        }
+                        return _eventResponse;
                     }
-                    Log.Info($"Wait for [requestPacks] response too long");
                 }
-                catch
-                {
-                    Log.Info($"smart contract [{RequestPacksMethod}] error or reverted");
-                    await Task.Delay(TimeSpan.FromSeconds(1)); 
-                }
-                ++count;
-                Log.Info($"Retry {RequestPacksMethod}: {count}");
-                if(count > MaxRequestRetryAttempt)
-                {
-                    throw new Exception($"{nameof(CallRequestPacksContract)} failed after {count} attempts");
-                }
+                Log.Info($"[{RequestPacksMethod}] takes longer response than expected.");
+                throw new Exception($"[{RequestPacksMethod}] takes longer response than expected.");
             }
+            catch
+            {
+                Log.Info($"smart contract [{RequestPacksMethod}] error or reverted");
+                throw new Exception($"smart contract [{RequestPacksMethod}] error or reverted");
+            }           
         }
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
