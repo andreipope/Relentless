@@ -61,7 +61,7 @@ namespace Loom.Client
             EventHandler<MessageReceivedEventArgs> messageHandler = null;
             closeHandler = (sender, e) =>
             {
-                tcs.TrySetException(CreateExceptionForClosedEvent(e));
+                tcs.TrySetException(CreateExceptionForEvent(e));
             };
 
             messageHandler = (sender, e) =>
@@ -119,29 +119,39 @@ namespace Loom.Client
             var tcs = new TaskCompletionSource<object>();
             EventHandler openHandler = null;
             EventHandler closeHandler = null;
+            EventHandler<ErrorEventArgs> errorHandler = null;
             openHandler = (sender, e) =>
             {
                 this.webSocket.Opened -= openHandler;
                 this.webSocket.Closed -= closeHandler;
+                this.webSocket.Error -= errorHandler;
                 tcs.TrySetResult(null);
                 this.Logger.Log(LogTag, "Connected to " + this.url.AbsoluteUri);
             };
             closeHandler = (sender, e) =>
             {
-                tcs.SetException(CreateExceptionForClosedEvent(e));
+                this.webSocket.Opened -= openHandler;
+                this.webSocket.Closed -= closeHandler;
+                this.webSocket.Error -= errorHandler;
+                if (tcs.Task.IsCompleted)
+                    return;
+
+                tcs.SetException(CreateExceptionForEvent(e));
             };
-            this.webSocket.Opened += openHandler;
-            this.webSocket.Closed += closeHandler;
-            try
-            {
-                this.webSocket.Open();
-            }
-            catch
+            errorHandler = (sender, e) =>
             {
                 this.webSocket.Opened -= openHandler;
                 this.webSocket.Closed -= closeHandler;
-                throw;
-            }
+                this.webSocket.Error -= errorHandler;
+                if (tcs.Task.IsCompleted)
+                    return;
+
+                tcs.SetException(CreateExceptionForEvent(e));
+            };
+            this.webSocket.Opened += openHandler;
+            this.webSocket.Closed += closeHandler;
+            this.webSocket.Error += errorHandler;
+            this.webSocket.Open();
             return tcs.Task;
         }
 
@@ -292,15 +302,18 @@ namespace Loom.Client
             }
         }
 
-        private RpcClientException CreateExceptionForClosedEvent(EventArgs eventArgs)
+        private RpcClientException CreateExceptionForEvent(EventArgs eventArgs)
         {
             if (eventArgs is ClosedEventArgs closedEventArgs)
             {
                 return new RpcClientException($"WebSocket closed unexpectedly with error {closedEventArgs.Code}: {closedEventArgs.Reason}", closedEventArgs.Code, this);
+            } else if (eventArgs is ErrorEventArgs errorEventArgs)
+            {
+                return new RpcClientException("WebSocket closed unexpectedly with error", errorEventArgs.Exception, -1,this);
             }
             else
             {
-                return new RpcClientException($"WebSocket closed unexpectedly with unknown error", -1, this);
+                return new RpcClientException("WebSocket closed unexpectedly with unknown error", -1, this);
             }
         }
     }
