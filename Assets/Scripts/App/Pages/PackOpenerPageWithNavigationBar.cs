@@ -269,6 +269,8 @@ namespace Loom.ZombieBattleground
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
             _uiManager.DrawPopup<AreaBarPopup>();
+
+            _uiManager.GetPage<ShopWithNavigationPage>().RequestFiatTransaction(false);
         }
         
         public void Hide()

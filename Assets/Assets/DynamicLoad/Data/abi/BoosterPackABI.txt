@@ -1,7 +1,9 @@
 [
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "mintingFinished",
       "outputs": [
         {
@@ -15,7 +17,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "name",
       "outputs": [
         {
@@ -52,7 +56,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "totalSupply",
       "outputs": [
         {
@@ -93,7 +99,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "INITIAL_SUPPLY",
       "outputs": [
         {
@@ -107,7 +115,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "decimals",
       "outputs": [
         {
@@ -163,16 +173,22 @@
     },
     {
       "constant": false,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "renounceOwnership",
-      "outputs": [],
+      "outputs": [
+        
+      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
       "constant": false,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "finishMinting",
       "outputs": [
         {
@@ -186,7 +202,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "owner",
       "outputs": [
         {
@@ -200,7 +218,9 @@
     },
     {
       "constant": true,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "symbol",
       "outputs": [
         {
@@ -290,7 +310,9 @@
         }
       ],
       "name": "transferOwnership",
-      "outputs": [],
+      "outputs": [
+        
+      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
@@ -329,7 +351,9 @@
     },
     {
       "anonymous": false,
-      "inputs": [],
+      "inputs": [
+        
+      ],
       "name": "MintFinished",
       "type": "event"
     },
@@ -438,7 +462,9 @@
         }
       ],
       "name": "addValidator",
-      "outputs": [],
+      "outputs": [
+        
+      ],
       "payable": false,
       "stateMutability": "nonpayable",
       "type": "function"
