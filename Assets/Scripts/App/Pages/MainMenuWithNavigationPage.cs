@@ -155,21 +155,25 @@ namespace Loom.ZombieBattleground
         }
 
         #endregion
-        
+
         public void StartMatch()
         {
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.BattleStarted);
             }
-            
+
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+            if (deck == null)
+            {
+                deck = _uiManager.GetPopup<DeckSelectionPopup>().GetDefaultDeck();
+            }
             _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             GameClient.Get<IMatchManager>().FindMatch();
 
             _buttonPlay.interactable = false;
-            
+
             // Wait for 1 frame to prevent multiple trigger on button
             Sequence waitSequence = DOTween.Sequence();
             waitSequence.AppendInterval(Time.fixedDeltaTime);

@@ -207,17 +207,24 @@ namespace Loom.ZombieBattleground
             UpdateSelectedDeckData
             (
                 _deckList.Find(x => x.Id == deckId)
-            );            
+            );
         }
-        
+
         public Deck GetSelectedDeck()
         {
             if (_deckList != null && _deckList.Count > 0)
+            {
                 return _deckList.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
-            else
-                return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
+            }
+
+            return _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
         }
-        
+
+        public Deck GetDefaultDeck()
+        {
+            return _dataManager.CachedDecksData.Decks[0];
+        }
+
         public List<Deck> GetDeckList()
         {
             return _deckList;

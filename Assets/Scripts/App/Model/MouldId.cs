@@ -7,7 +7,7 @@ namespace Loom.ZombieBattleground.Data
     /// Represents a unique card mould id.
     /// </summary>
     [JsonConverter(typeof(MouldIdConverter))]
-    public struct MouldId : IEquatable<MouldId>
+    public struct MouldId : IEquatable<MouldId>, IComparable<MouldId>
     {
         public long Id { get; }
 
@@ -51,6 +51,11 @@ namespace Loom.ZombieBattleground.Data
         {
             return left.Id != right;
         }*/
+
+        public int CompareTo(MouldId other)
+        {
+            return Id.CompareTo(other.Id);
+        }
 
         public override string ToString()
         {
