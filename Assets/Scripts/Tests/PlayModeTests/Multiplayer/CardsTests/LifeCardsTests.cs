@@ -783,41 +783,40 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     new TestCardData("Everlazting", 1),
-                    new TestCardData("Zlab", 10)
+                    new TestCardData("Zeeder", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     new TestCardData("Everlazting", 1),
-                    new TestCardData("Zlab", 10)
+                    new TestCardData("Zeeder", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerEverlaztingId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Everlazting", 1);
-                InstanceId playerZlabId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zlab", 1);
+                InstanceId playerZeederId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeeder", 1);
                 InstanceId opponentEverlaztingId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Everlazting", 1);
-                InstanceId opponentZlabId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zlab", 1);
+                InstanceId opponentZeederId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zeeder", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
                        player => {},
                        opponent =>
                        {
-                           opponent.CardPlay(opponentZlabId, ItemPosition.Start);
                            opponent.CardPlay(opponentEverlaztingId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentEverlaztingId, Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK, new List<ParametrizedAbilityInstanceId>());
+                           opponent.CardPlay(opponentZeederId, ItemPosition.Start, opponentEverlaztingId);
                        },
                        player =>
                        {
-                           player.CardPlay(playerZlabId, ItemPosition.Start);
                            player.CardPlay(playerEverlaztingId, ItemPosition.Start);
                            player.CardAbilityUsed(playerEverlaztingId, Enumerators.AbilityType.SHUFFLE_THIS_CARD_TO_DECK, new List<ParametrizedAbilityInstanceId>());
+                           player.CardPlay(playerZeederId, ItemPosition.Start, playerEverlaztingId);
                        },
                        opponent =>
                        {
-                           opponent.CardAttack(opponentEverlaztingId, playerZlabId);
+                           opponent.CardAttack(opponentEverlaztingId, playerEverlaztingId);
                        },
                        player => {
-                           player.CardAttack(playerEverlaztingId, opponentZlabId);
                        },
                        opponent => {},
                        player => {}
@@ -827,6 +826,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     bool playerHasEverlazting = false;
                     bool opponentHasEverlazting = false;
+                    BoardUnitModel playerEverlaztingBoard = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEverlaztingId);
+                    BoardUnitModel opponentEverlaztingBoard = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEverlaztingId);
+
+                    Assert.NotNull(playerEverlaztingBoard);
+                    Assert.NotNull(opponentEverlaztingBoard);
+
+                    InstanceId playerEverlaztingDeckId = playerEverlaztingBoard.InstanceId;
+                    InstanceId opponentEverlaztingDeckId = opponentEverlaztingBoard.InstanceId;
 
                     string cardToFind = "Everlazting";
 
@@ -835,6 +842,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         if (card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
+                            playerEverlaztingDeckId = card.InstanceId;
                             break;
                         }
                     }
@@ -844,6 +852,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         if (card.Card.Prototype.Name == cardToFind)
                         {
                             playerHasEverlazting = true;
+                            playerEverlaztingDeckId = card.InstanceId;
                             break;
                         }
                     }
@@ -853,6 +862,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         if (card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
+                            opponentEverlaztingDeckId = card.InstanceId;
                             break;
                         }
                     }
@@ -862,12 +872,16 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                         if (card.Card.Prototype.Name == cardToFind)
                         {
                             opponentHasEverlazting = true;
+                            opponentEverlaztingDeckId = card.InstanceId;
                             break;
                         }
                     }
 
                     Assert.IsTrue(playerHasEverlazting);
                     Assert.IsTrue(opponentHasEverlazting);
+
+                    Assert.AreNotEqual(opponentEverlaztingBoard.Card.InstanceId, opponentEverlaztingDeckId);
+                    Assert.AreNotEqual(playerEverlaztingBoard.Card.InstanceId, opponentEverlaztingDeckId);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
