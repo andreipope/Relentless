@@ -395,7 +395,10 @@ namespace Loom.ZombieBattleground
             for (int i = 0; i < 5 && _cardsToDisplayQueqe.Count > 0 ; ++i)
             {
                 Card card = _cardsToDisplayQueqe[0];
-                cards.Add(card);
+                if (card != null)
+                {
+                    cards.Add(card);
+                }
                 _cardsToDisplayQueqe.RemoveAt(0);
             }
                     

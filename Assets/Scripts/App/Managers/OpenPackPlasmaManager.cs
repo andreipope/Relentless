@@ -320,8 +320,17 @@ namespace Loom.ZombieBattleground
             if ((int)onOpenPackEvent.CardId % 10 == 0)
             {
                 MouldId mouldId = new MouldId((int)onOpenPackEvent.CardId / 10);
-                Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
-                Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                Card card;
+                try
+                {
+                    card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
+                    Log.Info($"<color=blue>MouId: {mouldId}, card.MouldId:{card.MouldId}, card.Name:{card.Name}</color>");
+                }
+                catch
+                {
+                    Log.Info($"Not found card with MouldId:{mouldId}");
+                    card = null;
+                }
                 CardsReceived.Add(card);
             }
         }                   
