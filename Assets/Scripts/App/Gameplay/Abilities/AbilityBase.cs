@@ -585,9 +585,7 @@ namespace Loom.ZombieBattleground
 
         protected bool HasEmptySpaceOnBoard(Player player, out int emptyFields)
         {
-            emptyFields = player.PlayerCardsController.CardsOnBoard.
-                FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive).Count;
-
+            emptyFields = GetAliveUnits(player.PlayerCardsController.CardsOnBoard).Count();
             emptyFields = (int)player.MaxCardsInPlay-emptyFields;
             return emptyFields > 0;
         }

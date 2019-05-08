@@ -831,10 +831,9 @@ namespace Loom.ZombieBattleground
 
             List<BoardUnitModel> units = new List<BoardUnitModel>();
 
-            units = units
+            units = _battlegroundController.GetAliveUnits(units
                .Concat(_gameplayManager.CurrentPlayer.CardsOnBoard)
-               .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard)
-               .Where(card => !card.IsDead && card.CurrentDefense > 0)
+               .Concat(_gameplayManager.OpponentPlayer.CardsOnBoard))
                .ToList();
             foreach (BoardUnitModel unit in units)
             {

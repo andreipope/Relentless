@@ -11,7 +11,7 @@ namespace Loom.ZombieBattleground.Data
             return new DeckCard
             {
                 Amount = deckCardData.Amount,
-                CardName = deckCardData.CardName
+                MouldId = deckCardData.MouldId.Id
             };
         }
 
@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground.Data
         {
             Protobuf.Card protoCard = new Protobuf.Card
             {
-                MouldId = card.MouldId,
+                MouldId = card.MouldId.Id,
                 Name = card.Name,
                 Cost = card.Cost,
                 Description = card.Description,

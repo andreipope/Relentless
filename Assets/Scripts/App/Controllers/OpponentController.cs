@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -372,9 +373,9 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
+        private async void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {
-            GotActionUseCardAbility(new UseCardAbilityModel
+            await GotActionUseCardAbility(new UseCardAbilityModel
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
@@ -486,7 +487,7 @@ namespace Loom.ZombieBattleground
                     },
                     (workingCard, boardObject) =>
                     {
-                        switch (workingCard.Prototype.Kind)
+                        switch (workingCard?.Prototype.Kind)
                         {
                             case Enumerators.CardKind.CREATURE:
                                 boardUnitViewElement.GameObject.SetActive(true);
@@ -538,7 +539,7 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.UnitCombat);
         }
 
-        private void GotActionUseCardAbility(UseCardAbilityModel model)
+        private async Task GotActionUseCardAbility(UseCardAbilityModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -548,11 +549,8 @@ namespace Loom.ZombieBattleground
             if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
                 // FIXME: why do we have recursion here??
-                GameClient.Get<IQueueManager>().AddTask(async () =>
-                {
-                    await new WaitForUpdate();
-                    GotActionUseCardAbility(model);
-                });
+                await new WaitForUpdate();
+                await GotActionUseCardAbility(model);
 
                 return;
             }
@@ -593,11 +591,12 @@ namespace Loom.ZombieBattleground
                     boardObjectCaller,
                     parametrizedAbilityObjects,
                     boardUnitModel,
-                    _gameplayManager.OpponentPlayer);
-
-                completeCallback?.Invoke();
+                    _gameplayManager.OpponentPlayer,
+                    completeCallback);
 
             }, Enumerators.QueueActionType.AbilityUsage);
+
+            _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
         }
 
         private void GotActionUseOverlordSkill(UseOverlordSkillModel model)

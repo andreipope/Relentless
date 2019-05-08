@@ -441,6 +441,15 @@ namespace Loom.ZombieBattleground
         private Deck GetSelectedDeck()
         {
             List<Deck> deckList = GetDeckList();
+            if(deckList.Count <= 0)
+            {
+                SelectDeckIndex = 0;
+                return null;
+            }
+            else if(SelectDeckIndex < 0 || SelectDeckIndex >= deckList.Count)
+            {
+                SelectDeckIndex = 0;
+            }
             return deckList[SelectDeckIndex];
         }
 
@@ -752,7 +761,6 @@ namespace Loom.ZombieBattleground
                 OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
 
                 deckInfoObject.TextDeckName.text = deckName;
-                deckInfoObject.TextDeckName.fontSize = deckName.Length < 15 ? 47.55f : 36.5f;                
                 if (_tutorialManager.IsTutorial)
                 {
                     deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{_tutorialManager.CurrentTutorial.TutorialContent.ToMenusContent().SpecificHordeInfo.MaximumCardsCount}";

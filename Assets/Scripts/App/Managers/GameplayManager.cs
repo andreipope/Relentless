@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -34,7 +35,9 @@ namespace Loom.ZombieBattleground
 
         private List<IController> _controllers = new List<IController>();
 
-        private ActionCollectorUploader ActionLogCollectorUploader { get; } = new ActionCollectorUploader();
+        private bool _gotApplicationWantsToQuit;
+
+        private bool _finishedApplicationQuitSequence;
 
         public Enumerators.StartingTurn StartingTurn { get; set; }
 
@@ -151,7 +154,7 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
-            //GameClient.Get<IQueueManager>().StopNetworkThread();
+            //GameClient.Get<INetworkActionManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
             
@@ -159,6 +162,8 @@ namespace Loom.ZombieBattleground
 
         public void StartGameplay()
         {
+            MainApp.Instance.ApplicationWantsToQuit += OnApplicationWantsToQuit;
+
             if (IsTutorial)
             {
                 StartPreparingToInitializeGame();
@@ -202,6 +207,8 @@ namespace Loom.ZombieBattleground
 
             CanDoDragActions = false;
             AvoidGooCost = false;
+
+            MainApp.Instance.ApplicationWantsToQuit -= OnApplicationWantsToQuit;
         }
 
         public bool IsLocalPlayerTurn()
@@ -473,6 +480,59 @@ namespace Loom.ZombieBattleground
             OpponentPlayer = null;
             CurrentTurnPlayer = null;
             PlayerMoves = null;
+        }
+
+        private async void OnApplicationWantsToQuit(Action<bool> setWantsToQuit)
+        {
+            if (_gotApplicationWantsToQuit)
+            {
+                Log.Debug($"Got quit request, {nameof(_finishedApplicationQuitSequence)} = {_finishedApplicationQuitSequence}");
+                setWantsToQuit(_finishedApplicationQuitSequence);
+                return;
+            }
+
+            if (UnitTestDetector.IsRunningUnitTests || !IsGameStarted)
+            {
+                Log.Debug("Got quit request, ignoring");
+                setWantsToQuit(true);
+                return;
+            }
+
+            BackendFacade backendFacade = GameClient.Instance.GetService<BackendFacade>();
+            if (!backendFacade.IsConnected)
+            {
+                Log.Debug("Not connected, quitting");
+                setWantsToQuit(true);
+                return;
+            }
+
+            Log.Debug("Got quit request, sending LeaveMatch");
+            _gotApplicationWantsToQuit = true;
+
+            // Do not close the game now, send the actions first
+            setWantsToQuit(false);
+            INetworkActionManager networkActionManager = GameClient.Get<INetworkActionManager>();
+
+            const float sendTimeout = 5;
+            float sendTime = Time.unscaledTime;
+            WarningPopup warningPopup = _uiManager.GetPopup<WarningPopup>();
+            warningPopup.Show("Leaving the match and closing the game...");
+            warningPopup.SetCloseButtonVisible(false);
+            CurrentPlayer.ThrowLeaveMatch();
+
+            await new WaitUntil(() => Time.unscaledTime - sendTime > sendTimeout || networkActionManager.QueuedTaskCount == 0);
+
+            if (networkActionManager.QueuedTaskCount == 0)
+            {
+                Log.Debug("LeaveMatch sent successfully, quitting");
+            }
+            else
+            {
+                Log.Warn("LeaveMatch timed out, quitting");
+            }
+
+            _finishedApplicationQuitSequence = true;
+            Application.Quit();
         }
     }
 }
