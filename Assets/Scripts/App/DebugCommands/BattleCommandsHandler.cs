@@ -666,11 +666,8 @@ static class BattleCommandsHandler
         {
             skill.Unlocked = true;
         }
-
-        GameClient.Get<IDataManager>().SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
     }
-    
-    
+
     [CommandHandler(Description = "Show Player and Opponent XP")]
     private static void ShowPlayerAndOpponentXP()
     {

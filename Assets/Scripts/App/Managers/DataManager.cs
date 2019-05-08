@@ -132,9 +132,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
                     break;
-                case Enumerators.CacheDataType.OVERLORDS_DATA:
-                    data = SerializePersistentObject(CachedOverlordData);
-                    break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
                     break;
@@ -400,7 +397,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e)
                     {
-                        ShowLoadDataFailMessage("Issue with Loading Opponent Leveling Data");
+                        ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
                         throw;
                     }
                     break;
@@ -439,9 +436,6 @@ namespace Loom.ZombieBattleground
                 },
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Constants.LocalBuffsTooltipDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.OVERLORDS_DATA, Constants.LocalOverlordsDataFileName
                 },
                 {
                     Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName
