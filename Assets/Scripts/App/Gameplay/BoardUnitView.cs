@@ -496,8 +496,10 @@ namespace Loom.ZombieBattleground
         {
             Action generalArrivalAnimationAction = () =>
             {
-                GameObject arrivalPrefab =
-              _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                if (_battleframeObject != null)
+                    Object.Destroy(_battleframeObject);
+
+                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
