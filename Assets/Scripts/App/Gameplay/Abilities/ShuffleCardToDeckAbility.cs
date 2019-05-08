@@ -53,8 +53,8 @@ namespace Loom.ZombieBattleground
 
                 Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(BoardUnitModel.Card.Prototype.Name));
                 WorkingCard card = new WorkingCard(prototype, prototype, SelectedPlayer);
-                BoardUnitModel.Card = card;
-                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(BoardUnitModel, true);
+                BoardUnitModel boardUnitModel = new BoardUnitModel(card);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(boardUnitModel, true);
             }
             AbilityProcessingAction?.ForceActionDone();
         }
