@@ -744,6 +744,11 @@ namespace Loom.ZombieBattleground
                 _battlegroundController.RegisterBoardUnitView(Player, unit);
             }
 
+            if (unit.Model.Owner.IsLocalPlayer || _gameplayManager.IsLocalPlayerTurn()) 
+            {
+                _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.Owner);
+            }
+
             _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model);
 
             _boardController.UpdateCurrentBoardOfPlayer(Player, onComplete);

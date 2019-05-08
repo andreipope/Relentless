@@ -107,8 +107,6 @@ namespace Loom.ZombieBattleground
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.StopSleepingParticles();
-
             GameplayManager.CanDoDragActions = true;
 
             return boardUnitView;
