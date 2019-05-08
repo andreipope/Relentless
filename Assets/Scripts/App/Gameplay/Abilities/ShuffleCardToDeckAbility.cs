@@ -48,8 +48,13 @@ namespace Loom.ZombieBattleground
 
             if (TargetTypes.Contains(Enumerators.Target.PLAYER))
             {
+                PlayerCallerOfAbility.PlayerCardsController.RemoveCardFromGraveyard(BoardUnitModel);
                 BoardUnitModel.ResetToInitial();
-                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(BoardUnitModel, true);
+
+                Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(BoardUnitModel.Card.Prototype.Name));
+                WorkingCard card = new WorkingCard(prototype, prototype, SelectedPlayer);
+                BoardUnitModel boardUnitModel = new BoardUnitModel(card);
+                PlayerCallerOfAbility.PlayerCardsController.AddCardToDeck(boardUnitModel, true);
             }
             AbilityProcessingAction?.ForceActionDone();
         }
