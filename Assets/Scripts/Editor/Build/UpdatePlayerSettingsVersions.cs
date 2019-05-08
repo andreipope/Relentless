@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground.Editor
             PlayerSettings.SplashScreen.showUnityLogo = false;
 
             PlayerSettings.applicationIdentifier = applicationIdentifier;
-            #if USE_STAGING_BACKEND
+            #if USE_STAGING_BACKEND && !UNITY_IOS && !UNITY_ANDROID
             PlayerSettings.applicationIdentifier = applicationIdentifierStaging;
             #endif
 
