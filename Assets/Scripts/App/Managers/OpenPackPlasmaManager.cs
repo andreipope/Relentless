@@ -230,8 +230,21 @@ namespace Loom.ZombieBattleground
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
-            DAppChainClient client = new DAppChainClient(writer, reader)
-                { Logger = Debug.unityLogger };
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
+            {
+                CallTimeout = Constants.PlasmachainCallTimeout,
+                StaticCallTimeout = Constants.PlasmachainCallTimeout
+            };
+            
+            DAppChainClient client = new DAppChainClient
+            (
+                writer, 
+                reader,
+                clientConfiguration
+            )
+            { 
+                Logger = Debug.unityLogger 
+            };
     
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {

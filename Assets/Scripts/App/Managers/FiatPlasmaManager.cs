@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.Protobuf;
+using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.Nethereum.ABI.FunctionEncoding.Attributes;
 
@@ -155,8 +156,21 @@ namespace Loom.ZombieBattleground
                 .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
                 .Create();
     
-            DAppChainClient client = new DAppChainClient(writer, reader)
-                { Logger = Debug.unityLogger };
+            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
+            {
+                CallTimeout = Constants.PlasmachainCallTimeout,
+                StaticCallTimeout = Constants.PlasmachainCallTimeout
+            };
+            
+            DAppChainClient client = new DAppChainClient
+            (
+                writer, 
+                reader,
+                clientConfiguration
+            )
+            { 
+                Logger = Debug.unityLogger 
+            };
     
             client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
             {
