@@ -1118,6 +1118,7 @@ namespace Loom.ZombieBattleground
             HasBuffRush = false;
             HasBuffHeavy = false;
             HasFeral = false;
+            HasHeavy = false;
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
