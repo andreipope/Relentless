@@ -119,9 +119,9 @@ namespace Loom.ZombieBattleground
 
             OverlordId overlordId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).OverlordId;
 
-            _selectedOverlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
-
-            _currentLevel.text = _selectedOverlord.Level.ToString();
+            // FIXME: LEVELING
+            //_selectedOverlord = dataManager.CachedOverlordData.GetOverlordById(overlordId);
+            //_currentLevel.text = _selectedOverlord.Level.ToString();
 
             _newOpenAbility = null;
 
