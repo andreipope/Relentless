@@ -697,21 +697,24 @@ namespace Loom.ZombieBattleground
             _cardsOnBoard.Clear();
         }
 
-        public BoardUnitView SpawnUnitOnBoard(string name, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null)
+        public BoardUnitView SpawnUnitOnBoard(string name, ItemPosition position, bool isPVPNetwork = false, Action onComplete = null, bool checkCardsOnBoardCondition = true)
         {
             CallLog($"{nameof(SpawnUnitOnBoard)}(string name = {name}, ItemPosition position = {position}, bool isPVPNetwork = {isPVPNetwork}, Action onComplete = {onComplete})");
 
-            if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+            if (checkCardsOnBoardCondition)
             {
-                CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
-                return null;
+                if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+                {
+                    CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
+                    return null;
+                }
             }
 
             Card prototype = new Card(_dataManager.CachedCardsLibraryData.GetCardFromName(name));
             WorkingCard card = new WorkingCard(prototype, prototype, Player);
             BoardUnitModel boardUnitModel = new BoardUnitModel(card);
 
-            BoardUnitView view = SpawnUnitOnBoard(boardUnitModel, position, isPVPNetwork, onComplete);
+            BoardUnitView view = SpawnUnitOnBoard(boardUnitModel, position, isPVPNetwork, onComplete, checkCardsOnBoardCondition);
             CallLog($"{nameof(SpawnUnitOnBoard)}: created and returned unit view {view}");
             return view;
         }
@@ -720,14 +723,18 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnitModel,
             ItemPosition position,
             bool isPVPNetwork = false,
-            Action onComplete = null)
+            Action onComplete = null,
+            bool checkCardsOnBoardCondition = true)
         {
             CallLog($"{nameof(SpawnUnitOnBoard)}(BoardUnitModel boardUnitModel = {boardUnitModel}, ItemPosition position = {position}, bool isPVPNetwork = {isPVPNetwork}, Action onComplete = {onComplete})");
 
-            if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+            if (checkCardsOnBoardCondition)
             {
-                CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
-                return null;
+                if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+                {
+                    CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
+                    return null;
+                }
             }
 
             BoardUnitView unit = CreateBoardUnitForSpawn(boardUnitModel, Player);
