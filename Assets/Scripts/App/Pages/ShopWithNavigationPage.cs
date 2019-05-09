@@ -373,7 +373,15 @@ namespace Loom.ZombieBattleground
             if (recordList.Count > 0)
             {
                 _cacheFiatTransactionRecordList = recordList.ToList();
-                RequestPack(recordList);
+                try
+                {
+                    RequestPack(recordList);
+                }
+                catch(Exception e)
+                {
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                    OpenAlertDialog($"e: {e.Message}");
+                }
             }
         }
         
@@ -436,7 +444,15 @@ namespace Loom.ZombieBattleground
             
             if(status && _cacheFiatTransactionRecordList.Count > 0)
             {
-                RequestPack(_cacheFiatTransactionRecordList);
+                try
+                {
+                    RequestPack(_cacheFiatTransactionRecordList);
+                }
+                catch(Exception e)
+                {
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                    OpenAlertDialog($"e: {e.Message}");
+                }
                 return;
             }               
         }
