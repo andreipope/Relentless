@@ -57,6 +57,11 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(GetConfigData()));
+            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<IFacebookManager>(new FacebookManager());
+            AddService<IAnalyticsManager>(new AnalyticsManager());
+            AddService<IPvPManager>(new PvPManager());
             AddService<BackendFacade>(
                 new BackendFacade(
                     backendEndpoint,
@@ -64,11 +69,6 @@ namespace Loom.ZombieBattleground
                     Logging.GetLog(nameof(BackendFacade)),
                     Logging.GetLog(nameof(BackendFacade) + "Rpc")
                 ));
-            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
-            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
-            AddService<IFacebookManager>(new FacebookManager());
-            AddService<IAnalyticsManager>(new AnalyticsManager());
-            AddService<IPvPManager>(new PvPManager());
             AddService<INetworkActionManager>(new NetworkActionManager());
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());

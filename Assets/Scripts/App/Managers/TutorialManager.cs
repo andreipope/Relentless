@@ -298,28 +298,18 @@ namespace Loom.ZombieBattleground
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBasic);
                     break;
 
+                // Deck
+                case 1:
+                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
+                    break;
+
                 // Abilities
                 case 2:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialAbilities);
                     break;
 
-                // Rank
-                case 4:
-                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialRanks);
-                    break;
-
-                // Overflow
-                case 6:
-                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialOverflow);
-                    break;
-
-                // Deck
-                case 7:
-                    SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialDeck);
-                    break;
-
                 // battle
-                case 8:
+                case 4:
                     SetStartTutorialEvent(AnalyticsManager.EventStartedTutorialBattle);
                     break;
             }
@@ -426,28 +416,18 @@ namespace Loom.ZombieBattleground
                     SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBasic);
                     break;
 
-                // Abilities
-                case 1:
-                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialAbilities);
-                    break;
-
-                // Rank
-                case 2:
-                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialRanks);
-                    break;
-
-                // Overflow
-                case 3:
-                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialOverflow);
-                    break;
-
                 // Deck
-                case 4:
+                case 1:
                     SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialDeck);
                     break;
 
+                // Abilities
+                case 2:
+                    SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialAbilities);
+                    break;
+
                 // battle
-                case 5:
+                case 4:
                     SetCompleteTutorialEvent(AnalyticsManager.EventCompletedTutorialBattle);
                     break;
             }
