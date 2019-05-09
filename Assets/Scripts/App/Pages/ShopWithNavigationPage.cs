@@ -336,124 +336,125 @@ namespace Loom.ZombieBattleground
         public async void RequestFiatTransaction(bool showLoadingPopup = true)
         {
             Log.Info($"{nameof(RequestFiatTransaction)}");
-            if (showLoadingPopup)
-            {
-                _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
-            }
-            
-            List<FiatBackendManager.FiatTransactionResponse> recordList = null;
             try
             {
-                recordList = await _fiatBackendManager.CallFiatTransaction();
+                if (showLoadingPopup)
+                {
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+                }
+
+                List<FiatBackendManager.FiatTransactionResponse> recordList = null;
+                try
+                {
+                    recordList = await _fiatBackendManager.CallFiatTransaction();
+                }
+                catch (Exception e)
+                {
+                    Log.Info($"{nameof(_fiatBackendManager.CallFiatTransaction)} failed: {e.Message}");
+                    throw new Exception($"{nameof(_fiatBackendManager.CallFiatTransaction)} failed: {e.Message}");
+                }
+
+                recordList.Sort((FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB) =>
+                {
+                   return resB.TxID - resA.TxID;
+                });
+                string log = "TxID: ";
+                foreach (var i in recordList)
+                {
+                    log += i.TxID + ", ";
+                }
+                Log.Debug(log);
+                if (showLoadingPopup)
+                {
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                }
+                if (recordList.Count > 0)
+                {
+                    _cacheFiatTransactionRecordList = recordList.ToList();
+                    RequestPack(recordList);
+                }
             }
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
-                _uiManager.DrawPopup<WarningPopup>("Something went wrong.\nPlease try again.");
-                WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-                popup.ConfirmationReceived += WarningPopupRequestFiatTransaction;
                 _uiManager.HidePopup<LoadingFiatPopup>();
-                return;
-            }
-            
-            recordList.Sort( (FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB)=>
-            {
-                return resB.TxID - resA.TxID;
-            });
-            string log = "TxID: ";
-            foreach( var i in recordList)
-            {
-                log += i.TxID + ", ";
-            }
-            Log.Debug(log);
-            if (showLoadingPopup)
-            {
-                _uiManager.HidePopup<LoadingFiatPopup>();
-            }            
-            if (recordList.Count > 0)
-            {
-                _cacheFiatTransactionRecordList = recordList.ToList();
-                try
-                {
-                    RequestPack(recordList);
-                }
-                catch(Exception e)
-                {
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                    OpenAlertDialog($"e: {e.Message}");
-                }
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestFiatTransaction;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
             }
         }
         
-        private void WarningPopupRequestFiatTransaction()
+        private void WarningPopupRequestFiatTransaction(bool status)
         {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatTransaction;
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestFiatTransaction;              
 
-            RequestFiatTransaction();
+            if(status)
+            {
+                RequestFiatTransaction();
+            }
         }
         
         private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> recordList)
         {            
-            Log.Debug("START REQUEST for packs");            
+            Log.Debug("START REQUEST for packs");  
+            Log.Debug($"recordList: {recordList.Count}");
 
-            for (int i = 0; i < recordList.Count; ++i)
+            try
             {
-                FiatBackendManager.FiatTransactionResponse record = recordList[i];
-
-                Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
-                _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
-
-                string eventResponse = "";
-
-                try
+                for (int i = 0; i < recordList.Count; ++i)
                 {
-                    eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
+                    FiatBackendManager.FiatTransactionResponse record = recordList[i];
+
+                    Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
+
+                    string eventResponse = "";
+
+                    try
+                    {
+                        eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
+                        Log.Debug($"Contract [requestPacks] success call.");
+                    }
+                    catch (Exception e)
+                    {                        
+                        Log.Debug($"Contract [requestPacks] failed");
+                        Log.Debug($"e: {e.Message}");
+                    }
+                    
+                    Log.Debug($"EVENT RESPONSE: {eventResponse}");
+                    _cacheFiatTransactionRecordList.Remove(record);
+
+                    if(!string.IsNullOrEmpty(eventResponse))
+                    {
+                        Log.Debug($"CallFiatClaim for UserId:{record.UserId} TxID:{record.TxID}");
+                        await _fiatBackendManager.CallFiatClaim
+                        (
+                            record.UserId,
+                            new List<int>
+                            {
+                                record.TxID
+                            }
+                        );
+                    }
                 }
-                catch
-                {                    
-                    _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;
-                    _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");   
-                    return;
-                }
-                Log.Debug($"Contract [requestPacks] success call.");
-                Log.Debug($"EVENT RESPONSE: {eventResponse}");
-                _cacheFiatTransactionRecordList.Remove(record);
-                
-                if (!string.IsNullOrEmpty(eventResponse))
-                {
-                    Log.Debug("FINISH REQUEST for packs");
-                    await _fiatBackendManager.CallFiatClaim
-                    (
-                        record.UserId,
-                        new List<int>
-                        {
-                            record.TxID
-                        }
-                    );                    
-                }
+
+                _finishRequestPack?.Invoke();
             }
-
-            _finishRequestPack?.Invoke();
+            catch(Exception e)
+            {
+                Log.Info($"{nameof(RequestPack)} failed: {e.Message}");
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            }
         }
         
         private void WarningPopupRequestPack(bool status)
         {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;
-            _uiManager.HidePopup<LoadingFiatPopup>();         
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;        
             
             if(status && _cacheFiatTransactionRecordList.Count > 0)
             {
-                try
-                {
-                    RequestPack(_cacheFiatTransactionRecordList);
-                }
-                catch(Exception e)
-                {
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                    OpenAlertDialog($"e: {e.Message}");
-                }
-                return;
+                RequestPack(_cacheFiatTransactionRecordList);
             }               
         }
 
