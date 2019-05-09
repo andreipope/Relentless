@@ -42,6 +42,9 @@ namespace Loom.ZombieBattleground
                         break;
                 }
             }
+
+            if (AbilityUnitOwner.BuffsOnUnit.Contains(Enumerators.BuffType.REANIMATE))
+                Activate();
         }
 
         private void FillBoard(Player targetPlayer)
