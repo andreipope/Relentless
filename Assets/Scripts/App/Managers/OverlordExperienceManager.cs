@@ -81,6 +81,7 @@ namespace Loom.ZombieBattleground
 
                 overlordModel.Level = experienceDeltaInfo.CurrentLevel;
                 overlordModel.Experience = experienceDeltaInfo.CurrentExperience;
+                return experienceDeltaInfo;
             }
 
             Log.Warn("No EndMatchNotification, returning known values");
