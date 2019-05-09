@@ -66,10 +66,11 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnit;
             for (int i = 0; i < cards.Count; i++)
             {
-                if (targetPlayer.PlayerCardsController.CardsOnBoard.Count >= targetPlayer.MaxCardsInPlay)
+                int CardOnBoard = GetCardOnBoard(targetPlayer);
+                if (CardOnBoard >= targetPlayer.MaxCardsInPlay)
                     break;
 
-                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility).Model;
+                boardUnit = targetPlayer.PlayerCardsController.SpawnUnitOnBoard(cards[i].Name, ItemPosition.End, IsPVPAbility, null, false).Model;
 
                 TargetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
@@ -87,6 +88,18 @@ namespace Loom.ZombieBattleground
                     TargetEffects = TargetEffects
                 });
             }
+        }
+
+        private int GetCardOnBoard(Player targetPlayer)
+        {
+            int count = 0;
+            for (var i = 0; i < targetPlayer.PlayerCardsController.CardsOnBoard.Count; i++)
+            {
+                if (targetPlayer.PlayerCardsController.CardsOnBoard[i].IsDead == false)
+                    count++;
+            }
+
+            return count;
         }
     }
 }
