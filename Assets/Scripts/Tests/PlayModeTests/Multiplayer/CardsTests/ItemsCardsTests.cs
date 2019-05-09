@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
     
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Boomstick()
         {
             return AsyncTest(async () =>
@@ -686,7 +686,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Harpoon()
         {
             return AsyncTest(async () =>
@@ -727,7 +727,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Bazooka()
         {
             return AsyncTest(async () =>
@@ -1002,7 +1002,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
         public IEnumerator Molotov()
         {
             return AsyncTest(async () =>

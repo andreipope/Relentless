@@ -697,6 +697,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             {
                 await _reader.UnsubscribeAsync(EventHandler);
             }
+            catch (RpcClientException rpcClientException) when (rpcClientException.Message.Contains("Subscription not found"))
+            {
+            }
             catch (Exception e)
             {
                 Helpers.ExceptionReporter.SilentReportException(e);

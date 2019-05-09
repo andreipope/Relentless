@@ -373,9 +373,9 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private async void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
+        private void OnCardAbilityUsedHandler(PlayerActionCardAbilityUsed actionUseCardAbility)
         {
-            await GotActionUseCardAbility(new UseCardAbilityModel
+            GotActionUseCardAbility(new UseCardAbilityModel
             {
                 Card = actionUseCardAbility.Card.FromProtobuf(),
                 Targets = actionUseCardAbility.Targets.Select(t => t.FromProtobuf()).ToList(),
@@ -522,7 +522,7 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.UnitCombat);
         }
 
-        private async Task GotActionUseCardAbility(UseCardAbilityModel model)
+        private void GotActionUseCardAbility(UseCardAbilityModel model)
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -539,9 +539,13 @@ namespace Loom.ZombieBattleground
 
             if (boardObjectCaller == null || _gameplayManager.OpponentPlayer.CardsInHand.Contains(boardObjectCaller))
             {
-                // FIXME: why do we have recursion here??
-                await new WaitForUpdate();
-                await GotActionUseCardAbility(model);
+                Log.Warn("boardObjectCaller not found, retrying");
+                InternalTools.DoActionDelayed(async () =>
+                {
+                    // FIXME: why do we have recursion here??
+                    await new WaitForUpdate();
+                    GotActionUseCardAbility(model);
+                });
 
                 return;
             }

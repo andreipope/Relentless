@@ -59,9 +59,7 @@ namespace Loom.ZombieBattleground
 
             List<Card> cards = DataManager.CachedCardsLibraryData.Cards.FindAll(card => card.Cost == Cost && card.Kind == Enumerators.CardKind.CREATURE);
 
-            cards = cards.OrderByDescending(x => x.MouldId).ToList();
-
-            cards = GetRandomElements(cards, (int)maxUnits);
+            cards = GetRandomElements(cards, maxUnits);
 
             List<PastActionsPopup.TargetEffectParam> TargetEffects = new List<PastActionsPopup.TargetEffectParam>();
 

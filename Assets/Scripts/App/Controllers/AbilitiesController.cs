@@ -844,6 +844,9 @@ namespace Loom.ZombieBattleground
 
         public void ActivateAbilitiesOnCard(IBoardObject abilityCaller, CardModel cardModel, Player owner)
         {
+            if (cardModel.IsAllAbilitiesResolvedAtStart)
+                return;
+                
             foreach(AbilityData abilityData in cardModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;

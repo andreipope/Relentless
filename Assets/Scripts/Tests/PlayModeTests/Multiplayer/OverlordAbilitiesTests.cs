@@ -1147,7 +1147,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Freeze()
         {
             return AsyncTest(async () =>
