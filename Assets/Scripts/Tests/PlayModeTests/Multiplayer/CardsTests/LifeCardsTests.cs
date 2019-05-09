@@ -813,8 +813,8 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                 {
                     bool playerHasEverlazting = false;
                     bool opponentHasEverlazting = false;
-                    BoardUnitModel playerEverlaztingBoard = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEverlaztingId);
-                    BoardUnitModel opponentEverlaztingBoard = (BoardUnitModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEverlaztingId);
+                    CardModel playerEverlaztingBoard = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerEverlaztingId);
+                    CardModel opponentEverlaztingBoard = (CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentEverlaztingId);
 
                     Assert.NotNull(playerEverlaztingBoard);
                     Assert.NotNull(opponentEverlaztingBoard);
