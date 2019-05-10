@@ -25,7 +25,6 @@ namespace Loom.ZombieBattleground
         public HealTargetAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
         {
-            Debug.LogWarning("CREATING ABILITY HEAL ");
             Value = ability.Value;
             Count = ability.Count;
             SubTrigger = ability.SubTrigger;
@@ -35,7 +34,6 @@ namespace Loom.ZombieBattleground
 
         public override void Activate()
         {
-            Debug.LogWarning("ACTIVATING ABILITY");
             base.Activate();
 
             if (AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Impact))
@@ -89,7 +87,6 @@ namespace Loom.ZombieBattleground
 
         protected override void UnitDiedHandler()
         {
-            Debug.LogWarning("GETTING HERE");
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
             {
                 base.UnitDiedHandler();
@@ -98,14 +95,12 @@ namespace Loom.ZombieBattleground
 
             if (SubTrigger == Enumerators.AbilitySubTrigger.YourOverlord)
             {
-                Debug.LogWarning("GETTING HERE 1");
                 _targets.Add(PlayerCallerOfAbility);
                 _vfxAnimationEndedCallback = HealOverlord;
                 InvokeActionTriggered(_targets);
             } 
             else
             {
-                Debug.LogWarning("GETTING HERE 2");
                 base.UnitDiedHandler();
             }
         }
