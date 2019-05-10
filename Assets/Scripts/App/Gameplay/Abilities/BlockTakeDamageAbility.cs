@@ -13,6 +13,8 @@ namespace Loom.ZombieBattleground
 
         private Action _animationEndedAction;
 
+        private int _previousMaximumDamageBuff;
+
         public BlockTakeDamageAbility(Enumerators.CardKind cardKind, AbilityData ability) : base(cardKind, ability)
         {
             Damage = ability.Damage;
@@ -29,10 +31,7 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = AbilityUnitOwner;
 
-                _animationEndedAction = () =>
-                {
-                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
-                };
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeActionTriggered(_targetedUnit);
 
@@ -48,10 +47,7 @@ namespace Loom.ZombieBattleground
             {
                 _targetedUnit = TargetUnit;
 
-                _animationEndedAction = () =>
-                {
-                    ApplyMaximumDamageBuff(_targetedUnit, Damage);
-                };
+                ApplyMaximumDamageBuff(_targetedUnit, Damage);
 
                 InvokeActionTriggered(_targetedUnit);
 
@@ -71,7 +67,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.UntilStartOfNextPlayerTurn)
             {
-                ApplyMaximumDamageBuff(_targetedUnit, 999);
+                ApplyMaximumDamageBuff(_targetedUnit, _previousMaximumDamageBuff);
                 Deactivate();
             }
         }
@@ -79,17 +75,15 @@ namespace Loom.ZombieBattleground
         protected override void VFXAnimationEndedHandler()
         {
             base.VFXAnimationEndedHandler();
-
-            _animationEndedAction?.Invoke();
-            _animationEndedAction = null;
+            _targetedUnit.IsPlayable = true;
         }
 
         private void ApplyMaximumDamageBuff(CardModel boardUnit, int value)
         {
             if (boardUnit != null)
             {
+                _previousMaximumDamageBuff = boardUnit.MaximumDamageFromAnySource;
                 boardUnit.SetMaximumDamageToUnit(value);
-                boardUnit.IsPlayable = true;
             }
         }
     }

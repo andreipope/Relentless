@@ -426,6 +426,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.BuffType.REANIMATE:
                     if (!GameMechanicDescriptionsOnUnit.Contains(Enumerators.GameMechanicDescription.Reanimate))
                     {
+                        IsReanimated = false;
                         AddBuff(Enumerators.BuffType.REANIMATE);
                         _abilitiesController.BuffUnitByAbility(
                             Enumerators.AbilityType.REANIMATE_UNIT,
@@ -1111,6 +1112,7 @@ namespace Loom.ZombieBattleground
             HasBuffRush = false;
             HasBuffHeavy = false;
             HasFeral = false;
+            HasHeavy = false;
             IsPlayable = false;
             IsAttacking = false;
             IsDead = false;
@@ -1120,6 +1122,7 @@ namespace Loom.ZombieBattleground
             UnitSpecialStatus = Enumerators.UnitSpecialStatus.NONE;
             AttackRestriction = Enumerators.AttackRestriction.ANY;
             LastAttackingSetType = Card.Prototype.Faction;
+            IsAllAbilitiesResolvedAtStart = true;
             BuffsOnUnit.Clear();
             CurrentDamageHistory.Clear();
             CurrentCostHistory.Clear();
@@ -1127,6 +1130,7 @@ namespace Loom.ZombieBattleground
             AttackedBoardObjectsThisTurn.Clear();
             UseShieldFromBuff();
             ClearUnitTypeEffects();
+            ClearEffectsOnUnit();
             MaximumDamageFromAnySource = 999;
         }
 

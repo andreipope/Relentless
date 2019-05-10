@@ -640,34 +640,35 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
                     new TestCardData("Super Serum", 1),
-                    new TestCardData("Trunk", 10)
+                    new TestCardData("Mountain", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
                     new TestCardData("Super Serum", 1),
-                    new TestCardData("Trunk", 10)
+                    new TestCardData("Mountain", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerSuperSerumId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Super Serum", 1);
-                InstanceId playerTrunkId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
+                InstanceId playerMountainId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Mountain", 1);
 
                 InstanceId opponentSuperSerumId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Super Serum", 1);
-                InstanceId opponentTrunkId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
+                InstanceId opponentMountainId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Mountain", 1);
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                    {
                        player => {},
                        opponent => {},
-                       player => player.CardPlay(playerTrunkId, ItemPosition.Start),
+                       player => player.CardPlay(playerMountainId, ItemPosition.Start),
                        opponent => {
-                           opponent.CardPlay(opponentTrunkId, ItemPosition.Start);
-                           opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, opponentTrunkId);
+                           opponent.CardPlay(opponentMountainId, ItemPosition.Start);
+                           opponent.LetsThink(10);
+                           opponent.CardPlay(opponentSuperSerumId, ItemPosition.Start, opponentMountainId);
                        },
                        player =>
                        {
-                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerTrunkId);
+                           player.CardPlay(playerSuperSerumId, ItemPosition.Start, playerMountainId);
                            player.LetsThink(10);
-                           player.CardAttack(playerTrunkId, opponentTrunkId);
+                           player.CardAttack(playerMountainId, opponentMountainId);
                        },
                        opponent => {},
                        player => {}
@@ -675,8 +676,10 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(8, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerTrunkId)).CurrentDefense);
-                    Assert.AreEqual(8, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentTrunkId)).CurrentDefense);
+                    Assert.AreEqual(9, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).CurrentDefense);
+                    Assert.AreEqual(9, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).CurrentDefense);
+                    Assert.AreEqual(2, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerMountainId)).MaximumDamageFromAnySource);
+                    Assert.AreEqual(2, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentMountainId)).MaximumDamageFromAnySource);
                 };
 
                 await PvPTestUtility.GenericPvPTest(pvpTestContext, turns, validateEndState);
