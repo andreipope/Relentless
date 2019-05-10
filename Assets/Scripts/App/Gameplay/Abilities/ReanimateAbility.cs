@@ -47,7 +47,8 @@ namespace Loom.ZombieBattleground
 
             AbilityUnitOwner.ResetToInitial();
 
-            WorkingCard card = new WorkingCard(AbilityUnitOwner.Card.Prototype, AbilityUnitOwner.Card.Prototype, owner);
+            Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
+            WorkingCard card = new WorkingCard(prototype, prototype, owner);
             BoardUnitModel reanimatedUnitModel = new BoardUnitModel(card);
             _reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
             reanimatedUnitModel.IsReanimated = true;
@@ -56,6 +57,8 @@ namespace Loom.ZombieBattleground
             {
                 _reanimatedUnit.Model.RemoveGameMechanicDescriptionFromUnit(Enumerators.GameMechanicDescription.Reanimate);
             }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(_reanimatedUnit.Model, false);
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
@@ -69,6 +72,8 @@ namespace Loom.ZombieBattleground
                     _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, reanimatedUnitModel, reanimatedUnitModel.Owner);
                 }
             }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(_reanimatedUnit.Model);
 
             owner.PlayerCardsController.AddCardToBoard(reanimatedUnitModel, ItemPosition.End);
 

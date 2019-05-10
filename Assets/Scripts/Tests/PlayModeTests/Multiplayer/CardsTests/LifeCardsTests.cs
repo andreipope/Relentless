@@ -1244,19 +1244,19 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 5,
                     new TestCardData("Rainz", 1),
-                    new TestCardData("Trunk", 10)
+                    new TestCardData("Zeeder", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 5,
                     new TestCardData("Rainz", 1),
-                    new TestCardData("Trunk", 10)
+                    new TestCardData("Zeeder", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
                 InstanceId playerRainzId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Rainz", 1);
-                InstanceId playerTrunk1Id = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Trunk", 1);
+                InstanceId playerZeederId = pvpTestContext.GetCardInstanceIdByName(playerDeck, "Zeeder", 1);
                 InstanceId opponentRainzId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Rainz", 1);
-                InstanceId opponentTrunk1Id = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Trunk", 1);
+                InstanceId opponentZeederId = pvpTestContext.GetCardInstanceIdByName(opponentDeck, "Zeeder", 1);
 
                 IReadOnlyList<Action<QueueProxyPlayerActionTestProxy>> turns = new Action<QueueProxyPlayerActionTestProxy>[]
                 {
@@ -1266,36 +1266,42 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerRainzId, ItemPosition.Start);
                            player.CardAbilityUsed(playerRainzId, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>());
-                           player.CardPlay(playerTrunk1Id, ItemPosition.Start);
+                           player.CardPlay(playerZeederId, ItemPosition.Start, playerRainzId);
                        },
                        opponent =>
                        {
                            opponent.CardPlay(opponentRainzId, ItemPosition.Start);
                            opponent.CardAbilityUsed(opponentRainzId, Enumerators.AbilityType.HEAL, new List<ParametrizedAbilityInstanceId>());
-                           opponent.CardPlay(opponentTrunk1Id, ItemPosition.Start);
+                           opponent.CardPlay(opponentZeederId, ItemPosition.Start, opponentRainzId);
                        },
                        player =>
                        {
                            player.CardAttack(playerRainzId, pvpTestContext.GetOpponentPlayer().InstanceId);
-                           player.CardAttack(playerTrunk1Id, pvpTestContext.GetOpponentPlayer().InstanceId);
+                           player.CardAttack(playerZeederId, pvpTestContext.GetOpponentPlayer().InstanceId);
                        },
                        opponent => 
                        {
                            opponent.CardAttack(opponentRainzId, pvpTestContext.GetCurrentPlayer().InstanceId);
-                           opponent.CardAttack(opponentTrunk1Id, pvpTestContext.GetCurrentPlayer().InstanceId);
+                           opponent.CardAttack(opponentZeederId, pvpTestContext.GetCurrentPlayer().InstanceId);
                        },
                        player => 
                        {
                            player.CardAttack(playerRainzId, opponentRainzId);
                        },
                        opponent => {},
+                       player => 
+                       {
+                           player.CardAttack(pvpTestContext.GetCurrentPlayer().CardsOnBoard.FindAll(card => card.Name == "Rainz").ToList()[0].Card.InstanceId, pvpTestContext.GetOpponentPlayer().CardsOnBoard.FindAll(card => card.Name == "Rainz").ToList()[0].Card.InstanceId);
+                       },
+                       opponent => {
+                       },
                        player => {}
 
                 };
 
                 Action validateEndState = () =>
                 {
-                    int damageDealtLeft = 4;
+                    int damageDealtLeft = 0;
                     Assert.AreEqual(pvpTestContext.GetCurrentPlayer().InitialDefense - damageDealtLeft, pvpTestContext.GetCurrentPlayer().Defense);
                     Assert.AreEqual(pvpTestContext.GetOpponentPlayer().InitialDefense - damageDealtLeft, pvpTestContext.GetOpponentPlayer().Defense);
                 };
