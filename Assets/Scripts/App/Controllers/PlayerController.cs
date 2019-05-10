@@ -483,7 +483,9 @@ namespace Loom.ZombieBattleground
             {
                 _isMoveHoveringCard = false;
             };
-            if (_hoveringHandCard != null && _hoveringHandCard.HandBoardCard != null && _hoveringHandCard.HandBoardCard.BoardCardView != null)
+            if (_hoveringHandCard?.HandBoardCard?.BoardCardView != null &&
+                _hoveringHandCard?.GameObject != null &&
+                _hoveringHandCard?.HandBoardCard.GameObject != null)
             {
                 _hoveringHandCard.HandBoardCard.ResetHoveringAndZoom(isMove, onComplete);
             }
