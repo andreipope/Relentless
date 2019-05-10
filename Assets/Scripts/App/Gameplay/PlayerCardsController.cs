@@ -754,6 +754,7 @@ namespace Loom.ZombieBattleground
 
             if (unit.Model.Owner.IsLocalPlayer || _gameplayManager.IsLocalPlayerTurn()) 
             {
+                _abilitiesController.ResolveAllAbilitiesOnUnit(unit.Model, false);
                 _abilitiesController.ActivateAbilitiesOnCard(unit.Model, unit.Model, unit.Model.Owner);
             }
 
