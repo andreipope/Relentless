@@ -19,9 +19,9 @@ namespace Loom.ZombieBattleground
 
         event Action TurnEnded;
 
-        int PlayerDeckId { get; set; }
+        DeckId PlayerDeckId { get; set; }
 
-        int OpponentDeckId { get; set; }
+        DeckId OpponentDeckId { get; set; }
 
         Player CurrentTurnPlayer { get; set; }
 
@@ -72,10 +72,10 @@ namespace Loom.ZombieBattleground
 
         PlayerMoveAction PlayerMoves { get; set; }
 
-        Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
-        Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
+        Data.Deck CurrentPlayerDeck { get; set; }
+        Data.Deck OpponentPlayerDeck { get; set; }
 
-        int OpponentIdCheat { get; set; }
+        DeckId OpponentIdCheat { get; set; }
         bool AvoidGooCost { get; set; }
         bool UseInifiniteAbility { get; set; }
         PlayerActionMulligan OpponentHasDoneMulligan { get; set; }

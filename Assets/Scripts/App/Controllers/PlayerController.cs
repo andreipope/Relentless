@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        int deckId = _gameplayManager.PlayerDeckId;
+                        DeckId deckId = _gameplayManager.PlayerDeckId;
                         Deck deck = _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId);
                         foreach (DeckCardData card in deck.Cards)
                         {

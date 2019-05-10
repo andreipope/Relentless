@@ -44,6 +44,10 @@ namespace Loom.ZombieBattleground
 
         private IAppStateManager _appStateManager;
 
+        private INetworkActionManager _networkActionManager;
+
+        private BackendFacade _backendFacade;
+
         private Button _buttonPlayAgain,
                        _buttonContinue;
 
@@ -58,13 +62,13 @@ namespace Loom.ZombieBattleground
                                 _textPlayerName,
                                 _textLevel;
 
-        private OverlordModel _currentPlayerOverlord1;
+        private OverlordModel _currentPlayerOverlord;
 
         private Coroutine _fillExperienceBarCoroutine;
 
         private bool _isWin;
 
-        private ExperienceDeltaInfo _experienceDeltaInfo;
+        private EndMatchResults _endMatchResults;
 
         #region IUIPopup
 
@@ -80,6 +84,8 @@ namespace Loom.ZombieBattleground
             _appStateManager = GameClient.Get<IAppStateManager>();
             _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
+            _backendFacade = GameClient.Get<BackendFacade>();
             _isWin = true;
         }
 
@@ -106,7 +112,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        public void Show()
+        public async void Show()
         {
             if (Self != null)
                 return;
@@ -130,62 +136,99 @@ namespace Loom.ZombieBattleground
             Enumerators.SoundType soundType = _isWin ? Enumerators.SoundType.WON_POPUP : Enumerators.SoundType.LOST_POPUP;
             _soundManager.PlaySound(soundType, Constants.SfxSoundVolume, false, false, true);  
 
-            Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
-            
-            _currentPlayerOverlord1 = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
 
             _imageExperienceBar = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar").GetComponent<Image>();
 
             _imageLock = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Bar/Image_Lock").GetComponent<Image>();
 
             _imageOverlordPortrait = Self.transform.Find("Scaler/Image_OverlordPortrait").GetComponent<Image>();
-            _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
-            (
-                _currentPlayerOverlord1.Faction
-            );
+
 
             _textDeckName = Self.transform.Find("Scaler/Text_DeckName").GetComponent<TextMeshProUGUI>();
             _textPlayerName = Self.transform.Find("Scaler/Group_PlayerInfo/Text_PlayerName").GetComponent<TextMeshProUGUI>();
             _textLevel = Self.transform.Find("Scaler/Group_PlayerInfo/Image_Circle/Text_LevelNumber").GetComponent<TextMeshProUGUI>();
 
             _textPlayerName.text = _backendDataControlMediator.UserDataModel.UserId;
-            _textDeckName.text = deck.Name;
 
             _imageLock.gameObject.SetActive(_tutorialManager.IsTutorial);
             _buttonContinue.gameObject.SetActive(_tutorialManager.IsTutorial);
             _buttonPlayAgain.gameObject.SetActive(false);
 
-            _experienceDeltaInfo = new ExperienceDeltaInfo(
-                _currentPlayerOverlord1.Level,
-                _currentPlayerOverlord1.Experience,
-                _currentPlayerOverlord1.Level,
-                _currentPlayerOverlord1.Experience,
-                Array.Empty<LevelReward>()
-            );
 
+            Deck deck;
             if (_tutorialManager.IsTutorial)
             {
+                // For tutorial, the popup is deactivated, so no point in fetching data from server
                 _imageExperienceBar.fillAmount = 0;
-                _textLevel.text = _overlordExperienceManager.PlayerMatchExperienceInfo.LevelAtBegin.ToString();
+                _textLevel.text = _currentPlayerOverlord.Level.ToString();
+                deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
+                _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+
+                _endMatchResults = new EndMatchResults(
+                    deck.Id,
+                    _currentPlayerOverlord.Id,
+                    _currentPlayerOverlord.Level,
+                    _currentPlayerOverlord.Experience,
+                    _currentPlayerOverlord.Level,
+                    _currentPlayerOverlord.Experience,
+                    _isWin,
+                    Array.Empty<LevelReward>()
+                );
             }
             else
             {
-                GetAndShowExperienceInfo();
-            }
-        }
+                // Hide UI elements while fetching data
+                _textLevel.text = "";
+                _textDeckName.text = "";
+                _imageOverlordPortrait.enabled = false;
 
-        private async Task GetAndShowExperienceInfo()
-        {
-            _textLevel.text = "";
-            try
-            {
-                _experienceDeltaInfo = await _overlordExperienceManager.UpdateLevelAndExperience(_currentPlayerOverlord1);
+                try
+                {
+                    (int? notificationId, EndMatchResults endMatchResults) =
+                        await _overlordExperienceManager.GetEndMatchResultsFromEndMatchNotification();
+
+                    _endMatchResults = endMatchResults;
+                    if (_endMatchResults != null)
+                    {
+                        _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(_endMatchResults.OverlordId);
+                        _currentPlayerOverlord.Level = _endMatchResults.CurrentLevel;
+                        _currentPlayerOverlord.Experience = _endMatchResults.CurrentExperience;
+                        deck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _endMatchResults.DeckId);
+
+                        await _networkActionManager.EnqueueNetworkTask(
+                            async () =>
+                                await _backendFacade.ClearNotifications(
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    new[]
+                                    {
+                                        notificationId.Value
+                                    })
+                        );
+                    }
+                    else
+                    {
+                        // We have no info to show, just close in shame silently
+                        Log.Warn("No EndMatchNotification present on server, closing");
+                        ButtonContinueHandler();
+                        return;
+                    }
+                }
+                catch
+                {
+                    ButtonContinueHandler();
+                    return;
+                }
+
                 _fillExperienceBarCoroutine = MainApp.Instance.StartCoroutine(FillExperienceBar());
+                _imageOverlordPortrait.enabled = true;
             }
-            catch (Exception e)
-            {
-                Log.Error("failed to get overlord level", e);
-            }
+
+            _imageOverlordPortrait.sprite = GetOverlordPortraitSprite
+            (
+                _currentPlayerOverlord.Faction
+            );
+
+            _textDeckName.text = deck?.Name ?? "";
         }
 
         public void Show(object data)
@@ -313,17 +356,36 @@ namespace Loom.ZombieBattleground
 
         private IEnumerator FillExperienceBar()
         {
-            float currentProgressRatio =
-                _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.PreviousLevel)
-                / (float) _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.PreviousLevel + 1);
+            float CalculateProgressRation(long experience, int previousLevel, int currentLevel)
+            {
+                long experienceForPreviousLevel = _overlordExperienceManager.GetRequiredExperienceForLevel(previousLevel);
+                long experienceForCurrentLevel = _overlordExperienceManager.GetRequiredExperienceForLevel(currentLevel);
 
-            float targetProgressRatio =
-                _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.CurrentLevel - 1)
-                / (float) _overlordExperienceManager.GetRequiredExperienceForLevel(_experienceDeltaInfo.CurrentLevel);
+                // When we have the exact experience for next level
+                if (experience == experienceForCurrentLevel)
+                    return 0;
 
-            _textLevel.text = _experienceDeltaInfo.PreviousLevel.ToString();
+                experience -= experienceForPreviousLevel;
+                experienceForCurrentLevel -= experienceForPreviousLevel;
+
+                return experience / (float) experienceForCurrentLevel;
+            }
+
+            float currentProgressRatio = CalculateProgressRation(
+                _endMatchResults.PreviousExperience,
+                _endMatchResults.PreviousLevel,
+                _endMatchResults.PreviousLevel + 1
+                );
+
+            float targetProgressRatio = CalculateProgressRation(
+                _endMatchResults.CurrentExperience,
+                _endMatchResults.CurrentLevel,
+                _endMatchResults.CurrentLevel + 1
+            );
+
+            _textLevel.text = _endMatchResults.PreviousLevel.ToString();
             _imageExperienceBar.fillAmount = currentProgressRatio;
-            for (int level = _experienceDeltaInfo.PreviousLevel; level < _experienceDeltaInfo.CurrentLevel; level++)
+            for (int level = _endMatchResults.PreviousLevel; level < _endMatchResults.CurrentLevel; level++)
             {
                 _imageExperienceBar.DOFillAmount(1, ExperienceFillInterval);
                 yield return _experienceFillWait;
@@ -337,9 +399,9 @@ namespace Loom.ZombieBattleground
             _buttonContinue.gameObject.SetActive(true);
             _buttonPlayAgain.gameObject.SetActive(true);
 
-            if (_experienceDeltaInfo.CurrentLevel > _experienceDeltaInfo.PreviousLevel)
+            if (_endMatchResults.CurrentLevel > _endMatchResults.PreviousLevel)
             {
-                _uiManager.DrawPopup<LevelUpPopup>();
+                _uiManager.DrawPopup<LevelUpPopup>(_endMatchResults);
             }
         }
     }

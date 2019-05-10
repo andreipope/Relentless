@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
 
         private GameObject _endTurnButton;
 
-        public int CurrentDeckId { get; set; }
+        public DeckId CurrentDeckId { get; set; }
 
         private IMatchManager _matchManager;
 
@@ -237,16 +237,18 @@ namespace Loom.ZombieBattleground
                     {
                         overlordId = _dataManager.CachedDecksData.Decks.First(o => o.Id == CurrentDeckId).OverlordId;
 
-                        List<Data.AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
+                        List<AIDeck> decks = _dataManager.CachedAiDecksData.Decks.FindAll(x => x.Deck.Cards.Count > 0);
 
-                        Data.AIDeck opponentDeck = _gameplayManager.OpponentIdCheat == -1 ? decks[Random.Range(0, decks.Count)] : decks[_gameplayManager.OpponentIdCheat];
-
+                        AIDeck opponentDeck =
+                            _gameplayManager.OpponentIdCheat.Id == -1 ?
+                                decks[Random.Range(0, decks.Count)] :
+                                decks.Single(deck => deck.Deck.Id == _gameplayManager.OpponentIdCheat);
 
                         overlordHeroId = opponentDeck.Deck.OverlordId;
                         _gameplayManager.OpponentPlayerDeck = opponentDeck.Deck;
-                        _gameplayManager.OpponentDeckId = (int)_gameplayManager.OpponentPlayerDeck.Id;
+                        _gameplayManager.OpponentDeckId = _gameplayManager.OpponentPlayerDeck.Id;
 
-                        _gameplayManager.OpponentIdCheat = -1;
+                        _gameplayManager.OpponentIdCheat = new DeckId(-1);
 
                         if(_gameplayManager.IsTutorial && _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.EnableCustomDeckForOpponent)
                         {
@@ -269,7 +271,7 @@ namespace Loom.ZombieBattleground
                         {
                             overlordHeroId = new OverlordId(playerState.Deck.OverlordId);
                             _gameplayManager.OpponentPlayerDeck = playerState.Deck.FromProtobuf();
-                            _gameplayManager.OpponentDeckId = -1;
+                            _gameplayManager.OpponentDeckId = new DeckId(-1);
                         }
                     }
                     break;

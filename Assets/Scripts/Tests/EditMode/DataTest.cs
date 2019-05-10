@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground.Test
         public void DeckProtobufSerialization()
         {
             Deck original = new Deck(
-                1,
+                new DeckId(1),
                 new OverlordId(2),
                 "deck name",
                 new List<DeckCardData>

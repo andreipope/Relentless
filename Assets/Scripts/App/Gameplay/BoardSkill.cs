@@ -281,7 +281,7 @@ namespace Loom.ZombieBattleground
 
             _overlordExperienceManager.ReportExperienceAction(
                 Enumerators.ExperienceActionType.UseOverlordAbility,
-                OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchExperienceInfo : _overlordExperienceManager.OpponentMatchExperienceInfo
+                OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
             );
 
             if (_gameplayManager.UseInifiniteAbility)

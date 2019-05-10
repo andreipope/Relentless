@@ -55,9 +55,9 @@ namespace Loom.ZombieBattleground
         public event Action TurnEnded;
 #pragma warning restore 67
 
-        public int PlayerDeckId { get; set; }
+        public DeckId PlayerDeckId { get; set; }
 
-        public int OpponentDeckId { get; set; }
+        public DeckId OpponentDeckId { get; set; }
 
         public bool IsGameStarted { get; set; }
 
@@ -83,11 +83,11 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
+        public Data.Deck CurrentPlayerDeck { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
+        public Data.Deck OpponentPlayerDeck { get; set; }
 
-        public int OpponentIdCheat { get; set; }
+        public DeckId OpponentIdCheat { get; set; }
 
         public bool AvoidGooCost { get; set; }
 
@@ -277,7 +277,7 @@ namespace Loom.ZombieBattleground
                 Constants.CreatureAttackSoundVolume *= 3;
             }
 
-            OpponentIdCheat = -1;
+            OpponentIdCheat = new DeckId(-1);
             AvoidGooCost = false;
             UseInifiniteAbility = false;
             MatchDuration = new AnalyticsTimer();

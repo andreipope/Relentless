@@ -142,7 +142,7 @@ namespace Loom.ZombieBattleground.Data
         public static Deck FromProtobuf(this Protobuf.Deck deck)
         {
             return new Deck(
-                deck.Id,
+                new DeckId(deck.Id),
                 new OverlordId(deck.OverlordId),
                 deck.Name,
                 deck.Cards.Select(card => card.FromProtobuf()).ToList(),
@@ -275,6 +275,7 @@ namespace Loom.ZombieBattleground.Data
                         notification.Id,
                         Utilites.UnixTimeStampToDateTime(notification.CreatedAt),
                         notification.Seen,
+                        new DeckId(notificationEndMatch.DeckId),
                         new OverlordId(notificationEndMatch.OverlordId),
                         notificationEndMatch.OldLevel,
                         notificationEndMatch.OldExperience,

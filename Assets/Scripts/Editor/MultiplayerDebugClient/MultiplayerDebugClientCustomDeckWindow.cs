@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (Client.DebugCheats.CustomDeck == null)
             {
                 Client.DebugCheats.CustomDeck =
-                    new Deck(-1, new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                    new Deck(new DeckId(-1), new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
             }
 
             if (_cardMouldIdToDescription == null)

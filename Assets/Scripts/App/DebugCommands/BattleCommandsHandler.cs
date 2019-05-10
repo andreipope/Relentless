@@ -671,14 +671,14 @@ static class BattleCommandsHandler
     [CommandHandler(Description = "Show Player and Opponent XP")]
     private static void ShowPlayerAndOpponentXP()
     {
-        Debug.Log("Player Experience = " + _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived);
-        Debug.Log("Opponent Experience = " + _overlordExperienceManager.OpponentMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Player Experience = " + _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived);
+        Debug.Log("Opponent Experience = " + _overlordExperienceManager.OpponentMatchMatchExperienceInfo.ExperienceReceived);
     }
 
     [CommandHandler(Description = "Set Player and Opponent XP")]
     private static void SetPlayerAndOpponentXP(int playerExperience, int opponentExperience)
     {
-        _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived = playerExperience;
-        _overlordExperienceManager.OpponentMatchExperienceInfo.ExperienceReceived = opponentExperience;
+        _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived = playerExperience;
+        _overlordExperienceManager.OpponentMatchMatchExperienceInfo.ExperienceReceived = opponentExperience;
     }
 }

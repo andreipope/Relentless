@@ -997,13 +997,13 @@ namespace Loom.ZombieBattleground
         public void FillTutorialDeck()
         {
             _gameplayManager.CurrentPlayerDeck =
-                         new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId,
+                         new Deck(new DeckId(0), CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.OverlordId,
                          "TutorialDeck", new List<DeckCardData>(),
                          CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.PrimarySkill,
                          CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.PlayerInfo.SecondarySkill);
 
             _gameplayManager.OpponentPlayerDeck =
-                        new Deck(0, CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId,
+                        new Deck(new DeckId(0), CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.OverlordId,
                         "TutorialDeckOpponent", new List<DeckCardData>(),
                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.PrimarySkill,
                         CurrentTutorial.TutorialContent.ToGameplayContent().SpecificBattlegroundInfo.OpponentInfo.SecondarySkill);
@@ -1371,14 +1371,14 @@ namespace Loom.ZombieBattleground
             else
             {
                 string nameOfDeck = "HORDE " + _dataManager.CachedDecksData.Decks.Count;
-                savedTutorialDeck = new Deck(-1, new OverlordId(4), nameOfDeck, cards, 0, 0);
+                savedTutorialDeck = new Deck(new DeckId(-1), new OverlordId(4), nameOfDeck, cards, 0, 0);
 
                 long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, savedTutorialDeck);
-                savedTutorialDeck.Id = 2;
+                savedTutorialDeck.Id = new DeckId(2);
                 _dataManager.CachedDecksData.Decks.Add(savedTutorialDeck);
             }
             _dataManager.CachedUserLocalData.TutorialSavedDeck = savedTutorialDeck;
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)savedTutorialDeck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = savedTutorialDeck.Id;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
         }
 
@@ -1397,7 +1397,7 @@ namespace Loom.ZombieBattleground
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         _dataManager.CachedDecksData.Decks.Remove(currentDeck);
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = new DeckId(-1);
                         _uiManager.GetPage<HordeSelectionWithNavigationPage>().SelectDeckIndex = 0;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 

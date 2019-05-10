@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
 using UnityEditor;
 using UnityEngine;
@@ -156,7 +157,7 @@ namespace Loom.ZombieBattleground.Test
 
             try
             {
-                clients.ForEach(client => client.DeckId = 1);
+                clients.ForEach(client => client.DeckId = new DeckId(1));
 
                 await Task.WhenAll(
                     clients
@@ -208,7 +209,7 @@ namespace Loom.ZombieBattleground.Test
                             {
                                 Log.Info("waiting for " + delay + "s");
                                 await Task.Delay((int) (delay * 1000f));
-                                await client.MatchMakingFlowController.Start(1, null, null, false, null);
+                                await client.MatchMakingFlowController.Start(new DeckId(1), null, null, false, null);
                             });
                         })
                         .ToArray()

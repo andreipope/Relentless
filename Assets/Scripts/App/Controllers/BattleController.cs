@@ -324,7 +324,7 @@ namespace Loom.ZombieBattleground
             {
                 _overlordExperienceManager.ReportExperienceAction(
                     Enumerators.ExperienceActionType.KillMinion,
-                    attackedUnit.OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchExperienceInfo : _overlordExperienceManager.OpponentMatchExperienceInfo
+                    attackedUnit.OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
                     );
             }
         }

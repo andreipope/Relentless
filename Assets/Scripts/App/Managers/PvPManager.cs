@@ -167,7 +167,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async Task StartMatchmaking(int deckId)
+        public async Task StartMatchmaking(DeckId deckId)
         {
             await _matchmakingBusySemaphore.WaitAsync();
 

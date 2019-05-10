@@ -383,7 +383,7 @@ namespace Loom.ZombieBattleground
 
             _buttonSaveDeck.enabled = true;
 
-            if (_myDeckPage.CurrentEditDeck.Id < 0)
+            if (_myDeckPage.CurrentEditDeck.Id.Id < 0)
                 return;
 
             List<Deck> cacheDeckList = _myDeckPage.GetDeckList();

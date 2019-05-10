@@ -190,12 +190,12 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<GetAIDecksResponse>(GetAiDecksDataMethod, request);
         }
 
-        public async Task DeleteDeck(string userId, long deckId)
+        public async Task DeleteDeck(string userId, DeckId deckId)
         {
             DeleteDeckRequest request = new DeleteDeckRequest
             {
                 UserId = userId,
-                DeckId = deckId,
+                DeckId = deckId.Id,
                 Version = BackendEndpoint.DataVersion
             };
 
@@ -630,7 +630,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         public async Task<RegisterPlayerPoolResponse> RegisterPlayerPool(
             string userId,
-            long deckId,
+            DeckId deckId,
             Address? customGameModeAddress,
             IList<string> pvpTags,
             bool useBackendGameLogic,
@@ -641,7 +641,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 RegistrationData = new PlayerProfileRegistrationData
                 {
                     UserId = userId,
-                    DeckId = deckId,
+                    DeckId = deckId.Id,
                     Version = BackendEndpoint.DataVersion,
                     Tags =
                     {
@@ -757,14 +757,19 @@ namespace Loom.ZombieBattleground.BackendCommunication
         public async Task<AddSoloExperienceResponse> AddSoloExperience(
             string userId,
             OverlordId overlordId,
-            long experience)
+            DeckId deckId,
+            long experience,
+            bool isWin
+            )
         {
             AddSoloExperienceRequest request = new AddSoloExperienceRequest
             {
                 Version = BackendEndpoint.DataVersion,
                 UserId = userId,
                 OverlordId = overlordId.Id,
-                Experience = experience
+                Experience = experience,
+                IsWin = isWin,
+                DeckId = deckId.Id
             };
 
             return await _contractCallProxy.CallAsync<AddSoloExperienceResponse>(AddSoloExperienceMethod, request);

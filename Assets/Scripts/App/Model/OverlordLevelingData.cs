@@ -80,42 +80,48 @@ namespace Loom.ZombieBattleground.Data
         }
     }
 
-    public class ExperienceDeltaInfo
+    public class EndMatchResults
     {
+        public DeckId DeckId { get; }
+
+        public OverlordId OverlordId { get; }
+
         public int PreviousLevel { get; }
 
         public long PreviousExperience { get; }
 
-        public int CurrentLevel { get; set; }
+        public int CurrentLevel { get; }
 
-        public long CurrentExperience { get; set; }
+        public long CurrentExperience { get; }
 
-        public IReadOnlyList<LevelReward> GotRewards { get; }
+        public bool IsWin { get; }
 
-        public ExperienceDeltaInfo(int previousLevel, long previousExperience, int currentLevel, long currentExperience, IReadOnlyList<LevelReward> gotRewards)
+        public IReadOnlyList<LevelReward> LevelRewards { get; }
+
+        public EndMatchResults(
+            DeckId deckId,
+            OverlordId overlordId,
+            int previousLevel,
+            long previousExperience,
+            int currentLevel,
+            long currentExperience,
+            bool isWin,
+            IReadOnlyList<LevelReward> levelRewards)
         {
+            DeckId = deckId;
+            OverlordId = overlordId;
             PreviousLevel = previousLevel;
             PreviousExperience = previousExperience;
             CurrentLevel = currentLevel;
             CurrentExperience = currentExperience;
-            GotRewards = gotRewards;
+            IsWin = isWin;
+            LevelRewards = levelRewards;
         }
     }
 
-    public class ExperienceInfo
+
+    public class MatchExperienceInfo
     {
-        public int LevelAtBegin { get; }
-
-        public long ExperienceAtBegin { get; }
-
         public long ExperienceReceived { get; set; }
-
-        public List<LevelReward> GotRewards { get; }
-
-        public ExperienceInfo(int levelAtBegin, long experienceAtBegin)
-        {
-            LevelAtBegin = levelAtBegin;
-            ExperienceAtBegin = experienceAtBegin;
-        }
     }
 }

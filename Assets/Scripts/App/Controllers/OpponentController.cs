@@ -496,7 +496,7 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
-                        _overlordExperienceManager.ReportExperienceAction(Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.OpponentMatchExperienceInfo);
+                        _overlordExperienceManager.ReportExperienceAction(Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.OpponentMatchMatchExperienceInfo);
                         
                         completeCallback?.Invoke();
                     }

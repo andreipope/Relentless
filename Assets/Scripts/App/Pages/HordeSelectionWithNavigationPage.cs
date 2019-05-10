@@ -475,7 +475,7 @@ namespace Loom.ZombieBattleground
         private Deck CreateNewDeckData()
         {
             Deck deck = new Deck(
-                -1,
+                new DeckId(-1),
                 CurrentEditOverlord.Id,
                 GameClient.Get<IGameplayManager>().GetController<DeckGeneratorController>().GenerateDeckName(),                
                 new List<DeckCardData>(),

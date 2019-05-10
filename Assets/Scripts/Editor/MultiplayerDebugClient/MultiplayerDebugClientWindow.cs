@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         {
                             EnqueueAsyncTask(async () =>
                             {
-                                await DebugClient.MatchMakingFlowController.Start(1, null, DebugClient.PvPTags, DebugClient.UseBackendGameLogic, DebugClient.DebugCheats);
+                                await DebugClient.MatchMakingFlowController.Start(new DeckId(1), null, DebugClient.PvPTags, DebugClient.UseBackendGameLogic, DebugClient.DebugCheats);
                             });
                         }
                     }

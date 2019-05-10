@@ -27,8 +27,8 @@ namespace Loom.ZombieBattleground
         private IGameplayManager _gameplayManager;
         private BackendDataControlMediator _backendDataControlMediator;
 
-        public ExperienceInfo PlayerMatchExperienceInfo { get; private set; }
-        public ExperienceInfo OpponentMatchExperienceInfo { get; private set; }
+        public MatchExperienceInfo PlayerMatchMatchExperienceInfo { get; private set; }
+        public MatchExperienceInfo OpponentMatchMatchExperienceInfo { get; private set; }
 
         public void Init()
         {
@@ -49,17 +49,17 @@ namespace Loom.ZombieBattleground
 
         public void InitializeMatchExperience(OverlordModel playerOverlord, OverlordModel opponentOverlord)
         {
-            PlayerMatchExperienceInfo = new ExperienceInfo(playerOverlord.Level, playerOverlord.Experience);
-            OpponentMatchExperienceInfo = new ExperienceInfo(opponentOverlord.Level, opponentOverlord.Experience);
+            PlayerMatchMatchExperienceInfo = new MatchExperienceInfo();
+            OpponentMatchMatchExperienceInfo = new MatchExperienceInfo();
         }
 
-        public void ReportExperienceAction(Enumerators.ExperienceActionType actionType, ExperienceInfo experienceInfo)
+        public void ReportExperienceAction(Enumerators.ExperienceActionType actionType, MatchExperienceInfo matchExperienceInfo)
         {
             if (_gameplayManager.IsTutorial)
                 return;
 
             Data.ExperienceAction action = _dataManager.CachedOverlordLevelingData.ExperienceActions.Single(x => x.Action == actionType);
-            experienceInfo.ExperienceReceived += action.Experience;
+            matchExperienceInfo.ExperienceReceived += action.Experience;
         }
 
         public long GetRequiredExperienceForLevel(int level)
@@ -67,34 +67,10 @@ namespace Loom.ZombieBattleground
             if (level <= 1)
                 return 0;
 
-            return _dataManager.CachedOverlordLevelingData.Fixed + _dataManager.CachedOverlordLevelingData.ExperienceStep * level;
+            return _dataManager.CachedOverlordLevelingData.Fixed + _dataManager.CachedOverlordLevelingData.ExperienceStep * (level - 1);
         }
 
-        public async Task<ExperienceDeltaInfo> UpdateLevelAndExperience(OverlordModel overlordModel)
-        {
-            (int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin) = await GetExperienceDeltaInfoFromEndMatchNotification();
-            if (experienceDeltaInfo != null)
-            {
-                await _networkActionManager.EnqueueNetworkTask(
-                    async () =>
-                        await _backendFacade.ClearNotifications(_backendDataControlMediator.UserDataModel.UserId,new[]{ notificationId.Value }));
-
-                overlordModel.Level = experienceDeltaInfo.CurrentLevel;
-                overlordModel.Experience = experienceDeltaInfo.CurrentExperience;
-                return experienceDeltaInfo;
-            }
-
-            Log.Warn("No EndMatchNotification, returning known values");
-            return new ExperienceDeltaInfo(
-                overlordModel.Level,
-                overlordModel.Experience,
-                overlordModel.Level,
-                overlordModel.Experience,
-                Array.Empty<LevelReward>()
-            );
-        }
-
-        public async Task<(int? notificationId, ExperienceDeltaInfo experienceDeltaInfo, bool isWin)> GetExperienceDeltaInfoFromEndMatchNotification()
+        public async Task<(int? notificationId, EndMatchResults endMatchResults)> GetEndMatchResultsFromEndMatchNotification()
         {
             GetNotificationsResponse notificationsResponse = null;
             await _networkActionManager.EnqueueNetworkTask(async () =>
@@ -106,18 +82,21 @@ namespace Loom.ZombieBattleground
                 if (!(notification is EndMatchNotification endMatchNotification))
                     continue;
 
-                ExperienceDeltaInfo experienceDeltaInfo = new ExperienceDeltaInfo(
+                EndMatchResults endMatchResults = new EndMatchResults(
+                    endMatchNotification.DeckId,
+                    endMatchNotification.OverlordId,
                     endMatchNotification.OldLevel,
                     endMatchNotification.OldExperience,
                     endMatchNotification.NewLevel,
                     endMatchNotification.NewExperience,
+                    endMatchNotification.IsWin,
                     endMatchNotification.Rewards
                 );
 
-                return (notification.Id, experienceDeltaInfo, endMatchNotification.IsWin);
+                return (notification.Id, endMatchResults);
             }
 
-            return (null, null, false);
+            return (null, null);
         }
 
         /*private void SaveSkillInDecks(int overlordId, OverlordSkill skill)

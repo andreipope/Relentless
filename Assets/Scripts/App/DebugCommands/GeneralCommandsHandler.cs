@@ -74,10 +74,16 @@ namespace Loom.ZombieBattleground
         }
 
         [CommandHandler(Description = "Add experience to an overlord")]
-        public static async void AddSoloExperience(int overlordId, int experience)
+        public static async void AddSoloExperience(int overlordId, int experience, int deckId = 1, bool isWin = true)
         {
             await GameClient.Get<BackendFacade>()
-                .AddSoloExperience(_backendDataControlMediator.UserDataModel.UserId, new OverlordId(overlordId), experience);
+                .AddSoloExperience(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    new OverlordId(overlordId),
+                    new DeckId(deckId),
+                    experience,
+                    isWin
+                );
 
             Debug.Log("Added experience");
         }

@@ -19,7 +19,7 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.Deck
             {
-                Id = deck.Id,
+                Id = deck.Id.Id,
                 OverlordId = deck.OverlordId.Id,
                 Name = deck.Name,
                 Cards =

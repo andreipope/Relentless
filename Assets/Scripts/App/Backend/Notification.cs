@@ -22,7 +22,8 @@ namespace Loom.ZombieBattleground
 
     public class EndMatchNotification : Notification
     {
-        public OverlordId OverlordId{ get; }
+        public DeckId DeckId { get; }
+        public OverlordId OverlordId { get; }
         public int OldLevel { get; }
         public long OldExperience { get; }
         public int NewLevel { get; }
@@ -30,13 +31,19 @@ namespace Loom.ZombieBattleground
         public bool IsWin { get; }
         public IReadOnlyList<LevelReward> Rewards { get; }
 
-        public EndMatchNotification(int id, DateTime createdAt, bool seen, OverlordId overlordId, int oldLevel,
+        public EndMatchNotification(
+            int id, 
+            DateTime createdAt, 
+            bool seen, 
+            DeckId deckId, 
+            OverlordId overlordId,            int oldLevel,
             long oldExperience,
             int newLevel,
             long newExperience,
             bool isWin,
             IReadOnlyList<LevelReward> rewards) : base(id, createdAt, seen)
         {
+            DeckId = deckId;
             OverlordId = overlordId;
             OldLevel = oldLevel;
             OldExperience = oldExperience;

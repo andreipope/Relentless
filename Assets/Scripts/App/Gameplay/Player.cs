@@ -442,7 +442,7 @@ namespace Loom.ZombieBattleground
         {
             _overlordExperienceManager.ReportExperienceAction(
                 Enumerators.ExperienceActionType.KillOverlord,
-                IsLocalPlayer ? _overlordExperienceManager.OpponentMatchExperienceInfo : _overlordExperienceManager.PlayerMatchExperienceInfo
+                IsLocalPlayer ? _overlordExperienceManager.OpponentMatchMatchExperienceInfo : _overlordExperienceManager.PlayerMatchMatchExperienceInfo
             );
 
             MulliganPopup mulliganPopup = _uiManager.GetPopup<MulliganPopup>();
@@ -518,42 +518,37 @@ namespace Loom.ZombieBattleground
                         {
                             _actionsQueueController.ClearActions();
 
-                            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
-                                {
-                                    _networkActionManager.EnqueueMessage(
-                                        new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
-                                            _backendDataControlMediator.UserDataModel.UserId,
-                                            IsLocalPlayer ?
-                                                _pvpManager.GetOpponentUserId() :
-                                                _backendDataControlMediator.UserDataModel.UserId,
-                                            new[]
-                                            {
-                                                _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived,
-                                                _overlordExperienceManager.OpponentMatchExperienceInfo
-                                                    .ExperienceReceived
-                                            })
-                                    );
-
-                                    completeCallback?.Invoke();
-                                },
-                                Enumerators.QueueActionType.EndMatch);
-                        }
-                    }
-                    else
-                    {
-                        try
-                        {
-                            _networkActionManager.EnqueueNetworkTask(async () =>
-                            {
-                                await _backendFacade.AddSoloExperience(
+                            _networkActionManager.EnqueueMessage(
+                                new MatchRequestFactory(_pvpManager.MatchMetadata.Id).EndMatch(
                                     _backendDataControlMediator.UserDataModel.UserId,
-                                    SelfOverlord.Id,
-                                    _overlordExperienceManager.PlayerMatchExperienceInfo.ExperienceReceived);
-                            });
+                                    _backendDataControlMediator.UserDataModel.UserId,
+                                    new[]
+                                    {
+                                        _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived,
+                                        _overlordExperienceManager.OpponentMatchMatchExperienceInfo
+                                            .ExperienceReceived
+                                    })
+                            );
                         }
-                        catch
+                        else
                         {
-                            // No special handling
+                            try
+                            {
+                                _networkActionManager.EnqueueNetworkTask(async () =>
+                                {
+                                    await _backendFacade.AddSoloExperience(
+                                        _backendDataControlMediator.UserDataModel.UserId,
+                                        _gameplayManager.CurrentPlayer.SelfOverlord.Id,
+                                        _dataManager.CachedUserLocalData.LastSelectedDeckId,
+                                        _overlordExperienceManager.PlayerMatchMatchExperienceInfo.ExperienceReceived,
+                                        true
+                                    );
+                                });
+                            }
+                            catch
+                            {
+                                // No special handling
+                            }
                         }
                     }
                 }, 2f);

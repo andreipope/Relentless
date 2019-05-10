@@ -151,18 +151,7 @@ namespace Loom.ZombieBattleground
 
         private void LoadDefaultDeckData()
         {
-            int defaultSelectedDeckId = _dataManager.CachedUserLocalData.LastSelectedDeckId;
-
-            if (defaultSelectedDeckId > _dataManager.CachedDecksData.Decks.Count)
-            {
-                defaultSelectedDeckId = 1;
-            }
-            if (_dataManager.CachedDecksData.Decks.Count > 0)
-            {
-                defaultSelectedDeckId = Mathf.Clamp(defaultSelectedDeckId, 1, defaultSelectedDeckId);
-            }
-            
-            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == defaultSelectedDeckId);
+            Deck selectedDeck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _dataManager.CachedUserLocalData.LastSelectedDeckId);
             
             if(selectedDeck == null && _dataManager.CachedDecksData.Decks.Count > 0)
             {
@@ -189,7 +178,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _dataManager.CachedUserLocalData.LastSelectedDeckId = (int)deck.Id;
+            _dataManager.CachedUserLocalData.LastSelectedDeckId = deck.Id;
             _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             if ((_tutorialManager.IsTutorial || _tutorialManager.BattleShouldBeWonBlocker) && _deckList.Count > 0)
@@ -202,7 +191,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void UpdateSelectedDeckData(int deckId)
+        private void UpdateSelectedDeckData(DeckId deckId)
         {
             UpdateSelectedDeckData
             (
