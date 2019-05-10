@@ -117,6 +117,7 @@ namespace Loom.ZombieBattleground.Test
             if (!Application.isPlaying)
                 return;
 
+            Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
             Log.Info(nameof(GameTearDown));
             await new WaitForSecondsRealtime(0.5f);
             GameClient.Get<IAppStateManager>()?.Dispose();
@@ -125,8 +126,6 @@ namespace Loom.ZombieBattleground.Test
             await new WaitForUpdate();
             GameClient.ClearInstance();
             await new WaitForSecondsRealtime(1);
-
-            Application.logMessageReceivedThreaded -= IgnoreAssertsLogMessageReceivedHandler;
         }
 
         private async Task GameSetUp()
