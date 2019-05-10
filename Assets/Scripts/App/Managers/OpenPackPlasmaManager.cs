@@ -28,6 +28,8 @@ namespace Loom.ZombieBattleground
         #region Contract
         private TextAsset _abiCardFaucet;
         private TextAsset[] _abiPacks;
+        private EvmContract _cardFaucetContract;
+        private List<EvmContract> _packContractList;
         #endregion    
         
         #region Key
@@ -51,8 +53,6 @@ namespace Loom.ZombieBattleground
         private const int _cardsPerPack = 5;
 
         private const int _maxRequestRetryAttempt = 5;
-
-        private bool _eventInitialized;
         
         private BackendDataControlMediator _backendDataControlMediator;
         private ILoadObjectsManager _loadObjectsManager;  
@@ -63,8 +63,7 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _dataManager = GameClient.Get<IDataManager>();
-            CardsReceived = new List<Card>();
-            _eventInitialized = false;
+            CardsReceived = new List<Card>();            
                       
             _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI");
             Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
@@ -73,6 +72,7 @@ namespace Loom.ZombieBattleground
             {
                 _abiPacks[i] = _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI");
             }
+            _packContractList = new List<EvmContract>();
         }
         
         public void Update()
@@ -115,13 +115,7 @@ namespace Loom.ZombieBattleground
         
         public async Task<int> CallPackBalanceContract(int packTypeId)
         {        
-            Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");
-            EvmContract packContract = GetContract(
-                PrivateKey,
-                PublicKey,
-                _abiPacks[packTypeId].ToString(),
-                GetContractAddress(packTypeId)
-            );
+            Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");            
 
             int amount;
             int count = 0;            
@@ -129,7 +123,10 @@ namespace Loom.ZombieBattleground
             {
                 try
                 {
-                    amount = await CallBalanceContract(packContract);
+                    amount = await CallBalanceContract
+                    (
+                        _packContractList[packTypeId]
+                    );
                     break;
                 }
                 catch
@@ -150,28 +147,11 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
-            EvmContract cardFaucetContract = GetContract(
-                PrivateKey,
-                PublicKey,
-                _abiCardFaucet.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressCardFaucet
-            );
-            EvmContract packContract = GetContract(
-                PrivateKey,
-                PublicKey,
-                _abiPacks[packTypeId].ToString(),
-                GetContractAddress(packTypeId)
-            );
-
-            if (!_eventInitialized)
-            {
-                cardFaucetContract.EventReceived += ContractEventReceived;
-                _eventInitialized = true;
-            }
+            EvmContract packContract = _packContractList[packTypeId];
 
             int expectCardReceiveAmount = _cardsPerPack;
-
             int count = 0;
+            
             while (true)
             {
                 resultList = new List<Card>();
@@ -181,7 +161,7 @@ namespace Loom.ZombieBattleground
                 {
                     await CallBalanceContract(packContract);
                     await CallApproveContract(packContract);
-                    await CallOpenPackContract(cardFaucetContract, packTypeId);
+                    await CallOpenPackContract(_cardFaucetContract, packTypeId);
                     await CallBalanceContract(packContract);
 
                     double timeOut = 29.99;
@@ -214,7 +194,45 @@ namespace Loom.ZombieBattleground
             return resultList;                                   
         }
         
-        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        public async Task CreateCardFaucetContract()
+        {
+            if(_cardFaucetContract != null)
+            {
+                _cardFaucetContract.EventReceived -= ContractEventReceived;
+            }
+            _cardFaucetContract = await GetContract
+            (
+                PrivateKey,
+                PublicKey,
+                _abiCardFaucet.ToString(),
+                PlasmaChainEndpointsContainer.ContractAddressCardFaucet
+            );
+            _cardFaucetContract.EventReceived += ContractEventReceived;            
+        }
+
+        public async Task CreatePacksContract()
+        {
+            _packContractList.Clear();
+            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues
+            (
+                typeof(Enumerators.MarketplaceCardPackType)
+            );
+            for(int i = 0; i < packTypes.Length; ++i)
+            {
+                _packContractList.Add
+                (
+                    await GetContract
+                    (
+                        PrivateKey,
+                        PublicKey,
+                        _abiPacks[i].ToString(),
+                        GetContractAddress(i)
+                    )
+                );
+            }
+        }
+
+        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {        
             ILogger logger = new UnityLoggerWrapper(RpcLog);
             
@@ -255,6 +273,11 @@ namespace Loom.ZombieBattleground
                 ),
                 new SignedTxMiddleware(privateKey)
             });
+
+            client.Configuration.AutoReconnect = false;
+
+            await client.ReadClient.ConnectAsync();
+            await client.WriteClient.ConnectAsync();
     
             Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
             Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    

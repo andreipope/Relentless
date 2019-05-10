@@ -72,15 +72,11 @@ namespace Loom.ZombieBattleground
         
          public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
         {
-            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);
-            _fiatPurchaseContract = GetContract
-            (
-                PrivateKey,
-                PublicKey,
-                _abiFiatPurchase.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
-            );
-            _fiatPurchaseContract.EventReceived += ContractEventReceived;
+            if(_fiatPurchaseContract == null)
+            {
+                await CreateFiatPurchaseContract();
+            }
+            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);            
             string responseEvent = "";
             responseEvent = await CallRequestPacksContract(_fiatPurchaseContract, contractParams);             
             return responseEvent;
@@ -140,7 +136,23 @@ namespace Loom.ZombieBattleground
             _eventResponse = e.EventName;
         }
         
-        private EvmContract GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
+        public async Task CreateFiatPurchaseContract()
+        {
+            if(_fiatPurchaseContract != null)
+            {
+                _fiatPurchaseContract.EventReceived -= ContractEventReceived;
+            }
+            _fiatPurchaseContract = await GetContract
+            (
+                PrivateKey,
+                PublicKey,
+                _abiFiatPurchase.ToString(),
+                PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
+            );
+            _fiatPurchaseContract.EventReceived += ContractEventReceived;
+        }
+
+        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
         {
             ILogger logger = new UnityLoggerWrapper(RpcLog);
 
@@ -181,6 +193,10 @@ namespace Loom.ZombieBattleground
                 ),
                 new SignedTxMiddleware(privateKey)
             });
+    
+            client.Configuration.AutoReconnect = false;
+            await client.ReadClient.ConnectAsync();
+            await client.WriteClient.ConnectAsync();
     
             Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
             Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    
