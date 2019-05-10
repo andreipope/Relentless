@@ -405,6 +405,7 @@ namespace Loom.ZombieBattleground
                         };
                         actions[1] = () => { };
 
+                        _uiManager.HidePopup<CardInfoWithSearchPopup>();
                         _uiManager.DrawPopup<ConfirmationPopup>(actions);
                     }
                 }

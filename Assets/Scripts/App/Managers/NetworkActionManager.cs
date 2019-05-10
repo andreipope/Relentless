@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
                     }
                     catch (Exception e2)
                     {
-                        Log.Error($"The impossible exception occured, thread id {Thread.CurrentThread.ManagedThreadId}, queue count: {_tasks.Count}, completedTask: {completedTask}, e: \n[{e}]\n\n\ne2: \n[{e2}]");
+                        Log.Warn($"The impossible exception occured, thread id {Thread.CurrentThread.ManagedThreadId}, queue count: {_tasks.Count}, completedTask: {completedTask}, e: \n[{e}]\n\n\ne2: \n[{e2}]");
                     }
                 }
 
