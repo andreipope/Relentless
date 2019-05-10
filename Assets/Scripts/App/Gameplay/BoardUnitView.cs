@@ -450,16 +450,13 @@ namespace Loom.ZombieBattleground
 
             if (_filteredEffectsToShow.Count == 0)
             {
-                if (_cardMechanicsPicture.sprite != null)
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
+                sequence.AppendCallback(() =>
                 {
-                    Sequence sequence = DOTween.Sequence();
-                    sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
-                    sequence.AppendCallback(() =>
-                    {
-                        _cardMechanicsPicture.sprite = null;
-                    });
-                    sequence.Play();
-                }
+                    _cardMechanicsPicture.sprite = null;
+                });
+                sequence.Play();
             }
             else
             {

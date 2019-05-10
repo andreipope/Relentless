@@ -580,6 +580,7 @@ namespace Loom.ZombieBattleground
 
             if (activateAbility)
             {
+                _abilitiesController.ResolveAllAbilitiesOnUnit(boardUnitView.Model, false);
                 _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, card.Model, Player);
             }
 

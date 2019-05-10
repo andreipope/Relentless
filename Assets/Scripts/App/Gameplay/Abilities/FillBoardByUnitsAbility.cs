@@ -93,10 +93,12 @@ namespace Loom.ZombieBattleground
         private int GetCardOnBoard(Player targetPlayer)
         {
             int count = 0;
-            for (var i = 0; i < targetPlayer.PlayerCardsController.CardsOnBoard.Count; i++)
+            for (int i = 0; i < targetPlayer.PlayerCardsController.CardsOnBoard.Count; i++)
             {
-                if (targetPlayer.PlayerCardsController.CardsOnBoard[i].IsDead == false)
+                if (targetPlayer.PlayerCardsController.CardsOnBoard[i].IsDead == false || targetPlayer.PlayerCardsController.CardsOnBoard[i].CurrentDefense <= 0)
+                {
                     count++;
+                }
             }
 
             return count;
