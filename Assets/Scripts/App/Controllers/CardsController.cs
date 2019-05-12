@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
 
         private Transform _parentOfSelectableCards;
+        
+        public bool BlockEndTurnButton { get; private set; }
 
         public void Init()
         {
@@ -117,6 +119,7 @@ namespace Loom.ZombieBattleground
         public void ResetAll()
         {
             ResetChoosalbeCardsList();
+            BlockEndTurnButton = false;
         }
 
         public void Update()
@@ -544,6 +547,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.ITEM:
                         {
+                            BlockEndTurnButton = true;
                             player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -569,6 +573,7 @@ namespace Loom.ZombieBattleground
                                     }, callAbilityAction, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                BlockEndTurnButton = false;
                             }, 0.75f);
                             break;
                         }
