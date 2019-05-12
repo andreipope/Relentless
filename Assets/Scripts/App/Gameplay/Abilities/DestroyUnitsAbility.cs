@@ -85,6 +85,12 @@ namespace Loom.ZombieBattleground
                 _units = GetRandomUnits(_units, Count);
             }
 
+            foreach (BoardUnitModel target in _units)
+            {
+                target.HandleDefenseBuffer(target.CurrentDefense);
+                target.SetUnitActiveStatus(false);
+            }
+
             InvokeActionTriggered(_units);
         }
 

@@ -19,12 +19,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Zlab", 5),
-                    new DeckCardData("Znowman", 1)
+                    new TestCardData("Zlab", 5),
+                    new TestCardData("Znowman", 1)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("Zlab", 5),
-                    new DeckCardData("Znowman", 1)
+                    new TestCardData("Zlab", 5),
+                    new TestCardData("Znowman", 1)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -98,12 +98,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Jetter", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Jetter", 1),
+                    new TestCardData("Hot", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Jetter", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Jetter", 1),
+                    new TestCardData("Hot", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -173,11 +173,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Maelztrom", 1),
-                    new DeckCardData("Whizper", 20));
+                    new TestCardData("Maelztrom", 1),
+                    new TestCardData("Whizper", 20));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Maelztrom", 1),
-                    new DeckCardData("Whizper", 20));
+                    new TestCardData("Maelztrom", 1),
+                    new TestCardData("Whizper", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -237,12 +237,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Ice", 2),
-                    new DeckCardData("Zlab", 10)
+                    new TestCardData("Ice", 2),
+                    new TestCardData("Zlab", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Ice", 2),
-                    new DeckCardData("Zlab", 10)
+                    new TestCardData("Ice", 2),
+                    new TestCardData("Zlab", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -298,9 +298,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Ztalagmite", 5));
+                    new TestCardData("Ztalagmite", 5));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Ztalagmite", 5));
+                    new TestCardData("Ztalagmite", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -341,9 +341,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Ozmoziz", 10));
+                    new TestCardData("Ozmoziz", 10));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Ozmoziz", 10));
+                    new TestCardData("Ozmoziz", 10));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -384,9 +384,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Hozer", 5));
+                    new TestCardData("Hozer", 5));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Hozer", 5));
+                    new TestCardData("Hozer", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -427,11 +427,11 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Zlider", 1),
-                    new DeckCardData("Zlab", 15));
+                    new TestCardData("Zlider", 1),
+                    new TestCardData("Zlab", 15));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Zlider", 1),
-                    new DeckCardData("Zlab", 15));
+                    new TestCardData("Zlider", 1),
+                    new TestCardData("Zlab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -484,9 +484,9 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Geyzer", 5));
+                    new TestCardData("Geyzer", 5));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Geyzer", 5));
+                    new TestCardData("Geyzer", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -520,17 +520,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Freezee()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Freezee", 2),
-                    new DeckCardData("Zlab", 20));
+                    new TestCardData("Freezee", 2),
+                    new TestCardData("Zlab", 20));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Freezee", 2),
-                    new DeckCardData("Zlab", 20));
+                    new TestCardData("Freezee", 2),
+                    new TestCardData("Zlab", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -608,19 +608,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
         public IEnumerator Zhatterer()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Zlab", 1),
-                    new DeckCardData("Freezee", 1),
-                    new DeckCardData("Zhatterer", 10));
+                    new TestCardData("Zlab", 1),
+                    new TestCardData("Freezee", 1),
+                    new TestCardData("Zhatterer", 10));
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Zlab", 1),
-                    new DeckCardData("Freezee", 1),
-                    new DeckCardData("Zhatterer", 10));
+                    new TestCardData("Zlab", 1),
+                    new TestCardData("Freezee", 1),
+                    new TestCardData("Zhatterer", 10));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -673,12 +672,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Icicle", 1),
-                    new DeckCardData("Cerberuz", 5));
+                    new TestCardData("Icicle", 1),
+                    new TestCardData("Cerberuz", 5));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Icicle", 1),
-                    new DeckCardData("Cerberuz", 5));
+                    new TestCardData("Icicle", 1),
+                    new TestCardData("Cerberuz", 5));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -714,12 +713,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Zpring", 1),
-                    new DeckCardData("Zwoop", 20));
+                    new TestCardData("Zpring", 1),
+                    new TestCardData("Zwoop", 20));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Zpring", 1),
-                    new DeckCardData("Zwoop", 20));
+                    new TestCardData("Zpring", 1),
+                    new TestCardData("Zwoop", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -772,18 +771,18 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
+        [Category("PlayQuickSubset")]
         public IEnumerator Blizzard()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Blizzard", 1),
-                    new DeckCardData("Zlab", 20));
+                    new TestCardData("Blizzard", 1),
+                    new TestCardData("Zlab", 20));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Blizzard", 1),
-                    new DeckCardData("Zlab", 20));
+                    new TestCardData("Blizzard", 1),
+                    new TestCardData("Zlab", 20));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -841,12 +840,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Zplash", 1),
-                    new DeckCardData("Trunk", 10)
+                    new TestCardData("Zplash", 1),
+                    new TestCardData("Trunk", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("Zplash", 1),
-                    new DeckCardData("Trunk", 10)
+                    new TestCardData("Zplash", 1),
+                    new TestCardData("Trunk", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -910,12 +909,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Zub-Zero", 1),
-                    new DeckCardData("Trunk", 15));
+                    new TestCardData("Zub-Zero", 1),
+                    new TestCardData("Trunk", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Zub-Zero", 1),
-                    new DeckCardData("Trunk", 15));
+                    new TestCardData("Zub-Zero", 1),
+                    new TestCardData("Trunk", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -963,18 +962,17 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
         [UnityTest]
         [Timeout(int.MaxValue)]
-        [Category("PlayQuickSubset2")]
         public IEnumerator Tzunamy()
         {
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Tzunamy", 1),
-                    new DeckCardData("Zlab", 10)
+                    new TestCardData("Tzunamy", 1),
+                    new TestCardData("Zlab", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Tzunamy", 1),
-                    new DeckCardData("Zlab", 10)
+                    new TestCardData("Tzunamy", 1),
+                    new TestCardData("Zlab", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -1041,12 +1039,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Vortex", 1),
-                    new DeckCardData("Hot", 15));
+                    new TestCardData("Vortex", 1),
+                    new TestCardData("Hot", 15));
 
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Vortex", 1),
-                    new DeckCardData("Zlab", 15));
+                    new TestCardData("Vortex", 1),
+                    new TestCardData("Zlab", 15));
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
 
@@ -1102,12 +1100,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    new DeckCardData("Brook", 2),
-                    new DeckCardData("Trunk", 10)
+                    new TestCardData("Brook", 2),
+                    new TestCardData("Trunk", 10)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    new DeckCardData("Brook", 2),
-                    new DeckCardData("Trunk", 10)
+                    new TestCardData("Brook", 2),
+                    new TestCardData("Trunk", 10)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -1155,12 +1153,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 2,
-                    new DeckCardData("Igloo", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Igloo", 1),
+                    new TestCardData("Hot", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 2,
-                    new DeckCardData("Igloo", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Igloo", 1),
+                    new TestCardData("Hot", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck)
@@ -1211,12 +1209,12 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 0,
-                    new DeckCardData("Znowy", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Znowy", 1),
+                    new TestCardData("Hot", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 0,
-                    new DeckCardData("Znowy", 1),
-                    new DeckCardData("Hot", 20)
+                    new TestCardData("Znowy", 1),
+                    new TestCardData("Hot", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);
@@ -1266,14 +1264,14 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
             return AsyncTest(async () =>
             {
                 Deck playerDeck = PvPTestUtility.GetDeckWithCards("deck 1", 4,
-                    new DeckCardData("Zteam", 1),
-                    new DeckCardData("Trunk", 2),
-                    new DeckCardData("Extinguisher", 20)
+                    new TestCardData("Zteam", 1),
+                    new TestCardData("Trunk", 2),
+                    new TestCardData("Extinguisher", 20)
                 );
                 Deck opponentDeck = PvPTestUtility.GetDeckWithCards("deck 2", 4,
-                    new DeckCardData("Zteam", 1),
-                    new DeckCardData("Trunk", 2),
-                    new DeckCardData("Extinguisher", 20)
+                    new TestCardData("Zteam", 1),
+                    new TestCardData("Trunk", 2),
+                    new TestCardData("Extinguisher", 20)
                 );
 
                 PvpTestContext pvpTestContext = new PvpTestContext(playerDeck, opponentDeck);

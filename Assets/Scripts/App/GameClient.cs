@@ -57,6 +57,11 @@ namespace Loom.ZombieBattleground
             AddService<IMatchManager>(new MatchManager());
             AddService<IUIManager>(new UIManager());
             AddService<IDataManager>(new DataManager(GetConfigData()));
+            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
+            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
+            AddService<IFacebookManager>(new FacebookManager());
+            AddService<IAnalyticsManager>(new AnalyticsManager());
+            AddService<IPvPManager>(new PvPManager());
             AddService<BackendFacade>(
                 new BackendFacade(
                     backendEndpoint,
@@ -64,12 +69,7 @@ namespace Loom.ZombieBattleground
                     Logging.GetLog(nameof(BackendFacade)),
                     Logging.GetLog(nameof(BackendFacade) + "Rpc")
                 ));
-            AddService<ActionCollectorUploader>(new ActionCollectorUploader());
-            AddService<BackendDataControlMediator>(new BackendDataControlMediator());
-            AddService<IFacebookManager>(new FacebookManager());
-            AddService<IAnalyticsManager>(new AnalyticsManager());
-            AddService<IPvPManager>(new PvPManager());
-            AddService<IQueueManager>(new QueueManager());
+            AddService<INetworkActionManager>(new NetworkActionManager());
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<FiatBackendManager>(new FiatBackendManager());
@@ -102,13 +102,23 @@ namespace Loom.ZombieBattleground
             }
 
 #if (UNITY_EDITOR || USE_LOCAL_BACKEND) && !USE_PRODUCTION_BACKEND && !USE_STAGING_BACKEND && !USE_BRANCH_TESTING_BACKEND && !USE_REBALANCE_BACKEND
-            const BackendPurpose backend = BackendPurpose.Local;
+            const BackendPurpose defaultBackend = BackendPurpose.Local;
 #elif USE_PRODUCTION_BACKEND
-            const BackendPurpose backend = BackendPurpose.Production;
+            const BackendPurpose defaultBackend = BackendPurpose.Production;
 #elif USE_BRANCH_TESTING_BACKEND
-            const BackendPurpose backend = BackendPurpose.BranchTesting;
+            const BackendPurpose defaultBackend = BackendPurpose.BranchTesting;
 #else
-            const BackendPurpose backend = BackendPurpose.Staging;
+            const BackendPurpose defaultBackend = BackendPurpose.Staging;
+#endif
+            BackendPurpose backend = defaultBackend;
+
+#if UNITY_EDITOR
+            const string envVarBackendEndpointName = "ZB_BACKEND_ENDPOINT_NAME";
+            string backendString = Environment.GetEnvironmentVariable(envVarBackendEndpointName);
+            if (!String.IsNullOrEmpty(backendString))
+            {
+                backend = (BackendPurpose) Enum.Parse(typeof(BackendPurpose), backendString);
+            }
 #endif
 
             BackendEndpoint backendEndpoint = BackendEndpointsContainer.Endpoints[backend];
@@ -145,15 +155,6 @@ namespace Loom.ZombieBattleground
             {
                 return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
             }
-
-#if UNITY_EDITOR
-            const string envVarConfigFileFilePath = "ZB_CONFIG_FILE_PATH";
-            configDataFilePath = Environment.GetEnvironmentVariable(envVarConfigFileFilePath);
-            if (!String.IsNullOrEmpty(configDataFilePath) && File.Exists(configDataFilePath))
-            {
-                return JsonConvert.DeserializeObject<ConfigData>(File.ReadAllText(configDataFilePath));
-            }
-#endif
 
             return new ConfigData();
         }

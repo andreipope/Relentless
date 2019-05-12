@@ -15,9 +15,15 @@ namespace Loom.ZombieBattleground.Editor
     {
         public int callbackOrder { get; } = 2;
 
+        public const string applicationIdentifierStaging = "games.loom.battleground-staging";
+
         public void OnPreprocessBuild(BuildReport report)
         {
             PlayerSettings.SplashScreen.showUnityLogo = false;
+
+            #if USE_STAGING_BACKEND && !UNITY_IOS && !UNITY_ANDROID
+                PlayerSettings.applicationIdentifier = applicationIdentifierStaging;
+            #endif
 
 #if UNITY_CLOUD_BUILD
             BuildMetaInfo buildMetaInfo = BuildMetaInfo.Instance;

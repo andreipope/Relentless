@@ -2,13 +2,14 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class MassiveDamageAbilityView : AbilityViewBase<MassiveDamageAbility>
     {
-        private const int LawnmowerCardId = 114;
+        private static readonly MouldId LawnmowerCardId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 

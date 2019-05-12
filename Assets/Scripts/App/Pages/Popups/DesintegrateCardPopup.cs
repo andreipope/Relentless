@@ -96,7 +96,7 @@ namespace Loom.ZombieBattleground
             GameClient.Get<ISoundManager>()
                 .PlaySound(Enumerators.SoundType.CLICK, Constants.SfxSoundVolume, false, false, true);
             Card prototype = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
-                .First(card => card.Name == _cardData.CardName);
+                .First(card => card.MouldId == _cardData.MouldId);
             _uiManager.DrawPopup<CardInfoPopup>(prototype);
 
             Hide();
@@ -115,7 +115,7 @@ namespace Loom.ZombieBattleground
             _cardPreview.GetComponent<BoardCardView>().UpdateAmount(_cardData.Amount);
 
             Card prototype = GameClient.Get<IDataManager>().CachedCardsLibraryData.Cards
-                .First(card => card.Name == _cardData.CardName);
+                .First(card => card.MouldId == _cardData.MouldId);
             GameClient.Get<IPlayerManager>().ChangeGoo(5 * ((int) prototype.Rank + 1));
         }
     }

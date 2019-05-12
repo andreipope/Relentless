@@ -245,6 +245,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
 #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
+            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;
             _finishRequestPack = OnFinishRequestPack;
 #endif
         }
@@ -443,6 +444,12 @@ namespace Loom.ZombieBattleground
             _fiatValidationDataAppleStore.storeName = "AppleStore";
             RequestFiatValidationApple();
 #endif
+        }
+
+        private void OnPurchaseFailedOrCanceled()
+        {
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            OpenAlertDialog("Purchasing failed or canceled.");
         }
         
         private string ParseTransactionIdentifierFromAppStoreReceipt(PurchaseEventArgs e)

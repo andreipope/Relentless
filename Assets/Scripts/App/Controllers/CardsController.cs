@@ -78,6 +78,8 @@ namespace Loom.ZombieBattleground
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
 
         private Transform _parentOfSelectableCards;
+        
+        public bool BlockEndTurnButton { get; private set; }
 
         public void Init()
         {
@@ -117,6 +119,7 @@ namespace Loom.ZombieBattleground
         public void ResetAll()
         {
             ResetChoosalbeCardsList();
+            BlockEndTurnButton = false;
         }
 
         public void Update()
@@ -210,12 +213,12 @@ namespace Loom.ZombieBattleground
                          .Concat(state.CardsInPlay)
                          .Concat(state.CardsInGraveyard));
 
-                int highestInstanceId = 0;
+                int highestInstanceId = 1; //we set it to 1 as the players overlords own instance ID 0 and 1 respectively
 
                 if (cards.Count() > 0)
                 {
                     cards.Max(card => card.InstanceId.Id);
-                    highestInstanceId = cards.Count();
+                    highestInstanceId += cards.Count();
                 }
                 else
                 {
@@ -397,7 +400,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void ReturnCardToHand(BoardUnitModel boardUnitModel)
+        public void ReturnCardToHand(BoardUnitModel boardUnitModel, int addToMaxCards = 0)
         {
             Player unitOwner = boardUnitModel.OwnerPlayer;
             BoardUnitView boardUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
@@ -410,6 +413,7 @@ namespace Loom.ZombieBattleground
             _battlegroundController.DeactivateAllAbilitiesOnUnit(boardUnitModel);
 
             boardUnitModel.InvokeUnitPrepairingToDie();
+            boardUnitModel.SetUnitActiveStatus(false);
 
             InternalTools.DoActionDelayed(() =>
             {
@@ -420,7 +424,7 @@ namespace Loom.ZombieBattleground
 
                 boardUnitModel.ResetToInitial();
 
-                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition);               
+                unitOwner.PlayerCardsController.ReturnToHandBoardUnit(boardUnitModel, unitPosition, addToMaxCards);               
 
                 _gameplayManager.RearrangeHands();
             },
@@ -543,6 +547,7 @@ namespace Loom.ZombieBattleground
                         }
                     case Enumerators.CardKind.ITEM:
                         {
+                            BlockEndTurnButton = true;
                             player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
                             _battlegroundController.PlayerHandCards.Remove(card);
                             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
@@ -568,6 +573,7 @@ namespace Loom.ZombieBattleground
                                     }, callAbilityAction, target, handCard, skipEntryAbilities);
 
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                BlockEndTurnButton = false;
                             }, 0.75f);
                             break;
                         }
@@ -609,6 +615,7 @@ namespace Loom.ZombieBattleground
             {
                 Exception exception = new Exception($"[Out of sync] not found card in opponent hand! card Id: {cardId.Id}");
                 Helpers.ExceptionReporter.LogExceptionAsWarning(Log, exception);
+                completePlayCardCallback?.Invoke(null, target);
                 return;
             }
 
@@ -781,6 +788,12 @@ namespace Loom.ZombieBattleground
         public WorkingCard CreateWorkingCardFromCardName(string cardName, Player owner)
         {
             Card card = _dataManager.CachedCardsLibraryData.GetCardFromName(cardName);
+            return new WorkingCard(card, card, owner);
+        }
+
+        public WorkingCard CreateWorkingCardFromCardMouldId(MouldId mouldId, Player owner)
+        {
+            Card card = _dataManager.CachedCardsLibraryData.GetCardFromMouldId(mouldId);
             return new WorkingCard(card, card, owner);
         }
 

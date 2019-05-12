@@ -450,16 +450,13 @@ namespace Loom.ZombieBattleground
 
             if (_filteredEffectsToShow.Count == 0)
             {
-                if (_cardMechanicsPicture.sprite != null)
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
+                sequence.AppendCallback(() =>
                 {
-                    Sequence sequence = DOTween.Sequence();
-                    sequence.Append(_cardMechanicsPicture.DOFade(0f, _effectsOnUnitFadeDuration));
-                    sequence.AppendCallback(() =>
-                    {
-                        _cardMechanicsPicture.sprite = null;
-                    });
-                    sequence.Play();
-                }
+                    _cardMechanicsPicture.sprite = null;
+                });
+                sequence.Play();
             }
             else
             {
@@ -496,8 +493,10 @@ namespace Loom.ZombieBattleground
         {
             Action generalArrivalAnimationAction = () =>
             {
-                GameObject arrivalPrefab =
-              _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
+                if (_battleframeObject != null)
+                    Object.Destroy(_battleframeObject);
+
+                GameObject arrivalPrefab = _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/Gameplay/" + Model.InitialUnitType + "_Arrival_VFX");
                 _battleframeObject = Object.Instantiate(arrivalPrefab, GameObject.transform, false).gameObject;
                 battleframeAnimator = _battleframeObject.GetComponent<Animator>();
                 _arrivalModelObject = _battleframeObject.transform.Find("Main_Model").gameObject;
@@ -584,27 +583,6 @@ namespace Loom.ZombieBattleground
 
                     Model.Card.Prototype.Name.ToLowerInvariant() + "_" + Constants.CardSoundPlay, Constants.ZombiesSoundVolume,
                     false, true);
-                }
-
-
-                // FIXME: WTF we have logic based on card name?
-                if (Model.Card.Prototype.Name.Equals("Freezzee"))
-                {
-                    IReadOnlyList<BoardUnitModel> freezzees =
-                        Model
-                            .GetEnemyUnitsList(Model)
-                            .FindAll(x => x.Card.Prototype.MouldId == Model.Card.Prototype.MouldId);
-
-                    if (freezzees.Count > 0)
-                    {
-                        foreach (BoardUnitModel unitModel in freezzees)
-                        {
-                            unitModel.Stun(Enumerators.StunType.FREEZE, 1);
-
-                            BoardUnitView unitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unitModel);
-                            CreateFrozenVfx(unitView.Transform.position);
-                        }
-                    }
                 }
             }
 
@@ -877,6 +855,7 @@ namespace Loom.ZombieBattleground
         public void HandleAttackPlayer(Action completeCallback, Player targetPlayer, Action hitCallback, Action attackCompleteCallback)
         {
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetPlayer.AvatarObject,
                 0.1f,
@@ -915,6 +894,7 @@ namespace Loom.ZombieBattleground
             }
 
             _animationsController.DoFightAnimation(
+                this,
                 GameObject,
                 targetCardView.GameObject,
                 0.5f,

@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.19";
+        internal const string CurrentVersionBase = "0.1.20";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -158,6 +158,10 @@ namespace Loom.ZombieBattleground.Common
         internal const float HandPointerSpeed = 4f;
 
         internal const float DurationHoveringHandCard = 0.15f;
+
+        internal const float DurationUnitAttacking = 0.65f;
+
+        internal const float DurationEndUnitAttacking = 0.1f;
 
         internal const int BackendCallTimeout = 10000;
 

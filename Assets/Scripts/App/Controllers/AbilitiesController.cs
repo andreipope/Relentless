@@ -676,10 +676,12 @@ namespace Loom.ZombieBattleground
 
         public bool CheckAbilityOnTarget(BoardUnitModel boardUnitModel, AbilityData ability = null)
         {
+            if (boardUnitModel == null)
+                return false;
+
             if(ability == null)
             {
-                IReadOnlyCardInstanceSpecificData instance = boardUnitModel.Card.InstanceCard;
-                ability = instance.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
+                ability = boardUnitModel.Card.InstanceCard.Abilities.FirstOrDefault(IsAbilityCanActivateTargetAtStart);
             }
 
             if (ability == null || ability is default(AbilityData))
@@ -750,7 +752,7 @@ namespace Loom.ZombieBattleground
         private bool _PvPToggleFirstLastAbility = true;
 
         public void PlayAbilityFromEvent(Enumerators.AbilityType ability, BoardObject abilityCaller,
-                                         List<ParametrizedAbilityBoardObject> targets, BoardUnitModel boardUnitModel, Player owner)
+                                         List<ParametrizedAbilityBoardObject> targets, BoardUnitModel boardUnitModel, Player owner, Action completeCallback = null)
         {
             //FIXME Hard: This is an hack to fix Ghoul without changing the backend API.
             //We should absolutely change the backend API to support an index field.
@@ -816,6 +818,8 @@ namespace Loom.ZombieBattleground
                     activeAbility.Ability.SelectedTargetAction(true);
 
                     _boardController.UpdateWholeBoard(null);
+
+                    completeCallback?.Invoke();
                 };
 
                 if (from != null && targets[0].BoardObject != null)
@@ -827,12 +831,19 @@ namespace Loom.ZombieBattleground
                     callback();
                 }
             }
+            else
+            {
+                completeCallback?.Invoke();
+            }
 
             activeAbility.Ability.Activate();
         }
 
         public void ActivateAbilitiesOnCard(BoardObject abilityCaller, BoardUnitModel boardUnitModel, Player owner)
         {
+            if (boardUnitModel.IsAllAbilitiesResolvedAtStart)
+                return;
+                
             foreach(AbilityData abilityData in boardUnitModel.InstanceCard.Abilities )
             {
                 ActiveAbility activeAbility;
@@ -1006,9 +1017,6 @@ namespace Loom.ZombieBattleground
                 case Enumerators.AbilityType.FREEZE_NUMBER_OF_RANDOM_ALLY:
                     ability = new FreezeNumberOfRandomAllyAbility(cardKind, abilityData);
                     abilityView = new FreezeNumberOfRandomAllyAbilityView((FreezeNumberOfRandomAllyAbility)ability);
-                    break;
-                case Enumerators.AbilityType.ADD_CARD_BY_NAME_TO_HAND:
-                    ability = new AddCardByNameToHandAbility(cardKind, abilityData);
                     break;
                 case Enumerators.AbilityType.DEAL_DAMAGE_TO_THIS_AND_ADJACENT_UNITS:
                     ability = new DealDamageToThisAndAdjacentUnitsAbility(cardKind, abilityData);

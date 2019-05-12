@@ -3,13 +3,14 @@ using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using System.Collections.Generic;
 using System.Linq;
+using Loom.ZombieBattleground.Data;
 using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {
     public class DamageAndDistractAbilityView : AbilityViewBase<DamageAndDistractAbility>
     {
-        private const int LawnmowerCardId = 114;
+        private readonly MouldId LawnmowerCardId = new MouldId(114);
 
         private List<BoardUnitView> _unitsViews;
 

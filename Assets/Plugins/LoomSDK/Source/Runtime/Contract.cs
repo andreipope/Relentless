@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Loom.Client.Internal;
 using Loom.Client.Protobuf;
@@ -66,13 +67,13 @@ namespace Loom.Client
                 Args = args.ToByteString()
             };
             var result = await this.Client.QueryAsync<byte[]>(this.Address, query, this.Caller, VMType.Plugin, new CallDescription(method, true));
+            T msg = new T();
             if (result != null)
             {
-                T msg = new T();
                 msg.MergeFrom(result);
-                return msg;
             }
-            return default(T);
+
+            return msg;
         }
 
         protected override ChainEventArgs TransformChainEvent(RawChainEventArgs e) {
@@ -100,7 +101,7 @@ namespace Loom.Client
         private async Task<T> CallAsync<T>(Transaction tx, CallDescription callDescription) where T : IMessage, new()
         {
             var result = await this.Client.CommitTxAsync(tx, callDescription);
-            if (result != null && result.DeliverTx.Data != null && result.DeliverTx.Data.Length != 0)
+            if (result != null && result.DeliverTx.Data != null)
             {
                 var resp = new Response();
                 resp.MergeFrom(result.DeliverTx.Data);

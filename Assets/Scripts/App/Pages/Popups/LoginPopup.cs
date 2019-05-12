@@ -4,6 +4,7 @@ using System.Numerics;
 using Loom.Client;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
@@ -39,6 +40,8 @@ namespace Loom.ZombieBattleground
         private IDataManager _dataManager;
 
         private IInputManager _inputManager;
+
+        private INetworkActionManager _networkActionManager;
 
         private BackendFacade _backendFacade;
 
@@ -127,6 +130,7 @@ namespace Loom.ZombieBattleground
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _dataManager = GameClient.Get<IDataManager>();
             _inputManager = GameClient.Get<IInputManager>();
+            _networkActionManager = GameClient.Get<INetworkActionManager>();
             _currentEventSystem = EventSystem.current;
         }
 
@@ -517,121 +521,121 @@ namespace Loom.ZombieBattleground
         private async void LoginProcess(bool isGuest)
         {
             SetUIState(LoginState.ValidateAndLogin);
+
             try
             {
-                byte[] privateKey;
-                byte[] publicKey;
-                LoginData loginData;
-                string userId;
-                int authyId = 0;
-                string accessToken = "";
+                await _networkActionManager.EnqueueNetworkTask(async () =>
+                    {
+                        byte[] privateKey;
+                        byte[] publicKey;
+                        LoginData loginData;
+                        string userId;
+                        int authyId = 0;
+                        string accessToken = "";
 
-                string GUID = _lastGUID ?? Guid.NewGuid().ToString();
+                        string GUID = _lastGUID ?? Guid.NewGuid().ToString();
 
+                        if (isGuest)
+                        {
+                            GenerateKeysAndUserFromGUID(GUID,
+                                out byte[] privateKeyFromGuID,
+                                out byte[] publicKeyFromGuID,
+                                out string userIDFromGuID);
+                            privateKey = privateKeyFromGuID;
+                            publicKey = publicKeyFromGuID;
+                            userId = userIDFromGuID;
+                        }
+                        else
+                        {
+                            loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
 
-                if (isGuest)
-                {
-                    GenerateKeysAndUserFromGUID(GUID, out byte[] privateKeyFromGuID, out byte[] publicKeyFromGuID, out string userIDFromGuID);
-                    privateKey = privateKeyFromGuID;
-                    publicKey = publicKeyFromGuID;
-                    userId = userIDFromGuID;
-                }
-                else
-                {
-                    loginData = await _backendFacade.InitiateLogin(_emailFieldLogin.text, _passwordFieldLogin.text);
+                            string payload = loginData.accessToken.Split('.')[1];
 
-                    string payload = loginData.accessToken.Split('.')[1];
+                            string decodedText = Encoding.UTF8.GetString(Utilites.Base64UrlDecode(payload));
 
-                    string decodedText = Encoding.UTF8.GetString(Utilites.Base64UrlDecode(payload));
+                            AccessTokenData accessTokenData = JsonConvert.DeserializeObject<AccessTokenData>(decodedText);
 
-                    AccessTokenData accessTokenData = JsonConvert.DeserializeObject<AccessTokenData>(decodedText);
+                            authyId = accessTokenData.authy_id;
 
-                    authyId = accessTokenData.authy_id;
+                            accessToken = loginData.accessToken;
 
-                    accessToken = loginData.accessToken;
+                            userId = "ZombieSlayer_" + accessTokenData.user_id;
+                            GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
 
-                    userId = "ZombieSlayer_" + accessTokenData.user_id;
-                    GenerateKeysAndUserFromUserID(userId, out byte[] privateKeyFromUserId, out byte[] publicKeyFromUserID);
+                            privateKey = privateKeyFromUserId;
+                            publicKey = publicKeyFromUserID;
+                        }
 
-                    privateKey = privateKeyFromUserId;
-                    publicKey = publicKeyFromUserID;
-                }
+                        UserDataModel userDataModel = new UserDataModel(userId, privateKey)
+                        {
+                            IsValid = false,
+                            IsRegistered = !isGuest,
+                            Email = _emailFieldLogin.text,
+                            Password = _passwordFieldLogin.text,
+                            GUID = GUID,
+                            AccessToken = accessToken
+                        };
 
-                UserDataModel userDataModel = new UserDataModel(userId, privateKey)
-                {
-                    IsValid = false,
-                    IsRegistered = !isGuest,
-                    Email = _emailFieldLogin.text,
-                    Password = _passwordFieldLogin.text,
-                    GUID = GUID,
-                    AccessToken = accessToken
-                };
+                        _backendDataControlMediator.SetUserDataModel(userDataModel);
 
-                _backendDataControlMediator.SetUserDataModel(userDataModel);
+                        _loginButton.enabled = true;
 
-                _loginButton.enabled = true;
+                        if (authyId != 0)
+                        {
+                            SetUIState(LoginState.PromptOTP);
+                            return;
+                        }
 
-                if (authyId != 0)
-                {
-                    SetUIState(LoginState.PromptOTP);
-                    return;
-                }
+                        _OTPFieldOTP.text = "";
 
-                _OTPFieldOTP.text = "";
+                        if (isGuest)
+                        {
+                            CompleteLoginFromCurrentSetUserData();
+                        }
+                        else
+                        {
+                            ConfirmOTPProcess(true);
+                        }
+                    },
 
-                if (isGuest)
-                {
-                    CompleteLoginFromCurrentSetUserData();
-                }
-                else
-                {
-                    ConfirmOTPProcess(true);
-                }
+                    onNetworkExceptionCallbackFunc: exception =>
+                    {
+                        SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
 
-                return;
+                        _loginButton.enabled = true;
+                        return Task.CompletedTask;
+                    },
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        if (exception is GameVersionMismatchException gameVersionMismatchException)
+                        {
+                            SetUIState(LoginState.RemoteVersionMismatch);
+                            UpdateVersionMismatchText(gameVersionMismatchException);
+
+                            _loginButton.enabled = true;
+                        }
+                        else
+                        {
+                            Log.Info(exception.ToString());
+                            _lastErrorMessage = exception.Message;
+                            if (exception.Message.Contains("NotFound") || exception.Message.Contains("Unauthorized"))
+                            {
+                                _lastErrorMessage = "Incorrect username and/or password.\nPlease try again.";
+                            }
+                            SetUIState(LoginState.ValidationFailed);
+
+                            _loginButton.enabled = true;
+                        }
+                        return Task.CompletedTask;
+                    },
+                    keepCurrentAppState: true,
+                    drawErrorMessage: false,
+                    ignoreConnectionState: true
+                );
             }
-            catch (GameVersionMismatchException e)
+            catch
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                SetUIState(LoginState.RemoteVersionMismatch);
-                UpdateVersionMismatchText(e);
-
-                _loginButton.enabled = true;
-            }
-            catch (TimeoutException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
-
-                SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
-
-                _loginButton.enabled = true;
-            }
-            catch (RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
-
-                SetUIState(LoginState.ValidationFailed, "Unable to login at this time.\nPlease try again a bit later.");
-
-                _loginButton.enabled = true;
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Info(e.ToString());
-                _lastErrorMessage = e.Message;
-                if (e.Message.Contains("NotFound") || e.Message.Contains("Unauthorized"))
-                {
-                    _lastErrorMessage = "Incorrect username and/or password.\nPlease try again.";
-                }
-                SetUIState(LoginState.ValidationFailed);
-
-                _loginButton.enabled = true;
+                // No additional handling
             }
         }
 
@@ -641,48 +645,51 @@ namespace Loom.ZombieBattleground
 
             try
             {
-                await _backendDataControlMediator.LoginAndLoadData();
+                await _networkActionManager.EnqueueNetworkTask(async () =>
+                    {
+                        await _backendDataControlMediator.LoginAndLoadData();
 
-                _backendDataControlMediator.UserDataModel.IsValid = true;
-                _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
+                        _backendDataControlMediator.UserDataModel.IsValid = true;
+                        _backendDataControlMediator.SetUserDataModel(_backendDataControlMediator.UserDataModel);
 
-                SuccessfulLogin();
+                        SuccessfulLogin();
 
-                if(!_gameStarted)
-                {
-                    _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
-                    _gameStarted = true;
-                }
+                        if (!_gameStarted)
+                        {
+                            _analyticsManager.SetEvent(AnalyticsManager.EventGameStarted);
+                            _gameStarted = true;
+                        }
 
-                _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                        _analyticsManager.SetEvent(AnalyticsManager.EventLogIn);
+                    },
+                    onUnknownExceptionCallbackFunc: exception =>
+                    {
+                        _lastErrorMessage = exception.Message;
+                        SetUIState(LoginState.ValidationFailed);
+                        return Task.CompletedTask;
+                    },
+                    onNetworkExceptionCallbackFunc: exception =>
+                    {
+                        _lastErrorMessage = exception.Message;
+                        SetUIState(LoginState.ValidationFailed);
+                        return Task.CompletedTask;
+                    },
+                    keepCurrentAppState: true,
+                    drawErrorMessage: false,
+                    ignoreConnectionState: true
+                );
             }
-            catch (TimeoutException e)
+            catch
             {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
-
-                _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
-            }
-            catch (RpcClientException e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                GameClient.Get<IAppStateManager>().HandleNetworkExceptionFlow(e, true, false);
-
-                _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
-            }
-            catch (Exception e)
-            {
-                Helpers.ExceptionReporter.SilentReportException(e);
-
-                Log.Warn(e);
-                _lastErrorMessage = e.Message;
-                SetUIState(LoginState.ValidationFailed);
+                // No additional handling
             }
         }
+
+        public void SetValidationFailed (string errorMessage)
+        {
+            _lastErrorMessage = errorMessage;
+            SetUIState(LoginState.ValidationFailed);
+        } 
 
         private async void SuccessfulLogin()
         {
