@@ -103,6 +103,25 @@ namespace Loom.ZombieBattleground
 
         #region Mulligan
 
+        public int GetCardsOnBoardCount (bool filterOutDeadCards = false)
+        {
+            if (filterOutDeadCards) 
+            {
+                int count = 0;
+                for (int i = 0; i < CardsOnBoard.Count; i++)
+                {
+                    if (CardsOnBoard[i].IsDead == false || CardsOnBoard[i].CurrentDefense <= 0)
+                    {
+                        count++;
+                    }
+                }
+
+                return count;
+            }
+
+            return CardsOnBoard.Count;
+        }
+
         public void SetCardsPreparingToHand(IReadOnlyList<BoardUnitModel> cards)
         {
             _cardsPreparingToHand.Clear();
@@ -704,9 +723,9 @@ namespace Loom.ZombieBattleground
 
             if (checkCardsOnBoardCondition)
             {
-                if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+                if (Player.PlayerCardsController.GetCardsOnBoardCount(true) >= Player.MaxCardsInPlay)
                 {
-                    CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
+                    CallLog($"{nameof(SpawnUnitOnBoard)}: Player.PlayerCardsController.GetCardsOnBoardCount(true) >= Player.MaxCardsInPlay, returned null");
                     return null;
                 }
             }
@@ -731,9 +750,9 @@ namespace Loom.ZombieBattleground
 
             if (checkCardsOnBoardCondition)
             {
-                if (CardsOnBoard.Count >= Player.MaxCardsInPlay)
+                if (Player.PlayerCardsController.GetCardsOnBoardCount(true) >= Player.MaxCardsInPlay)
                 {
-                    CallLog($"{nameof(SpawnUnitOnBoard)}: CardsOnBoard.Count >= Player.MaxCardsInPlay, returned null");
+                    CallLog($"{nameof(SpawnUnitOnBoard)}: Player.PlayerCardsController.GetCardsOnBoardCount(true) >= Player.MaxCardsInPlay, returned null");
                     return null;
                 }
             }

@@ -43,12 +43,16 @@ namespace Loom.ZombieBattleground
 
             Player owner = AbilityUnitOwner.OwnerPlayer;
 
+            int CardOnBoard = owner.PlayerCardsController.GetCardsOnBoardCount(true);
+            if (CardOnBoard >= owner.MaxCardsInPlay)
+                return;
+
             owner.PlayerCardsController.RemoveCardFromGraveyard(AbilityUnitOwner);
 
             AbilityUnitOwner.ResetToInitial();
 
             Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
-            WorkingCard card = new WorkingCard(prototype, prototype, owner);
+            WorkingCard card = new WorkingCard(prototype, prototype, owner, AbilityUnitOwner.Card.InstanceId);
             BoardUnitModel reanimatedUnitModel = new BoardUnitModel(card);
             _reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
             reanimatedUnitModel.IsReanimated = true;
