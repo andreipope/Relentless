@@ -768,7 +768,9 @@ namespace Loom.ZombieBattleground.Common
             OverlordSkillUsage,
             AbilityUsageBlocker,
             AbilityTargetingBlocker,
-            StopTurn,
+            StopTurnPart1Prepare,
+            StopTurnPart2InvokePlayerTurnEnded,
+            StopTurnPart3Finish,
             EndMatch,
             UnitCombat,
             LeaveMatch

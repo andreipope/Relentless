@@ -104,7 +104,9 @@ namespace Loom.ZombieBattleground
         private static bool IsUserInputAction(Enumerators.QueueActionType actionType)
         {
             return
-                actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.StopTurnPart1Prepare ||
+                actionType == Enumerators.QueueActionType.StopTurnPart2InvokePlayerTurnEnded ||
+                actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.CardPlay ||
                 actionType == Enumerators.QueueActionType.OverlordSkillUsage ||
@@ -130,8 +132,10 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         private static bool IsStrictlyChildlessAction(Enumerators.QueueActionType actionType)
         {
+            // StopTurnPart2InvokePlayerTurnEnded is not here since we WANT actions to be added to it
             return
-                actionType == Enumerators.QueueActionType.StopTurn ||
+                actionType == Enumerators.QueueActionType.StopTurnPart1Prepare ||
+                actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.LeaveMatch;
         }

@@ -502,7 +502,7 @@ namespace Loom.ZombieBattleground
             TurnStarted?.Invoke();
         }
 
-        public void EndTurn()
+        private void EndTurnPart1Prepare()
         {
             if (_gameplayManager.IsGameEnded)
                 return;
@@ -536,10 +536,21 @@ namespace Loom.ZombieBattleground
                     card.OnEndTurn();
                 }
             }
+        }
+
+        private void EndTurnPart2InvokePlayerTurnEnded()
+        {
+            if (_gameplayManager.IsGameEnded)
+                return;
 
             _gameplayManager.CurrentPlayer.InvokeTurnEnded();
             _gameplayManager.OpponentPlayer.InvokeTurnEnded();
+        }
 
+        private void EndTurnPart3Finish()
+        {
+            if (_gameplayManager.IsGameEnded)
+                return;
 
             if (_gameplayManager.IsLocalPlayerTurn())
             {
@@ -559,33 +570,46 @@ namespace Loom.ZombieBattleground
 
             TurnWaitingForEnd = true;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
-                 completeCallback =>
-                 {
-                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
-                     InternalTools.DoActionDelayed(() =>
-                     {
-                         TurnWaitingForEnd = false;
-                         ValidateGameState(pvpControlGameState);
-                         EndTurn();
+            _actionsQueueController.AddNewActionInToQueue(
+                completeCallback =>
+                {
+                    float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
+                    InternalTools.DoActionDelayed(() =>
+                    {
+                        TurnWaitingForEnd = false;
+                        ValidateGameState(pvpControlGameState);
+                        EndTurnPart1Prepare();
+                        completeCallback.Invoke();
+                    }, delay);
+                }, Enumerators.QueueActionType.StopTurnPart1Prepare);
 
-                         if (_gameplayManager.IsLocalPlayerTurn())
-                         {
-                             _uiManager.DrawPopup<YourTurnPopup>();
+            _actionsQueueController.AddNewActionInToQueue(
+                completeCallback =>
+                {
+                    EndTurnPart2InvokePlayerTurnEnded();
+                    completeCallback.Invoke();
+                }, Enumerators.QueueActionType.StopTurnPart2InvokePlayerTurnEnded);
 
-                             InternalTools.DoActionDelayed(() =>
-                             {
-                                 StartTurn();
-                                 completeCallback?.Invoke();
-                             }, Constants.DelayBetweenYourTurnPopup);
-                         }
-                         else
-                         {
-                             StartTurn();
-                             completeCallback?.Invoke();
-                         }
-                     }, delay);
-                 }, Enumerators.QueueActionType.StopTurn);
+            _actionsQueueController.AddNewActionInToQueue(
+                completeCallback =>
+                {
+                    EndTurnPart3Finish();
+                    if (_gameplayManager.IsLocalPlayerTurn())
+                    {
+                        _uiManager.DrawPopup<YourTurnPopup>();
+
+                        InternalTools.DoActionDelayed(() =>
+                        {
+                            StartTurn();
+                            completeCallback?.Invoke();
+                        }, Constants.DelayBetweenYourTurnPopup);
+                    }
+                    else
+                    {
+                        StartTurn();
+                        completeCallback?.Invoke();
+                    }
+                }, Enumerators.QueueActionType.StopTurnPart3Finish);
         }
 
         public void RemovePlayerCardFromBoardToGraveyard(CardModel cardModel)
