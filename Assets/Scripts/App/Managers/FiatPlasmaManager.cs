@@ -116,8 +116,8 @@ namespace Loom.ZombieBattleground
             }
             catch (Exception e)
             {
-                Log.Info($"smart contract [{RequestPacksMethod}] error or reverted e:{e.Message}");
-                throw new Exception($"smart contract [{RequestPacksMethod}] error or reverted e:{e.Message}");
+                Log.Info($"smart contract [{RequestPacksMethod}] failed e:{e.Message}");
+                throw new Exception($"smart contract [{RequestPacksMethod}] failed e:{e.Message}");
             }                                            
         }
         

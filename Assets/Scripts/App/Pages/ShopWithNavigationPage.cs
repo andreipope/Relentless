@@ -86,9 +86,8 @@ namespace Loom.ZombieBattleground
             if (_state == State.RequestPack)
             {
                 if (_fiatTransactionRecordQueqe.Count > 0)
-                {
+                {                    
                     RequestPack(_fiatTransactionRecordQueqe[0]);
-                    ChangeState(State.WaitForRequestPackResponse);
                 }
                 else
                 {
@@ -120,6 +119,17 @@ namespace Loom.ZombieBattleground
             }
             LoadItems();
             ResetState();
+            
+            if 
+            (
+                !string.IsNullOrEmpty
+                (
+                    GameClient.Get<BackendDataControlMediator>().UserDataModel.AccessToken
+                )
+            )
+            {
+                _uiManager.GetPage<ShopWithNavigationPage>().RequestFiatTransaction();
+            }
         }
         
         public void Hide()
@@ -208,7 +218,8 @@ namespace Loom.ZombieBattleground
             }
             _requestPackTimeoutCoroutine = null;
             
-            switch(newState)
+            _state = newState;
+            switch(_state)
             {
                 case State.WaitForInput:
                     _uiManager.HidePopup<LoadingFiatPopup>();
@@ -220,15 +231,18 @@ namespace Loom.ZombieBattleground
                     _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
                     break;
                 case State.RequestFiatTransaction:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs");
                     RequestFiatTransaction();
                     break;
                 case State.RequestPack:
-                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
-                    _requestPackTimeoutCoroutine = MainApp.Instance.StartCoroutine(RequestPackTimeoutAsync());                    
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs.");                                        
                     break;
                 case State.WaitForRequestPackResponse:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs..");
+                    _requestPackTimeoutCoroutine = MainApp.Instance.StartCoroutine(RequestPackTimeoutAsync());
                     break;
                 case State.RequestFiatClaim:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
                     break;
                 case State.TransitionToPackOpener:
                     OnFinishRequestPack();
@@ -236,8 +250,6 @@ namespace Loom.ZombieBattleground
                 default:
                     break;
             }
-
-            _state = newState;
             #endif
         }
 
@@ -429,17 +441,12 @@ namespace Loom.ZombieBattleground
             RequestFiatValidationApple();
         }
         
-        public async void RequestFiatTransaction(bool showLoadingPopup = true)
+        public async void RequestFiatTransaction()
         {
             Log.Info($"{nameof(RequestFiatTransaction)}");
             
             try
-            {
-                if (showLoadingPopup)
-                {
-                    _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
-                }
-
+            {              
                 List<FiatBackendManager.FiatTransactionResponse> recordList = null;
                 try
                 {
@@ -461,14 +468,15 @@ namespace Loom.ZombieBattleground
                     log += i.TxID + ", ";
                 }
                 Log.Debug(log);
-                if (showLoadingPopup)
-                {
-                    _uiManager.HidePopup<LoadingFiatPopup>();
-                }
+                
                 if (recordList.Count > 0)
                 {
                     _fiatTransactionRecordQueqe = recordList.ToList();
                     ChangeState(State.RequestPack);
+                }
+                else
+                {
+                    ChangeState(State.WaitForInput);
                 }
             }
             catch(Exception e)
@@ -494,6 +502,7 @@ namespace Loom.ZombieBattleground
         private async void RequestPack(FiatBackendManager.FiatTransactionResponse record)
         {
             Log.Debug($"{nameof(RequestPack)} UserId: {record.UserId}, TxID: {record.TxID}");
+            ChangeState(State.WaitForRequestPackResponse);
             try
             {  
                 try
@@ -506,6 +515,18 @@ namespace Loom.ZombieBattleground
                     //If a record was already claimed for pack, contract request would also failed at this point
                     Log.Debug($"Contract [requestPacks] failed");
                     Log.Debug($"e: {e.Message}");
+                    if
+                    (
+                        e.Message.Contains("reverted") ||
+                        e.Message.Contains("already exists")
+                    )
+                    {
+                        RequestFiatClaim
+                        (
+                            record.UserId,
+                            record.TxID
+                        );
+                    }
                 }
                 
                 _fiatTransactionRecordQueqe.Remove(record);
@@ -522,7 +543,7 @@ namespace Loom.ZombieBattleground
         private IEnumerator RequestPackTimeoutAsync()
         {
             WaitForSeconds wait = new WaitForSeconds(1f);
-            for(int i = 0; i < RequestPackTimeout; ++i)
+            for(int i = 0; i < RequestPackTimeout && _state == State.WaitForRequestPackResponse; ++i)
             {
                 yield return new WaitForSeconds(1f);
             }
@@ -539,7 +560,6 @@ namespace Loom.ZombieBattleground
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;
 
-            ChangeState(State.WaitForInput);
             if(status)
             {
                 ChangeState(State.RequestPack);
@@ -548,31 +568,43 @@ namespace Loom.ZombieBattleground
         
         private void OnRequestPackSuccess(FiatPlasmaManager.ContractRequest contractRequest)
         {
-            Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");                
-            RequestFiatClaim(contractRequest);     
+            Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");
+            ChangeState(State.RequestFiatClaim);                
+            RequestFiatClaim
+            (
+                contractRequest.UserId,
+                contractRequest.TxID
+            );
         }
         
         private void OnRequestPackFailed()
         {
             Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
+            ChangeState(State.WaitForInput); 
             _uiManager.HidePopup<LoadingFiatPopup>();
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
             _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
         }
         
-        public async void RequestFiatClaim(FiatPlasmaManager.ContractRequest contractRequest)
+        public async void RequestFiatClaim(int userId, int txId)
         {
-            Log.Debug($"{nameof(RequestFiatClaim)} for UserID:{contractRequest.UserId} TxID:{contractRequest.TxID}");
+            Log.Debug($"{nameof(RequestFiatClaim)} for UserID:{userId} TxID:{txId}");
             try
             {
                 await _fiatBackendManager.CallFiatClaim
                 (
-                    contractRequest.UserId,
+                    userId,
                     new List<int>
                     {
-                        contractRequest.TxID
+                        txId
                     }
                 );
+
+                FiatBackendManager.FiatTransactionResponse record = _fiatTransactionRecordQueqe.Find(x => x.TxID == txId);
+                if (record != null)
+                {
+                    _fiatTransactionRecordQueqe.Remove(record);
+                }
                 
                 ChangeState
                 (
@@ -582,6 +614,7 @@ namespace Loom.ZombieBattleground
             catch (Exception e)
             {
                 Log.Debug($"{nameof(_fiatBackendManager.CallFiatClaim)} failed. e:{e.Message}");
+                ChangeState(State.WaitForInput);
                 _uiManager.HidePopup<LoadingFiatPopup>();
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupFiatClaim;                
                 _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
@@ -591,8 +624,7 @@ namespace Loom.ZombieBattleground
         private void WarningPopupFiatClaim(bool status)
         {
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupFiatClaim;
-
-            ChangeState(State.WaitForInput);
+            
             if(status)
             {
                 ChangeState(State.RequestFiatTransaction);

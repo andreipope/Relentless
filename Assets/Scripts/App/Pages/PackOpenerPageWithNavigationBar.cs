@@ -268,18 +268,7 @@ namespace Loom.ZombieBattleground
             ChangeSelectedPackType((int)Enumerators.MarketplaceCardPackType.Minion);
 
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.MY_PACKS);
-            _uiManager.DrawPopup<AreaBarPopup>();
-
-            if 
-            (
-                !string.IsNullOrEmpty
-                (
-                    _backendDataControlMediator.UserDataModel.AccessToken
-                )
-            )
-            {
-                _uiManager.GetPage<ShopWithNavigationPage>().RequestFiatTransaction(false);
-            }
+            _uiManager.DrawPopup<AreaBarPopup>();            
         }
         
         public void Hide()
