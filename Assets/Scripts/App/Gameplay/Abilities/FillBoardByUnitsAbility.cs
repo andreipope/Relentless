@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             BoardUnitModel boardUnit;
             for (int i = 0; i < cards.Count; i++)
             {
-                int CardOnBoard = GetCardOnBoard(targetPlayer);
+                int CardOnBoard = targetPlayer.PlayerCardsController.GetCardsOnBoardCount(true);
                 if (CardOnBoard >= targetPlayer.MaxCardsInPlay)
                     break;
 
