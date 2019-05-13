@@ -295,13 +295,21 @@ namespace Loom.ZombieBattleground
             }
             
             Log.Info($"Calling smart contract [{BalanceOfMethod}]");
-            int result = await contract.StaticCallSimpleTypeOutputAsync<int>(
-                BalanceOfMethod,
-                 Address.FromPublicKey(PublicKey).ToString()
-            );        
-            Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
-        
-            Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
+            int result;
+            try
+            {
+                result = await contract.StaticCallSimpleTypeOutputAsync<int>(
+                    BalanceOfMethod,
+                     Address.FromPublicKey(PublicKey).ToString()
+                );
+                Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
+                Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Requesting [{BalanceOfMethod}] failed e:{e.Message}");
+            }
+            
             return result;
         }
         
