@@ -143,6 +143,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const float TurnTime = 120;
 
+        internal const int MaxDecksCount = 10;
+
         public const float PvPCheckPlayerAvailableMaxTime = 30f;
 
         internal const float TimeForStartEndTurnAnimation = 15;
@@ -180,6 +182,8 @@ namespace Loom.ZombieBattleground.Common
         public const string ErrorMessageForMaintenanceMode = "Our server is currently undergoing maintenance. Please try again later.";
         public const string ErrorMessageForConnectionImpossible = "The connection to the server has timed out. Please check your internet connection and try again later.";
         public const string ErrorMessageForConnectionFailed = "Please check your internet connection";
+        public const string ErrorMessageForMaxDecks =
+            "You can't have more than 10 decks, delete 1 or more decks and try again.";
 
         public const bool MulliganEnabled = true;
 
