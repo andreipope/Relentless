@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,6 +58,10 @@ namespace Loom.ZombieBattleground
         }
         
         private State _state;
+
+        private Coroutine _requestPackTimeoutCoroutine;
+
+        private const int RequestPackTimeout = 20;
         
         #region IUIElement
         
@@ -73,19 +78,6 @@ namespace Loom.ZombieBattleground
             InitPurchaseLogic();
             LoadProductData();
             
-            _fiatPlasmaManager.OnRequestPackSuccess += (FiatPlasmaManager.ContractRequest contractRequest) =>
-            {
-                Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");                
-                RequestFiatClaim(contractRequest);                                
-            };
-            _fiatPlasmaManager.OnRequestPackFailed += () =>
-            {
-                Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
-                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
-            };
-
             _state = State.None;
         }
 
@@ -143,6 +135,12 @@ namespace Loom.ZombieBattleground
             
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
+            
+            if (_requestPackTimeoutCoroutine != null)
+            {
+                MainApp.Instance.StopCoroutine(_requestPackTimeoutCoroutine);
+            }
+            _requestPackTimeoutCoroutine = null;
         }
         
         public void Dispose()
@@ -202,6 +200,13 @@ namespace Loom.ZombieBattleground
             if(_state == newState)
                 return;
 
+            Log.Info($"ChangeState: prev:{_state.ToString()} next:{newState.ToString()}");
+            
+            if (_requestPackTimeoutCoroutine != null)
+            {
+                MainApp.Instance.StopCoroutine(_requestPackTimeoutCoroutine);
+            }
+            _requestPackTimeoutCoroutine = null;
             
             switch(newState)
             {
@@ -218,7 +223,8 @@ namespace Loom.ZombieBattleground
                     RequestFiatTransaction();
                     break;
                 case State.RequestPack:
-                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");                    
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
+                    _requestPackTimeoutCoroutine = MainApp.Instance.StartCoroutine(RequestPackTimeoutAsync());                    
                     break;
                 case State.WaitForRequestPackResponse:
                     break;
@@ -345,7 +351,10 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
 #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;            
+            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;
+
+            _fiatPlasmaManager.OnRequestPackSuccess += OnRequestPackSuccess;
+            _fiatPlasmaManager.OnRequestPackFailed += OnRequestPackFailed;
 #endif
         }
         
@@ -509,6 +518,22 @@ namespace Loom.ZombieBattleground
                 _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
             }
         }
+
+        private IEnumerator RequestPackTimeoutAsync()
+        {
+            WaitForSeconds wait = new WaitForSeconds(1f);
+            for(int i = 0; i < RequestPackTimeout; ++i)
+            {
+                yield return new WaitForSeconds(1f);
+            }
+            if(_state == State.WaitForRequestPackResponse)
+            {
+                Log.Info($"{nameof(RequestPack)} timeout");
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            }
+        }
         
         private void WarningPopupRequestPack(bool status)
         {
@@ -519,6 +544,20 @@ namespace Loom.ZombieBattleground
             {
                 ChangeState(State.RequestPack);
             }           
+        }
+        
+        private void OnRequestPackSuccess(FiatPlasmaManager.ContractRequest contractRequest)
+        {
+            Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");                
+            RequestFiatClaim(contractRequest);     
+        }
+        
+        private void OnRequestPackFailed()
+        {
+            Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
+            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
+            _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
         }
         
         public async void RequestFiatClaim(FiatPlasmaManager.ContractRequest contractRequest)
