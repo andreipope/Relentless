@@ -23,9 +23,19 @@ namespace Loom.ZombieBattleground
         private static readonly ILog Log = Logging.GetLog(nameof(FiatPlasmaManager));
         private static readonly ILog RpcLog = Logging.GetLog(nameof(FiatPlasmaManager) + "Rpc");
 
+        public event Action<ContractRequest> OnRequestPackSuccess;
+        public event Action OnRequestPackFailed;
+
+        private ContractRequest _cachePackRequestingParams;
+
+        private const string RequestPackResponseEventName = "PurchaseSent";
+
         #region Contract
         private TextAsset _abiFiatPurchase;
         private EvmContract _fiatPurchaseContract;
+        private bool _isConnected => _fiatPurchaseContract != null &&
+            _fiatPurchaseContract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
+            _fiatPurchaseContract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
         #endregion
         
         #region Key
@@ -48,11 +58,7 @@ namespace Loom.ZombieBattleground
         
         private BackendDataControlMediator _backendDataControlMediator;
         
-        private ILoadObjectsManager _loadObjectsManager;   
-        
-        private bool _isEventTriggered = false;      
-        
-        private string _eventResponse;                   
+        private ILoadObjectsManager _loadObjectsManager;                            
     
         public void Init()
         {           
@@ -70,33 +76,31 @@ namespace Loom.ZombieBattleground
         {
         }
         
-         public async Task<string> CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
+         public async Task CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
         {
-            if(_fiatPurchaseContract == null)
+            if(!_isConnected)
             {
                 await CreateFiatPurchaseContract();
-            }
-            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);            
-            string responseEvent = "";
-            responseEvent = await CallRequestPacksContract(_fiatPurchaseContract, contractParams);             
-            return responseEvent;
+            }            
+            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);                        
+            await CallRequestPacksContract(_fiatPurchaseContract, contractParams);
         }
 
         private const string RequestPacksMethod = "requestPacks";
         
-        private async Task<string> CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
+        private async Task CallRequestPacksContract(EvmContract contract, ContractRequest contractParams)
         {              
             if (contract == null)
             {
                 throw new Exception("Contract not signed in!");
             }
-            Log.Info( $"Calling smart contract [{RequestPacksMethod}]");
             
-            _isEventTriggered = false;
-            _eventResponse = ""; 
+            Log.Info( $"Calling smart contract [{RequestPacksMethod}]");            
+            _cachePackRequestingParams = contractParams;
+            
             try
             {
-
+                Log.Info($"CallAsync method [{RequestPacksMethod}]");
                 await contract.CallAsync
                 (
                     RequestPacksMethod,
@@ -109,31 +113,27 @@ namespace Loom.ZombieBattleground
                     contractParams.TxID
                 );
                 Log.Info($"Smart contract method [{RequestPacksMethod}] finished executing.");
-                for (int i = 0; i < 10; ++i)
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(1));
-                    Log.Info($"<color=green>Wait {i + 1} sec</color>");
-                    if (_isEventTriggered)
-                    {
-                        return _eventResponse;
-                    }
-                }
-                Log.Info($"[{RequestPacksMethod}] takes longer response than expected.");
-                throw new Exception($"[{RequestPacksMethod}] takes longer response than expected.");
             }
-            catch
+            catch (Exception e)
             {
-                Log.Info($"smart contract [{RequestPacksMethod}] error or reverted");
-                throw new Exception($"smart contract [{RequestPacksMethod}] error or reverted");
-            }           
+                Log.Info($"smart contract [{RequestPacksMethod}] error or reverted e:{e.Message}");
+                throw new Exception($"smart contract [{RequestPacksMethod}] error or reverted e:{e.Message}");
+            }                                            
         }
         
         private void ContractEventReceived(object sender, EvmChainEventArgs e)
         {
             Log.InfoFormat("Received smart contract event: " + e.EventName);
             Log.InfoFormat("BlockHeight: " + e.BlockHeight);
-            _isEventTriggered = true;
-            _eventResponse = e.EventName;
+            if (string.Equals(e.EventName, RequestPackResponseEventName))
+            {
+                OnRequestPackSuccess?.Invoke(_cachePackRequestingParams);
+            }
+            else 
+            {
+                OnRequestPackFailed?.Invoke();
+            }
+            _cachePackRequestingParams = null;
         }
         
         public async Task CreateFiatPurchaseContract()
@@ -141,6 +141,7 @@ namespace Loom.ZombieBattleground
             if(_fiatPurchaseContract != null)
             {
                 _fiatPurchaseContract.EventReceived -= ContractEventReceived;
+                _fiatPurchaseContract?.Client?.Dispose();
             }
             _fiatPurchaseContract = await GetContract
             (

@@ -41,7 +41,22 @@ namespace Loom.ZombieBattleground
 
         private string _currencyPrefix;
 
-        private List<FiatBackendManager.FiatTransactionResponse> _cacheFiatTransactionRecordList;
+        private List<FiatBackendManager.FiatTransactionResponse> _fiatTransactionRecordQueqe;
+        
+        public enum State
+        {
+            None = -1,
+            WaitForInput = 0,
+            Purchasing = 1,
+            RequestFiatValidation = 2,
+            RequestFiatTransaction = 3,
+            RequestPack = 4,
+            WaitForRequestPackResponse = 5,
+            RequestFiatClaim = 6,
+            TransitionToPackOpener = 7,
+        }
+        
+        private State _state;
         
         #region IUIElement
         
@@ -53,14 +68,44 @@ namespace Loom.ZombieBattleground
             _itemButtonList = new List<Button>();
             _textItemNameList = new List<TextMeshProUGUI>();
             _textItemPriceList = new List<TextMeshProUGUI>();
-            _cacheFiatTransactionRecordList = new List<FiatBackendManager.FiatTransactionResponse>();
+            _fiatTransactionRecordQueqe = new List<FiatBackendManager.FiatTransactionResponse>();
 
             InitPurchaseLogic();
-            LoadProductData();         
+            LoadProductData();
+            
+            _fiatPlasmaManager.OnRequestPackSuccess += (FiatPlasmaManager.ContractRequest contractRequest) =>
+            {
+                Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");                
+                RequestFiatClaim(contractRequest);                                
+            };
+            _fiatPlasmaManager.OnRequestPackFailed += () =>
+            {
+                Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            };
+
+            _state = State.None;
         }
 
         public void Update()
         {
+            if (_state == State.RequestPack)
+            {
+                if (_fiatTransactionRecordQueqe.Count > 0)
+                {
+                    RequestPack(_fiatTransactionRecordQueqe[0]);
+                    ChangeState(State.WaitForRequestPackResponse);
+                }
+                else
+                {
+                    ChangeState
+                    (
+                        _selfPage == null ? State.None : State.WaitForInput
+                    );
+                }
+            }
         }
 
         public void Show()
@@ -69,7 +114,7 @@ namespace Loom.ZombieBattleground
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Pages/MyShopPage"));
             _selfPage.transform.SetParent(_uiManager.Canvas.transform, false);            
 
-            _cacheFiatTransactionRecordList.Clear();
+            _fiatTransactionRecordQueqe.Clear();
             UpdatePageScaleToMatchResolution();
             
             _uiManager.DrawPopup<SideMenuPopup>(SideMenuPopup.MENU.SHOP);
@@ -82,6 +127,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
             LoadItems();
+            ResetState();
         }
         
         public void Hide()
@@ -110,7 +156,7 @@ namespace Loom.ZombieBattleground
             if (_textItemPriceList != null)
                 _textItemPriceList.Clear();  
                 
-            _cacheFiatTransactionRecordList.Clear();
+            _fiatTransactionRecordQueqe.Clear();
         }
         
         #endregion
@@ -120,7 +166,7 @@ namespace Loom.ZombieBattleground
         private void BuyButtonHandler( int id )
         {
             #if UNITY_IOS || UNITY_ANDROID && !UNITY_EDITOR
-            _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
+            ChangeState(State.Purchasing);            
             _inAppPurchaseManager.BuyProductID(_productData.packs[id].store_id);
             #else
             _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += ConfirmRedirectMarketplaceLink;
@@ -139,6 +185,56 @@ namespace Loom.ZombieBattleground
         
 #endregion
         
+        private void ResetState()
+        {
+            _state = State.None;
+            ChangeState(State.WaitForInput);
+        }
+
+        private void ChangeState(State newState)
+        {
+            #if UNITY_IOS || UNITY_ANDROID
+            if (_selfPage == null)
+            {
+                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
+            }
+            
+            if(_state == newState)
+                return;
+
+            
+            switch(newState)
+            {
+                case State.WaitForInput:
+                    _uiManager.HidePopup<LoadingFiatPopup>();
+                    break;
+                case State.Purchasing:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
+                    break;
+                case State.RequestFiatValidation:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+                    break;
+                case State.RequestFiatTransaction:
+                    RequestFiatTransaction();
+                    break;
+                case State.RequestPack:
+                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");                    
+                    break;
+                case State.WaitForRequestPackResponse:
+                    break;
+                case State.RequestFiatClaim:
+                    break;
+                case State.TransitionToPackOpener:
+                    OnFinishRequestPack();
+                    break;      
+                default:
+                    break;
+            }
+
+            _state = newState;
+            #endif
+        }
+
         private void UpdatePageScaleToMatchResolution()
         {
             float screenRatio = (float)Screen.width/Screen.height;
@@ -239,9 +335,7 @@ namespace Loom.ZombieBattleground
 
         private FiatBackendManager _fiatBackendManager;
 
-        private FiatPlasmaManager _fiatPlasmaManager;
-        
-        private Action _finishRequestPack;
+        private FiatPlasmaManager _fiatPlasmaManager;        
 
         public void InitPurchaseLogic()
         {
@@ -251,8 +345,7 @@ namespace Loom.ZombieBattleground
             _inAppPurchaseManager = GameClient.Get<IInAppPurchaseManager>();
 #if UNITY_IOS || UNITY_ANDROID
             _inAppPurchaseManager.ProcessPurchaseAction += OnProcessPurchase;
-            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;
-            _finishRequestPack = OnFinishRequestPack;
+            _inAppPurchaseManager.PurchaseFailedOrCanceled += OnPurchaseFailedOrCanceled;            
 #endif
         }
         
@@ -260,7 +353,7 @@ namespace Loom.ZombieBattleground
         private async void RequestFiatValidationGoogle()
         {
             Log.Info($"{nameof(RequestFiatValidationGoogle)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+            ChangeState(State.RequestFiatValidation);
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -281,24 +374,21 @@ namespace Loom.ZombieBattleground
                 popup.ConfirmationReceived += WarningPopupRequestFiatValidationGoogle;
                 _uiManager.HidePopup<LoadingFiatPopup>();
                 return;
-            }  
-            
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction();         
+            }
+
+            ChangeState(State.RequestFiatTransaction);
         }
         
         private void WarningPopupRequestFiatValidationGoogle()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationGoogle;
-
+        {            
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupRequestFiatValidationGoogle;
             RequestFiatValidationGoogle();
         }
 
         private async void RequestFiatValidationApple()
         {
             Log.Info($"{nameof(RequestFiatValidationApple)}");
-            _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
+            ChangeState(State.RequestFiatValidation);
             
             FiatBackendManager.FiatValidationResponse response = null;
             try
@@ -321,21 +411,19 @@ namespace Loom.ZombieBattleground
                 return;
             }  
             
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            RequestFiatTransaction();     
+            ChangeState(State.RequestFiatTransaction);
         }
         
         private void WarningPopupRequestFiatValidationApple()
-        {
-            WarningPopup popup = _uiManager.GetPopup<WarningPopup>();
-            popup.ConfirmationReceived -= WarningPopupRequestFiatValidationApple;
-
+        {            
+            _uiManager.GetPopup<WarningPopup>().ConfirmationReceived -= WarningPopupRequestFiatValidationApple;
             RequestFiatValidationApple();
         }
         
         public async void RequestFiatTransaction(bool showLoadingPopup = true)
         {
             Log.Info($"{nameof(RequestFiatTransaction)}");
+            
             try
             {
                 if (showLoadingPopup)
@@ -370,8 +458,8 @@ namespace Loom.ZombieBattleground
                 }
                 if (recordList.Count > 0)
                 {
-                    _cacheFiatTransactionRecordList = recordList.ToList();
-                    RequestPack(recordList);
+                    _fiatTransactionRecordQueqe = recordList.ToList();
+                    ChangeState(State.RequestPack);
                 }
             }
             catch(Exception e)
@@ -385,59 +473,33 @@ namespace Loom.ZombieBattleground
         
         private void WarningPopupRequestFiatTransaction(bool status)
         {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestFiatTransaction;              
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestFiatTransaction;
 
+            ChangeState(State.WaitForInput);
             if(status)
             {
-                RequestFiatTransaction();
+                ChangeState(State.RequestFiatTransaction);
             }
         }
         
-        private async void RequestPack(List<FiatBackendManager.FiatTransactionResponse> recordList)
-        {            
-            Log.Debug("START REQUEST for packs");  
-            Log.Debug($"recordList: {recordList.Count}");
-
+        private async void RequestPack(FiatBackendManager.FiatTransactionResponse record)
+        {
+            Log.Debug($"{nameof(RequestPack)} UserId: {record.UserId}, TxID: {record.TxID}");
             try
-            {
-                for (int i = 0; i < recordList.Count; ++i)
+            {  
+                try
                 {
-                    FiatBackendManager.FiatTransactionResponse record = recordList[i];
-
-                    Log.Debug($"Request Pack UserId: {record.UserId}, TxID: {record.TxID}");
-                    _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
-
-                    string eventResponse = "";
-
-                    try
-                    {
-                        eventResponse = await _fiatPlasmaManager.CallRequestPacksContract(record);
-                        Log.Debug($"Contract [requestPacks] success call.");
-                    }
-                    catch (Exception e)
-                    {                        
-                        Log.Debug($"Contract [requestPacks] failed");
-                        Log.Debug($"e: {e.Message}");
-                    }
-                    
-                    Log.Debug($"EVENT RESPONSE: {eventResponse}");
-                    _cacheFiatTransactionRecordList.Remove(record);
-
-                    if(!string.IsNullOrEmpty(eventResponse))
-                    {
-                        Log.Debug($"CallFiatClaim for UserId:{record.UserId} TxID:{record.TxID}");
-                        await _fiatBackendManager.CallFiatClaim
-                        (
-                            record.UserId,
-                            new List<int>
-                            {
-                                record.TxID
-                            }
-                        );
-                    }
+                    await _fiatPlasmaManager.CallRequestPacksContract(record);
+                    Log.Debug($"Contract [requestPacks] success call.");
                 }
-
-                _finishRequestPack?.Invoke();
+                catch (Exception e)
+                {                        
+                    //If a record was already claimed for pack, contract request would also failed at this point
+                    Log.Debug($"Contract [requestPacks] failed");
+                    Log.Debug($"e: {e.Message}");
+                }
+                
+                _fiatTransactionRecordQueqe.Remove(record);
             }
             catch(Exception e)
             {
@@ -450,12 +512,52 @@ namespace Loom.ZombieBattleground
         
         private void WarningPopupRequestPack(bool status)
         {
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;        
-            
-            if(status && _cacheFiatTransactionRecordList.Count > 0)
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupRequestPack;
+
+            ChangeState(State.WaitForInput);
+            if(status)
             {
-                RequestPack(_cacheFiatTransactionRecordList);
-            }               
+                ChangeState(State.RequestPack);
+            }           
+        }
+        
+        public async void RequestFiatClaim(FiatPlasmaManager.ContractRequest contractRequest)
+        {
+            Log.Debug($"{nameof(RequestFiatClaim)} for UserID:{contractRequest.UserId} TxID:{contractRequest.TxID}");
+            try
+            {
+                await _fiatBackendManager.CallFiatClaim
+                (
+                    contractRequest.UserId,
+                    new List<int>
+                    {
+                        contractRequest.TxID
+                    }
+                );
+                
+                ChangeState
+                (
+                    _fiatTransactionRecordQueqe.Count > 0 ? State.RequestPack : State.TransitionToPackOpener
+                );
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"{nameof(_fiatBackendManager.CallFiatClaim)} failed. e:{e.Message}");
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupFiatClaim;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            }
+        }
+        
+        private void WarningPopupFiatClaim(bool status)
+        {
+            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived -= WarningPopupFiatClaim;
+
+            ChangeState(State.WaitForInput);
+            if(status)
+            {
+                ChangeState(State.RequestFiatTransaction);
+            }  
         }
 
         private async void OnFinishRequestPack()
@@ -498,8 +600,8 @@ namespace Loom.ZombieBattleground
         }
 
         private void OnPurchaseFailedOrCanceled()
-        {
-            _uiManager.HidePopup<LoadingFiatPopup>();
+        {            
+            ChangeState(State.WaitForInput);
             OpenAlertDialog("Purchasing failed or canceled.");
         }
         
