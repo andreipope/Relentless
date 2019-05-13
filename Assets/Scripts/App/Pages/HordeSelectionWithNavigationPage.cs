@@ -241,6 +241,13 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonNewDeck.name))
                 return;
 
+            if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+            {
+                _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                return;
+            }
+
+
             PlayClickSound();
             ChangeTab(Tab.SelectOverlord);
         }
