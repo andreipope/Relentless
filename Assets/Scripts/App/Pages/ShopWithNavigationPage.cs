@@ -445,9 +445,10 @@ namespace Loom.ZombieBattleground
         {
             Log.Info($"{nameof(RequestFiatTransaction)}");
             
+            bool success;
+            List<FiatBackendManager.FiatTransactionResponse> recordList = new List<FiatBackendManager.FiatTransactionResponse>();
             try
-            {              
-                List<FiatBackendManager.FiatTransactionResponse> recordList = null;
+            {    
                 try
                 {
                     recordList = await _fiatBackendManager.CallFiatTransaction();
@@ -457,7 +458,16 @@ namespace Loom.ZombieBattleground
                     Log.Info($"{nameof(_fiatBackendManager.CallFiatTransaction)} failed: {e.Message}");
                     throw new Exception($"{nameof(_fiatBackendManager.CallFiatTransaction)} failed: {e.Message}");
                 }
-
+                success = true;
+            }
+            catch(Exception e)
+            {
+                Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
+                success = false;                
+            }
+            
+            if(success)
+            {
                 recordList.Sort((FiatBackendManager.FiatTransactionResponse resA, FiatBackendManager.FiatTransactionResponse resB) =>
                 {
                    return resB.TxID - resA.TxID;
@@ -479,9 +489,8 @@ namespace Loom.ZombieBattleground
                     ChangeState(State.WaitForInput);
                 }
             }
-            catch(Exception e)
+            else
             {
-                Log.Info($"{nameof(RequestFiatTransaction)} failed: {e.Message}");
                 _uiManager.HidePopup<LoadingFiatPopup>();
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestFiatTransaction;                
                 _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
@@ -503,6 +512,8 @@ namespace Loom.ZombieBattleground
         {
             Log.Debug($"{nameof(RequestPack)} UserId: {record.UserId}, TxID: {record.TxID}");
             ChangeState(State.WaitForRequestPackResponse);
+            bool success;
+            bool isRequestFiatClaim = false;
             try
             {  
                 try
@@ -521,19 +532,33 @@ namespace Loom.ZombieBattleground
                         e.Message.Contains("already exists")
                     )
                     {
-                        RequestFiatClaim
-                        (
-                            record.UserId,
-                            record.TxID
-                        );
+                        isRequestFiatClaim = true;                        
                     }
                 }
                 
-                _fiatTransactionRecordQueqe.Remove(record);
+                
+                success = true;
             }
             catch(Exception e)
             {
                 Log.Info($"{nameof(RequestPack)} failed: {e.Message}");
+                success = false;
+            }
+            
+            if(success)
+            {
+                if(isRequestFiatClaim)
+                {
+                    RequestFiatClaim
+                    (
+                        record.UserId,
+                        record.TxID
+                    );
+                }
+                _fiatTransactionRecordQueqe.Remove(record);
+            }
+            else
+            {
                 _uiManager.HidePopup<LoadingFiatPopup>();
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
                 _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
@@ -562,7 +587,7 @@ namespace Loom.ZombieBattleground
 
             if(status)
             {
-                ChangeState(State.RequestPack);
+                ChangeState(State.RequestFiatTransaction);
             }           
         }
         
@@ -589,6 +614,7 @@ namespace Loom.ZombieBattleground
         public async void RequestFiatClaim(int userId, int txId)
         {
             Log.Debug($"{nameof(RequestFiatClaim)} for UserID:{userId} TxID:{txId}");
+            bool success;
             try
             {
                 await _fiatBackendManager.CallFiatClaim
@@ -600,6 +626,17 @@ namespace Loom.ZombieBattleground
                     }
                 );
 
+                success = true;                
+            }
+            catch (Exception e)
+            {
+                Log.Debug($"{nameof(_fiatBackendManager.CallFiatClaim)} failed. e:{e.Message}");
+                success = false;
+                
+            }
+            
+            if(success)
+            {
                 FiatBackendManager.FiatTransactionResponse record = _fiatTransactionRecordQueqe.Find(x => x.TxID == txId);
                 if (record != null)
                 {
@@ -611,9 +648,8 @@ namespace Loom.ZombieBattleground
                     _fiatTransactionRecordQueqe.Count > 0 ? State.RequestPack : State.TransitionToPackOpener
                 );
             }
-            catch (Exception e)
+            else
             {
-                Log.Debug($"{nameof(_fiatBackendManager.CallFiatClaim)} failed. e:{e.Message}");
                 ChangeState(State.WaitForInput);
                 _uiManager.HidePopup<LoadingFiatPopup>();
                 _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupFiatClaim;                
