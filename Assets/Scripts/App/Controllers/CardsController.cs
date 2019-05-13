@@ -77,6 +77,8 @@ namespace Loom.ZombieBattleground
         public bool HasChoosableCardsForAbilities { get { return _currentListOfChoosableCards.Count > 0; } }
 
         private Transform _parentOfSelectableCards;
+        
+        public bool BlockEndTurnButton { get; private set; }
 
         public void Init()
         {
@@ -116,6 +118,7 @@ namespace Loom.ZombieBattleground
         public void ResetAll()
         {
             ResetChoosalbeCardsList();
+            BlockEndTurnButton = false;
         }
 
         public void Update()
@@ -569,10 +572,11 @@ namespace Loom.ZombieBattleground
                         break;
                     }
                     case Enumerators.CardKind.ITEM:
-                    {
-                        player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
-                        _battlegroundController.UnregisterCardView(card);
-                        _battlegroundController.UpdatePositionOfCardsInPlayerHand();
+                        {
+                            BlockEndTurnButton = true;
+                            player.PlayerCardsController.RemoveCardFromHand(card.Model, true);
+                            _battlegroundController.UnregisterCardView(card);
+                            _battlegroundController.UpdatePositionOfCardsInPlayerHand();
 
                         card.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.BoardCards;
                         card.GameObject.GetComponent<SortingGroup>().sortingOrder = 1000;
@@ -603,10 +607,10 @@ namespace Loom.ZombieBattleground
 
                                 completeCallback();
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
-                            },
-                            0.75f);
-                        break;
-                    }
+                                BlockEndTurnButton = false;
+                            }, 0.75f);
+                            break;
+                        }
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
