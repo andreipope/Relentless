@@ -69,6 +69,37 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
+            if (_targets.Count > 0)
+            {
+                List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
+
+                foreach (BoardUnitModel unit in _targets)
+                {
+                    targetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    {
+                        new PastActionsPopup.TargetEffectParam()
+                        {
+                            ActionEffectType = Enumerators.ActionEffectType.Damage,
+                            Target = unit
+                        }
+                    };
+                }
+
+                Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingCard;
+
+                if (_targets.Count > 1)
+                {
+                    actionType = Enumerators.ActionType.CardAffectingMultipleCards;
+                }
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = actionType,
+                    Caller = GetCaller(),
+                    TargetEffects = targetEffects
+                });
+            }
+
             for (int i = _targets.Count-1; i >= 0; i--)
             {
                 OneActionCompleted(_targets[i]);
