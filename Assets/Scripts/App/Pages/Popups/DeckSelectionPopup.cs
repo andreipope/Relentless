@@ -323,6 +323,12 @@ namespace Loom.ZombieBattleground
                 if (_tutorialManager.IsTutorial)
                     return;
 
+                if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+                {
+                    _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                    return;
+                }
+
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                 _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab
                 (

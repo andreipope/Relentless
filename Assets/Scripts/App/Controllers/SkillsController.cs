@@ -258,12 +258,14 @@ namespace Loom.ZombieBattleground
 
                         skill.UseSkill();
                         skill.SkillUsedAction(targets);
+                        GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
                             skill.SelfObject.transform.position,
                             targetPlayer,
                             (x) =>
                             {
+                                AbilityProcessingAction?.ForceActionDone();
                                 DoActionByType(skill, targets, completeCallback);
                             }, _isDirection);
 
@@ -304,12 +306,14 @@ namespace Loom.ZombieBattleground
                         }
                         skill.UseSkill();
                         _targets = targets;
+                        GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
                             skill.SelfObject.transform.position,
                             targetUnitView,
                             (x) =>
                             {
+                                AbilityProcessingAction?.ForceActionDone();
                                 DoActionByType(skill, targets, completeCallback);
                                 skill.SkillUsedAction(targets);
                             }, _isDirection);
@@ -344,12 +348,14 @@ namespace Loom.ZombieBattleground
                     }
                     skill.UseSkill();
                     _targets = targets;
+                    GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,
                         targets[0].BoardObject,
                         (x) =>
                         {
+                            AbilityProcessingAction?.ForceActionDone();
                             DoActionByType(skill, targets, completeCallback);
                             skill.SkillUsedAction(_targets);
                         }, _isDirection);

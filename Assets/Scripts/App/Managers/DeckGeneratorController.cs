@@ -103,10 +103,7 @@ namespace Loom.ZombieBattleground
 
         public async void ProcessEditDeck(Deck deck)
         {
-            if (!GameClient.Get<ITutorialManager>().IsTutorial)
-            {
-                GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
-            }
+            GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
             bool success = false;
             try
             {
@@ -156,10 +153,7 @@ namespace Loom.ZombieBattleground
             }
             finally
             {
-                if (!GameClient.Get<ITutorialManager>().IsTutorial)
-                {
-                    GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
-                }
+                GameClient.Get<IUIManager>().HidePopup<LoadingFiatPopup>();
                 FinishEditDeck?.Invoke(success, deck);
             }
         }
