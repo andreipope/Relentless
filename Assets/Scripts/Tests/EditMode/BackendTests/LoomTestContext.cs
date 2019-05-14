@@ -53,11 +53,6 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public string CreateUniqueUserId(string userId)
-        {
-            return userId + "_" + Guid.NewGuid();
-        }
-
         private async Task EnsureContract()
         {
             if (BackendFacade.IsConnected)

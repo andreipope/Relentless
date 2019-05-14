@@ -76,7 +76,7 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int MaxCardsInHand = 10;
 
-        internal const int DefaultPlayerHp = 50;
+        internal const int TutorialDefaultOverlordDefense = 50;
 
         internal const int DefaultPlayerGoo = 0;
 

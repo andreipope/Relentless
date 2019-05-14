@@ -191,7 +191,6 @@ namespace Loom.ZombieBattleground
                     MaxCardsInPlay = Constants.MaxBoardUnits;
                     MaxGooVials = Constants.MaximumPlayerGoo;
 
-                    Defense = Constants.DefaultPlayerHp;
                     CurrentGoo = Constants.DefaultPlayerGoo;
                     GooVials = _currentGoo;
                     TurnTime = (uint) Constants.TurnTime;
@@ -253,6 +252,15 @@ namespace Loom.ZombieBattleground
                 throw new Exception("overlordId == null");
 
             SelfOverlord = _dataManager.CachedOverlordData.GetOverlordById(overlordId.Value);
+
+            switch (_matchManager.MatchType)
+            {
+                case Enumerators.MatchType.PVP:
+                    break;
+                default:
+                    Defense = SelfOverlord.Prototype.InitialDefense;
+                    break;
+            }
 
             // TODO: REMOVE logs when issue will be fixed
             Log.Debug($"SelfOverlord: {SelfOverlord}");

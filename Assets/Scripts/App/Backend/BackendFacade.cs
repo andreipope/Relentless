@@ -232,7 +232,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
         #region Overlords
 
         private const string ListOverlordUserInstancesMethod = "ListOverlordUserInstances";
-        private const string GetOverlordMethod = "GetOverlord";
+        private const string GetOverlordUserInstanceMethod = "GetOverlordUserInstance";
 
         public async Task<ListOverlordUserInstancesResponse> ListOverlordUserInstances(string userId)
         {
@@ -245,7 +245,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
             return await _contractCallProxy.StaticCallAsync<ListOverlordUserInstancesResponse>(ListOverlordUserInstancesMethod, request);
         }
 
-        public async Task<GetOverlordUserInstanceResponse> GetOverlord(string userId, OverlordId overlordId)
+        public async Task<GetOverlordUserInstanceResponse> GetOverlordUserInstance(string userId, OverlordId overlordId)
         {
             GetOverlordUserInstanceRequest request = new GetOverlordUserInstanceRequest
             {
@@ -254,7 +254,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<GetOverlordUserInstanceResponse>(GetOverlordMethod, request);
+            return await _contractCallProxy.StaticCallAsync<GetOverlordUserInstanceResponse>(GetOverlordUserInstanceMethod, request);
         }
 
         private const string GetOverlordLevelingDataMethod = "GetOverlordLevelingData";

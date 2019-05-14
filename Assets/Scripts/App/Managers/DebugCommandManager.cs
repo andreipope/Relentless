@@ -15,6 +15,7 @@ public class DebugCommandsManager : IService
         DecksCommandHandler.Initialize();
         PvPCommandsHandler.Initialize();
         TutorialRewardCommandsHandler.Initialize();
+        NetworkCommandsHandler.Initialize();
         #endif
     }
 

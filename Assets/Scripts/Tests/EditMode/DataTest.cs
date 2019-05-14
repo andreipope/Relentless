@@ -131,8 +131,8 @@ namespace Loom.ZombieBattleground.Test
 
             Protobuf.OverlordUserData protobufUserData = new Protobuf.OverlordUserData
             {
-                Experience = 100500,
                 Level = 373,
+                Experience = 100500,
                 UnlockedSkillIds = { 1, 2, 3 }
             };
 
@@ -175,8 +175,8 @@ namespace Loom.ZombieBattleground.Test
             );
 
             Data.OverlordUserData clientUserData = new Data.OverlordUserData(
-                100500,
-                373
+                373,
+                100500
             );
 
             clientPrototype.ShouldDeepEqual(protobufPrototype.FromProtobuf());

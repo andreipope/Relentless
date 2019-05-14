@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground.Data
 
         public OverlordSkillUserInstance GetSkill(Enumerators.Skill skill)
         {
-            return Skills.First(x => x.Prototype.Skill == skill);
+            return Skills.FirstOrDefault(x => x.Prototype.Skill == skill);
         }
     }
 
@@ -99,7 +99,7 @@ namespace Loom.ZombieBattleground.Data
 
         public OverlordSkillPrototype GetSkill(Enumerators.Skill skill)
         {
-            return Skills.First(x => x.Skill == skill);
+            return Skills.FirstOrDefault(x => x.Skill == skill);
         }
     }
 

@@ -94,6 +94,7 @@ namespace Loom.Client
             }
 
             this.disposed = true;
+            NotifyConnectionStateChanged();
         }
         
         public override Task ConnectAsync()

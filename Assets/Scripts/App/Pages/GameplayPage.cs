@@ -348,7 +348,7 @@ namespace Loom.ZombieBattleground
         public void SetOverlordInfo(OverlordUserInstance overlord, string objectName)
         {
             Texture2D overlordTexture =
-                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Prototype + "_EXP");
+                _loadObjectsManager.GetObjectByPath<Texture2D>("Images/Heroes/CZB_2D_Hero_Portrait_" + overlord.Prototype.Faction + "_EXP");
             Transform overlordObjectTransform = GameObject.Find(objectName + "/OverlordArea/RegularModel/RegularPosition/Avatar/OverlordImage").transform;
 
             Material overlordAvatarMaterial = new Material(Shader.Find("Sprites/Default"));
