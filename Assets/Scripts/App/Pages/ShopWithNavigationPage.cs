@@ -63,6 +63,8 @@ namespace Loom.ZombieBattleground
 
         private const int RequestPackTimeout = 20;
         
+        private readonly Queue<Action> _executeOnMainThread = new Queue<Action>();
+        
         #region IUIElement
         
         public void Init()
@@ -83,6 +85,14 @@ namespace Loom.ZombieBattleground
 
         public void Update()
         {
+            if (_selfPage != null)
+            {
+                while (_executeOnMainThread.Count > 0)
+                {
+                    _executeOnMainThread.Dequeue().Invoke();
+                }
+            }
+            
             if (_state == State.RequestPack)
             {
                 if (_fiatTransactionRecordQueqe.Count > 0)
@@ -594,21 +604,27 @@ namespace Loom.ZombieBattleground
         private void OnRequestPackSuccess(FiatPlasmaManager.ContractRequest contractRequest)
         {
             Log.Debug($"{nameof(_fiatPlasmaManager.OnRequestPackSuccess)}");
-            ChangeState(State.RequestFiatClaim);                
-            RequestFiatClaim
-            (
-                contractRequest.UserId,
-                contractRequest.TxID
-            );
+            _executeOnMainThread.Enqueue(() => 
+            {  
+                ChangeState(State.RequestFiatClaim);                
+                RequestFiatClaim
+                (
+                    contractRequest.UserId,
+                    contractRequest.TxID
+                );
+            });            
         }
         
         private void OnRequestPackFailed()
         {
             Log.Info($"{nameof(_fiatPlasmaManager.OnRequestPackFailed)} failed");
-            ChangeState(State.WaitForInput); 
-            _uiManager.HidePopup<LoadingFiatPopup>();
-            _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
-            _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            _executeOnMainThread.Enqueue(() => 
+            {
+                ChangeState(State.WaitForInput); 
+                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.GetPopup<QuestionPopup>().ConfirmationReceived += WarningPopupRequestPack;                
+                _uiManager.DrawPopup<QuestionPopup>("Something went wrong.\nPlease try again.");
+            });            
         }
         
         public async void RequestFiatClaim(int userId, int txId)
