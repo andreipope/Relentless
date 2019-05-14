@@ -38,6 +38,16 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
+        protected override void UnitHpChangedHandler(int oldValue, int newValue)
+        {
+            base.UnitHpChangedHandler(oldValue, newValue);
+
+            if (AbilityUnitOwner.CurrentDefense <= 0 && !AbilityUnitOwner.IsReanimated)
+            {
+                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+            }
+        }
+
         public override void Action(object info = null)
         {
             base.Action(info);
@@ -93,6 +103,8 @@ namespace Loom.ZombieBattleground
                     TargetEffects = targetEffects
                 });
             }
+
+            AbilityProcessingAction?.ForceActionDone();
         }
 
         private void PutCardOnBoard(Player owner, BoardUnitModel boardUnitModel, ref List<PastActionsPopup.TargetEffectParam> targetEffects)
