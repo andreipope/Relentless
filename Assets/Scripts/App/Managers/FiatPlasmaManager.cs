@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
         #region Contract
         private TextAsset _abiFiatPurchase;
         private EvmContract _fiatPurchaseContract;
-        private bool _isConnected => _fiatPurchaseContract != null &&
+        private bool IsConnected => _fiatPurchaseContract != null &&
             _fiatPurchaseContract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
             _fiatPurchaseContract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
         #endregion
@@ -76,11 +76,41 @@ namespace Loom.ZombieBattleground
         {
         }
         
-         public async Task CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
-        {
-            if(!_isConnected)
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
+        {   
+            UnitySynchronizationContext.Instance.Post(o =>
             {
-                await CreateFiatPurchaseContract();
+                if (state != RpcConnectionState.Connected &&
+                    state != RpcConnectionState.Connecting)
+                {
+                    string errorMsg =
+                        "Your game client is now OFFLINE. Please check your internet connection and try again later.";
+                    HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
+                }
+            }, null);
+        }
+        
+        public async void HandleNetworkExceptionFlow(Exception exception)
+        {
+            if (!ScenePlaybackDetector.IsPlaying || UnitTestDetector.IsRunningUnitTests) {
+                throw exception;
+            }
+
+            string message = "Handled network exception: ";
+            if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)
+            {
+                message += $"[URL: {webSocketRpcClient.Url}] ";
+            }
+            message += exception;
+
+            Log.Warn(message);
+        }
+        
+        public async Task CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
+        {
+            if(!IsConnected)
+            {
+                await GetFiatPurchaseContract();
             }            
             ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);                        
             await CallRequestPacksContract(_fiatPurchaseContract, contractParams);
@@ -136,13 +166,16 @@ namespace Loom.ZombieBattleground
             _cachePackRequestingParams = null;
         }
         
-        public async Task CreateFiatPurchaseContract()
+        public async Task<EvmContract> GetFiatPurchaseContract()
         {
             if(_fiatPurchaseContract != null)
             {
                 _fiatPurchaseContract.EventReceived -= ContractEventReceived;
+                _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
                 _fiatPurchaseContract?.Client?.Dispose();
             }
+            
             _fiatPurchaseContract = await GetContract
             (
                 PrivateKey,
@@ -151,6 +184,9 @@ namespace Loom.ZombieBattleground
                 PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
             );
             _fiatPurchaseContract.EventReceived += ContractEventReceived;
+            _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+            return _fiatPurchaseContract;
         }
 
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)

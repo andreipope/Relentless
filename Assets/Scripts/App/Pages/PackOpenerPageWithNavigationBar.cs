@@ -747,7 +747,24 @@ namespace Loom.ZombieBattleground
         }
         
         private void RevealCard(Transform cardShirt)
-        {            
+        {
+            if (cardShirt == null)
+                return;
+
+            Transform cardFace;
+            try
+            {
+                cardFace = cardShirt.GetChild(0)?.GetChild(0);
+            }
+            catch
+            {
+                Log.Info($"{nameof(RevealCard)}: Cannot retrive cardFace child");
+                return;
+            }
+
+            if (cardFace == null)
+                return;
+            
             Sequence sequence = DOTween.Sequence();
             sequence.Append(
                 cardShirt
@@ -758,7 +775,7 @@ namespace Loom.ZombieBattleground
                 {
         
                 }));
-            Transform cardFace = cardShirt.GetChild(0).GetChild(0);
+            
             cardFace.parent = null;
             cardFace.localEulerAngles = Vector3.up * 90f;
             sequence.Append(

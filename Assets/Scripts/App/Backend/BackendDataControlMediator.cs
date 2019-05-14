@@ -120,13 +120,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             };
             IDAppChainClientCallExecutor chainClientCallExecutor = new NotifyingDAppChainClientCallExecutor(clientConfiguration);
             await _backendFacade.CreateContract(UserDataModel.PrivateKey, clientConfiguration, chainClientCallExecutor: chainClientCallExecutor);
-        }
-        
-        private async Task CreateFiatContract()
-        {
-            await GameClient.Get<FiatPlasmaManager>().CreateFiatPurchaseContract();
-            await GameClient.Get<OpenPackPlasmaManager>().CreateCardFaucetContract();
-            GameClient.Get<OpenPackPlasmaManager>().CreatePacksContract();
-        }
+        }        
     }
 }

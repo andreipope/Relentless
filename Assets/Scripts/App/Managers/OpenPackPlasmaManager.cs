@@ -149,7 +149,7 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
-            EvmContract packContract = await CreatePacksContract(packTypeId);
+            EvmContract packContract;
 
             int expectCardReceiveAmount = _cardsPerPack;
             int count = 0;
@@ -161,6 +161,9 @@ namespace Loom.ZombieBattleground
 
                 try
                 {
+                    packContract = await CreatePacksContract(packTypeId);
+                    await CreateCardFaucetContract();
+                    
                     await CallBalanceContract(packContract);
                     await CallApproveContract(packContract);
                     await CallOpenPackContract(_cardFaucetContract, packTypeId);
@@ -181,13 +184,13 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 }
-                catch
+                catch (Exception e)
                 {
-                    Log.Info($"smart contract [open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] error or reverted");
+                    Log.Info($"[open{ (Enumerators.MarketplaceCardPackType)packTypeId }Packs] failed. e:{e.Message}");
                     await Task.Delay(TimeSpan.FromSeconds(1)); 
                 }
                 ++count;
-                if(count > _maxRequestRetryAttempt)
+                if(count >= _maxRequestRetryAttempt)
                 {
                     throw new Exception($"{nameof(CallOpenPack)} with packTypeId {packTypeId}  failed after {count} attempts");
                 }

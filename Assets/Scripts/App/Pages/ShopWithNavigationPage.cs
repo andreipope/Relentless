@@ -686,12 +686,12 @@ namespace Loom.ZombieBattleground
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
-            await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
+            //await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s).");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
-            await Task.Delay(TimeSpan.FromSeconds(0.2f));
-            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
+            //await Task.Delay(TimeSpan.FromSeconds(0.2f));
+            //GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
         
         private void OnProcessPurchase(PurchaseEventArgs args)
