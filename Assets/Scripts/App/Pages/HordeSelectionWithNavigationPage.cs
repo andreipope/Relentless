@@ -241,7 +241,7 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonNewDeck.name))
                 return;
 
-            if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+            if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount && !_tutorialManager.IsTutorial)
             {
                 _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
                 return;
