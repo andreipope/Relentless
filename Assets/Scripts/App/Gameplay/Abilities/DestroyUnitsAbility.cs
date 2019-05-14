@@ -127,11 +127,6 @@ namespace Loom.ZombieBattleground
 
             OnUpdateEvent = null;
 
-            for (int i = _units.Count -1; i >= 0; i--)
-            {
-                DestroyUnit(_units[i]);
-            }
-
             if (_units.Count > 0)
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
@@ -161,6 +156,11 @@ namespace Loom.ZombieBattleground
                     Caller = GetCaller(),
                     TargetEffects = targetEffects
                 });
+            }
+
+            for (int i = _units.Count -1; i >= 0; i--)
+            {
+                DestroyUnit(_units[i]);
             }
         }
     }
