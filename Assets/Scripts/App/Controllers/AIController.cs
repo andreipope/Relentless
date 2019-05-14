@@ -302,7 +302,7 @@ namespace Loom.ZombieBattleground
 
             await LetsWaitForQueue(cancellationToken);
 
-            if (_gameplayManager.OpponentPlayer.SelfOverlord.Faction == Enumerators.Faction.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfOverlord.Prototype.Faction == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -362,7 +362,7 @@ namespace Loom.ZombieBattleground
                     return;
             }
 
-            if (_gameplayManager.OpponentPlayer.SelfOverlord.Faction == Enumerators.Faction.FIRE)
+            if (_gameplayManager.OpponentPlayer.SelfOverlord.Prototype.Faction == Enumerators.Faction.FIRE)
             {
                 await UseUnitsOnBoard(cancellationToken);
                 cancellationToken.ThrowIfCancellationRequested();
@@ -1479,7 +1479,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.TOXIC_POWER:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.Prototype.Faction ==
-                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Faction);
+                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Prototype.Faction);
                         if (units.Count > 0)
                         {
                             target = units[UnityEngine.Random.Range(0, units.Count)];
@@ -1506,7 +1506,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.Skill.ENHANCE:
                     {
                         List<BoardUnitModel> units = GetUnitsOnBoard().FindAll(x => x.Card.Prototype.Faction ==
-                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Faction);
+                                                                        _gameplayManager.OpponentPlayer.SelfOverlord.Prototype.Faction);
 
                         if (units.Count > 0)
                         {

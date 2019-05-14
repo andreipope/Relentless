@@ -132,7 +132,7 @@ namespace Loom.ZombieBattleground
             {
                 case Player player:
                     sprite = LoadObjectsManager.GetObjectByPath<Sprite>("Images/Heroes/CZB_2D_Hero_Portrait_" +
-                        player.SelfOverlord.Faction + "_EXP");
+                        player.SelfOverlord.Prototype.Faction + "_EXP");
                     break;
                 case BoardUnitModel unit:
                     sprite = unit.CardPicture;

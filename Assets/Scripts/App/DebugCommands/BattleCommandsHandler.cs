@@ -211,7 +211,7 @@ static class BattleCommandsHandler
         string[] overlordNames = new string[_dataManager.CachedOverlordData.Overlords.Count];
         for (var i = 0; i < _dataManager.CachedOverlordData.Overlords.Count; i++)
         {
-            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Name;
+            overlordNames[i] = _dataManager.CachedOverlordData.Overlords[i].Prototype.Name;
         }
         return overlordNames;
     }
@@ -664,7 +664,7 @@ static class BattleCommandsHandler
     {
         foreach (var skill in _gameplayManager.CurrentPlayer.SelfOverlord.Skills)
         {
-            skill.Unlocked = true;
+            skill.UserData.IsUnlocked = true;
         }
     }
 

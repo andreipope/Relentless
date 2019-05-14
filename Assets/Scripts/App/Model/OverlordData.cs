@@ -10,20 +10,54 @@ namespace Loom.ZombieBattleground.Data
 {
     public class OverlordData
     {
-        public List<OverlordModel> Overlords { get; }
+        public List<OverlordUserInstance> Overlords { get; }
 
-        public OverlordData(List<OverlordModel> overlords)
+        public OverlordData(List<OverlordUserInstance> overlords)
         {
             Overlords = overlords ?? throw new ArgumentNullException(nameof(overlords));
         }
 
-        public OverlordModel GetOverlordById(OverlordId id)
+        public OverlordUserInstance GetOverlordById(OverlordId id)
         {
-            return Overlords.Single(model => model.Id == id);
+            return Overlords.Single(model => model.Prototype.Id == id);
         }
     }
 
-    public class OverlordModel
+    public class OverlordUserInstance
+    {
+        public OverlordPrototype Prototype { get; }
+
+        public OverlordUserData UserData { get; }
+
+        public IReadOnlyList<OverlordSkillUserInstance> Skills { get; }
+
+        public OverlordUserInstance(OverlordPrototype prototype, OverlordUserData userData, IReadOnlyList<OverlordSkillUserInstance> skills)
+        {
+            Prototype = prototype;
+            UserData = userData;
+            Skills = skills;
+        }
+
+        public OverlordSkillUserInstance GetSkill(Enumerators.Skill skill)
+        {
+            return Skills.First(x => x.Prototype.Skill == skill);
+        }
+    }
+
+    public class OverlordUserData
+    {
+        public int Level { get; set; }
+
+        public long Experience { get; set; }
+
+        public OverlordUserData(int level, long experience)
+        {
+            Level = level;
+            Experience = experience;
+        }
+    }
+
+    public class OverlordPrototype
     {
         public OverlordId Id { get; }
 
@@ -35,28 +69,22 @@ namespace Loom.ZombieBattleground.Data
 
         public string LongDescription { get; }
 
-        public long Experience { get; set; }
-
-        public int Level { get; set; }
-
         public Enumerators.Faction Faction { get; }
 
-        public List<OverlordSkill> Skills { get; }
+        public IReadOnlyList<OverlordSkillPrototype> Skills { get; }
 
         public int InitialDefense { get; }
 
         public string FullName => $"{Name}, {ShortDescription}";
 
-        public OverlordModel(
+        public OverlordPrototype(
             OverlordId id,
             string icon,
             string name,
             string shortDescription,
             string longDescription,
-            long experience,
-            int level,
             Enumerators.Faction faction,
-            List<OverlordSkill> skills,
+            IReadOnlyList<OverlordSkillPrototype> skills,
             int initialDefense)
         {
             Id = id;
@@ -64,22 +92,42 @@ namespace Loom.ZombieBattleground.Data
             Name = name;
             ShortDescription = shortDescription;
             LongDescription = longDescription;
-            Experience = experience;
-            Level = level;
             Faction = faction;
-            Skills = skills ?? new List<OverlordSkill>();
+            Skills = skills ?? new List<OverlordSkillPrototype>();
             InitialDefense = initialDefense;
         }
 
-        public OverlordSkill GetSkill(Enumerators.Skill skill)
+        public OverlordSkillPrototype GetSkill(Enumerators.Skill skill)
         {
-            return Skills.Find(x => x.Skill == skill);
+            return Skills.First(x => x.Skill == skill);
         }
     }
 
-    public class OverlordSkill
+    public class OverlordSkillUserInstance {
+        public OverlordSkillPrototype Prototype { get; }
+
+        public OverlordSkillUserData UserData { get; }
+
+        public OverlordSkillUserInstance(OverlordSkillPrototype prototype, OverlordSkillUserData userData)
+        {
+            Prototype = prototype;
+            UserData = userData;
+        }
+    }
+
+    public class OverlordSkillUserData
     {
-        public int Id { get; }
+        public bool IsUnlocked { get; set; }
+
+        public OverlordSkillUserData(bool isUnlocked)
+        {
+            IsUnlocked = isUnlocked;
+        }
+    }
+
+    public class OverlordSkillPrototype
+    {
+        public SkillId Id { get; }
 
         public string Title { get; }
 
@@ -97,22 +145,20 @@ namespace Loom.ZombieBattleground.Data
 
         public int Count { get; }
 
-        public Enumerators.Skill Skill { get; private set; }
+        public Enumerators.Skill Skill { get; }
 
-        public List<Enumerators.SkillTarget> SkillTargets { get; private set; }
+        public List<Enumerators.SkillTarget> SkillTargets { get; }
 
-        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus { get; private set; }
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus { get; }
 
-        public List<Enumerators.Faction> TargetFactions { get; private set; }
-
-        public bool Unlocked { get; set; }
+        public List<Enumerators.Faction> TargetFactions { get; }
 
         public bool CanSelectTarget { get; }
 
         public bool SingleUse { get; }
 
-        public OverlordSkill(
-            int id,
+        public OverlordSkillPrototype(
+            SkillId id,
             string title,
             string iconPath,
             string description,
@@ -125,7 +171,6 @@ namespace Loom.ZombieBattleground.Data
             List<Enumerators.SkillTarget> skillTargets,
             Enumerators.UnitSpecialStatus targetUnitSpecialStatus,
             List<Enumerators.Faction> targetFactions,
-            bool unlocked,
             bool canSelectTarget,
             bool singleUse)
         {
@@ -143,7 +188,6 @@ namespace Loom.ZombieBattleground.Data
             TargetUnitSpecialStatus = targetUnitSpecialStatus;
             TargetFactions = targetFactions ?? new List<Enumerators.Faction>();
             CanSelectTarget = canSelectTarget;
-            Unlocked = unlocked;
             SingleUse = singleUse;
         }
     }

@@ -219,9 +219,9 @@ namespace Loom.ZombieBattleground
             return _deckList;
         }
 
-        private OverlordModel GetOverlordDataFromDeck(Deck deck)
+        private OverlordUserInstance GetOverlordDataFromDeck(Deck deck)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             return overlord;
         }
         
@@ -276,7 +276,7 @@ namespace Loom.ZombieBattleground
                 Deck deck = _deckList[i];
                 deckIcon.GetComponent<Image>().sprite = GetDeckIconSprite
                 ( 
-                    GetOverlordDataFromDeck(deck).Faction
+                    GetOverlordDataFromDeck(deck).Prototype.Faction
                 );
                 
                 _createdDeckIconList.Add(deckIcon);
@@ -340,8 +340,8 @@ namespace Loom.ZombieBattleground
         private void UpdateSelectedDeckDisplay(Deck selectedDeck)
         {
             _textDeckName.text = selectedDeck.Name;
-            OverlordModel selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
-            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Faction);
+            OverlordUserInstance selectedOverlord = GetOverlordDataFromDeck(selectedDeck);
+            _uiManager.GetPage<MainMenuWithNavigationPage>().SetOverlordPortrait(selectedOverlord.Prototype.Faction);
 
             int middleFrameIndex = _deckIconPositionList.Count / 2;
             int shiftIndex = _selectDeckIndex - middleFrameIndex;

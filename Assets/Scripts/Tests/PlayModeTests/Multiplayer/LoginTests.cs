@@ -192,8 +192,6 @@ namespace Loom.ZombieBattleground.Test
 
                 await TestHelper.ClickGenericButton("Login_Group/Button_Login_BG/Button_Login");
 
-                await TestHelper.LetsThink(10, true);
-
                 Assert.IsTrue(GameClient.Get<IUIManager>().GetPopup<WarningPopup>().Self != null);
             });
         }

@@ -192,7 +192,7 @@ namespace Loom.ZombieBattleground
                     damage = 0;
                     attackedUnitModel.UseShieldFromBuff();
                 }
-                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
+                attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Prototype.Faction;
                 attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
                     Enumerators.ReasonForValueChange.Attack);
 

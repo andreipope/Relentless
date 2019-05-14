@@ -20,6 +20,7 @@ using Loom.ZombieBattleground.Protobuf;
 using Card = Loom.ZombieBattleground.Data.Card;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 using Faction = Loom.ZombieBattleground.Data.Faction;
+using OverlordUserInstance = Loom.ZombieBattleground.Data.OverlordUserInstance;
 
 namespace Loom.ZombieBattleground
 {
@@ -744,8 +745,8 @@ namespace Loom.ZombieBattleground
             if (_myDeckPage.CurrentEditDeck == null)
                 return;
 
-            OverlordModel overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
-            if (FactionAgainstDictionary[overlordData.Faction] == card.Faction)
+            OverlordUserInstance overlordData = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
+            if (FactionAgainstDictionary[overlordData.Prototype.Faction] == card.Faction)
             {
                 _myDeckPage.OpenAlertDialog(
                     "Cannot add from the faction your Overlord is weak against.");
@@ -1120,14 +1121,14 @@ namespace Loom.ZombieBattleground
         private void UpdateOverlordAbilitiesButton()
         {
             Deck deck = _myDeckPage.CurrentEditDeck;
-            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId);
             if(deck.PrimarySkill == Enumerators.Skill.NONE)
             {
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/skill_unselected");
             }
             else
             {
-                string iconPath = overlord.GetSkill(deck.PrimarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.PrimarySkill).Prototype.IconPath;
                 _imageAbilityIcons[0].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
             if(deck.SecondarySkill == Enumerators.Skill.NONE)
@@ -1136,11 +1137,11 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                string iconPath = overlord.GetSkill(deck.SecondarySkill).IconPath;
+                string iconPath = overlord.GetSkill(deck.SecondarySkill).Prototype.IconPath;
                 _imageAbilityIcons[1].sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/OverlordAbilitiesIcons/" + iconPath);
             }
 
-            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+overlord.Faction.ToString().ToLower());
+            _imageAbilitiesPanel.sprite = _loadObjectsManager.GetObjectByPath<Sprite>("Images/UI/MyDecks/OverlordAbilitiesPanel/abilities_button_"+overlord.Prototype.Faction.ToString().ToLower());
         }
 
         private void UpdateEditDeckCardsAmount()
@@ -1243,7 +1244,7 @@ namespace Loom.ZombieBattleground
             UpdateDeckCardsDisplay();
         }
 
-        public void MoveCollectionPageIndex(int direction)
+        private void MoveCollectionPageIndex(int direction)
         {
             int newIndex = Mathf.Clamp(_collectionPageIndex + direction, 0, GetCollectionPageAmount() - 1);
             if (newIndex == _collectionPageIndex)
@@ -1265,7 +1266,7 @@ namespace Loom.ZombieBattleground
 
         private void ResetAvailableFactions()
         {
-            Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId).Faction;
+            Enumerators.Faction overlordFaction = _dataManager.CachedOverlordData.GetOverlordById(_myDeckPage.CurrentEditDeck.OverlordId).Prototype.Faction;
 
             _againstFaction = FactionAgainstDictionary[overlordFaction];
             Enumerators.Faction firstFaction = _tutorialManager.IsTutorial ?
@@ -1492,7 +1493,7 @@ namespace Loom.ZombieBattleground
             Object.Destroy(DeckCardPlaceholders);
         }
 
-        public uint GetMaxCopiesValue(IReadOnlyCard card)
+        private uint GetMaxCopiesValue(IReadOnlyCard card)
         {
             Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
@@ -1534,7 +1535,7 @@ namespace Loom.ZombieBattleground
             if(_myDeckPage.IsEditingNewDeck)
             {
                 deckGeneratorController.FinishAddDeck += FinishAddDeck;
-                _myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Id;
+                _myDeckPage.CurrentEditDeck.OverlordId = _myDeckPage.CurrentEditOverlord.Prototype.Id;
                 _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedPrimarySkill;
                 _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.SelectOverlordSkillTab.SelectedSecondarySkill;
 

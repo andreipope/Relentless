@@ -17,7 +17,7 @@ namespace Loom.ZombieBattleground
 
         public GameObject SelfObject;
 
-        public OverlordSkill Skill;
+        public OverlordSkillPrototype Skill;
 
         public List<Enumerators.UnitSpecialStatus> BlockedUnitStatusTypes;
 
@@ -41,8 +41,6 @@ namespace Loom.ZombieBattleground
 
         private readonly GameObject _fightTargetingArrowPrefab;
 
-        private int _initialCooldown;
-
         private readonly Animator _shutterAnimator;
 
         private readonly PointerEventSolver _pointerEventSolver;
@@ -55,8 +53,6 @@ namespace Loom.ZombieBattleground
 
         private bool _isAlreadyUsed;
 
-        private bool _singleUse;
-
         private OnBehaviourHandler _behaviourHandler;
 
         private OverlordAbilityInfoObject _currentOverlordAbilityInfoObject;
@@ -67,16 +63,14 @@ namespace Loom.ZombieBattleground
 
         public override Player OwnerPlayer { get; }
 
-        public BoardSkill(GameObject obj, Player player, OverlordSkill skillInfo, bool isPrimary)
+        public BoardSkill(GameObject obj, Player player, OverlordSkillPrototype skillPrototype, bool isPrimary)
         {
             SelfObject = obj;
-            Skill = skillInfo;
+            Skill = skillPrototype;
             OwnerPlayer = player;
             IsPrimary = isPrimary;
 
-            _initialCooldown = skillInfo.InitialCooldown;
-            _cooldown = skillInfo.Cooldown;
-            _singleUse = skillInfo.SingleUse;
+            _cooldown = skillPrototype.Cooldown;
 
             BlockedUnitStatusTypes = new List<Enumerators.UnitSpecialStatus>();
 
@@ -126,7 +120,7 @@ namespace Loom.ZombieBattleground
             _isOpen = false;
         }
 
-        public bool IsSkillReady => _cooldown == 0 && (!_singleUse || !_isAlreadyUsed);
+        public bool IsSkillReady => _cooldown == 0 && (!Skill.SingleUse || !_isAlreadyUsed);
 
         public bool IsUsing { get; private set; }
 
@@ -157,7 +151,7 @@ namespace Loom.ZombieBattleground
 
         public void SetCoolDown(int coolDownValue)
         {
-            if (_isAlreadyUsed && _singleUse)
+            if (_isAlreadyUsed && Skill.SingleUse)
                 return;
 
             _cooldown = coolDownValue;
@@ -267,7 +261,7 @@ namespace Loom.ZombieBattleground
         public void UseSkill()
         {
             SetHighlightingEnabled(false);
-            _cooldown = _initialCooldown;
+            _cooldown = Skill.InitialCooldown;
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
@@ -290,7 +284,7 @@ namespace Loom.ZombieBattleground
                 SetCoolDown(0);
             }
 
-            if(_singleUse)
+            if(Skill.SingleUse)
             {
                 _coolDownTimer.Close();
             }
@@ -407,7 +401,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            if (!_singleUse || !_isAlreadyUsed)
+            if (!Skill.SingleUse || !_isAlreadyUsed)
             {
                 _coolDownTimer.SetAngle(_cooldown);
             }
@@ -425,7 +419,7 @@ namespace Loom.ZombieBattleground
             }
             if (!_usedInThisTurn)
             {
-                _cooldown = Mathf.Clamp(_cooldown - 1, 0, _initialCooldown);
+                _cooldown = Mathf.Clamp(_cooldown - 1, 0, Skill.InitialCooldown);
             }
 
             _usedInThisTurn = false;
@@ -574,7 +568,7 @@ namespace Loom.ZombieBattleground
 
             private readonly TextMeshPro _descriptionText;
 
-            public OverlordAbilityInfoObject(OverlordSkill skill, Transform parent, Vector3 position)
+            public OverlordAbilityInfoObject(OverlordSkillPrototype skill, Transform parent, Vector3 position)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

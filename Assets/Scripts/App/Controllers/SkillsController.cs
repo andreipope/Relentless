@@ -132,14 +132,14 @@ namespace Loom.ZombieBattleground
                 secondarySkillType = _gameplayManager.CurrentPlayerDeck.SecondarySkill;
             }
 
-            OverlordSkill primary = _gameplayManager.CurrentPlayer.SelfOverlord.GetSkill(primarySkillType);
-            OverlordSkill secondary = _gameplayManager.CurrentPlayer.SelfOverlord.GetSkill(secondarySkillType);
+            OverlordSkillPrototype primary = _gameplayManager.CurrentPlayer.SelfOverlord.Prototype.GetSkill(primarySkillType);
+            OverlordSkillPrototype secondary = _gameplayManager.CurrentPlayer.SelfOverlord.Prototype.GetSkill(secondarySkillType);
 
             rootPage.SetupSkills(primary, secondary, false);
             SetPlayerSkills(rootPage, primary, secondary);
 
-            primary = _gameplayManager.OpponentPlayer.SelfOverlord.GetSkill(_gameplayManager.OpponentPlayerDeck.PrimarySkill);
-            secondary = _gameplayManager.OpponentPlayer.SelfOverlord.GetSkill(_gameplayManager.OpponentPlayerDeck.SecondarySkill);
+            primary = _gameplayManager.OpponentPlayer.SelfOverlord.Prototype.GetSkill(_gameplayManager.OpponentPlayerDeck.PrimarySkill);
+            secondary = _gameplayManager.OpponentPlayer.SelfOverlord.Prototype.GetSkill(_gameplayManager.OpponentPlayerDeck.SecondarySkill);
 
             rootPage.SetupSkills(primary, secondary, true);
             SetOpponentSkills(rootPage, primary, secondary);
@@ -189,7 +189,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetPlayerSkills(GameplayPage rootPage, OverlordSkill primary, OverlordSkill secondary)
+        public void SetPlayerSkills(GameplayPage rootPage, OverlordSkillPrototype primary, OverlordSkillPrototype secondary)
         {
             if (primary != null)
             {
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public void SetOpponentSkills(GameplayPage rootPage, OverlordSkill primary, OverlordSkill secondary)
+        public void SetOpponentSkills(GameplayPage rootPage, OverlordSkillPrototype primary, OverlordSkillPrototype secondary)
         {
             if (primary != null)
             {
@@ -684,7 +684,7 @@ namespace Loom.ZombieBattleground
 
         // AIR
 
-        private void PushAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void PushAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             owner.CurrentGoo = 0;
 
@@ -716,7 +716,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void DrawAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void DrawAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             owner.PlayerCardsController.AddCardFromDeckToHand();
             owner.PlayDrawCardVFX();
@@ -735,7 +735,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void WindShieldAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void WindShieldAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
             List<BoardUnitModel> units;
@@ -775,7 +775,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void Levitate(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void Levitate(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             int value = -skill.Value;
             BoardUnitModel boardUnitModel = null;
@@ -831,7 +831,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void RetreatAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void RetreatAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -878,7 +878,7 @@ namespace Loom.ZombieBattleground
 
         // TOXIC
 
-        private void ToxicPowerAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void ToxicPowerAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -909,7 +909,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void PoisonDartAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void PoisonDartAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             AttackWithModifiers(owner, boardSkill, targets[0].BoardObject);
             _vfxController.CreateVfx(
@@ -952,7 +952,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void BreakoutAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void BreakoutAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1037,7 +1037,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void InfectAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void InfectAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -1110,7 +1110,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void EpidemicAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void EpidemicAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1225,7 +1225,7 @@ namespace Loom.ZombieBattleground
             });
         }
     
-        private void EpidemicUnit(Player owner, BoardSkill boardSkill, OverlordSkill skill, BoardUnitModel unit, BoardUnitModel target, Action<BoardUnitModel> callback)
+        private void EpidemicUnit(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, BoardUnitModel unit, BoardUnitModel target, Action<BoardUnitModel> callback)
         {
             _vfxController.CreateVfx(
             _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/VFX/Skills/InfectVFX"),
@@ -1257,7 +1257,7 @@ namespace Loom.ZombieBattleground
 
         // LIFE
 
-        private void HealingTouchAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void HealingTouchAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets.Count > 0)
             {
@@ -1308,7 +1308,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void MendAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void MendAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             owner.Defense = Mathf.Clamp(owner.Defense + skill.Value, 0, owner.MaxCurrentDefense);
 
@@ -1340,7 +1340,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void RessurectAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void RessurectAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1424,7 +1424,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void EnhanceAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void EnhanceAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1494,7 +1494,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ReanimateAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void ReanimateAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1606,7 +1606,7 @@ namespace Loom.ZombieBattleground
 
         // WATER
 
-        private void FreezeAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void FreezeAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets.Count > 0)
             {
@@ -1665,7 +1665,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void IceBoltAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void IceBoltAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -1708,7 +1708,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void IceWallAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void IceWallAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0)
             {
@@ -1761,7 +1761,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ShatterAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void ShatterAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0)
             {
@@ -1770,7 +1770,7 @@ namespace Loom.ZombieBattleground
 
                 if (target is BoardUnitModel boardUnitModel)
                 {
-                    boardUnitModel.LastAttackingSetType = owner.SelfOverlord.Faction;
+                    boardUnitModel.LastAttackingSetType = owner.SelfOverlord.Prototype.Faction;
                     _battlegroundController.DestroyBoardUnit(boardUnitModel, false, true);
 
                     _soundManager.PlaySound(
@@ -1796,7 +1796,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void BlizzardAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void BlizzardAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1853,7 +1853,7 @@ namespace Loom.ZombieBattleground
 
         // FIRE
 
-        private void FireBoltAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void FireBoltAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0)
             {
@@ -1898,7 +1898,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void RabiesAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void RabiesAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -1929,7 +1929,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void FireballAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void FireballAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0)
             {
@@ -1975,7 +1975,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void MassRabiesAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void MassRabiesAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -1991,7 +1991,7 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = owner.CardsOnBoard
-                    .FindAll(x => !x.HasFeral && x.Card.Prototype.Faction == owner.SelfOverlord.Faction);
+                    .FindAll(x => !x.HasFeral && x.Card.Prototype.Faction == owner.SelfOverlord.Prototype.Faction);
 
                 units = InternalTools.GetRandomElementsFromList(units, skill.Count);
 
@@ -2029,7 +2029,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void MeteorShowerAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void MeteorShowerAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -2116,7 +2116,7 @@ namespace Loom.ZombieBattleground
         }
         // EARTH
 
-        private void StoneskinAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void StoneskinAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -2153,7 +2153,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void HardenAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void HardenAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             _battleController.HealPlayerBySkill(owner, boardSkill, owner);
 
@@ -2180,7 +2180,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void FortifyAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void FortifyAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             if (targets != null && targets.Count > 0 && targets[0].BoardObject is BoardUnitModel unit)
             {
@@ -2212,7 +2212,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void PhalanxAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void PhalanxAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
@@ -2263,7 +2263,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void FortressAction(Player owner, BoardSkill boardSkill, OverlordSkill skill, List<ParametrizedAbilityBoardObject> targets)
+        private void FortressAction(Player owner, BoardSkill boardSkill, OverlordSkillPrototype skill, List<ParametrizedAbilityBoardObject> targets)
         {
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
