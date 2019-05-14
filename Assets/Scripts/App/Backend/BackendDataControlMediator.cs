@@ -108,8 +108,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
             }
 
-            await _dataManager.StartLoadCache();      
-            await CreateFiatContract();
+            await _dataManager.StartLoadCache();
         }
 
         private async Task CreateContract()

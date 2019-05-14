@@ -117,6 +117,8 @@ namespace Loom.ZombieBattleground
         {        
             Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");            
 
+            EvmContract packContract = await CreatePacksContract(packTypeId);
+
             int amount;
             int count = 0;            
             while (true)
@@ -125,7 +127,7 @@ namespace Loom.ZombieBattleground
                 {
                     amount = await CallBalanceContract
                     (
-                        _packContractList[packTypeId]
+                        packContract
                     );
                     break;
                 }
@@ -147,7 +149,7 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
-            EvmContract packContract = _packContractList[packTypeId];
+            EvmContract packContract = await CreatePacksContract(packTypeId);
 
             int expectCardReceiveAmount = _cardsPerPack;
             int count = 0;
@@ -199,6 +201,7 @@ namespace Loom.ZombieBattleground
             if(_cardFaucetContract != null)
             {
                 _cardFaucetContract.EventReceived -= ContractEventReceived;
+                _cardFaucetContract?.Client?.Dispose();
             }
             _cardFaucetContract = await GetContract
             (
@@ -230,6 +233,17 @@ namespace Loom.ZombieBattleground
                     )
                 );
             }
+        }
+
+        private async Task<EvmContract> CreatePacksContract(int packId)
+        {
+            return await GetContract
+            (
+                PrivateKey,
+                PublicKey,
+                _abiPacks[packId].ToString(),
+                GetContractAddress(packId)
+            );
         }
 
         private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
