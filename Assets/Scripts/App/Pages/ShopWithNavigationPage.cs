@@ -88,6 +88,8 @@ namespace Loom.ZombieBattleground
             {
                 if
                 ( 
+                    _unfinishedState == State.Purchasing ||
+                    _unfinishedState == State.RequestFiatValidation ||
                     _unfinishedState == State.RequestFiatTransaction ||
                     _unfinishedState == State.RequestPack ||
                     _unfinishedState == State.WaitForRequestPackResponse ||
@@ -97,11 +99,6 @@ namespace Loom.ZombieBattleground
                     _unfinishedState = State.None;
                     GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);                    
                 }
-            };
-
-            _fiatPlasmaManager.OnConnectionStateNotConnect += () =>
-            {
-                _unfinishedState = _state;
             };
         }
 
@@ -257,26 +254,33 @@ namespace Loom.ZombieBattleground
                     _uiManager.HidePopup<LoadingFiatPopup>();
                     break;
                 case State.Purchasing:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Activating Purchase...");
                     break;
                 case State.RequestFiatValidation:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Processing payment...");
                     break;
                 case State.RequestFiatTransaction:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs");
                     RequestFiatTransaction();
                     break;
                 case State.RequestPack:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs.");                                        
                     break;
                 case State.WaitForRequestPackResponse:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs..");
                     _requestPackTimeoutCoroutine = MainApp.Instance.StartCoroutine(RequestPackTimeoutAsync());
                     break;
                 case State.RequestFiatClaim:
+                    _unfinishedState = _state;
                     _uiManager.DrawPopup<LoadingFiatPopup>("Fetching your packs...");
                     break;
                 case State.TransitionToPackOpener:
+                    _unfinishedState = State.None;
                     OnFinishRequestPack();
                     break;      
                 default:
