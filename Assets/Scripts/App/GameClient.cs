@@ -73,6 +73,7 @@ namespace Loom.ZombieBattleground
             AddService<DebugCommandsManager>(new DebugCommandsManager());
             AddService<PushNotificationManager>(new PushNotificationManager());
             AddService<FiatBackendManager>(new FiatBackendManager());
+            AddService<ContractManager>(new ContractManager());
             AddService<FiatPlasmaManager>(new FiatPlasmaManager());
             AddService<OpenPackPlasmaManager>(new OpenPackPlasmaManager());
             AddService<IInAppPurchaseManager>(new InAppPurchaseManager());

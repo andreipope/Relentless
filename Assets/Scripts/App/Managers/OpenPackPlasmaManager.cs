@@ -25,31 +25,6 @@ namespace Loom.ZombieBattleground
         
         public List<Card> CardsReceived { get; private set; }
         
-        #region Contract
-        private TextAsset _abiCardFaucet;
-        private TextAsset[] _abiPacks;
-        private EvmContract _cardFaucetContract;
-        private List<EvmContract> _packContractList;
-        #endregion    
-        
-        #region Key
-        private byte[] PrivateKey
-        {
-            get
-            {
-                return _backendDataControlMediator.UserDataModel.PrivateKey;
-            }
-        }
-        
-        private byte[] PublicKey
-        {
-            get 
-            { 
-                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
-            }
-        }
-        #endregion
-
         private const int _cardsPerPack = 5;
 
         private const int _maxRequestRetryAttempt = 5;
@@ -57,22 +32,31 @@ namespace Loom.ZombieBattleground
         private BackendDataControlMediator _backendDataControlMediator;
         private ILoadObjectsManager _loadObjectsManager;  
         private IDataManager _dataManager;      
+        private ContractManager _contractManager;
+        
+        public event Action OnConnectionStateNotConnect;
     
         public void Init()
         {           
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _dataManager = GameClient.Get<IDataManager>();
-            CardsReceived = new List<Card>();            
-                      
-            _abiCardFaucet = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/CardFaucetABI");
-            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues(typeof(Enumerators.MarketplaceCardPackType));
-            _abiPacks = new TextAsset[packTypes.Length];
-            for (int i = 0;i < packTypes.Length;++i)
+            _contractManager = GameClient.Get<ContractManager>();   
+            
+            CardsReceived = new List<Card>();
+            
+            _contractManager.OnContractCreated += 
+            (
+                Enumerators.ContractType contractType, 
+                EvmContract contract
+            ) => 
             {
-                _abiPacks[i] = _loadObjectsManager.GetObjectByPath<TextAsset>($"Data/abi/{packTypes[i].ToString()}PackABI");
-            }
-            _packContractList = new List<EvmContract>();
+                if (contractType != Enumerators.ContractType.FiatPurchase)
+                {
+                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                }
+            };    
         }
         
         public void Update()
@@ -83,41 +67,32 @@ namespace Loom.ZombieBattleground
         {
         }
         
-        private string GetContractAddress(int packTypeId)
+        private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            switch( (Enumerators.MarketplaceCardPackType)packTypeId)
+            if
+            (
+                state != RpcConnectionState.Connected &&
+                state != RpcConnectionState.Connecting
+            )
             {
-                case Enumerators.MarketplaceCardPackType.Booster:
-                    return PlasmaChainEndpointsContainer.ContractAddressBoosterPack;
-                case Enumerators.MarketplaceCardPackType.Super:
-                    return PlasmaChainEndpointsContainer.ContractAddressSuperPack;
-                case Enumerators.MarketplaceCardPackType.Air:
-                    return PlasmaChainEndpointsContainer.ContractAddressAirPack;
-                case Enumerators.MarketplaceCardPackType.Earth:
-                    return PlasmaChainEndpointsContainer.ContractAddressEarthPack;
-                case Enumerators.MarketplaceCardPackType.Fire:
-                    return PlasmaChainEndpointsContainer.ContractAddressFirePack;
-                case Enumerators.MarketplaceCardPackType.Life:
-                    return PlasmaChainEndpointsContainer.ContractAddressLifePack;
-                case Enumerators.MarketplaceCardPackType.Toxic:
-                    return PlasmaChainEndpointsContainer.ContractAddressToxicPack;
-                case Enumerators.MarketplaceCardPackType.Water:
-                    return PlasmaChainEndpointsContainer.ContractAddressWaterPack;
-                case Enumerators.MarketplaceCardPackType.Small:
-                    return PlasmaChainEndpointsContainer.ContractAddressSmallPack;
-                case Enumerators.MarketplaceCardPackType.Minion:
-                    return PlasmaChainEndpointsContainer.ContractAddressMinionPack;
-                default:
-                    break;
+                OnConnectionStateNotConnect?.Invoke();
             }
-            return "";
+            
+            UnitySynchronizationContext.Instance.Post(o =>
+            {
+                if (state != RpcConnectionState.Connected &&
+                    state != RpcConnectionState.Connecting)
+                {
+                    string errorMsg =
+                        "Your game client is now OFFLINE. Please check your internet connection and try again later.";
+                    _contractManager.HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
+                }
+            }, null);
         }
         
         public async Task<int> CallPackBalanceContract(int packTypeId)
         {        
             Log.Info($"CallPackBalanceContract { ((Enumerators.MarketplaceCardPackType)packTypeId).ToString() }");            
-
-            EvmContract packContract = await CreatePacksContract(packTypeId);
 
             int amount;
             int count = 0;            
@@ -127,7 +102,10 @@ namespace Loom.ZombieBattleground
                 {
                     amount = await CallBalanceContract
                     (
-                        packContract
+                        await _contractManager.GetContract
+                        (
+                            GetPackContractTypeFromId(packTypeId)
+                        ) 
                     );
                     break;
                 }
@@ -149,7 +127,6 @@ namespace Loom.ZombieBattleground
         public async Task<List<Card>> CallOpenPack(int packTypeId)
         {
             List<Card> resultList;
-            EvmContract packContract;
 
             int expectCardReceiveAmount = _cardsPerPack;
             int count = 0;
@@ -160,14 +137,35 @@ namespace Loom.ZombieBattleground
                 CardsReceived.Clear();
 
                 try
-                {
-                    packContract = await CreatePacksContract(packTypeId);
-                    await CreateCardFaucetContract();
-                    
-                    await CallBalanceContract(packContract);
-                    await CallApproveContract(packContract);
-                    await CallOpenPackContract(_cardFaucetContract, packTypeId);
-                    await CallBalanceContract(packContract);
+                {                    
+                    //await CallBalanceContract
+                    //(
+                    //    await _contractManager.GetContract
+                    //    (
+                    //        GetPackContractTypeFromId(packTypeId)
+                    //    ) 
+                    //);
+                    await CallApproveContract
+                    (
+                        await _contractManager.GetContract
+                        (
+                            GetPackContractTypeFromId(packTypeId)
+                        ) 
+                    );
+                    await CallOpenPackContract(
+                        await _contractManager.GetContract
+                        (
+                            Enumerators.ContractType.CardFaucet
+                        ), 
+                        packTypeId
+                    );
+                    await CallBalanceContract
+                    (
+                        await _contractManager.GetContract
+                        (
+                            GetPackContractTypeFromId(packTypeId)
+                        ) 
+                    );
 
                     double timeOut = 29.99;
                     double interval = 1.0;
@@ -176,7 +174,6 @@ namespace Loom.ZombieBattleground
                         await Task.Delay(TimeSpan.FromSeconds(interval));
                         timeOut -= interval;
                     }
-
 
                     foreach (Card card in CardsReceived)
                     {
@@ -199,109 +196,6 @@ namespace Loom.ZombieBattleground
             return resultList;                                   
         }
         
-        public async Task CreateCardFaucetContract()
-        {
-            if(_cardFaucetContract != null)
-            {
-                _cardFaucetContract.EventReceived -= ContractEventReceived;
-                _cardFaucetContract?.Client?.Dispose();
-            }
-            _cardFaucetContract = await GetContract
-            (
-                PrivateKey,
-                PublicKey,
-                _abiCardFaucet.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressCardFaucet
-            );
-            _cardFaucetContract.EventReceived += ContractEventReceived;            
-        }
-
-        public async Task CreatePacksContract()
-        {
-            _packContractList.Clear();
-            Enumerators.MarketplaceCardPackType[] packTypes = (Enumerators.MarketplaceCardPackType[])Enum.GetValues
-            (
-                typeof(Enumerators.MarketplaceCardPackType)
-            );
-            for(int i = 0; i < packTypes.Length; ++i)
-            {
-                _packContractList.Add
-                (
-                    await GetContract
-                    (
-                        PrivateKey,
-                        PublicKey,
-                        _abiPacks[i].ToString(),
-                        GetContractAddress(i)
-                    )
-                );
-            }
-        }
-
-        private async Task<EvmContract> CreatePacksContract(int packId)
-        {
-            return await GetContract
-            (
-                PrivateKey,
-                PublicKey,
-                _abiPacks[packId].ToString(),
-                GetContractAddress(packId)
-            );
-        }
-
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {        
-            ILogger logger = new UnityLoggerWrapper(RpcLog);
-            
-            IRpcClient writer = RpcClientFactory
-                .Configure()
-                .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
-                .Create();
-    
-            IRpcClient reader = RpcClientFactory
-                .Configure()
-                .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
-                .Create();
-    
-            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
-            {
-                CallTimeout = Constants.PlasmachainCallTimeout,
-                StaticCallTimeout = Constants.PlasmachainCallTimeout
-            };
-            
-            DAppChainClient client = new DAppChainClient
-            (
-                writer, 
-                reader,
-                clientConfiguration
-            )
-            { 
-                Logger = Debug.unityLogger 
-            };
-    
-            client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
-            {
-                new NonceTxMiddleware
-                ( 
-                    publicKey,
-                    client
-                ),
-                new SignedTxMiddleware(privateKey)
-            });
-
-            client.Configuration.AutoReconnect = false;
-
-            await client.ReadClient.ConnectAsync();
-            await client.WriteClient.ConnectAsync();
-    
-            Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
-            Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    
-    
-            return new EvmContract(client, contractAddr, callerAddr, abi);
-        }
-
         private const string BalanceOfMethod = "balanceOf";
         
         public async Task<int> CallBalanceContract(EvmContract contract)
@@ -315,9 +209,10 @@ namespace Loom.ZombieBattleground
             int result;
             try
             {
-                result = await contract.StaticCallSimpleTypeOutputAsync<int>(
+                result = await contract.StaticCallSimpleTypeOutputAsync<int>
+                (
                     BalanceOfMethod,
-                     Address.FromPublicKey(PublicKey).ToString()
+                    Address.FromPublicKey(_contractManager.PublicKey).ToString()
                 );
                 Log.Info("<color=green>" + "balanceOf RESULT: " + result + "</color>");
                 Log.Info($"Smart contract method [{BalanceOfMethod}] finished executing.");
@@ -395,7 +290,45 @@ namespace Loom.ZombieBattleground
                 CardsReceived.Add(card);
             }
         }                   
-         
+        
+        private Enumerators.ContractType GetPackContractTypeFromId(int packId)
+        {
+            switch((Enumerators.MarketplaceCardPackType)packId)
+            {
+                case Enumerators.MarketplaceCardPackType.Booster:
+                    return Enumerators.ContractType.BoosterPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Super:
+                    return Enumerators.ContractType.SuperPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Air:
+                    return Enumerators.ContractType.AirPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Earth:
+                    return Enumerators.ContractType.EarthPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Fire:
+                    return Enumerators.ContractType.FirePack;
+                    
+                case Enumerators.MarketplaceCardPackType.Life:
+                    return Enumerators.ContractType.LifePack;
+                    
+                case Enumerators.MarketplaceCardPackType.Toxic:
+                    return Enumerators.ContractType.ToxicPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Water:
+                    return Enumerators.ContractType.WaterPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Small:
+                    return Enumerators.ContractType.SmallPack;
+                    
+                case Enumerators.MarketplaceCardPackType.Minion:
+                    return Enumerators.ContractType.MinionPack;
+                    
+                default:
+                    throw new Exception($"Not found ContractType from pack id {packId}");
+            }
+        }
     }
 
 }

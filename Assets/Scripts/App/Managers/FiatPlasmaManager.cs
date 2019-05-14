@@ -31,31 +31,7 @@ namespace Loom.ZombieBattleground
 
         private const string RequestPackResponseEventName = "PurchaseSent";
 
-        #region Contract
-        private TextAsset _abiFiatPurchase;
-        private EvmContract _fiatPurchaseContract;
-        private bool IsConnected => _fiatPurchaseContract != null &&
-            _fiatPurchaseContract.Client.ReadClient.ConnectionState == RpcConnectionState.Connected &&
-            _fiatPurchaseContract.Client.WriteClient.ConnectionState == RpcConnectionState.Connected;
-        #endregion
-        
-        #region Key
-        private byte[] PrivateKey
-        {
-            get
-            {
-                return _backendDataControlMediator.UserDataModel.PrivateKey;
-            }
-        }
-        
-        private byte[] PublicKey
-        {
-            get 
-            { 
-                return CryptoUtils.PublicKeyFromPrivateKey(PrivateKey); 
-            }
-        }
-        #endregion
+        private ContractManager _contractManager;
         
         private BackendDataControlMediator _backendDataControlMediator;
         
@@ -65,8 +41,19 @@ namespace Loom.ZombieBattleground
         {           
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
-            
-            _abiFiatPurchase = _loadObjectsManager.GetObjectByPath<TextAsset>("Data/abi/FiatPurchaseABI");            
+            _contractManager = GameClient.Get<ContractManager>();   
+            _contractManager.OnContractCreated += 
+            (
+                Enumerators.ContractType contractType, 
+                EvmContract contract
+            ) => 
+            {
+                if (contractType == Enumerators.ContractType.FiatPurchase)
+                {
+                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                }
+            };         
         }
         
         public void Update()
@@ -75,17 +62,28 @@ namespace Loom.ZombieBattleground
         
         public void Dispose()
         {
-            if (_fiatPurchaseContract?.Client != null)
-            {
-                _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-            }
+        }
+        
+        public async Task CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
+        {
+            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);                        
+            await CallRequestPacksContract
+            (
+                await _contractManager.GetContract
+                (
+                    Enumerators.ContractType.FiatPurchase
+                ), 
+                contractParams
+            );
         }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            if (state != RpcConnectionState.Connected &&
-                    state != RpcConnectionState.Connecting)
+            if
+            (
+                state != RpcConnectionState.Connected &&
+                state != RpcConnectionState.Connecting
+            )
             {
                 OnConnectionStateNotConnect?.Invoke();
             }
@@ -97,35 +95,9 @@ namespace Loom.ZombieBattleground
                 {
                     string errorMsg =
                         "Your game client is now OFFLINE. Please check your internet connection and try again later.";
-                    HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
+                    _contractManager.HandleNetworkExceptionFlow(new RpcClientException(errorMsg, 1, null));
                 }
             }, null);
-        }
-        
-        public async void HandleNetworkExceptionFlow(Exception exception)
-        {
-            if (!ScenePlaybackDetector.IsPlaying || UnitTestDetector.IsRunningUnitTests) {
-                throw exception;
-            }
-
-            string message = "Handled network exception: ";
-            if (exception is RpcClientException rpcClientException && rpcClientException.RpcClient is WebSocketRpcClient webSocketRpcClient)
-            {
-                message += $"[URL: {webSocketRpcClient.Url}] ";
-            }
-            message += exception;
-
-            Log.Warn(message);
-        }
-        
-        public async Task CallRequestPacksContract(FiatBackendManager.FiatTransactionResponse fiatResponse)
-        {
-            if(!IsConnected)
-            {
-                await GetFiatPurchaseContract();
-            }            
-            ContractRequest contractParams = ParseContractRequestFromFiatTransactionResponse(fiatResponse);                        
-            await CallRequestPacksContract(_fiatPurchaseContract, contractParams);
         }
 
         private const string RequestPacksMethod = "requestPacks";
@@ -178,81 +150,6 @@ namespace Loom.ZombieBattleground
             _cachePackRequestingParams = null;
         }
         
-        public async Task<EvmContract> GetFiatPurchaseContract()
-        {
-            if(_fiatPurchaseContract != null)
-            {
-                _fiatPurchaseContract.EventReceived -= ContractEventReceived;
-                _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
-                _fiatPurchaseContract?.Client?.Dispose();
-            }
-            
-            _fiatPurchaseContract = await GetContract
-            (
-                PrivateKey,
-                PublicKey,
-                _abiFiatPurchase.ToString(),
-                PlasmaChainEndpointsContainer.ContractAddressFiatPurchase
-            );
-            _fiatPurchaseContract.EventReceived += ContractEventReceived;
-            _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-            _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-            return _fiatPurchaseContract;
-        }
-
-        private async Task<EvmContract> GetContract(byte[] privateKey, byte[] publicKey, string abi, string contractAddress)
-        {
-            ILogger logger = new UnityLoggerWrapper(RpcLog);
-
-            IRpcClient writer = RpcClientFactory
-                .Configure()
-                .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.WebSocket)
-                .Create();
-    
-            IRpcClient reader = RpcClientFactory
-                .Configure()
-                .WithLogger(logger)
-                .WithWebSocket(PlasmaChainEndpointsContainer.QueryWS)
-                .Create();
-    
-            DAppChainClientConfiguration clientConfiguration = new DAppChainClientConfiguration
-            {
-                CallTimeout = Constants.PlasmachainCallTimeout,
-                StaticCallTimeout = Constants.PlasmachainCallTimeout
-            };
-            
-            DAppChainClient client = new DAppChainClient
-            (
-                writer, 
-                reader,
-                clientConfiguration
-            )
-            { 
-                Logger = Debug.unityLogger 
-            };
-    
-            client.TxMiddleware = new TxMiddleware(new ITxMiddlewareHandler[]
-            {
-                new NonceTxMiddleware
-                ( 
-                    publicKey,
-                    client
-                ),
-                new SignedTxMiddleware(privateKey)
-            });
-    
-            client.Configuration.AutoReconnect = false;
-            await client.ReadClient.ConnectAsync();
-            await client.WriteClient.ConnectAsync();
-    
-            Address contractAddr = Address.FromString(contractAddress, PlasmaChainEndpointsContainer.Chainid);
-            Address callerAddr = Address.FromPublicKey(publicKey, PlasmaChainEndpointsContainer.Chainid);    
-    
-            return new EvmContract(client, contractAddr, callerAddr, abi);
-        }
-        
         public class ContractRequest
         {
             public int UserId;
@@ -261,8 +158,7 @@ namespace Loom.ZombieBattleground
             public sbyte v;
             public byte[] hash;
             public int []amount;
-            public int TxID;
-            
+            public int TxID;            
         }    
         
 #region Util

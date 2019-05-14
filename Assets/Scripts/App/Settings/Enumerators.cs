@@ -934,6 +934,22 @@ namespace Loom.ZombieBattleground.Common
             AboveUI
         }
         
+        public enum ContractType
+        {
+            FiatPurchase,
+            CardFaucet,
+            BoosterPack,
+            SuperPack,
+            AirPack,
+            EarthPack,
+            FirePack,
+            LifePack,
+            ToxicPack,
+            WaterPack,
+            SmallPack,
+            MinionPack
+        }
+        
         public enum MarketplaceCardPackType
         {
             Booster = 0,

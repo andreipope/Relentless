@@ -94,7 +94,8 @@ namespace Loom.ZombieBattleground
                     _unfinishedState == State.RequestFiatClaim
                 )
                 {
-                    ChangeState(State.RequestFiatTransaction);
+                    _unfinishedState = State.None;
+                    GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);                    
                 }
             };
 
@@ -235,7 +236,7 @@ namespace Loom.ZombieBattleground
             #if UNITY_IOS || UNITY_ANDROID
             if (_selfPage == null)
             {
-                GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.SHOP);
+                return;
             }
             
             if(_state == newState)
