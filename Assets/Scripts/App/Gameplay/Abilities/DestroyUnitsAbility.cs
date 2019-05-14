@@ -95,6 +95,7 @@ namespace Loom.ZombieBattleground
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
+                _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
                 _units = GetRandomUnits(_units, Count);
             }
 
