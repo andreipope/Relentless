@@ -25,6 +25,7 @@ namespace Loom.ZombieBattleground
 
         public event Action<ContractRequest> OnRequestPackSuccess;
         public event Action OnRequestPackFailed;
+        public event Action OnConnectionStateNotConnect;
 
         private ContractRequest _cachePackRequestingParams;
 
@@ -74,10 +75,21 @@ namespace Loom.ZombieBattleground
         
         public void Dispose()
         {
+            if (_fiatPurchaseContract?.Client != null)
+            {
+                _fiatPurchaseContract.Client.ReadClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+                _fiatPurchaseContract.Client.WriteClient.ConnectionStateChanged -= RpcClientOnConnectionStateChanged;
+            }
         }
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
-        {   
+        {
+            if (state != RpcConnectionState.Connected &&
+                    state != RpcConnectionState.Connecting)
+            {
+                OnConnectionStateNotConnect?.Invoke();
+            }
+            
             UnitySynchronizationContext.Instance.Post(o =>
             {
                 if (state != RpcConnectionState.Connected &&

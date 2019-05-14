@@ -57,7 +57,8 @@ namespace Loom.ZombieBattleground
             TransitionToPackOpener = 7,
         }
         
-        private State _state;
+        private State _state,
+                      _unfinishedState;
 
         private Coroutine _requestPackTimeoutCoroutine;
 
@@ -81,6 +82,26 @@ namespace Loom.ZombieBattleground
             LoadProductData();
             
             _state = State.None;
+            _unfinishedState = State.None;
+            
+            ((AppStateManager)GameClient.Get<IAppStateManager>()).ConnectionStatusDidUpdate += () =>
+            {
+                if
+                ( 
+                    _unfinishedState == State.RequestFiatTransaction ||
+                    _unfinishedState == State.RequestPack ||
+                    _unfinishedState == State.WaitForRequestPackResponse ||
+                    _unfinishedState == State.RequestFiatClaim
+                )
+                {
+                    ChangeState(State.RequestFiatTransaction);
+                }
+            };
+
+            _fiatPlasmaManager.OnConnectionStateNotConnect += () =>
+            {
+                _unfinishedState = _state;
+            };
         }
 
         public void Update()
@@ -146,13 +167,6 @@ namespace Loom.ZombieBattleground
         {
             Dispose();
         
-            if (_selfPage == null)
-                return;
-        
-            _selfPage.SetActive(false);
-            Object.Destroy(_selfPage);
-            _selfPage = null;
-            
             _uiManager.HidePopup<SideMenuPopup>();
             _uiManager.HidePopup<AreaBarPopup>();
             
@@ -161,6 +175,13 @@ namespace Loom.ZombieBattleground
                 MainApp.Instance.StopCoroutine(_requestPackTimeoutCoroutine);
             }
             _requestPackTimeoutCoroutine = null;
+            
+            if (_selfPage == null)
+                return;
+        
+            _selfPage.SetActive(false);
+            Object.Destroy(_selfPage);
+            _selfPage = null;
         }
         
         public void Dispose()
@@ -686,12 +707,10 @@ namespace Loom.ZombieBattleground
         private async void OnFinishRequestPack()
         {
             Log.Debug("SUCCESSFULLY REQUEST for packs");
-            //await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Booster);
             _uiManager.DrawPopup<LoadingFiatPopup>($"Successfully request for pack(s).");
             await Task.Delay(TimeSpan.FromSeconds(1f));
             _uiManager.HidePopup<LoadingFiatPopup>();
-            //await Task.Delay(TimeSpan.FromSeconds(0.2f));
-            //GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
+            GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.PACK_OPENER);
         }
         
         private void OnProcessPurchase(PurchaseEventArgs args)

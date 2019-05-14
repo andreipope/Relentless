@@ -87,6 +87,7 @@ namespace Loom.ZombieBattleground
             Self.SetActive(false);
             Object.Destroy(Self);
             Self = null;
+            ((AppStateManager)GameClient.Get<IAppStateManager>()).ConnectionStatusDidUpdate -= ReloadDeckDataAndDisplay;
         }
 
         public void SetMainPriority()
