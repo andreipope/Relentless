@@ -116,7 +116,9 @@ namespace Loom.ZombieBattleground
             {
                 _targets.Clear();
 
-                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                _targets.AddRange(PlayerCallerOfAbility.PlayerCardsController.
+                            CardsOnBoard.Where(unit => unit != AbilityUnitOwner && !unit.IsDead &&
+                                                unit.CurrentDefense > 0 && unit.IsUnitActive));
 
                 _vfxAnimationEndedCallback = HealRandomCountOfAlliesCompleted;
                 InvokeActionTriggered(_targets);
