@@ -184,7 +184,7 @@ namespace Loom.ZombieBattleground
 
             if (GameClient.Get<ITutorialManager>().IsTutorial)
             {
-                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup)
+                if (popup is WarningPopup || popup is ConnectionPopup || popup is QuestionPopup || popup is LoadingFiatPopup)
                     return;
 
                 GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.ScreenChanged);
