@@ -45,13 +45,19 @@ namespace Loom.ZombieBattleground
             _contractManager.OnContractCreated += 
             (
                 Enumerators.ContractType contractType, 
-                EvmContract contract
+                EvmContract oldContract,
+                EvmContract newContract
             ) => 
             {
                 if (contractType == Enumerators.ContractType.FiatPurchase)
                 {
-                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    if (oldContract != null)
+                    {
+                        oldContract.EventReceived -= ContractEventReceived;
+                    }
+                    newContract.EventReceived += ContractEventReceived;
                 }
             };         
         }

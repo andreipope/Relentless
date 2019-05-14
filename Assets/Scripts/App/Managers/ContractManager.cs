@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
 
         private Dictionary<Enumerators.ContractType, EvmContract> _contractDictionary;
         
-        public event Action<Enumerators.ContractType, EvmContract> OnContractCreated;
+        public event Action<Enumerators.ContractType, EvmContract, EvmContract> OnContractCreated;
 
         private byte[] PrivateKey
         {
@@ -86,7 +86,10 @@ namespace Loom.ZombieBattleground
         }
         
         public async Task<EvmContract> GetContract(Enumerators.ContractType contractType)
-        {   
+        {
+            EvmContract newContract,
+                        oldContract;
+            
             if(_contractDictionary.ContainsKey(contractType))
             {
                 if 
@@ -101,14 +104,17 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
+                    oldContract = _contractDictionary[contractType];
                     _contractDictionary[contractType]?.Client.Dispose();
                     _contractDictionary.Remove(contractType);
                 }
             }
-            
-            EvmContract contract;
-            
-            contract = await CreateContract
+            else
+            {
+                oldContract = null;
+            }
+
+            newContract = await CreateContract
             (
                 PrivateKey,
                 PublicKey,
@@ -118,12 +124,12 @@ namespace Loom.ZombieBattleground
             _contractDictionary.Add
             (
                 contractType,
-                contract
+                newContract
             );
             
-            OnContractCreated?.Invoke(contractType, contract);
+            OnContractCreated?.Invoke(contractType, oldContract, newContract);
 
-            return contract;
+            return newContract;
         }
         
         public async void HandleNetworkExceptionFlow(Exception exception)

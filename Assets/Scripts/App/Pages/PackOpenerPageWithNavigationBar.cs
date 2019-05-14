@@ -596,6 +596,7 @@ namespace Loom.ZombieBattleground
                     _packBalanceAmounts[_selectedPackTypeIndex]--;
                     _packToOpenAmount--;
                     await RetriveCardsFromPack(_selectedPackTypeIndex);
+                    await RetrievePackBalanceAmount(_selectedPackTypeIndex);
                 }
                 else
                 {

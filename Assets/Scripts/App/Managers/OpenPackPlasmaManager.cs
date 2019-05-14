@@ -48,13 +48,23 @@ namespace Loom.ZombieBattleground
             _contractManager.OnContractCreated += 
             (
                 Enumerators.ContractType contractType, 
-                EvmContract contract
+                EvmContract oldContract,
+                EvmContract newContract
             ) => 
             {
                 if (contractType != Enumerators.ContractType.FiatPurchase)
                 {
-                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
-                    contract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                    newContract.Client.ReadClient.ConnectionStateChanged += RpcClientOnConnectionStateChanged;
+                }
+                
+                if(contractType == Enumerators.ContractType.CardFaucet)
+                {
+                    if (oldContract != null)
+                    {
+                        oldContract.EventReceived -= ContractEventReceived;
+                    }
+                    newContract.EventReceived += ContractEventReceived;
                 }
             };    
         }
@@ -137,20 +147,13 @@ namespace Loom.ZombieBattleground
                 CardsReceived.Clear();
 
                 try
-                {                    
-                    //await CallBalanceContract
-                    //(
-                    //    await _contractManager.GetContract
-                    //    (
-                    //        GetPackContractTypeFromId(packTypeId)
-                    //    ) 
-                    //);
+                {     
                     await CallApproveContract
                     (
                         await _contractManager.GetContract
                         (
                             GetPackContractTypeFromId(packTypeId)
-                        ) 
+                        )
                     );
                     await CallOpenPackContract(
                         await _contractManager.GetContract
@@ -158,14 +161,7 @@ namespace Loom.ZombieBattleground
                             Enumerators.ContractType.CardFaucet
                         ), 
                         packTypeId
-                    );
-                    await CallBalanceContract
-                    (
-                        await _contractManager.GetContract
-                        (
-                            GetPackContractTypeFromId(packTypeId)
-                        ) 
-                    );
+                    );                    
 
                     double timeOut = 29.99;
                     double interval = 1.0;
