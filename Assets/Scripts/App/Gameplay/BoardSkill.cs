@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class BoardSkill : OwnableBoardObject, ISkillIdOwner
+    public class BoardSkill : IOwnableBoardObject, ISkillIdOwner
     {
         public event Action<BoardSkill, List<ParametrizedAbilityBoardObject>> SkillUsed;
 
@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private readonly ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private readonly PlayerController _playerController;
 
         private readonly SkillsController _skillsController;
@@ -34,6 +36,8 @@ namespace Loom.ZombieBattleground
         private readonly BoardArrowController _boardArrowController;
 
         private readonly BattlegroundController _battlegroundController;
+
+        private ActionsQueueController _actionsQueueController;
 
         private readonly GameObject _glowObject;
 
@@ -63,7 +67,7 @@ namespace Loom.ZombieBattleground
 
         public SkillId SkillId { get; }
 
-        public override Player OwnerPlayer { get; }
+        public Player OwnerPlayer { get; }
 
         public BoardSkill(GameObject obj, Player player, OverlordSkill skillInfo, bool isPrimary)
         {
@@ -88,11 +92,13 @@ namespace Loom.ZombieBattleground
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _playerController = _gameplayManager.GetController<PlayerController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
@@ -172,20 +178,20 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
-                    GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
-                        
-                    BoardObject target = parametrizedAbilityObjects[0].BoardObject;
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+
+                    IBoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
                     Action callback = () =>
                     {
-                        AbilityProcessingAction?.ForceActionDone();
+                        skillUsageAction.TriggerActionExternally();
                         switch (target)
                         {
                             case Player player:
                                 FightTargetingArrow.SelectedPlayer = player;
                                 break;
-                            case BoardUnitModel boardUnitModel:
-                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel);
+                            case CardModel cardModel:
+                                FightTargetingArrow.SelectedCard = _gameplayManager.GetController<BattlegroundController>().GetCardViewByModel<BoardUnitView>(cardModel);
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -246,7 +252,7 @@ namespace Loom.ZombieBattleground
             IsUsing = true;
         }
 
-        public GameplayQueueAction<object> EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
+        public GameplayActionQueueAction EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
                 return null;
@@ -255,8 +261,8 @@ namespace Loom.ZombieBattleground
 
             return _gameplayManager
                 .GetController<ActionsQueueController>()
-                .AddNewActionInToQueue(
-                    (parameter, completeCallback) =>
+                .EnqueueAction(
+                    completeCallback =>
                     {
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
@@ -271,12 +277,18 @@ namespace Loom.ZombieBattleground
             _usedInThisTurn = true;
             _coolDownTimer.SetAngle(_cooldown, true);
             _isAlreadyUsed = true;
-            GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(OwnerPlayer.SelfOverlord, Common.Enumerators.ExperienceActionType.UseOverlordAbility);
+
+
 
             if (OwnerPlayer.IsLocalPlayer)
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordAbilityUsed);
             }
+
+            _overlordExperienceManager.ReportExperienceAction(
+                Enumerators.ExperienceActionType.UseOverlordAbility,
+                OwnerPlayer.IsLocalPlayer ? _overlordExperienceManager.PlayerMatchMatchExperienceInfo : _overlordExperienceManager.OpponentMatchMatchExperienceInfo
+            );
 
             if (_gameplayManager.UseInifiniteAbility)
             {

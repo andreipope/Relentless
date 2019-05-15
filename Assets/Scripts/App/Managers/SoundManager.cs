@@ -162,7 +162,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (SoundContainer item in _soundContainers)
             {
-                if (cardSoundType.ToString().Equals(item.Tag))
+                if (cardSoundType.ToString() == item.Tag)
                     return;
             }
 
@@ -175,7 +175,7 @@ namespace Loom.ZombieBattleground
         {
             foreach (SoundContainer item in _soundContainers)
             {
-                if (cardSoundType.ToString().Equals(item.Tag))
+                if (cardSoundType.ToString() == item.Tag)
                     return;
             }
 

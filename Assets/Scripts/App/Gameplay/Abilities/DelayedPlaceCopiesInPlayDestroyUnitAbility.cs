@@ -23,9 +23,9 @@ namespace Loom.ZombieBattleground
 
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-            List<BoardObject> targets = new List<BoardObject>();
+            List<IBoardObject> targets = new List<IBoardObject>();
 
-            BoardUnitModel boardUnitModel;
+            CardModel cardModel;
             BoardUnitView boardUnitView;
             for (int i = 0; i < Count; i++)
             {
@@ -33,15 +33,15 @@ namespace Loom.ZombieBattleground
                     break;
 
                 boardUnitView = PlayerCallerOfAbility.PlayerCardsController.SpawnUnitOnBoard(Name, ItemPosition.End);
-                boardUnitModel = boardUnitView.Model;
+                cardModel = boardUnitView.Model;
 
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.SpawnOnBoard,
-                    Target = boardUnitModel,
+                    Target = cardModel,
                 });
 
-                targets.Add(boardUnitModel);
+                targets.Add(cardModel);
             }
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
@@ -52,10 +52,10 @@ namespace Loom.ZombieBattleground
 
             BattlegroundController.DestroyBoardUnit(AbilityUnitOwner, false, true);
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
 

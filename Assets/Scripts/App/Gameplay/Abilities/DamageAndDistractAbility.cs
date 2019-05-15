@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public event Action OnUpdateEvent;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         private List<PastActionsPopup.TargetEffectParam> _targetEffects;
 
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleSubTriggers()
         {
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
 
             foreach(Enumerators.Target target in AbilityTargets)
             {
@@ -75,9 +75,9 @@ namespace Loom.ZombieBattleground
                 _units = GetRandomUnits(_units, Count);
             }
 
-            foreach(BoardUnitModel boardUnitModel in _units)
+            foreach(CardModel cardModel in _units)
             {
-                boardUnitModel.HandleDefenseBuffer(Damage);
+                cardModel.HandleDefenseBuffer(Damage);
             }
 
             InvokeActionTriggered(_units);
@@ -85,24 +85,25 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent(_units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
         }
 
-        private void DamageAndDistract(List<BoardUnitModel> units)
+        private void DamageAndDistract(List<CardModel> units)
         {
-            foreach (BoardUnitModel boardUnit in units)
+            foreach (CardModel boardUnit in units)
             {
                 DamageAndDistractUnit(boardUnit);
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = _targetEffects
             });
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
-        private void DamageAndDistractUnit(BoardUnitModel boardUnit)
+        private void DamageAndDistractUnit(CardModel boardUnit)
         {
-            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
 
             if (boardUnit.IsUnitActive)
             {
@@ -124,10 +125,10 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        public void OneActionCompleted(BoardUnitModel boardUnitModel)
+        public void OneActionCompleted(CardModel cardModel)
         {
-            DamageAndDistractUnit(boardUnitModel);
-            _units.Remove(boardUnitModel);
+            DamageAndDistractUnit(cardModel);
+            _units.Remove(cardModel);
         }
 
         protected override void VFXAnimationEndedHandler()

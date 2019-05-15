@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             {
                 if(SubTrigger == Enumerators.AbilitySubTrigger.CardCostMoreThanCostOfThis)
                 {
-                    if (unit.Model.CurrentCost <= OwnerOfThis.BoardUnitModel.CurrentCost)
+                    if (unit.Model.CurrentCost <= OwnerOfThis.CardModel.CurrentCost)
                         return;
                 }
 

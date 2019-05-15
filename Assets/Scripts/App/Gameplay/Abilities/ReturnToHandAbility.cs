@@ -58,11 +58,11 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void ReturnTargetToHand(BoardUnitModel unit)
+        private void ReturnTargetToHand(CardModel unit)
         {
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
             {
-                Vector3 unitPosition = BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform.position;
+                Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
 
                 CreateVfx(unitPosition, true, 3f, true);
 
@@ -79,14 +79,14 @@ namespace Loom.ZombieBattleground
 
                 if (PlayerCallerOfAbility.IsLocalPlayer)
                 {
-                    BattlegroundController.PlayerHandCards.FirstOrDefault(card => card.Model == BoardUnitModel).UpdateCardCost();
+                    BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel).UpdateCardCost();
                 }
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                 {
                     new PastActionsPopup.TargetEffectParam()
@@ -98,7 +98,7 @@ namespace Loom.ZombieBattleground
             });
         }
 
-        private void ReturnDeadTargetToHand(BoardUnitModel unit)
+        private void ReturnDeadTargetToHand(CardModel unit)
         {
             unit.ResetToInitial();
 

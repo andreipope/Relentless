@@ -61,11 +61,11 @@ public class PlayCardOnBoard : IMove
 
 public class AttackOverlord : IMove
 {
-    public BoardUnitModel UnitModel;
+    public CardModel UnitModel;
     public Player AttackedPlayer;
     public int Damage;
 
-    public AttackOverlord(BoardUnitModel unitModel, Player player, int damage)
+    public AttackOverlord(CardModel unitModel, Player player, int damage)
     {
         UnitModel = unitModel;
         AttackedPlayer = player;
@@ -75,12 +75,12 @@ public class AttackOverlord : IMove
 
 public class AttackUnit : IMove
 {
-    public BoardUnitModel AttackingUnitModel;
-    public BoardUnitModel AttackedUnitModel;
+    public CardModel AttackingUnitModel;
+    public CardModel AttackedUnitModel;
     public int DamageOnAttackingUnit;
     public int DamageOnAttackedUnit;
 
-    public AttackUnit(BoardUnitModel attackingUnitModel, BoardUnitModel attackedUnitModel, int damageOnAttackingUnit, int damageOnAttackedUnit)
+    public AttackUnit(CardModel attackingUnitModel, CardModel attackedUnitModel, int damageOnAttackingUnit, int damageOnAttackedUnit)
     {
         AttackingUnitModel = attackingUnitModel;
         AttackedUnitModel = attackedUnitModel;

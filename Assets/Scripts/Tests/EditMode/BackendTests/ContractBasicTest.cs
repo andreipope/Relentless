@@ -1,12 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Protobuf;
-using Newtonsoft.Json;
 using NUnit.Framework;
-using UnityEngine;
 using UnityEngine.TestTools;
 using Deck = Loom.ZombieBattleground.Data.Deck;
 
@@ -71,7 +68,7 @@ namespace Loom.ZombieBattleground.Test
                 Assert.IsNotNull(listDecksResponse);
                 Assert.GreaterOrEqual(listDecksResponse.Decks.Count, 1);
 
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 1);
+                await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(1));
 
                 ListDecksResponse newListDecksResponse = await LoomTestContext.BackendFacade.ListDecks(user);
                 Assert.IsNotNull(newListDecksResponse);
@@ -87,7 +84,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.BackendFacade.AddDeck(user, deck);
             });
@@ -99,7 +96,7 @@ namespace Loom.ZombieBattleground.Test
             return LoomTestContext.ContractAsyncTest(async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_AddDeck_wrong_user");
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
@@ -122,7 +119,7 @@ namespace Loom.ZombieBattleground.Test
                     {
                         new DeckCardData(new MouldId(1), 100500)
                     };
-                Deck deck = new Deck(0, 0, "Gaurav", cards, 0, 0);
+                Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", cards, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
@@ -139,7 +136,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(1, 0, "Default", null, 0, 0);
+                Deck deck = new Deck(new DeckId(1), new OverlordId(0), "Default", null, 0, 0);
                 await LoomTestContext.BackendFacade.EditDeck(user, deck);
             });
         }
@@ -150,7 +147,7 @@ namespace Loom.ZombieBattleground.Test
             return LoomTestContext.ContractAsyncTest(async () =>
             {
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck_wrong_user");
-                Deck deck = new Deck(0, 0, "Gaurav", null, 0, 0);
+                Deck deck = new Deck(new DeckId(0), new OverlordId(0), "Gaurav", null, 0, 0);
 
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
@@ -167,7 +164,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_EditDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                Deck deck = new Deck(123, 0, "GauravRandomDeck", null, 0, 0);
+                Deck deck = new Deck(new DeckId(123), new OverlordId(0), "GauravRandomDeck", null, 0, 0);
                 await LoomTestContext.AssertThrowsAsync(async () =>
                 {
                     await LoomTestContext.BackendFacade.EditDeck(user, deck);
@@ -183,7 +180,7 @@ namespace Loom.ZombieBattleground.Test
                 string user = LoomTestContext.CreateUniqueUserId("LoomTest_DeleteDeck");
                 await LoomTestContext.BackendFacade.SignUp(user);
 
-                await LoomTestContext.BackendFacade.DeleteDeck(user, 1);
+                await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(1));
             });
         }
 
@@ -196,7 +193,7 @@ namespace Loom.ZombieBattleground.Test
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.DeleteDeck(user, 0);
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(0));
                     });
             });
         }
@@ -212,7 +209,7 @@ namespace Loom.ZombieBattleground.Test
                 await LoomTestContext.AssertThrowsAsync(
                     async () =>
                     {
-                        await LoomTestContext.BackendFacade.DeleteDeck(user, 123);
+                        await LoomTestContext.BackendFacade.DeleteDeck(user, new DeckId(123));
                     });
             });
         }

@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             if (!HasEmptySpaceOnBoard(PlayerCallerOfAbility, out int emptyFields))
                 return;
 
-            List<BoardUnitModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
+            List<CardModel> cards = PlayerCallerOfAbility.PlayerCardsController.CardsInHand.
                 FindAll(card => card.Prototype.Kind == Enumerators.CardKind.CREATURE);
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HighestCost)
@@ -76,13 +76,13 @@ namespace Loom.ZombieBattleground
             if (cards.Count == 0)
                 return;
 
-            List<BoardObject> targets = new List<BoardObject>();
+            List<IBoardObject> targets = new List<IBoardObject>();
 
             for (int i = 0; i < Mathf.Min(emptyFields, cards.Count); i++)
             {
                 if (cards[i].Owner.IsLocalPlayer)
                 {
-                    BoardCardView cardView = BattlegroundController.GetBoardUnitViewByModel<BoardCardView>(cards[i]);
+                    BoardCardView cardView = BattlegroundController.GetCardViewByModel<BoardCardView>(cards[i]);
                     PutCardFromHandToBoard(PlayerCallerOfAbility, cardView, ref targetEffects, ref boardCards, true);
                 }
                 else
@@ -92,10 +92,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingCard,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
         }

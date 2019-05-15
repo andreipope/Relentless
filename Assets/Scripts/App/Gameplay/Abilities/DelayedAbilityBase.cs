@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
             if (CheckActionEnded())
                 return;
 
-            if (GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
+            if (GameplayManager.CurrentTurnPlayer == PlayerCallerOfAbility)
             {
                 CountDelay();
             }
@@ -67,7 +67,7 @@ namespace Loom.ZombieBattleground
 
         private bool CheckActionEnded()
         {
-            if (GetCaller() == null)
+            if (AbilityUnitOwner == null)
             {
                 ActionDone = true;
             }

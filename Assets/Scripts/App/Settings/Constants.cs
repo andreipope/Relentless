@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalConfigDataFileName = "config_data.json";
 
-        internal const string LocalOverlordsDataFileName = "overlords_data.json";
-
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
         // ReSharper disable once UnusedMember.Global
@@ -195,7 +193,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
-        public const bool RankSystemEnabled = false;
+        public static readonly bool RankSystemEnabled = false;
 
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR

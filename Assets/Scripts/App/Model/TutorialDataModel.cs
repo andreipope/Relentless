@@ -182,7 +182,7 @@ namespace Loom.ZombieBattleground
 
         public class SpecificBattlegroundOverlordInfo
         {
-            public int OverlordId;
+            public OverlordId OverlordId;
             public int Defense;
             public int MaximumDefense;
             public int CurrentGoo;
@@ -207,7 +207,7 @@ namespace Loom.ZombieBattleground
                 MaximumGoo = Constants.DefaultPlayerGoo;
                 CurrentGoo = MaximumGoo;
 
-                OverlordId = 0;
+                OverlordId = new OverlordId(0);
             }
         }
 

@@ -2,23 +2,23 @@ using System;
 using Newtonsoft.Json;
 
 namespace Loom.ZombieBattleground.Data {
-    internal class MouldIdConverter : JsonConverter
+    internal class JsonIdConverter<TId, TIdValue> : JsonConverter where TIdValue : struct where TId : struct, IId<TIdValue>
     {
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            MouldId mouldId = (MouldId) value;
-            serializer.Serialize(writer, mouldId.Id);
+            TId id = (TId) value;
+            serializer.Serialize(writer, id.Id);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            long mouldId = serializer.Deserialize<long>(reader);
-            return new MouldId(mouldId);
+            TIdValue idValue = serializer.Deserialize<TIdValue>(reader);
+            return (TId) Activator.CreateInstance(typeof(TId), idValue);
         }
 
         public override bool CanConvert(Type objectType)
         {
-            return objectType == typeof(MouldId);
+            return objectType == typeof(TId);
         }
     }
 }

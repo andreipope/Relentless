@@ -18,7 +18,7 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.Faction Faction;
 
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         private int _calculatedDamage;
 
@@ -29,7 +29,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             Faction = ability.Faction;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
         {
             base.TurnEndedHandler();
             if (AbilityTrigger != Enumerators.AbilityTrigger.END ||
-          !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility) || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun) || (AbilityUnitOwner != null && AbilityUnitOwner.IsDead) || (AbilityUnitOwner != null && AbilityUnitOwner.CurrentDefense <= 0))
+          GameplayManager.CurrentTurnPlayer != PlayerCallerOfAbility || (AbilityUnitOwner != null && AbilityUnitOwner.IsStun) || (AbilityUnitOwner != null && AbilityUnitOwner.IsDead) || (AbilityUnitOwner != null && AbilityUnitOwner.CurrentDefense <= 0))
                 return;
             Action();
         }
@@ -91,7 +91,7 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            List<BoardObject> possibleTargets = new List<BoardObject>();
+            List<IBoardObject> possibleTargets = new List<IBoardObject>();
 
             foreach (Enumerators.Target abilityTarget in AbilityData.Targets)
             {
@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
             int count = Mathf.Max(1, Count);
             while (count > 0 && possibleTargets.Count > 0)
             {   
@@ -133,11 +133,11 @@ namespace Loom.ZombieBattleground
                 _calculatedDamage = PlayerCallerOfAbility.CardsInHand.FindAll(x => x.Prototype.Faction == Faction).Count;
             }
 
-            foreach (BoardObject target in _targets)
+            foreach (IBoardObject target in _targets)
             {
                 switch (target)
                 {
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         unit.HandleDefenseBuffer(_calculatedDamage);
                         break;
                 }
@@ -153,7 +153,7 @@ namespace Loom.ZombieBattleground
             List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
             int damageWas = -1;
-            foreach (object target in _targets)
+            foreach (IBoardObject target in _targets)
             {
                 ActionCompleted(target, out damageWas);
 
@@ -166,10 +166,10 @@ namespace Loom.ZombieBattleground
                 });
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = targetEffects
             });
 
@@ -190,10 +190,10 @@ namespace Loom.ZombieBattleground
             switch (target)
             {
                 case Player player:
-                    BattleController.AttackPlayerByAbility(GetCaller(), AbilityData, player, _calculatedDamage);
+                    BattleController.AttackPlayerByAbility(AbilityUnitOwner, AbilityData, player, _calculatedDamage);
                     break;
-                case BoardUnitModel unit:
-                    BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, _calculatedDamage);
+                case CardModel unit:
+                    BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, _calculatedDamage);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target, null);
