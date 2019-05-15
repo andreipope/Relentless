@@ -84,6 +84,20 @@ namespace Loom.ZombieBattleground
             {
                 _previousMaximumDamageBuff = boardUnit.MaximumDamageFromAnySource;
                 boardUnit.SetMaximumDamageToUnit(value);
+
+                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = GetCaller(),
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.None,
+                                Target = boardUnit
+                            }
+                        }
+                });
             }
         }
     }
