@@ -306,11 +306,17 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
 
             PlayerCallerOfAbility = player;
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
