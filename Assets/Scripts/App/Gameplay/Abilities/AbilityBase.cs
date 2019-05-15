@@ -53,6 +53,8 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
+        public bool LastAuraState;
+
         public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
@@ -256,6 +258,7 @@ namespace Loom.ZombieBattleground
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
 
             ChangeAuraStatusAction(true);
+            LastAuraState = true;
         }
 
         public virtual void Update()
@@ -450,7 +453,11 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
-            ChangeAuraStatusAction(false);
+            if (LastAuraState)
+            {
+                ChangeAuraStatusAction(false);
+                LastAuraState = false;
+            }
 
             Deactivate();
             Dispose();
@@ -466,6 +473,15 @@ namespace Loom.ZombieBattleground
             if (!AbilityUnitOwner.IsAttacking)
             {
                 CheckRageStatus();
+            }
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                if (LastAuraState)
+                {
+                    ChangeAuraStatusAction(false);
+                    LastAuraState = false;
+                }
             }
         }
 
