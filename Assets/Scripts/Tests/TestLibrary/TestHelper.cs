@@ -2252,7 +2252,7 @@ namespace Loom.ZombieBattleground.Test
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 
             // TODO: add customization
-            client.DeckId = 1;
+            client.DeckId = new DeckId(1);
 
             client.MatchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler;
             await client.MatchMakingFlowController.Start(

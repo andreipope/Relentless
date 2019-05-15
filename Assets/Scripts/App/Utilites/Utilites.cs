@@ -67,6 +67,14 @@ namespace Loom.ZombieBattleground
             return new TimeSpan(DateTime.UtcNow.Ticks).TotalSeconds;
         }
 
+        public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)
+        {
+            // Unix timestamp is seconds past epoch
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
+            return dtDateTime;
+        }
+
         public static GameObject[] CollectAllSceneRootGameObjects(GameObject dontDestroyOnLoadGameObject)
         {
             Scene[] scenes = new Scene[SceneManager.sceneCount];
@@ -86,10 +94,7 @@ namespace Loom.ZombieBattleground
                     .ToArray();
         }
 
-        public static string JsonPrettyPrint(string json)
-        {
-            return JToken.Parse(json).ToString(Formatting.Indented);
-        }
+
 
         public static string FormatCallLogList<T>(IList<T> list)
         {

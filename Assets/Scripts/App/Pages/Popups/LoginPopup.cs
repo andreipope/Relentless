@@ -13,6 +13,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using Loom.Newtonsoft.Json;
+using Loom.ZombieBattleground.Data;
 using UnityEngine.EventSystems;
 
 namespace Loom.ZombieBattleground
@@ -717,7 +718,7 @@ namespace Loom.ZombieBattleground
                         savedTutorialDeck = _dataManager.CachedDecksData.Decks.Last();
                     }
 
-                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)savedTutorialDeck.Id;
+                    _uiManager.GetPage<GameplayPage>().CurrentDeckId = savedTutorialDeck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
                     if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
@@ -749,6 +750,15 @@ namespace Loom.ZombieBattleground
             {
                 _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
             }
+
+            (int? notificationId, EndMatchResults endMatchResults) =
+                await GameClient.Get<IOverlordExperienceManager>().GetEndMatchResultsFromEndMatchNotification();
+
+            if (endMatchResults != null)
+            {
+                _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });
+            }
+
             Hide();
             OnLoginSuccess?.Invoke();
         }

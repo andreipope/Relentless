@@ -361,7 +361,8 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA
+            BUFFS_TOOLTIP_DATA,
+            OVERLORD_LEVELING_DATA,
         }
 
         public enum CardKind

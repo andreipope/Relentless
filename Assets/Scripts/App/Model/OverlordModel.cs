@@ -4,7 +4,7 @@ using Loom.ZombieBattleground.Common;
 namespace Loom.ZombieBattleground.Data {
     public class OverlordModel
     {
-        public int OverlordId { get; }
+        public OverlordId Id { get; }
 
         public string Icon { get; }
 
@@ -20,16 +20,14 @@ namespace Loom.ZombieBattleground.Data {
 
         public Enumerators.Faction Faction { get; }
 
-        public List<OverlordSkillData> Skills { get; }
+        public List<OverlordSkill> Skills { get; }
 
-        public Enumerators.Skill PrimarySkill { get; set; }
-
-        public Enumerators.Skill SecondarySkill { get; set; }
+        public int InitialDefense { get; }
 
         public string FullName => $"{Name}, {ShortDescription}";
 
         public OverlordModel(
-            int overlordId,
+            OverlordId id,
             string icon,
             string name,
             string shortDescription,
@@ -37,11 +35,10 @@ namespace Loom.ZombieBattleground.Data {
             long experience,
             int level,
             Enumerators.Faction faction,
-            List<OverlordSkillData> skills,
-            Enumerators.Skill primarySkill,
-            Enumerators.Skill secondarySkill)
+            List<OverlordSkill> skills,
+            int initialDefense)
         {
-            OverlordId = overlordId;
+            Id = id;
             Icon = icon;
             Name = name;
             ShortDescription = shortDescription;
@@ -49,19 +46,13 @@ namespace Loom.ZombieBattleground.Data {
             Experience = experience;
             Level = level;
             Faction = faction;
-            Skills = skills ?? new List<OverlordSkillData>();
-            PrimarySkill = primarySkill;
-            SecondarySkill = secondarySkill;
+            Skills = skills ?? new List<OverlordSkill>();
+            InitialDefense = initialDefense;
         }
 
-        public OverlordSkillData GetSkill(Enumerators.Skill skill)
+        public OverlordSkill GetSkill(Enumerators.Skill skill)
         {
             return Skills.Find(x => x.Skill == skill);
-        }
-
-        public OverlordSkillData GetSkill(int index)
-        {
-            return Skills[index];
         }
     }
 }

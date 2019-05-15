@@ -5,7 +5,7 @@ namespace Loom.ZombieBattleground.Data
     /// <summary>
     /// Represents a unique skill identifier.
     /// </summary>
-    public struct SkillId : IEquatable<SkillId>
+    public struct SkillId : IId<long>, IEquatable<SkillId>
     {
         public long Id { get; }
 

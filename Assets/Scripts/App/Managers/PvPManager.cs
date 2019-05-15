@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async Task StartMatchmaking(int deckId)
+        public async Task StartMatchmaking(DeckId deckId)
         {
             await _matchmakingBusySemaphore.WaitAsync();
 
@@ -292,7 +292,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
+                Log.Debug("[Incoming Player Action]\r\n" + JsonUtility.PrettyPrint(playerActionEvent.ToString()));
 
                 if (playerActionEvent.Block != null)
                 {

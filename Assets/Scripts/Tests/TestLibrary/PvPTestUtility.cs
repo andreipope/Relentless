@@ -122,7 +122,7 @@ namespace Loom.ZombieBattleground.Test
 
             await StartOnlineMatch(null, createOpponent: false);
 
-            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = (int) deck.Id;
+            GameClient.Get<IUIManager>().GetPage<GameplayPage>().CurrentDeckId = deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             await TestHelper.MainMenuTransition("Button_Battle");
             if (GameClient.Get<IPvPManager>()?.MatchMakingFlowController != null)
@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground.Test
         public static Deck GetDeckWithCards(string name, int overlordId = 0, params TestCardData[] cards)
         {
             Deck deck = new Deck(
-                 0,
-                 overlordId,
+                 new DeckId(0),
+                 new OverlordId(overlordId),
                  name,
                  cards.Select(card => card.ToDeckCardData()).ToList(),
                  Enumerators.Skill.NONE,

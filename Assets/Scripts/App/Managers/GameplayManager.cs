@@ -31,6 +31,8 @@ namespace Loom.ZombieBattleground
 
         private IPvPManager _pvpManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private BackendDataControlMediator _backendDataControlMediator;
 
         private List<IController> _controllers = new List<IController>();
@@ -53,9 +55,9 @@ namespace Loom.ZombieBattleground
         public event Action TurnEnded;
 #pragma warning restore 67
 
-        public int PlayerDeckId { get; set; }
+        public DeckId PlayerDeckId { get; set; }
 
-        public int OpponentDeckId { get; set; }
+        public DeckId OpponentDeckId { get; set; }
 
         public bool IsGameStarted { get; set; }
 
@@ -81,11 +83,11 @@ namespace Loom.ZombieBattleground
 
         public PlayerMoveAction PlayerMoves { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck CurrentPlayerDeck { get; set; }
+        public Data.Deck CurrentPlayerDeck { get; set; }
 
-        public Loom.ZombieBattleground.Data.Deck OpponentPlayerDeck { get; set; }
+        public Data.Deck OpponentPlayerDeck { get; set; }
 
-        public int OpponentIdCheat { get; set; }
+        public DeckId OpponentIdCheat { get; set; }
 
         public bool AvoidGooCost { get; set; }
 
@@ -262,6 +264,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
 
             _matchManager.MatchFinished += MatchFinishedHandler;
@@ -274,7 +277,7 @@ namespace Loom.ZombieBattleground
                 Constants.CreatureAttackSoundVolume *= 3;
             }
 
-            OpponentIdCheat = -1;
+            OpponentIdCheat = new DeckId(-1);
             AvoidGooCost = false;
             UseInifiniteAbility = false;
             MatchDuration = new AnalyticsTimer();
@@ -342,8 +345,8 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.MatchType.PVP:
                     int localPlayerIndex =
-                        _pvpManager.InitialGameState.PlayerStates[0].Id == _backendDataControlMediator.UserDataModel.UserId ?
-                            0 : 1;
+                        _pvpManager.InitialGameState.PlayerStates.First(state => state.Id == _backendDataControlMediator.UserDataModel.UserId)
+                            .Index;
 
                     GetController<PlayerController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[localPlayerIndex].InstanceId.FromProtobuf());
                     GetController<OpponentController>().InitializePlayer(_pvpManager.InitialGameState.PlayerStates[1 - localPlayerIndex].InstanceId.FromProtobuf());
@@ -355,6 +358,7 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
+            _overlordExperienceManager.InitializeMatchExperience(CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord);
 
             if (IsTutorial)
             {

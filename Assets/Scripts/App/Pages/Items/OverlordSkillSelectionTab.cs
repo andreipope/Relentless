@@ -47,10 +47,6 @@ namespace Loom.ZombieBattleground
         private TextMeshProUGUI[] _textSkillDescriptions;
 
         private TextMeshProUGUI _textSelectedAmount;
-        
-        private const int AbilityListSize = 5;
-
-        private const int MaxSelectedAbilities = 2;
 
         private ISoundManager _soundManager;
 
@@ -58,10 +54,14 @@ namespace Loom.ZombieBattleground
 
         private GameObject _abilitiesGroup;
 
-        private List<OverlordAbilityItem> _overlordAbilityItems;
+        private List<OverlordSkillItem> _overlordSkillItems;
 
         private Canvas _backLayerCanvas;
-        
+
+        public Enumerators.Skill SelectedPrimarySkill { get; private set; }
+
+        public Enumerators.Skill SelectedSecondarySkill { get; private set; }
+
         public void Init()
         {
             _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
@@ -75,12 +75,12 @@ namespace Loom.ZombieBattleground
 
             _imageSkillIcons = new Image[2];
             _textSkillDescriptions = new TextMeshProUGUI[2];
-            _overlordAbilityItems = new List<OverlordAbilityItem>();
+            _overlordSkillItems = new List<OverlordSkillItem>();
             
             _myDeckPage = GameClient.Get<IUIManager>().GetPage<HordeSelectionWithNavigationPage>();
             _myDeckPage.EventChangeTab += (HordeSelectionWithNavigationPage.Tab tab) =>
             {
-                if (tab == HordeSelectionWithNavigationPage.Tab.SelecOverlordSkill)
+                if (tab == HordeSelectionWithNavigationPage.Tab.SelectOverlordSkill)
                 {
                     UpdateTabShow();                    
                     UpdateSkillIconAndDescriptionDisplay();
@@ -127,8 +127,8 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSkillIconAndDescriptionDisplay()
         {
-            List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
-            for (int i = 0; i < 2;++i)
+            List<OverlordSkillItem> items = _overlordSkillItems.FindAll(x => x.IsSelected);
+            for (int i = 0; i < 2; i++)
             {
                 if(i < items.Count)
                 {
@@ -160,22 +160,23 @@ namespace Loom.ZombieBattleground
         
         private void UpdateSelectedSkills()
         {
-            List<OverlordSkillData> selectedSkills = new List<OverlordSkillData>();
+            List<OverlordSkill> selectedSkills = new List<OverlordSkill>();
             if(_myDeckPage.CurrentEditDeck.PrimarySkill != Enumerators.Skill.NONE)
             {
-                OverlordSkillData overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
-                selectedSkills.Add(overlordSkil);
+                OverlordSkill overlordSkill = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.PrimarySkill);
+                selectedSkills.Add(overlordSkill);
             }
-             if(_myDeckPage.CurrentEditDeck.SecondarySkill != Enumerators.Skill.NONE)
+
+            if(_myDeckPage.CurrentEditDeck.SecondarySkill != Enumerators.Skill.NONE)
             {
-                OverlordSkillData overlordSkil = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
-                selectedSkills.Add(overlordSkil);
+                OverlordSkill overlordSkill = _myDeckPage.CurrentEditOverlord.GetSkill(_myDeckPage.CurrentEditDeck.SecondarySkill);
+                selectedSkills.Add(overlordSkill);
             }
             
-            foreach (OverlordSkillData skill in selectedSkills)
+            foreach (OverlordSkill skill in selectedSkills)
             {
-                OverlordAbilityItem item = _overlordAbilityItems.Find(x => x.Skill.Skill == skill.Skill);
-                OverlordAbilitySelectedHandler(item);
+                OverlordSkillItem item = _overlordSkillItems.Find(x => x.Skill.Skill == skill.Skill);
+                OverlordSkillSelectedHandler(item);
             }
         }
 
@@ -187,29 +188,29 @@ namespace Loom.ZombieBattleground
                 return;
 
             PlayClickSound();
-            List<OverlordAbilityItem> items = _overlordAbilityItems.FindAll(x => x.IsSelected);
+            List<OverlordSkillItem> items = _overlordSkillItems.FindAll(x => x.IsSelected);
 
             if (items.Count > 1)
             {
-                _myDeckPage.CurrentEditOverlord.PrimarySkill = items[0].Skill.Skill;
-                _myDeckPage.CurrentEditOverlord.SecondarySkill = items[1].Skill.Skill;
+                SelectedPrimarySkill = items[0].Skill.Skill;
+                SelectedSecondarySkill = items[1].Skill.Skill;
             }
             else if(items.Count == 1)
             {
-                _myDeckPage.CurrentEditOverlord.PrimarySkill = items[0].Skill.Skill;
-                _myDeckPage.CurrentEditOverlord.SecondarySkill = Enumerators.Skill.NONE;
+                 SelectedPrimarySkill = items[0].Skill.Skill;
+                 SelectedSecondarySkill = Enumerators.Skill.NONE;
             }
             else
             {
-                _myDeckPage.CurrentEditOverlord.PrimarySkill = Enumerators.Skill.NONE;
-                _myDeckPage.CurrentEditOverlord.SecondarySkill = Enumerators.Skill.NONE;
+                 SelectedPrimarySkill = Enumerators.Skill.NONE;
+                 SelectedSecondarySkill = Enumerators.Skill.NONE;
             }
-            
+
 
             if (_myDeckPage.CurrentEditDeck != null)
             {
-                _myDeckPage.CurrentEditDeck.PrimarySkill = _myDeckPage.CurrentEditOverlord.PrimarySkill;
-                _myDeckPage.CurrentEditDeck.SecondarySkill = _myDeckPage.CurrentEditOverlord.SecondarySkill;
+                _myDeckPage.CurrentEditDeck.PrimarySkill = SelectedPrimarySkill;
+                _myDeckPage.CurrentEditDeck.SecondarySkill = SelectedSecondarySkill;
             }
 
             if (_myDeckPage.IsEditingNewDeck)
@@ -265,36 +266,36 @@ namespace Loom.ZombieBattleground
         {
             ResetItems();
 
-            OverlordAbilityItem itemInstance;
-            OverlordSkillData ability = null;
-
-            for (int i = 0; i < AbilityListSize; i++)
+            // All overlords are supposed to have 5 unlockable abilities, but not all exist yet.
+            // Until then, just show them as empty locked abilities.
+            const int finalAbilityCount = 5;
+            for (int i = 0; i < finalAbilityCount; i++)
             {
-                ability = null;
+                OverlordSkill overlordSkill = null;
 
                 if (i < _myDeckPage.CurrentEditOverlord.Skills.Count)
                 {
-                    ability = _myDeckPage.CurrentEditOverlord.Skills[i];
+                    overlordSkill = _myDeckPage.CurrentEditOverlord.Skills[i];
                 }
 
-                itemInstance = new OverlordAbilityItem(_abilitiesGroup.transform, ability);
-                itemInstance.OverlordAbilitySelected += OverlordAbilitySelectedHandler;
+                OverlordSkillItem itemInstance = new OverlordSkillItem(_abilitiesGroup.transform, overlordSkill);
+                itemInstance.OverlordAbilitySelected += OverlordSkillSelectedHandler;
 
-                _overlordAbilityItems.Add(itemInstance);
+                _overlordSkillItems.Add(itemInstance);
             }
         }
 
         private void ResetItems()
         {
-            foreach (OverlordAbilityItem itemInstance in _overlordAbilityItems)
+            foreach (OverlordSkillItem itemInstance in _overlordSkillItems)
             {
                 itemInstance.Dispose();
             }
 
-            _overlordAbilityItems.Clear();
+            _overlordSkillItems.Clear();
         }
 
-        private void OverlordAbilitySelectedHandler(OverlordAbilityItem item)
+        private void OverlordSkillSelectedHandler(OverlordSkillItem item)
         {
             if (item == null)
                 return;
@@ -305,7 +306,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                if (_overlordAbilityItems.FindAll(x => x.IsSelected).Count < 2)
+                if (_overlordSkillItems.FindAll(x => x.IsSelected).Count < 2)
                 {
                     item.Select();
                 }
@@ -314,9 +315,9 @@ namespace Loom.ZombieBattleground
             UpdateSkillIconAndDescriptionDisplay();
         }
 
-        private class OverlordAbilityItem : IDisposable
+        private class OverlordSkillItem : IDisposable
         {
-            public event Action<OverlordAbilityItem> OverlordAbilitySelected;
+            public event Action<OverlordSkillItem> OverlordAbilitySelected;
 
             private readonly ILoadObjectsManager _loadObjectsManager;
 
@@ -330,13 +331,13 @@ namespace Loom.ZombieBattleground
 
             private readonly Image _abilityIconImage;
 
-            public readonly OverlordSkillData Skill;
+            public readonly OverlordSkill Skill;
 
             public bool IsSelected { get; private set; }
 
             public bool IsUnlocked { get; }
 
-            public OverlordAbilityItem(Transform root, OverlordSkillData skill)
+            public OverlordSkillItem(Transform root, OverlordSkill skill)
             {
                 _loadObjectsManager = GameClient.Get<ILoadObjectsManager>();
 

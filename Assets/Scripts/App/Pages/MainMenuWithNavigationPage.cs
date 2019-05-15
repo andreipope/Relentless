@@ -168,7 +168,7 @@ namespace Loom.ZombieBattleground
             {
                 deck = _uiManager.GetPopup<DeckSelectionPopup>().GetDefaultDeck();
             }
-            _uiManager.GetPage<GameplayPage>().CurrentDeckId = (int)deck.Id;
+            _uiManager.GetPage<GameplayPage>().CurrentDeckId = deck.Id;
             GameClient.Get<IGameplayManager>().CurrentPlayerDeck = deck;
             GameClient.Get<IMatchManager>().FindMatch();
 

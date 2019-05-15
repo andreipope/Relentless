@@ -22,9 +22,9 @@ namespace Loom.ZombieBattleground
 
         private IGameplayManager _gameplayManager;
         private IPvPManager _pvpManager;
-        private BackendFacade _backendFacade;
         private BackendDataControlMediator _backendDataControlMediator;
         private IMatchManager _matchManager;
+        private IOverlordExperienceManager _overlordExperienceManager;
 
         private CardsController _cardsController;
         private BattlegroundController _battlegroundController;
@@ -48,10 +48,10 @@ namespace Loom.ZombieBattleground
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
-            _backendFacade = GameClient.Get<BackendFacade>();
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
             _pvpManager = GameClient.Get<IPvPManager>();
             _matchManager = GameClient.Get<IMatchManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _skillsController = _gameplayManager.GetController<SkillsController>();
@@ -481,6 +481,8 @@ namespace Loom.ZombieBattleground
                                 break;
                         }
 
+                        _overlordExperienceManager.ReportExperienceAction(Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.OpponentMatchMatchExperienceInfo);
+                        
                         completeCallback?.Invoke();
                     }
                 );

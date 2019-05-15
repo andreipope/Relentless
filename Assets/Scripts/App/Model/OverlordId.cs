@@ -4,19 +4,19 @@ using Newtonsoft.Json;
 namespace Loom.ZombieBattleground.Data
 {
     /// <summary>
-    /// Represents a unique card mould id.
+    /// Represents a unique overlord ID.
     /// </summary>
-    [JsonConverter(typeof(JsonIdConverter<MouldId, long>))]
-    public struct MouldId : IId<long>, IEquatable<MouldId>, IComparable<MouldId>
+    [JsonConverter(typeof(JsonIdConverter<OverlordId, long>))]
+    public struct OverlordId : IId<long>, IEquatable<OverlordId>
     {
         public long Id { get; }
 
-        public MouldId(long id)
+        public OverlordId(long id)
         {
             Id = id;
         }
 
-        public bool Equals(MouldId other)
+        public bool Equals(OverlordId other)
         {
             return Id == other.Id;
         }
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground.Data
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is MouldId other && Equals(other);
+            return obj is OverlordId other && Equals(other);
         }
 
         public override int GetHashCode()
@@ -32,24 +32,19 @@ namespace Loom.ZombieBattleground.Data
             return Id.GetHashCode();
         }
 
-        public static bool operator ==(MouldId left, MouldId right)
+        public static bool operator ==(OverlordId left, OverlordId right)
         {
             return left.Equals(right);
         }
 
-        public static bool operator !=(MouldId left, MouldId right)
+        public static bool operator !=(OverlordId left, OverlordId right)
         {
             return !left.Equals(right);
         }
 
-        public int CompareTo(MouldId other)
-        {
-            return Id.CompareTo(other.Id);
-        }
-
         public override string ToString()
         {
-            return $"({nameof(MouldId)}: {Id})";
+            return $"({nameof(OverlordId)}: {Id})";
         }
     }
 }

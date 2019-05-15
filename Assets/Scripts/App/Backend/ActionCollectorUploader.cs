@@ -260,7 +260,7 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 // Exclude ControlGameState from logs for clarity
                 GameState controlGameState = playerAction.ControlGameState;
                 playerAction.ControlGameState = null;
-                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + Utilites.JsonPrettyPrint(JsonFormatter.Default.Format(playerAction)));
+                PlayerActionLog.Debug($"Queued player action ({playerAction.ActionType}):\r\n" + JsonUtility.PrettyPrint(JsonFormatter.Default.Format(playerAction)));
                 playerAction.ControlGameState = controlGameState;
 
                 try

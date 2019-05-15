@@ -46,7 +46,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
             if (Client.DebugCheats.CustomDeck == null)
             {
                 Client.DebugCheats.CustomDeck =
-                    new Deck(-1, 0, "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
+                    new Deck(new DeckId(-1), new OverlordId(0), "custom deck", new List<DeckCardData>(), Enumerators.Skill.NONE, Enumerators.Skill.NONE);
             }
 
             if (_cardMouldIdToDescription == null)
@@ -170,7 +170,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                     string overlordIString = GUILayout.TextField(customDeck.OverlordId.ToString());
                     if (int.TryParse(overlordIString, out int newOverlordId))
                     {
-                        customDeck.OverlordId = newOverlordId;
+                        customDeck.OverlordId = new OverlordId(newOverlordId);
                     }
                 }
                 EditorGUILayout.EndVertical();

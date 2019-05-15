@@ -27,6 +27,8 @@ namespace Loom.ZombieBattleground
 
         private ITutorialManager _tutorialManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private CardsController _cardsController;
 
         private PlayerController _playerController;
@@ -57,6 +59,7 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager = GameClient.Get<IGameplayManager>();
             _tutorialManager = GameClient.Get<ITutorialManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _playerController = _gameplayManager.GetController<PlayerController>();
@@ -468,8 +471,8 @@ namespace Loom.ZombieBattleground
                                        callback: () =>
                                        {
                                            _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
-                                           GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfOverlord, Common.Enumerators.ExperienceActionType.PlayCard);
-  
+                                           _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchMatchExperienceInfo);
+
                                            cardModel.Owner.PlayerCardsController.RemoveCardFromHand(cardModel, true);
                                            cardModel.Owner.PlayerCardsController.AddCardToGraveyard(cardModel);
 
@@ -644,6 +647,9 @@ namespace Loom.ZombieBattleground
 
 
                                abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+
+
+
 
                                _cardsController.CardForAbilityChoosed += callback;
                                _cardsController.CreateChoosableCardsForAbilities(choosableAbility.ChoosableAbilities, cardModel);
@@ -1239,7 +1245,7 @@ namespace Loom.ZombieBattleground
             {
                 _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.PlayerOverlordCardPlayed);
 
-                GameClient.Get<IOverlordExperienceManager>().ReportExperienceAction(card.Model.Card.Owner.SelfOverlord, Common.Enumerators.ExperienceActionType.PlayCard);
+                _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchMatchExperienceInfo);
 
                 card.Model.Card.Owner.PlayerCardsController.RemoveCardFromHand(card.Model);
 

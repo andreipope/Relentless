@@ -22,6 +22,8 @@ namespace Loom.ZombieBattleground
 
         CreditsData CachedCreditsData { get; set; }
 
+        Data.OverlordLevelingData CachedOverlordLevelingData { get; set; }
+
         ConfigData ConfigData { get; set; }
 
         UserInfo UserInfo { get; set; }

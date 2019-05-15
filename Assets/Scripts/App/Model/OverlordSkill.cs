@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Loom.ZombieBattleground.Common;
 
 namespace Loom.ZombieBattleground.Data {
-    public class OverlordSkillData
+    public class OverlordSkill
     {
         public int Id { get; }
 
@@ -36,7 +36,7 @@ namespace Loom.ZombieBattleground.Data {
 
         public bool SingleUse { get; }
 
-        public OverlordSkillData(
+        public OverlordSkill(
             int id,
             string title,
             string iconPath,

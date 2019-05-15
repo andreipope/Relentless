@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,9 +82,15 @@ namespace Loom.ZombieBattleground
 
         public void Show()
         {
+            throw new InvalidOperationException("Use Show with parameter");
+        }
+
+        public void Show(object data)
+        {
             if (Self != null)
                 return;
 
+            EndMatchResults endMatchResults = (EndMatchResults) data;
             Self = Object.Instantiate(_loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/LevelUpPopup"));
             Self.transform.SetParent(_uiManager.Canvas3.transform, false);
 
@@ -98,70 +105,46 @@ namespace Loom.ZombieBattleground
 
             _message = _rewardDisabledObject.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 
-            _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level")
-                .GetComponent<TextMeshProUGUI>();
-
-            _skillName = _rewardSkillObject.transform.Find("SkillName")
-                .GetComponent<TextMeshProUGUI>();
-
-            _skillDescription = _rewardSkillObject.transform.Find("SkillDescription")
-                .GetComponent<TextMeshProUGUI>();
+            _currentLevel = Self.transform.Find("Pivot/levelup_panel/UI/Text_Level").GetComponent<TextMeshProUGUI>();
+            _skillName = _rewardSkillObject.transform.Find("SkillName").GetComponent<TextMeshProUGUI>();
+            _skillDescription = _rewardSkillObject.transform.Find("SkillDescription").GetComponent<TextMeshProUGUI>();
 
             _backgroundAnimator = Self.transform.Find("Background").GetComponent<Animator>();
             _containerAnimator = Self.transform.Find("Pivot").GetComponent<Animator>();
 
-            _backgroundAnimator.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += AnimationEventTriggeredHandler;        
+            _backgroundAnimator.GetComponent<AnimationEventTriggering>().AnimationEventTriggered += AnimationEventTriggeredHandler;
 
             Self.SetActive(true);
 
-            int playerDeckId = GameClient.Get<IGameplayManager>().PlayerDeckId;
             IDataManager dataManager = GameClient.Get<IDataManager>();
 
-            int overlordId = dataManager.CachedDecksData.Decks.First(d => d.Id == playerDeckId).OverlordId;
-
-            _selectedOverlord = dataManager.CachedOverlordData.Overlords[overlordId];
-
+            _selectedOverlord = dataManager.CachedOverlordData.GetOverlordById(endMatchResults.OverlordId);
             _currentLevel.text = _selectedOverlord.Level.ToString();
 
             _newOpenAbility = null;
 
-            FillInfo();
+            FillInfo(endMatchResults);
         }
 
-        public void Show(object data)
+        private void FillInfo(EndMatchResults endMatchResults)
         {
-            Show();
-        }
+            _rewardDisabledObject.SetActive(true);
+            _rewardSkillObject.SetActive(false);
+            _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
 
-        private void FillInfo()
-        {
-            List<LevelReward> gotRewards = GameClient.Get<IOverlordExperienceManager>().MatchExperienceInfo.GotRewards;
-
-            _rewardDisabledObject.SetActive(false);
-            _rewardSkillObject.SetActive(true);
-
-            foreach (LevelReward levelReward in gotRewards)
+            foreach (LevelReward levelReward in endMatchResults.LevelRewards)
             {
-                if (levelReward != null)
+                switch (levelReward)
                 {
-                    if (levelReward.SkillReward != null)
-                    {
+                    case OverlordSkillRewardItem overlordSkillRewardItem:
                         _rewardDisabledObject.SetActive(false);
                         _rewardSkillObject.SetActive(true);
-
-                        FillRewardSkillInfo(levelReward.SkillReward.SkillIndex);
-
+                        FillRewardSkillInfo(overlordSkillRewardItem.SkillIndex);
                         AbilityInstanceOnSelectionChanged(_newOpenAbility);
-                    }
-                    else
-                    {
-                        if (gotRewards.FindAll(x => x.SkillReward != null).Count == 0)
-                        {
-                            _rewardDisabledObject.SetActive(true);
-                            _rewardSkillObject.SetActive(false);
-                            _message.text = "Rewards have been disabled for ver " + BuildMetaInfo.Instance.DisplayVersionName;
-                        }
-                    }
+                        break;
+                    case UnitRewardItem _:
+                        // TODO: handle
+                        break;
                 }
             }
         }
@@ -170,17 +153,15 @@ namespace Loom.ZombieBattleground
         {
             ClearSkillInfo();
 
-            AbilityViewItem abilityInstance = null;
-            bool isDefault = false;
             for (int i = 0; i < _abilityListSize; i++)
             {
-                abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
+                AbilityViewItem abilityInstance = new AbilityViewItem(_abilitiesGroup.transform);
 
                 if (i < _selectedOverlord.Skills.Count && _selectedOverlord.Skills[i].Unlocked)
                 {
                     abilityInstance.Skill = _selectedOverlord.Skills[i];
                 }
-                isDefault = skillIndex == i;
+                bool isDefault = skillIndex == i;
                 abilityInstance.UpdateUIState(isDefault);
                 _abilities.Add(abilityInstance);
             }
@@ -247,7 +228,7 @@ namespace Loom.ZombieBattleground
 
             private readonly Transform _parentGameObject;
 
-            private OverlordSkillData _skill;
+            private OverlordSkill _skill;
 
             private bool _isSelected;
 
@@ -276,7 +257,7 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            public OverlordSkillData Skill
+            public OverlordSkill Skill
             {
                 get => _skill;
                 set

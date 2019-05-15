@@ -18,8 +18,6 @@ namespace Loom.ZombieBattleground.Common
 
         internal const string LocalConfigDataFileName = "config_data.json";
 
-        internal const string LocalOverlordsDataFileName = "overlords_data.json";
-
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
         // ReSharper disable once UnusedMember.Global
