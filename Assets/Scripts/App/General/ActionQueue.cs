@@ -115,11 +115,6 @@ namespace Loom.ZombieBattleground
             return currentQueue;
         }
 
-        public void MarkAsRemoved()
-        {
-            IsRemoved = true;
-        }
-
         public override string ToString()
         {
             return ToString(DefaultFormat);
@@ -133,6 +128,11 @@ namespace Loom.ZombieBattleground
             StringBuilder stringBuilder = new StringBuilder();
             FormatActionQueue(this, 0, actionFormatFunc, stringBuilder);
             return stringBuilder.ToString();
+        }
+
+        private void MarkAsRemoved()
+        {
+            IsRemoved = true;
         }
 
         private void InvokeStateChanged()
