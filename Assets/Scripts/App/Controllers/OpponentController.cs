@@ -518,15 +518,17 @@ namespace Loom.ZombieBattleground
                     return;
                 }
 
-                Action callback = () =>
-                {
-                    attackerUnit.DoCombat(target);
-                };
-
                 BoardUnitView attackerUnitView = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(attackerUnit);
 
                 if (attackerUnitView != null)
                 {
+                    GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+                     
+                    Action callback = () =>
+                    {
+                        AbilityProcessingAction?.ForceActionDone();
+                        attackerUnit.DoCombat(target);
+                    };
                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
                 }
                 else
