@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using Loom.ZombieBattleground.Common;
 using UnityEngine;
@@ -56,20 +57,20 @@ namespace Loom.ZombieBattleground
         }
 
 #if !UNITY_ANDROID && !UNITY_IOS
-        public void SetResolution(ResolutionInfo info)
+        public async Task SetResolution(ResolutionInfo info)
         {
             CurrentResolution = info;
 
             Screen.SetResolution(info.Resolution.x, info.Resolution.y, CurrentScreenMode == Enumerators.ScreenMode.FullScreen);
 
             _dataManager.CachedUserLocalData.AppResolution = CurrentResolution.Resolution;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
             OnResolutionChanged?.Invoke();
         }
 #endif
 
-        public void SetScreenMode(Enumerators.ScreenMode screenMode)
+        public async Task SetScreenMode(Enumerators.ScreenMode screenMode)
         {
             CurrentScreenMode = screenMode;
 
@@ -98,22 +99,22 @@ namespace Loom.ZombieBattleground
             }
 
             _dataManager.CachedUserLocalData.AppScreenMode = CurrentScreenMode;
-            _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
+            await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 #if !UNITY_ANDROID && !UNITY_IOS 
             MakeResolutionHighestInFullScreenMode();
 #endif
         }
   
 #if !UNITY_ANDROID && !UNITY_IOS      
-        private void MakeResolutionHighestInFullScreenMode()
+        private async Task MakeResolutionHighestInFullScreenMode()
         {
             if(CurrentScreenMode == Enumerators.ScreenMode.FullScreen)
             {
-                SetResolution(Resolutions[Resolutions.Count - 1]);
+                await SetResolution(Resolutions[Resolutions.Count - 1]);
             }
             else
             {
-                SetResolution(CurrentResolution);
+                await SetResolution(CurrentResolution);
             }
         }
 

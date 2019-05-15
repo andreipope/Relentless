@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Helpers;
@@ -23,6 +24,8 @@ namespace Loom.ZombieBattleground
 
         public Action<bool> OnLoginButtonDisplayUpdate;
 
+        public static event Action OnResolutionOrScreenModeHasChanged;
+        
         private GameObject _panelVideoSettings,
                            _groupLogin;
 
@@ -240,23 +243,27 @@ namespace Loom.ZombieBattleground
         }
         
 #if !UNITY_ANDROID && !UNITY_IOS
-        private void ResolutionChangedHandler(int index)
+        private async void ResolutionChangedHandler(int index)
         {
             if (!_initialInit)
             {
                 PlayClickSound();
 
-                _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                await _applicationSettingsManager.SetResolution(_applicationSettingsManager.Resolutions[index]);
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                OnResolutionOrScreenModeHasChanged?.Invoke();
             }
         }
 
-        private void ScreenModeChangedHandler(int index)
+        private async void ScreenModeChangedHandler(int index)
         {
             if (!_initialInit)
             {
                 PlayClickSound();
                 
-                _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+                await _applicationSettingsManager.SetScreenMode((Enumerators.ScreenMode)index);
+                await Task.Delay(TimeSpan.FromSeconds(0.5));
+                OnResolutionOrScreenModeHasChanged?.Invoke();
             }
         }
 #endif
