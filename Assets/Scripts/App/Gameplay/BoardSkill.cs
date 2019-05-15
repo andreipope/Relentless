@@ -172,10 +172,13 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
+                    GameplayQueueAction<object> AbilityProcessingAction = _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+                        
                     BoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
                     Action callback = () =>
                     {
+                        AbilityProcessingAction?.ForceActionDone();
                         switch (target)
                         {
                             case Player player:

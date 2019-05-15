@@ -271,6 +271,9 @@ public class HandBoardCard : OwnableBoardObject
 
     public void ResetHoveringAndZoom(bool isMove = true, Action onComplete = null)
     {
+        if (_gameplayManager.IsGameEnded || GameObject == null)
+            return; 
+
         if (isMove)
         {
             Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
