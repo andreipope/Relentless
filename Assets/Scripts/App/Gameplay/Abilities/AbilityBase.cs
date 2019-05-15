@@ -200,7 +200,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
 
-            AbilityTargetingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityTargetingBlocker);
+            AbilityTargetingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityTargetingBlocker);
         }
 
         public void DeactivateSelectTarget()

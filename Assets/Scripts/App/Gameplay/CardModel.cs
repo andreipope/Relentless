@@ -798,7 +798,7 @@ namespace Loom.ZombieBattleground
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
-                    _actionsQueueController.AddNewActionInToQueue(
+                    _actionsQueueController.EnqueueAction(
                         completeCallback =>
                         {
                             if (targetPlayer.Defense <= 0 || !IsUnitActive)
@@ -854,7 +854,7 @@ namespace Loom.ZombieBattleground
                     IsPlayable = false;
                     AttackedThisTurn = true;
 
-                    _actionsQueueController.AddNewActionInToQueue(
+                    _actionsQueueController.EnqueueAction(
                         completeCallback =>
                         {
                             targetCardModel.IsAttacking = true;
@@ -891,8 +891,8 @@ namespace Loom.ZombieBattleground
                                 }
                             }
 
-                            ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
-                            targetCardModel.ActionForDying = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                            ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
+                            targetCardModel.ActionForDying = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.UnitDeath, blockQueue: true);
 
                             if (!AttackedBoardObjectsThisTurn.Contains(targetCardModel))
                             {

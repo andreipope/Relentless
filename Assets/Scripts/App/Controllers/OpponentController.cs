@@ -416,7 +416,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(completeCallback =>
             {
                 BoardUnitView boardUnitViewElement = null;
                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer,
@@ -494,7 +494,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(completeCallback =>
             {
                 CardModel attackerUnit = _battlegroundController.GetCardModelByInstanceId(model.CardId);
                 IBoardObject target = _battlegroundController.GetTargetByInstanceId(model.TargetId, false);
@@ -509,7 +509,7 @@ namespace Loom.ZombieBattleground
 
                 if (attackerUnitView != null)
                 {
-                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
 
                     Action callback = () =>
                     {
@@ -556,7 +556,7 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(completeCallback =>
             {
                 List<ParametrizedAbilityBoardObject> parametrizedAbilityObjects = new List<ParametrizedAbilityBoardObject>();
 
@@ -605,7 +605,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(completeCallback =>
             {
                 BoardSkill skill = _battlegroundController.GetSkillById(_gameplayManager.OpponentPlayer, model.SkillId);
 
@@ -635,7 +635,7 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(completeCallback =>
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(completeCallback =>
             {
                 List<CardModel> units = new List<CardModel>();
 

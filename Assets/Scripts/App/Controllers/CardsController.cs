@@ -616,7 +616,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            _actionsQueueController.AddNewActionInToQueue(playCardAction, Enumerators.QueueActionType.CardPlay);
+            _actionsQueueController.EnqueueAction(playCardAction, Enumerators.QueueActionType.CardPlay);
         }
 
         public void PlayOpponentCard(

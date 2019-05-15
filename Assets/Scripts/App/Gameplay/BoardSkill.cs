@@ -178,7 +178,7 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
-                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
 
                     IBoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
 
             return _gameplayManager
                 .GetController<ActionsQueueController>()
-                .AddNewActionInToQueue(
+                .EnqueueAction(
                     completeCallback =>
                     {
                         DoOnUpSkillAction(completeCallback, targets);

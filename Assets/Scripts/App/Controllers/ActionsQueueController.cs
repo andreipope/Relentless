@@ -39,13 +39,13 @@ namespace Loom.ZombieBattleground
         }
 
         /// <summary>
-        ///     AddNewActionInToQueue
+        ///     EnqueueAction
         /// </summary>
         /// <param name="actionToDo">action to do, callback action</param>
-        public GameplayActionQueueAction AddNewActionInToQueue(
+        public GameplayActionQueueAction EnqueueAction(
             GameplayActionQueueAction.ExecutedActionDelegate actionToDo, Enumerators.QueueActionType actionType, bool blockQueue = false)
         {
-            Log.Debug($"{nameof(AddNewActionInToQueue)}(GameplayActionQueueAction.ExecutedActionDelegate actionToDo = {(actionToDo == null ? "null" : actionToDo.ToString())}, Enumerators.QueueActionType actionType = {actionType}, bool blockQueue = {blockQueue})");
+            Log.Debug($"{nameof(EnqueueAction)}(GameplayActionQueueAction.ExecutedActionDelegate actionToDo = {(actionToDo == null ? "null" : actionToDo.ToString())}, Enumerators.QueueActionType actionType = {actionType}, bool blockQueue = {blockQueue})");
             GameplayActionQueueAction action = CreateAction(actionToDo, actionType, IsOnlyManualCompleteAction(actionType));
             if (IsUserInputAction(actionType))
             {

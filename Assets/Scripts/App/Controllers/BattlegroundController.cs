@@ -570,7 +570,7 @@ namespace Loom.ZombieBattleground
 
             TurnWaitingForEnd = true;
 
-            _actionsQueueController.AddNewActionInToQueue(
+            _actionsQueueController.EnqueueAction(
                 completeCallback =>
                 {
                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
@@ -583,14 +583,14 @@ namespace Loom.ZombieBattleground
                     }, delay);
                 }, Enumerators.QueueActionType.StopTurnPart1Prepare);
 
-            _actionsQueueController.AddNewActionInToQueue(
+            _actionsQueueController.EnqueueAction(
                 completeCallback =>
                 {
                     EndTurnPart2InvokePlayerTurnEnded();
                     completeCallback.Invoke();
                 }, Enumerators.QueueActionType.StopTurnPart2InvokePlayerTurnEnded);
 
-            _actionsQueueController.AddNewActionInToQueue(
+            _actionsQueueController.EnqueueAction(
                 completeCallback =>
                 {
                     EndTurnPart3Finish();

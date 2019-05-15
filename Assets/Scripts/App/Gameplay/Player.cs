@@ -622,7 +622,7 @@ namespace Loom.ZombieBattleground
         {
             _actionsQueueController.ClearActions();
 
-            _actionsQueueController.AddNewActionInToQueue(completeCallback =>
+            _actionsQueueController.EnqueueAction(completeCallback =>
             {
                 LeaveMatch?.Invoke();
 

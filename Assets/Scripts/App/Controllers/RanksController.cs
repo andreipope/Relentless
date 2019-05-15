@@ -88,7 +88,7 @@ namespace Loom.ZombieBattleground
                 }
             };
 
-            return _actionsQueueController.AddNewActionInToQueue(action, Enumerators.QueueActionType.RankBuff);
+            return _actionsQueueController.EnqueueAction(action, Enumerators.QueueActionType.RankBuff);
         }
 
         public void DoRankUpgrades(List<CardModel> targetUnits, CardModel originUnit, bool randomly = true)
@@ -330,7 +330,7 @@ namespace Loom.ZombieBattleground
 
         public void BuffAllyManually(List<CardModel> units, CardModel card)
         {
-            _gameplayManager.GetController<ActionsQueueController>().AddNewActionInToQueue(
+            _gameplayManager.GetController<ActionsQueueController>().EnqueueAction(
                  completeCallback =>
                  {
                      _ranksUpgradeCompleteAction = completeCallback;

@@ -646,7 +646,7 @@ namespace Loom.ZombieBattleground
                                };
 
 
-                               abilityHelperAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+                               abilityHelperAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
 
 
@@ -668,7 +668,7 @@ namespace Loom.ZombieBattleground
                    }
                };
 
-            return _actionsQueueController.AddNewActionInToQueue(callAbilityAction, Enumerators.QueueActionType.AbilityUsage);
+            return _actionsQueueController.EnqueueAction(callAbilityAction, Enumerators.QueueActionType.AbilityUsage);
         }
 
         public bool CheckAbilityOnTarget(CardModel cardModel, AbilityData ability = null)

@@ -261,7 +261,7 @@ namespace Loom.ZombieBattleground
 
                         skill.UseSkill();
                         skill.SkillUsedAction(targets);
-                        GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+                        GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
 
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
@@ -311,7 +311,7 @@ namespace Loom.ZombieBattleground
                         skill.UseSkill();
                         _targets = targets;
 
-                        GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+                        GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
                         CreateSkillVfx(
                             GetVfxPrefabBySkill(skill),
                             skill.SelfObject.transform.position,
@@ -353,7 +353,7 @@ namespace Loom.ZombieBattleground
                     }
                     skill.UseSkill();
                     _targets = targets;
-                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
                     CreateSkillVfx(
                         GetVfxPrefabBySkill(skill),
                         skill.SelfObject.transform.position,

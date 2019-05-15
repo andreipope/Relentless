@@ -847,7 +847,7 @@ namespace Loom.ZombieBattleground
 
         public void PlayCardOnBoard(CardModel cardModel, bool ignorePlayAbility = false, PlayCardActionInfo playCardActionInfo = null)
         {
-            _actionsQueueController.AddNewActionInToQueue(completeCallback =>
+            _actionsQueueController.EnqueueAction(completeCallback =>
             {
                 if(!CardCanBePlayable(cardModel) && !ignorePlayAbility)
                 {
