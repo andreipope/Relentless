@@ -34,6 +34,7 @@ namespace Loom.ZombieBattleground
         private BoardArrowController _boardArrowController;
         private AbilitiesController _abilitiesController;
         private ActionsReportController _actionsReportController;
+        private ActionsQueueController _actionsQueueController;
         private RanksController _ranksController;
 
         public IReadOnlyList<CardModel> BoardItemsInUse => _boardItemsInUse;
@@ -59,6 +60,7 @@ namespace Loom.ZombieBattleground
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _abilitiesController = _gameplayManager.GetController<AbilitiesController>();
             _actionsReportController = _gameplayManager.GetController<ActionsReportController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
             _ranksController = _gameplayManager.GetController<RanksController>();
             _boardController = _gameplayManager.GetController<BoardController>();
 
@@ -501,15 +503,17 @@ namespace Loom.ZombieBattleground
                     return;
                 }
 
-                Action callback = () =>
-                {
-                    attackerUnit.DoCombat(target);
-                };
-
                 BoardUnitView attackerUnitView = _battlegroundController.GetCardViewByModel<BoardUnitView>(attackerUnit);
 
                 if (attackerUnitView != null)
                 {
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+
+                    Action callback = () =>
+                    {
+                        skillUsageAction.TriggerActionExternally();
+                        attackerUnit.DoCombat(target);
+                    };
                     _boardArrowController.DoAutoTargetingArrowFromTo<OpponentBoardArrow>(attackerUnitView.Transform, target, action: callback);
                 }
                 else

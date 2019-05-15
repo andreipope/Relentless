@@ -107,7 +107,7 @@ static class BattleCommandsHandler
     {
         Player player = _gameplayManager.CurrentPlayer;
 
-        if (_gameplayManager.CurrentTurnPlayer != player)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Log.Error("Please Wait For Your Turn");
             return;
@@ -161,7 +161,7 @@ static class BattleCommandsHandler
     private static void PlayerSetGooVial(int gooVials)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != player)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Log.Warn("Please Wait For Your Turn");
             return;
@@ -180,7 +180,7 @@ static class BattleCommandsHandler
     private static void PlayerSetGooAmount(int gooAmount)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != player)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Log.Error("Please Wait For Your Turn");
             return;
@@ -264,7 +264,7 @@ static class BattleCommandsHandler
     private static void PlayerDraw(string cardName)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != player)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Log.Error("Please Wait For Your Turn");
             return;
@@ -277,7 +277,7 @@ static class BattleCommandsHandler
     private static void PlayerInfiniteAbility(bool useInfiniteAbility)
     {
         Player player = _gameplayManager.CurrentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != player)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(player))
         {
             Log.Error("Please Wait For Your Turn");
             return;
@@ -311,7 +311,7 @@ static class BattleCommandsHandler
     private static void EnemyOverlordPlayAnyCard(string cardName)
     {
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != opponentPlayer)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
             Log.Error("Please Wait For Opponent Turn");
             return;
@@ -326,7 +326,7 @@ static class BattleCommandsHandler
     private static void EnemyOverlordPlayCard(string cardName)
     {
         Player opponentPlayer = _gameplayManager.OpponentPlayer;
-        if (_gameplayManager.CurrentTurnPlayer != opponentPlayer)
+        if (!_gameplayManager.CurrentTurnPlayer.Equals(opponentPlayer))
         {
             Log.Error("Please Wait For Opponent Turn");
             return;

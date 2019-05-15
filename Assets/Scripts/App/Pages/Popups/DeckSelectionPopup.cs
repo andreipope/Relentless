@@ -170,11 +170,11 @@ namespace Loom.ZombieBattleground
             }
 
             _deckList = new List<Deck>();
-            _deckList.AddRange(_dataManager.CachedDecksData.Decks);
+            HordeSelectionWithNavigationPage hordeSelection = _uiManager.GetPage<HordeSelectionWithNavigationPage>();
+            _deckList.AddRange(hordeSelection.GetDeckList());
 
             if (GameClient.Get<IGameplayManager>().IsTutorial && _dataManager.CachedDecksData.Decks.Count > 1 && _deckList.Count > 0)
             {
-                _deckList.Remove(_deckList[0]);
                 selectedDeck = _deckList[_deckList.Count - 1];
             }
 
@@ -334,6 +334,12 @@ namespace Loom.ZombieBattleground
             {
                 if (_tutorialManager.IsTutorial)
                     return;
+
+                if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount)
+                {
+                    _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                    return;
+                }
 
                 GameClient.Get<IAppStateManager>().ChangeAppState(Enumerators.AppState.HordeSelection);
                 _uiManager.GetPage<HordeSelectionWithNavigationPage>().ChangeTab

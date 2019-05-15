@@ -139,7 +139,7 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.AURA || AbilityUnitOwner.IsDead || AbilityUnitOwner.CurrentDefense <= 0)
                 return;
 
             ChangeStatsOfPlayerAllyCards(Defense, Attack, false, _affectedUnits);

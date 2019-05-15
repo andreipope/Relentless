@@ -241,6 +241,13 @@ namespace Loom.ZombieBattleground
             if (GameClient.Get<ITutorialManager>().BlockAndReport(_buttonNewDeck.name))
                 return;
 
+            if (_dataManager.CachedDecksData.Decks.Count >= Constants.MaxDecksCount && !_tutorialManager.IsTutorial)
+            {
+                _uiManager.DrawPopup<WarningPopup>(Constants.ErrorMessageForMaxDecks);
+                return;
+            }
+
+
             PlayClickSound();
             ChangeTab(Tab.SelectOverlord);
         }
@@ -435,7 +442,23 @@ namespace Loom.ZombieBattleground
 
         public List<Deck> GetDeckList()
         {
-            return _dataManager.CachedDecksData.Decks.ToList();
+            if (_tutorialManager.IsTutorial)
+            {
+                List<Deck> tutorialDeckList = new List<Deck>();
+                if (_dataManager.CachedUserLocalData.TutorialSavedDeck != null)
+                {
+                    tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
+                }
+                else
+                {
+                    tutorialDeckList.Add(_dataManager.CachedDecksData.Decks[0]);
+                }
+                return tutorialDeckList;
+            }
+            else
+            {
+                return _dataManager.CachedDecksData.Decks.ToList();
+            }
         }
         
         private Deck GetSelectedDeck()
@@ -729,7 +752,7 @@ namespace Loom.ZombieBattleground
             List<Deck> deckListToDisplay = GetDeckListFromSelectedPageToDisplay(_cacheDeckListToDisplay, displayNewDeckButton);
            
             int startObjectIndex = displayNewDeckButton?1:0;
-            int deckDataIndex = _tutorialManager.IsTutorial ? 1 : 0;
+            int deckDataIndex = 0;
 
             for (int i=startObjectIndex; i < _deckInfoObjectList.Count; ++i, ++deckDataIndex)
             {
@@ -767,7 +790,7 @@ namespace Loom.ZombieBattleground
                 }
                 else
                 {
-                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";
+                    deckInfoObject.TextCardsAmount.text = $"{cardsAmount}/{Constants.MaxDeckSize}";               
                 }
                 deckInfoObject.ImageOverlordThumbnail.sprite = GetOverlordThumbnailSprite(overlord.Faction);
 

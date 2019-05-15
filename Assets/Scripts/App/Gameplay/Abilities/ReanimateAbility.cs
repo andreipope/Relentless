@@ -29,6 +29,11 @@ namespace Loom.ZombieBattleground
 
                 AbilityUnitOwner.AddGameMechanicDescriptionOnUnit(Enumerators.GameMechanicDescription.Reanimate);
             }
+            else
+            {
+                base.Deactivate();
+                base.Dispose();
+            }
         }
 
         public override void Action(object info = null)

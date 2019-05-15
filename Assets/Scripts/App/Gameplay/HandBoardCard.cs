@@ -274,20 +274,20 @@ namespace Loom.ZombieBattleground
 
         public void ResetHoveringAndZoom(bool isMove = true, Action onComplete = null)
         {
+            if (_gameplayManager.IsGameEnded || GameObject == null)
+                return;
+
             if (isMove)
             {
                 Transform.DOMove(BoardCardView.PositionOnHand, Constants.DurationHoveringHandCard);
             }
-
             Transform.DOScale(BoardCardView.ScaleOnHand, Constants.DurationHoveringHandCard);
-            Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard)
-                .OnComplete(() =>
-                {
-                    onComplete?.Invoke();
-                });
+            Transform.DORotate(BoardCardView.RotationOnHand, Constants.DurationHoveringHandCard).OnComplete(() =>
+            {
+                onComplete?.Invoke();
+            });
 
             _sortingGroup.sortingOrder = _normalSortingOrder;
-
         }
     }
 }

@@ -63,11 +63,24 @@ namespace Loom.ZombieBattleground
                 switch (target)
                 {
                     case Enumerators.Target.OPPONENT_ALL_CARDS:
-
-                        _units.AddRange(GetOpponentOverlord().CardsOnBoard);
+                        IReadOnlyList<CardModel> boardCardsOpponent = GetOpponentOverlord().CardsOnBoard;
+                        for (int i = 0; i < boardCardsOpponent.Count; i++)
+                        {
+                            if (!boardCardsOpponent[i].IsDead && boardCardsOpponent[i].CurrentDefense > 0)
+                            {
+                                _units.Add(boardCardsOpponent[i]);
+                            }
+                        }
                         break;
                     case Enumerators.Target.PLAYER_ALL_CARDS:
-                        _units.AddRange(PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard);
+                        IReadOnlyList<CardModel> boardCardsPlayers = PlayerCallerOfAbility.PlayerCardsController.CardsOnBoard;
+                        for (int i = 0; i < boardCardsPlayers.Count; i++)
+                        {
+                            if (!boardCardsPlayers[i].IsDead && boardCardsPlayers[i].CurrentDefense > 0)
+                            {
+                                _units.Add(boardCardsPlayers[i]);
+                            }
+                        }
 
                         if (AbilityUnitOwner != null)
                         {
@@ -82,6 +95,7 @@ namespace Loom.ZombieBattleground
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
+                _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
                 _units = GetRandomUnits(_units, Count);
             }
 
@@ -113,11 +127,6 @@ namespace Loom.ZombieBattleground
 
             OnUpdateEvent = null;
 
-            for (int i = _units.Count -1; i >= 0; i--)
-            {
-                DestroyUnit(_units[i]);
-            }
-
             if (_units.Count > 0)
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
@@ -147,6 +156,11 @@ namespace Loom.ZombieBattleground
                     Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
+            }
+
+            for (int i = _units.Count -1; i >= 0; i--)
+            {
+                DestroyUnit(_units[i]);
             }
         }
     }

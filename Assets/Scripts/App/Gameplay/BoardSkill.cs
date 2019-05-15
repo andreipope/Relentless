@@ -35,6 +35,8 @@ namespace Loom.ZombieBattleground
 
         private readonly BattlegroundController _battlegroundController;
 
+        private ActionsQueueController _actionsQueueController;
+
         private readonly GameObject _glowObject;
 
         private readonly GameObject _fightTargetingArrowPrefab;
@@ -93,6 +95,7 @@ namespace Loom.ZombieBattleground
             _skillsController = _gameplayManager.GetController<SkillsController>();
             _boardArrowController = _gameplayManager.GetController<BoardArrowController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+            _actionsQueueController = _gameplayManager.GetController<ActionsQueueController>();
 
             _glowObject = SelfObject.transform.Find("OverlordAbilitySelection").gameObject;
             _glowObject.SetActive(false);
@@ -172,10 +175,13 @@ namespace Loom.ZombieBattleground
             {
                 if (Skill.CanSelectTarget)
                 {
+                    GameplayActionQueueAction skillUsageAction = _actionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.OverlordSkillUsageBlocker, blockQueue: true);
+
                     IBoardObject target = parametrizedAbilityObjects[0].BoardObject;
 
                     Action callback = () =>
                     {
+                        skillUsageAction.TriggerActionExternally();
                         switch (target)
                         {
                             case Player player:

@@ -49,6 +49,8 @@ namespace Loom.ZombieBattleground
 
         public Player SelectedPlayer;
 
+        public bool LastAuraState;
+
         public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
         protected AbilitiesController AbilitiesController;
@@ -253,6 +255,7 @@ namespace Loom.ZombieBattleground
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
 
             ChangeAuraStatusAction(true);
+            LastAuraState = true;
         }
 
         public virtual void Update()
@@ -303,11 +306,17 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
 
             PlayerCallerOfAbility = player;
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -444,7 +453,11 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
-            ChangeAuraStatusAction(false);
+            if (LastAuraState)
+            {
+                ChangeAuraStatusAction(false);
+                LastAuraState = false;
+            }
 
             Deactivate();
             Dispose();
@@ -460,6 +473,15 @@ namespace Loom.ZombieBattleground
             if (!AbilityUnitOwner.IsAttacking)
             {
                 CheckRageStatus();
+            }
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                if (LastAuraState)
+                {
+                    ChangeAuraStatusAction(false);
+                    LastAuraState = false;
+                }
             }
         }
 
