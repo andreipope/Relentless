@@ -449,10 +449,6 @@ namespace Loom.ZombieBattleground
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
                 }
-                else
-                {
-                    tutorialDeckList.Add(_dataManager.CachedDecksData.Decks[0]);
-                }
                 return tutorialDeckList;
             }
             else
@@ -478,9 +474,12 @@ namespace Loom.ZombieBattleground
 
         public void AssignCurrentDeck()
         { 
-            CurrentEditDeck = GetSelectedDeck().Clone();
-            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Id == CurrentEditDeck.OverlordId);
-            IsEditingNewDeck = false;
+            if (GetSelectedDeck() != null)
+            {
+                CurrentEditDeck = GetSelectedDeck().Clone();
+                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Id == CurrentEditDeck.OverlordId);
+                IsEditingNewDeck = false;
+            }
         }
 
         public void AssignCurrentDeck(int deckIndex)

@@ -1353,7 +1353,6 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        },
                        player =>
                        {
-                           player.CardPlay(playerJunkSpearId, ItemPosition.Start, opponentTrunkId, true);
                            player.CardAbilityUsed(playerJunkSpearId, Enumerators.AbilityType.DAMAGE_OVERLORD_ON_COUNT_ITEMS_PLAYED,
                                new List<ParametrizedAbilityInstanceId>() {
                                 new ParametrizedAbilityInstanceId(opponentTrunkId,
@@ -1363,6 +1362,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                                     })
                                }
                            );
+                           player.CardPlay(playerJunkSpearId, ItemPosition.Start, opponentTrunkId, true);
                            player.LetsThink(2);
                        },
                        opponent =>

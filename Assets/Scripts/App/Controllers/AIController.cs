@@ -428,7 +428,6 @@ namespace Loom.ZombieBattleground
 
                     if (card != null)
                     {
-
                         PlayCardOnBoard(card, playCardActionInfo: playCardActionInfo);
 
                         await LetsThink(cancellationToken);
@@ -851,6 +850,7 @@ namespace Loom.ZombieBattleground
             {
                 if(!CardCanBePlayable(cardModel) && !ignorePlayAbility)
                 {
+                    Debug.LogWarning("FUCK MY LIFE");
                     completeCallback?.Invoke();
                     return;
                 }
@@ -900,6 +900,7 @@ namespace Loom.ZombieBattleground
                         target = GetAbilityTarget(cardModel);
                     }
                 }
+
                 switch (cardModel.Card.Prototype.Kind)
                 {
                     case Enumerators.CardKind.CREATURE when _gameplayManager.OpponentPlayer.CardsOnBoard.Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
@@ -914,10 +915,9 @@ namespace Loom.ZombieBattleground
                         break;
                     case Enumerators.CardKind.ITEM:
                         {
+
                             if ((target != null && needTargetForAbility) || !needTargetForAbility)
                             {
-                                _gameplayManager.OpponentPlayer.PlayerCardsController.RemoveCardFromHand(cardModel);
-
                                 _cardsController.PlayOpponentCard(_gameplayManager.OpponentPlayer, cardModel.InstanceId, target, null, (x, y) =>
                                 {
                                     PlayCardCompleteHandler(x, y, completeCallback);

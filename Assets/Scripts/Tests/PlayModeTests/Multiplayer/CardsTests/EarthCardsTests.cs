@@ -325,7 +325,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
                        {
                            player.CardPlay(playerHotId, ItemPosition.Start);
                            player.CardPlay(playerHot2Id, ItemPosition.Start);
-                           player.CardPlay(playerProtectorId, ItemPosition.Start, playerHot2Id);
+                           player.CardPlay(playerProtectorId, ItemPosition.Start, playerHotId);
                        },
                        opponent => {},
                        player => {}
@@ -335,7 +335,7 @@ namespace Loom.ZombieBattleground.Test.MultiplayerTests
 
                 Action validateEndState = () =>
                 {
-                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHot2Id)).BuffedDefense);
+                    Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(playerHotId)).BuffedDefense);
                     Assert.AreEqual(value, ((CardModel)TestHelper.BattlegroundController.GetBoardObjectByInstanceId(opponentHotId)).BuffedDefense);
                 };
 
