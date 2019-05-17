@@ -52,15 +52,15 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void GainStats(BoardUnitModel boardUnit, List<BoardUnitModel> boardUnits)
+        private void GainStats(CardModel boardUnit, List<CardModel> boardUnits)
         {
             _addedDefense = 0;
             _addedDamage = 0;
 
-            foreach (BoardUnitModel boardUnitModel in boardUnits)
+            foreach (CardModel cardModel in boardUnits)
             {
-                _addedDefense += boardUnitModel.CurrentDefense;
-                _addedDamage += boardUnitModel.CurrentDamage;
+                _addedDefense += cardModel.CurrentDefense;
+                _addedDamage += cardModel.CurrentDamage;
             }
 
             boardUnit.BuffedDefense += _addedDefense;
@@ -69,12 +69,12 @@ namespace Loom.ZombieBattleground
             boardUnit.AddToCurrentDamageHistory(_addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
-        private void RestoreGainedStats(BoardUnitModel boardUnit, int addedDamage, int addedDefense)
+        private void RestoreGainedStats(CardModel card, int addedDamage, int addedDefense)
         {
-            boardUnit.BuffedDefense -= addedDefense;
-            boardUnit.AddToCurrentDefenseHistory(-addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
-            boardUnit.BuffedDamage -= addedDamage;
-            boardUnit.AddToCurrentDamageHistory(-addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.BuffedDefense -= addedDefense;
+            card.AddToCurrentDefenseHistory(-addedDefense, Enumerators.ReasonForValueChange.AbilityBuff);
+            card.BuffedDamage -= addedDamage;
+            card.AddToCurrentDamageHistory(-addedDamage, Enumerators.ReasonForValueChange.AbilityBuff);
         }
 
         private void ResetStoredStats ()

@@ -35,23 +35,21 @@ namespace Loom.ZombieBattleground
 
         public Enumerators.CardKind CardKind;
 
-        public BoardUnitModel CardOwnerOfAbility => BoardUnitModel;
+        public CardModel CardOwnerOfAbility => CardModel;
 
-        public BoardUnitModel BoardUnitModel;
+        public CardModel CardModel;
 
-        public BoardUnitModel AbilityUnitOwner;
+        public CardModel AbilityUnitOwner;
 
         public Player PlayerCallerOfAbility;
 
-        public BoardItem BoardItem;
-
-        public BoardCardView BoardCardView;
-
-        public BoardUnitModel TargetUnit;
+        public CardModel TargetUnit;
 
         public Player TargetPlayer;
 
         public Player SelectedPlayer;
+
+        public bool LastAuraState;
 
         public List<ParametrizedAbilityBoardObject> PredefinedTargets;
 
@@ -62,6 +60,8 @@ namespace Loom.ZombieBattleground
         protected BattleController BattleController;
 
         protected ActionsQueueController ActionsQueueController;
+
+        protected ActionsReportController ActionsReportController;
 
         protected BattlegroundController BattlegroundController;
 
@@ -99,7 +99,9 @@ namespace Loom.ZombieBattleground
 
         private readonly Player _opponentAvatar;
 
-        protected GameplayQueueAction<object> AbilityProcessingAction;
+        protected GameplayActionQueueAction AbilityProcessingAction;
+
+        protected GameplayActionQueueAction AbilityTargetingAction;
 
         protected bool UnitOwnerIsInRage;
         
@@ -127,6 +129,7 @@ namespace Loom.ZombieBattleground
             ParticlesController = GameplayManager.GetController<ParticlesController>();
             BattleController = GameplayManager.GetController<BattleController>();
             ActionsQueueController = GameplayManager.GetController<ActionsQueueController>();
+            ActionsReportController = GameplayManager.GetController<ActionsReportController>();
             BattlegroundController = GameplayManager.GetController<BattlegroundController>();
             CardsController = GameplayManager.GetController<CardsController>();
             BoardController = GameplayManager.GetController<BoardController>();
@@ -197,7 +200,7 @@ namespace Loom.ZombieBattleground
             TargettingArrow.InputEnded += InputEndedHandler;
             TargettingArrow.InputCanceled += InputCanceledHandler;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityTargetingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityTargetingBlocker);
         }
 
         public void DeactivateSelectTarget()
@@ -244,10 +247,6 @@ namespace Loom.ZombieBattleground
                     }
                     break;
                 case Enumerators.CardKind.ITEM:
-                    if (BoardItem != null)
-                    {
-                        BoardItem.Used += UsedHandler;
-                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(CardKind), CardKind, null);
@@ -256,6 +255,7 @@ namespace Loom.ZombieBattleground
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
 
             ChangeAuraStatusAction(true);
+            LastAuraState = true;
         }
 
         public virtual void Update()
@@ -306,11 +306,17 @@ namespace Loom.ZombieBattleground
 
             PlayerCallerOfAbility.TurnEnded -= TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted -= TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged -= HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged -= PlayerCurrentGooChangedHandler;
 
             PlayerCallerOfAbility = player;
 
             PlayerCallerOfAbility.TurnEnded += TurnEndedHandler;
             PlayerCallerOfAbility.TurnStarted += TurnStartedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.BoardChanged += BoardChangedHandler;
+            PlayerCallerOfAbility.PlayerCardsController.HandChanged += HandChangedHandler;
+            PlayerCallerOfAbility.PlayerCurrentGooChanged += PlayerCurrentGooChangedHandler;
         }
 
         private void GameEndedHandler(Enumerators.EndGameType endGameType)
@@ -327,6 +333,7 @@ namespace Loom.ZombieBattleground
             if (callInputEndBefore)
             {
                 PermanentInputEndEvent?.Invoke();
+                CompleteTargetingAction();
                 return;
             }
 
@@ -355,6 +362,8 @@ namespace Loom.ZombieBattleground
                 OnObjectSelectFailedByTargettingArrowCallback?.Invoke();
                 OnObjectSelectFailedByTargettingArrowCallback = null;
             }
+
+            CompleteTargetingAction();
         }
 
         public virtual void Action(object info = null)
@@ -444,13 +453,17 @@ namespace Loom.ZombieBattleground
 
         protected virtual void UnitDiedHandler()
         {
-            ChangeAuraStatusAction(false);
+            if (LastAuraState)
+            {
+                ChangeAuraStatusAction(false);
+                LastAuraState = false;
+            }
 
             Deactivate();
             Dispose();
         }
 
-        protected virtual void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected virtual void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
 
         }
@@ -461,13 +474,22 @@ namespace Loom.ZombieBattleground
             {
                 CheckRageStatus();
             }
+
+            if (AbilityUnitOwner.CurrentDefense <= 0)
+            {
+                if (LastAuraState)
+                {
+                    ChangeAuraStatusAction(false);
+                    LastAuraState = false;
+                }
+            }
         }
 
         protected virtual void ChangeRageStatusAction(bool rageStatus)
         {
         }
 
-        protected virtual void UnitDamagedHandler(BoardObject from)
+        protected virtual void UnitDamagedHandler(IBoardObject from)
         {
         }
 
@@ -475,7 +497,7 @@ namespace Loom.ZombieBattleground
         {
         }
 
-        protected virtual void UnitKilledUnitHandler(BoardUnitModel unit)
+        protected virtual void UnitKilledUnitHandler(CardModel unit)
         {
 
         }
@@ -504,7 +526,7 @@ namespace Loom.ZombieBattleground
             CheckRageStatus();
         }
 
-        protected virtual void PrepairingToDieHandler(BoardObject from)
+        protected virtual void PrepairingToDieHandler(IBoardObject from)
         {
             AbilitiesController.DeactivateAbility(ActivityId);
         }
@@ -528,10 +550,6 @@ namespace Loom.ZombieBattleground
                 }
             }
         }
-        protected void UsedHandler()
-        {
-            BoardItem.Used -= UsedHandler;
-        }
 
         protected void ClearParticles()
         {
@@ -541,11 +559,6 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public BoardObject GetCaller()
-        {
-            return AbilityUnitOwner ?? (BoardObject) BoardItem;
-        }
-
         public Player GetOpponentOverlord()
         {
             return GetOpponentOverlord(PlayerCallerOfAbility);
@@ -553,22 +566,22 @@ namespace Loom.ZombieBattleground
 
         public Player GetOpponentOverlord(Player player)
         {
-            return player.Equals(GameplayManager.CurrentPlayer) ?
+            return player == GameplayManager.CurrentPlayer ?
                 GameplayManager.OpponentPlayer :
                 GameplayManager.CurrentPlayer;
         }
 
         protected BoardUnitView GetAbilityUnitOwnerView()
         {
-            return BattlegroundController.GetBoardUnitViewByModel<BoardUnitView>(AbilityUnitOwner);
+            return BattlegroundController.GetCardViewByModel<BoardUnitView>(AbilityUnitOwner);
         }
 
-        protected List<BoardUnitModel> GetRandomEnemyUnits(int count)
+        protected List<CardModel> GetRandomEnemyUnits(int count)
         {
             return BattlegroundController.GetDeterministicRandomElements(GetOpponentOverlord().CardsOnBoard.ToList(), count);
         }
 
-        protected List<BoardUnitModel> GetRandomUnits(List<BoardUnitModel> units,int count)
+        protected List<CardModel> GetRandomUnits(List<CardModel> units,int count)
         {
             return BattlegroundController.GetDeterministicRandomElements(units, count);
         }
@@ -578,7 +591,7 @@ namespace Loom.ZombieBattleground
             return BattlegroundController.GetDeterministicRandomElements(elements, count);
         }
 
-        protected IEnumerable<BoardUnitModel> GetAliveUnits(IEnumerable<BoardUnitModel> units)
+        protected IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
         {
             return BattlegroundController.GetAliveUnits(units);
         }
@@ -600,16 +613,16 @@ namespace Loom.ZombieBattleground
 
         }
 
-        protected void ReportAbilityDoneAction(List<BoardObject> targets)
+        protected void ReportAbilityDoneAction(List<IBoardObject> targets)
         {
 
         }
 
         protected int GetAbilityIndex()
         {
-            int index = BoardUnitModel.Card.InstanceCard.Abilities.IndexOf(AbilityData);
+            int index = CardModel.Card.InstanceCard.Abilities.IndexOf(AbilityData);
             if (index == -1)
-                throw new Exception($"Ability {AbilityData} not found in card {BoardUnitModel}");
+                throw new Exception($"Ability {AbilityData} not found in card {CardModel}");
 
             return index;
         }
@@ -620,10 +633,16 @@ namespace Loom.ZombieBattleground
                 return;
 
             AbilitiesController.InvokeUseAbilityEvent(
-                BoardUnitModel,
+                CardModel,
                 AbilityData.Ability,
                 targets ?? new List<ParametrizedAbilityBoardObject>()
             );
+        }
+
+        private void CompleteTargetingAction()
+        {
+            AbilityTargetingAction?.TriggerActionExternally();
+            AbilityTargetingAction = null;
         }
     }
 }

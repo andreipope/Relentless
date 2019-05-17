@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
 
             Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(AbilityUnitOwner.Card.Prototype.Name));
             WorkingCard card = new WorkingCard(prototype, prototype, owner, AbilityUnitOwner.Card.InstanceId);
-            BoardUnitModel reanimatedUnitModel = new BoardUnitModel(card);
+            CardModel reanimatedUnitModel = new CardModel(card);
             _reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
             reanimatedUnitModel.IsReanimated = true;
 
@@ -71,12 +71,12 @@ namespace Loom.ZombieBattleground
 
             if (PlayerCallerOfAbility.IsLocalPlayer)
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.CurrentPlayer, _reanimatedUnit);
+                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.CurrentPlayer);
                 _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, reanimatedUnitModel, reanimatedUnitModel.Owner);
             }
             else
             {
-                BattlegroundController.RegisterBoardUnitView(GameplayManager.OpponentPlayer, _reanimatedUnit);
+                BattlegroundController.RegisterCardView(_reanimatedUnit, GameplayManager.OpponentPlayer);
                 if (_gameplayManager.IsLocalPlayerTurn()) {
                     _abilitiesController.ActivateAbilitiesOnCard(_reanimatedUnit.Model, reanimatedUnitModel, reanimatedUnitModel.Owner);
                 }
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityUnitOwner.CurrentDefense == 0 && !AbilityUnitOwner.IsReanimated)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker, blockQueue: true);
             }
         }
 
@@ -108,18 +108,18 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
 
             base.UnitDiedHandler();
 
             _gameplayManager.CanDoDragActions = true;
         }
 
-        private BoardUnitView CreateBoardUnit(BoardUnitModel boardUnitModel, Player owner)
+        private BoardUnitView CreateBoardUnit(CardModel cardModel, Player owner)
         {
-            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, boardUnitModel);
+            BoardUnitView boardUnitView = BattlegroundController.CreateBoardUnit(owner, cardModel);
 
-            if (!owner.Equals(GameplayManager.CurrentTurnPlayer))
+            if (owner != GameplayManager.CurrentTurnPlayer)
             {
                 boardUnitView.Model.IsPlayable = true;
             }

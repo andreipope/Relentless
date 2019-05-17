@@ -39,7 +39,7 @@ namespace Loom.ZombieBattleground.Test
         private List<string> _pvpTags = new List<string>();
         private DebugCheatsConfiguration _debugCheats = new DebugCheatsConfiguration();
         private Address? _customGameAddress;
-        private long _deckId;
+        private DeckId _deckId;
 
         private double? _lastTimeSinceStartup;
         private double _keepAliveTimer;
@@ -102,7 +102,7 @@ namespace Loom.ZombieBattleground.Test
             set => _customGameAddress = value;
         }
 
-        public long DeckId
+        public DeckId DeckId
         {
             get => _deckId;
             set => _deckId = value;
@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground.Test
             double deltaTime = timeSinceStartup - _lastTimeSinceStartup.Value;
             _lastTimeSinceStartup = timeSinceStartup;
 
-            if (MatchMakingFlowController != null && _backendFacade.IsConnected)
+            if (MatchMakingFlowController != null && _backendFacade != null && _backendFacade.IsConnected)
             {
                 await MatchMakingFlowController.Update((float) deltaTime);
 

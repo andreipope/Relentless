@@ -114,14 +114,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     InstanceId instanceId;
                     switch (target.BoardObject)
                     {
-                        case BoardUnitModel model:
+                        case CardModel model:
                             instanceId = model.Card.InstanceId;
                             break;
                         case Player player:
                             instanceId = player.InstanceId;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.BoardUnitModel.InstanceId;
+                            instanceId = handCard.CardModel.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();
@@ -198,14 +198,14 @@ namespace Loom.ZombieBattleground.BackendCommunication
                     InstanceId instanceId;
                     switch (target.BoardObject)
                     {
-                        case BoardUnitModel model:
+                        case CardModel model:
                             instanceId = model.Card.InstanceId;
                             break;
                         case Player player:
                             instanceId = player.InstanceId;
                             break;
                         case HandBoardCard handCard:
-                            instanceId = handCard.BoardUnitModel.Card.InstanceId;
+                            instanceId = handCard.CardModel.Card.InstanceId;
                             break;
                         default:
                             throw new ArgumentOutOfRangeException();

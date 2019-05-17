@@ -9,7 +9,7 @@ namespace Loom.ZombieBattleground
     public class BlockTakeDamageAbility : AbilityBase
     {
         private int Damage { get; }
-        private BoardUnitModel _targetedUnit;
+        private CardModel _targetedUnit;
 
         private Action _animationEndedAction;
 
@@ -78,12 +78,26 @@ namespace Loom.ZombieBattleground
             _targetedUnit.IsPlayable = true;
         }
 
-        private void ApplyMaximumDamageBuff(BoardUnitModel boardUnit, int value)
+        private void ApplyMaximumDamageBuff(CardModel boardUnit, int value)
         {
             if (boardUnit != null)
             {
                 _previousMaximumDamageBuff = boardUnit.MaximumDamageFromAnySource;
                 boardUnit.SetMaximumDamageToUnit(value);
+
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                {
+                    ActionType = Enumerators.ActionType.CardAffectingCard,
+                    Caller = AbilityUnitOwner,
+                    TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                        {
+                            new PastActionsPopup.TargetEffectParam()
+                            {
+                                ActionEffectType = Enumerators.ActionEffectType.None,
+                                Target = boardUnit
+                            }
+                        }
+                });
             }
         }
     }

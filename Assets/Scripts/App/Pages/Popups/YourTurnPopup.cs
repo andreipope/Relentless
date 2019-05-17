@@ -3,6 +3,7 @@ using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Gameplay;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using System;
 
 namespace Loom.ZombieBattleground
 {
@@ -12,6 +13,8 @@ namespace Loom.ZombieBattleground
         private ITutorialManager _tutorialManager;
         private IGameplayManager _gameplayManager;
         private IUIManager _uiManager;
+
+        public Action OnPopupHide;
 
         public GameObject Self { get; private set; }
 
@@ -38,6 +41,8 @@ namespace Loom.ZombieBattleground
                 return;
 
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndTurn);
+
+            OnPopupHide?.Invoke();
 
             Self.SetActive(false);
             Object.Destroy(Self);

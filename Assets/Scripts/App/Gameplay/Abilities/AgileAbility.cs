@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void EnableAgileOnUnit(BoardUnitModel boardUnit)
+        private void EnableAgileOnUnit(CardModel boardUnit)
         {
             boardUnit.SetAgileStatus(true);
 

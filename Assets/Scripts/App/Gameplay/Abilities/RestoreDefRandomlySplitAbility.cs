@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 {
     public class RestoreDefRandomlySplitAbility : AbilityBase
     {
-        private List<BoardObject> _targets;
+        private List<IBoardObject> _targets;
 
         public int Count;
         public List<Enumerators.Target> TargetTypes;
@@ -23,7 +23,7 @@ namespace Loom.ZombieBattleground
             Count = ability.Count;
             TargetTypes = ability.Targets;
 
-            _targets = new List<BoardObject>();
+            _targets = new List<IBoardObject>();
         }
 
         public override void Activate()
@@ -62,7 +62,7 @@ namespace Loom.ZombieBattleground
             }
             else
             {
-                _targets = new List<BoardObject>();
+                _targets = new List<IBoardObject>();
                 foreach (Enumerators.Target targetType in TargetTypes)
                 {
                     switch (targetType)
@@ -106,7 +106,7 @@ namespace Loom.ZombieBattleground
             int maxCount = Count;
             int defenseValue = 0;
             int blocksCount = _targets.Count;
-            BoardObject currentTarget = null;
+            IBoardObject currentTarget = null;
 
             int deltaDefense = 0;
 
@@ -116,7 +116,7 @@ namespace Loom.ZombieBattleground
                
                 switch (currentTarget)
                 {
-                    case BoardUnitModel unit:
+                    case CardModel unit:
                         deltaDefense = unit.MaxCurrentDefense - unit.CurrentDefense;
                         break;
                     case Player player:
@@ -160,7 +160,7 @@ namespace Loom.ZombieBattleground
         {
             switch (target)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     BattleController.HealUnitByAbility(AbilityUnitOwner, AbilityData, unit, defenseValue);
                     break;
                 case Player player:

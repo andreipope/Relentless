@@ -29,19 +29,19 @@ namespace Loom.ZombieBattleground
 
             switch (info)
             {
-                case BoardUnitModel boardUnitModel:
-                    BattlegroundController.DestroyBoardUnit(boardUnitModel, handleShield:true);
+                case CardModel cardModel:
+                    BattlegroundController.DestroyBoardUnit(cardModel, handleShield:true);
 
-                    ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                    ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                     {
                         ActionType = Enumerators.ActionType.CardAffectingCard,
-                        Caller = GetCaller(),
+                        Caller = AbilityUnitOwner,
                         TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                         {
                             new PastActionsPopup.TargetEffectParam()
                             {
                                 ActionEffectType = Enumerators.ActionEffectType.DeathMark,
-                                Target = boardUnitModel
+                                Target = cardModel
                             }
                         }
                     });
@@ -53,7 +53,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject from, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject from, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 

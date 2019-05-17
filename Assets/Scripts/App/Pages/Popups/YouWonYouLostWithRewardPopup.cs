@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
 using Loom.ZombieBattleground.Data;
@@ -124,7 +125,7 @@ namespace Loom.ZombieBattleground
 
             Deck deck = _uiManager.GetPopup<DeckSelectionPopup>().GetSelectedDeck();
             
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             
             _imageOverlordPortrait = Self.transform.Find("Moving_Panel/Image_OverlordPortrait").GetComponent<Image>();
             _imageOverlordPortrait.sprite = GetOverlordPortraitSprite

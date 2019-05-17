@@ -83,6 +83,8 @@ namespace Loom.ZombieBattleground
 
         public CreditsData CachedCreditsData { get; set; }
 
+        public Data.OverlordLevelingData CachedOverlordLevelingData { get; set; }
+
         public ConfigData ConfigData { get; set; }
 
         public UserInfo UserInfo { get; set; }
@@ -129,9 +131,6 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.CacheDataType.USER_LOCAL_DATA:
                     data = SerializePersistentObject(CachedUserLocalData);
-                    break;
-                case Enumerators.CacheDataType.OVERLORDS_DATA:
-                    data = SerializePersistentObject(CachedOverlordData);
                     break;
                 case Enumerators.CacheDataType.COLLECTION_DATA:
                     data = SerializePersistentObject(CachedCollectionData);
@@ -319,15 +318,8 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
-                        if (File.Exists(GetPersistentDataPath(_cacheDataFileNames[type])))
-                        {
-                            CachedOverlordData = DeserializeObjectFromPersistentData<OverlordData>(GetPersistentDataPath(_cacheDataFileNames[type]));
-                        }
-                        else
-                        {
-                            ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
-                            CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
-                        }
+                        ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
+                        CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                     }
                     catch (Exception)
                     {
@@ -397,6 +389,18 @@ namespace Loom.ZombieBattleground
                         throw;
                     }
                     break;
+                case Enumerators.CacheDataType.OVERLORD_LEVELING_DATA:
+                    try
+                    {
+                        GetOverlordLevelingDataResponse overlordLevelingData = await _backendFacade.GetOverlordLevelingData();
+                        CachedOverlordLevelingData = overlordLevelingData.OverlordLeveling.FromProtobuf();
+                    }
+                    catch (Exception e)
+                    {
+                        ShowLoadDataFailMessage("Issue with Loading Overlord Leveling Data");
+                        throw;
+                    }
+                    break;
                 case Enumerators.CacheDataType.CREDITS_DATA:
                     CachedCreditsData = DeserializeObjectFromAssets<CreditsData>(_cacheDataFileNames[type]);
                     break;
@@ -432,9 +436,6 @@ namespace Loom.ZombieBattleground
                 },
                 {
                     Enumerators.CacheDataType.BUFFS_TOOLTIP_DATA, Constants.LocalBuffsTooltipDataFileName
-                },
-                {
-                    Enumerators.CacheDataType.OVERLORDS_DATA, Constants.LocalOverlordsDataFileName
                 },
                 {
                     Enumerators.CacheDataType.COLLECTION_DATA, Constants.LocalCollectionDataFileName

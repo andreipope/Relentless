@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
+using Loom.ZombieBattleground.Data;
 using DebugCheatsConfiguration = Loom.ZombieBattleground.BackendCommunication.DebugCheatsConfiguration;
 
 namespace Loom.ZombieBattleground
@@ -47,7 +48,7 @@ namespace Loom.ZombieBattleground
 
         bool IsFirstPlayer();
 
-        Task StartMatchmaking(int deckId);
+        Task StartMatchmaking(DeckId deckId);
 
         Task StopMatchmaking();
 

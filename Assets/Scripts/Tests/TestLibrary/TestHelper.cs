@@ -1111,32 +1111,31 @@ namespace Loom.ZombieBattleground.Test
 
         #region Adapted from AIController
 
-        public async Task PlayCardFromHandToBoard(BoardUnitModel boardUnitModel, ItemPosition position, BoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
+        public async Task PlayCardFromHandToBoard(CardModel cardModel, ItemPosition position, IBoardObject entryAbilityTarget = null, bool skipEntryAbilities = false)
         {
             bool needTargetForAbility = false;
 
             if (!skipEntryAbilities)
             {
-                if (boardUnitModel.InstanceCard.Abilities != null && boardUnitModel.InstanceCard.Abilities.Count > 0 && !HasChoosableAbilities(boardUnitModel.Prototype))
+                if (cardModel.InstanceCard.Abilities != null && cardModel.InstanceCard.Abilities.Count > 0 && !HasChoosableAbilities(cardModel.Prototype))
                 {
                     needTargetForAbility =
-                        boardUnitModel.InstanceCard.Abilities.FindAll(x => x.Targets.Count > 0).Count > 0;
+                        cardModel.InstanceCard.Abilities.FindAll(x => x.Targets.Count > 0).Count > 0;
                 }
             }
 
-            switch (boardUnitModel.Prototype.Kind)
+            Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
+            BoardCardView boardCardView = _battlegroundController.GetCardViewByModel<BoardCardView>(cardModel);
+            switch (cardModel.Prototype.Kind)
             {
                 case Enumerators.CardKind.CREATURE
                     when _testBroker.GetBoardCards(_player).Count < _gameplayManager.OpponentPlayer.MaxCardsInPlay:
                 {
-                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView =
-                        _battlegroundController.PlayerHandCards.FirstOrDefault(x => x.Model == boardUnitModel);
-                    Assert.NotNull(boardCardView, $"Card {boardUnitModel} not found in local player hand");
+                    Assert.NotNull(boardCardView, $"Card {cardModel} not found in local player hand");
                     Assert.True(boardCardView.Model.CanBePlayed(boardCardView.Model.Card.Owner),
                         "boardCardView.CanBePlayed(boardCardView.WorkingCard.Owner)");
 
-                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+                        _testBroker.GetPlayer(_player).CurrentGoo -= cardModel.Prototype.Cost;
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
@@ -1151,16 +1150,13 @@ namespace Loom.ZombieBattleground.Test
 
                     await new WaitForUpdate();
 
-                    _cardsController.DrawCardInfo(boardUnitModel);
+                    _cardsController.DrawCardInfo(cardModel);
 
                     break;
                 }
                 case Enumerators.CardKind.ITEM:
                 {
-                    Assert.AreEqual(Enumerators.MatchPlayer.CurrentPlayer, _player);
-                    BoardCardView boardCardView = _battlegroundController.PlayerHandCards.First(x => x.Model == boardUnitModel);
-
-                        _testBroker.GetPlayer(_player).CurrentGoo -= boardUnitModel.Prototype.Cost;
+                        _testBroker.GetPlayer(_player).CurrentGoo -= cardModel.Prototype.Cost;
 
                         _cardsController.PlayPlayerCard(_testBroker.GetPlayer(_player),
                         boardCardView,
@@ -1175,7 +1171,7 @@ namespace Loom.ZombieBattleground.Test
                         entryAbilityTarget,
                         skipEntryAbilities);
 
-                    _cardsController.DrawCardInfo(boardUnitModel);
+                    _cardsController.DrawCardInfo(cardModel);
 
                     break;
                 }
@@ -1210,26 +1206,27 @@ namespace Loom.ZombieBattleground.Test
             {
                 if (skill.Skill.CanSelectTarget)
                 {
-                    BoardObject target = targets[0].BoardObject;
+                    IBoardObject target = targets[0].BoardObject;
 
                     Assert.IsNotNull(skill.FightTargetingArrow, "skill.FightTargetingArrow == null, are you sure this skill has an active target?");
                     await SelectTargetOnFightTargetArrow(skill.FightTargetingArrow, target);
                 }
             }
 
-            GameplayQueueAction<object> gameplayQueueAction = skill.EndDoSkill(targets);
-            if (!gameplayQueueAction.ActionDone)
+            GameplayActionQueueAction gameplayQueueAction = skill.EndDoSkill(targets);
+            if (!gameplayQueueAction.IsCompleted)
             {
-                Action<GameplayQueueAction<object>> onDone = null;
+                ActionQueueAction.ActionCompletedHandler onDone = null;
                 onDone = gameplayQueueAction2 =>
                 {
                     taskCompletionSource.SetResult(true);
-                    gameplayQueueAction.OnActionDoneEvent -= onDone;
+                    gameplayQueueAction.Completed -= onDone;
                 };
-                gameplayQueueAction.OnActionDoneEvent += onDone;
+                gameplayQueueAction.Completed += onDone;
             }
             else
             {
+                gameplayQueueAction.TriggerActionExternally();
                 taskCompletionSource.SetResult(true);
             }
 
@@ -1238,7 +1235,7 @@ namespace Loom.ZombieBattleground.Test
 
         #endregion
 
-        public async Task SelectTargetOnFightTargetArrow(BattleBoardArrow arrow, BoardObject target)
+        public async Task SelectTargetOnFightTargetArrow(BattleBoardArrow arrow, IBoardObject target)
         {
             arrow.SetTarget(target);
             await new WaitForSeconds(0.4f); // just so we can see the arrow for a short bit
@@ -1248,8 +1245,8 @@ namespace Loom.ZombieBattleground.Test
                 case Player player:
                     arrow.OnPlayerSelected(player);
                     break;
-                case BoardUnitModel boardUnitModel:
-                    arrow.OnCardSelected(_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(boardUnitModel));
+                case CardModel cardModel:
+                    arrow.OnCardSelected(_battlegroundController.GetCardViewByModel<BoardUnitView>(cardModel));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(target), target.GetType(), null);
@@ -1266,14 +1263,14 @@ namespace Loom.ZombieBattleground.Test
             return _testBroker.GetPlayer(_opponent);
         }
 
-        public BoardUnitModel GetBoardUnitModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
+        public CardModel GetCardModelByInstanceId(InstanceId instanceId, Enumerators.MatchPlayer player)
         {
-            BoardUnitModel boardUnitModel = BattlegroundController.GetBoardUnitModelByInstanceId(instanceId);
-            if (boardUnitModel == null)
+            CardModel cardModel = BattlegroundController.GetCardModelByInstanceId(instanceId);
+            if (cardModel == null)
                 throw new Exception($"Card {instanceId} not found on board");
 
-            Assert.AreEqual(_testBroker.GetPlayer(player), boardUnitModel.OwnerPlayer, "_testBroker.GetPlayer(player) != boardUnitModel.OwnerPlayer");
-            return boardUnitModel;
+            Assert.AreEqual(_testBroker.GetPlayer(player), cardModel.OwnerPlayer, "_testBroker.GetPlayer(player) != cardModel.OwnerPlayer");
+            return cardModel;
         }
 
         /// <summary>
@@ -2255,7 +2252,7 @@ namespace Loom.ZombieBattleground.Test
             modifyDebugCheatsAction?.Invoke(client.DebugCheats);
 
             // TODO: add customization
-            client.DeckId = 1;
+            client.DeckId = new DeckId(1);
 
             client.MatchMakingFlowController.MatchConfirmed += SecondClientMatchConfirmedHandler;
             await client.MatchMakingFlowController.Start(

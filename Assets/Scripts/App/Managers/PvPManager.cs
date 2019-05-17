@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using log4net;
 using Loom.Client;
 using Loom.ZombieBattleground.BackendCommunication;
@@ -167,7 +168,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public async Task StartMatchmaking(int deckId)
+        public async Task StartMatchmaking(DeckId deckId)
         {
             await _matchmakingBusySemaphore.WaitAsync();
 
@@ -291,7 +292,7 @@ namespace Loom.ZombieBattleground
             {
                 PlayerActionEvent playerActionEvent = PlayerActionEvent.Parser.ParseFrom(data);
                 CurrentActionIndex = (int)playerActionEvent.CurrentActionIndex;
-                Log.Debug("[Incoming Player Action]\r\n" + Utilites.JsonPrettyPrint(playerActionEvent.ToString()));
+                Log.Debug("[Incoming Player Action]\r\n" + JsonUtility.PrettyPrint(playerActionEvent.ToString()));
 
                 if (playerActionEvent.Block != null)
                 {
@@ -341,10 +342,10 @@ namespace Loom.ZombieBattleground
                         {
                             if (Constants.MulliganEnabled && !DebugCheats.SkipMulligan && playerActionEvent.PlayerAction.ActionType == PlayerActionType.Types.Enum.Mulligan)
                             {
-                               List<BoardUnitModel> finalCardsInHand = new List<BoardUnitModel>();
+                               List<CardModel> finalCardsInHand = new List<CardModel>();
                                int cardsRemoved = 0;
                                bool found;
-                               foreach (BoardUnitModel cardInHand in _gameplayManager.CurrentPlayer.CardsPreparingToHand)
+                               foreach (CardModel cardInHand in _gameplayManager.CurrentPlayer.MulliganCards)
                                {
                                    found = false;
                                    foreach (Protobuf.InstanceId cardNotMulligan in playerActionEvent.PlayerAction.Mulligan.MulliganedCards)
@@ -411,7 +412,7 @@ namespace Loom.ZombieBattleground
             catch
             {
                 // No additional handling
-            }
+}
         }
 
         private async Task LoadInitialGameState()

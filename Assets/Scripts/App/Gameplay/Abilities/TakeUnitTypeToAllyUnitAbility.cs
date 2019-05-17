@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
 {
     public class TakeUnitTypeToAllyUnitAbility : AbilityBase
     {
-        private List<BoardUnitModel> _affectedUnits;
+        private List<CardModel> _affectedUnits;
 
         public Enumerators.CardType UnitType;
         public Enumerators.Faction Faction;
@@ -24,7 +24,7 @@ namespace Loom.ZombieBattleground
             Faction = ability.Faction;
             Cost = ability.Cost;
 
-            _affectedUnits = new List<BoardUnitModel>();
+            _affectedUnits = new List<CardModel>();
         }
 
         public override void Activate()
@@ -97,7 +97,7 @@ namespace Loom.ZombieBattleground
             {
                 case Enumerators.AbilitySubTrigger.RandomUnit:
                     {
-                        List<BoardUnitModel> allies;
+                        List<CardModel> allies;
 
                         allies = PlayerCallerOfAbility.CardsOnBoard
                         .Where(unit => unit != AbilityUnitOwner && unit.InitialUnitType != UnitType && !unit.IsDead && unit.IsUnitActive)
@@ -131,13 +131,13 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllOtherAllyUnitsInPlay:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
                            .Where(unit => unit != AbilityUnitOwner &&
                                    (unit.Card.Prototype.Faction == Faction || Faction == Enumerators.Faction.Undefined) &&
                                    unit.InitialUnitType != UnitType && !unit.IsDead)
                            .ToList();
 
-                        foreach (BoardUnitModel unit in allies)
+                        foreach (CardModel unit in allies)
                         {
                             if (TakeTypeToUnit(unit))
                             {
@@ -152,12 +152,12 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllyUnitsByFactionThatCost:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard
+                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard
                                .Where(unit => unit != AbilityUnitOwner && unit.Card.Prototype.Faction == Faction &&
                                       unit.CurrentCost <= Cost && unit.InitialUnitType != UnitType && !unit.IsDead)
                                .ToList();
 
-                        foreach (BoardUnitModel unit in allies)
+                        foreach (CardModel unit in allies)
                         {
                             if (TakeTypeToUnit(unit))
                             {
@@ -172,7 +172,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay:
                     {
-                        List<BoardUnitModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
+                        List<CardModel> allies = PlayerCallerOfAbility.CardsOnBoard.Where(
                                        unit => unit != AbilityUnitOwner &&
                                            !unit.IsDead &&
                                            unit.CurrentDefense > 0 && unit.IsUnitActive).ToList();
@@ -188,7 +188,7 @@ namespace Loom.ZombieBattleground
                             }
                         }
 
-                        foreach (BoardUnitModel unit in allies)
+                        foreach (CardModel unit in allies)
                         {
                             if (AbilityTrigger == Enumerators.AbilityTrigger.AURA &&
                                 _affectedUnits.Contains(unit))
@@ -222,16 +222,16 @@ namespace Loom.ZombieBattleground
                     actionType = Enumerators.ActionType.CardAffectingCard;
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }
         }
 
-        private bool TakeTypeToUnit(BoardUnitModel unit)
+        private bool TakeTypeToUnit(CardModel unit)
         {
             if (unit == null)
                 return false;
@@ -249,9 +249,9 @@ namespace Loom.ZombieBattleground
             return false;
         }
 
-        private void ResetAffectedUnits(List<BoardUnitModel> units)
+        private void ResetAffectedUnits(List<CardModel> units)
         {
-            foreach(BoardUnitModel unit in units)
+            foreach(CardModel unit in units)
             {
                 switch(unit.Card.InstanceCard.CardType)
                 {

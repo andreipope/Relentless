@@ -12,7 +12,7 @@ namespace Loom.ZombieBattleground
 
         private ParticlesController _particlesController;
 
-        private List<BoardUnitModel> _targetUnits;
+        private List<CardModel> _targetUnits;
 
         private string _cardName;
 
@@ -24,15 +24,15 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            _targetUnits = new List<BoardUnitModel>();
+            _targetUnits = new List<CardModel>();
             if(info != null)
             {
-                _targetUnits = (List<BoardUnitModel>)info;
+                _targetUnits = (List<CardModel>)info;
             }
 
             ulong id;
 
-            BoardUnitModel unit = null;
+            CardModel unit = null;
 
             bool isLastUnit = false;
 
@@ -43,13 +43,13 @@ namespace Loom.ZombieBattleground
                     unit = _targetUnits[i];
 
                     Vector3 targetPosition = Ability.CardKind == Enumerators.CardKind.CREATURE ?
-                    _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position :
+                    _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position :
                     Ability.SelectedPlayer.Transform.position;
 
                     VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                     VfxObject = Object.Instantiate(VfxObject);
-                    VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                    VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                     id = ParticlesController.RegisterParticleSystem(VfxObject);
                     ParticleIds.Add(id);
 
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
                 for (int i = 0; i < _targetUnits.Count; i++)
                 {
-                    if (_battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_targetUnits[i]).GameObject != null)
+                    if (_battlegroundController.GetCardViewByModel<BoardUnitView>(_targetUnits[i]).GameObject != null)
                     {
                         effectInfo = VfxObject.GetComponent<AbilityEffectInfoView>();
                         if (effectInfo != null)
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
                             soundName = effectInfo.soundName;
                         }
 
-                        Vector3 targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(_targetUnits[i]).Transform.position;
+                        Vector3 targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(_targetUnits[i]).Transform.position;
 
                         CreateVfx(targetPosition, true, delayBeforeDestroy);
                     }

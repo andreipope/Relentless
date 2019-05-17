@@ -361,7 +361,8 @@ namespace Loom.ZombieBattleground.Common
             DECKS_OPPONENT_DATA,
             USER_LOCAL_DATA,
             CREDITS_DATA,
-            BUFFS_TOOLTIP_DATA
+            BUFFS_TOOLTIP_DATA,
+            OVERLORD_LEVELING_DATA,
         }
 
         public enum CardKind
@@ -765,12 +766,13 @@ namespace Loom.ZombieBattleground.Common
             RankBuff,
             AbilityUsage,
             UnitDeath,
-            WholeBoardUpdate,
-            PlayerBoardUpdate,
-            OpponentBoardUpdate,
             OverlordSkillUsage,
+            OverlordSkillUsageBlocker,
             AbilityUsageBlocker,
-            StopTurn,
+            AbilityTargetingBlocker,
+            StopTurnPart1Prepare,
+            StopTurnPart2InvokePlayerTurnEnded,
+            StopTurnPart3Finish,
             EndMatch,
             UnitCombat,
             LeaveMatch

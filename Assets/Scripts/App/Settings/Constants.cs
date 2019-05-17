@@ -4,7 +4,7 @@ namespace Loom.ZombieBattleground.Common
 {
     public static class Constants
     {
-        internal const string CurrentVersionBase = "0.1.20";
+        internal const string CurrentVersionBase = "0.1.21";
 
         internal const string VersionFileResolution = ".ver";
 
@@ -17,8 +17,6 @@ namespace Loom.ZombieBattleground.Common
         internal const string LocalBuffsTooltipDataFileName = "buffs_tooltip_data.json";
 
         internal const string LocalConfigDataFileName = "config_data.json";
-
-        internal const string LocalOverlordsDataFileName = "overlords_data.json";
 
         internal const string LocalCollectionDataFileName = "collection_data.json";
 
@@ -195,7 +193,7 @@ namespace Loom.ZombieBattleground.Common
 
         public const bool UsingCardTooltips = false;
 
-        public const bool RankSystemEnabled = false;
+        public static readonly bool RankSystemEnabled = false;
 
         public const bool GameStateValidationEnabled =
 #if UNITY_EDITOR

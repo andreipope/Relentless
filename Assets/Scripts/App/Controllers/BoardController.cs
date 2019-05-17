@@ -85,7 +85,7 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
         public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
@@ -155,8 +155,7 @@ namespace Loom.ZombieBattleground
         public Vector2 GetCorrectPositionOfUnitOnBoard(Player player, BoardUnitView boardUnitView)
         {
             UnitPositionOnBoard unitPositionOnBoard =
-                GetPositionsForUnits(_battlegroundController.GetBoardUnitViewsFromModels(
-                                        player.PlayerCardsController.CardsOnBoard),
+                GetPositionsForUnits(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard),
                                      player.IsLocalPlayer).Find(item => item.BoardUnitView == boardUnitView);
 
             if (unitPositionOnBoard != null)
