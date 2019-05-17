@@ -70,6 +70,7 @@ namespace Loom.ZombieBattleground
             _applicationSettingsManager.OnResolutionChanged += RefreshSettingPopup;
 #endif
             _cachePreviousFrameResolution = Screen.currentResolution;
+            OnResolutionOrScreenModeHasChanged += FixSliderAndDropdownZPosition;
         }
 
         public void Dispose()
@@ -223,6 +224,24 @@ namespace Loom.ZombieBattleground
 
             _cachePreviousFrameResolution = Screen.currentResolution;
 #endif
+        }
+        
+        private void FixSliderAndDropdownZPosition()
+        {
+            List<Transform> transformsList = new List<Transform>()
+            {
+                _musicVolumeSlider.transform,
+                _sfxVolumeSlider.transform,
+                _resolutionDropdown.transform,
+                _screenModeDropdown.transform
+            };
+            Vector3 pos;
+            foreach(Transform tran in transformsList)
+            {
+                pos = tran.localPosition;
+                pos.z = 0f;
+                tran.localPosition = pos;
+            }
         }
 
         private void FillInfo()
