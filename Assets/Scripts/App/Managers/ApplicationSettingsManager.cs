@@ -45,6 +45,8 @@ namespace Loom.ZombieBattleground
             CurrentScreenMode = _dataManager.CachedUserLocalData.AppScreenMode;
             CurrentResolution = Resolutions.Find(x => x.Resolution.x == _dataManager.CachedUserLocalData.AppResolution.x &&
                 x.Resolution.y == _dataManager.CachedUserLocalData.AppResolution.y);
+
+            SetScreenMode(CurrentScreenMode);
 #endif
         }
 
@@ -118,8 +120,12 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void FillResolutions()
+        public void FillResolutions()
         {
+            if(Resolutions != null)
+            {
+                Resolutions.Clear();
+            }
             Resolutions = new List<ResolutionInfo>();
 
             ResolutionInfo info;
