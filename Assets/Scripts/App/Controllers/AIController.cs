@@ -850,7 +850,6 @@ namespace Loom.ZombieBattleground
             {
                 if(!CardCanBePlayable(cardModel) && !ignorePlayAbility)
                 {
-                    Debug.LogWarning("FUCK MY LIFE");
                     completeCallback?.Invoke();
                     return;
                 }
