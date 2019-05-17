@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
             {
                 List<PastActionsPopup.TargetEffectParam> targetEffects = new List<PastActionsPopup.TargetEffectParam>();
 
-                foreach (CardModel unit in _targets)
+                foreach (IBoardObject unit in _targets)
                 {
                     targetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {

@@ -8,6 +8,7 @@ using Loom.ZombieBattleground.Data;
 using Loom.ZombieBattleground.Gameplay;
 using Loom.ZombieBattleground.Helpers;
 using TMPro;
+using log4net;
 using UnityEngine;
 using UnityEngine.UI;
 using static Loom.ZombieBattleground.OverlordExperienceManager;
@@ -17,6 +18,7 @@ namespace Loom.ZombieBattleground
 {
     public class LevelUpPopup : IUIPopup
     {
+        private static readonly ILog Log = Logging.GetLog(nameof(LevelUpPopup));
         private readonly WaitForSeconds _experienceFillWait = new WaitForSeconds(1);
 
         private const string _hideParameterName = "Hide";
@@ -185,8 +187,19 @@ namespace Loom.ZombieBattleground
 
         private void AbilityInstanceOnSelectionChanged(AbilityViewItem ability)
         {
-            _skillName.text = ability.Skill.Title;
-            _skillDescription.text = ability.Skill.Description;
+            //Frequent crash here
+            //this null check will allow QA to
+            //confirm if there's anything wrong when Skill == null
+            //visually
+            if (ability.Skill != null)
+            {
+                _skillName.text = ability.Skill.Title;
+                _skillDescription.text = ability.Skill.Description;
+            }
+            else
+            {
+                Log.Warn("Error: Ability Skill was null " + ability);
+            }
         }
 
         private void AnimationEventTriggeredHandler(string animationName)

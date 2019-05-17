@@ -542,7 +542,7 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
-
+            
             _gameplayManager.CurrentPlayer.InvokeTurnEnded();
             _gameplayManager.OpponentPlayer.InvokeTurnEnded();
         }
@@ -551,7 +551,7 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.IsGameEnded)
                 return;
-
+            
             if (_gameplayManager.IsLocalPlayerTurn())
             {
                 TurnEnded?.Invoke();
@@ -598,11 +598,22 @@ namespace Loom.ZombieBattleground
                     {
                         _uiManager.DrawPopup<YourTurnPopup>();
 
-                        InternalTools.DoActionDelayed(() =>
+                        YourTurnPopup yourTurnPopup = _uiManager.GetPopup<YourTurnPopup>();
+                        
+                        //We unregister from any possible previous event
+                        //This should be the only handler that runs
+                        if (yourTurnPopup.OnPopupHide != null)
                         {
+                            foreach (Delegate d in yourTurnPopup.OnPopupHide.GetInvocationList())
+                            {
+                                yourTurnPopup.OnPopupHide -= (Action)d;
+                            }
+                        }
+                        
+                        yourTurnPopup.OnPopupHide += () => {
                             StartTurn();
                             completeCallback?.Invoke();
-                        }, Constants.DelayBetweenYourTurnPopup);
+                        };
                     }
                     else
                     {

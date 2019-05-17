@@ -116,15 +116,18 @@ namespace Loom.ZombieBattleground
                 }
             }
 
-            _targets = new List<IBoardObject>();
-            int count = Mathf.Max(1, Count);
-            while (count > 0 && possibleTargets.Count > 0)
-            {   
-                int chosenIndex = MTwister.IRandom(0, possibleTargets.Count-1);
-                _targets.Add(possibleTargets[chosenIndex]);
-                possibleTargets.RemoveAt(chosenIndex);
-                count--;
-            }
+            possibleTargets = possibleTargets.OrderByDescending((x) => {
+                switch (x)
+                {
+                    case CardModel unit:
+                        return unit.InstanceId.Id;
+                    case Player player:
+                        return player.InstanceId.Id;
+                }
+                return InstanceId.Invalid.Id;
+            }).ToList();
+
+            _targets = GetRandomElements(possibleTargets, Count);
 
             _calculatedDamage  = Mathf.Max(1, Damage);
 
