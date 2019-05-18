@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground.Editor
 #endif
 
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
-            EditorUserBuildSettings.androidDebugMinification = AndroidMinification.Proguard;
+            EditorUserBuildSettings.androidDebugMinification = AndroidMinification.None;
             EditorUserBuildSettings.androidReleaseMinification = AndroidMinification.Proguard;
         }
     }
