@@ -228,6 +228,9 @@ namespace Loom.ZombieBattleground
         
         private void FixSliderAndDropdownZPosition()
         {
+            if (_musicVolumeSlider == null || _sfxVolumeSlider == null || _resolutionDropdown == null || _screenModeDropdown == null)
+                return;
+
             List<Transform> transformsList = new List<Transform>()
             {
                 _musicVolumeSlider.transform,

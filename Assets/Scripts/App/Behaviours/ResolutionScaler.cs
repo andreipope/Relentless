@@ -66,6 +66,9 @@ namespace Loom.ZombieBattleground
 
         private void SettingCameras()
         {
+            if (_cameras == null || _cameras [0] == null)
+                return;
+
             float cameraSize = _squareFactorScreen ? _squareFactorCameraSize : _cameras[0].orthographicSize;
 
             foreach (Camera camera in _cameras)
