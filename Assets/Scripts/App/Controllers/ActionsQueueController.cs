@@ -132,9 +132,8 @@ namespace Loom.ZombieBattleground
         /// <returns></returns>
         private static bool IsStrictlyChildlessAction(Enumerators.QueueActionType actionType)
         {
-            // StopTurnPart2InvokePlayerTurnEnded is not here since we WANT actions to be added to it
+            // StopTurnPart2InvokePlayerTurnEnded and StopTurnPart1Prepare are not here since we WANT actions to be added to it
             return
-                actionType == Enumerators.QueueActionType.StopTurnPart1Prepare ||
                 actionType == Enumerators.QueueActionType.StopTurnPart3Finish ||
                 actionType == Enumerators.QueueActionType.EndMatch ||
                 actionType == Enumerators.QueueActionType.LeaveMatch;

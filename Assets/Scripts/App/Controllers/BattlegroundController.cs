@@ -952,7 +952,8 @@ namespace Loom.ZombieBattleground
         {
             if (!isForceDestroy && unit.HasBuffShield && handleShield)
             {
-                unit.UseShieldFromBuff();
+                unit.HasUsedBuffShield = true;
+                unit.ResolveBuffShield();
             }
             else
             {
@@ -992,7 +993,8 @@ namespace Loom.ZombieBattleground
             card.HasBuffHeavy = false;
             card.SetMaximumDamageToUnit(999);
             card.SetAsWalkerUnit();
-            card.UseShieldFromBuff();
+            card.HasUsedBuffShield = true;
+            card.ResolveBuffShield();
             card.AttackRestriction = Enumerators.AttackRestriction.ANY;
             card.AttackTargetsAvailability = new List<Enumerators.SkillTarget>()
             {
