@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground
         {
             _screenSize = new Vector2(Screen.width, Screen.height);
 
-            if (_canvases.Length > 0)
+            if (_canvases.Length > 0 && _canvases[0] != null)
             {
                 int displayIndex = _canvases[0].targetDisplay;
                 if (displayIndex > 0 && displayIndex < Display.displays.Length)
@@ -58,6 +58,9 @@ namespace Loom.ZombieBattleground
 
         private void SettingCanvases()
         {
+            if (_canvases == null || _canvases.Length == 0 || _canvases[0] == null)
+                return;
+                
             float canvasMatchParam = _squareFactorScreen ? _squareFactorCanvasMatch : 1f;
 
             foreach (Canvas canvas in _canvases)

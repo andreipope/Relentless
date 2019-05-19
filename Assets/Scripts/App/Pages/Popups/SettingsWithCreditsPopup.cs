@@ -228,15 +228,24 @@ namespace Loom.ZombieBattleground
         
         private void FixSliderAndDropdownZPosition()
         {
-            if (_musicVolumeSlider == null || _sfxVolumeSlider == null || _resolutionDropdown == null || _screenModeDropdown == null)
+            if (_musicVolumeSlider == null || _sfxVolumeSlider == null)
                 return;
+
+#if !UNITY_ANDROID && !UNITY_IOS
+            if (_resolutionDropdown == null || _screenModeDropdown == null)
+                return;
+#endif
+
 
             List<Transform> transformsList = new List<Transform>()
             {
                 _musicVolumeSlider.transform,
-                _sfxVolumeSlider.transform,
+                _sfxVolumeSlider.transform
+#if !UNITY_ANDROID && !UNITY_IOS
+                ,
                 _resolutionDropdown.transform,
                 _screenModeDropdown.transform
+#endif
             };
             Vector3 pos;
             foreach(Transform tran in transformsList)
