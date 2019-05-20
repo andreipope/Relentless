@@ -73,6 +73,8 @@ namespace Loom.ZombieBattleground
                     playerOwner.PlayerCardsController.CardsInGraveyard
                         .FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
 
+                elements = elements.OrderByDescending(x => x.InstanceId.Id).ToList();
+                
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
                 {
                     elements = GetRandomElements(elements, Count);
