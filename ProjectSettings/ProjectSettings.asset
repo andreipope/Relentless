@@ -610,6 +610,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   scriptingDefineSymbols:
     1: 
+    7: 
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
@@ -704,7 +705,7 @@ PlayerSettings:
   apiCompatibilityLevel: 3
   cloudProjectId: 227000ce-c46a-4627-abea-e35335a5bbf7
   framebufferDepthMemorylessMode: 0
-  projectName: battleground
+  projectName: Relentless
   organizationId: loom-network
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0

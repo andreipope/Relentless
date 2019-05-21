@@ -73,7 +73,7 @@ namespace Loom.ZombieBattleground
         {
             if (!_isRewardClaimed)
             {
-                _uiManager.DrawPopup<LoadingFiatPopup>("Request TutorialReward");
+                _uiManager.DrawPopup<LoadingOverlayPopup>("Request TutorialReward");
                 _message.text = "Request TutorialReward";
                 _buttonOk.gameObject.SetActive(false);
                 TutorialRewardManager tutorialRewardManager = GameClient.Get<TutorialRewardManager>();
@@ -86,7 +86,7 @@ namespace Loom.ZombieBattleground
                 {
                     _message.text = "Reward claim fail";
                 }
-                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.HidePopup<LoadingOverlayPopup>();
                 
                 _isRewardClaimed = true;
                 _buttonOk.gameObject.SetActive(true);

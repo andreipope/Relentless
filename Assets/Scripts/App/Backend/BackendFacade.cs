@@ -321,11 +321,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Url = BackendEndpoint.AuthHost + userInfoEndPoint;
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + accessToken);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetUserInfo)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             UserInfo userInfo = JsonConvert.DeserializeObject<UserInfo>(
                 httpResponseMessage.ReadToEnd(),
@@ -351,11 +348,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateLogin)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             Log.Debug(httpResponseMessage.ReadToEnd());
             LoginData loginData = JsonConvert.DeserializeObject<LoginData>(
@@ -377,13 +371,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("authority", "auth.loom.games");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            Log.Debug(httpResponseMessage.ToString());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(InitiateRegister)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             RegisterData registerData = JsonConvert.DeserializeObject<RegisterData>(
                 httpResponseMessage.ReadToEnd());
@@ -395,12 +384,8 @@ namespace Loom.ZombieBattleground.BackendCommunication
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = BackendEndpoint.AuthHost + forgottenPasswordEndPoint + "?email=" + email + "&kind=signup";
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception(
-                    $"{nameof(InitiateForgottenPassword)} failed with error code {httpResponseMessage.StatusCode}");
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             return true;
         }
@@ -419,13 +404,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultToken)} failed with error code {httpResponseMessage.StatusCode}");
 
             CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
                 httpResponseMessage.ReadToEnd());
@@ -446,13 +427,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             Log.Debug(JsonConvert.SerializeObject(vaultTokenRequest));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(CreateVaultTokenForNon2FAUsers)} failed with error code {httpResponseMessage.StatusCode}");
 
             CreateVaultTokenData vaultTokenData = JsonConvert.DeserializeObject<CreateVaultTokenData>(
                 httpResponseMessage.ReadToEnd());
@@ -472,8 +449,6 @@ namespace Loom.ZombieBattleground.BackendCommunication
             HttpResponseMessage httpResponseMessage =
                 await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
 
-            Log.Debug(httpResponseMessage.ReadToEnd());
-
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 if (httpResponseMessage.StatusCode.ToString() == Constants.VaultEmptyErrorCode)
@@ -482,9 +457,11 @@ namespace Loom.ZombieBattleground.BackendCommunication
                 }
                 else
                 {
-                    throw new Exception($"{nameof(GetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
+                    httpResponseMessage.ThrowOnError(webrequestCreationInfo);
                 }
             }
+            Log.Debug(httpResponseMessage.ReadToEnd());
+
 
             GetVaultDataResponse getVaultDataResponse = JsonConvert.DeserializeObject<GetVaultDataResponse>(
                 httpResponseMessage.ReadToEnd());
@@ -505,15 +482,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("X-Vault-Token", vaultToken);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-
-            if (!httpResponseMessage.IsSuccessStatusCode)
-            {
-                throw new Exception($"{nameof(SetVaultData)} failed with error code {httpResponseMessage.StatusCode}");
-            }
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
             return true;
         }
@@ -527,12 +498,9 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
             Log.Debug(webrequestCreationInfo.Url);
 
-            HttpResponseMessage httpResponseMessage =
-                await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
-
+            HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
+            httpResponseMessage.ThrowOnError(webrequestCreationInfo);
             Log.Debug(httpResponseMessage.ReadToEnd());
-            if (!httpResponseMessage.IsSuccessStatusCode)
-                throw new Exception($"{nameof(GetServerURLs)} failed with error code {httpResponseMessage.StatusCode}");
 
             ServerUrlsResponse serverInfo = JsonConvert.DeserializeObject<ServerUrlsResponse>(
                 httpResponseMessage.ReadToEnd()

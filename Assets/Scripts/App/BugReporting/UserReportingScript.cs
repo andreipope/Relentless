@@ -259,7 +259,7 @@ public class UserReportingScript : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(transform.root.gameObject);
 
-#if !UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER
+#if (!UNITY_EDITOR || FORCE_ENABLE_CRASH_REPORTER) && !DISABLE_CRASH_REPORTER
         Application.logMessageReceived += OnLogMessageReceived;
 #endif
     }
