@@ -19,8 +19,11 @@ public class MTwister
     static uint[] mt = new uint[MERS_N];
     static uint mti;
 
+    static int callCount;
+
     static public void RandomInit(uint seed)
     {
+        callCount = 0;
         mt[0] = seed;
         for (mti = 1; mti < MERS_N; mti++)
         {
@@ -41,7 +44,8 @@ public class MTwister
     }
     static public double Random()
     {
-        Log.Debug("Random request");
+        callCount++;
+        Log.Debug("Random request number " + callCount);
         uint r = BRandom(); // get 32 random bits
         if (BitConverter.IsLittleEndian)
         {
