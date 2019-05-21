@@ -535,6 +535,10 @@ namespace Loom.ZombieBattleground
             }
 
             _finishedApplicationQuitSequence = true;
+
+            await new WaitForSeconds(0.2f);
+            await new WaitForUpdate();
+
             Application.Quit();
         }
     }
