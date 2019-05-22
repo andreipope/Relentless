@@ -34,7 +34,7 @@ namespace Loom.ZombieBattleground
 
             int sortingIndex = sortingGroup.sortingLayerID;
 
-            sortingGroup.sortingLayerID = SRSortingLayers.GameUI3;
+            sortingGroup.sortingLayerID = SRSortingLayers.GameplayInfo;
 
             List<GameObject>  allUnitObj = unitView.GameObject.GetComponentsInChildren<Transform>().Select(x => x.gameObject).ToList();
             foreach (GameObject child in allUnitObj)
