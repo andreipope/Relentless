@@ -672,16 +672,16 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private Dictionary<T, int> GetRandomTargetsByAmount<T>(List<T> root, int count)
+        private Dictionary<T, int> GetRandomTargetsByAmount<T>(List<T> root, int count, bool useDeterministic = false)
         {
-            Dictionary<T, int> targets = InternalTools.GetRandomElementsFromList(root, count).ToDictionary(x => x, с => 1);
+            Dictionary<T, int> targets = InternalTools.GetRandomElementsFromList(root, count, useDeterministic).ToDictionary(x => x, с => 1);
 
             if (targets.Count < count)
             {
                 int delta = count - targets.Count;
                 for (int i = 0; i < delta; i++)
                 {
-                    targets[InternalTools.GetRandomElementsFromList(root, 1)[0]]++;
+                    targets[InternalTools.GetRandomElementsFromList(root, 1, useDeterministic)[0]]++;
                 }
             }
             return targets;
@@ -974,7 +974,7 @@ namespace Loom.ZombieBattleground
                 Player opponent = _gameplayManager.GetOpponentByPlayer(owner);
 
                 boardObjects.Add(opponent);
-                boardObjects.AddRange(opponent.CardsOnBoard);
+                boardObjects.AddRange(opponent.CardsOnBoard.Where(x => !x.IsDead && x.CurrentDefense > 0).ToList());
 
                 sortedTargets = GetRandomTargetsByAmount(boardObjects, skill.Count);
 
@@ -1136,9 +1136,9 @@ namespace Loom.ZombieBattleground
             else
             {
                 units = owner.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Enumerators.Faction.TOXIC);
-                units = _battlegroundController.GetDeterministicRandomElements(units.ToList(), skill.Count);
+                units = _battlegroundController.GetRandomUnits(units.ToList(), skill.Count);
                 count = units.Count;
-                opponentUnits = _battlegroundController.GetDeterministicRandomUnits(
+                opponentUnits = _battlegroundController.GetRandomUnits(
                     _gameplayManager.GetOpponentByPlayer(owner).CardsOnBoard.ToList(),
                     skill.Count);
 
@@ -1536,22 +1536,27 @@ namespace Loom.ZombieBattleground
             List<BoardUnitView> units = new List<BoardUnitView>();
             BoardUnitView reanimatedUnit = null;
 
-            foreach (CardModel card in cards)
+            foreach (CardModel cardModel in cards)
             {
-                if (card == null)
+                if (cardModel == null)
                     continue;
 
                 if (owner.CardsOnBoard.Count >= owner.MaxCardsInPlay)
                     break;
 
-                card.ResetToInitial();
+                owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
+                cardModel.ResetToInitial();
 
-                reanimatedUnit = CreateBoardUnit(card, owner);
+                Card prototype = new Card(GameClient.Get<IDataManager>().CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
+                WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, cardModel.Card.InstanceId);
+                CardModel reanimatedUnitModel = new CardModel(card);
+
+                reanimatedUnit = CreateBoardUnit(reanimatedUnitModel, owner);
                 units.Add(reanimatedUnit);
                 targetEffects.Add(new PastActionsPopup.TargetEffectParam()
                 {
                     ActionEffectType = Enumerators.ActionEffectType.Reanimate,
-                    Target = card
+                    Target = reanimatedUnitModel
                 });
             }
 
@@ -1577,21 +1582,21 @@ namespace Loom.ZombieBattleground
                 boardUnitView.Model.IsPlayable = true;
             }
 
-            boardUnitView.StopSleepingParticles();
-
             _gameplayManager.CanDoDragActions = true;
             
             boardUnitView.ChangeModelVisibility(false);
 
-            owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
+            _battlegroundController.RegisterCardView(boardUnitView, owner);
+
+            if (cardModel.Owner.IsLocalPlayer || _gameplayManager.IsLocalPlayerTurn()) 
+            {
+                _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel, false);
+                _abilitiesController.ActivateAbilitiesOnCard(cardModel, cardModel, owner);
+            }
+
+            _abilitiesController.ResolveAllAbilitiesOnUnit(cardModel);
 
             owner.PlayerCardsController.AddCardToBoard(boardUnitView.Model, ItemPosition.End);
-
-            if (owner.IsLocalPlayer)
-            {
-                _abilitiesController.ActivateAbilitiesOnCard(boardUnitView.Model, cardModel, owner);
-            }
-            _battlegroundController.RegisterCardView(boardUnitView, owner);
 
             return boardUnitView;
         }
