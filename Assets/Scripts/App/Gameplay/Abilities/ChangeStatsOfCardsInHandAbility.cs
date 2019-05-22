@@ -24,8 +24,6 @@ namespace Loom.ZombieBattleground
 
         public int Count { get;  }
 
-        private bool _lastAuraActive;
-
         private List<ValueHistory> _changedValues;
 
         public ChangeStatsOfCardsInHandAbility(Enumerators.CardKind cardKind, AbilityData ability)
@@ -78,7 +76,6 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.AURA)
                 return;
 
-            _lastAuraActive = status;
             if (status)
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
@@ -96,7 +93,7 @@ namespace Loom.ZombieBattleground
         protected override void HandChangedHandler(int count)
         {
 
-            if (_lastAuraActive) 
+            if (LastAuraState) 
             {
                 _affectedCards?.ForEach(ResetStatsOfTargetCard);
                 CheckSubTriggers();
