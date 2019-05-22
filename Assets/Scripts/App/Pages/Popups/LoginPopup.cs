@@ -754,7 +754,11 @@ namespace Loom.ZombieBattleground
             (int? notificationId, EndMatchResults endMatchResults) =
                 await GameClient.Get<IOverlordExperienceManager>().GetEndMatchResultsFromEndMatchNotification();
 
-            if (endMatchResults != null)
+            if 
+            (
+                endMatchResults != null &&
+                _uiManager.GetPopup<QuestionPopup>().Self == null
+            )
             {
                 _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });
             }
