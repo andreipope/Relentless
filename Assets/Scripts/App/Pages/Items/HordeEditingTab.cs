@@ -549,11 +549,13 @@ namespace Loom.ZombieBattleground
                 }
 
                 BoardCardView boardCard;
+                Vector3 position = CollectionsCardPositions[i % CollectionsCardPositions.Count].position;
                 
                 if(_collectionBoardCardsPool.Exists(x => x.Model.Name == card.Name))                
                 {
                     boardCard = _collectionBoardCardsPool.Find(x => x.Model.Name == card.Name);
                     _collectionBoardCardsPool.Remove(boardCard);
+                    boardCard.Transform.position = position;
                 }
                 else
                 {
@@ -561,7 +563,7 @@ namespace Loom.ZombieBattleground
                     (
                         card,
                         rectContainer,
-                        CollectionsCardPositions[i % CollectionsCardPositions.Count].position,
+                        position,
                         BoardCardScale
                     );
                     
