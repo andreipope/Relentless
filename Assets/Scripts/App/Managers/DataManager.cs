@@ -191,11 +191,10 @@ namespace Loom.ZombieBattleground
 
             _dir = new DirectoryInfo(Application.persistentDataPath + "/");
 
+            CheckVersion();
             LoadLocalCachedData();
 
             GameClient.Get<ISoundManager>().ApplySoundData();
-
-            CheckVersion();
         }
 
         public void Update()
