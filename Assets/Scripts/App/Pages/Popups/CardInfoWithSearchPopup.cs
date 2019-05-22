@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoWithSearchPopup"));
-            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>
             (
