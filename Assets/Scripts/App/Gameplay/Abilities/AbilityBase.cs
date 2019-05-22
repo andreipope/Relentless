@@ -219,7 +219,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        public virtual void Activate()
+        public async virtual void Activate()
         {
             GameplayManager.GameEnded += GameEndedHandler;
 
@@ -253,6 +253,8 @@ namespace Loom.ZombieBattleground
             }
 
             SelectedPlayer = PlayerCallerOfAbility.IsLocalPlayer ? _playerAvatar : _opponentAvatar;
+
+            await new WaitForUpdate();
 
             ChangeAuraStatusAction(true);
             LastAuraState = true;

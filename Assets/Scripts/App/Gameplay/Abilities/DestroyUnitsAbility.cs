@@ -93,9 +93,10 @@ namespace Loom.ZombieBattleground
                 }
             }
 
+            _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
+
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
-                _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
                 _units = GetRandomUnits(_units, Count);
             }
 

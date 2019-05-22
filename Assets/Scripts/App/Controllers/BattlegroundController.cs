@@ -1352,6 +1352,17 @@ namespace Loom.ZombieBattleground
             return InternalTools.GetRandomElementsFromList(elements, count, true);
         }
 
+        public List<CardModel> GetRandomUnits(List<CardModel> units, int count)
+        {
+            return GetRandomElements(units, count)
+                .FindAll(card => card.CurrentDefense > 0 && !card.IsDead && card.IsUnitActive);
+        }
+
+        public List<T> GetRandomElements<T>(List<T> elements, int count)
+        {
+            return InternalTools.GetRandomElementsFromList(elements, count);
+        }
+
         public IEnumerable<CardModel> GetAliveUnits(IEnumerable<CardModel> units)
         {
             return units.Where(card => card.IsAlive());

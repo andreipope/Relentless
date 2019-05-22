@@ -74,7 +74,7 @@ namespace Loom.ZombieBattleground
                         .FindAll(card => card.Card.Prototype.Kind == Enumerators.CardKind.CREATURE && card != AbilityUnitOwner);
 
                 elements = elements.OrderByDescending(x => x.InstanceId.Id).ToList();
-                
+
                 if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
                 {
                     elements = GetRandomElements(elements, Count);
@@ -114,7 +114,12 @@ namespace Loom.ZombieBattleground
         {
             owner.PlayerCardsController.RemoveCardFromGraveyard(cardModel);
             cardModel.ResetToInitial();
-            owner.PlayerCardsController.SpawnUnitOnBoard(cardModel, ItemPosition.End, IsPVPAbility);
+
+            Card prototype = new Card(DataManager.CachedCardsLibraryData.GetCardFromName(cardModel.Card.Prototype.Name));
+            WorkingCard card = new WorkingCard(prototype, prototype, cardModel.OwnerPlayer, cardModel.Card.InstanceId);
+            CardModel resurrectedUnitModel = new CardModel(card);
+
+            owner.PlayerCardsController.SpawnUnitOnBoard(resurrectedUnitModel, ItemPosition.End, IsPVPAbility);
 
             targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
