@@ -576,7 +576,6 @@ namespace Loom.ZombieBattleground
                     float delay = (!_tutorialManager.IsTutorial && _matchManager.MatchType == Enumerators.MatchType.PVP) ? 2 : 0;
                     InternalTools.DoActionDelayed(() =>
                     {
-                        TurnWaitingForEnd = false;
                         ValidateGameState(pvpControlGameState);
                         EndTurnPart1Prepare();
                         completeCallback.Invoke();
@@ -593,6 +592,7 @@ namespace Loom.ZombieBattleground
             _actionsQueueController.EnqueueAction(
                 completeCallback =>
                 {
+                    TurnWaitingForEnd = false;
                     EndTurnPart3Finish();
                     if (_gameplayManager.IsLocalPlayerTurn())
                     {
