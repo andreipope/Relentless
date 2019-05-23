@@ -161,6 +161,9 @@ namespace Loom.ZombieBattleground
             if (_gameplayManager.IsGameEnded)
                 return;
 
+            if (_gameplayManager.GetController<CardsController>().BlockPlayFromHand)
+                return;
+            
             _cardsController.ResetPlayerCardsOnBattlegroundPosition();
 
             _alreadySelected = false;

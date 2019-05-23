@@ -80,6 +80,8 @@ namespace Loom.ZombieBattleground
         
         public bool BlockEndTurnButton { get; private set; }
 
+        public bool BlockPlayFromHand { get; private set; }
+
         public void Init()
         {
             _gameplayManager = GameClient.Get<IGameplayManager>();
@@ -119,6 +121,7 @@ namespace Loom.ZombieBattleground
         {
             ResetChoosalbeCardsList();
             BlockEndTurnButton = false;
+            BlockPlayFromHand = false;
         }
 
         public void Update()
@@ -448,12 +451,14 @@ namespace Loom.ZombieBattleground
             IBoardObject target = null,
             bool skipEntryAbilities = false)
         {
+            BlockPlayFromHand = true;
             GameplayActionQueueAction.ExecutedActionDelegate playCardAction = completeCallback =>
             {
                 if (!card.Model.CanBePlayed(card.Model.Card.Owner))
                 {
                     card.HandBoardCard.ResetToInitialPosition();
                     completeCallback();
+                    BlockPlayFromHand = false;
                     return;
                 }
 
@@ -567,6 +572,7 @@ namespace Loom.ZombieBattleground
 
                                 completeCallback();
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
+                                BlockPlayFromHand = false;
                             });
                         boardUnitView.PlayArrivalAnimation(playUniqueAnimation: true);
                         break;
@@ -608,6 +614,7 @@ namespace Loom.ZombieBattleground
                                 completeCallback();
                                 _actionsQueueController.ForceContinueAction(callAbilityAction);
                                 BlockEndTurnButton = false;
+                                BlockPlayFromHand = false;
                             }, 0.75f);
                             break;
                         }
