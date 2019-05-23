@@ -45,7 +45,7 @@ namespace Loom.ZombieBattleground.Iap
             return appleReceipt;
         }
 
-        private static RawPurchaseReceipt ParseRawReceipt(string receiptString, string expectedStore)
+        public static RawPurchaseReceipt ParseRawReceipt(string receiptString, string expectedStore)
         {
             RawPurchaseReceipt rawPurchaseReceipt = JsonConvert.DeserializeObject<RawPurchaseReceipt>(receiptString);
 #if !UNITY_EDITOR

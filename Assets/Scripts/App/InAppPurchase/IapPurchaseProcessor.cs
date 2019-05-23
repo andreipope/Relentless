@@ -7,6 +7,7 @@ using Loom.Client;
 using Newtonsoft.Json;
 using OneOf;
 using OneOf.Types;
+using UnityEngine.Assertions;
 using UnityEngine.Purchasing.Security;
 
 namespace Loom.ZombieBattleground.Iap
@@ -49,15 +50,16 @@ namespace Loom.ZombieBattleground.Iap
                         googlePlayReceipt.purchaseToken
                     );
 #elif UNITY_IOS
-                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(args.purchasedProduct.receipt);
-                Log.Debug($"{nameof(OnProcessPurchase)}: AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
+                AppleReceipt appleReceipt = IapReceiptParser.ParseAppleReceipt(receipt);
+                Log.Debug($"{nameof(ProcessPurchase)}: AppleReceipt:\n" + JsonUtility.PrettyPrint(JsonConvert.SerializeObject(appleReceipt)));
                 Assert.AreEqual(1, appleReceipt.inAppPurchaseReceipts.Length);
 
                 fiatValidationData =
                     new FiatValidationDataAppStore(
-                        product.definition.id,
-                        product.transactionID,
-                        ParseRawReceipt(args.purchasedProduct.receipt, "AppleAppStore").Payload);
+                        appleReceipt.inAppPurchaseReceipts[0].productID,
+                        appleReceipt.inAppPurchaseReceipts[0].transactionID,
+                        IapReceiptParser.ParseRawReceipt(receipt, "AppleAppStore").Payload
+                    );
 #endif
             }
             catch (IapException e)
@@ -175,7 +177,7 @@ namespace Loom.ZombieBattleground.Iap
 
             try
             {
-                await _authFiatApiFacade.Claim(userId, new List<int>{ txId });
+                await _authFiatApiFacade.Claim(userId, new [] { txId });
             }
             catch (Exception e)
             {
