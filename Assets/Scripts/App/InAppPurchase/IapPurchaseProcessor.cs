@@ -62,10 +62,6 @@ namespace Loom.ZombieBattleground.Iap
                     );
 #endif
             }
-            catch (IapException e)
-            {
-                return e;
-            }
             catch (Exception e)
             {
                 Log.Info($"{nameof(ProcessPurchase)} failed: " + e);
@@ -149,7 +145,7 @@ namespace Loom.ZombieBattleground.Iap
             catch (TxCommitException e)
             {
                 // If the pack was already claimed, call is expected to fail. We can safely ignore this.
-                Log.Warn($"{nameof(_fiatPlasmaManager.ClaimPacks)} failed: " + e);
+                Log.Debug($"{nameof(_fiatPlasmaManager.ClaimPacks)} failed, this is expected: " + e);
             }
             catch (IapException e)
             {

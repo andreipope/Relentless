@@ -25,24 +25,20 @@ namespace Loom.ZombieBattleground
         private static readonly ILog Log = Logging.GetLog(nameof(AuthFiatApiFacade));
 
         private BackendDataControlMediator _backendDataControlMediator;
-    
+
         public void Init()
         {
             _backendDataControlMediator = GameClient.Get<BackendDataControlMediator>();
         }
-        
-        public void Update()
-        {
-        }
-        
-        public void Dispose()
-        {
-        }
-        
+
+        public void Update() { }
+
+        public void Dispose() { }
+
         public async Task<ValidationResponse> RegisterTransactionAndValidate(FiatValidationData fiatValidationData)
-        {  
+        {
             Log.Info($"{nameof(RegisterTransactionAndValidate)}");
-            
+
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatValidationURL;
@@ -52,20 +48,20 @@ namespace Loom.ZombieBattleground
             Log.Debug("Fiat validation data:\n" + JsonUtility.PrettyPrint(fiatValidationDataJson));
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(fiatValidationDataJson);
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
-            
+
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
-            string json = httpResponseMessage.ReadToEnd();          
+            string json = httpResponseMessage.ReadToEnd();
             Log.Info(json);
             ValidationResponse response = JsonConvert.DeserializeObject<ValidationResponse>(json);
             return response;
         }
 
         public async Task<List<TransactionResponse>> ListPendingTransactions()
-        {    
+        {
             Log.Info($"{nameof(ListPendingTransactions)}");
-                 
+
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatTransactionURL;
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
@@ -76,28 +72,24 @@ namespace Loom.ZombieBattleground
 
             string json = httpResponseMessage.ReadToEnd();
             List<TransactionResponse> fiatResponseList = JsonConvert.DeserializeObject<List<TransactionResponse>>(json);
-    
-            foreach(TransactionResponse reponse in fiatResponseList)
+            foreach (TransactionResponse response in fiatResponseList)
             {
-                Log.Info("TransactionResponse hash: " + reponse.VerifyHash.hash);
+                Log.Info("TransactionResponse hash: " + response.VerifyHash.hash);
             }
 
             return fiatResponseList;
         }
-        
+
         public async Task<IReadOnlyList<StoreData>> GetProducts()
         {
             Log.Info($"{nameof(GetProducts)}");
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatProductsURL;
-            
+
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
 
-            StoresDataList apiProductList = JsonConvert.DeserializeObject<StoresDataList>
-            (
-                httpResponseMessage.ReadToEnd()
-            );
+            StoresDataList apiProductList = JsonConvert.DeserializeObject<StoresDataList>(httpResponseMessage.ReadToEnd());
             return apiProductList.products;
         }
 
@@ -109,7 +101,7 @@ namespace Loom.ZombieBattleground
         }
 
         /// <summary>
-        /// Removes the transactions from the database;
+        /// Removes the transactions from the database.
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="transactionIds"></param>
@@ -117,24 +109,25 @@ namespace Loom.ZombieBattleground
         /// <exception cref="Exception"></exception>
         public async Task<bool> Claim(int userId, IReadOnlyList<int> transactionIds)
         {
-            Log.Info($"{nameof(Claim)}");
-            
+            Log.Info($"{nameof(Claim)}(userId = {userId}, transactionIds = {Utilites.FormatCallLogList(transactionIds)})");
+
             WebrequestCreationInfo webrequestCreationInfo = new WebrequestCreationInfo();
             webrequestCreationInfo.Method = WebRequestMethod.POST;
             webrequestCreationInfo.Url = PlasmaChainEndpointsContainer.FiatClaimURL;
             webrequestCreationInfo.ContentType = "application/json";
-            
+
             FiatClaimRequestBody body = new FiatClaimRequestBody();
             body.user_id = userId;
-            body.transaction_ids = transactionIds.ToArray();  
-            
+            body.transaction_ids = transactionIds.ToArray();
+
             webrequestCreationInfo.Data = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(body));
             webrequestCreationInfo.Headers.Add("accept", "application/json, text/plain, */*");
             webrequestCreationInfo.Headers.Add("authorization", "Bearer " + _backendDataControlMediator.UserDataModel.AccessToken);
 
             HttpResponseMessage httpResponseMessage = await WebRequestUtils.CreateAndSendWebrequest(webrequestCreationInfo);
             httpResponseMessage.ThrowOnError(webrequestCreationInfo);
-                     
+            Log.Debug(httpResponseMessage.ReadToEnd());
+
             return true;
         }
 
@@ -145,11 +138,11 @@ namespace Loom.ZombieBattleground
             public bool success;
             public int txId;
         }
-        
+
         public class TransactionResponse
         {
             public VerifyHash VerifyHash;
-            public int UserId;        
+            public int UserId;
             public int Booster;
             public int Super;
             public int Air;
@@ -157,24 +150,24 @@ namespace Loom.ZombieBattleground
             public int Fire;
             public int Life;
             public int Toxic;
-            public int Water;            
+            public int Water;
             public int Small;
             public int Minion;
             public int Binance;
             public int TxID;
         }
-        
+
         public class VerifyHash
         {
             public string hash;
             public string signature;
         }
-        
+
         public class StoresDataList
         {
             public StoreData[] products;
         }
-        
+
         public class StoreData
         {
             public string currency;
@@ -182,7 +175,7 @@ namespace Loom.ZombieBattleground
             public ProductData[] packs;
             public int unit_percent;
         }
-        
+
         public class ProductData
         {
             public string uid;
