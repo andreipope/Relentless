@@ -194,6 +194,18 @@ namespace Loom.ZombieBattleground
                         _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(_endMatchResults.OverlordId);
                         _currentPlayerOverlord.Level = _endMatchResults.CurrentLevel;
                         _currentPlayerOverlord.Experience = _endMatchResults.CurrentExperience;
+                        var levelRewards = _endMatchResults.LevelRewards;
+                        foreach (LevelReward levelReward in levelRewards)
+                        {
+                            switch (levelReward)
+                            {
+                                case OverlordSkillRewardItem overlordSkillRewardItem:
+                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].Unlocked = true;
+                                    break;
+                            }
+                        }
+
+
                         deck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _endMatchResults.DeckId);
 
                         await _networkActionManager.EnqueueNetworkTask(
