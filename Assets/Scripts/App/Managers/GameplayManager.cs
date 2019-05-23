@@ -156,10 +156,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
-            //GameClient.Get<INetworkActionManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
-            
         }
 
         public void StartGameplay()
@@ -537,6 +535,10 @@ namespace Loom.ZombieBattleground
             }
 
             _finishedApplicationQuitSequence = true;
+
+            await new WaitForSeconds(0.2f);
+            await new WaitForUpdate();
+
             Application.Quit();
         }
     }

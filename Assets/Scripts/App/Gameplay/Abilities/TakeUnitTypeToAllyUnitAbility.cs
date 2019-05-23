@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if (AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityTrigger == Enumerators.AbilityTrigger.AURA)
+            if (AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityTrigger == Enumerators.AbilityTrigger.AURA && LastAuraState)
             {
                 Action();
             }
