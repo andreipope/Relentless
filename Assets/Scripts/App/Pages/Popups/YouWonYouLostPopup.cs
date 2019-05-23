@@ -397,8 +397,11 @@ namespace Loom.ZombieBattleground
             _imageExperienceBar.DOFillAmount(targetProgressRatio, ExperienceFillInterval);
 
             yield return _experienceFillWait;
-            _buttonContinue.gameObject.SetActive(true);
-            _buttonPlayAgain.gameObject.SetActive(true);
+            _buttonContinue.gameObject.SetActive(true);            
+            _buttonPlayAgain.gameObject.SetActive
+            (
+                _appStateManager.AppState == Enumerators.AppState.GAMEPLAY
+            );
 
             if (_endMatchResults.CurrentLevel > _endMatchResults.PreviousLevel)
             {
