@@ -52,6 +52,9 @@ namespace Loom.ZombieBattleground
         {
             base.HandChangedHandler(count);
 
+            if (!LastAuraState)
+                return;
+                
             HandleTargets(true, true);
         }
 

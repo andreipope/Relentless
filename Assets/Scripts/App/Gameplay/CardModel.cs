@@ -917,13 +917,14 @@ namespace Loom.ZombieBattleground
                                         {
                                             _battleController.AttackUnitByUnit(this, unit, AdditionalDamage, false);
                                             unit.InvokeUnitAttackStateFinished();
+                                            unit.ResolveBuffShield();
                                         }
                                     }
 
                                     if (TakeFreezeToAttacked && targetCardModel.CurrentDefense > 0)
                                     {
                                         targetCardModel.Stun(Enumerators.StunType.FREEZE, 1);
-                                        targetCardModel.UseShieldFromBuff();
+                                        targetCardModel.HasUsedBuffShield = true;
                                     }
 
                                     targetCardModel.ResolveBuffShield();
@@ -1128,7 +1129,8 @@ namespace Loom.ZombieBattleground
             CurrentCostHistory.Clear();
             CurrentDefenseHistory.Clear();
             AttackedBoardObjectsThisTurn.Clear();
-            UseShieldFromBuff();
+            HasUsedBuffShield = true;
+            ResolveBuffShield();
             ClearUnitTypeEffects();
             ClearEffectsOnUnit();
             MaximumDamageFromAnySource = 999;

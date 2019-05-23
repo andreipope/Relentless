@@ -302,7 +302,6 @@ namespace Loom.ZombieBattleground
                         if (endGameData != null)
                         {
                             Log.Info(endGameData.MatchId + " , " + endGameData.UserId + " , " + endGameData.WinnerId);
-                            await _backendFacade.UnsubscribeEvent();
                             return;
                         }
                     }
@@ -412,7 +411,7 @@ namespace Loom.ZombieBattleground
             catch
             {
                 // No additional handling
-}
+            }
         }
 
         private async Task LoadInitialGameState()

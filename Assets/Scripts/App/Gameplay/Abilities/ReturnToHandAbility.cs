@@ -60,6 +60,7 @@ namespace Loom.ZombieBattleground
 
         private void ReturnTargetToHand(CardModel unit)
         {
+            int currentCost = unit.CurrentCost;
             if (AbilityTrigger != Enumerators.AbilityTrigger.DEATH)
             {
                 Vector3 unitPosition = BattlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform.position;
@@ -75,7 +76,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.HasChangesInParameters)
             {
-                unit.AddToCurrentCostHistory(Cost, Enumerators.ReasonForValueChange.AbilityBuff);
+                unit.AddToCurrentCostHistory((currentCost - unit.CurrentCost) + Cost, Enumerators.ReasonForValueChange.AbilityBuff);
 
                 if (PlayerCallerOfAbility.IsLocalPlayer)
                 {
