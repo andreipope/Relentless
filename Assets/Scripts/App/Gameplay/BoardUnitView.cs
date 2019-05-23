@@ -600,13 +600,16 @@ namespace Loom.ZombieBattleground
                 _glowSelectedObject.SetActive(status);
             }
 
-            if (status)
+            if (_arrivalDone)
             {
-                GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
-            }
-            else
-            {
-                GameObject.transform.localScale = _initialScale;
+                if (status)
+                {
+                    GameObject.transform.localScale = _initialScale + Vector3.one * 0.1f;
+                }
+                else
+                {
+                    GameObject.transform.localScale = _initialScale;
+                }
             }
         }
 
@@ -745,7 +748,9 @@ namespace Loom.ZombieBattleground
 
         private void UnitSelectedEventHandler(IBoardObject boardObject)
         {
-            if (_boardArrowController.IsBoardArrowNowInTheBattle || !_gameplayManager.CanDoDragActions)
+            if (_boardArrowController.IsBoardArrowNowInTheBattle || 
+                !_gameplayManager.CanDoDragActions ||
+                _battlegroundController.TurnWaitingForEnd)
                 return;
 
             if (boardObject == Model)
