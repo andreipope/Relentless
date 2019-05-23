@@ -831,7 +831,7 @@ namespace Loom.ZombieBattleground
             _parentOfSelectableCards = container.transform;
             collider.size = Vector2.one * 100f;
             group.sortingOrder = 22;
-            group.sortingLayerID = SRSortingLayers.GameUI3;
+            group.sortingLayerID = SRSortingLayers.GameplayInfo;
 
             foreach (AbilityData.ChoosableAbility ability in choosableAbilities)
             {
