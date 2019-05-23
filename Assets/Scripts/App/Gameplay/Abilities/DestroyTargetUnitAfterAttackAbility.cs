@@ -57,7 +57,7 @@ namespace Loom.ZombieBattleground
         {
             base.UnitAttackedHandler(from, damage, isAttacker);
 
-            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK)
+            if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || AbilityUnitOwner.CurrentDamage <= 0)
                 return;
 
             Action(from);

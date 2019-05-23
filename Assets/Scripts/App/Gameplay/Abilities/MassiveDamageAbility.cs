@@ -145,7 +145,7 @@ namespace Loom.ZombieBattleground
 
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.EqualToUnitAttack)
             {
-                Damage = CardModel.InstanceCard.Damage;
+                Damage = CardModel.CurrentDamage;
             }
 
             foreach(IBoardObject boardObject in _targets)
