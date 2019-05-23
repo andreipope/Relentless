@@ -550,11 +550,13 @@ namespace Loom.ZombieBattleground
                 }
 
                 BoardCardView boardCard;
+                Vector3 position = CollectionsCardPositions[i % CollectionsCardPositions.Count].position;
                 
                 if(_collectionBoardCardsPool.Exists(x => x.Model.Name == card.Name))                
                 {
                     boardCard = _collectionBoardCardsPool.Find(x => x.Model.Name == card.Name);
                     _collectionBoardCardsPool.Remove(boardCard);
+                    boardCard.Transform.position = position;
                 }
                 else
                 {
@@ -562,7 +564,7 @@ namespace Loom.ZombieBattleground
                     (
                         card,
                         rectContainer,
-                        CollectionsCardPositions[i % CollectionsCardPositions.Count].position,
+                        position,
                         BoardCardScale
                     );
                     
@@ -924,17 +926,17 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCard;
-            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+            CardModel cardModel = new CardModel(new WorkingCard(card, card, null));
 
             switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(CardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go, boardUnitModel);
+                    boardCard = new UnitBoardCardView(go, cardModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(CardItemPrefab);
-                    boardCard = new ItemBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCardView(go, cardModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
@@ -1498,9 +1500,7 @@ namespace Loom.ZombieBattleground
             Enumerators.CardRank rank = card.Rank;
             uint maxCopies;
 
-            Enumerators.Faction faction = GameClient.Get<IGameplayManager>().GetController<CardsController>().GetSetOfCard(card);
-
-            if (faction == Enumerators.Faction.ITEM)
+            if (card.Faction == Enumerators.Faction.ITEM)
             {
                 maxCopies = Constants.CardItemMaxCopies;
                 return maxCopies;

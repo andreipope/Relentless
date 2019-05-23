@@ -37,7 +37,7 @@ namespace Loom.ZombieBattleground.Data
 
         public string Name { get; set; }
 
-        public List<DeckCardData> Cards;
+        public List<DeckCardData> Cards { get; set; }
 
         public Enumerators.Skill PrimarySkill { get; set; }
 

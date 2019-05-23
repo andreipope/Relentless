@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ using Rect = UnityEngine.Rect;
 
 namespace Loom.ZombieBattleground.Editor.Tools
 {
-    public class MultiplayerDebugClientWindow : EditorWindow
+    public class MultiplayerDebugClientWindow : EditorWindow, IHasCustomMenu
     {
         [SerializeField]
         private PlayerActionLogView _playerActionLogView = new PlayerActionLogView();
@@ -617,6 +618,30 @@ namespace Loom.ZombieBattleground.Editor.Tools
             Repaint();
         }
 
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            string customDeckFilePath = Path.Combine(Application.persistentDataPath, "EditorCustomDeck.json");
+            menu.AddItem(
+                new GUIContent("Save Debug Cheats"),
+                false,
+                () =>
+                {
+                    string json = JsonConvert.SerializeObject(DebugClient.DebugCheats);
+                    File.WriteAllText(customDeckFilePath, json);
+                }
+            );
+
+            menu.AddItem(
+                new GUIContent("Load Debug Cheats"),
+                false,
+                () =>
+                {
+                    string json = File.ReadAllText(customDeckFilePath);
+                    DebugClient.DebugCheats = JsonConvert.DeserializeObject<DebugCheatsConfiguration>(json);
+                }
+            );
+        }
+
         private static void DrawMinWidthLabel(string text)
         {
             GUIContent guiContent = new GUIContent(text);
@@ -933,9 +958,7 @@ namespace Loom.ZombieBattleground.Editor.Tools
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ActionType.ToString() : "Matchmaking",
                         playerAction.PlayerAction != null ? playerAction.PlayerAction.ToString() : "Match Status: " + playerAction.Match.Status,
                         isLocalPlayer
-                    )
-                {
-                }
+                    ) { }
 
                 public PlayerActionEventViewModel(long id, string match, string actionType, string action, bool? isLocalPlayer)
                 {

@@ -466,7 +466,7 @@ namespace Loom.ZombieBattleground
             return true;
         }
 
-        public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
+        public void ReportActivityAction(Enumerators.TutorialActivityAction activityAction, IBoardObject sender, string tag = "")
         {
             if (!IsTutorial && Constants.UsingCardTooltips)
             {
@@ -576,7 +576,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        private void HandleNonTutorialActions(Enumerators.TutorialActivityAction activityAction, BoardObject sender, string tag = "")
+        private void HandleNonTutorialActions(Enumerators.TutorialActivityAction activityAction, IBoardObject sender, string tag = "")
         {
             ResetInGameTutorialActiveTooltips();
 

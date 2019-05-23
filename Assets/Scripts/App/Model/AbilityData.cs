@@ -8,79 +8,79 @@ namespace Loom.ZombieBattleground.Data
     public class AbilityData
     {
         [JsonProperty]
-        public Enumerators.AbilityType Ability { get; private set; }
+        public Enumerators.AbilityType Ability { get; }
 
         [JsonProperty]
-        public Enumerators.AbilityActivity Activity { get; private set; }
+        public Enumerators.AbilityActivity Activity { get; }
 
         [JsonProperty]
-        public Enumerators.AbilityTrigger Trigger { get; private set; }
+        public Enumerators.AbilityTrigger Trigger { get; }
 
         [JsonProperty]
-        public List<Enumerators.Target> Targets { get; private set; }
+        public List<Enumerators.Target> Targets { get; }
 
         [JsonProperty]
-        public Enumerators.Stat Stat { get; private set; }
+        public Enumerators.Stat Stat { get; }
 
         [JsonProperty]
-        public Enumerators.Faction Faction { get; private set; }
+        public Enumerators.Faction Faction { get; }
 
         [JsonProperty]
-        public Enumerators.AbilityEffect Effect { get; private set; }
+        public Enumerators.AbilityEffect Effect { get; }
 
         [JsonProperty]
-        public Enumerators.AttackRestriction AttackRestriction { get; private set; }
+        public Enumerators.AttackRestriction AttackRestriction { get; }
 
         [JsonProperty]
-        public Enumerators.CardType TargetCardType { get; private set; }
+        public Enumerators.CardType TargetCardType { get; }
 
         [JsonProperty]
-        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus { get; private set; }
+        public Enumerators.UnitSpecialStatus TargetUnitSpecialStatus { get;  }
 
         [JsonProperty]
-        public Enumerators.CardType TargetUnitType { get; private set; }
+        public Enumerators.CardType TargetUnitType { get; }
 
         [JsonProperty]
-        public int Value { get; private set; }
+        public int Value { get; }
 
         [JsonProperty]
-        public string Name { get; private set; }
+        public string Name { get; }
         
         [JsonProperty]
-        public int Damage { get; private set; }
+        public int Damage { get; }
 
         [JsonProperty]
-        public int Defense { get; private set; }
+        public int Defense { get; }
 
         [JsonProperty]
-        public int Turns { get; private set; }
+        public int Turns { get; }
 
         [JsonProperty]
-        public int Count { get; private set; }
+        public int Count { get; }
 
         [JsonProperty]
-        public int Delay { get; private set; }
+        public int Delay { get; }
 
         [JsonProperty]
-        public List<VisualEffectInfo> VisualEffectsToPlay { get; private set; }
+        public List<VisualEffectInfo> VisualEffectsToPlay { get; }
 
         [JsonProperty]
-        public Enumerators.GameMechanicDescription GameMechanicDescription { get; private set; }
+        public Enumerators.GameMechanicDescription GameMechanicDescription { get; }
 
         [JsonProperty]
-        public Enumerators.Faction TargetFaction { get; private set; }
+        public Enumerators.Faction TargetFaction { get; }
 
         [JsonProperty]
-        public Enumerators.AbilitySubTrigger SubTrigger { get; private set; }
+        public Enumerators.AbilitySubTrigger SubTrigger { get; }
 
         [JsonProperty]
-        public List<ChoosableAbility> ChoosableAbilities { get; private set; }
+        public List<ChoosableAbility> ChoosableAbilities { get; }
 
         [JsonProperty]
-        public int Defense2 { get; private set; }
+        public int Defense2 { get; }
 
         [JsonProperty]
-        public int Cost { get; private set; }
+        public int Cost { get; }
 
         [JsonProperty]
         public Enumerators.CardKind TargetKind { get; private set; }
@@ -202,10 +202,10 @@ namespace Loom.ZombieBattleground.Data
         public class VisualEffectInfo
         {
             [JsonProperty]
-            public Enumerators.VisualEffectType Type { get; private set; }
+            public Enumerators.VisualEffectType Type { get; }
 
             [JsonProperty]
-            public string Path { get; private set; }
+            public string Path { get; }
 
             [JsonConstructor]
             public VisualEffectInfo(Enumerators.VisualEffectType type, string path)
@@ -214,33 +214,24 @@ namespace Loom.ZombieBattleground.Data
                 Path = path;
             }
 
-            public VisualEffectInfo(VisualEffectInfo source)
+            public VisualEffectInfo(VisualEffectInfo source) : this(
+                source.Type,
+                source.Path
+                )
             {
-                Type = source.Type;
-                Path = source.Path;
-            }
-
-            public void ForceSetPath(string path)
-            {
-                Path = path;
-            }
-
-            public void ForceSetType(Enumerators.VisualEffectType type)
-            {
-                Type = type;
             }
         }
 
         public class ChoosableAbility
         {
             [JsonProperty]
-            public string Description { get; private set; }
+            public string Description { get; }
 
             [JsonProperty]
-            public AbilityData AbilityData { get; private set; }
+            public AbilityData AbilityData { get; }
 
             [JsonProperty]
-            public string Attribute { get; private set; }
+            public string Attribute { get; }
 
             [JsonConstructor]
             public ChoosableAbility(string description, AbilityData abilityData, string attribute)
@@ -250,11 +241,12 @@ namespace Loom.ZombieBattleground.Data
                 Attribute = attribute;
             }
 
-            public ChoosableAbility(ChoosableAbility source)
+            public ChoosableAbility(ChoosableAbility source) : this (
+                source.Description,
+                new AbilityData(source.AbilityData),
+                source.Attribute
+            )
             {
-                Description = source.Description;
-                Attribute = source.Attribute;
-                AbilityData = new AbilityData(source.AbilityData);
             }
         }
     }

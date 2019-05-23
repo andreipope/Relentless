@@ -40,7 +40,7 @@ namespace Loom.ZombieBattleground
         public override void Action(object info = null)
         {
             base.Action(info);
-            if (!PlayerCallerOfAbility.CardsInHand.Contains(BoardUnitModel))
+            if (!PlayerCallerOfAbility.CardsInHand.Contains(CardModel))
                 return;
 
             int gooCost = 0;
@@ -61,28 +61,29 @@ namespace Loom.ZombieBattleground
                 gooCost = PlayerCallerOfAbility.CardsOnBoard.FindAll(x => x.Card.Prototype.Faction == Faction).Count * Value;
             }
 
+            BoardCardView boardCardView = BattlegroundController.GetCardViewByModel<BoardCardView>(CardModel);
             if (_lastCost != 0) 
             {
-                CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
-                -_lastCost, BoardCardView);
+                CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, CardModel,
+                -_lastCost, boardCardView);
             }
 
-            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, BoardUnitModel,
-                gooCost, BoardCardView);
+            CardsController.SetGooCostOfCardInHand(PlayerCallerOfAbility, CardModel,
+                gooCost, boardCardView);
 
             _lastCost = gooCost;
         }
 
-        private void CardPlayedHandler(BoardUnitModel boardUnitModel, int position)
+        private void CardPlayedHandler(CardModel cardModel, int position)
         {
-            if (!boardUnitModel.Equals(BoardUnitModel))
+            if (cardModel != CardModel)
                 return;
 
             PlayerCallerOfAbility.PlayerCardsController.BoardChanged -= BoardChangedHandler;
             PlayerCallerOfAbility.CardPlayed -= CardPlayedHandler;
         }
 
-        private new void BoardChangedHandler(int obj)
+        protected override void BoardChangedHandler(int count)
         {
             Action();
         }

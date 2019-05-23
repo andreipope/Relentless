@@ -14,7 +14,7 @@ namespace Loom.ZombieBattleground
 
         public event Action OnUpdateEvent;
 
-        private List<BoardUnitModel> _units;
+        private List<CardModel> _units;
 
         private List<PastActionsPopup.TargetEffectParam> _targetEffects;
 
@@ -44,7 +44,7 @@ namespace Loom.ZombieBattleground
 
         private void HandleSubTriggers()
         {
-            _units = new List<BoardUnitModel>();
+            _units = new List<CardModel>();
 
             foreach(Enumerators.Target target in AbilityTargets)
             {
@@ -70,14 +70,16 @@ namespace Loom.ZombieBattleground
             if (_units.Count == 0)
                 return;
 
+            _units = _units.OrderByDescending(x => x.InstanceId.Id).ToList();
+
             if(AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.RandomUnit)
             {
                 _units = GetRandomUnits(_units, Count);
             }
 
-            foreach(BoardUnitModel boardUnitModel in _units)
+            foreach(CardModel cardModel in _units)
             {
-                boardUnitModel.HandleDefenseBuffer(Damage);
+                cardModel.HandleDefenseBuffer(Damage);
             }
 
             InvokeActionTriggered(_units);
@@ -85,29 +87,29 @@ namespace Loom.ZombieBattleground
             InvokeUseAbilityEvent(_units.Select(item => new ParametrizedAbilityBoardObject(item)).ToList());
         }
 
-        private void DamageAndDistract(List<BoardUnitModel> units)
+        private void DamageAndDistract(List<CardModel> units)
         {
-            foreach (BoardUnitModel boardUnit in units)
+            foreach (CardModel boardUnit in units)
             {
                 DamageAndDistractUnit(boardUnit);
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingMultipleCards,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = _targetEffects
             });
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
-        private void DamageAndDistractUnit(BoardUnitModel boardUnit)
+        private void DamageAndDistractUnit(CardModel boardUnit)
         {
-            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, boardUnit, Damage);
-
-            if (boardUnit.IsUnitActive)
+            _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
-                BattlegroundController.DistractUnit(boardUnit);
-            }
+                ActionEffectType = Enumerators.ActionEffectType.Distract,
+                Target = boardUnit,
+            });
 
             _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
             {
@@ -117,17 +119,18 @@ namespace Loom.ZombieBattleground
                 Value = -Damage
             });
 
-            _targetEffects.Add(new PastActionsPopup.TargetEffectParam()
+            if (boardUnit.IsUnitActive)
             {
-                ActionEffectType = Enumerators.ActionEffectType.Distract,
-                Target = boardUnit,
-            });
+                BattlegroundController.DistractUnit(boardUnit);
+            }
+
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, boardUnit, Damage);
         }
 
-        public void OneActionCompleted(BoardUnitModel boardUnitModel)
+        public void OneActionCompleted(CardModel cardModel)
         {
-            DamageAndDistractUnit(boardUnitModel);
-            _units.Remove(boardUnitModel);
+            DamageAndDistractUnit(cardModel);
+            _units.Remove(cardModel);
         }
 
         protected override void VFXAnimationEndedHandler()

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using Loom.ZombieBattleground.Common;
-using UnityEngine;
 
 namespace Loom.ZombieBattleground
 {

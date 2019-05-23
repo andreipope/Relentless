@@ -194,7 +194,7 @@ namespace Loom.ZombieBattleground.Test
             double deltaTime = timeSinceStartup - _lastTimeSinceStartup.Value;
             _lastTimeSinceStartup = timeSinceStartup;
 
-            if (MatchMakingFlowController != null && _backendFacade.IsConnected)
+            if (MatchMakingFlowController != null && _backendFacade != null && _backendFacade.IsConnected)
             {
                 await MatchMakingFlowController.Update((float) deltaTime);
 

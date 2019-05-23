@@ -20,12 +20,12 @@ namespace Loom.ZombieBattleground
         {
             if (Ability.AbilityData.HasVisualEffectType(Enumerators.VisualEffectType.Moving))
             {
-                _targetPosition = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position;
+                _targetPosition = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform.position;
 
                 VfxObject = LoadObjectsManager.GetObjectByPath<GameObject>(Ability.AbilityData.GetVisualEffectByType(Enumerators.VisualEffectType.Moving).Path);
 
                 VfxObject = Object.Instantiate(VfxObject);
-                VfxObject.transform.position = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
+                VfxObject.transform.position = _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.AbilityUnitOwner).Transform.position;
                 VfxObject.transform.DOMove(_targetPosition, 0.5f).OnComplete(ActionCompleted);
                 ParticleIds.Add(ParticlesController.RegisterParticleSystem(VfxObject));
             }
@@ -58,7 +58,7 @@ namespace Loom.ZombieBattleground
                 }
 
                 _targetPosition += offset;
-                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(Ability.TargetUnit).Transform, false);
+                VfxObject = Object.Instantiate(VfxObject, _battlegroundController.GetCardViewByModel<BoardUnitView>(Ability.TargetUnit).Transform, false);
                 ParticlesController.RegisterParticleSystem(VfxObject, true, delayBeforeDestroy);
                 VfxObject.transform.position = _targetPosition;
             }

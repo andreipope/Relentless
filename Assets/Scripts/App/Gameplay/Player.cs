@@ -16,7 +16,7 @@ using ZombieBattleground.Editor.Runtime;
 
 namespace Loom.ZombieBattleground
 {
-    public class Player : BoardObject, IView, IInstanceIdOwner
+    public class Player : IBoardObject, IView, IInstanceIdOwner
     {
         private static readonly ILog Log = Logging.GetLog(nameof(Player));
 
@@ -315,17 +315,19 @@ namespace Loom.ZombieBattleground
 
         public event Action<int, bool> PlayerGooVialsChanged;
 
-        public event Action<BoardUnitModel> DrawCard;
+        public event Action<CardModel> DrawCard;
 
-        public event Action<BoardUnitModel, int> CardPlayed;
+        public event Action<CardModel, int> CardPlayed;
 
-        public event Action<BoardUnitModel, Data.InstanceId> CardAttacked;
+        public event Action<CardModel, Data.InstanceId> CardAttacked;
 
         public event Action LeaveMatch;
 
         public GameObject PlayerObject { get; }
 
         public GameObject AvatarObject => _avatarObject?.transform.parent?.gameObject;
+
+        public GameObject GameObject => PlayerObject;
 
         public Transform Transform => PlayerObject.transform;
 
@@ -377,17 +379,15 @@ namespace Loom.ZombieBattleground
         public bool IsLocalPlayer { get; set; }
 
         // TODO: refactor-state: these list are here temporarily and will be removed
-        public UniquePositionedList<BoardItem> BoardItemsInUse => PlayerCardsController.BoardItemsInUse;
+        public IReadOnlyList<CardModel> CardsInDeck => PlayerCardsController.CardsInDeck;
 
-        public IReadOnlyList<BoardUnitModel> CardsInDeck => PlayerCardsController.CardsInDeck;
+        public IReadOnlyList<CardModel> CardsInGraveyard => PlayerCardsController.CardsInGraveyard;
 
-        public IReadOnlyList<BoardUnitModel> CardsInGraveyard => PlayerCardsController.CardsInGraveyard;
+        public IReadOnlyList<CardModel> CardsInHand => PlayerCardsController.CardsInHand;
 
-        public IReadOnlyList<BoardUnitModel> CardsInHand => PlayerCardsController.CardsInHand;
+        public IReadOnlyList<CardModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
 
-        public IReadOnlyList<BoardUnitModel> CardsOnBoard => PlayerCardsController.CardsOnBoard;
-
-        public IReadOnlyList<BoardUnitModel> CardsPreparingToHand => PlayerCardsController.CardsPreparingToHand;
+        public IReadOnlyList<CardModel> MulliganCards => PlayerCardsController.MulliganCards;
 
         public bool IsStunned { get; private set; }
 
@@ -590,7 +590,7 @@ namespace Loom.ZombieBattleground
 
         public void Stun(Enumerators.StunType stunType, int turnsCount)
         {
-            if (!_gameplayManager.CurrentTurnPlayer.Equals(this))
+            if (_gameplayManager.CurrentTurnPlayer != this)
                 turnsCount++;
 
             _freezedHighlightObject.SetActive(true);
@@ -611,26 +611,26 @@ namespace Loom.ZombieBattleground
             _skillsController.UnBlockSkill(this);
         }
 
-        public void ThrowDrawCardEvent(BoardUnitModel boardUnitModel)
+        public void ThrowDrawCardEvent(CardModel cardModel)
         {
-            DrawCard?.Invoke(boardUnitModel);
+            DrawCard?.Invoke(cardModel);
         }
 
-        public void ThrowPlayCardEvent(BoardUnitModel boardUnitModel, int position)
+        public void ThrowPlayCardEvent(CardModel cardModel, int position)
         {
-            CardPlayed?.Invoke(boardUnitModel, position);
+            CardPlayed?.Invoke(cardModel, position);
         }
 
-        public void ThrowCardAttacked(BoardUnitModel boardUnitModel, Data.InstanceId instanceId)
+        public void ThrowCardAttacked(CardModel cardModel, Data.InstanceId instanceId)
         {
-            CardAttacked?.Invoke(boardUnitModel, instanceId);
+            CardAttacked?.Invoke(cardModel, instanceId);
         }
 
         public void ThrowLeaveMatch()
         {
             _actionsQueueController.ClearActions();
 
-            _actionsQueueController.AddNewActionInToQueue((param, completeCallback) =>
+            _actionsQueueController.EnqueueAction(completeCallback =>
             {
                 LeaveMatch?.Invoke();
 
@@ -638,9 +638,9 @@ namespace Loom.ZombieBattleground
             }, Enumerators.QueueActionType.LeaveMatch);
         }
 
-        private BoardUnitModel GetCardThatNotInDistribution()
+        private CardModel GetCardThatNotInDistribution()
         {
-            List<BoardUnitModel> cards = CardsInDeck.FindAll(x => !CardsPreparingToHand.Contains(x)).ToList();
+            List<CardModel> cards = CardsInDeck.FindAll(x => !MulliganCards.Contains(x)).ToList();
 
             return cards[0];
         }

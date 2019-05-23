@@ -101,6 +101,8 @@ namespace Loom.ZombieBattleground
         
         public int SelectDeckIndex;
 
+        private int _selectedDeckId;
+
         public Deck CurrentEditDeck;
 
         public OverlordUserInstance CurrentEditOverlord;
@@ -193,7 +195,9 @@ namespace Loom.ZombieBattleground
             HordeEditTab.Show(_selfPage);
             SelectOverlordTab.Show(_selfPage);
             SelectOverlordSkillTab.Show(_selfPage);
-            
+
+            _selectedDeckId = (int)_dataManager.CachedDecksData.Decks[0].Id.Id;
+
             LoadButtons();
             LoadObjects();            
             LoadTabs();
@@ -324,20 +328,26 @@ namespace Loom.ZombieBattleground
             ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
             popup.ActionPopupHiding += FilterPopupHidingHandler;
         }
-        
+
         private void FilterPopupHidingHandler()
         {
+            ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
             if(CheckAvailableDeckExist())
-            {   
+            {
                 ApplyDeckFilter();
-                ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
-                popup.ActionPopupHiding -= FilterPopupHidingHandler;
             }
             else
             {
                 _uiManager.DrawPopup<WarningPopup>("No decks found for the selected faction.");
                 _uiManager.DrawPopup<ElementFilterPopup>();
             }
+
+            ElementFilterPopup popup = _uiManager.GetPopup<ElementFilterPopup>();
+            popup.ActionPopupHiding -= FilterPopupHidingHandler;
         }
 
         private void ButtonEditHandler()
@@ -449,10 +459,6 @@ namespace Loom.ZombieBattleground
                 {
                     tutorialDeckList.Add(_dataManager.CachedUserLocalData.TutorialSavedDeck);
                 }
-                else
-                {
-                    tutorialDeckList.Add(_dataManager.CachedDecksData.Decks[0]);
-                }
                 return tutorialDeckList;
             }
             else
@@ -473,14 +479,17 @@ namespace Loom.ZombieBattleground
             {
                 SelectDeckIndex = 0;
             }
-            return deckList[SelectDeckIndex];
+            return deckList.Find(deck => deck.Id.Id == _selectedDeckId);
         }
 
         public void AssignCurrentDeck()
         { 
-            CurrentEditDeck = GetSelectedDeck().Clone();
-            CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
-            IsEditingNewDeck = false;
+            if (GetSelectedDeck() != null)
+            {
+                CurrentEditDeck = GetSelectedDeck().Clone();
+                CurrentEditOverlord = _dataManager.CachedOverlordData.Overlords.Single(overlord => overlord.Prototype.Id == CurrentEditDeck.OverlordId);
+                IsEditingNewDeck = false;
+            }
         }
 
         public void AssignCurrentDeck(int deckIndex)
@@ -488,7 +497,13 @@ namespace Loom.ZombieBattleground
             SelectDeckIndex = deckIndex;
             AssignCurrentDeck();
         }
-        
+
+        public void OpenDeckPage(int deckId)
+        {
+            _selectedDeckId = deckId;
+            AssignCurrentDeck();
+        }
+
         public void AssignNewDeck()
         {
             CurrentEditDeck = CreateNewDeckData();
@@ -539,6 +554,8 @@ namespace Loom.ZombieBattleground
                 case Tab.SelectDeck:
                     _inputFieldSearchDeckName.text = "";
                     ApplyDeckByLastSelected();
+                    if (!_tutorialManager.IsTutorial)
+                        ApplyFilter();
                     break;
                 case Tab.Rename:
                     _inputFieldRenameDeckName.text = CurrentEditDeck.Name;
@@ -770,7 +787,9 @@ namespace Loom.ZombieBattleground
                 deckInfoObject.Button.gameObject.SetActive(true);
 
 #if UNITY_STANDALONE_OSX || UNITY_STANDALONE_WIN || UNITY_EDITOR
-                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();                
+                MultiPointerClickHandler multiPointerClickHandler = deckInfoObject.Button.gameObject.GetComponent<MultiPointerClickHandler>();
+                if(multiPointerClickHandler == null)
+                    multiPointerClickHandler = deckInfoObject.Button.gameObject.AddComponent<MultiPointerClickHandler>();
                 multiPointerClickHandler.DoubleClickReceived += ()=>
                 {                    
                     ChangeSelectDeckIndex(index);
@@ -819,6 +838,7 @@ namespace Loom.ZombieBattleground
                 deckInfoObject.Button.onClick.RemoveAllListeners();                
                 deckInfoObject.Button.onClick.AddListener(() =>
                 {
+                    _selectedDeckId = (int) deck.Id.Id;
                     ChangeSelectDeckIndex(index);
                     PlayClickSound();
                 });

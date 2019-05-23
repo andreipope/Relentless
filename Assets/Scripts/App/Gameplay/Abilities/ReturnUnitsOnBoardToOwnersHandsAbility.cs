@@ -10,7 +10,7 @@ namespace Loom.ZombieBattleground
     {
         public int Value { get; }
 
-        public List<BoardUnitModel> Units { get; private set; }
+        public List<CardModel> Units { get; private set; }
 
         public ReturnUnitsOnBoardToOwnersHandsAbility(Enumerators.CardKind cardKind, AbilityData ability)
             : base(cardKind, ability)
@@ -34,9 +34,9 @@ namespace Loom.ZombieBattleground
         {
             base.Action(info);
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
-            Units = new List<BoardUnitModel>();
+            Units = new List<CardModel>();
             Units.AddRange(GameplayManager.CurrentPlayer.CardsOnBoard);
             Units.AddRange(GameplayManager.OpponentPlayer.CardsOnBoard);
             Units =
@@ -51,7 +51,7 @@ namespace Loom.ZombieBattleground
                 Units = Units.Where(x => x.Card.InstanceCard.Cost <= Value).ToList();
             }
 
-            foreach(BoardUnitModel unit in Units)
+            foreach(CardModel unit in Units)
             {
                 unit.SetUnitActiveStatus(false);
             }
@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
             InvokeActionTriggered(Units);
         }
 
-        private void ReturnBoardUnitToHand(BoardUnitModel unit)
+        private void ReturnBoardUnitToHand(CardModel unit)
         {
             CardsController.ReturnCardToHand(unit, 1);
         }
@@ -68,12 +68,12 @@ namespace Loom.ZombieBattleground
         {
             base.VFXAnimationEndedHandler();
 
-            foreach (BoardUnitModel unit in Units)
+            foreach (CardModel unit in Units)
             {
                 ReturnBoardUnitToHand(unit);
             }
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
     }
 }

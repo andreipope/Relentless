@@ -50,10 +50,10 @@ namespace Loom.ZombieBattleground
                 PlayerCallerOfAbility.BuffedDefense += defenseToBuff;
                 PlayerCallerOfAbility.Defense += defenseToBuff;
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()

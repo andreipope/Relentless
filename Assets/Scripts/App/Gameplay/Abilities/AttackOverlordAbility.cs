@@ -33,7 +33,7 @@ namespace Loom.ZombieBattleground
             if (AbilityTrigger != Enumerators.AbilityTrigger.ENTRY)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -46,18 +46,18 @@ namespace Loom.ZombieBattleground
                 return;
             }
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -70,7 +70,7 @@ namespace Loom.ZombieBattleground
                 !GameplayManager.CurrentTurnPlayer.Equals(PlayerCallerOfAbility))
                 return;
 
-            AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+            AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
             InvokeActionTriggered();
         }
@@ -84,7 +84,7 @@ namespace Loom.ZombieBattleground
 
             if (status)
             {
-                AbilityProcessingAction = ActionsQueueController.AddNewActionInToQueue(null, Enumerators.QueueActionType.AbilityUsageBlocker);
+                AbilityProcessingAction = ActionsQueueController.EnqueueAction(null, Enumerators.QueueActionType.AbilityUsageBlocker);
 
                 InvokeActionTriggered();
             }
@@ -119,10 +119,10 @@ namespace Loom.ZombieBattleground
                 base.UnitDiedHandler();
             }
 
-            ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+            ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
             {
                 ActionType = Enumerators.ActionType.CardAffectingOverlord,
-                Caller = GetCaller(),
+                Caller = AbilityUnitOwner,
                 TargetEffects = new List<PastActionsPopup.TargetEffectParam>()
                     {
                         new PastActionsPopup.TargetEffectParam()
@@ -135,12 +135,12 @@ namespace Loom.ZombieBattleground
                     }
             });
 
-            AbilityProcessingAction?.ForceActionDone();
+            AbilityProcessingAction?.TriggerActionExternally();
         }
 
         public void ActivateAbility(AttackOverlordOutcome outcome)
         {
-            BoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
+            IBoardObject boardObject = BattlegroundController.GetBoardObjectByInstanceId(outcome.PlayerInstanceId);
             if (boardObject is Player targetOverlord)
             {
                 BattleController.AttackPlayer(targetOverlord, outcome.Damage);

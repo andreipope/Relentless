@@ -35,7 +35,7 @@ namespace Loom.ZombieBattleground
             Action();
         }
 
-        protected override void UnitKilledUnitHandler(BoardUnitModel unit)
+        protected override void UnitKilledUnitHandler(CardModel unit)
         {
             if (AbilityTrigger != Enumerators.AbilityTrigger.KILL_UNIT)
                 return;
@@ -66,7 +66,7 @@ namespace Loom.ZombieBattleground
             }
         }
 
-        protected override void UnitAttackedHandler(BoardObject info, int damage, bool isAttacker)
+        protected override void UnitAttackedHandler(IBoardObject info, int damage, bool isAttacker)
         {
             base.UnitAttackedHandler(info, damage, isAttacker);
             if (AbilityTrigger != Enumerators.AbilityTrigger.ATTACK || !isAttacker)
@@ -95,7 +95,7 @@ namespace Loom.ZombieBattleground
 
             if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsInPlay)
             {
-                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != BoardUnitModel.Card).Count;
+                cardsCount = ToPlayer.PlayerCardsController.CardsOnBoard.FindAll(model => model.Card != CardModel.Card).Count;
             }
             else if (AbilityData.SubTrigger == Enumerators.AbilitySubTrigger.AllAllyUnitsByFactionInPlay)
             {

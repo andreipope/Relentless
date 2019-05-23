@@ -42,7 +42,7 @@ namespace Loom.ZombieBattleground.Data
 
         public override string ToString()
         {
-            return $"(SkillId: {Id})";
+            return $"({nameof(SkillId)}: {Id})";
         }
     }
 }

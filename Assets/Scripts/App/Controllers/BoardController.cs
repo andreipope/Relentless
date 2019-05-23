@@ -39,6 +39,8 @@ namespace Loom.ZombieBattleground
 
         private long _sequenceUniqueId = 0;
 
+        private float _latestArrangeDelay;
+
         public void Dispose()
         {
         }
@@ -56,11 +58,14 @@ namespace Loom.ZombieBattleground
             _matchManager = GameClient.Get<IMatchManager>();
 
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
+
+            _latestArrangeDelay = 0;
         }
 
         public void ResetAll()
         {
             _sequenceUniqueId = 0;
+            _latestArrangeDelay = 0;
         }
 
         public void Update()
@@ -85,20 +90,36 @@ namespace Loom.ZombieBattleground
 
         public void UpdateCurrentBoardOfPlayer(Player player, Action boardUpdated)
         {
-            UpdateBoard(_battlegroundController.GetBoardUnitViewsFromModels(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
+            UpdateBoard(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard), player.IsLocalPlayer, boardUpdated);
         }
 
-        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1)
+        public void UpdateBoard(IReadOnlyList<BoardUnitView> units, bool isBottom, Action boardUpdated, int skipIndex = -1, bool skipDelayCheck = false)
         {
+            const float Duration = 0.4f;
+
             if (_gameplayManager.IsGameEnded || units == null)
                 return;
 
             if(_battlegroundController.HasUnitInAttackingState(units))
             {
+                float increasedDelay = Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f;
+                _latestArrangeDelay += increasedDelay;
                 InternalTools.DoActionDelayed(() =>
                 {
-                    UpdateBoard(units, isBottom, boardUpdated, skipIndex);
-                }, Constants.DurationUnitAttacking + Constants.DurationEndUnitAttacking * 2f);
+                    _latestArrangeDelay -= increasedDelay;
+                    UpdateBoard(units, isBottom, boardUpdated, skipIndex, true);
+                }, _latestArrangeDelay);
+                return;
+            }
+
+            if (_latestArrangeDelay > 0 && !skipDelayCheck) {
+                float increasedDelay = Duration*2.5f;
+                _latestArrangeDelay += increasedDelay;
+                InternalTools.DoActionDelayed(() =>
+                {
+                    _latestArrangeDelay -= increasedDelay;
+                    UpdateBoard(units, isBottom, boardUpdated, skipIndex, true);
+                }, _latestArrangeDelay);
                 return;
             }
 
@@ -110,7 +131,6 @@ namespace Loom.ZombieBattleground
             updateSequence.Id = _sequenceUniqueId;
 
             Tween tween;
-            const float Duration = 0.4f;
 
             for (int i = 0; i < newPositions.Count; i++)
             {
@@ -155,8 +175,7 @@ namespace Loom.ZombieBattleground
         public Vector2 GetCorrectPositionOfUnitOnBoard(Player player, BoardUnitView boardUnitView)
         {
             UnitPositionOnBoard unitPositionOnBoard =
-                GetPositionsForUnits(_battlegroundController.GetBoardUnitViewsFromModels(
-                                        player.PlayerCardsController.CardsOnBoard),
+                GetPositionsForUnits(_battlegroundController.GetCardViewsByModels<BoardUnitView>(player.PlayerCardsController.CardsOnBoard),
                                      player.IsLocalPlayer).Find(item => item.BoardUnitView == boardUnitView);
 
             if (unitPositionOnBoard != null)

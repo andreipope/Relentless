@@ -28,7 +28,7 @@ namespace Loom.ZombieBattleground
         {
             GUIUtility.ScaleAroundPivot(Vector2.one * UIScaleFactor, Vector2.zero);
 
-            Rect pvpCheatsRect = new Rect(20, 20, 200, 150);
+            Rect pvpCheatsRect = new Rect(20, 20, 200, 160);
             GUILayout.BeginArea(pvpCheatsRect, "PvP Cheats", Styles.OpaqueWindow);
             {
                 _pvpManager.DebugCheats.Enabled = GUILayout.Toggle(_pvpManager.DebugCheats.Enabled, "Enabled");
@@ -212,8 +212,8 @@ namespace Loom.ZombieBattleground
                                 GUILayout.Label("Filter Name ", GUILayout.ExpandWidth(false));
                                 _nameFilterString = GUILayout.TextField(_nameFilterString).Trim();
                             }
-
                             GUILayout.EndHorizontal();
+
                             _cardLibraryScrollPosition = GUILayout.BeginScrollView(_cardLibraryScrollPosition);
                             {
                                 CardsLibraryData cardLibrary = _cheatUI._dataManager.CachedCardsLibraryData;

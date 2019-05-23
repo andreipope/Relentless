@@ -156,10 +156,8 @@ namespace Loom.ZombieBattleground
 
             _tutorialManager.PlayerWon = endGameType == Enumerators.EndGameType.WIN;
             _tutorialManager.ReportActivityAction(Enumerators.TutorialActivityAction.EndMatchPopupAppear);
-            //GameClient.Get<INetworkActionManager>().StopNetworkThread();
 
             GameEnded?.Invoke(endGameType);
-            
         }
 
         public void StartGameplay()
@@ -299,6 +297,7 @@ namespace Loom.ZombieBattleground
                 new ParticlesController(),
                 new AbilitiesController(),
                 new ActionsQueueController(),
+                new ActionsReportController(),
                 new PlayerController(),
                 new AIController(),
                 new CardsController(),
@@ -455,13 +454,13 @@ namespace Loom.ZombieBattleground
                             String.Join(
                                 "\n",
                                 (IList<WorkingCard>)opponentCardsInHand
-                                    .OrderBy(card => card.InstanceId)
+                                    .OrderBy(card => card.InstanceId.Id)
                                     .ToArray()
                             )
                         );
 
-                        BoardUnitModel[] boardUnitModels = opponentCardsInHand.Select(card => new BoardUnitModel(card)).ToArray();
-                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels, false);
+                        CardModel[] cardModels = opponentCardsInHand.Select(card => new CardModel(card)).ToArray();
+                        OpponentPlayer.PlayerCardsController.SetFirstHandForPvPMatch(cardModels, false);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(_matchManager.MatchType), _matchManager.MatchType, null);
@@ -536,6 +535,10 @@ namespace Loom.ZombieBattleground
             }
 
             _finishedApplicationQuitSequence = true;
+
+            await new WaitForSeconds(0.2f);
+            await new WaitForUpdate();
+
             Application.Quit();
         }
     }

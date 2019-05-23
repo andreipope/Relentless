@@ -168,8 +168,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
-                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
+                CardModel[] cardModels = workingDeck.Select(card => new CardModel(card)).ToArray();
+                player.PlayerCardsController.SetCardsInDeck(cardModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -204,8 +204,8 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    BoardUnitModel[] boardUnitModels = workingCards.Select(card => new BoardUnitModel(card)).ToArray();
-                    player.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels);
+                    CardModel[] cardModels = workingCards.Select(card => new CardModel(card)).ToArray();
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(cardModels);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -270,7 +270,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((ICardView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()
@@ -285,9 +285,10 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
-                foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
+                IReadOnlyList<BoardCardView> views = _battlegroundController.GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+                foreach (BoardCardView card in views)
                 {
-                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card?.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }
@@ -483,7 +484,9 @@ namespace Loom.ZombieBattleground
             {
                 _isMoveHoveringCard = false;
             };
-            if (_hoveringHandCard != null && _hoveringHandCard.HandBoardCard != null && _hoveringHandCard.HandBoardCard.BoardCardView != null)
+            if (_hoveringHandCard?.HandBoardCard?.BoardCardView != null &&
+                _hoveringHandCard?.GameObject != null &&
+                _hoveringHandCard?.HandBoardCard.GameObject != null)
             {
                 _hoveringHandCard.HandBoardCard.ResetHoveringAndZoom(isMove, onComplete);
             }
@@ -571,14 +574,14 @@ namespace Loom.ZombieBattleground
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
-        private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
+        private void ClickedOnBoardObjectEventHandler(IBoardObject boardObject)
         {
             if (GameClient.Get<IUIManager>().GetPopup<SettingsWithCreditsPopup>().Self != null)
                 return;
         
             switch (boardObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     if (!unit.IsAttacking)
                     {
                         StopHandTimer();
@@ -588,7 +591,7 @@ namespace Loom.ZombieBattleground
                         {
                             HandCardPreview(new object[]
                             {
-                                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)
+                                _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)
                             });
                         }
                     }

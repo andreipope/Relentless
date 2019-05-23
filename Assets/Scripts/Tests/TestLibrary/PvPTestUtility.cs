@@ -173,35 +173,35 @@ namespace Loom.ZombieBattleground.Test
             }
         }
 
-        public static BoardUnitModel GetCardOnBoard(Player player, string name)
+        public static CardModel GetCardOnBoard(Player player, string name)
         {
-            BoardUnitModel boardUnitModel =
+            CardModel cardModel =
                 player
                 .CardsOnBoard
                 .Concat(player.CardsOnBoard)
                 .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (boardUnitModel == null)
+            if (cardModel == null)
             {
                 throw new Exception($"No '{name}' cards found on board for player {player}");
             }
 
-            return boardUnitModel;
+            return cardModel;
         }
 
-        public static BoardUnitModel GetCardInHand(Player player, string name)
+        public static CardModel GetCardInHand(Player player, string name)
         {
-            BoardUnitModel boardUnitModel =
+            CardModel cardModel =
                 player
                     .CardsInHand
                     .FirstOrDefault(card => CardNameEqual(name, card.Card.Prototype.Name));
 
-            if (boardUnitModel == null)
+            if (cardModel == null)
             {
                 throw new Exception($"No '{name}' cards found in hand of player {player}");
             }
 
-            return boardUnitModel;
+            return cardModel;
         }
 
         public static bool CardNameEqual(string name1, string name2)
