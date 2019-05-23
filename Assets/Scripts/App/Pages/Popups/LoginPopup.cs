@@ -721,7 +721,11 @@ namespace Loom.ZombieBattleground
                     _uiManager.GetPage<GameplayPage>().CurrentDeckId = savedTutorialDeck.Id;
                     GameClient.Get<IGameplayManager>().CurrentPlayerDeck = savedTutorialDeck;
 
-                    if(_dataManager.CachedUserLocalData.CurrentTutorialId == 0)
+                    if
+                    (
+                        _dataManager.CachedUserLocalData.CurrentTutorialId == 0 &&
+                        _uiManager.GetPopup<YouWonYouLostPopup>().Self == null
+                    )
                     {
                         _appStateManager.ChangeAppState(Enumerators.AppState.MAIN_MENU);
 
@@ -754,12 +758,12 @@ namespace Loom.ZombieBattleground
             (int? notificationId, EndMatchResults endMatchResults) =
                 await GameClient.Get<IOverlordExperienceManager>().GetEndMatchResultsFromEndMatchNotification();
 
-            if 
-            (
-                endMatchResults != null &&
-                _uiManager.GetPopup<QuestionPopup>().Self == null
-            )
+            if(endMatchResults != null)
             {
+                if(_uiManager.GetPopup<QuestionPopup>().Self != null)
+                {
+                    _uiManager.HidePopup<QuestionPopup>();
+                }
                 _uiManager.DrawPopup<YouWonYouLostPopup>(new object[] { endMatchResults.IsWin });
             }
 
