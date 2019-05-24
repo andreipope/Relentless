@@ -12,7 +12,7 @@ using UnityEngine;
 using Player = Loom.ZombieBattleground.Player;
 using Rect = UnityEngine.Rect;
 
-namespace Editor
+namespace Loom.ZombieBattleground.Editor
 {
     public class LocalStateDebugWindow : EditorWindow
     {

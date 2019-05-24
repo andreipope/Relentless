@@ -73,14 +73,14 @@ namespace Loom.ZombieBattleground
         
         public async Task CallRewardTutorialFlow()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallRewardTutorialComplete)}");
+            _uiManager.DrawPopup<LoadingOverlayPopup>($"{nameof(CallRewardTutorialComplete)}");
             
             RewardTutorialCompletedResponse response = null;
             try
             {
                 response = await CallRewardTutorialComplete();
-                _uiManager.HidePopup<LoadingFiatPopup>();
-                _uiManager.DrawPopup<LoadingFiatPopup>($"{nameof(CallTutorialRewardContract)}");
+                _uiManager.HidePopup<LoadingOverlayPopup>();
+                _uiManager.DrawPopup<LoadingOverlayPopup>($"{nameof(CallTutorialRewardContract)}");
                 await CallTutorialRewardContract(response);
             }catch(Exception e)
             {
@@ -93,7 +93,7 @@ namespace Loom.ZombieBattleground
                
             _dataManager.CachedUserLocalData.TutorialRewardClaimed = true;
             await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.HidePopup<LoadingOverlayPopup>();
             _uiManager.DrawPopup<RewardPopup>();
             await _uiManager.GetPage<PackOpenerPageWithNavigationBar>().RetrievePackBalanceAmount((int)Enumerators.MarketplaceCardPackType.Minion);
         }

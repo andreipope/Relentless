@@ -183,8 +183,10 @@ namespace Loom.ZombieBattleground
         private T Load<T>(string fileName, AssetBundle assetBundle, string bundleName)
             where T : UnityEngine.Object
         {
+#if !(UNITY_EDITOR && SKIP_ASSET_BUNDLE_LOAD)
             if (assetBundle != null)
                 return assetBundle.LoadAsset<T>(fileName);
+#endif
 
 #if UNITY_EDITOR && !DISABLE_EDITOR_ASSET_BUNDLE_SIMULATION
             fileName = fileName.ToLowerInvariant();

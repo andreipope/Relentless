@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using JetBrains.Annotations;
 using Loom.ZombieBattleground.Common;
 using Newtonsoft.Json;
 

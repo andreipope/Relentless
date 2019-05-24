@@ -350,7 +350,7 @@ namespace Loom.ZombieBattleground
             _packTypeAmountLabels = new TextMeshProUGUI[amountOfPackType];
             _packTypeButtons = new Button[amountOfPackType];
             for (int i = 0; i < amountOfPackType; ++i)
-            {   
+            {
                 Transform buttonParent = _selfPage.transform.Find($"pack_holder_tray/PackContent/Group/pack_holder_normal_{i}");
                 _packTypeNames[i] = buttonParent.Find("text_name").GetComponent<TextMeshProUGUI>();
                 _packTypeNames[i].text = $"{packTypes[i].ToString().ToUpper()} PACK";
@@ -512,12 +512,12 @@ namespace Loom.ZombieBattleground
         {
             _lastOpenPackIdRequest = packTypeId;
             SetButtonInteractable(false);
-            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
+            _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
             try
             {
                 List<Card> cards = await _openPackPlasmaManager.CallOpenPack(packTypeId);
                 _cardsToDisplayQueqe = cards;
-                _uiManager.HidePopup<LoadingFiatPopup>();
+                _uiManager.HidePopup<LoadingOverlayPopup>();
                 _retryOpenPackRequestCount = 0;
                 ChangeState(STATE.CARD_EMERGED);
             }
@@ -542,9 +542,9 @@ namespace Loom.ZombieBattleground
         
         private async Task SimulateRetriveTutorialCardsFromPack()
         {
-            _uiManager.DrawPopup<LoadingFiatPopup>("Loading your cards...");
+            _uiManager.DrawPopup<LoadingOverlayPopup>("Loading your cards...");
             _cardsToDisplayQueqe = _tutorialManager.GetCardForCardPack(5);
-            _uiManager.HidePopup<LoadingFiatPopup>();
+            _uiManager.HidePopup<LoadingOverlayPopup>();
             await Task.Delay(TimeSpan.FromSeconds(1));
             ChangeState(STATE.CARD_EMERGED);          
         }

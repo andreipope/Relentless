@@ -165,6 +165,8 @@ namespace Loom.ZombieBattleground.Common
 
         internal const int BackendCallTimeout = 10000;
 
+        internal const int PlasmachainCallTimeout = 20000;
+
         internal const float QueueActionTimeout = 60f;    
 
         internal static Vector3 DefaultPositionOfPlayerBoardCard = new Vector3(6.5f, -2.5f, 0);
@@ -219,14 +221,9 @@ namespace Loom.ZombieBattleground.Common
             false;
 #endif
 
-        internal const string PRODUCT_BOOSTER_PACK_1 = "booster_pack_1";
-        internal const string PRODUCT_BOOSTER_PACK_2 = "booster_pack_2";
-        internal const string PRODUCT_BOOSTER_PACK_5 = "booster_pack_5";
-        internal const string PRODUCT_BOOSTER_PACK_10 = "booster_pack_10";
-        
         internal const int LastTutorialId = 8;
 
-        internal const string MarketPlaceLink = "https://loom.games/en/browse";
+        internal const string MarketPlaceLink = "https://loom.games/en/purchase";
         
         internal const string HelpLink = "https://loom.games/en/how-to-play";
 
