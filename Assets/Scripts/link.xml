@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <linker>
+    <assembly fullname="ZombieBattleground.Main" preserve="all" />
     <assembly fullname="ZombieBattleground.Generated" preserve="all" />
     <assembly fullname="Loom.Google.Protobuf" preserve="all" />
+    <assembly fullname="LoomSDK" preserve="all" />
+    <assembly fullname="Opencoding.Shared" preserve="all" />
+    <assembly fullname="Opencoding.LogHistory" preserve="all" />
+    <assembly fullname="Opencoding.Console" preserve="all" />
+    <assembly fullname="Opencoding.CommandHandlers" preserve="all" />
 </linker>

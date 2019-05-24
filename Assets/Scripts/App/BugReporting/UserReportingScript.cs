@@ -21,6 +21,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CompressionLevel = SharpCompress.Compressors.Deflate.CompressionLevel;
+using CompressionType = SharpCompress.Common.CompressionType;
 
 /// <summary>
 /// Represents a behavior for working with the user reporting client.
