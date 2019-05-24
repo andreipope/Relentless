@@ -59,7 +59,7 @@ namespace Loom.ZombieBattleground
         {
             CachedUserLocalData = new UserLocalData();
             CachedCardsLibraryData = new CardsLibraryData(new List<Card>());
-            CachedOverlordData = new OverlordData(new List<OverlordModel>());
+            CachedOverlordData = new OverlordData(new List<Data.OverlordUserInstance>());
             CachedCollectionData = new CollectionData();
             CachedDecksData = new DecksData(new List<Deck>());
             CachedAiDecksData = new AIDecksData();
@@ -317,7 +317,7 @@ namespace Loom.ZombieBattleground
                 case Enumerators.CacheDataType.OVERLORDS_DATA:
                     try
                     {
-                        ListOverlordsResponse overlordsList = await _backendFacade.GetOverlordList(_backendDataControlMediator.UserDataModel.UserId);
+                        ListOverlordUserInstancesResponse overlordsList = await _backendFacade.ListOverlordUserInstances(_backendDataControlMediator.UserDataModel.UserId);
                         CachedOverlordData = new OverlordData(overlordsList.Overlords.Select(overlord => overlord.FromProtobuf()).ToList());
                     }
                     catch (Exception)

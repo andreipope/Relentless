@@ -21,7 +21,9 @@ namespace Loom.ZombieBattleground.Editor {
             // Protobuf
             IEnumerable<MessageDescriptor> messageDescriptors =
                 new MessageDescriptor[0]
-                    .Concat(ZbReflection.Descriptor.MessageTypes)
+                    .Concat(ZbCallsReflection.Descriptor.MessageTypes)
+                    .Concat(ZbDataReflection.Descriptor.MessageTypes)
+                    .Concat(ZbEnumsReflection.Descriptor.MessageTypes)
                     .Concat(TypesReflection.Descriptor.MessageTypes)
                     .Concat(PlasmaCashReflection.Descriptor.MessageTypes)
                     .Concat(AddressMapperReflection.Descriptor.MessageTypes)

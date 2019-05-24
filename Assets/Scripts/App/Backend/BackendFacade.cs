@@ -231,41 +231,30 @@ namespace Loom.ZombieBattleground.BackendCommunication
 
         #region Overlords
 
-        private const string OverlordsList = "ListOverlords";
-        private const string GetOverlordMethod = "GetOverlord";
+        private const string ListOverlordUserInstancesMethod = "ListOverlordUserInstances";
+        private const string GetOverlordUserInstanceMethod = "GetOverlordUserInstance";
 
-        public async Task<ListOverlordsResponse> GetOverlordList(string userId)
+        public async Task<ListOverlordUserInstancesResponse> ListOverlordUserInstances(string userId)
         {
-            ListOverlordsRequest request = new ListOverlordsRequest
-            {
-                UserId = userId
-            };
-
-            return await _contractCallProxy.StaticCallAsync<ListOverlordsResponse>(OverlordsList, request);
-        }
-
-        public async Task<GetOverlordResponse> GetOverlord(string userId, OverlordId overlordId)
-        {
-            GetOverlordRequest request = new GetOverlordRequest()
+            ListOverlordUserInstancesRequest request = new ListOverlordUserInstancesRequest
             {
                 UserId = userId,
-                OverlordId = overlordId.Id
-            };
-
-            return await _contractCallProxy.StaticCallAsync<GetOverlordResponse>(GetOverlordMethod, request);
-        }
-
-
-        private const string GlobalOverlordsList = "ListOverlordLibrary";
-
-        public async Task<ListOverlordLibraryResponse> GetGlobalOverlordsList()
-        {
-            ListOverlordLibraryRequest request = new ListOverlordLibraryRequest
-            {
                 Version = BackendEndpoint.DataVersion
             };
 
-            return await _contractCallProxy.StaticCallAsync<ListOverlordLibraryResponse>(GlobalOverlordsList, request);
+            return await _contractCallProxy.StaticCallAsync<ListOverlordUserInstancesResponse>(ListOverlordUserInstancesMethod, request);
+        }
+
+        public async Task<GetOverlordUserInstanceResponse> GetOverlordUserInstance(string userId, OverlordId overlordId)
+        {
+            GetOverlordUserInstanceRequest request = new GetOverlordUserInstanceRequest
+            {
+                UserId = userId,
+                OverlordId = overlordId.Id,
+                Version = BackendEndpoint.DataVersion
+            };
+
+            return await _contractCallProxy.StaticCallAsync<GetOverlordUserInstanceResponse>(GetOverlordUserInstanceMethod, request);
         }
 
         private const string GetOverlordLevelingDataMethod = "GetOverlordLevelingData";

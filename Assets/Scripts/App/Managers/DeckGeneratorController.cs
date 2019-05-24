@@ -226,8 +226,8 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
-            Enumerators.Faction faction = overlord.Faction;
+            OverlordUserInstance overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
+            Enumerators.Faction faction = overlord.Prototype.Faction;
 
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);
             List<Card> creatureCards = overlordElementSet.Cards.ToList();

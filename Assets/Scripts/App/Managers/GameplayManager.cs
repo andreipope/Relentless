@@ -356,7 +356,7 @@ namespace Loom.ZombieBattleground
 
             GetController<SkillsController>().InitializeSkills();
             GetController<BattlegroundController>().InitializeBattleground();
-            _overlordExperienceManager.InitializeMatchExperience(CurrentPlayer.SelfOverlord, OpponentPlayer.SelfOverlord);
+            _overlordExperienceManager.InitializeMatchExperience();
 
             if (IsTutorial)
             {

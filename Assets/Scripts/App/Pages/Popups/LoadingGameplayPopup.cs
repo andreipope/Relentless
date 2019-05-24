@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace Loom.ZombieBattleground
 {
-    public class LoadingGameplayPopup : IUIPopup
+    public class     LoadingGameplayPopup : IUIPopup
     {
         private ILoadObjectsManager _loadObjectsManager;
 

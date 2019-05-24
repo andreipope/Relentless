@@ -88,6 +88,19 @@ namespace Loom.ZombieBattleground
             Debug.Log("Added experience");
         }
 
+        [CommandHandler(Description = "Get overlord user instance from server")]
+        public static async void GetOverlordUserInstance(int overlordId)
+        {
+            GetOverlordUserInstanceResponse getOverlordUserInstanceResponse =
+                await GameClient.Get<BackendFacade>()
+                .GetOverlordUserInstance(
+                    _backendDataControlMediator.UserDataModel.UserId,
+                    new OverlordId(overlordId)
+                );
+
+            Debug.Log(JsonUtility.PrettyPrint(getOverlordUserInstanceResponse.Overlord.ToString()));
+        }
+
         [CommandHandler]
         public static void ShowYouWonYouLostPopup(bool win)
         {
