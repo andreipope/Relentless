@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 using log4net;
 
@@ -191,13 +192,13 @@ namespace Loom.ZombieBattleground
                         _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(_endMatchResults.OverlordId);
                         _currentPlayerOverlord.UserData.Level = _endMatchResults.CurrentLevel;
                         _currentPlayerOverlord.UserData.Experience = _endMatchResults.CurrentExperience;
-                        var levelRewards = _endMatchResults.LevelRewards;
+                        IReadOnlyList<LevelReward> levelRewards = _endMatchResults.LevelRewards;
                         foreach (LevelReward levelReward in levelRewards)
                         {
                             switch (levelReward)
                             {
                                 case OverlordSkillRewardItem overlordSkillRewardItem:
-                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].Unlocked = true;
+                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].UserData.IsUnlocked = true;
                                     break;
                             }
                         }
