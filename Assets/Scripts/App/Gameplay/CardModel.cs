@@ -845,6 +845,7 @@ namespace Loom.ZombieBattleground
                                 {
                                     IsAttacking = false;
                                     UnitAttackedEnded?.Invoke();
+                                    _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
                                 }
                             );
                         }, Enumerators.QueueActionType.UnitCombat);
@@ -935,6 +936,7 @@ namespace Loom.ZombieBattleground
                                     targetCardModel.IsAttacking = false;
                                     IsAttacking = false;
                                     UnitAttackedEnded?.Invoke();
+                                    _gameplayManager.GetController<BoardController>().UpdateWholeBoard(null);
                                 }
                                 );
                         }, Enumerators.QueueActionType.UnitCombat);

@@ -69,15 +69,13 @@ namespace Loom.Client
 
         public void HandleTxException(LoomException e)
         {
-            switch (e) {
-                case InvalidTxNonceException _:
-                case TxAlreadyExistsInCacheException _:
-                    this.NextNonce = null;
-                    this.Client.Logger.Log("[NonceLog] Got InvalidTxNonceException, will retrieve nonce from node next time");
-                    break;
-                case TxCommitException _:
-                    this.Client.Logger.Log($"[NonceLog] Got {e.GetType().Name} ({e.Message}), so next nonce is still {this.NextNonce}");
-                    break;
+            if (e is InvalidTxNonceException || e is TxAlreadyExistsInCacheException)
+            {
+                this.NextNonce = null;
+                this.Client.Logger.Log($"[NonceLog] Got {e.GetType().Name}, will retrieve nonce from node next time");
+            } else if (e is TxCommitException)
+            {
+                this.Client.Logger.Log($"[NonceLog] Got {e.GetType().Name} ({e.Message}), so next nonce is still {this.NextNonce}");
             }
         }
 

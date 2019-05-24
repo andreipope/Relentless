@@ -69,6 +69,9 @@ TagManager:
   - name: GameUI2
     uniqueID: 2163736433
     locked: 0
+  - name: GameplayInfo
+    uniqueID: 1589928389
+    locked: 0
   - name: GameUI3
     uniqueID: 2983387319
     locked: 0

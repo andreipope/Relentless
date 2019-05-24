@@ -93,8 +93,8 @@ namespace Loom.Client
                 ((IDisposable) this.webSocket).Dispose();
             }
 
-            this.disposed = true;
             NotifyConnectionStateChanged();
+            this.disposed = true;
         }
         
         public override Task ConnectAsync()

@@ -191,6 +191,18 @@ namespace Loom.ZombieBattleground
                         _currentPlayerOverlord = _dataManager.CachedOverlordData.GetOverlordById(_endMatchResults.OverlordId);
                         _currentPlayerOverlord.UserData.Level = _endMatchResults.CurrentLevel;
                         _currentPlayerOverlord.UserData.Experience = _endMatchResults.CurrentExperience;
+                        var levelRewards = _endMatchResults.LevelRewards;
+                        foreach (LevelReward levelReward in levelRewards)
+                        {
+                            switch (levelReward)
+                            {
+                                case OverlordSkillRewardItem overlordSkillRewardItem:
+                                    _currentPlayerOverlord.Skills[overlordSkillRewardItem.SkillIndex].Unlocked = true;
+                                    break;
+                            }
+                        }
+
+
                         deck = _dataManager.CachedDecksData.Decks.Find(x => x.Id == _endMatchResults.DeckId);
 
                         await _networkActionManager.EnqueueNetworkTask(
@@ -394,8 +406,11 @@ namespace Loom.ZombieBattleground
             _imageExperienceBar.DOFillAmount(targetProgressRatio, ExperienceFillInterval);
 
             yield return _experienceFillWait;
-            _buttonContinue.gameObject.SetActive(true);
-            _buttonPlayAgain.gameObject.SetActive(true);
+            _buttonContinue.gameObject.SetActive(true);            
+            _buttonPlayAgain.gameObject.SetActive
+            (
+                _appStateManager.AppState == Enumerators.AppState.GAMEPLAY
+            );
 
             if (_endMatchResults.CurrentLevel > _endMatchResults.PreviousLevel)
             {

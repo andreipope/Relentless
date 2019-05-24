@@ -217,6 +217,8 @@ namespace Loom.ZombieBattleground
                 TargettingArrow.Dispose();
                 TargettingArrow = null;
             }
+
+            CompleteTargetingAction();
         }
 
         public async virtual void Activate()
