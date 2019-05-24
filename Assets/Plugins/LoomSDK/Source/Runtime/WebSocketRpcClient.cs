@@ -93,6 +93,7 @@ namespace Loom.Client
                 ((IDisposable) this.webSocket).Dispose();
             }
 
+            NotifyConnectionStateChanged();
             this.disposed = true;
         }
         

@@ -2,4 +2,5 @@
 <linker>
     <assembly fullname="ZombieBattleground.Generated" preserve="all" />
     <assembly fullname="Loom.Google.Protobuf" preserve="all" />
+    <assembly fullname="ZombieBattleground.Main" preserve="all" />
 </linker>
