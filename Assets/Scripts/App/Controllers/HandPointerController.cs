@@ -291,7 +291,7 @@ namespace Loom.ZombieBattleground
                     break;
                 case Enumerators.TutorialObjectLayer.AbovePopups:
                     _handRenderer.sortingOrder = SortingOrderAbovePopups;
-                    _handRenderer.sortingLayerName = SRSortingLayers.GameUI3; 
+                    _handRenderer.sortingLayerName = SRSortingLayers.GameplayInfo; 
                     break;
             }
 
