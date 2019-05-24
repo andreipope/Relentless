@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <linker>
-    <assembly fullname="ZombieBattleground.Generated" preserve="all" />
     <assembly fullname="ZombieBattleground.Main" preserve="all" />
+    <assembly fullname="ZombieBattleground.Generated" preserve="all" />
     <assembly fullname="Loom.Google.Protobuf" preserve="all" />
-    <assembly fullname="LoomSDK" preserve="all" /></linker>
+    <assembly fullname="LoomSDK" preserve="all" />
+</linker>
