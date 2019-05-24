@@ -250,8 +250,8 @@ namespace Loom.ZombieBattleground
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 case Enumerators.TutorialObjectLayer.AboveUI:
-                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameUI3;
-                    UpdateBackgroundLayers(SRSortingLayers.GameUI3, 1);
+                    _textDescription.renderer.sortingLayerName = SRSortingLayers.GameplayInfo;
+                    UpdateBackgroundLayers(SRSortingLayers.GameplayInfo, 1);
                     _textDescription.renderer.sortingOrder = 2;
                     break;
                 default:

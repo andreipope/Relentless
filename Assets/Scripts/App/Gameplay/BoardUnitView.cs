@@ -886,6 +886,8 @@ namespace Loom.ZombieBattleground
 
             if (targetCardView == null || targetCardView.GameObject == null)
             {
+                _actionsQueueController.ForceContinueAction(Model.ActionForDying);
+                _actionsQueueController.ForceContinueAction(targetCard.ActionForDying);
                 Model.ActionForDying = null;
                 targetCard.ActionForDying = null;
                 completeCallback?.Invoke();

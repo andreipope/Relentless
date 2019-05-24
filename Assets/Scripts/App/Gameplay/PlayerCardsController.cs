@@ -108,9 +108,9 @@ namespace Loom.ZombieBattleground
             if (filterOutDeadCards) 
             {
                 int count = 0;
-                for (int i = 0; i < CardsOnBoard.Count; i++)
+                for (int i = CardsOnBoard.Count-1; i >= 0; i--)
                 {
-                    if (CardsOnBoard[i].IsDead == false || CardsOnBoard[i].CurrentDefense <= 0)
+                    if (CardsOnBoard[i].IsDead == false && CardsOnBoard[i].CurrentDefense > 0)
                     {
                         count++;
                     }
