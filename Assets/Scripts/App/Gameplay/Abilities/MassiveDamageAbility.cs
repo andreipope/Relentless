@@ -75,14 +75,11 @@ namespace Loom.ZombieBattleground
 
                 foreach (IBoardObject unit in _targets)
                 {
-                    targetEffects = new List<PastActionsPopup.TargetEffectParam>()
+                    targetEffects.Add(new PastActionsPopup.TargetEffectParam
                     {
-                        new PastActionsPopup.TargetEffectParam()
-                        {
-                            ActionEffectType = Enumerators.ActionEffectType.Damage,
-                            Target = unit
-                        }
-                    };
+                        ActionEffectType = Enumerators.ActionEffectType.Damage,
+                        Target = unit
+                    });
                 }
 
                 Enumerators.ActionType actionType = Enumerators.ActionType.CardAffectingCard;
