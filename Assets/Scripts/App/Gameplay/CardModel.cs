@@ -900,9 +900,6 @@ namespace Loom.ZombieBattleground
                                 AttackedBoardObjectsThisTurn.Add(targetCardModel);
                             }
 
-                            
-                            Debug.LogWarning("GOT IN ACTION CODE");
-
                             FightSequenceHandler.HandleAttackCard(
                                 completeCallback,
                                 targetCardModel,
