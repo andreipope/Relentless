@@ -474,7 +474,6 @@ namespace Loom.ZombieBattleground
                                            _overlordExperienceManager.ReportExperienceAction(Common.Enumerators.ExperienceActionType.PlayCard, _overlordExperienceManager.PlayerMatchMatchExperienceInfo);
 
                                            cardModel.Owner.PlayerCardsController.RemoveCardFromHand(cardModel, true);
-                                           cardModel.Owner.PlayerCardsController.AddCardToGraveyard(cardModel);
 
                                            if (card.Model.Card.Prototype.Kind == Enumerators.CardKind.CREATURE)
                                            {

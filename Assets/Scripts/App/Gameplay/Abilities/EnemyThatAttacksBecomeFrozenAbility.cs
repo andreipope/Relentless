@@ -31,7 +31,10 @@ namespace Loom.ZombieBattleground
             {
                 if (unit.HasBuffShield)
                     return;
-                    
+
+                if (CardModel.CurrentDamage <= 0)
+                    return;
+
                 unit.Stun(Enumerators.StunType.FREEZE, Value);
 
                 ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()

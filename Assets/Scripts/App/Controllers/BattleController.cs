@@ -108,7 +108,7 @@ namespace Loom.ZombieBattleground
                     attackedUnitModel.HasUsedBuffShield = true;
                 }
 
-                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;//LastAttackingUnit = attackingUnit;
+                attackedUnitModel.LastAttackingSetType = attackingUnitModel.Card.Prototype.Faction;
                 attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damageAttacking, attackedUnitModel.MaximumDamageFromAnySource),
                     Enumerators.ReasonForValueChange.Attack);
 
@@ -190,7 +190,8 @@ namespace Loom.ZombieBattleground
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
                 attackedUnitModel.LastAttackingSetType = attackingPlayer.SelfOverlord.Faction;
                 attackedUnitModel.AddToCurrentDefenseHistory(-Mathf.Min(damage, attackedUnitModel.MaximumDamageFromAnySource),
@@ -249,7 +250,8 @@ namespace Loom.ZombieBattleground
                 if (damage > 0 && attackedUnitModel.HasBuffShield)
                 {
                     damage = 0;
-                    attackedUnitModel.UseShieldFromBuff();
+                    attackedUnitModel.HasUsedBuffShield = true;
+                    attackedUnitModel.ResolveBuffShield();
                 }
 
                 switch (attacker)
