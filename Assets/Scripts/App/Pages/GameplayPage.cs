@@ -191,7 +191,11 @@ namespace Loom.ZombieBattleground
             _settingsButton.onClick.AddListener(SettingsButtonOnClickHandler);
             _buttonKeep.onClick.AddListener(KeepButtonOnClickHandler);
 
-            _reportGameActionsPanel = new PastActionReportPanel(_selfPage.transform.Find("ActionReportPanel").gameObject);
+            Vector3 pos = GameObject.Find("ActionReportPivot").transform.position;
+            GameObject actionReportPanelObject = _selfPage.transform.Find("ActionReportPanel").gameObject;
+            pos.z = actionReportPanelObject.transform.position.z;
+            actionReportPanelObject.transform.position = pos;
+            _reportGameActionsPanel = new PastActionReportPanel(actionReportPanelObject);
 
             if (_zippingVfx == null)
             {
