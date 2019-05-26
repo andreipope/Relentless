@@ -433,6 +433,7 @@ namespace Loom.ZombieBattleground
         {
             SelectedTargetAction();
             DeactivateSelectTarget();
+            AbilityUnitOwner.Owner.PlayerCardsController.InvokeHandChanged();
         }
 
         protected virtual void InputCanceledHandler()
