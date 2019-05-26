@@ -711,6 +711,10 @@ namespace Loom.ZombieBattleground
         {
             CallLog($"{nameof(ClearCardsOnBoard)}()");
 
+            foreach(CardModel model in _cardsOnBoard)
+            {
+                _battlegroundController.GetCardViewByModel<BoardUnitView>(model).CancelTargetingArrows();
+            }
             _cardsOnBoard.Clear();
         }
         
