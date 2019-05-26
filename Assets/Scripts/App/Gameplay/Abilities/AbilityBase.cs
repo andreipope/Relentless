@@ -258,8 +258,8 @@ namespace Loom.ZombieBattleground
 
             await new WaitForUpdate();
 
-            ChangeAuraStatusAction(true);
             LastAuraState = true;
+            ChangeAuraStatusAction(true);
         }
 
         public virtual void Update()
@@ -459,8 +459,8 @@ namespace Loom.ZombieBattleground
         {
             if (LastAuraState)
             {
-                ChangeAuraStatusAction(false);
                 LastAuraState = false;
+                ChangeAuraStatusAction(false);
             }
 
             Deactivate();
@@ -483,8 +483,8 @@ namespace Loom.ZombieBattleground
             {
                 if (LastAuraState)
                 {
-                    ChangeAuraStatusAction(false);
                     LastAuraState = false;
+                    ChangeAuraStatusAction(false);
                 }
             }
         }
