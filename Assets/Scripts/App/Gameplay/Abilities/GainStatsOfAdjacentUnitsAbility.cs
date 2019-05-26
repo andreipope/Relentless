@@ -43,7 +43,7 @@ namespace Loom.ZombieBattleground
         {
             base.BoardChangedHandler(count);
 
-            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && LastAuraState)
+            if(AbilityUnitOwner.IsUnitActive && !AbilityUnitOwner.IsDead && AbilityUnitOwner.CurrentDefense > 0 && LastAuraState)
             {
                 int oldAddedDefense = _addedDefense;
                 int oldAddedDamage = _addedDamage;

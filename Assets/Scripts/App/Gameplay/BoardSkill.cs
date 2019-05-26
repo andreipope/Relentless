@@ -255,8 +255,11 @@ namespace Loom.ZombieBattleground
         public GameplayActionQueueAction EndDoSkill(List<ParametrizedAbilityBoardObject> targets, bool isLocal = false)
         {
             if (!IsSkillCanUsed() || !IsUsing)
+            {                
+                CancelTargetingArrows();
                 return null;
-
+            }
+            
             IsLocal = isLocal;
 
             return _gameplayManager
@@ -266,6 +269,7 @@ namespace Loom.ZombieBattleground
                     {
                         DoOnUpSkillAction(completeCallback, targets);
                         IsUsing = false;
+                        CancelTargetingArrows();
                     },
                     Enumerators.QueueActionType.OverlordSkillUsage);
         }
