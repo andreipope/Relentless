@@ -82,19 +82,14 @@ namespace Loom.ZombieBattleground
             _list.Insert(position, item);
         }
 
-        public void InsertRange(int index, IEnumerable<T> collection)
+        public void InsertRange(ItemPosition position, IEnumerable<T> collection)
         {
             foreach (T item in collection)
             {
                 ThrowIfContains(item);
             }
 
-            _list.InsertRange(index, collection);
-        }
-
-        public void InsertRange(ItemPosition position, IEnumerable<T> collection)
-        {
-            InsertRange(position.GetIndex(this), collection);
+            _list.InsertRange(position.GetIndex(this), collection);
         }
 
         public void RemoveAt(ItemPosition index)

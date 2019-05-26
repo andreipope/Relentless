@@ -30,6 +30,8 @@ namespace Loom.ZombieBattleground
 
         private IMatchManager _matchManager;
 
+        private IOverlordExperienceManager _overlordExperienceManager;
+
         private CardsController _cardsController;
 
         private BattlegroundController _battlegroundController;
@@ -73,6 +75,7 @@ namespace Loom.ZombieBattleground
             _timerManager = GameClient.Get<ITimerManager>();
             _matchManager = GameClient.Get<IMatchManager>();
             _pvpManager = GameClient.Get<IPvPManager>();
+            _overlordExperienceManager = GameClient.Get<IOverlordExperienceManager>();
 
             _cardsController = _gameplayManager.GetController<CardsController>();
             _battlegroundController = _gameplayManager.GetController<BattlegroundController>();
@@ -125,8 +128,6 @@ namespace Loom.ZombieBattleground
 
             _gameplayManager.CurrentPlayer = player;
 
-            GameClient.Get<IOverlordExperienceManager>().InitializeExperienceInfoInMatch(player.SelfOverlord);
-
             if (!_gameplayManager.IsSpecificGameplayBattleground ||
                 (_gameplayManager.IsTutorial &&
                 _tutorialManager.CurrentTutorial.TutorialContent.ToGameplayContent().
@@ -138,7 +139,7 @@ namespace Loom.ZombieBattleground
                 switch (_matchManager.MatchType)
                 {
                     case Enumerators.MatchType.LOCAL:
-                        int deckId = _gameplayManager.PlayerDeckId;
+                        DeckId deckId = _gameplayManager.PlayerDeckId;
                         Deck deck = _dataManager.CachedDecksData.Decks.First(d => d.Id == deckId);
                         foreach (DeckCardData card in deck.Cards)
                         {
@@ -167,8 +168,8 @@ namespace Loom.ZombieBattleground
                         throw new ArgumentOutOfRangeException();
                 }
 
-                BoardUnitModel[] boardUnitModels = workingDeck.Select(card => new BoardUnitModel(card)).ToArray();
-                player.PlayerCardsController.SetCardsInDeck(boardUnitModels);
+                CardModel[] cardModels = workingDeck.Select(card => new CardModel(card)).ToArray();
+                player.PlayerCardsController.SetCardsInDeck(cardModels);
             }
 
             player.TurnStarted += OnTurnStartedStartedHandler;
@@ -203,8 +204,8 @@ namespace Loom.ZombieBattleground
                         String.Join("\n", workingCards.Cast<object>().ToArray())
                     );
 
-                    BoardUnitModel[] boardUnitModels = workingCards.Select(card => new BoardUnitModel(card)).ToArray();
-                    player.PlayerCardsController.SetFirstHandForPvPMatch(boardUnitModels);
+                    CardModel[] cardModels = workingCards.Select(card => new CardModel(card)).ToArray();
+                    player.PlayerCardsController.SetFirstHandForPvPMatch(cardModels);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -269,7 +270,7 @@ namespace Loom.ZombieBattleground
                 cardPosition = new Vector3(-6f, -2.5f, 0f);
             }
 
-            _battlegroundController.CreateCardPreview(param[0], cardPosition, false);
+            _battlegroundController.CreateCardPreview((ICardView) param[0], cardPosition, false);
         }
 
         public void OnTurnEndedEndedHandler()
@@ -284,9 +285,10 @@ namespace Loom.ZombieBattleground
         {
             if (_gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer)
             {
-                foreach (BoardCardView card in _battlegroundController.PlayerHandCards)
+                IReadOnlyList<BoardCardView> views = _battlegroundController.GetCardViewsByModels<BoardCardView>(_gameplayManager.CurrentPlayer.CardsInHand);
+                foreach (BoardCardView card in views)
                 {
-                    card.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
+                    card?.SetHighlightingEnabled(card.Model.CanBeBuyed(_gameplayManager.CurrentPlayer));
                 }
             }
         }
@@ -482,7 +484,9 @@ namespace Loom.ZombieBattleground
             {
                 _isMoveHoveringCard = false;
             };
-            if (_hoveringHandCard != null && _hoveringHandCard.HandBoardCard != null && _hoveringHandCard.HandBoardCard.BoardCardView != null)
+            if (_hoveringHandCard?.HandBoardCard?.BoardCardView != null &&
+                _hoveringHandCard?.GameObject != null &&
+                _hoveringHandCard?.HandBoardCard.GameObject != null)
             {
                 _hoveringHandCard.HandBoardCard.ResetHoveringAndZoom(isMove, onComplete);
             }
@@ -570,14 +574,14 @@ namespace Loom.ZombieBattleground
             _battlegroundController.UpdatePositionOfCardsInPlayerHand();
         }
 
-        private void ClickedOnBoardObjectEventHandler(BoardObject boardObject)
+        private void ClickedOnBoardObjectEventHandler(IBoardObject boardObject)
         {
             if (GameClient.Get<IUIManager>().GetPopup<SettingsWithCreditsPopup>().Self != null)
                 return;
         
             switch (boardObject)
             {
-                case BoardUnitModel unit:
+                case CardModel unit:
                     if (!unit.IsAttacking)
                     {
                         StopHandTimer();
@@ -587,7 +591,7 @@ namespace Loom.ZombieBattleground
                         {
                             HandCardPreview(new object[]
                             {
-                                _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit)
+                                _battlegroundController.GetCardViewByModel<BoardUnitView>(unit)
                             });
                         }
                     }

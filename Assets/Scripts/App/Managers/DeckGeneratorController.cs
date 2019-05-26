@@ -54,12 +54,9 @@ namespace Loom.ZombieBattleground
 
         }
 
-        public async void ProcessAddDeck(Deck deck, OverlordModel overlord)
+        public async void ProcessAddDeck(Deck deck)
         {
             GameClient.Get<IUIManager>().DrawPopup<LoadingFiatPopup>("Saving Deck . . .");
-            deck.OverlordId = overlord.OverlordId;
-            deck.PrimarySkill = overlord.PrimarySkill;
-            deck.SecondarySkill = overlord.SecondarySkill;
 
             bool success = false;
             try
@@ -67,7 +64,7 @@ namespace Loom.ZombieBattleground
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         long newDeckId = await _backendFacade.AddDeck(_backendDataControlMediator.UserDataModel.UserId, deck);
-                        deck.Id = newDeckId;
+                        deck.Id = new DeckId(newDeckId);
                         _dataManager.CachedDecksData.Decks.Add(deck);
                         _analyticsManager.SetEvent(AnalyticsManager.EventDeckCreated);
                         Log.Info(" ====== Add Deck " + newDeckId + " Successfully ==== ");
@@ -80,7 +77,7 @@ namespace Loom.ZombieBattleground
 
                         success = true;
 
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId =  deck.Id;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
 
                         GameClient.Get<ITutorialManager>().ReportActivityAction(Enumerators.TutorialActivityAction.HordeSaved);
@@ -127,7 +124,7 @@ namespace Loom.ZombieBattleground
                         Log.Info(" ====== Edit Deck Successfully ==== ");
                         success = true;
 
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = (int) deck.Id;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = deck.Id;
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
                     },
                     keepCurrentAppState: true,
@@ -170,9 +167,8 @@ namespace Loom.ZombieBattleground
                 await _networkActionManager.EnqueueNetworkTask(async () =>
                     {
                         _dataManager.CachedDecksData.Decks.Remove(deck);
-                        _dataManager.CachedUserLocalData.LastSelectedDeckId = -1;
+                        _dataManager.CachedUserLocalData.LastSelectedDeckId = new DeckId(-1);
                         await _dataManager.SaveCache(Enumerators.CacheDataType.USER_LOCAL_DATA);
-                        await _dataManager.SaveCache(Enumerators.CacheDataType.OVERLORDS_DATA);
 
                         await _backendFacade.DeleteDeck(
                             _backendDataControlMediator.UserDataModel.UserId,
@@ -230,7 +226,7 @@ namespace Loom.ZombieBattleground
 
         public void GenerateCardsToDeck(Deck deck, CollectionData collectionData)
         {
-            OverlordModel overlord = _dataManager.CachedOverlordData.Overlords[deck.OverlordId];
+            OverlordModel overlord = _dataManager.CachedOverlordData.GetOverlordById(deck.OverlordId);
             Enumerators.Faction faction = overlord.Faction;
 
             Faction overlordElementSet = SetTypeUtility.GetCardFaction(_dataManager, faction);

@@ -19,8 +19,8 @@ namespace Loom.ZombieBattleground.Data
         {
             return new Protobuf.Deck
             {
-                Id = deck.Id,
-                OverlordId = deck.OverlordId,
+                Id = deck.Id.Id,
+                OverlordId = deck.OverlordId.Id,
                 Name = deck.Name,
                 Cards =
                 {
@@ -66,7 +66,12 @@ namespace Loom.ZombieBattleground.Data
                     ability.ChoosableAbilities.Select(a => a.ToProtobuf())
                 },
                 Defense2 = ability.Defense2,
-                Cost = ability.Cost
+                Cost = ability.Cost,
+                TargetCardKind = (CardKind.Types.Enum) ability.TargetKind,
+                TargetGameMechanicDescriptionTypes =
+                {
+                    ability.TargetGameMechanicDescriptions.Select(m => (GameMechanicDescription.Types.Enum) m)
+                }
             };
 
             return abilityData;

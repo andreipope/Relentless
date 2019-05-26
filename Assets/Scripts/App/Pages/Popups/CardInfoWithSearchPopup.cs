@@ -104,7 +104,7 @@ namespace Loom.ZombieBattleground
 
             Self = Object.Instantiate(
                 _loadObjectsManager.GetObjectByPath<GameObject>("Prefabs/UI/Popups/CardInfoWithSearchPopup"));
-            Self.transform.SetParent(_uiManager.Canvas3.transform, false);
+            Self.transform.SetParent(_uiManager.Canvas2.transform, false);
             
             _cardCreaturePrefab = _loadObjectsManager.GetObjectByPath<GameObject>
             (
@@ -331,17 +331,17 @@ namespace Loom.ZombieBattleground
         {
             GameObject go;
             BoardCardView boardCard;
-            BoardUnitModel boardUnitModel = new BoardUnitModel(new WorkingCard(card, card, null));
+            CardModel cardModel = new CardModel(new WorkingCard(card, card, null));
 
             switch (card.Kind)
             {
                 case Enumerators.CardKind.CREATURE:
                     go = Object.Instantiate(_cardCreaturePrefab);
-                    boardCard = new UnitBoardCard(go, boardUnitModel);
+                    boardCard = new UnitBoardCardView(go, cardModel);
                     break;
                 case Enumerators.CardKind.ITEM:
                     go = Object.Instantiate(_cardItemPrefab);
-                    boardCard = new ItemBoardCard(go, boardUnitModel);
+                    boardCard = new ItemBoardCardView(go, cardModel);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(card.Kind), card.Kind, null);
@@ -350,7 +350,7 @@ namespace Loom.ZombieBattleground
             boardCard.SetHighlightingEnabled(false);
             boardCard.Transform.position = position;
             boardCard.Transform.localScale = Vector3.one * scale;
-            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameUI3;
+            boardCard.GameObject.GetComponent<SortingGroup>().sortingLayerID = SRSortingLayers.GameplayInfo;
             
             boardCard.Transform.SetParent(GameClient.Get<IUIManager>().Canvas.transform, true);
             RectTransform cardRectTransform = boardCard.GameObject.AddComponent<RectTransform>();

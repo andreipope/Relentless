@@ -1,6 +1,7 @@
 ﻿using System;
 using Loom.ZombieBattleground.BackendCommunication;
 using Loom.ZombieBattleground.Common;
+using Loom.ZombieBattleground.Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -116,7 +117,7 @@ namespace Loom.ZombieBattleground
                 _dataManager.CachedUserLocalData.CurrentTutorialId = 0;
                 _dataManager.CachedUserLocalData.Tutorial = true;
                 GameClient.Get<IGameplayManager>().IsTutorial = true;
-                _uiManager.GetPage<GameplayPage>().CurrentDeckId = 0;
+                _uiManager.GetPage<GameplayPage>().CurrentDeckId = new DeckId(0);
                 GameClient.Get<IMatchManager>().FindMatch(Enumerators.MatchType.LOCAL);
             }
         }

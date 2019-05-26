@@ -16,7 +16,7 @@ namespace Loom.ZombieBattleground
 
         protected override void OnAbilityAction(object info = null)
         {
-            List<BoardUnitModel> units = (List<BoardUnitModel>)info;
+            List<CardModel> units = (List<CardModel>)info;
 
             float delayBeforeDestroy = 3f;
             float delayAfter = 0;
@@ -30,7 +30,7 @@ namespace Loom.ZombieBattleground
 
                 Enumerators.VisualEffectType effectType = Enumerators.VisualEffectType.Impact;
 
-                foreach (BoardUnitModel unit in units)
+                foreach (CardModel unit in units)
                 {
                     offset = Vector3.zero;
 
@@ -52,7 +52,7 @@ namespace Loom.ZombieBattleground
                         effectType = Enumerators.VisualEffectType.Impact;
                     }
 
-                    Transform unitTransform = _battlegroundController.GetBoardUnitViewByModel<BoardUnitView>(unit).Transform;
+                    Transform unitTransform = _battlegroundController.GetCardViewByModel<BoardUnitView>(unit).Transform;
 
                     Vector3 targetPosition = unitTransform.position;
 

@@ -120,7 +120,7 @@ namespace Loom.ZombieBattleground
             _playerOverlordPicture.SetNativeSize();
             _opponentOverlordPicture.SetNativeSize();
 
-            bool isPlayerFirstTurn = _gameplayManager.CurrentTurnPlayer.Equals(_gameplayManager.CurrentPlayer);
+            bool isPlayerFirstTurn = _gameplayManager.CurrentTurnPlayer == _gameplayManager.CurrentPlayer;
 
             _playerAnimator.SetBool(_parameterName, isPlayerFirstTurn);
             _opponentAnimator.SetBool(_parameterName, !isPlayerFirstTurn);

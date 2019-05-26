@@ -90,16 +90,16 @@ namespace Loom.ZombieBattleground
                     actionType = Enumerators.ActionType.CardAffectingCard;
                 }
 
-                ActionsQueueController.PostGameActionReport(new PastActionsPopup.PastActionParam()
+                ActionsReportController.PostGameActionReport(new PastActionsPopup.PastActionParam()
                 {
                     ActionType = actionType,
-                    Caller = GetCaller(),
+                    Caller = AbilityUnitOwner,
                     TargetEffects = targetEffects
                 });
             }
         }
 
-        private void TakeTypeToUnit(BoardUnitModel unit)
+        private void TakeTypeToUnit(CardModel unit)
         {
             if (unit == null)
                 return;

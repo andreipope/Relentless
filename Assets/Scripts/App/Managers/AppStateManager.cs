@@ -217,7 +217,7 @@ namespace Loom.ZombieBattleground
         
         private void RpcClientOnConnectionStateChanged(IRpcClient sender, RpcConnectionState state)
         {
-            if (state == RpcConnectionState.Connected)
+            if (!UnitTestDetector.IsRunningUnitTests && state == RpcConnectionState.Connected)
             {
                 _isReconnecting = false;
             }

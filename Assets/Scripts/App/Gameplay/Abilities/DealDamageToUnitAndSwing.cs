@@ -46,9 +46,9 @@ namespace Loom.ZombieBattleground
 
             TakeDamageToUnit(TargetUnit, Value);
 
-            List<BoardUnitModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit);
+            List<CardModel> adjacent = BattlegroundController.GetAdjacentUnitsToUnit(TargetUnit);
 
-            foreach (BoardUnitModel unit in adjacent)
+            foreach (CardModel unit in adjacent)
             {
                 TakeDamageToUnit(unit, Damage);
             }
@@ -61,9 +61,9 @@ namespace Loom.ZombieBattleground
             );
         }
 
-        private void TakeDamageToUnit(BoardUnitModel unit, int value)
+        private void TakeDamageToUnit(CardModel unit, int value)
         {
-            BattleController.AttackUnitByAbility(GetCaller(), AbilityData, unit, value);
+            BattleController.AttackUnitByAbility(AbilityUnitOwner, AbilityData, unit, value);
         }
     }
 }
