@@ -229,6 +229,10 @@ namespace Loom.ZombieBattleground
                             actionElement.Init(card.CardModel.Card, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value,
                                 card.CardModel.CardPicture);
                             break;
+                        case Player player:
+                            actionElement = new SmallUnitCardElement(_parentOfRightBlockElements, true);
+                            actionElement.Init(player, targetEffect.ActionEffectType, targetEffect.HasValue, targetEffect.Value);
+                            break;
                         default:
                             throw new ArgumentOutOfRangeException(nameof(targetEffect.Target), targetEffect.Target, null);
                     }
